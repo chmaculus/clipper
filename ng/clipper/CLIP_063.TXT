@@ -1,0 +1,43 @@
+'------------------------------------------------------------------------------
+^BSET INDEX^B
+
+    SET INDEX opens the specified index files in the current work area.
+
+^USyntax^U
+
+    SET INDEX TO [<file list>/(<expC1>)...]
+
+^UArgument^U
+
+    <file list> are the names of one or more (up to 15) index (.ntx or
+    .ndx) files to open in the current work area, separated by commas.
+
+^UUsage^U
+
+    SET INDEX assumes an .ntx or .ndx filename extension unless otherwise
+    specified.  You may include a drive letter and/or path name with the
+    index filename.
+
+    CLOSE INDEX or SET INDEX TO without a filename closes all indexes open
+    in the current work area.
+
+    When more than one index file is opened for the active database file,
+    the first index becomes the controlling index.  The record pointer is
+    then positioned at the first logical record in the index.  During
+    database file processing, all open indexes are updated whenever a key
+    value is appended or changed.  To change the controlling index without
+    issuing another SET INDEX command, use SET ORDER.
+
+    ^BMacro Variables^B: Index files may be specified by using macro
+    variables.  Each file listed, however, must be a separate variable.
+    For example, this is not permissible:
+
+    ^Rntx_list = "Name, Account"^R
+    ^RSET INDEX TO &ntx_list    ^R
+
+    Note that macros substituting a null string ("") or spaces are ignored.
+!seealso: ???.ngo:"CLOSE" clip_013.ngo:"INDEX" clip_030.ngo:"REINDEX" clip_068.ngo:"SET ORDER" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

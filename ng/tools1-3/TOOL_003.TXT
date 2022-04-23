@@ -1,0 +1,3246 @@
+!short: Introduction Extended Drivers
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     In addition to supporting the window functions, the CTUS.LIB extended
+     driver contains a series of independent functions, all of which are
+     described in this chapter.
+
+     We are concerned here with functions that relate directly to CA-Clipper
+     keyboard input, screen and printer output, or other internal functions.
+     To use these internal functions, the driver must be linked in.  The use
+     of CTUS.LIB does not mean that all the code for all the functions
+     contained in CTUS.LIB is linked to your application.  An intensive
+     modularization effort causes RTLINK to link only those portions that are
+     actually needed.
+
+ ^bThe Use of CTUS.LIB^b
+
+     The extended driver is delivered as an .OBJ file (CTUS.OBJ) to allow
+     replacement of the CA-Clipper driver module in CLIPPER.LIB during
+     linking.  The extended driver must be included in the list of object
+     files.
+
+ ^bVideo Modes^b
+
+     Some functions which relate to screen adapters are found in the Video
+     Modes chapter rather than in the  Video Functions chapter.
+
+ ^bChanging Modes^b
+
+     Some settings are reset by a mode change:
+
+     Cursor position to:      Line 0, Column 0
+
+     Screen page 0:           SETPAGE()
+
+     All font information:    SETFONT(), FONTLOAD(), FONTSELECT()
+
+     All palette information: EGAPALETTE(), VGAPALETTE()
+
+     Border settings:         SET COLOR TO
+
+ ^bDSETWINDOW()/External Screen Output^b
+
+     This is a very important switch for CA-Clipper Tools that impacts many
+     functions and other modules.  DSETWINDOW() determines whether or not the
+     output of external programs or modules is redirected to a window.
+     (CA-Clipper Tools functions are considered "external").
+
+     The default setting for this switch (.T.) redirects the output.  To make
+     this possible, the driver changes the interrupt vector 10H.  Under
+     certain circumstances external programs will not accept changes in
+     particular interrupt vectors, which is why you must call DSETWINDOW(.F.)
+     before you call the RUN function.
+
+     Certain other functions, like ISANSI() or NUMCOL(), return false or
+     differing values in conjunction with DSETWINDOW().  Pay attention to the
+     accompanying notes in the function descriptions.
+
+ ^bSystem Settings Are Saved^b
+
+     When you end an application under CA-Clipper's control (normal program
+     termination, Alt-C, or ending after a CA-Clipper error message), the
+     cursor type, color attribute, and interrupt vectors 0 to 127 are
+     restored.
+
+     However, if you exit a program in any other way (usually with an
+     external module containing errors) then the extended driver system
+     settings cannot be restored.  Previously changed interrupt vectors are
+     probably still changed, which sooner or later result in a system crash.
+     If this occurs, reboot as soon as possible.
+
+ ^bThe QUIT File^b
+
+     A QUIT file can be added to any of the extended driver functions.  The
+     QUIT file provides information at the next program start as to whether
+     the previous run ended correctly.  Additionally, the user's keyboard
+     input is also recorded.
+
+     The default name for this file is the same name as your CA-Clipper
+     program except that it has a .Q extension instead of a .EXE extension.
+     However, you can select another name for the file.  For more
+     information, please see DSETQFILE(), DSETQNAME() and KEYREAD().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: CGA40()      Switches to 40-column mode (color or monochrome)
+'------------------------------------------------------------------------------
+ ^bCGA40()^b
+ Switches to 40-column mode (color or monochrome)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCGA40([<lMonochromeMode>]) --> lSwitch
+
+ ^bArgument^b
+
+     ^b<lMonochromeMode>^b  Designates the 40뻙haracter mode.  If this
+     parameter is .T., the function switches to the monochrome CGA
+     40-character mode.  If this parameter is.F., the function switches to
+     the 40-character color mode.  The default value is .F..
+
+ ^bReturns^b
+
+     CGA40() returns .T. if the screen adapter you use permits a switch.
+
+ ^bDescription^b
+
+     This function can be used with any screen adapter that has CGA emulation
+     capability.  You can switch to CGA 40-character mode, color or
+     monochrome.  The function ISCOLOR() also returns .T. in the monochrome
+     mode because this option activates a "color summing" of the screen
+     adapter and does not switch to the monochrome mode for a hercules
+     adapter or a monochrome text adapter.
+
+ ^bNotes^b
+
+     ^bImportant!^b  This function cannot be implemented when windows are
+     open.
+
+     ^b^CFE^b  Modes set through this function can also be combined with
+        other line counts, i.e. EGA43().
+
+     ^b^CFE^b  A call with .T. corresponds to BIOS mode 0.  A call with .F.
+        corresponds to BIOS mode 1.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Switch to 40-character mode (color):
+
+        ?  CGA40()         //  .T., if successful
+
+     ^b^CFE^b  Switch to 40-character mode (monochrome):
+
+        ?  CGA40(.T.)      //  .T., if successful
+
+!seealso: "GETMODE()" "CGA80()" "EGA43()" "VGA50()" "MONOCHROME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CGA80()      Switches to 80-column mode (color or monochrome)
+'------------------------------------------------------------------------------
+ ^bCGA80()^b
+ Switches to 80-column mode (color or monochrome)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCGA80([<lMonochromeMode>]) --> lSwitch
+
+ ^bArgument^b
+
+     ^b<lMonochromeMode>^b  Designates the 40뻙haracter mode.  If this
+     parameter is .T., the function switches to the monochrome CGA
+     80-character mode.  If this parameter is .F., the function switches to
+     the 80-character color mode.  The default value is .F..
+
+ ^bReturns^b
+
+     CGA80() returns .T. when the screen adapter you use permits a switch.
+
+ ^bDescription^b
+
+     This function can be used with any screen adapter that has CGA emulation
+     capability.  You can switch to CGA 80-character mode, color or
+     monochrome.  The function ISCOLOR() also returns .T. in the monochrome
+     mode because this option activates a "color summing" of the screen
+     adapter and does not switch to the monochrome mode for a hercules
+     adapter or a monochrome text adapter.
+
+ ^bNotes^b
+
+     ^bImportant!^b  This function cannot be implemented when windows are
+     open.
+
+     ^b^CFE^b  A call with .T. corresponds to BIOS mode 2.  A call with .F.
+        corresponds to BIOS mode 3.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Switch to 80-character mode (color):
+
+        ?  CGA80()         //  .T., if successful
+
+     ^b^CFE^b  Switch to 80-character mode (monochrome):
+
+        ?  CGA80(.T.)      //  .T., if successful
+
+!seealso: "GETMODE()" "CGA40()" "EGA43()" "VGA50()" "MONOCHROME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DSETKBIOS()  Turns the extended keyboard mode on or off through BIOS
+'------------------------------------------------------------------------------
+ ^bDSETKBIOS()^b
+ Turns the extended keyboard mode on or off through BIOS (additional keys F11,
+ F12)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDSETKBIOS([<lNewKeyboardMode>]) --> lOldKeyboardMode
+
+ ^bArgument^b
+
+     ^b<lNewKeyboardMode>^b  Designates whether the extended keyboard input
+     mode is on (.T.) or off (.F.).  The default value (.T.) designates that
+     the extended keyboard input mode is on.
+
+ ^bReturns^b
+
+     When called without the parameter, this function returns the current
+     setting for DSETKBIOS().  If you pass a parameter, then it returns the
+     previous setting.
+
+ ^bDescription^b
+
+     Beginning with CA-Clipper 5.0, all keyboard entries are read through the
+     BIOS instead of DOS.  The default setting for DSETKBIOS() is now the
+     opposite of what it was in previous versions.  The default setting for
+     the enhanced keyboard is on (.T.).  When the enhanced keyboard mode is
+     off, keyboard entries are redirected through DOS.  This function is very
+     useful if file inputs must be read at program start.
+
+ ^bNote^b
+
+     ^b^CFE^b  Symbolic constants for keyboard coding are found in the
+        CTSCAN.CH include file and in Appendix A.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows a keyboard entry that is redirected through
+        DOS:
+
+        C:\>TEST < KEYS.DAT
+
+     ^b^CFE^b  This example shows the application TEST.EXE:
+
+        DSETKBIOS(.F.)            // Switch to DOS input mode
+        ACCEPT "" TO cInput
+
+!seealso: "KEYREAD()" "KEYSEND()" "SETKXLAT()" tool_014.ngo:"SCANKEY()" tool_014.ngo:"KBDTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DSETNOLINE() Ignores the next line feed sent to the screen
+'------------------------------------------------------------------------------
+ ^bDSETNOLINE()^b
+ Ignores the next line feed sent to the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDSETNOLINE([<lNewLFMode>]) --> lOldLFMode
+
+ ^bArgument^b
+
+     ^b<lNewLFMode>^b  Designates whether the next line feed for the screen
+     is ignored (.T.) or not (.F.).  The default value (.F.) designates that
+     the next line feed is not ignored.
+
+ ^bReturns^b
+
+     When called without a parameter, the function returns the current
+     setting for DSETNOLINE().  If a parameter is passed, it returns the
+     previous setting.
+
+ ^bDescription^b
+
+     DSETNOLINE() can be used in conjunction with a LIST command when you
+     have empty lines you want overwritten by the next line (see example).
+     You can also suppress a line feed issued by CA-Clipper before each LIST.
+     This makes it possible to begin LIST output on line 0.
+
+ ^bExample^b
+
+     When you use DSETNOLINE(), records with the Art_nr field empty are
+     written to the screen but are overwritten by the next record where
+     Art_nr is present:
+
+     LIST Art_nr, Art_bez, DSETNOLINE(EMPTY(Art_nr))
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DSETQFILE()  Creates a protocol file when the program ends normally
+'------------------------------------------------------------------------------
+ ^bDSETQFILE()^b
+ Creates a protocol file when the program ends normally
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDSETQFILE([<lNewQuitMode>]) --> lOldQuitMode
+
+ ^bArgument^b
+
+     ^b<lNewQuitMode>^b  Designates whether the automatic QUIT file is
+     created (.T.) or not (.F.).  The default value (.F.) does not create an
+     automatic QUIT file.
+
+ ^bReturns^b
+
+     When called without parameter, the function returns the current
+     DSETQFILE() setting.  If a parameter is passed, it returns the previous
+     setting.
+
+ ^bDescription^b
+
+     This function allows for the creation of a QUIT file.  This file can be
+     used to determine if an application has been terminated normally or not
+     (i.e.  Ctrl-Alt-Del).  When the program ends, the contents of the
+     keyboard buffer are written to a file.  This allows you to determine
+     what keyboard input the user made, which can be used to trace errors and
+     reconstruct files.  The size of the QUIT file corresponds to the size of
+     the keyboard buffer.  To save more than the 16 default characters, you
+     must increase the keyboard buffer size with SET TYPEAHEAD.  (The maximum
+     buffer size 32768 keystrokes.)
+
+     The name for the QUIT file is normally constructed from the name of the
+     .EXE file with a .Q extension.  SETQNAME() lets you use any file name
+     you choose.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The keyboard data appears in KEYREAD() format in the QUIT file
+        (see Appendix A: Key Codes/ CTSCAN.CH).
+
+     ^b^CFE^b  Only those keyboard inputs already processed by the program
+        are written to the QUIT file.
+
+     ^b^CFE^b  An existing QUIT file is overwritten automatically if it has
+        the same name as the QUIT file that is currently being written.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This statement causes the program to create a standard QUIT
+        file when you exit the program:
+
+        DSETQFILE(.T.)       // QUIT file will be created
+
+     ^b^CFE^b  Select the name of the QUIT file:
+
+        SETQNAME("C:\LOGS\PROTO.LOG")
+        DSETQFILE(.T.)       // QUIT file will be created
+                             // with an alternate name
+
+!seealso: "SETQNAME()" "KEYREAD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DSETTYPE()   Determines the size of the keyboard buffer (SET TYPEAHEAD TO)
+'------------------------------------------------------------------------------
+ ^bDSETTYPE()^b
+ Determines the size of the keyboard buffer (SET TYPEAHEAD TO)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDSETTYPE() --> nBufferSize
+
+ ^bReturns^b
+
+     DSETTYPE() returns the current size of the CA-Clipper keyboard buffer.
+
+ ^bDescription^b
+
+     DSETTYPE() allows you to determine what size the CA-Clipper keyboard
+     buffer has been set to with SET TYPEAHEAD TO.  You can use the function
+     to determine the number of characters that can be placed in the keyboard
+     buffer using KEYSEND().
+
+ ^bNotes^b
+
+     ^b^CFE^b  The keyboard buffer is made of memory that is internal to
+        CA-Clipper, which is independent of the system buffer.  In
+        CA-Clipper, the standard setting for TYPEAHEAD is 16 characters.
+        (This corresponds to the size of the system buffer.)
+
+     ^b^CFE^b  For every character that is processed in a CA-Clipper program,
+        two bytes must be allocated in the keyboard buffer.  DSETTYPE()
+        determines the number of CA-Clipper characters, not the number of
+        bytes!  The standard buffer size is not 16, but 32 bytes.
+
+ ^bExample^b
+
+     The current size of the keyboard buffer is queried and increased if
+     needed:
+
+     nSize  :=  DSETTYPE()
+
+     IF nSize < 256
+        SET TYPEAHEAD TO 256
+     ENDIF
+
+!seealso: "KEYREAD()" "KEYSEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DSETWINDEB() This function is no longer supported
+'------------------------------------------------------------------------------
+ ^bDSETWINDEB()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+
+     This function is no longer supported because the CA-Clipper debugger has
+     been completely changed.  However, there are other methods for debugging
+     that are easier.  You must set these debugging methods with the CLIPPER=
+     environment variable, since they must be known at program start.  The
+     DSETWINDEB() is no longer used.  Notes regarding the new debugging
+     system can be found in the CA-Clipper Norton Guides, under
+     Miscellaneous.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DSETWINDOW() Reroutes external functions and programs to a window
+'------------------------------------------------------------------------------
+ ^bDSETWINDOW()^b
+ Reroutes external functions and programs to a window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDSETWINDOW([<lNewDisplayMode>]) --> lOldDisplayMode
+
+ ^bArgument^b
+
+     ^b<lNewDisplayMode>^b  Designates whether the screen output from
+     external programs or other language UDF's displays in the current
+     window.
+
+ ^bReturns^b
+
+     When called without a parameter, the function returns the current
+     setting for DSETWINDOW().  If a parameter is passed, it returns the
+     previous setting.
+
+ ^bDescription^b
+
+     DSETWINDOW() allows you to determine if only CA-Clipper screen outputs
+     should appear in a window, or if all outputs (all external modules and
+     programs, including DOS) should appear.  If you would like to implement
+     a subroutine for screen handling with CA-Clipper Tools window functions,
+     you can use this switch to turn off these functions for a short time.
+
+     ^bImportant!^b  Before you call external programs using RUN, you should
+     set DSETWINDOW() to .F.; if you do not, some programs will not run
+     correctly.
+
+ ^bNotes^b
+
+     ^bImportant!^b  The standard setting for DSETWINDOW() is on.  This means
+     that all program output, not written directly into the screen memory,
+     displays in the currently active window.
+
+     ^b^CFE^b  CA-Clipper screen output is always written in a window if one
+        is open and active.  Only screen output from external routines (like
+        Assembler or C UDF's, or external programs called using RUN) can be
+        affected.  CA-Clipper Tools functions are also viewed as foreign or
+        external.
+
+     ^b^CFE^b  If you call DSETWINDOW() with .T., a change in cursor position
+        in an external module or program also affects the cursor position in
+        CA-Clipper.  If you do not want to change the cursor position in
+        CA-Clipper, then set DSETWINDOW() to .F. so that the CA-Clipper
+        cursor position remains unchanged.  If you still want to pass the
+        cursor position to CA-Clipper, then use the SETRC() function without
+        parameters.
+
+     ^b^CFE^b  Some CA-Clipper Tools functions ignore this switch because
+        they work directly with the physical screen memory.
+
+     ^b^CFE^b  CA-Clipper Tools has a public variable available for your own
+        Assembler or C routines to affect the DSETWINDOW() function.  It can
+        be addressed as follows:
+
+        EXTR _WINDOW:WORD
+        MOV  _WINDOW, 0               // Window functions OFF, all
+                                      // other values switched ON!
+
+     ^b^CFE^b  If the switch is set to on, then interrupt 16 (10h, video) and
+        function 19 (13h, write string), normally only available on AT's,
+        become available on PC XT's.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Do not reroute other program output to the selected window:
+
+        DSETWINDOW(.F.)
+
+     ^b^CFE^b  Do a test to see if ANSI.SYS has been linked in to CONFIG.SYS:
+
+        lVar  :=  DSETWINDOW(.F.)
+        ? ISANSI()
+        DSETWINDOW(lVar)              // Reset to old status
+
+!seealso: tool_007.ngo:"SCREENFILE()" tool_007.ngo:"FILESCREEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EGA43()      Switches to the 43-line EGA mode
+'------------------------------------------------------------------------------
+ ^bEGA43()^b
+ Switches to the 43-line EGA mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEGA43() --> lSwitched
+
+ ^bReturns^b
+
+     EGA43() returns .T. if the screen graphics adapter successfully switched
+     to the 43-line mode.
+
+ ^bDescription^b
+
+     This function can be used with either an EGA or VGA card.  A 43-line
+     mode is requested, and the maximum number of coordinates for the
+     CA-Clipper screen output is automatically increased.  It isn't necessary
+     to also call the SETMAXROW() and SETMAXCOL() functions.
+
+ ^bNote^b
+
+     ^bImportant!^b  This function cannot be implemented when windows are
+     open.
+
+ ^bExample^b
+
+     The following example switches to 43-line mode, making lines 0 to 42
+     available:
+
+     IF ISEGA()
+        EGA43()
+     ENDIF
+
+     @ 42, 10 SAY "CA-Clipper"      // Last line
+     WAIT
+     CGA80()                        // Return to 25-line mode
+
+!seealso: "CGA40()" "CGA80()" "VGA50()" "MONOCHROME()" "SETSCRMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIRSTCOL()   Sets the first visible column of a virtual screen
+'------------------------------------------------------------------------------
+ ^bFIRSTCOL()^b
+ Sets the first visible column of a virtual screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFIRSTCOL(<nFirstNewColumn>) --> nFirstOldColumn
+
+ ^bArgument^b
+
+     ^b<nFirstNewColumn>^b  Designates which column is the first visible
+     column on the left side of a virtual screen.
+
+ ^bReturns^b
+
+     If the parameter is passed, the function returns the previous setting.
+     If no parameter is passed, it returns the current setting.
+
+ ^bDescription^b
+
+     This function is important for use in setting virtual screen size in
+     conjunction with SETMAXROW() and SETMAXCOL().  You can select the first
+     column that you would like to be visible on the left side of the screen.
+     In this way the screen can be moved in any direction.
+
+ ^bNote^b
+
+     ^b^CFE^b  To simplify programming, values outside of the permissible
+        range are automatically corrected to the maximum or minimum values
+        (see example).
+
+ ^bExample^b
+
+     The following example sets up a screen with 100 lines and 120 columns.
+     To help you with screen orientation, the current column number is
+     displayed at three locations on this virtual screen.  The virtual screen
+     can be moved in any direction using cursor keys and PgUp and PgDn:
+
+     SETMAXROW( 99)                        // screen with 100 lines
+     SETMAXCOL(119)                        // and 120 columns
+     CLEAR
+
+     FOR nCount = 0 TO MAXROW()            // Build screen
+        @ nCount, 0 SAY "Line" + NTOC(nCount, 10, 4)
+        @ nCount, MAXCOL()/2 -5 SAY "Line" + NTOC(nCount, 10, 4)
+        @ nCount, MAXCOL()  -10 SAY "Line" + NTOC(nCount, 10, 4)
+
+     NEXT nCount
+
+     @ 99, 00 SAY CENTER("This is the last line")
+
+     nKeyVal  := 0
+     DO WHILE nKeyVal <> 27
+        nKeyVal  := INKEY(0)
+        DO CASE
+        CASE nKeyVal = 5
+           FIRSTROW(FIRSTROW() -1)
+        CASE nKeyVal = 24
+           FIRSTROW(FIRSTROW() +1)
+        CASE nKeyVal = 4
+           FIRSTCOL(FIRSTCOL() +1)
+        CASE nKeyVal = 19
+           FIRSTCOL(FIRSTCOL() -1)
+        CASE nKeyVal = 18
+           FIRSTROW(FIRSTROW() -10)
+        CASE nKeyVal = 3
+           FIRSTROW(FIRSTROW() +10)
+        ENDCASE
+     ENDDO
+
+     FIRSTROW(0)                           // reset
+     FIRSTCOL(0)
+     SETMAXCOL(79)
+     SETMAXROW(24)
+     CLEAR
+
+!seealso: "SETMAXCOL()" "MAXCOL()" "FIRSTROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIRSTROW()   Sets the first visible line of a virtual screen
+'------------------------------------------------------------------------------
+ ^bFIRSTROW()^b
+ Sets the first visible line of a virtual screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFIRSTROW(<nFirstNewLine>) --> nFirstOldLine
+
+ ^bArgument^b
+
+     ^b<nFirstNewLine>^b  Designates which line is displayed as the top line
+     on the virtual screen.
+
+ ^bReturns^b
+
+     If the parameter is passed, the function returns the previous setting
+     each time.  If no parameter is passed, it returns the current setting.
+
+ ^bDescription^b
+
+     This function is important for use in setting virtual screen size in
+     conjunction with SETMAXROW() and SETMAXCOL().  You can select the first
+     line that you would like to have visible at the top side of the screen.
+     In this way the screen can be moved in any direction.
+
+ ^bNote^b
+
+     ^b^CFE^b  To simplify programming, values outside of the permissible
+        range are automatically corrected to the maximum or minimum values
+        (see example).
+
+ ^bExample^b
+
+     The following example sets up a screen with 100 lines and 120 columns.
+     To help you with screen orientation, the current column number is
+     displayed at three locations on this virtual screen. The virtual screen
+     can be moved in any direction using cursor keys and PgUp and PgDn:
+
+     SETMAXROW( 99)                        // screen with 100 lines
+     SETMAXCOL(119)                        // and 120 columns
+     CLEAR
+
+     FOR nCount = 0 TO MAXROW()            // Build screen
+        @ nCount, 0 SAY "Line" + NTOC(nCount, 10, 4)
+        @ nCount, MAXCOL()/2 -5 SAY "Line" + NTOC(nCount, 10, 4)
+        @ nCount, MAXCOL()  -10 SAY "Line" + NTOC(nCount, 10, 4)
+     NEXT nCount
+
+     @@ 99, 00 SAY CENTER("This is the last line")
+
+     nKeyVal  := 0
+     DO WHILE nKeyVal <> 27
+        nKeyVal  := INKEY(0)
+        DO CASE
+        CASE nKeyVal = 5
+        FIRSTROW(FIRSTROW() -1)
+        CASE nKeyVal = 24
+           FIRSTROW(FIRSTROW() +1)
+        CASE nKeyVal = 4
+           FIRSTCOL(FIRSTCOL() +1)
+        CASE nKeyVal = 19
+           FIRSTCOL(FIRSTCOL() -1)
+        CASE nKeyVal = 18
+           FIRSTROW(FIRSTROW() -10)
+        CASE nKeyVal = 3
+           FIRSTROW(FIRSTROW() +10)
+        ENDCASE
+     ENDDO
+
+     FIRSTROW(0)                           // reset
+     FIRSTCOL(0)
+     SETMAXCOL(79)
+     SETMAXROW(24)
+     CLEAR
+
+!seealso: "SETMAXROW()" "MAXROW()" "FIRSTCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETBOXGROW() Gets the time delay with which boxes are opened
+'------------------------------------------------------------------------------
+ ^bGETBOXGROW()^b
+ Gets the time delay with which boxes are opened
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETBOXGROW() --> nTimeDelay
+
+ ^bReturns^b
+
+     GETBOXGROW() returns the value set in SETBOXGROW() for the delay in
+     creating a box.
+
+ ^bDescription^b
+
+     GETBOXGROW() retrieves the time delay that a box in "grow" mode has when
+     it is opened.
+
+ ^bExample^b
+
+     Here is an example of a box with 10 milliseconds between each growth
+     step:
+
+     SETBOXGROW(10)
+     WOPEN(2, 2, 23, 78)            // Sets box coordinates only
+     WBOX()                         // Generates box with delay
+     ? GETBOXGROW()                 // Result: 10
+
+!seealso: "SETBOXGROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETCURSOR()* Determines the setting for the cursor form
+'------------------------------------------------------------------------------
+ ^bGETCURSOR()*^b
+ Determines the setting for the cursor form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETCURSOR([<lMode>]) --> nCursorForm
+
+     ^b*  This function has been retained for compatibility reasons only.^b
+     ^b   Its use in development of future applications is not recommended.^b
+     ^b   For future applications use the SETCURSOR() function.^b
+
+ ^bArgument^b
+
+     ^b<lMode>^b  Sets the cursor form to the overwrite (.F.) or the insert
+     (.T.) mode.  The default value (.F.) sets the cursor form to the
+     overwrite mode.
+
+ ^bReturns^b
+
+     The returned value designates how many scan lines are used to display
+     the cursor.
+
+ ^bDescription^b
+
+     GETCURSOR() allows you to save the current cursor form for an input
+     field in a function called with a VALID, before you change it in a UDF.
+     GETCURSOR() then allows you to restore its old form before returning to
+     the GET field.
+
+     CA-Clipper Tools stores the form for two cursor displays: one for
+     overwriting and one for inserting.  If <lMode>  is .F. or omitted, then
+     the overwrite cursor form is returned.  If <lMode> is .T., then the
+     insert cursor form is returned.  (See the note with SETCURSOR()).
+
+     The cursor is broken down into lines on the screen called scan lines.
+     The form and height of the cursor are specified by two instructions that
+     correspond to the first and the last line used for the cursor display.
+     GETCURSOR() returns both numbers combined into one value, according to
+     the following formula:
+
+           (Starting Line * 256) + Final Line
+
+     The NUMHIGH() and NUMLOW() functions let you separate the starting and
+     final lines very easily.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The word "line" here does not mean a screen (output) line, but
+        the scan or pixel lines from which screen characters are created.
+
+     ^b^CFE^b  This function works independently of the SET CURSOR setting.
+
+ ^bExample^b
+
+     Break down cursor information into a starting line and a final line:
+
+     nCursor  :=  GETCURSOR()
+     ? NUMHIGH(nCursor)            // Cursor start line
+     ? NUMLOW(nCursor)             // Cursor final line
+
+!seealso: "SETCURSOR()" tool_006.ngo:"NUMHIGH()" tool_006.ngo:"NUMLOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETKXLAT()   Determines the current key code table
+'------------------------------------------------------------------------------
+ ^bGETKXLAT()^b
+ Determines the current key code table
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETKXLAT(<nKeyValue>) --> nKeyValue
+
+ ^bArgument^b
+
+     ^b<nKeyValue>^b  Designates the original key code so that its current
+     value can be tested for translation or lock out.
+
+ ^bReturns^b
+
+     GETKXLAT() returns the status of the key designated by <nKeyValue>.  A
+     return value of 0 indicates that there is no translation.  A return
+     value of -1 indicates that the key is locked out.  And any other return
+     indicates that the designated key is translated into that key value.
+
+     With CHR(NUMLOW(<nkeyValue>)) + CHR(NUMHIGH(<nkeyValue>)) the return
+     value can be converted to the form used in the include file CTSCAN.CH
+
+ ^bDescription^b
+
+     GETKXLAT() allows you to test to see if a key designated under
+     SETKXLAT() has been locked out or translated.  <nKeyValue> is the
+     original key code.  The key codes used are described in detail in the
+     SETKXLAT() function.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Symbolic constants for key codes can be found in the CTSCAN.CH
+        file.
+
+     ^b^CFE^b  You can also use the symbolic constants from the CA-Clipper
+        file INKEY.CH for <cKeyValue>.
+
+ ^bExample^b
+
+     Has the "A" key been locked out or translated?
+
+     nVar  := GETKXLAT(KS_A)
+
+     IF nVar <> 0
+        * Undo translation/lock out for "A"
+        SETKXLAT(KS_A)               // "A" returns to "A"
+     ENDIF
+
+!seealso: "SETKXLAT()" "SETKXTAB()" "GETKXTAB()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETKXTAB()   Retrieves the entire key code table
+'------------------------------------------------------------------------------
+ ^bGETKXTAB()^b
+ Retrieves the entire key code table
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETKXTAB() --> cTable
+
+ ^bReturns^b
+
+     GETKXTAB() returns a character string that contains all of the
+     previously defined key translations.
+
+ ^bDescription^b
+
+     A CA-Clipper Tools key table can be as large as the maximum allocatable
+     string.  The number of translations corresponds to:
+
+     ((MEMORY(1) * 1024)/4),
+
+     where the required memory is allocated dynamically.  The key code
+     translations can be done through SETKXLAT() or SETKXTAB().
+
+     GETKXTAB(), in contrast to GETKXLAT(), always returns a table of all
+     defined key code translations as a string.  A translation table can then
+     be saved in a variable and reset using SETKXTAB().
+
+ ^bExample^b
+
+     Save the entire key table and reinstall it later:
+
+     cKXTab  := GETKXTAB()
+
+        DO KEYCHANGE
+
+     SETKXTAB(cKXTab)
+
+!seealso: "SETKXTAB()" "SETKXLAT()" "GETKXLAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETLINES()   Determines number of lines after which screen display pauses
+'------------------------------------------------------------------------------
+ ^bGETLINES()^b
+ Determines the number of lines after which the screen display pauses
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETLINES() --> nLineNumber
+
+ ^bReturns^b
+
+     GETLINES() returns the value established with SETLINES()
+
+ ^bDescription^b
+
+     GETLINES() queries the value previously set with SETLINES().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set a value:
+
+        SETLINES(20)
+
+           LIST ...
+
+     ^b^CFE^b  Query that value:
+
+        ? GETLINES()               // Result: 20
+
+!seealso: "SETLINES()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETMODE()    Uses the current screen mode as a function name
+'------------------------------------------------------------------------------
+ ^bGETMODE()^b
+ Uses the current screen mode as a function name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETMODE() --> cFunctionName
+
+ ^bReturns^b
+
+     GETMODE() returns a character string that represents the active mode.
+     The character string corresponds to the CA-Clipper Tools function call
+     used to switch to that mode.
+
+ ^bDescription^b
+
+     This function substitutes for a difficult to understand numeric code for
+     the return value of a function.  This character string corresponds to
+     the function call used to switch to the current mode.  The returned
+     value can be held in a variable, and this function can be called later
+     using the compile and run operator.
+
+ ^bNote^b
+
+     ^bImportant!^b  You must declare all function calls for setting a mode
+     which could occur as a return value from this function as EXTERNAL.
+
+ ^bExample^b
+
+     Notice the mode and reset it later:
+
+     cVar := GETMODE()                 // Save current mode
+     ? cVar                            // For example "CGA80(.T.)"
+
+     CGA40(.T.)                        // Select other mode
+
+     ? &(cVar)                         // Reset old mode.
+
+!seealso: "CGA40()" "CGA80()" "MONOCHROME()" "EGA43()" "VGA50()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETPAGE()    Determines the current screen page
+'------------------------------------------------------------------------------
+ ^bGETPAGE()^b
+ Determines the current screen page
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETPAGE([<lHiddenPage>]) --> nScreenPage
+
+ ^bArgument^b
+
+     ^b<lHiddenPage>^b  Designates an optional parameter.  If this parameter
+     is .T., the function returns the number of the currently hidden page.
+     If this parameter is .F., the function returns the number of the visible
+     screen page.  The default value is .F..
+
+ ^bReturns^b
+
+     GETPAGE() returns the number of the currently set screen pages.
+
+ ^bDescription^b
+
+     GETPAGE() allows you to determine which screen page is currently
+     available.  The screen page that is currently available can be switched
+     by using the SETPAGE() function.
+
+     Since screen output can be directed to a hidden screen page, you can
+     determine the number of this hidden page by setting the parameter to .T.
+
+ ^bExample^b
+
+     Determine the active screen page:
+
+     ? GETPAGE()                        // i.e. 2
+
+!seealso: "SETPAGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETPBIOS()   Determines if printing is through DOS or the BIOS
+'------------------------------------------------------------------------------
+ ^bGETPBIOS()^b
+ Determines if printing is through DOS or the BIOS
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETPBIOS() --> nPrintMode
+
+ ^bReturns^b
+
+     GETPBIOS() returns the setting made in SETPBIOS() as a numeric value
+     between 0 and 3.
+
+ ^bDescription^b
+
+     This function allows you to determine the current setting for rerouting
+     the printer through extended drivers.  If the function returns a value
+     of 0, the print output is through DOS.  If the value is between 1 and 3,
+     the output is through the BIOS on the corresponding printer.
+
+ ^bExample^b
+
+     Determine the current setting:
+
+     ? GETPBIOS()                        // 0  Output via DOS
+
+!seealso: "SETPBIOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETPXLAT()   Retrieves the current printer table
+'------------------------------------------------------------------------------
+ ^bGETPXLAT()^b
+ Retrieves the current printer table
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETPXLAT() --> cPrintTable
+
+ ^bReturns^b
+
+     GETPXLAT() returns the entire print table or returns an empty character
+     string if a print table has not been defined.
+
+ ^bDescription^b
+
+     GETPXLAT() retrieves the current printer table set by SETPXLAT().  The
+     string returned can be assigned to a variable and restored later.  If
+     you use a printer with different font styles, this function allows you
+     to switch print tables as required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Save the existing table:
+
+        cOldTab  := GETPXLAT()
+
+     ^b^CFE^b  Install new table:
+
+        SETPXLAT(......)
+        SETPXLAT(......)
+        SETPXLAT(......)
+
+     ^b^CFE^b  Output to another printer:
+
+        SET PRINTER TO LPT2
+
+     ^b^CFE^b  Restore the old table starting at position 0:
+
+        SETPXLAT(0, cOldTab)
+
+!seealso: "SETPXLAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETSCRMODE() Determines the number of the active video mode
+'------------------------------------------------------------------------------
+ ^bGETSCRMODE()^b
+ Determines the number of the active video mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETSCRMODE() --> nModeNumber
+
+ ^bReturns^b
+
+     The function returns the mode number of the currently set video mode.
+
+ ^bDescription^b
+
+     In contrast to GETMODE(), GETSCRMODE() returns the current video mode as
+     a numeric value.  This allows you to query special modes for particular
+     screen adapters and reset them using SETSCRMODE().  The following modes
+     are accommodated by other functions within CA-Clipper Tools:
+
+     ^bTable 2-1: Modes and Their Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bMode                Mode Number^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     CGA40 Monochrome    0
+     CGA40 Color         1
+     CGA80 Monochrome    2
+     CGA80 Color         3
+     Monochrome          7
+     EGA43 (EGA only)    299 (43+256)
+     VGA28 (VGA only)    284 (28+256)
+     VGA50 (VGA only)    306 (50+256)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  GETSCRMODE() returns the value previously set with
+        SETSCRMODE() and the current BIOS or CA-Clipper Tools mode.  If you
+        switch into a special mode for a particular screen adapter, there is
+        no guarantee that this is the mode number that GETSCRMODE() returns.
+        This is a factor of the unique behavior of the specific screen
+        adapter.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the EGA 43-line mode:
+
+        EGA43()
+
+     ^b^CFE^b  The current video mode is saved:
+
+        nOldMode  := GETSCRMODE()
+
+     ^b^CFE^b  The current video mode is restored later:
+
+        SETSCRMODE(nOldMode)
+
+!seealso: "SETSCRMODE()" "GETMODE()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETTAB()     Retrieves tab values for CA-Clipper screen output
+'------------------------------------------------------------------------------
+ ^bGETTAB()^b
+ Retrieves tab values for CA-Clipper screen output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETTAB() --> cTabTable
+
+ ^bReturns^b
+
+     GETTAB() returns the currently installed tab locations for CA-Clipper
+     screen output in the form of a character string.
+
+ ^bDescription^b
+
+     This function gives the tab definitions specified in SETTAB() for
+     CA-Clipper screen output.  You can use this function to save the active
+     tab definitions.
+
+ ^bExample^b
+
+     Save the tab definitions:
+
+     cTabs := GETTAB()
+
+!seealso: "SETTAB()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INKEYTRAP()  Behaves like INKEY() with support for key traps
+'------------------------------------------------------------------------------
+ ^bINKEYTRAP()^b
+ Behaves like INKEY() with support for key traps
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINKEYTRAP(<nDelay>) --> nKeyCode
+
+ ^bArgument^b
+
+     ^b<nDelay>^b  Designates the delay time in seconds.
+
+ ^bReturns^b
+
+     The function returns the same key code as INKEY().
+
+ ^bDescription^b
+
+     This function operates in essentially the same way as INKEY().  It
+     supports the same time delays and returns the same key codes as values.
+     The most significant difference to INKEY() is that all key traps defined
+     using SET KEY <Key> TO <Procedure> are supported.  This function saves
+     the programmer time; for example, the programmer does not have to
+     develop extensive CASE constructs after each INKEY().
+
+ ^bNote^b
+
+     ^b^CFE^b  After the trap procedure ends, the <nDelay> time is reset.
+
+ ^bExample^b
+
+     SET KEY 28 TO HELP               // F1 Key
+     nVar  :=  INKEYTRAP(10)          // 10-second delay
+     RETURN
+
+     PROCEDURE Help(a, b, c)          // Parameter c is always
+                                      // a null string
+     ("")
+
+     * Program code desired
+
+     RETURN
+
+!seealso: tool_017.ngo:"SAVESETKEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INPUTMODE()  Determines previously active or currently active input mode
+'------------------------------------------------------------------------------
+ ^bINPUTMODE()^b
+ Determines the previously active or the currently active input mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINPUTMODE([<lActiveMode>]) --> nInputMode
+
+ ^bArgument^b
+
+     ^b<lActiveMode>^b  Designates an optional parameter.  If this parameter
+     is .T., the function returns the currently active mode.
+
+ ^bReturns^b
+
+     INPUTMODE() returns a numeric value that indicates the input command for
+     the previously active or the currently active input mode.
+
+ Description
+
+     INPUTMODE() allows you to determine what type of input command has been
+     interrupted.  When called without a parameter or with .F., the function
+     returns the currently active mode or, if no input has occurred, the
+     previously active input mode.
+
+     If the function is called with <lActiveMode> set to .T., then only the
+     currently active input mode or 0 is returned.  The following table shows
+     the return values as well as the symbolic constants and their
+     accompanying definitions.
+
+     ^bTable 2-2  Coding the Input Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bReturn  Symbolic Const.    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0      IMODE_NO            No input command currently.
+     1      IMODE_WAIT          WAIT
+     2      IMODE_ACCEPT        ACCEPT
+     3      IMODE_INPUT         INPUT
+     4      IMODE_READ          READ
+     5      IMODE_MEMOEDIT      MEMOEDIT()
+     6      IMODE_MENU          MENU
+     7      IMODE_INKEY         INKEY()
+     8      IMODE_DEBUG         Debugger input
+     9      IMODE_GETINPUT      Input within GETINPUT()
+     10     IMODE_GETSECRET     Input within GETSECRET()
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExample^b
+
+     PROCEDURE HELP(A, B, C)
+
+        nArea  := SELECT()
+        nMode  := INPUTMODE()
+
+        IF nMode = 5               // Calling from MEMOEDIT()
+           SELECT MEMOHELP
+        ELSE
+           SELECT HELP
+        ENDIF
+
+        SELECT (nArea)
+
+        RETURN
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: KEYREAD()    Reads already processed CA-Clipper keyboard buffer input
+'------------------------------------------------------------------------------
+ ^bKEYREAD()^b
+ Reads already processed CA-Clipper keyboard buffer input
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKEYREAD() --> cKeyValue
+
+ ^bReturns^b
+
+     The returned string contains the characters from the CA-Clipper keyboard
+     buffer that have already been read and processed by the program.
+
+ ^bDescription^b
+
+     With KEYREAD() you can read the keys that have already been processed by
+     your application from the keyboard buffer.  KEYREAD() offers the
+     possibility of "looking into the past" of the current program execution
+     so you can determine what the user has done up to that point.  This
+     gives you the ability to repeat particular actions, perform and undo
+     functions, or build keyboard macros.  KEYREAD() can also be very useful
+     in searching for errors.
+
+ ^bNotes^b
+
+     ^b^CFE^b  All the keys processed since the last execution of SET
+        TYPEAHEAD TO or KEYSEND() are placed in the keyboard buffer.
+        Characters already in the buffer, but not yet read by a CA-Clipper
+        program through an input instruction, are ignored by KEYREAD().  If
+        the keyboard buffer is empty (as at program start, or after executing
+        a KEYSEND() or SET TYPEAHEAD TO), the function returns a null string.
+
+     ^b^CFE^b  In contrast to the Clipper release form the Summer of 1987,
+        KEYREAD() in CA-Clipper returns the entire BIOS key code as defined
+        in the CTSCAN.CH include file.  If complete key code compatibility is
+        required for an existing application, the CT.CH include file must be
+        included.  The CTSCAN.CH file also contains information regarding new
+        keyboard function behavior.
+
+ ^bExample^b
+
+     cHistory   :=  KEYREAD()                  // Prior input
+     IF RIGHT(cHistory, 2) == cSequence
+        ? "You have left MEMOEDIT using Ctrl-END!"
+     ENDIF
+
+!seealso: "KEYSEND()" "DSETTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KEYSEND()    Simulates CA-Clipper keyboard buffer input
+'------------------------------------------------------------------------------
+ ^bKEYSEND()^b
+ Simulates CA-Clipper keyboard buffer input
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKEYSEND(<cKeyValue>,[<lAdditiveMode>]) --> lPassed
+
+ ^bArguments^b
+
+     ^b<cKeyValue>^b  Designates one or more sequences that are placed in the
+     keyboard buffer.
+
+     ^b<lAdditiveMode>^b  Designates an optional parameter.  If this
+     parameter is .T., then the key codes passed are added to the contents of
+     the keyboard buffer.  If the parmeter is .F. or if no parameter is
+     passed, the contents of the keyboard buffer are overwritten.
+
+ ^bReturns^b
+
+     When the string has been placed successfully in the CA-Clipper keyboard
+     buffer, the function returns a value of .T..  If an error occurs, the
+     return value is .F..
+
+ ^bDescription^b
+
+     KEYSEND() works similarly to the CA-Clipper KEYBOARD command.  However,
+     it allows you to use other codes for the characters that are stuffed.
+     Symbolic constants for these key codes can be found in the CTSCAN.CH
+     include file and in Appendix A.  By using this unique coding for
+     characters in the keyboard buffer, KEYSEND() allows you to place keys in
+     the buffer that CA-Clipper's KEYBOARD command does not permit, such as
+     codes smaller than 0 or greater than 255 (e.g.  all function keys and
+     most Alt combinations).  This unique coding is also helpful for two keys
+     that have the same INKEY() value and cannot be differentiated with the
+     KEYBOARD command.
+
+     If you want to place normal characters like letters and numbers in the
+     keyboard buffer, it is better to use the CA-Clipper KEYBOARD command.
+     Using CA-Clipper Tools functions for normal characters provides no real
+     advantage.  If, on the other hand, you want to simulate other keyboard
+     input, like function or control keys, then KEYSEND() is best to use
+     because function and control keys can be clearly differentiated.
+
+     As with the CA-Clipper KEYBOARD command, the entire contents of the
+     keyboard buffer are cleared as soon as KEYSEND() passes a new character.
+     If <lAdditiveMode> is .T., the function adds the key codes to the
+     current buffer contents.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Key codes in CA-Clipper Tools have been extended, but the old
+        codes are still valid (see include file CTSCAN.CH).
+
+     ^b^CFE^b  The maximum length of the string to be saved is now calculated
+        as follows:
+
+           maximum allocatable memory / 2
+
+ ^bExample^b
+
+     Simulate the function key Alt-F10:
+
+     KEYSEND(KS_ALT_F10)
+
+!seealso: "KEYREAD()" "DSETTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAXCOL()     Extends the CA-Clipper MAXCOL() function
+'------------------------------------------------------------------------------
+ ^bMAXCOL()^b
+ Extends the CA-Clipper MAXCOL() function
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMAXCOL([<lMode>]) --> nMaxColumn
+
+ ^bArgument^b
+
+     ^b<lMode>^b  When .F. is passed, or when no parameter is specified, the
+     function returns the highest column number of the selected window.  When
+     .T. is passed, it returns the highest column number for the entire
+     screen.  The default value (.F.) returns the highest column number for
+     the selected window.
+
+ ^bReturns^b
+
+     MAXCOL() returns the highest column number available within a window or
+     within the physical screen.
+
+ ^bDescription^b
+
+     MAXCOL() is also a CA-Clipper function.  Without parameters, or when
+     specifying .F., MAXCOL() always returns a value for the selected window.
+     In the absence of CA-Clipper Tools, this value is always Window 0, which
+     is exactly the same size as the entire screen.  However, if the extended
+     driver CTUS.LIB and the CA-Clipper Tools window functions are
+     implemented, this value can change.  If you want the highest column for
+     the entire screen, regardless of the window selected, you can pass .T.
+     for the optional <lMode> parameter.
+
+ ^bNote^b
+
+     ^b^CFE^b  The explanation of this function was taken from the Video
+        Functions chapter and placed in the Extended Driver chapter.  Now all
+        CA-Clipper Tools functions that replace and/or extend CA-Clipper
+        functions when CTUS.LIB is linked in are in the same chapter.  The
+        extensions to the CA-Clipper versions of these functions are only of
+        interest when used in conjunction with the other extended driver
+        functions and their accompanying windows.
+
+ ^bExample^b
+
+     Display the highest column number:
+
+     WOPEN(10, 10, 20, 70)            // Open a window
+     ? MAXCOL()                       // Relates to a window
+     ? MAXCOL(.T.)                    // Back to the physical screen
+
+!seealso: tool_007.ngo:"NUMCOL()" "MAXROW()" "CGA40()" "SETMAXCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAXPAGE()    Determines the number of available screen pages
+'------------------------------------------------------------------------------
+ ^bMAXPAGE()^b
+ Determines the number of available screen pages
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMAXPAGE() --> nMaxPage
+
+ ^bReturns^b
+
+     This function returns the number of the maximum available video "pages".
+     A return of 0 means that only one page is available; so, the actual
+     number of available pages is MAXPAGE() +1.
+
+ ^bDescription^b
+
+     MAXPAGE() allows you to determine the number of screen pages that are
+     available for use on the display adapter.  This information can be
+     particularly valuable when you use the SETPAGE() or PAGECOPY() function.
+
+ ^bExample^b
+
+     Find the maximum number of available screen pages:
+
+     ? MAXPAGE()                  // Result 3 means 4 pages
+
+!seealso: "SETPAGE()" "GETPAGE()" "PAGECOPY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAXROW()     Extends the CA-Clipper MAXROW() function
+'------------------------------------------------------------------------------
+ ^bMAXROW()^b
+ Extends the CA-Clipper MAXROW() function
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMAXROW([<lMode>]) --> nMaxRow
+
+ ^bArgument^b
+
+     ^b<lMode>^b  Designates the highest row nmber for the selected window or
+     for the entire screen.  When .F. is passed, or when no parameter is
+     specified, the function returns the highest row number of the selected
+     window.  When .T. is passed, it returns the highest row number for the
+     entire screen.  The default value (.F.) returns the highest row number
+     for the selected window.
+
+ ^bReturns^b
+
+     MAXROW() returns the highest row number available within a window or
+     within the physical screen.
+
+ ^bDescription^b
+
+     MAXROW() is also a CA-Clipper function.  Without parameters, or when you
+     specify .F., MAXROW() always returns a value for the selected window.
+     In the absence of CA-Clipper Tools, this value is always Window 0, which
+     is exactly the same size as the entire screen.  However, if the extended
+     driver CTUS.LIB and the CA-Clipper Tools window functions are
+     implemented, this value can change.  If you want the highest row for the
+     entire screen, regardless of the window selected, you can pass .T.  for
+     the optional <lMode> parameter.
+
+ ^bNote^b
+
+     ^b^CFE^b  The explanation of this function was taken from the Video
+        Functions chapter and placed in the Extended Driver chapter. Now all
+        CA-Clipper Tools functions that replace and/or extend CA-Clipper
+        functions when CTUS.LIB is linked in are in the same chapter.  The
+        extensions to the CA-Clipper versions of these functions are only of
+        interest when used in conjunction with the other extended driver
+        functions and their accompanying windows.
+
+ ^bExample^b
+
+     Display the highest row number:
+
+     WOPEN(10, 10, 20, 70)         // Open a window
+     ? MAXROW()                    // Relates to a window
+     ? MAXROW(.T.)                 // Back to the physical screen
+
+!seealso: "MAXCOL()" "EGA43()" "VGA50()" "SETMAXROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MONOCHROME() Switches to the monochrome mode
+'------------------------------------------------------------------------------
+ ^bMONOCHROME()^b
+ Switches to the monochrome mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMONOCHROME() --> lSwitched
+
+ ^bReturns^b
+
+     MONOCHROME() returns .T. when the screen adapter successfully changes
+     modes.
+
+ ^bDescription^b
+
+     This function can be used on any screen adapter capable of emulating a
+     monochrome card.
+
+ ^bNotes^b
+
+     ^bImportant!^b  This function cannot be used when windows are open.
+
+     ^b^CFE^b  MONOCHROME() sets the BIOS mode to 7.
+
+     ^b^CFE^b  This function cannot be used with a second monochrome monitor
+        (Hercules).
+
+ ^bExample^b
+
+     Switch to monochrome mode:
+
+     ? MONOCHROME()                  // .T., if successful
+
+!seealso: "GETMODE()" "CGA40()" "CGA80()" "EGA43()" "VGA50()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PAGECOPY()   Copies one screen page to another
+'------------------------------------------------------------------------------
+ ^bPAGECOPY()^b
+ Copies one screen page to another
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPAGECOPY(<nOriginalPage>, <nCopyPage>) --> lStatus
+
+ ^bArguments^b
+
+     ^b<nOriginalPage>^b  Designates the page from which you copy.
+
+     ^b<nCopyPage>^b  Designates the target page, the page to which you copy.
+
+ ^bReturns^b
+
+     The function returns a value of .T. if the copy is successful.
+
+ ^bDescription^b
+
+     A complete screen page (<nOriginalPage>) can be moved to another screen
+     page (<nCopyPage>).  With this function, the entire contents of the
+     screen memory can quickly be copied to another page, without the need
+     for additional working memory for a string.
+
+ ^bNote^b
+
+     ^b^CFE^b  To find the valid range of page numbers, use the MAXPAGE()
+        function.
+
+ ^bExample^b
+
+     Copy screen page 0 to page 1:
+
+     ? PAGECOPY(0, 1)                  // .T., if successful
+
+!seealso: "SETPAGE()" "GETPAGE()" "MAXPAGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTERROR() Returns the error code for the last printer output
+'------------------------------------------------------------------------------
+ ^bPRINTERROR()^b
+ Returns the error code for the last printer output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTERROR() --> nError
+
+ ^bReturns^b
+
+     PRINTERROR() returns the code for the last error that occurred in a
+     print output.  The following table provides an overview of all the error
+     codes and their meanings:
+
+     ^bTable 2-3: Print Output Error Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       No error occurred
+     5       Access denied
+     6       Invalid Handle
+     127     Canceled by Ctrl-Break
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     PRINTERROR() allows you to determine why the last print output failed.
+     This function gives you the ability to determine the source of the error
+     from within the CA-Clipper error system and react accordingly.  To
+     identify an abort command that used Ctrl-Break, CA-Clipper Tools returns
+     a value of 127.
+
+ ^bNote^b
+
+     ^b^CFE^b  PRINTERROR() only returns an error code for print errors that
+        occur during a CA-Clipper printing operation.
+
+ ^bExample^b
+
+     React to an error during a print operation:
+
+     nStatus  :=  PRINTERROR()
+
+     IF nStatus = 127
+     ? "Print operation aborted by user!"
+     ENDIF
+
+!seealso: tool_009.ngo:"Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETBELL()    Sets the tone frequency and duration for CHR(7)
+'------------------------------------------------------------------------------
+ ^bSETBELL()^b
+ Sets the tone frequency and duration for CHR(7) or CA-Clipper's "beep"
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETBELL([<nFrequency>,<nDuration>]) --> cBlank
+
+ ^bArguments^b
+
+     ^b<nFrequency>^b  Designates the frequency for the bell tone in Hertz.
+     Values from 21 to 65535 are possible.
+
+     ^b<nDuration>^b  Designates the duration of the bell tone in 1/100
+     seconds.  Values from 1 to 65535 are possible.
+
+     ()  Calling this function without parameters resets the function to the
+     default value of 880.30 (a frequency of 880 Hertz and a duration of 0.3
+     seconds).
+
+ ^bReturns^b
+
+     This function always returns a null string.
+
+ ^bDescription^b
+
+     Previously, when you output CHR(7) or completed a GET command with SET
+     BELL ON, only an unchangeable tone was produced.  With SETBELL(), the
+     frequency and duration of this tone can be modified.  The frequency
+     range for this tone is between 21 and 65535 Hertz.  However, the use of
+     frequencies outside the audible range (above approximately 16000)
+     doesn't make much sense.
+
+     The bell tone default setting is 880 Hertz with a duration of 0.3
+     seconds.  These values are reset if no parameters are passed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Select a tone of 300 Hz with 0.2 second duration:
+
+        SETBELL(300, 20)
+
+     ^b^CFE^b  Reset the function to the default values:
+
+        SETBELL()
+
+!seealso: tool_014.ngo:"SOUND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETBOXGROW() Opens boxes with a time delay
+'------------------------------------------------------------------------------
+ ^bSETBOXGROW()^b
+ Opens boxes with a time delay
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETBOXGROW(<nTimeDelay>) --> cBlank
+
+ ^bArgument^b
+
+     ^b<nTimeDelay>^b  Designates the time delay in milliseconds with which
+     boxes are opened in "grow" mode.
+
+ ^bReturns^b
+
+     The function always returns a null string.
+
+ ^bDescription^b
+
+     Normally boxes are only formed with the WBOX() function, the CA-Clipper
+     @ ..  BOX command, or the CA-Clipper @ ..  CLEAR TO ..  [DOUBLE]
+     command.  By using SETBOXGROW(), you can establish the display for empty
+     boxes in a "grow" mode
+
+     A box grows from the midpoint of the window outward when SETBOXGROW()
+     has been set.  The <nTimeDelay> parameter is the time delay in
+     milliseconds between the individual steps.
+
+     But there are two exceptions to the rule on the <nTimeDelay> parameter.
+     If the parameter is 0, the box is (re)opened, but not in "grow" mode.
+     And if the parameter is 1, the box is opened in "grow" mode, but without
+     a time delay.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The "grow" mode is only functional when a fill character has
+        been specified.  If you do not specify a parameter with WBOX(),  the
+        default settings are used.
+
+     ^b^CFE^b  When you work with "snow prevent", do not specify a time delay
+        for boxes.
+
+ ^bExample^b
+
+     Specify 10 milliseconds between each growth step of a box:
+
+     SETBOXGROW(10)
+
+     WOPEN(2, 2, 23, 78)        // Nothing happens
+     WBOX()                     // The box is generated with
+                                // a time delay
+
+!seealso: tool_002.ngo:"WBOX()" "GETBOXGROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETCURSOR()  Sets the cursor form
+'------------------------------------------------------------------------------
+ ^bSETCURSOR()^b
+ Sets the cursor form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETCURSOR([[<nCursorType>],[<lMode>]]) --> nCursor
+
+     or:
+
+     ^bSETCURSOR([[<idCursorForm>],[<lMode>]]) --> nCursor
+
+     or:
+
+     ^bSETCURSOR([[<nTopLine>,<nBottomLine>], [<lMode>]])
+     ^b   --> nCursor
+
+ ^bArguments^b
+
+     ^b<nCursorType>^b  Designates a cursor type between 0 and 4 (see Clipper
+     5.0, SETCURS.CH).
+
+     ^b<idCursorForm>^b  Designates a value previously returned from this
+     function.  The <nCursor> return value is a 16-bit integer.
+
+     ^b<nTopLine>^b  Designates the beginning scan line of the new cursor.
+
+     ^b<nBottomLine>^b  Designates the ending scan line of the new cursor.
+
+     ^b<lMode>^b  Designates whether the cursor is set to the overwrite (.F.)
+     or the insert (.T.) mode.  The default value (.F.) designates that the
+     cursor is set to the overwrite mode.
+
+ ^bReturns^b
+
+     If the SETCURSOR() function is called with parameters, it returns the
+     previous setting.  When the function is called without parameters, it
+     returns the current cursor setting.  When a value between 0 and 4 is
+     returned, then the cursor type was set through CA-Clipper's SETCURSOR()
+     function.  When the return value is less than 0, the return value is the
+     cursor value that had been set using <nTopLine> and <nBottomLine>.
+
+ ^bDescription^b
+
+     SETCURSOR() is also a function under CA-Clipper.   The CA-Clipper Tools
+     implementation makes several extensions available over and above the
+     CA-Clipper function.  When the CTUS.LIB extended driver is linked in,
+     these extensions become available.
+
+     One method for using the SETCURSOR() function is with only a numeric
+     parameter between 0 and 4.  With this parameter, the function is
+     CA-Clipper compatible.  Please refer to your CA-Clipper documentation
+     for the cursor type corresponding to the individual values.
+
+     The second method for using the SETCURSOR() is exclusively for restoring
+     a cursor type previously saved from the return value.  A cursor saved
+     using GETCURSOR() can also be implemented this way, however, use of the
+     GETCURSOR() function for the creation of new applications is ^bnot^b
+     ^brecommended!^b
+
+     The third and last method allows you to implement a cursor completely of
+     your own design by specifying the start and stop pixel lines.  Specify
+     the <nTopLine> and <nBottomLine>; the first parameter serves as the
+     start line, and the second parameter serves as the end line for the
+     cursor display.
+
+     In all three variants of this function's syntax, you can determine the
+     type of cursor you want to change, in the overwrite or the insert modes,
+     by specifying <lMode>.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The range used for the <nTopLine> and <nBottomLine> parameters
+        is dependent on the screen adapter used and the font installed.
+
+     ^b^CFE^b  To preserve complete compatibility with the former version of
+        the function call without parameter, CT.CH must be linked in.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, the cursor for both modes is saved, and then
+        restored:
+
+        nNormCursor  :=  SETCURSOR(.F.)         // Overwrite mode
+        nInsCursor   :=  SETCURSOR(.T.)         // Insert mode
+
+        * Cursor is changed in the program
+
+        SETCURSOR(nNormCursor, .F.)             // Reset cursor
+        SETCURSOR(nInsCursor, .T.)              // Reset cursor
+
+     ^b^CFE^b  Here is an example of a setting using the first and last pixel
+        line:
+
+        SETCURSOR(10, 13)                       // Cursor as thick
+                                                // underscore
+
+!seealso: "GETCURSOR()*" tool_007.ngo:"CHARPIX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETKXLAT()   Redefines key codes or lock keys
+'------------------------------------------------------------------------------
+ ^bSETKXLAT()^b
+ Redefines key codes or lock keys
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETKXLAT([<nOrgKeyValue>],[<nNewKeyValue>])
+     ^b   --> lAccepted
+
+ ^bArguments^b
+
+     ^b<nOrgKeyValue>^b  Designates the original key code that is translated
+     into the value of <nNewKeyValue>.
+
+     ^b<nNewKeyValue>^b  Designates a new key code for <nOrgKeyValue>.  If
+     not specified, SETKXLAT() turns off the key translation designated by
+     <nOrgKeyValue>.
+
+     ()  Calling this function without a parameter uninstalls all of the key
+     translations previously performed.
+
+ ^bReturns^b
+
+     SETKXLAT() returns .T. when the translation code is successfully
+     installed, and .F. if a parameter contains errors or additional memory
+     can not be allocated.  The number of allowable key code translations can
+     be calculated as follows:
+
+     maximum allocatable memory / 4
+
+ ^bDescription^b
+
+     With this function, keyed input can be translated or even switched off.
+     Symbolic constants for the codes have been defined in the CTSCAN.CH
+     include file.  The following formula applies to each key:
+
+     cKeyValue = CHR(ASCII) + CHR(SCAN_CODE)
+
+     Many key combinations have no ASCII equivalent.  In these cases, the
+     CHR(ASCII) byte is 0.  However, some key and key combinations have a
+     scan code, allowing the differentiation of keys with the same ASCII code
+     (e.g.  the decimal point on the numeric key pad and the period in the
+     alpha numeric field).
+
+     Scan code 0 is returned when you input an ASCII code through the numeric
+     key pad in the form Alt + <number>.
+
+     When the function is called without <cNewKeyValue>, the translations
+     specified in <cOrgKeyValue> are uninstalled.
+
+     Calling the function without any parameters discards all existing
+     translations.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The numeric coding previously used for the key codes is still
+        valid.
+
+     ^b^CFE^b  All symbolic constants from the CA-Clipper file INKEY.CH can
+        be used.
+
+     ^b^CFE^b  A new translation for a key overwrites the previous one.
+
+     ^b^CFE^b  Memory for the key code translations is allocated dynamically.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Press the "A" and the keyboard returns the code of "B' (in
+        reality you would seldom use this):
+
+        SETKXLAT(KS_A, KS_B)                   // .T. if successful
+
+     ^b^CFE^b  Translate the left arrow into the down arrow on the key pad.
+        Both keys then return the same code:
+
+        ? SETKXLAT(KS_LEFT, KS_DOWN)           // .T. if successful
+
+     ^b^CFE^b  Turn the up arrow in the cursor control block off.  Key code:
+
+        ? SETKXLAT(KS_DOWN, KS_DISABLE)        // .T. when successful
+
+     ^b^CFE^b  Turn the up arrow back on:
+
+        ? SETKXLAT(KS_DOWN)
+
+     ^b^CFE^b  Uninstall all translations:
+
+        SETKXLAT()
+
+!seealso: "GETKXLAT()" "GETKXTAB()" "SETKXTAB()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETKXTAB()   Installs key tables
+'------------------------------------------------------------------------------
+ ^bSETKXTAB()^b
+ Installs key tables
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETKXTAB(<idKeyTable>) --> lInstalled
+
+ ^bArgument^b
+
+     ^b<idKeyTable>^b  Designates a character string that contains the key
+     definitions as described below.
+
+ ^bReturns^b
+
+     The function returns .T. when the key table is successfully installed.
+
+ ^bDescription^b
+
+     With SETKXLAT() code translations can only be defined for individual
+     keys.   In contrast, with SETKXTAB() an entire table can be implemented.
+     SETKXLAT() is primarily for use in the restoration of a key table that
+     has been saved with GETKXTAB().  Four bytes are needed to translate a
+     single key; two bytes are needed for the scan code for the original key;
+     and two bytes are needed for the scan code for the key that is
+     simulated.  The construction of the table progresses in the following
+     form:
+
+     cByte1  := CHR(ASC1)            // Key to be translated
+     cByte2  := CHR(ASC2)            // Key to be translated
+     cByte3  := CHR(ASC1)            // Key to be simulated
+     cByte4  := CHR(ASC2)            // Key to be simulated
+
+     cTable := cByte1 + cByte2 + cByte3 + cByte4
+
+     with symbolic constants:
+
+     cTable := KS_A + KS_B           // Translate "A" to "B"
+
+     The symbolic constants for key codes can be found in the CTSCAN.CH
+     include file.
+
+ ^bNote^b
+
+     ^b^CFE^b  The installation of a new key table overwrites the existing
+        table.
+
+ ^bExample^b
+
+     Save the existing key table and reset it later:
+
+     cKXTab := GETKXTAB()
+     DO KEYCHANGE
+     SETKXTAB(cKXTab)
+
+!seealso: "GETKXTAB()" "SETKXLAT()" "GETKXLAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETLINES()   Determines number of lines after which screen display pauses
+'------------------------------------------------------------------------------
+ ^bSETLINES()^b
+ Determines the number of lines after which the screen display pauses
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETLINES(<nLines>) --> cNullString
+
+ ^bArgument^b
+
+     ^b<nLines>^b  Designates the number of lines after which the screen
+     display pauses.
+
+ ^bReturns^b
+
+     The function always returns a null string.
+
+ ^bDescription^b
+
+     SETLINES() allows you to simulate a DOS MORE command for commands like
+     LIST or DISPLAY.  To properly function, one input command must always be
+     present in the related instruction (see example).
+
+ ^bNote^b
+
+     ^b^CFE^b  Only line feeds are counted.
+
+     ^b^CFE^b  If you use values less than or equal to 0 for <nNrLines>, the
+        screen display does not pause.
+
+ ^bExample^b
+
+     In this example, the screen output stops after 20 lines.  INKEY() allows
+     you to continuously query the keyboard, while the NUL() suppresses the
+     return value for INKEY().
+
+     USE DATA
+     SETLINES(20)                  // Stop after 20 lines
+     LIST Field1, Field2, NUL(INKEY())
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETMAXCOL()  Sets the number of columns for a virtual screen
+'------------------------------------------------------------------------------
+ ^bSETMAXCOL()^b
+ Sets the number of columns for a virtual screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETMAXCOL(<nLastColumn>, [<nScrollBorder>])
+     ^b   --> lSuccessful
+
+ ^bArguments^b
+
+     ^b<nLastColumn>^b  Designates the rightmost column that the extended
+     driver supports for screen output.  The highest value possible is 253,
+     assuming sufficient screen memory is available.  Only odd numbers of
+     columns are permitted because the value is 0-based.
+
+     ^b<nScrollBorder>^b  Designates the left and right column borders that
+     move the screen when crossed by the cursor.  Values from 0 to
+     MAXCOL(.T.)/2 are valid.  Larger values are corrected to the maximum
+     value.  When a value is passed for this parameter, scroll is turned on.
+     When no parameter is passed, scroll is off.
+
+ ^bReturns^b
+
+     SETMAXCOL() returns .T. when <nLastColumn> is successfully set.
+
+ ^bDescription^b
+
+     This function allows you to set the number of columns that the extended
+     driver accepts for CA-Clipper screen output.  Two different types of
+     screen output can be determined:
+
+     ^bSpecial Screen^b
+     It is possible to use full page screens or other special screens that
+     display more than 80 columns, and whose column count is not
+     automatically recognized by the BIOS (this is always hardware based).
+     These screens must be compatible with the usual screen adapter with
+     regard to the organization of the screen memory (character attributes),
+     the attribute bytes themselves, and the basic address of the screen
+     memory.  The function doesn't switch any modes; the internal settings of
+     the extended drivers are simply adjusted.  Specific screen settings must
+     be carried out through the hardware's driver module.
+
+     ^bVirtual Screen^b
+     It is also possible to set a column count higher than what can be
+     displayed on the screen.  In this case there is only a portion of the
+     total screen memory visible.  If a CA-Clipper input command (such as
+     GET/READ) is built larger than the visible area, the extended driver
+     automatically moves screen memory in accordance with cursor movement.
+     This movement always occurs when the cursor moves beyond the left or the
+     right borders set in <nScrollBorder>.  In this way, the portion of text
+     that is worked on is always visible.  The visible area of the virtual
+     screen can also be set using the FIRSTCOL() function if needed.
+
+     Virtual screens are possible on CGA, EGA, and VGA adapters as well as
+     those that can fully emulate them.  The maximum number of columns you
+     can install, assuming a 25-line and 80-column mode (CGA80() or
+     MONOCHROME()), can be determined in the following manner:
+
+     nColumns   := (MAXPAGE() +1) * 2048 / 25
+     nMaxColumn   := MIN(INT(nColumn /2) * 2, 253)
+
+     With eight screen pages you will have a value of >255.  In other words a
+     maximum of 254 columns can be used, which exactly equals the maximum
+     value for SETMAXCOL() of 253.  To switch back to the number of actually
+     displayed columns, call the function with the corresponding value and no
+     border.
+
+ ^bNotes^b
+
+     ^b^CFE^b  We are not able to provide any kind of technical support when
+        unknown screen hardware is used.  Full page screens do exist on the
+        market which fulfill the conditions described above.
+
+     ^b^CFE^b  Changing the number of columns breaks down the existing screen
+        contents and renders it unusable.  This switch should always be
+        linked to a CLEAR.
+
+     ^b^CFE^b  Virtual screens use the memory area for additional screen
+        pages.  The number of screen pages decreases in proportion to the
+        growth of the virtual screen.
+
+     ^b^CFE^b  If the <nScrollBorder> is larger than or equal to half of the
+        visible columns, then the display in the middle of the screen is
+        scrolled under the cursor.
+
+     ^b^CFE^b  If the cursor is switched off, the automatic scroll depends
+        only on keyboard input.
+
+     ^b^CFE^b  When windows are open, the column count cannot be changed,
+        regardless of the automatic scroll setting.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the number of columns to 96 (special screen):
+
+        SETMAXCOL(95)           // 96 columns
+        @ 10, 80 SAY "CA-Clipper"
+
+     ^b^CFE^b  Switch a VGA adapter already in 50-line mode (VGA50()) to a
+        virtual 100-column mode with a border of 3 characters:
+
+        CLEAR                   // Best to have the screen clear
+        ? SETMAXCOL(99, 3)      // Returns .T. if successful
+
+     ^b^CFE^b  Switch off the automatic scroll:
+
+        SETMAXCOL(MAXCOL(.T.))
+
+!seealso: "SETMAXROW()" "FIRSTCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETMAXROW()  Sets the number of lines for a virtual screen
+'------------------------------------------------------------------------------
+ ^bSETMAXROW()^b
+ Sets the number of lines for a virtual screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETMAXROW(<nLastLine>, [<nScrollBorder>])
+     ^b   --> lSuccessful
+
+ ^bArguments^b
+
+     ^b<nLastLine>^b  Designates the last line that the extended driver
+     supports for screen output.  The highest value possible is 254, assuming
+     sufficient screen memory is available.
+
+     ^b<nScrollBorder>^b  Designates the top and bottom borders that move the
+     screen when crossed by the cursor.  Values from 0 to MAXCOL(.T.)/2 are
+     valid.  Larger values are corrected to the maximum value.  When a value
+     is passed for this parameter, scroll is turned on.   When no parameter
+     is passed, scroll is turned off.
+
+ ^bReturns^b
+
+     SETMAXROW() returns .T. when <nLastLine> is successfully set.
+
+ ^bDescription^b
+
+     This function allows you to set the number of lines that the extended
+     driver accepts for CA-Clipper screen output.  You can determine two
+     different types of screen output.
+
+     ^bSpecial Screen^b
+     It is possible to use full page screens or other special screens that
+     display more than 25 lines, and whose line count is not automatically
+     recognized by the BIOS (this is always hardware based).  These screens
+     must be compatible with the usual screen adapter with regard to the
+     organization of the screen memory (character attributes), the attribute
+     bytes themselves, and the basic address of the screen memory.  The
+     function doesn't switch any modes; the internal settings of the extended
+     drivers are simply adjusted.  Specific screen settings must be carried
+     out through the hardware's driver module.
+
+     ^bVirtual Screen^b
+     It is also possible to set a line count higher than what can be
+     displayed on the screen.  In this case, only a portion of the total
+     screen memory is visible.  If a CA-Clipper input command such as
+     GET/READ is built larger than the visible area, the extended driver
+     automatically moves screen memory in accordance with cursor movement.
+     This movement always occurs when the cursor moves beyond the left or the
+     right borders set in <nScrollBorder>.  In this way, the portion of text
+     that is worked on is always visible.  The visible area of the virtual
+     screen can also be set using the FIRSTROW() function if needed.
+
+     Virtual screens are possible on CGA, EGA, and VGA adapters as well as
+     those that can fully emulate them.  The maximum number of lines you can
+     install, assuming a 25-line and 80-column mode (CGA80() or
+     MONOCHROME()), can be determined in the following manner:
+
+     MIN(INT((MAXPAGE() +1) * 2048 / 80), 254)
+
+     With eight screen pages you have:
+
+     MIN(INT(8 * 2048 / 80), 254)   204
+
+     In other words, a maximum of 204 lines can be used, which exactly equals
+     the maximum value for SETMAXROW() of 203.
+
+     You can switch back to the number of lines that actually display by
+     calling the function with the corresponding value and no border.
+
+ ^bNotes^b
+
+     ^b^CFE^b  We are not able to provide any kind of technical support when
+        unknown screen hardware is used.  Full page screens do exist on the
+        market which fulfill the conditions described above.
+
+     ^b^CFE^b  Please notice that virtual screens use the memory area for
+        additional screen pages.  The number of screen pages decreases in
+        proportion to the growth of the virtual screen.
+
+     ^b^CFE^b  If the <nScrollBorder> is larger than or equal to half of the
+        visible columns, then the display in the middle of the screen is
+        scrolled under the cursor.
+
+     ^b^CFE^b  If the cursor is switched off, the automatic scroll depends
+        only on keyboard input.
+
+     ^b^CFE^b  When windows are open, the line count cannot be changed,
+        regardless of the automatic scroll setting.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the number of lines to 72 (full page screen):
+
+        SETMAXROW(71)                 // 72 lines
+        @ 65, 20 SAY "CA-Clipper"
+
+     ^b^CFE^b  Switch a VGA adapter to a 100-line screen.  As soon as the
+        cursor is in the region of the top or bottom tow lines, the screen
+        moves:
+
+        ? SETMAXROW(99, 2)            // Returns .T. if successful
+
+     ^b^CFE^b  Switch off the automatic scroll:
+
+        SETMAXROW(MAXROW(.T.))
+
+!seealso: "SETMAXCOL()" "FIRSTROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETPAGE()    Selects a new screen page
+'------------------------------------------------------------------------------
+ ^bSETPAGE()^b
+ Selects a new screen page
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETPAGE(<nScreenPage>,[<lHidden>]) --> lSwitched
+
+ ^bArguments^b
+
+     ^b<nScreenPage>^b  Designates the screen page number to select.  The
+     value can be as high as you like, depending on the screen card, its
+     mode, and available memory.  The first page is 0.
+
+     ^b<lHidden>^b  Designates whether or not output is displayed.  If this
+     parameter is .T., the output is in the page selected, but is not
+     displayed.  If this parameter is .F., the output is displayed.  The
+     default value is .F..
+
+ ^bReturns^b
+
+     SETPAGE() returns .T. when it is possible to physically or virtually
+     select the screen page.
+
+ ^bDescription^b
+
+     SETPAGE() allows you to switch to another screen page on the video
+     adapter that you use.  If the <lHidden> parameter is not passed (or is
+     designated as .F.), the output, and therefore the selected page, is
+     visible.  By contrast, if <lHidden> is .T., the output is sent to the
+     new page, but the page that was visible when you invoked SETPAGE()
+     remains visible.  It is therefore possible to construct hidden screens.
+
+ ^bNotes^b
+
+     ^bImportant!^b  This function cannot be implemented when windows are
+     open.
+
+     ^b^CFE^b  Virtual screen output cannot be achieved using a string output
+        (i.e. SETSCRSTR()).  Use SETSCRSTR() when there is only one page
+        available on the screen adapter.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Select two pages with the output immediately visible.  The
+        output with the returned value is on the new page:
+
+        ? SETPAGE(1)            // .T., if OK
+
+     ^b^CFE^b  Hide the output:
+
+        SETPAGE(0)              // Displayed
+        SETPAGE(1, .T.)         // Output here
+
+!seealso: "GETPAGE()" "MAXPAGE()" "PAGECOPY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETPBIOS()   Redirects print output to BIOS or DOS, and establishes timeout
+'------------------------------------------------------------------------------
+ ^bSETPBIOS()^b
+ Redirects print output to the BIOS or DOS, and establishes the timeout
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETPBIOS(<nPrinter>,[<nRefreshRate>]) --> lBIOSPrint
+
+ ^bArguments^b
+
+     ^b<nPrinter>^b  Designates whether the printer output is through DOS (0)
+     or BIOS on printer 1, 2, or 3.
+
+     ^b<nRepeatRate>^b  Designates how frequently an output attempt is made
+     from extended drivers if the printer is not ready.  The default value is
+     1000 attempts.
+
+ ^bReturns^b
+
+     The function returns .T. when the selected output setting is
+     successfully established.
+
+ ^bDescription^b
+
+     The default setting for CA-Clipper's printer output is through DOS.
+     SETPBIOS() configures the extended driver in such a way that all
+     subsequent printer output is directed through the BIOS.  This
+     configuration gives you certain advantages.  You can determine the
+     timeout for printers that are not ready.  Using <nRepeatRate>, you
+     determine how frequently the output should be attempted before the
+     program falls into an error trap.  Printer output on local printers is
+     usually quicker, at least as long as the printer is able to accept the
+     files quickly enough (hardware spoiler, built in printer buffer memory).
+
+     For BIOS output, you must always designate the selected printer with the
+     <nPrinter> parameter.  This setting then has absolute priority over any
+     previously setting using the CA-Clipper SET PRINTER TO command.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If you use the SET PRINTER TO command, the extended drivers
+        ignore the SETPBIOS() setting.
+
+     ^b^CFE^b  The extended driver can test to see if the printer is busy or
+        not, before the output of a single character, but only when the
+        extended driver outputs with BIOS.  In this case, the extended driver
+        waits until the printer can once again receive files.
+
+     ^b^CFE^b  BIOS output functions in all systems that have an interrupt
+        17h that is compatible with the IBM BIOS.
+
+     ^b^CFE^b  BIOS output successfully operates in those networks that
+        reroute the corresponding interrupt 17h.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Specify printer output through BIOS to LPT2, independently of
+        the CA-Clipper SET PRINTER TO setting:
+
+        SET PRINTER TO LPT1
+        ? SETPBIOS(2)                  // .T. if OK
+
+     ^b^CFE^b  This is the same setting with a shortened timeout:
+
+        SETPBIOS(2, 100)               // 100 repetitions
+
+     ^b^CFE^b  Reset the print output to DOS:
+
+        ? SETPBIOS(0)                  // .F. when via DOS
+
+!seealso: "GETPBIOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETPXLAT()   Establishes translation tables for printer output
+'------------------------------------------------------------------------------
+ ^bSETPXLAT()^b
+ Establishes translation tables for printer output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETPXLAT([<nASCIIPos|cCharacter>,
+     ^b   <cPrintCharacter>]) --> lActiveTable
+
+ ^bArguments^b
+
+     ^b<nASCIIPos|cCharacter>^b  Designates the position or the character in
+     the key table that is overwritten by the <cPrintCharacter>.  This
+     parameter can be designated as a numeric value, between 0 and 255, or as
+     an individual character.
+
+     ^b<cPrintCharacter>^b  Designates the sequence of characters that are
+     copied into the key table, starting from the <nASCIIPos> position.
+
+     ()  By invoking the function with no parameters, the existing key table
+     is cleared.
+
+ ^bReturns^b
+
+     SETPXLAT() returns .T. when the key table is active.
+
+ ^bDescription^b
+
+     CA-Clipper normally passes all characters between 0 and 255 to the
+     printer, without changing any of the characters.  This always leads to
+     problems when the printer is set up with a different font style.  For
+     example, a 7 bit printer, which looks for things like German umlauts,
+     can cause problems with the IBM extended character set.  Output through
+     a key table that you can build yourself is more flexible than a special
+     drive module for different printers.
+
+     Imagine the key table as a memory area of 256 bytes.  Memory position 65
+     normally contains the character CHR(65).  Using SETPXLAT() you could
+     exchange this character for CHR(66).  Thus an "A" sent to the printer no
+     longer produces an "A", but a "B".  There are also other ways to
+     substitute characters from a particular position.
+
+ ^bNote^b
+
+     ^b^CFE^b  The key table is only created at the moment that an exchange
+        under SETPXLAT() is requested.  Therefore, memory is not used up
+        unnecessarily.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Here is the solution for multiple calls of SETPXLAT():
+
+        SETPXLAT(65, CHR(66))            //  B
+
+     ^b^CFE^b  You can also call the function as follows:
+
+        SETPXLAT("1", "AB")              // 12  AB
+
+!seealso: "GETPXLAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETQNAME()   Changes the file and path name for the QUIT file
+'------------------------------------------------------------------------------
+ ^bSETQNAME()^b
+ Changes the file and path name for the QUIT file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETQNAME([<cFileSpecification>]) --> lAmended
+
+ ^bArgument^b
+
+     ^b<cFileSpecification>^b  Designates the new file name for the QUIT file
+     which can include a path and file extension.  The default name for this
+     file is the name of the active .EXE file with a .Q extension.
+
+ ^bReturns^b
+
+     SETQNAME() returns .T. when the new name and path are successfully set.
+
+ ^bDescription^b
+
+     The DSETQFILE() function allows you to create a QUIT file when a
+     CA-Clipper application returns to DOS.  The default name for this file
+     is the name of the .EXE file with a .Q extension.  Unless otherwise
+     specified, the QUIT file is saved in the directory from which the
+     application was started.
+
+     Using SETQNAME() you can designate an alternate name and a completely
+     different path for saving the QUIT file.
+
+ ^bNote^b
+
+     ^b^CFE^b  Calling this function without parameters returns .F., the
+        default value.  The QUIT file name is reset to the default name.
+
+ ^bExample^b
+
+     Change the name for the QUIT file:
+
+     SETQNAME("C:\LOGS\PROTO.LOG")
+     DSETQFILE(.T.)               // Alternative name for QUIT file
+
+!seealso: "DSETQFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETSCRMODE() Establishes a new video mode
+'------------------------------------------------------------------------------
+ ^bSETSCRMODE()^b
+ Establishes a new video mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETSCRMODE(<nModeNumber>) --> lStatus
+
+ ^bArgument^b
+
+     ^b<nModeNumber>^b  Designates the number of the selected mode that
+     corresponds to the designation in the table below.
+
+ ^bReturns^b
+
+     The function returns .T. when the selected mode is installed.
+
+ ^bDescription^b
+
+     SETSCRMODE() supports every video mode that the current screen adapter
+     supports.  However, non standard mode settings under the CA-Clipper and
+     CA-Clipper Tools combination are not a good idea.  For example, this
+     applies to all graphic modes where CA-Clipper or CA-Clipper Tools cannot
+     work.  The following modes are anticipated within the CA-Clipper Tools:
+
+     ^bTable 2-4: Modes and Their Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bMode                Mode Number^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     CGA40 Monochrome    0
+     CGA40 Color         1
+     CGA80 Monochrome    2
+     CGA80 Color         3
+     Monochrome          7
+     EGA43 (EGA only)    299 (43+256)
+     VGA28 (VGA only)    284 (28+256)
+     VGA50 (VGA only)    306 (50+256)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^bImportant!^b  We cannot guarantee that you won't have problems if you
+     use any special mode and screen adapter together with Clipper and
+     CA-Clipper Tools.
+
+     ^b^CFE^b  This function cannot be implemented when windows are open.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Implement the EGA43-line mode:
+
+        EGA43()
+
+     ^b^CFE^b  Save the current screen mode:
+
+        nOldMode := GETSCRMODE()
+
+     ^b^CFE^b  Reinstall the current screen mode later:
+
+        SETSCRMODE(nOldMode)
+
+!seealso: "GETSCRMODE()" "GETMODE()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETTAB()     Sets the tab widths for CA-Clipper screen outputs
+'------------------------------------------------------------------------------
+ ^bSETTAB()^b
+ Sets the tab widths for CA-Clipper screen outputs
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETTAB([<cTabTable>|<nTabWidth>]) --> lAccepted
+
+ ^bArguments^b
+
+     ^b<cTabTable>^b  Designates a character string with tab definitions in a
+     format as defined below.  Can be a maximum of 32 characters long.
+
+     or:
+
+     ^b<nTabWidth>^b  Designates (as an exception) an individual numeric
+     value for the tab value.  A blank is then used for the tab setting.
+
+     ()  If you call the function without parameters, the tab settings from
+     the CA-Clipper console output are uninstalled.
+
+ ^bReturns^b
+
+     SETTAB() returns .T. when the character string that contains the tab
+     settings is installed successfully.
+
+ ^bDescription^b
+
+     Using this function, you can switch to a mode in which CA-Clipper
+     console output (with the exception of @..SAY) can interpret tab
+     characters.  This function allows tabs to be blanks or any other
+     character you choose.  The tab positions and the character used for each
+     tab jump are passed in a character string with the following format:
+
+     CHR(tab-pos) + CHR(character) + CHR(tab-pos) + CHR(character)...
+
+     You do not need to specify every tab position within a line.  Any tab
+     position that is not specified is worked out as follows:
+
+     <previous Tab Pos.> + <previous Tab Pos.>
+
+     For example, if the first position is 0, the second is 8, and no other
+     positions are specified, then the tab positions are 16, 24, 32 etc.
+
+     When you call the function with <nTabWidth>, only one tab width can be
+     specified.  All positions are calculated as multiples of this value.  A
+     space is used as the tab character.
+
+ ^bNotes^b
+
+     ^b^CFE^b  A tab position within a string can never be less than one
+        previously designated.  The function returns .F., indicating an
+        error.
+
+     ^b^CFE^b  If the difference between the last and the next to last tab
+        positions is 0, or if the last position specified is 0, then
+        additional tabs on this line are not taken into account.
+
+     ^b^CFE^b  The tabs are exclusively for screen output, not for printer or
+        ALTERNATE files.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set tabs that expand to spaces with a tab width of 8:
+
+        SETTAB(8)
+
+     ^b^CFE^b  Set tabs for positions 8, 16, 24, etc.  Use a "." as the tab
+        character:
+
+        cTab := CHR(9)
+        cTabString := CHR(8) + "." + CHR(16) + "."
+        SETTAB(cTabString)
+
+        ? "AAAA" + cTab + "BBB" + cTab + "CCCCCC" + cTab + "DDD"
+
+
+        * The resulting output: AAAA. . . .BBB. . . . .CCCCCC. .DDD
+
+     ^b^CFE^b  Format the output in conjunction with LIST:
+
+        USE <file>
+        LIST OFF cTab + FIELD1 + cTab + FIELD2 + cTab + FIELD3
+
+!seealso: "GETTAB()" tool_005.ngo:"TABEXPAND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TRAPANYKEY() Calls a procedure with any keyboard input
+'------------------------------------------------------------------------------
+ ^bTRAPANYKEY()^b
+ Calls a procedure with any keyboard input
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTRAPANYKEY(<cProcedure>) --> cOldProcedure
+
+ ^bArgument^b
+
+     ^b<cProcedure>^b  Designates the name of the procedure that is called
+     when any input key is touched.
+
+     ()  If you call the function without parameters, the procedure to
+     monitor selected keyboard input is uninstalled.
+
+ ^bReturns^b
+
+     At any given time, the function returns the name of the previously
+     active trap procedure.  If no call has ever been made to TRAPANYKEY(),
+     the function returns a null string.
+
+ ^bDescription^b
+
+     TRAPANYKEY() calls a given procedure for all keys that generate input.
+     This is somewhat similar to SET KEY <AnyKey> TO <cProcName>.
+
+     The scan code transmitted by the key is passed as a parameter to the
+     trap procedure, but it is not yet stored in the keyboard buffer.  To
+     input normally, each character must be sent to the keyboard buffer using
+     either the KEYBOARD command, or the KEYSEND() function.  Using KEYSEND()
+     is generally preferred because the previous keyboard buffer is always
+     added to the characters that have not yet been amended by the CA-Clipper
+     application -- therefore you do not lose input.
+
+     ^bThe Procedure Call^b
+     When you use this function, you do not call any CA-Clipper key trap.
+     When CA-Clipper tries to collect a keyboard input, this call is
+     redirected within the driver by the TRAPANYKEY() procedure.  CA-Clipper
+     checks the keyboard, with the exception of special input commands like
+     GET/READ, so these traps almost always work.
+
+     ^bImportant!^b  In contrast to CA-Clipper key traps, these internal
+     input commands do not have the option to ignore the interruption because
+     no internal input routine is reentrant.  You cannot, under any
+     circumstances, use the same input command in the called procedure.  This
+     applies the GET/READ, PROMPT, ACCEPT, and any similar input
+     instructions.  You can easily use INPUTMODE(.T.) to determine which
+     input command is currently active when you call a procedure.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The transmitted key codes must continue to be processed within
+        the trap procedure.  Otherwise no additional input is possible, and
+        you cannot even exit the program using Alt-C.
+
+     ^b^CFE^b  In contrast to CA-Clipper KEY TRAPS, recursions are
+        automatically avoided.
+
+     ^b^CFE^b  If the designated procedure does not exist, then the function
+        uninstalls itself and does not produce a runtime error.  If a warning
+        regarding a missing procedure is required during linking, use the
+        EXTERNAL <procedure> statement.
+
+ ^bExample^b
+
+     In this example, two established abbreviations are input within
+     MEMOEDIT(), and then the accompanying phrases are expanded into the
+     text.  The trap procedure recognizes the last three keys that were input
+     and compares this sequence with the defined abbreviations.  In each
+     case, these phrases are sent using KEYSEND() and inserted in the
+     existing keyboard buffer.  Since the functions are called with .T. for
+     the second parameter, no characters are lost even if you type quickly.
+
+     At this time, the third character of the recognized abbreviation has not
+     yet been placed in the keyboard buffer and therefore does not yet exist
+     in text, so only two CHR(8) (backspace) characters are used to delete
+     the two characters that have already been transmitted.  The entire
+     sequence must be expanded with CHR(0) before it can be placed in the
+     keyboard buffer because KEYSEND() works on the basis of scan codes.
+
+     Notice the SET TYPEAHEAD enlarged keyboard buffer.
+
+     CLEAR
+
+     cLastThree := ""
+     SET TYPEAHEAD TO 50
+
+     TRAPANYKEY("Trap_Key")
+
+     cTextVar := SPACE(5000)
+     @@ 00, 00 TO MAXROW(), MAXCOL(), DOUBLE
+     cTextVar := MEMOEDIT(cTextVar, 1, 1, MAXROW() -1,    MAXCOL() -1)
+
+     TRAPANYKEY()
+
+     RETURN
+
+     PROCEDURE Trap_Key(nKey)
+
+        cLastThree := RIGHT(cLastThree, 2) + CHR(nKey)
+
+        DO CASE
+        CASE cLastThree == "ys"
+           cLine := CHR(8) + "Yours Sincerely"
+           KEYSEND(CHARMIX(cLine, CHR(0)), .T.)
+        CASE cLastThree == "yvt"
+           cLine := CHR(8) + "Yours Very Truly"
+           KEYSEND(CHARMIX(cLine, CHR(0)), .T.)
+        OTHERWISE
+           KEYSEND(I2BIN(nKey), .T.)
+        ENDCASE
+
+        RETURN
+
+!seealso: "TRAPSHIFT()" "INPUTMODE()" "KEYSEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TRAPINPUT()  Allows supervision of CA-Clipper input commands
+'------------------------------------------------------------------------------
+ ^bTRAPINPUT()^b
+ Allows supervision of CA-Clipper input commands
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTRAPINPUT(<cProcedure>,[<lParameter>]) --> cOldProcedure
+
+ ^bArguments^b
+
+     ^b<cProcedure>^b  Designates the name of the procedure that is called
+     during active CA-Clipper input commands.
+
+     ^b<lParameter>^b  Designates whether a parameter is passed internally to
+     the specified trap procedure.  If this logical parameter is .T., then no
+     parameter is passed internally to the specified trap procedure.  This
+     allows you to significantly improve performance.
+
+     ()  If this function is called without a parameter, the previously set
+     trap is uninstalled.
+
+ ^bReturns^b
+
+     This function returns the name of the previously set trap procedure.  If
+     no trap was set, TRAPINPUT() returns a null string.
+
+ ^bDescription^b
+
+     This function is different from a CA-Clipper key trap.  When one of the
+     CA-Clipper input commands is active, the specified trap procedure is
+     always called when CA-Clipper attempts to retrieve the keyboard input.
+     This function is completely independent of whether or not there really
+     has been a keyboard input.  Additionally, the ensuing inputs are not
+     influenced in any way, but are passed to the CA-Clipper command
+     unchanged.
+
+     ^bThe Procedure Call^b
+     Three parameters are transmitted by the called procedure, as with
+     CA-Clipper trap procedures.  These parameters are the procedure name,
+     the line number, and the variable name.  All three parameters are
+     transmitted unless the <lParameter> option is .T.
+
+     ^bImportant! ^b In contrast to CA-Clipper key traps, these internal
+     input commands do not have the option to ignore the interruption because
+     no internal input routine is reentrant.  You cannot, under any
+     circumstances, use the same input command in the called procedure.  This
+     applies the GET/READ, PROMPT, ACCEPT, and any similar input
+     instructions.  You can easily use INPUTMODE(.T.) to determine which
+     input command is currently active when you call a procedure.
+
+ ^bNotes^b
+
+     ^b^CFE^b  In contrast to CA-Clipper SET KEY TO traps, recursions are
+        automatically avoided.
+
+     ^b^CFE^b  If the designated procedure does not exist, then the function
+        uninstalls itself and does not produce a runtime error.  If a warning
+        regarding a missing procedure is required during linking, use the
+        EXTERNAL <procedure> statement.
+
+ ^bExample^b
+
+     The following example shows a MEMOEDIT() extension to a very simple
+     communications program.  This is only intended to demonstrate a possible
+     application.  This solution is unsuitable for a full fledged
+     communications program because at some point the memory available to
+     MEMOEDIT() would be insufficient.
+
+     The main purpose of the example is to show how using TRAPINPUT() can
+     convert characters from the serial port into keyboard input for a
+     CA-Clipper application.  Each time the CA-Clipper program looks for
+     keyboard input, the characters in the serial port input buffer are added
+     to the available keyboard buffer.  Please notice that the example uses
+     KEYSEND().
+
+     To complete this example, all local keyboard input is transmitted
+     through the TRAPANYKEY() procedure over the serial port.  The other
+     terminal is expecting an echo of these characters.  Alt-C remains
+     functional in this example.  The application can also be changed to take
+     into account other control keys.
+
+     CLEAR
+
+     nPort := 1
+
+     COM_OPEN(nPort, 1000)
+     CON_DTR(2, .T.)
+     COM_INIT(nPort, 1200, "N", 8 , 1)
+
+     TRAPINPUT("Trap1")
+     TRAPINPUT("Trap2")
+
+
+     cTextVar := SPACE(5000)
+     cTextVar := MEMOEDIT(cTextVar)
+
+     COM_CLOSE(nPort)
+
+     RETURN
+
+     PROCEDURE Trap1(a, b, c)
+
+        IF COM_COUNT(nPort) > 0
+           KEYSEND(CHARMIX(COM_READ(nPort), CHR(0), .T.)
+        ENDIF
+
+        RETURN
+
+     PROCEDURE Trap2(nKey)
+
+        IF nKey <= 255
+           COM_SEND(nPort, CHR(nKey))
+        ELSE
+           KEYSEND(I2BIN(nKey), .T.)
+        ENDIF
+
+        RETURN
+
+!seealso: "TRAPANYKEY()" "TRAPSHIFT()" "INPUTMODE()" "KEYSEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TRAPSHIFT()  Calls a procedure that depends on switching keys
+'------------------------------------------------------------------------------
+ ^bTRAPSHIFT()^b
+ Calls a procedure that depends on switching keys
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTRAPSHIFT(<cProcedure>, <nBitMap>) --> cOldProcedure
+
+ ^bArguments^b
+
+     ^b<cProcedure>^b  Designates the procedure name that is called when the
+     specified shift keys are selected.
+
+     ^b<nBitMap>^b  Designates the bit values that allow you to specify which
+     of the shift keys should call the procedure.  The description section
+     below has a table of valid values.
+
+     ()  If you call the function without parameters, you uninstall a
+     previously selected function that monitored the switching keys.
+
+ ^bReturns^b
+
+     The function returns the name of the previously set trap procedure.  If
+     no trap was set, TRAPINPUT() returns a null string.
+
+ ^bDescription^b
+
+     This function makes it possible for all the shift keys, like Shift,
+     Ctrl, Alt, Num-Lock etc., to trigger a procedure call.  If the system
+     has the European extended (MF-2) keyboard available, which can be
+     determined by using the KBDTYPE() function, then additional differences
+     like left and right Ctrl keys must be taken into account.  The key scan
+     codes and their assigned bits must be added to determine the value for
+     the <nBitMap> parameter.  The following code applies:
+
+     ^bTable 2-5: Coding the Switching Keys^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Key^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Right shift at the instant actuated
+     2       Left shift at the instant actuated
+     3       Ctrl at the instant actuated (left or right)
+     4       Alt at the instant actuated (Alt - Shift/Alt)
+     5       Scroll-Lock ON/OFF
+     6       Num-Lock ON/OFF
+     7       Caps-Lock ON/OFF
+     8       Insert ON/OFF
+     9       Ctrl left at the instant actuated
+     10      Alt left at the instant actuated
+     11      Ctrl right at the instant actuated
+     12      Right Alt (not valid for US keyboards)
+     13      Scroll Lock at the instant actuated
+     14      Num-Lock at the instant actuated
+     15      Caps-Lock at the instant actuated
+     16      Alt Print Scrn at the instant actuated
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bThe Procedure Call^b
+     If the selected switching key or keys are actuated, then the specified
+     procedure is called.  The call is always passed as a numeric parameter
+     and the status of all the switching keys at the time of the call.  The
+     coding of the passed value corresponds to the table above.
+
+     Using this function will not reproduce any CA-Clipper key trap.  Each
+     time that CA-Clipper queries the keyboard, the switching keys are
+     checked, and if required, the procedure is called directly from the
+     driver.  In this way, these traps are always functional.
+
+     ^bImportant!^b  In contrast to CA-Clipper key traps, these internal
+     input commands do not have the option to ignore the interruption because
+     no internal input routine is reentrant.  You cannot, under any
+     circumstances, use the same input command in the called procedure.  This
+     applies the GET/READ, PROMPT, ACCEPT, and any similar input
+     instructions.  You can easily use INPUTMODE(.T.) to determine which
+     input command is currently active when you call a procedure.
+
+ ^bNotes^b
+
+     ^b^CFE^b  In contrast to CA-Clipper KEY TRAPS, recursions are
+        automatically avoided.
+
+     ^b^CFE^b  The parameter passed to the trap must be passed in every case,
+        even when it is not needed.
+
+     ^b^CFE^b  If a designated procedure does not exist, then the function
+        uninstalls itself and does not produce a runtime error.  If a warning
+        regarding a missing procedure is required during linking, use the
+        EXTERNAL <procedure> statement.
+
+ ^bExample^b
+
+     In this example, the Trap_Alt procedure is called as soon as the Alt key
+     is actuated.  It is not in any way necessary for a GET/READ mask to be
+     active for this example.   This is only intended to be an example of an
+     application.
+
+     The trap procedure waits in a loop for as long as you hold the Alt key,
+     or until an additional combination key that delivers an INKEY code is
+     actuated.  Pressing the Alt key displays an additional help list from
+     which you can select the program option.  In this case, Alt-M appends
+     the text "Yours Sincerely" to the keyboard buffer.
+
+     CLEAR
+
+     TRAPSHIFT("Trap_ALT", 8)
+
+     cVar1 := SPACE(50)
+     cVar2 := SPACE(50)
+
+     @ 10, 20 GET cVar1
+     @ 11, 20 GET cVar2
+     READ
+
+     TRAPSHIFT()
+
+     RETURN
+
+     PROCEDURE Trap_ALT(nStatus)
+
+        @ MAXROW(), 0 SAY "........Help Line........"
+
+        nInVar := 0
+
+        DO WHILE NUMAND(KBDSTAT(), 8) = 8 .AND. nInVar = 8
+           nInVar := INKEY()
+        ENDDO
+
+        DO CASE
+        CASE nInVar = 306                  // ALT-M
+           KEYSEND(CHARMIX("Yours Sincerely", CHR(0), .T.)
+        ENDCASE
+
+        @ MAXROW(), 0
+
+        RETURN
+
+!seealso: "TRAPANYKEY()" "INPUTMODE()" tool_014.ngo:"KBDTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VGA28()      Switches to 28-line VGA mode
+'------------------------------------------------------------------------------
+ ^bVGA28()^b
+ Switches to 28-line VGA mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVGA28() --> lStatus
+
+ ^bReturns^b
+
+     VGA28() returns .T. when the screen adapter that you use (VGA only)
+     successfully switches to this mode.
+
+ ^bDescription^b
+
+     In order to generate a pixel height of 14, like that of EGA (for
+     instance, to use the accompanying font editor on a VGA adapter), this
+     mode must be implemented.
+
+ ^bNote^b
+
+     ^bImportant!^b  This function cannot be used when windows are open.
+
+ ^bExample^b
+
+     Switch to 28-line mode:
+
+     IF ISVGA()
+        VGA28()
+     ENDIF
+
+     @ 27, 00 SAY CENTER("CA-Clipper")       // Last screen line
+
+     WAIT
+
+     CGA80()                                 // Return to 25 line
+                                             // mode
+
+!seealso: "CGA80()" "VGA50()" "EGA43()" "SETSCRMODE()" "GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VGA50()      Switches to 50-line VGA mode.
+'------------------------------------------------------------------------------
+ ^bVGA50()^b
+ Switches to 50-line VGA mode.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVGA50() --> lSwitched
+
+ ^bReturns^b
+
+     VGA50() returns .T. when the screen adapter that you use successfully
+     switches to this mode.
+
+ ^bDescription^b
+
+     This function can only be used on a VGA card.  It generates a 50-line
+     mode, which automatically increases CA-Clipper screen output to the
+     maximum allowable coordinates.  It is therefore not necessary to also
+     call the SETMAXROW() and SETMAXCOL() functions.
+
+ ^bNote^b
+
+     ^bImportant!^b  This function cannot be used when windows are open.
+
+ ^bExample^b
+
+     Switch to 50-line mode.  You can then output from line 0 to 49:
+
+     IF ISVGA()
+        VGA50()                      // Switch mode
+     ENDIF
+
+     @ 49, 10 SAY "CA-Clipper"       // Last line
+
+     WAIT
+
+     CGA80()                         // Return to 25 line mode
+
+!seealso: "CGA40()" "CGA80()" "EGA43()" "MONOCHROME()" "SETSCRMODE()" 
+'------------------------------------------------------------------------------
+
+
+

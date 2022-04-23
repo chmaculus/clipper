@@ -1,0 +1,36 @@
+'------------------------------------------------------------------------------
+^BSET FILTER^B
+
+    SET FILTER allows display of only those records of a database file that
+    meet a specified condition.
+
+^USyntax^U
+
+    SET FILTER TO [<condition>]
+
+^UUsage^U
+
+    SET FILTER applies only to the database file open in the work area
+    where the command is issued.  Therefore, a different filter condition
+    may be set for each open database file.
+
+    SET FILTER TO <condition> sets up a filter based on a valid expression.
+    The condition can filter records in the active database file based on
+    any of the allowed data types, for example, on a character field (SET
+    FILTER TO Lastname='Smith') or on a date filed (SET FILTER TO
+    Department=CTOD('12/25/85').
+
+    Filters are not activated until ^Bafter^B the record pointer is moved
+    within a file.  This means that your filter condition is not in effect
+    unless something has caused the pointer to change position since the
+    condition was set.  The best way to assure that a filter is in effect
+    is to execute a GOTO TOP command after setting the filter.
+
+    As with SET DELETED, a filter has no effect on INDEX and REINDEX.  You
+    may, however, directly access filtered records with GOTO or commands
+    using the RECORD scope.
+!seealso: clip_053.ngo:"SET DELETED" 
+'------------------------------------------------------------------------------
+
+
+

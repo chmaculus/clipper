@@ -1,0 +1,213 @@
+!short: COOL ALL HOT... ^bDe-activate all defined hotspots                            ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ECOOL ALL HOT...^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   De-activate all previous defined hotspots. If the 'COOL' colors were
+   defined the hotspots are repainted in these colors.
+
+ ^bSyntax
+   ^bCOOL ALL HOTSPOTS
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "COOL HOTSPOT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COOL HOTSPOT    ^bDe-activate a defined hotspot                               ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ECOOL HOTSPOT^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   De-activate a previous defined hotspot. If the 'COOL' colors were
+   defined the hotspot is repainted in these colors.
+
+ ^bSyntax
+   ^bCOOL HOTSPOT nVar
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "DEFINE HOTSPOT" "WARM HOTSPOT" "COOL ALL HOT..." 
+'------------------------------------------------------------------------------
+
+
+
+!short: DEFINE HOTSPOT  ^bDefine a hotspot region                                     ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EDEFINE HOTSPOT^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define a region of the screen that must respond to a mouse click, a so
+   called HOTSPOT. The hotspot can is activated by default but can be
+   de-activated temporary. The colors for activated and de-activated
+   hotspots can be supplied, this way the user can see which hotspots are
+   (not) active. Before defining the hotspot you must display the text for
+   the hotspot in the hotspot region. When the hotspot is defined the text
+   in this region is painted in the correct colors.
+   A key can be attached to the hotspot, so it is possible to assign the
+   same action to a hotspot and a key(value).
+
+ ^bSyntax
+   ^bDEFINE HOTSPOT nVar            ;
+   ^b  [AT top, row, bottom, right] ;
+   ^b  [OFF]                        ;
+   ^b  [KEY nKey]                   ;
+   ^b  [DO bDo]                     ;
+   ^b  [WARM [COLOR] cWarmColor]    ;
+   ^b  [COLD [COLOR] cColdColor]
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "WARM HOTSPOT" "COOL HOTSPOT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DELETE ALL HOTS ^bDelete all defined hotspot                                  ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EDELETE ALL HOTS^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Delete all previous defined hotspots.
+
+ ^bSyntax
+   ^bDELETE ALL HOTSPOTS
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "DELETE HOTSPOT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DELETE HOTSPOT  ^bDelete a defined hotspot                                    ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EDELETE HOTSPOT^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Delete a previous defined hotspot.
+
+ ^bSyntax
+   ^bDELETE HOTSPOT nVar
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "DELETE ALL HOTS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PAINT HOTSPOTS  ^bPaint all defined hotspot                                   ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EPAINT HOTSPOTS^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Paint all previous defined hotspots. The hotspots are painted in the
+   correct 'warm' and 'cold' colors.
+
+ ^bSyntax
+   ^bPAINT HOTSPOTS
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: RESTORE HOTSPOT ^bRestore the saved hotspot definitions                       ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ERESTORE HOTSPOT^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Restore the saved hotspot definitions. This is useful if you want to
+   redefine some (or all) hotspots temporary. And then restore the previous
+   hotspots.
+
+ ^bSyntax
+   ^bRESTORE HOTSPOTS FROM aSpots [REPAINT]
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "SAVE HOTSPOTS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVE HOTSPOTS   ^bSave the hotspot definitions                                ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ESAVE HOTSPOTS^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Save the hotspot definitions for later use. This is useful if you want
+   to redefine some (or all) hotspots temporary. And then restore the
+   previous hotspots.
+
+ ^bSyntax
+   ^bSAVE HOTSPOTS TO aSpots [DELETE]
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "RESTORE HOTSPOT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WARM ALL HOT... ^bActivate all defined hotspots                               ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EWARM ALL HOT...^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Activate all previous defined hotspots. If the 'WARM' colors were
+   defined the hotspots are repainted in these colors.
+
+ ^bSyntax
+   ^bWARM ALL HOTSPOTS
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "WARM HOTSPOT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WARM HOTSPOT    ^bActivate a defined hotspot                                  ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EWARM HOTSPOT^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Activate a previous defined hotspot. If the 'WARM' colors were defined
+   the hotspot is repainted in these colors.
+
+ ^bSyntax
+   ^bWARM HOTSPOT nVar
+
+   Note : MOUSE.CH must be included in your program
+
+!seealso: "DEFINE HOTSPOT" "COOL HOTSPOT" "WARM ALL HOT..." 
+'------------------------------------------------------------------------------
+
+
+

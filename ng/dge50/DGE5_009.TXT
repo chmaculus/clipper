@@ -1,0 +1,174 @@
+!short: GKI_BitBltM2V              Fast paste an area from memory to screen
+'------------------------------------------------------------------------------
+void GKI_BitBltM2V(nX0, nY0, nXLen, nYLen, nRowBytes, *Buffer)
+
+Fast pastes an area from memory to screen.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the target area of the 
+screen.
+
+^Uint nY0^U
+Y coordinate for the top of the target area of the screen.
+
+^Uint nXLen^U
+Width of the source.
+
+^Uint nYLen^U
+Height of the source.
+
+^Uint nRowBytes^U
+Length of the buffer, in bytes. Can be obtained by a call to 
+GKI_GetBltSize.
+
+^Uint *Buffer^U
+Identifies the buffer containing the area copied. The area is 
+copied to the buffer by calling GKI_BitBltV2M.
+
+!seealso: "GKI_BitBltV2M" dge5_008.ngo:"GKI_GetBltSize" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_BitBltV2M              Fast copy an area from screen to memory
+'------------------------------------------------------------------------------
+void GKI_BitBltV2M(nX0, nY0, nX1, nY1, *Buffer)
+
+Fast copies an area from screen to memory.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the area to be copied to
+memory.
+
+^Uint nY0^U
+Y coordinate for the top of the area to be copied.
+
+^Uint nX1^U
+X coordinate fot the right edge of the area to be copied.
+
+^Uint nY1^U
+Y coordinate for the bottom of the area to be copied.
+
+^Uint *Buffer^U
+Identifies the buffer to receive the area copied. The buffer 
+can be sized by calling GKI_GetBltSize.
+
+
+!seealso: "GKI_BitBltM2V" dge5_008.ngo:"GKI_GetBltSize" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_BitBltV2V              Fast copy one area of the screen to another
+'------------------------------------------------------------------------------
+void GKI_BitBltV2V(nX0, nY0, nX1, nY1, nX0Target, nY0Target)
+
+Fast copies one area of the screen to another.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the source area.
+
+^Uint nY0^U
+Y coordinate for the top of the source area.
+
+^Uint nX1^U
+X coordinate for the right edge of the source area.
+
+^Uint nY1^U
+Y coordinate for the bottom of the source area.
+
+^Uint nX0Target^U
+X coordinate for the top left corner of the destination.
+
+^Uint nY0Target^U
+Y coordinate for the top left corner of the destination.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_RasterPatterned        Draw a patterned raster line
+'------------------------------------------------------------------------------
+void GKI_RasterPatterned(nX0, nX1, nY, nPattern, nRop, nColor)
+
+Draws a patterned raster line. This may be used for regular
+patterned fills, and is always byte-aligned.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the start of the raster line.
+
+^Uint nX1^U
+X coordinate for the end of the raster line.
+
+^Uint nY^U
+Y coordinate for the raster line.
+
+^Uint nPattern^U
+An integer defining a 16-bit repeating pattern.
+
+^Uint nRop^U
+Integer indicating the raster operation.
+
+          Value
+          컴컴컴컴컴컴컴컴
+          ROPREPLACE     0
+          ROPOR          1
+          ROPXOR         2
+          ROPNOT         3
+          ROPAND         4
+
+^Uint nColor^U
+Color index number.
+
+!seealso: dge5_008.ngo:"GKI_PutRaster" "GKI_RasterSolid" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_RasterSolid            Draw a solid raster line
+'------------------------------------------------------------------------------
+void GKI_RasterSolid(nX0, nX1, nY, nRop, nColor)
+
+Draws a solid raster line.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the start of the raster line.
+
+^Uint nX1^U
+X coordinate for the end of the raster line.
+
+^Uint nY^U
+Y coordinate for the raster line.
+
+^Uint nRop^U
+Integer indicating the raster operation.
+
+          Value
+          컴컴컴컴컴컴컴컴
+          ROPREPLACE     0
+          ROPOR          1
+          ROPXOR         2
+          ROPNOT         3
+          ROPAND         4
+
+^Uint nColor^U
+Color index number.
+
+
+!seealso: dge5_008.ngo:"GKI_PutRaster" "GKI_RasterPatterned" 
+'------------------------------------------------------------------------------
+
+
+

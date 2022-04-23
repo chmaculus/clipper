@@ -1,0 +1,50 @@
+'------------------------------------------------------------------------------
+^BTYPE()^B
+
+    TYPE() evaluates an expression and returns a single upper case
+    character that indicates whether the expression is character, numeric,
+    logical, memo, or undefined.  It is a test for the existence of a
+    variable and/or the validity of an expression.
+
+^USyntax^U
+
+    TYPE(<exp C>)
+
+^UUsage^U
+
+    The TYPE() function always returns an upper case letter.
+
+    The possible TYPE() values are:
+
+    Character           = C
+    Numeric             = N
+    Logical             = L
+    Memo                = M
+    Array               = A
+    Undefined           = U
+    Error syntactical   = UE
+    Error indeterminate = UI
+
+^UUsage^U
+
+    TYPE() returns the type of the specified expression.  With its expanded
+    capabilities, it can be used to test expression validity.  There arem
+    however, several special cases to note:
+
+    ^BArray references^B: References to DECLAREd arrays return an "A".
+    References to array elements return the type of the element.  Invalid
+    references return "U".
+
+    ^BIF()/IIF()^B: In order to return the appropriate data type for an IF(),
+    TYPE() evaluates the condition and then returns the type of the
+    evaluated path.  If either the IF() condition or the evaluated path are
+    invalid, TYPE() returns "UE".
+
+    ^BUser-defined and EXTEND.LIB functions^B: If a reference is made anywhere
+    in an expression to a function not found in CLIPPER.LIB (such as a
+    user-defined or EXTEND.LIB function), TYPE() returns a "UI".
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,1116 @@
+!short: ^bOverview -- Blinker Error Messages
+'------------------------------------------------------------------------------
+     The following sections contain a complete list of the Blinker error
+     messages with a description of each error and reasons for their
+     occurrence.  The errors are divided into the following classes:
+
+     ^b^CFE^b 10xx - Link-time warning messages
+
+     ^b^CFE^b 11xx - Link-time fatal messages
+
+     ^b^CFE^b 12xx - DOS real mode runtime messages
+
+     Link-time warning messages are only for information.  They do not set
+     the DOS ERRORLEVEL.  As a result the execution of Blinker and any MAKE
+     utilities being used will continue unaffected.  These warning messages
+     may be disabled altogether using the BLINKER MESSAGE NOWARNING command.
+
+     Link-time fatal messages and runtime messages, on the other hand, are of
+     a more serious nature.  They cause immediate termination of program
+     execution, and set the DOS ERRORLEVEL to 1.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bLink-Time Warning Messages
+!short:
+!short: 1001:        ignoring invalid link script file command parameter in '<cmd>'
+'------------------------------------------------------------------------------
+ ^b1001:   ignoring invalid link script file command parameter in '<command>'^b
+
+     ^bExplanation:^b  This message indicates that the link script file
+     command specified has been ignored as it contains an invalid parameter
+     value.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1002:        duplicate input file <filename> ignored
+'------------------------------------------------------------------------------
+ ^b1002:   duplicate input file <filename> ignored^b
+
+     ^bExplanation:^b  This message indicates that the same input file
+     appeared in more than one FILE or LIBRARY command.  The duplicated input
+     file will be ignored.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1003:        warning - no stack segment in .EXE file
+'------------------------------------------------------------------------------
+ ^b1003:   warning - no stack segment in .EXE file^b
+
+     ^bExplanation:^b  This message indicates that the program .EXE file was
+     created without a stack segment, which may cause the program to fail at
+     runtime unless it is designed to set up its own stack, in which case
+     this message may be ignored.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1004:        <filename(modulename)> : '<symbol>' duplicated in...
+'------------------------------------------------------------------------------
+ ^b1004:   <filename(modulename)>:'<symbol>' duplicated in
+ ^b        <filename(modulename)>
+
+     ^bExplanation:^b  This message indicates that the name symbol defined as
+     public in the first module is also defined as public in the second
+     module.  This will occur if two procedures in separate .OBJ or .LIB
+     files have the same name.  The first one found is the one which is
+     linked into the program, and the second one is ignored.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1004:        DEFINE command : '<symbol>' duplicated in <filename(modulename)>
+'------------------------------------------------------------------------------
+ ^b1004:   DEFINE command : '<symbol>' duplicated in <filename(modulename)>^b
+
+     ^bExplanation:^b  This message indicates that the name symbol defined
+     in a DEFINE command, is also defined as public in the second module.
+     This will occur if two procedures in separate .OBJ or .LIB files have
+     the same name.  The first one found is the one which is linked into the
+     program, and the second one is ignored.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1005:        the default overlay class '<class>' contains the word 'DATA'
+'------------------------------------------------------------------------------
+ ^b1005:   the default overlay class '<class>' contains the word 'DATA'^b
+
+     ^bExplanation:^b  This message indicates that the default overlay class,
+     taken from the class of the first segment in the first .OBJ being
+     linked, contains the word 'DATA'.  Blinker currently overlays code only,
+     so this message is displayed as a warning in case a non-standard .OBJ
+     file is being linked as the first .OBJ file.
+
+     ^bAction:^b  If the class name displayed is not a code class, check that
+     the first .OBJ being linked contains a valid code segment as the first
+     segment, or place one of your own program .OBJ files as the first .OBJ
+     file in the script file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1007:        warning - program has no start address
+'------------------------------------------------------------------------------
+ ^b1007:   warning - program has no start address^b
+
+     ^bExplanation:^b  This message indicates that no module containing a
+     record defining the starting point of the program was found during the
+     link.  A module of this type is usually found in the CA-Clipper 5.3
+     default language library.
+
+     ^bAction:^b  Make sure you link CLIPPER.LIB into your program.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1011:        '<symbol>' has been aliased to two different symbols
+'------------------------------------------------------------------------------
+ ^b1011:   '<symbol>' has been aliased to two different symbols^b
+
+     ^bExplanation:^b  This message indicates that the named symbol has been
+     aliased to more than one different symbol name.  The second alias symbol
+     is ignored.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1017:        Blinker for CA-Clipper 5.3 does not support the command '...'
+'------------------------------------------------------------------------------
+ ^b1017:   Blinker for CA-Clipper 5.3 does not support the command '...'^b
+
+     ^bExplanation:^b  This message indicates that the link script file
+     command has been ignored as it refers to a feature which is only
+     available in the full product version of Blinker, not in Blinker for
+     CA-Clipper 5.3.
+
+     ^bSee also:^b  Refer to file BLINKER.TXT in the directory in which CA-
+     Clipper is installed for details on upgrading to the full version of
+     Blinker.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bLink-Time Fatal Messages
+!short:
+!short: 1101:        terminated by user
+'------------------------------------------------------------------------------
+ ^b1101:   terminated by user^b
+
+     ^bExplanation:^b  This message indicates that the user interrupted
+     Blinker while it was running by pressing the Ctrl+C or Ctrl+Break keys.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1102:        no input files were specified
+'------------------------------------------------------------------------------
+ ^b1102:   no input files were specified^b
+
+     ^bExplanation:^b  This message indicates that no FILE commands were
+     found on the Blinker command line or in any of the script files
+     specified on the command line.
+
+     ^bAction:^b  Blinker requires at least one FILE command to indicate
+     which object file(s) is to be linked, so specify a FILE command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1103:        '......' is not a valid link script command
+'------------------------------------------------------------------------------
+ ^b1103:   '......' is not a valid link script command^b
+
+     ^bExplanation:^b  This message indicates that the command shown is not a
+     valid Blinker link script command.
+
+     ^bAction:^b  Make sure that the command is a valid Blinker link script
+     command.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1104:        unbalanced BEGINAREAs and ENDAREAs
+'------------------------------------------------------------------------------
+ ^b1104:   unbalanced BEGINAREAs and ENDAREAs^b
+
+     ^bExplanation:^b  This message indicates that a different number of
+     BEGINAREA and ENDAREA commands was found in the script file(s), which
+     implies an invalid overlay structure.  Generally only one BEGINAREA and
+     ENDAREA section is needed for Blinker's dynamic overlays.
+
+     ^bAction:^b  If an overlay structure is being carried over from a
+     structured linker, this can be simplified by reducing the number of
+     overlay sections.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1105:        maximum script file nesting depth exceeded
+'------------------------------------------------------------------------------
+ ^b1105:   maximum script file nesting depth exceeded^b
+
+     ^bExplanation:^b  This message indicates that a script file name
+     (@<filename>) was found inside another script file, which increased the
+     total nesting level for script files to greater than the maximum
+     permissible five levels.
+
+     ^bAction:^b  It may be possible to alleviate the problem by splitting
+     the script files into two or more files specified one after the other on
+     the Blinker command line.  For example, BLINKER @script1 @script2.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1106:        not enough real memory to link
+'------------------------------------------------------------------------------
+ ^b1106:   not enough real memory to link^b
+
+     ^bExplanation:^b  This message indicates that Blinker could not allocate
+     enough real (DOS) memory to continue the link.  Blinker has a link-time
+     virtual memory system that can use EMS (3.2 and higher), XMS (2.0 and
+     higher) memory (or disk space) when conventional DOS memory is fully
+     allocated.  However, Blinker still requires a certain amount of
+     conventional DOS memory to complete the link cycle.
+
+     ^bAction:^b  To make more memory available, either remove one or more
+     TSRs currently resident, run Blinker from outside a make utility, or
+     reduce the number of buffers specified in the CONFIG.SYS.  Reducing the
+     number of SECTION INTO and SEARCH commands will also reduce the memory
+     needed at link time.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1107:        disk full writing output file
+'------------------------------------------------------------------------------
+ ^b1107:   disk full writing output file^b
+
+     ^bExplanation:^b  This message indicates that the destination disk is
+     full.  There was an error writing to the disk, possibly because write
+     access has been denied or the output file name is invalid.
+
+     ^bAction:^b  If there is plenty of space available, then this message
+     indicates that there may be a problem writing to the disk, which can be
+     checked by attempting to copy some other files to the destination disk
+     and path.  An externally overlaid program will use less temporary disk
+     space at link time than an internally overlaid program.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1108:        stack overflow during linking
+'------------------------------------------------------------------------------
+ ^b1108:   stack overflow during linking^b
+
+     ^bExplanation:^b  This message indicates that the runtime stack for
+     BLINKER.EXE has overflowed and should not be displayed under normal
+     circumstances.
+
+     ^bAction:^b  If this message is displayed, reinstall the Blinker
+     software.  if the error persists, contact Computer Associates technical
+     support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1109:        unable to open file <filename>
+'------------------------------------------------------------------------------
+ ^b1109:   unable to open file <filename>^b
+
+     ^bExplanation:^b  This message indicates that Blinker was unable to find
+     the specified file in the current directory where it was expected to be,
+     so the full directory path for the file should be specified.  If no file
+     extension is specified for script files, Blinker assumes an extension of
+     .LNK.  This error can also occur when Blinker is attempting to create a
+     swap file and the TEMP environment variable points to an invalid
+     directory.  When running on a network, it is also possible that another
+     user deleted the file, or that you do not have network access rights to
+     the file.
+
+     ^bAction:^b  If the file has been specified in the link script with a
+     FILE command, check the OBJ environment variable; if it has been
+     specified with a LIBRARY or SEARCH command, check the LIB environment
+     variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1110:        <file>: invalid object file or library file
+'------------------------------------------------------------------------------
+ ^b1110:   <file>: invalid object file or library file^b
+
+     ^bExplanation:^b  This message indicates that the file shown, which may
+     be an .OBJ file or a .LIB file, contains an invalid object record.  If
+     the file is expected to be valid, it has probably become corrupt.
+
+     ^bAction:^b  Either recreate the file by recompiling, or reinstall the
+     appropriate file from the installation disk.  For a CA-Clipper
+     application, place EXTEND.LIB after CLIPPER.LIB in the link script or do
+     not mention these libraries, allowing them to be brought in by default
+     in the correct order.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1111:        <filename(modulename)> : invalid segment definition
+'------------------------------------------------------------------------------
+ ^b1111:   <filename(modulename)> : invalid segment definition^b
+
+     ^bExplanation:^b  This message indicates that the file shown, which may
+     be an .OBJ file or a .LIB file, contains an invalid object record.  If
+     the file is expected to be valid, it has probably become corrupt.
+
+     ^bAction:^b  Either recreate the file by recompiling, or reinstall the
+     appropriate file from the installation disk.  For a CA-Clipper
+     application, place EXTEND.LIB after CLIPPER.LIB in the link script, or
+     do not mention these libraries, allowing them to be brought in by
+     default in the correct order.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1112:        <filename(modulename)>: invalid group definition
+'------------------------------------------------------------------------------
+ ^b1112:   <filename(modulename)>: invalid group definition^b
+
+     ^bExplanation:^b  This message indicates that the file shown, which may
+     be an .OBJ file or a .LIB file, contains an invalid object record.  If
+     the file is expected to be valid, then it has probably become corrupt.
+
+     ^bAction:^b  Either recreate the file by recompiling, or reinstall the
+     appropriate file from the installation disk.  For a CA-Clipper
+     application, place EXTEND.LIB after CLIPPER.LIB in the link script, or
+     do not mention these libraries, allowing them to be brought in by
+     default in the correct order.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1113:        segment <name> or its group exceeds 64kb
+'------------------------------------------------------------------------------
+ ^b1113:   segment <name> or its group exceeds 64kb^b
+
+     ^bExplanation:^b  This message indicates one of a number of situations:
+
+     1. Two related libraries may have been separated by other libraries in
+        the link script file, so that the code in one library cannot reach
+        the code in the other library.  This may also occur when related .OBJ
+        files, possibly extracted from the same library, have been separated
+        by too many other .OBJ files in the script file.
+
+     2. Non-overlayable code may have been overlaid.  When third-party
+        products are linked into the program, refer to the third-party
+        documentation for their suggested method for dynamic overlaying.
+
+     3. Two libraries may have declared the same segment names in different
+        classes.  This should not occur in most programs.
+
+     4. Two or more libraries may have been specified in an incorrect order
+        within the link script.
+
+     5. The program's default data segment (usually named DGROUP in the
+        program's MAP file) may have exceeded 64K in size.
+
+        ^bAction for Situation 5:^b  If the default data segment exceeded 64K
+        when using CA-Clipper, determine which third-party product is using
+        the most of DGROUP by systematically removing each library and
+        running the program with the //INFO parameter of the CLIPPER
+        environment variable enabled.  When the offending library is found,
+        contact Computer Associates technical support.
+
+     ^bNote: ^b For CA-Clipper applications, the usual cause of this problem
+     is that the first .OBJ file specified on the command line or in the
+     script file is not a CA-Clipper .OBJ file.  When linking a CA-Clipper
+     application the first .OBJ file specified must be the CA-Clipper
+     starting program.
+
+     If these approaches do not work, and recreating or reinstalling the
+     specified file does not help, then contact Computer Associates technical
+     support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1114:        <file(module)> : '<symbol>' duplicated in <file(module)>
+'------------------------------------------------------------------------------
+ ^b1114:   <file(module)> : '<symbol>' duplicated in <file(module)>^b
+
+     ^bExplanation:^b  This message indicates that the name symbol defined as
+     public in the first module is also defined as public in the second.
+     This will occur if two procedures in separate .OBJ or .LIB files have
+     the same name.  The first one found is the one which is linked into the
+     program, and the second one is ignored.
+
+     ^bAction:^b  One of the symbols must be given a different name and the
+     appropriate .OBJ file recompiled.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1114:        DEFINE command : '<symbol>' duplicated in <file(module)>
+'------------------------------------------------------------------------------
+ ^b1114:   DEFINE command : '<symbol>' duplicated in <file(module)>^b
+
+     ^bExplanation:^b  This message indicates that the name symbol defined as
+     public in a DEFINE command, is also defined as public in the second
+     module.  This will occur if two procedures in separate .OBJ or .LIB
+     files have the same name.  The first one found is the one which is
+     linked into the program, and the second one is ignored.
+
+     ^bAction:^b  One of the symbols must be given a different name and the
+     appropriate .OBJ file recompiled.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1115:        <file(module)> : '<symbol>'unresolved external
+'------------------------------------------------------------------------------
+ ^b1115:   <file(module)> : '<symbol>'unresolved external^b
+
+     ^bExplanation:^b  This message indicates that the '<symbol>' defined as
+     external in the file module cannot be found in any of the other .OBJ
+     files or libraries in the script file.  The usual cause of this problem
+     is that an object or library file required by the program has been
+     omitted from the script file.  Another possible cause of this message is
+     that some libraries require the use of the SEARCH command, as their
+     library cross-reference records are not complete.
+
+     ^bAction:^b  Try a SEARCH on the library that you suspect contains the
+     missing '<symbol>'.  If you are aware of the cause for this message and
+     want to continue linking to create an executable file, use the command
+     BLINKER EXECUTABLE NODELETE.
+
+     ^bSee Also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1116:        fixup overflow at <offset> in segment <segment> in <module>...
+'------------------------------------------------------------------------------
+ ^b1116:   fixup overflow at <offset> in segment <segment> in <module>
+ ^b        referencing <symbol> in module <module>
+
+     ^bExplanation:^b This message indicates the exact point in the code that
+     refers to another symbol more than 64Kb away.  This may occur in one of
+     a number of situations:
+
+     1. Two related libraries may have been separated by other libraries in
+        the link script file, so that the code in one library cannot reach
+        the code in the other library.  This may also occur when related .OBJ
+        files, possibly extracted from the same library, have been separated
+        by too many other .OBJ files in the script file.
+
+     2. Non-overlayable code may have been overlaid.  When third-party
+        products are linked into the program, refer to the third-party
+        documentation for their suggested method for dynamic overlaying.
+
+     3. Two libraries may have declared the same segment names in different
+        classes.  This should not occur in most programs.
+
+     4. Two or more libraries may have been specified in an incorrect order
+        within the link script.
+
+     ^bAction:^b  Determine which library is causing the problem by
+     systematically removing each library and relinking.  When the offending
+     library is found, contact Computer Associates technical support.  If the
+     offending library is not found, modify the code so that <symbol> is
+     accessed with a far reference, or ensure that the specified segment and
+     symbol are accessible to one another by examining the MAP file for their
+     respective locations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1118:        too many external overlays
+'------------------------------------------------------------------------------
+ ^b1118:   too many external overlays^b
+
+     ^bExplanation:^b  This message indicates that more than 15 unique
+     external overlay file names were specified in the link script file.
+     This version of Blinker only supports up to 15 external overlays.  It
+     should be noted that with Blinker's dynamic overlaying, the only reason
+     to have more than one external overlay file is so that each overlay file
+     will fit onto a 360KB disk, if required for distribution purposes.
+
+     ^bAction:^b  Reduce the number of external overlay file names in the
+     link script file.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1119:        no main module found
+'------------------------------------------------------------------------------
+ ^b1119:   no main module found^b
+
+     ^bExplanation:^b  This message indicates that no startup procedure was
+     found in the files and libraries to be linked.  It usually indicates
+     that the language library containing the startup code has not been
+     specified in the link script.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1121:        this is not a CA-Clipper 5.3 application
+'------------------------------------------------------------------------------
+ ^b1121:   this is not a CA-Clipper 5.3 application^b
+
+     ^bExplanation:^b  This message indicates that the application being
+     linked is not a CA-Clipper 5.3 application.  This special limited
+     version of Blinker will only link CA-Clipper 5.3 applications.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1122:        <file(module)> : compiled with Summer '87 not 5.x
+'------------------------------------------------------------------------------
+ ^b1122:   <file(module)> : compiled with Summer '87 not 5.x^b
+
+     ^bExplanation:^b  This message indicates that Blinker has determined
+     that the specified module was compiled with CA-Clipper Summer '87, but
+     that the first FILE in the application was compiled with CA-Clipper 5.3.
+     All CA-Clipper compiled modules in a single application must be compiled
+     with the same version of CA-Clipper.
+
+     ^bAction:^b  Ensure you are linking the correct versions of the CA
+     libraries and any third-party libraries for the version of CA-Clipper
+     that you are using, and also make sure all CA-Clipper compiled .OBJ
+     files were compiled with the same version of CA-Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1124:        <file(module)> : first .OBJ not compiled with CA-Clipper
+'------------------------------------------------------------------------------
+ ^b1124:   <file(module)> : first .OBJ not compiled with CA-Clipper^b
+
+     ^bExplanation:^b  Within an application that contained a CA-Clipper
+     module, the first module in a FILE command was not compiled with
+     CA-Clipper.  In a CA-Clipper application, the first FILE command must
+     refer to the CA-Clipper starting program.
+
+     ^bAction:^b  If you receive this message, reorganize your link script so
+     that the first FILE statement refers to a CA-Clipper compiled module.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1125:        <file(module)> communal '<symbol>' has an inconsistent...
+'------------------------------------------------------------------------------
+ ^b1125:   <file(module)> communal '<symbol>' has an inconsistent element size^b
+
+     ^bExplanation:^b  This message is applicable to C-compiled modules.
+     Blinker has detected that the size of the far static uninitialized data
+     item (communal variable) indicated, had been declared to have a
+     different element size in a previously encountered module.
+
+     ^bAction:^b  If you receive this message, modify and recompile your C
+     modules so that the communal variable is declared to be the same size in
+     all the modules.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1126:        <file(module)> communal '<symbol>' has an invalid data type
+'------------------------------------------------------------------------------
+ ^b1126:   <file(module)> communal '<symbol>' has an invalid data type^b
+
+     ^bExplanation:^b  This message is applicable to C-compiled modules.
+     Blinker has detected that the type of the indicated communal variable is
+     neither NEAR nor FAR.  If you receive this message, it is likely that
+     the indicated file has been corrupted.
+
+     ^bAction:^b  Recompile or reinstall the module.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1127:        near communals segment exceeds 64kb
+'------------------------------------------------------------------------------
+ ^b1127:   near communals segment exceeds 64kb^b
+
+     ^bExplanation:^b  The total size of the NEAR communal variables segment
+     exceeds the maximum permissible size (64Kb).
+
+     ^bAction:^b  To reduce the size of the segment change some NEAR
+     uninitialized data declarations to FAR in the program source.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1128:        <file(module)> : unrecognized .OBJ record type nnh
+'------------------------------------------------------------------------------
+ ^b1128:   <file(module)> : unrecognized .OBJ record type nnh^b
+
+     ^bExplanation:^b  Blinker encountered an object record type which is not
+     currently supported.  It is possible that the module in question is
+     corrupted.  If recreating or reinstalling the module does not solve the
+     problem, contact Computer Associates technical support.  Also, Blinker
+     may have encountered a new type of object record; perhaps one which has
+     been created by a new compiler version which is not supported by the
+     version of Blinker being used.
+
+     ^bAction:^b  Refer to the file BLINKER.TXT in directory in which CA-
+     Clipper is installed for details on upgrading to the full version of
+     Blinker.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1130 :       unable to create file <filename>
+'------------------------------------------------------------------------------
+ ^b1130 :  unable to create file <filename>^b
+
+     ^bExplanation:^b  Either there is already an existing file of the same
+     name which has been assigned read-only status, or no create access has
+     been granted to the destination drive or directory, or the destination
+     disk is full.
+
+     ^bAction:^b  Make sure that the file name is different and that there is
+     sufficient disk space.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1131 :       error closing file <filename>
+'------------------------------------------------------------------------------
+ ^b1131 :  error closing file <filename>^b
+
+     ^bExplanation:^b  It is likely that the file specified has been
+     inadvertently deleted by another user on the system while Blinker was
+     still using it, or there could be a network or disk failure.
+
+     ^bAction:^b  Make sure the file actually exists and that you have
+     sufficient rights on the network.  if you are not on a network, make
+     sure your disk is free of errors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1132:        error deleting file <filename>
+'------------------------------------------------------------------------------
+ ^b1132:   error deleting file <filename>^b
+
+     ^bExplanation:^b  Either the file specified is still in use, or no
+     delete access has been granted, or the file exists in an alternate
+     directory specified with the DOS APPEND command or network search
+     command.
+
+     ^bAction:^b  Make sure the file is not marked read-only, is not in use,
+     and does not appear elsewhere in the DOS APPEND or network search path.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1133:        version n.n is required to use this .LNK file
+'------------------------------------------------------------------------------
+ ^b1133:   version n.n is required to use this .LNK file^b
+
+     ^bExplanation:^b  This message indicates that the .LNK file being used
+     contains a request for a version of Blinker later than the version you
+     are using.
+
+     ^bAction:^b  Make sure you have the correct version of Blinker.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1134:        error reading file <filename>
+'------------------------------------------------------------------------------
+ ^b1134:   error reading file <filename>^b
+
+     ^bExplanation:^b  Blinker was unable to read from the specified file.
+
+     ^bAction:^b  Check to make sure the file is accessible via the
+     appropriate PATH and other environment variables, or is specified with a
+     full path in the link script.  Alternatively, the file may be in use or
+     corrupt.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1135:        error writing file <filename>
+'------------------------------------------------------------------------------
+ ^b1135:   error writing file <filename>^b
+
+     ^bExplanation:^b  Blinker was unable to write to the specified file.
+
+     ^bAction:^b  Check available disk space, and ensure that an undeleteable
+     file with the same name is not preventing Blinker from writing to the
+     file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1136:        no more XMS handles available
+'------------------------------------------------------------------------------
+ ^b1136:   no more XMS handles available^b
+
+     ^bExplanation:^b  This message indicates that there were no more XMS
+     handles available for Blinker's link-time virtual memory.
+
+     ^bAction:^b  Increase the number of handles provided by your XMS memory
+     manager.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1137:        no more EMS handles available
+'------------------------------------------------------------------------------
+ ^b1137:   no more EMS handles available^b
+
+     ^bExplanation:^b  This message indicates that there were no more EMS
+     handles available for Blinker's link-time virtual memory.
+
+     ^bAction:^b  Increase the number of handles provided by your EMS memory
+     manager.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1142:        <filename(modulename)> : <segment> already belongs to group...
+'------------------------------------------------------------------------------
+ ^b1142:   <filename(modulename)> : <segment> already belongs to group <group>^b
+
+     ^bExplanation:^b  This message indicates that a segment in the specified
+     module has been defined as being in two distinct groups, which is not
+     permitted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1147:        <filename(modulename)> contains incremental compilation errors
+'------------------------------------------------------------------------------
+ ^b1147:   <filename(modulename)> contains incremental compilation errors^b
+
+     ^bExplanation:^b  This message indicates that the specified .OBJ file
+     was created with a compiler which supports incremental compilation, but
+     that the compilation failed.
+
+     ^bAction:^b  Correct and recompile the specified .OBJ file and then
+     relink.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1150:        <filename> is a demo so cannot be linked with this Blinker
+'------------------------------------------------------------------------------
+ ^b1150:   <filename> is a demo so cannot be linked with this Blinker^b
+
+     ^bExplanation:^b  This message indicates that the specified .OBJ or .LIB
+     file was created as a demonstration version. These files can only be
+     linked by the demonstration version of Blinker.
+
+     ^bAction:^b  Use the demonstration version of Blinker supplied with that
+     library, or the latest Blinker demonstration version, to link this
+     application.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDOS Real Mode Runtime Error Messages
+!short:
+!short: 1201:        unable to find overlay file <filename> in current PATH
+'------------------------------------------------------------------------------
+ ^b1201:   unable to find overlay file <filename> in current PATH^b
+
+     ^bNote:^b  This error can occasionally result from the effects of a
+     virus.  In this case, first try external overlays (via the SECTION INTO
+     xxx command) marking the .EXE read-only, and then follow the procedures
+     outlined below.  If nothing else helps, perform an extensive check for
+     viruses and take the necessary measures for removal.
+
+     ^bExplanation:^b  This message indicates that either too many files are
+     open or that the external overlay file <filename> specified and created
+     at link time, can no longer be found in the current directory or the
+     current PATH.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1202:        DOS read error in file <filename>
+'------------------------------------------------------------------------------
+ ^b1202:   DOS read error in file <filename>^b
+
+     ^bNote:^b  This error can occasionally result from the effects of a
+     virus.  In this case, first try external overlays (via the SECTION INTO
+     xxx command) marking the .EXE read-only, and then follow the procedures
+     outlined below.  If nothing else helps, perform an extensive check for
+     viruses and take the necessary measures for removal.
+
+     ^bExplanation:^b  This message indicates that DOS returned an error
+     while reading an overlay file.  A number of situations can cause this
+     error to occur frequently and consistently:
+
+     1. The most common is the use of a 'file handles' routine within the
+        program to increase the maximum number of file handles available to
+        the program under DOS versions 3.0 to 3.2.  If this 'file handle'
+        routine is called after Blinker has opened the overlay file and
+        loaded one or more overlays from the file, the file handle table is
+        recreated, wiping out Blinker's existing file handle for the
+        overlays.
+
+        ^bNote: ^b A combination of three factors can cause this to occur in
+        a CA-Clipper application--Calling any handle table expanding routine
+        from an overlay, using versions of DOS 3.3 or above, and specifying
+        the CLIPPER Fn environment parameter.  Since the handle-increasing
+        routine is only needed for DOS versions 3.0 to 3.2, this error can be
+        avoided by checking the DOS version before calling that routine.
+
+     2. This error can also occur when non-overlayable modules are placed in
+        the overlay area.
+
+     3. Should the program stack overflow, it can overwrite the nearby file
+        handle area, resulting in this error.
+
+     4. A network could be configured to deny access to the .EXE once it had
+        been loaded, preventing Blinker's overlay manager from reading an
+        internal overlay.  Also swap functions can result in this error if
+        the file handle table has not been restored correctly.
+
+     5. Finally, if this error occurs sporadically, it is possible that the
+        overlay file has been closed by an external influence such as a TSR
+        or being logged off a network, or the overlay file has become corrupt
+        because of a disk error and should be reinstalled.
+
+     ^bAction:^b  Some suggestions to resolve this error are:
+
+     1. ensure that the handles function is called from the root before
+        Blinker has loaded any overlays.
+
+     2. If there are any .OBJ or .LIB files in the overlay area which are not
+        known to be overlayable, these should be moved to the root and the
+        program relinked.  If the program then runs successfully, this
+        indicates that the file(s) are not currently overlayable.
+
+     3. Try increasing the size of the stack with either the STACK or BLINKER
+        PROCEDURE DEPTH command.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1203:        file <filename> is not a valid .EXE file
+'------------------------------------------------------------------------------
+ ^b1203:   file <filename> is not a valid .EXE file^b
+
+     ^bNote:^b  This error can occasionally result from the effects of a
+     virus.  In this case, first try external overlays (via the SECTION INTO
+     xxx command) marking the .EXE read-only, and then follow the procedures
+     outlined below.  If nothing else helps, perform an extensive check for
+     viruses and take the necessary measures for removal.
+
+     ^bExplanation:^b  This message indicates that the specified file does
+     not have a valid .EXE file header so the Blinker internal overlay cannot
+     be located within the file.  This indicates that the file has become
+     overwritten by another file, the PATH has changed so that an alternative
+     file of the same name is found instead, or the .EXE file has become
+     corrupt.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1204:        overlay file <filename> does not match the .EXE file
+'------------------------------------------------------------------------------
+ ^b1204:   overlay file <filename> does not match the .EXE file^b
+
+     ^bNote:^b  This error can occasionally result from the effects of a
+     virus.  In this case, first try external overlays (via the SECTION INTO
+     xxx command) marking the .EXE read-only, and then follow the procedures
+     outlined below.  If nothing else helps, perform an extensive check for
+     viruses and take the necessary measures for removal.
+
+     ^bExplanation:^b  This message indicates that when the overlay manager
+     opened the overlay file specified and created at link time, it was not a
+     Blinker overlay file, or it was not prepared at the same time as the
+     currently executing .EXE file.  This indicates that the correct copy of
+     the overlay file has become overwritten by an older version, the newer
+     version cannot be found in the current PATH, or the previous link was
+     terminated before the overlay file was created correctly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1206:        maximum procedure nesting depth exceeded
+'------------------------------------------------------------------------------
+ ^b1206:   maximum procedure nesting depth exceeded^b
+
+     ^bExplanation:^b  This message indicates that during execution of the
+     program the depth of nested procedures, i.e., the number of procedures
+     calling one another without returning, has exceeded the maximum that may
+     be handled on the procedure call stack.
+
+     ^bAction:^b  To increase the size of the procedure call stack simply use
+     a BLINKER PROCEDURE DEPTH or a STACK command in the Blinker script file.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1211:        overlay manager stack overflow
+'------------------------------------------------------------------------------
+ ^b1211:   overlay manager stack overflow^b
+
+     ^bExplanation:^b  The Blinker overlay manager maintains a reload stack
+     used in the management of dynamic overlays, and this stack has
+     overflowed.  The most common cause of this error is uncontrolled or
+     unintentional recursion within an overlaid procedure or function, where
+     a particular procedure or function is calling itself repeatedly.
+
+     ^bAction:^b  Increase your BLINKER PROCEDURE DEPTH when it is low, and
+     check your code for unintentional recursion.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1212:        Overlay Opsize exceeded - increase Opsize
+'------------------------------------------------------------------------------
+ ^b1212:   Overlay Opsize exceeded - increase Opsize^b
+
+     ^bExplanation:^b  This message applies only to the BLINKER OVERLAY FIXED
+     overlay allocation method, and should not occur in normal operation.
+     Normally, Blinker calculates the minimum required opsize at link time,
+     and does not allow the opsize to be set below this minimum size (if you
+     set the opsize to a value smaller than the minimum, Blinker will use the
+     minimum instead).  This message indicates that the Blinker overlay
+     manager could not find space in the overlay area to load an overlay (the
+     opsize was exceeded).
+
+     ^bAction:^b  Increase the overlay opsize by 1-2kb and relink the
+     program.  If you continue to receive this message, call Computer
+     Associates technical support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1213:        attempt to call DEFINED routine
+'------------------------------------------------------------------------------
+ ^b1213:   attempt to call DEFINED routine^b
+
+     ^bExplanation:^b  The DEFINE link time command has been used to 'stub
+     out' a particular routine, but a call to the routine has been made
+     during execution of the program.
+
+     ^bAction:^b  Either remove all calls to the defined routine from the
+     program, or remove the DEFINE command from your link script.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1214:        error accessing EMS overlay cache
+'------------------------------------------------------------------------------
+ ^b1214:   error accessing EMS overlay cache^b
+
+     ^bExplanation:^b  This message indicates that an error has occurred
+     while the Blinker overlay manager is accessing EMS for the storage
+     and/or retrieval of overlays in the overlay cache.
+
+     ^bAction:^b  Disable the BLINKER CACHE EMS command in the link script
+     file.  If this fixes the problem, it is possible that you have a TSR or
+     device driver working in the background which is manipulating EMS
+     directly in a non-standard manner.  Try removing all TSRs and device
+     drivers from the system except for the EMS driver, and test if the
+     problem still occurs.  If it does, contact Computer Associates technical
+     support.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1215:        error accessing XMS overlay cache
+'------------------------------------------------------------------------------
+ ^b1215:   error accessing XMS overlay cache^b
+
+     ^bExplanation:^b  This message indicates that an error has occurred
+     while the Blinker overlay manager is accessing XMS for the storage
+     and/or retrieval of overlays in the overlay cache.
+
+     ^bAction:^b  Disable the BLINKER CACHE XMS command in the link script
+     file.  If this fixes the problem, it is possible that you have a TSR or
+     device driver working in the background which is manipulating XMS
+     directly in a non-standard manner.  Try removing all TSRs and device
+     drivers from the system except for the XMS driver, and test if the
+     problem still occurs.  If it does, contact Computer Associates technical
+     support.
+
+     ^bSee also:^b  The Linker Reference Commands section in the "CA-Clipper
+     Real Mode Linker--BLINKER.EXE" chapter of the Programming and Utilities
+     Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1217:        overlay vector corrupted during execution
+'------------------------------------------------------------------------------
+ ^b1217:   overlay vector corrupted during execution^b
+
+     ^bExplanation:^b  This message indicates that the overlay manager has
+     detected an invalid overlay vector.  The most likely cause of this is
+     corruption at runtime due to an invalid pointer, or an attempt to
+     overlay a non-overlayable module.  Another possible cause is the use of
+     a debugger to place breakpoints in the code after an overlay call, since
+     this replaces the vector data with a debugger breakpoint.
+
+     ^bAction:^b  Use of the MURPHY command for debugging overlays may help
+     to identify whether non-overlayable modules are responsible for this
+     message.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

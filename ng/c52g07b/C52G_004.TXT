@@ -1,0 +1,378 @@
+!short:   Chapter 4: DBFCDX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 4: DBFCDX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBFCDX is the FoxPro 2 compatible RDD for CA-Clipper.  As such, it
+     connects to the low-level database management subsystem in the
+     CA-Clipper architecture.  When you use the DBFCDX RDD, you add a number
+     of new features including:
+
+     ^b^CFE^b  FoxPro 2 file format compatibility
+
+     ^b^CFE^b  Compact indexes
+
+     ^b^CFE^b  Compound indexes
+
+     ^b^CFE^b  Conditional indexes
+
+     ^b^CFE^b  Memo files smaller than DBFNTX format
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short:      In This Chapter
+'------------------------------------------------------------------------------
+ ^bIn This Chapter^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This chapter explains how to install DBFCDX and how to use it in your
+     applications.  The following major topics are discussed:
+
+     ^b^CFE^b  Overview of the DBFCDX RDD
+
+     ^b^CFE^b  Installing DBFCDX Driver Files
+
+     ^b^CFE^b  Linking the DBFCDX Driver
+
+     ^b^CFE^b  Using the DBFCDX Driver
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Overview of the DBFCDX RDD
+'------------------------------------------------------------------------------
+ ^bOverview of the DBFCDX RDD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFCDX driver lets you create and maintain (.cdx) and (.idx) files
+     with features different from those supplied with the original DBFNTX
+     driver and is compatible with files created under FoxPro 2. The new
+     features are supplied in the form of several syntactical additions to
+     the INDEX and REINDEX commands.  Specifically, you can:
+
+     ^b^CFE^b  Create indexes smaller than those created with the DBFNTX
+        driver.  The key data is stored in a compressed format that
+        substantially reduces the size of the index file.
+
+     ^b^CFE^b  Create a compound index file that contains multiple indexes
+        (TAGs), making it possible to open several indexes under one file
+        handle.  A single (.cdx) file may contain up to 99 index keys.
+
+     ^b^CFE^b  Create conditional indexes (FOR / WHILE / REST / NEXT).
+
+     ^b^CFE^b  Create files with FoxPro 2 file format compatibility.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Compact Indexes
+'------------------------------------------------------------------------------
+ ^bCompact Indexes^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Like FoxPro 2, The DBFCDX driver creates compact indexes.  This means
+     that the key data is stored in a compressed format, resulting in a
+     substantial size reduction in the index file.  Compact indexes store
+     only the actual data for the index keys.  Trailing blanks and duplicate
+     bytes between keys are stored in one or two bytes.  This allows
+     considerable space savings in indexes with much empty space and similar
+     keys.  Since the amount of compression is dependent on many variables,
+     including the number of unique keys in an index, the exact amount of
+     compression is impossible to predetermine.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Compound Indexes
+'------------------------------------------------------------------------------
+ ^bCompound Indexes^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A compound index is an index file that contains multiple indexes (called
+     tags).  Compound indexes (.cdx)'s make several indexes available to your
+     application while only using one file handle.  Therefore, you can
+     overcome the CA-Clipper index file limit of 15. A compound index can
+     have as many as 99 tags, but the practical limit is around 50.  Once you
+     open a compound index, all the tags in the file are automatically
+     updated as the records are changed.
+
+     Once you open a compound index, all the tags contained in the file are
+     automatically updated as the records are changed.  A tag in a compound
+     index is essentially identical to an individual index (.idx) and
+     supports all the same features.  The first tag (in order of creation) in
+     the compound index is, by default, the controlling index.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Conditional Indexes
+'------------------------------------------------------------------------------
+ ^bConditional Indexes^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFCDX driver can create indexes with a built-in FOR clause.  These
+     are conditional indexes in which the condition can be any expression,
+     including a user-defined function.  As the database is updated, only
+     records that match the index condition are added to the index, and
+     records that satisfied the condition before, but don't any longer, are
+     automatically removed.
+
+     Expanded control over conditional indexing is supported with the revised
+     INDEX and REINDEX command options as in the new DBFNTX driver.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Installing DBFCDX Driver Files
+'------------------------------------------------------------------------------
+ ^bInstalling DBFCDX Driver Files^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFCDX driver is supplied as the file, DBFCDX.LIB.
+
+     The CA-Clipper installation program installs this driver in the
+     \CLIPPER5\LIB subdirectory on the drive that you specify, so you need
+     not install the driver manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Linking the DBFCDX Database Driver
+'------------------------------------------------------------------------------
+ ^bLinking the DBFCDX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To link the DBFCDX database driver into an application program, you must
+     specify DBFCDX.LIB to the linker in addition to your application object
+     files (.OBJ).
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> ,,,DBFCDX
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList> LIB DBFCDX
+
+     ^bNote: ^b These link commands all assume the LIB, OBJ, and PLL
+     environment variables are set to the standard locations.  They also
+     assume that the CA-Clipper programs were compiled without the /R option.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Using the DBFCDX Database Driver
+'------------------------------------------------------------------------------
+ ^bUsing the DBFCDX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To use FoxPro 2 files in a CA-Clipper  program:
+
+     1. Place REQUEST DBFCDX at the beginning of your application or at the
+        top of the first program file (.prg) that opens a database file using
+        the DBFCDX driver.
+
+     2. Specify the VIA "DBFCDX" clause if you open the database file with
+        the USE command.
+
+        -OR-
+
+     3. Specify "DBFCDX" for the <cDriver> argument if you open the database
+        file with the DBUSEAREA() function.
+
+        -OR-
+
+     4. Use RDDSETDEFAULT( "DBFCDX" ) to set the default driver to DBFCDX.
+
+        Except in the case of REQUEST, the RDD name must be a literal
+        character string or a variable.  In all cases it is important that
+        the driver name be spelled correctly.
+
+     The following program fragments illustrate:
+
+     REQUEST DBFCDX
+     .
+     .
+     .
+     USE Customers INDEX Name, Address NEW VIA "DBFCDX"
+
+     -OR-
+
+     REQUEST DBFCDX
+     RDDSETDEFAULT( "DBFCDX" )
+     .
+     .
+     .
+     USE Customers INDEX Name, Address NEW
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Using (.idx) and (.ntx) Files Concurrently
+'------------------------------------------------------------------------------
+ ^bUsing (.idx) and (.ntx) Files Concurrently^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You can use both (.idx) and (.ntx) files concurrently in a CA-Clipper
+     program like this:
+
+     // (.ntx) file using default DBFNTX driver
+     USE File1 INDEX File1 NEW
+
+     // (.idx) files using DBFCDX driver
+     USE File2 VIA "DBFCDX" INDEX File2 NEW
+
+     Note, however, that you cannot use (.idx) and (.ntx) files in the same
+     work area.  For example, the following does not work:
+
+     USE File1 VIA "DBFNTX" INDEX File1.ntx, File2.idx
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Using (.cdx) and (.idx) Files Concurrently
+'------------------------------------------------------------------------------
+ ^bUsing (.cdx) and (.idx) Files Concurrently^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You may use (.cdx) with (.idx) files concurrently (even in the same work
+     area); however, in most cases it is easier to use a single (.cdx) index
+     for each database file or separate (.idx) files.  When using both types
+     of index at the same time, attempting to select an Order based on its
+     Order Number can be confusing and will become difficult to maintain.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           File Maintenance under DBFCDX
+'------------------------------------------------------------------------------
+ ^bFile Maintenance under DBFCDX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     When an existing tag in a compound index (.cdx) is rebuilt using INDEX
+     ON...TAG... the space used by the original tag is not automatically
+     reclaimed.  Instead, the new tag is added to the end of the file,
+     increasing file size.
+
+     You can use the REINDEX command to "pack" the index file.  REINDEX
+     rebuilds each tag, eliminating any unused space in the file.
+
+     If you rebuild your indexes on a regular basis, you should either delete
+     your (.cdx) files before rebuilding the tags or use the REINDEX command
+     to rebuild them instead.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           DBFCDX and Memo Files
+'------------------------------------------------------------------------------
+ ^bDBFCDX and Memo Files^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFCDX driver uses FoxPro compatible memo (.fpt) files to store data
+     for memo fields.  These memo files have a default block size of 64 bytes
+     rather than the 512 byte default for (.dbt) files.
+
+     DBFCDX memo files can store any type of data.  While (.dbt) files use an
+     end of file marker (ASCII 26) at the end of a memo entry, (.fpt) files
+     store the length of the entry.  This not only eliminates the problems
+     normally encountered with storing binary data in a memo field but also
+     speeds up memo field access since the data need not be scanned to
+     determine the length.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Tips For Using DBFCDX
+'------------------------------------------------------------------------------
+ ^bTips For Using DBFCDX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1. Make sure index extensions aren't hard-coded in your application.
+        The default extension for DBFCDX indexes is (.idx), not (.ntx).  You
+        can still use (.ntx) as the extension as long as you specify the
+        extension when you create your indexes.  The best way to determine
+        index extensions in an application is to call ORDBAGEXT().
+
+        For example, if you currently use the following code to determine the
+        existence of an index file:
+
+        IF .NOT. FILE("index.ntx")
+           INDEX ON field TO index
+        ENDIF
+
+        Change the code to include the INDEXEXT() function, as follows:
+
+        IF .NOT. FILE("index"+ORDBAGEXT())
+           INDEX ON field TO index
+        ENDIF
+
+     2. If your application uses memo fields, you should convert your (.dbt)
+        files to (.fpt) files.
+
+        There are some good reasons for using (.fpt) files.  Most important
+        is the smaller block size (64 bytes).  CA-Clipper's (.dbt) files use
+        a fixed block size of 512 bytes which means that every time you store
+        even 1 byte in a memo field CA-Clipper uses 512 bytes to store it.
+        If the data in a memo field grows to 513 bytes, then two blocks are
+        required.
+
+        When creating (.fpt) files, the block size is set at 64 bytes to
+        optimize it for your needs.  A simple conversion from (.dbt) files to
+        (.fpt) files will generally shrink your memo files by approximately
+        30%.
+
+     3. Add DBFCDX.LIB as a library to your link command or link script.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Summary
+'------------------------------------------------------------------------------
+ ^bSummary^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In this chapter, you were given an overview of the features and benefits
+     of the DBFCDX RDD.  You also learned how to link this driver and how to
+     use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

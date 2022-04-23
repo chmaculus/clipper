@@ -1,0 +1,27 @@
+'------------------------------------------------------------------------------
+^BSET UNIQUE^B
+
+    SET UNIQUE determines whether all records with the same key value are
+    included in the index file.
+
+^USyntax^U
+
+    SET UNIQUE on/OFF/(<expL>)
+
+^UUsage^U
+
+    When you INDEX with UNIQUE ON, Clipper creates an index with uniqueness
+    as an attribute.  As indexing proceeds and two or more records have the
+    same key value, Clipper includes only the first record in the index.
+    Whenever the unique index is updated, REINDEXed, or PACKed, only unique
+    records are added.  This happens without regard to the current UNIQUE
+    SETting.
+
+    Note that this differs from previous versions of Clipper where UNIQUE
+    was a global SETting and applied to the creation and updating of all
+    open indexes.
+!seealso: clip_008.ngo:"FIND" clip_013.ngo:"INDEX" clip_030.ngo:"REINDEX" clip_041.ngo:"SEEK" clip_063.ngo:"SET INDEX" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,169 @@
+!short: _xalloc()          Allocate memory and return NULL if unsuccessful
+'------------------------------------------------------------------------------
+ ^b_xalloc()^b
+ Allocate memory and return NULL if unsuccessful
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "fm.api"
+     ^bvoid far * _xalloc(
+     ^b                    unsigned int uiSize
+     ^b                  )
+
+ ^bArguments^b
+
+     ^buiSize^b is the number of bytes to allocate.
+
+ ^bReturns^b
+
+     _xalloc() returns a far pointer to the allocated memory or NULL if the
+     requested memory could not be allocated.
+
+ ^bDescription^b
+
+     _xalloc() lets a C or Assembly language function allocate memory from
+     CA-Clipper's fixed heap.  If the allocation request is unsuccessful,
+     CA-Clipper returns a NULL pointer.
+
+     Use _xfree() to free memory allocated with _xalloc() after use.
+
+     ^bWarning! ^b Fixed memory returned from _xalloc() is not cleared by the
+     system and is, therefore, in an uninitialized state.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char *mem;
+        mem = (char)_xalloc(320);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __xalloc:FAR
+              mov   ax, 320
+              push  ax
+              call  __xalloc            ; pointer in DX:AX
+              add   sp, 2               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Fm.api.
+
+!seealso: "_xfree()" "_xgrab()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xfree()           Free allocated memory
+'------------------------------------------------------------------------------
+ ^b_xfree()^b
+ Free allocated memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "fm.api"
+     ^bvoid _xfree(
+     ^b             void far * vlpMem
+     ^b           )
+
+ ^bArguments^b
+
+     ^bvlpMem^b is a far pointer to memory allocated with _xalloc() or
+     _xgrab().
+
+ ^bReturns^b
+
+     _xfree() has no return value.
+
+ ^bDescription^b
+
+     _xfree() releases memory allocated by _xalloc() or _xgrab().  Note that
+     the pointer returned by _xalloc() or _xgrab() must be passed as the
+     argument to _xfree().
+
+     ^bNote: ^b In Fm.api, _exmback() is defined (using #define) to _xfree()
+     to maintain compatibility with Summer '87.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char *mem;
+        mem = _xgrab(320);
+        _xfree(mem);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __xgrab:FAR
+        EXTRN __xfree:FAR
+              mov   ax, 320
+              push  ax
+              call  __xgrab            ; pointer in DX:AX
+              add   sp, 2              ; reset stack pointer
+              push  dx
+              push  ax
+              call  __xfree            ; give it right back
+              add   sp, 4
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Fm.api.
+
+!seealso: "_xalloc()" "_xgrab()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xgrab()           Allocate memory, generating an error if unsuccessful
+'------------------------------------------------------------------------------
+ ^b_xgrab()^b
+ Allocate memory, generating an error if unsuccessful
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "fm.api"
+     ^bvoid far * _xgrab(
+     ^b                   unsigned int uiSize
+     ^b                 )
+
+ ^bArguments^b
+
+     ^buiSize^b is the number of bytes to allocate.
+
+ ^bReturns^b
+
+     _xgrab() returns a pointer to the allocated memory.
+
+ ^bDescription^b
+
+     _xgrab() lets a C or Assembly language function allocate memory from
+     CA-Clipper's fixed heap.  If the allocation request is unsuccessful,
+     CA-Clipper raises an unrecoverable internal error.  Thus, _xgrab()
+     always returns a valid pointer (never NULL).
+
+     Use _xfree() to free memory allocated with _xgrab() after use.
+
+     ^bWarning! ^b Fixed memory returned from _xgrab() is not cleared by the
+     system and is, therefore, in an uninitialized state.
+
+     ^bNote: ^b In Fm.api, _exmgrab() is defined (using #define) to _xgrab()
+     to maintain compatibility with Summer '87.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char *mem;
+        mem = (char)_xgrab(320);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __xgrab:FAR
+              mov   ax, 320
+              push  ax
+              call  __xgrab            ; pointer in DX:AX
+              add   sp, 2              ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Fm.api.
+
+!seealso: "_xalloc()" "_xfree()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,233 @@
+!short:   Chapter 1: Introduction
+'------------------------------------------------------------------------------
+ ^bChapter 1: Introduction^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bImportant! ^b Some of the topics in this guide are intended for
+     advanced CA-Clipper developers.  Much of this information is presented
+     at a fairly high level and requires programming knowledge beyond the
+     CA-Clipper language.  Other parts are useful to users of all levels.
+     Refer to the "User Interface Levels" section of the Replaceable Database
+     Driver Architecture chapter to determine which part of the language is
+     appropriate to your level of expertise.
+
+     Based on your own experience level with the CA-Clipper language, you
+     should decide whether you wish to take advantage of these new and
+     advanced features.  The Reference guide contains existing CA-Clipper
+     command and function syntax and descriptions.  This guide addresses new
+     extensions to CA-Clipper.  Understanding this information should enable
+     you to increase the power and effectiveness of your applications.
+
+     CA-Clipper 5.2 supports a driver architecture that allows CA-Clipper-
+     compiled applications to use replaceable database and terminal drivers.
+     This Drivers guide contains all the information you need to use the
+     replaceable drivers provided as part of the CA-Clipper Development
+     System.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short:      Overview of RDD System
+'------------------------------------------------------------------------------
+ ^bOverview of RDD System^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RDD is an abbreviation for Replaceable Database Driver, and it is used
+     to describe an interface that controls how your application accesses and
+     manipulates database and ancillary files.
+
+     CA-Clipper provides several RDDs to give you access to the database,
+     memo, and index file formats of many popular database software products.
+     By simply linking the proper RDD with your application, you get
+     automatic, easy access to files created by other database engines.
+
+     Moreover, CA-Clipper gives you new and enhanced commands and functions
+     designed to make your applications independent of the RDD in use.  Using
+     RDDs, you can give end users more flexibility in choosing to migrate to
+     your CA-Clipper applications without losing data and to easily move
+     their data back and forth between applications if they prefer.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Overview of Alternate Terminal Drivers
+'------------------------------------------------------------------------------
+ ^bOverview of Alternate Terminal Drivers^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     An Alternate Terminal Driver is a library file (.LIB) that controls how
+     your application addresses the screen output device.  CA-Clipper
+     provides several Alternate Terminal Drivers to allow your applications
+     to run in a wider variety of environments.
+
+     ^bNote:^b  To perform normal information presented in screen
+     input/output in a CA-Clipper application, you do not need the Drivers
+     guide.  The default database and terminal drivers are automatically
+     linked and the commands and functions used for these purposes are
+     discussed in the Reference guide.  For several categorized lists of
+     these commands and functions, refer to Appendix G: Categorized Language
+     Tables in the Error Messages and Appendices guide.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      In This Guide
+'------------------------------------------------------------------------------
+ ^bIn This Guide^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This guide consists of nine chapters including this Introduction
+     chapter.
+
+     For an online version of this guide accessible while operating your
+     program editor or any other development utility, use The Guide To
+     CA-Clipper.  The Guide To CA-Clipper is an online documentation system
+     that uses the Norton Instant Access Engine.  It is documented in the
+     Programming and Utilities guide.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 2: Replaceable Database Driver Architecture
+'------------------------------------------------------------------------------
+ ^bChapter 2: Replaceable Database Driver Architecture^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The CA-Clipper database system supports a driver architecture that makes
+     CA-Clipper-compiled applications data format independent.  Such
+     applications can, therefore, access the data formats of other database
+     systems, including the dBASE IV (.mdx), FoxPro (.cdx), and Paradox (.db)
+     formats on a variety of equipment.  This chapter discusses how RDDs fit
+     into the overall CA-Clipper architecture, defines the basic terminology
+     you will need to understand subsequent chapters, and summarizes new and
+     enhanced commands and functions designed to support the RDD
+     architecture.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 3: Reference
+'------------------------------------------------------------------------------
+ ^bChapter 3: Reference^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper 5.2 provides many new and enhanced commands and functions
+     that you will use to access and manipulate databases and to get specific
+     information about the RDD in use.  This chapter contains entries for all
+     new CA-Clipper commands and functions designed for use with RDDs.  As
+     for existing language elements, only those that were changed to
+     accommodate the new RDD architecture are documented here.  Other
+     language elements that are specifically designed for database
+     manipulation and have not been altered (e.g., USE) are documented in the
+     Reference guide.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 4: DBFCDX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 4: DBFCDX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFCDX database driver provides access to FoxPro 2 (.cdx) and (.idx)
+     file formats.  This chapter explains how to install DBFCDX and how to
+     use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 5: DBFMDX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 5: DBFMDX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFMDX database driver provides access to dBASE IV (.dbf), (.mdx),
+     and (.dbt) file formats.  The driver also supports dBASE IV-compatible
+     file and record locking schemes, allowing shared access between
+     CA-Clipper  and dBASE IV programs.  This chapter explains how to install
+     DBFMDX and how to use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 6: DBFNDX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 6: DBFNDX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNDX database driver uses the CA-Clipper driver architecture to
+     access dBASE III PLUS compatible index files within a CA-Clipper
+     program, allowing you to create, access, and update dBASE III and dBASE
+     III PLUS compatible index (.ndx) files.  This chapter explains how to
+     install DBFNDX and how to use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 7: DBFNTX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 7: DBFNTX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBFNTX is the default database driver for CA-Clipper that lets you
+     create and maintain (.ntx) files with features above and beyond those
+     supplied with previous versions of DBFNTX.  This chapter details these
+     new features and explains how to install and use DBFNTX in your
+     applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 8: DBPX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 8: DBPX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBPX database driver provides access to Paradox 3.5 (.db), (.px),
+     (.x) and (.y) file formats.  This chapter explains how to install DBPX
+     and how to use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Chapter 9: Alternate Terminal Drivers
+'------------------------------------------------------------------------------
+ ^bChapter 9: Alternate Terminal Drivers^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper provides several Alternate Terminal Drivers to allow your
+     applications to run in a wider variety of environments.  This chapter
+     discusses how Alternate Terminal Drivers fit into the overall CA-Clipper
+     architecture, as well as how to install and use each of the supplied
+     terminal drivers:  ANSITERM, NOVTERM, and PCBIOS.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

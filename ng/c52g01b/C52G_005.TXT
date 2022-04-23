@@ -1,0 +1,2122 @@
+!short: $               Substring comparison--binary               (Relational)
+'------------------------------------------------------------------------------
+ ^b$^b
+ Substring comparison--binary                    (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<cString1> $ <cString2>
+
+ ^bType^b
+
+     Character, memo
+
+ ^bOperands^b
+
+     ^b<cString1>^b is a character or memo value that is searched for in
+     <cString2>.
+
+     ^b<cString2>^b is a character or memo value within which <cString1> is
+     sought.
+
+ ^bDescription^b
+
+     The $ operator is a binary relational operator that performs a
+     case-sensitive substring search and returns true (.T.) if <cString1> is
+     found within <cString2>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example illustrates the case-sensitivity of the substring
+        operator ($):
+
+        ? "A" $ "ABC"            // Result: .T.
+        ? "a" $ "ABC"            // Result: .F.
+!seealso: "<" "<=" "<>" "= (equality)" "==" ">" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: %               Modulus--binary                            (Mathematical)
+'------------------------------------------------------------------------------
+ ^b%^b
+ Modulus--binary                                 (Mathematical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<nNumber1> % <nNumber2>
+
+ ^bType^b
+
+     Numeric
+
+ ^bOperands^b
+
+     ^b<nNumber1>^b is the dividend of the division operation.
+
+     ^b<nNumber2>^b is the divisor of the division operation.
+
+ ^bDescription^b
+
+     % returns a number representing the remainder of <nNumber1> divided by
+     <nNumber2>.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Seeking the modulus of any dividend using a zero as the
+        divisor causes a runtime error.  In versions of CA-Clipper prior to
+        Summer '87, a modulus operation with a zero divisor returned zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows modulus results using different operands:
+
+        ?  3 %  0            // Result: Runtime error
+        ?  3 % -2            // Result:  1
+        ? -3 %  2            // Result: -1
+        ? -3 %  0            // Result: Runtime error
+        ? -1 %  3            // Result: -1
+        ? -2 %  3            // Result: -2
+        ?  2 % -3            // Result:  2
+        ?  1 % -3            // Result:  1
+!seealso: "*" "**" "+" "-" "/" "= (compound)" c52g_001.ngo:"MOD()*" c52g_002.ngo:"SET FIXED" 
+'------------------------------------------------------------------------------
+
+
+
+!short: &               Macro evaluation--unary                    (Special)
+'------------------------------------------------------------------------------
+ ^b&^b
+ Macro evaluation--unary                         (Special)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b&<cMacroVar>[.]
+     ^b&(<cMacroExp>)
+
+ ^bOperands^b
+
+     ^b<cMacroVar>^b can be any character variable.  The period (.) is the
+     macro terminator and indicates the end of the macro variable and
+     distinguishes the macro variable from adjacent text in the statement.
+
+     ^b<cMacroExp>^b is a character expression enclosed in parentheses.  In
+     this instance, the expression is evaluated first, and the macro
+     operation is performed on the resulting character value.  This allows
+     the contents of fields and array elements to be compiled and run.
+
+ ^bDescription^b
+
+     The macro operator in CA-Clipper is a special operator that allows
+     runtime compilation of expressions and text substitution within strings.
+     Whenever the macro operator (&) is encountered, the operand is submitted
+     to a special runtime compiler (the macro compiler) that compiles
+     expressions, but not statements or commands.
+
+     ^bText Substitution^b
+
+     Whenever a reference to a private or public macro variable, embedded in
+     a character string is encountered:
+
+     cMacro := "there"
+     ? "Hello &cMacro"            // Result: Hello there
+
+     the variable reference is replaced by the content of the macro variable.
+     If you specify a macro expression (e.g., &(cMacro1 + cMacro2), and the
+     macro variable is a local, static, field variable, or an array element,
+     it is treated as literal text and not expanded.
+
+     ^bCompile and Run^b
+
+     When a macro variable or expression specified within an expression is
+     encountered, it is treated like an expression, with the macro symbol
+     behaving as the compile and run operator.  If the macro is specified as
+     a macro variable:
+
+     cMacro := "DTOC(DATE())"
+     ? &cMacro
+
+     the macro compiler compiles, then executes the content of the macro
+     variable.  The compiled code is then discarded.
+
+     If you specify an expression enclosed in parentheses and prefaced by the
+     macro operator (&):
+
+     ? &(INDEXKEY(0))
+
+     the expression is evaluated and the resulting character string is
+     compiled and run as a macro variable.
+
+     Using the macro operator, you can compile a character string containing
+     a code block definition:
+
+     bBlock := &("{ |exp| QOUT(exp) }")
+
+     The run portion of the operation returns the code block as a value.  You
+     may then use the code block by invoking it with the EVAL() function.
+     This is especially significant in activations that involve extensive
+     looping through user-defined conditions, (operations that in earlier
+     versions of CA-Clipper required macro expansion).  In those versions,
+     the macro expression was compiled and run for each iteration of the
+     loop.  With the combination of a macro expansion and a code block
+     EVAL(), the compilation is performed once at compile time, and the
+     EVAL() merely executes the code block each time through the loop.  The
+     time savings at runtime can be enormous.
+
+     EVAL(bBlock, DATE())
+
+ ^bNotes^b
+
+     ^b^CFE  Command keywords^b: You cannot use the macro operator (&) to
+        substitute or compile command keywords.  However, you can redefine
+        command keywords by modifying the command definition in STD.CH,
+        overriding an existing command definition with a new definition using
+        the #command directive, or redefining a command keyword using the
+        #translate directive.  In any case, you may redefine a command
+        keyword only at compile time, not at runtime.
+
+     ^b^CFE  Command arguments^b: In prior versions of CA-Clipper as well as
+        in other dialects, you could use macro variables as the arguments of
+        commands requiring literal text values.  These included all file
+        command arguments and SET commands with toggle arguments.  In these
+        instances, you can now use an extended expression enclosed in
+        parentheses in place of the literal argument.  For example:
+
+        xcDatabase = "Invoices"
+        USE &xcDatabase.
+
+        can be replaced with:
+
+        xcDatabase = "Invoices"
+        USE (xcDatabase)
+
+        It is important to use extended expressions if you are using local
+        and static variables.  Generally, commands are preprocessed into
+        function calls with command arguments translated into function
+        arguments as valid CA-Clipper values.  Filenames in file commands,
+        for instance, are stringified using the smart stringify result marker
+        and passed as arguments to the functions that actually perform the
+        desired actions.  If you specify a literal or macro value as the
+        command argument, it is stringified.  If, however, the argument is an
+        extended expression, it is written to the result text exactly as
+        specified.  This example:
+
+        #command RENAME <xcOld> TO <xcNew>;
+        =>;
+              FRENAME( <(xcOld)>, <(xcNew)> )
+        //
+        RENAME &xcOld TO &xcNew
+        RENAME (xcOld) TO (xcNew)
+
+        is written to the result text as this:
+
+        FRENAME( "&xcOld", "&xcNew" )
+        FRENAME( xcOld, xcNew )
+
+        when preprocessed.  When the macro variables are stringified, the
+        macro variable names are hidden in the string and not compiled.
+        Later, at runtime, they are substituted into the string and passed as
+        arguments to the FRENAME() function.  This precludes local and static
+        macro variables since the names of the variables are not present at
+        runtime to be substituted.  Public and private variables, however,
+        behave as expected.
+
+     ^b^CFE  Lists as arguments of commands^b: The macro operator (&)will not
+        fully substitute or compile a list as an argument of most commands.
+        In particular, these are commands where an argument list is
+        preprocessed into an array or a code block.  Instances of this are
+        arguments of the FIELDS clause and SET INDEX.  An exception is the
+        SET COLOR command which preprocesses the list of colors into a single
+        character string and passes it to the SETCOLOR() function.
+
+        In any case, list arguments should always be specified as extended
+        expressions with each list argument specified:
+
+        LOCAL xcIndex := { "Ntx1", "Ntx2" }
+        SET INDEX TO (xcIndex[1]), (xcIndex[2])
+
+     ^b^CFE  Arrays:^b You can use the macro operator (&) with arrays and
+        array elements.  However, because of the increased power of
+        CA-Clipper arrays, you may find less need to use the macro operator
+        (&) to  make variable references to arrays.  You can now assign array
+        references to variables, return array references from user-defined
+        functions, and nest array references within other arrays.  You may
+        also create arrays by specifying literal arrays or using the ARRAY()
+        function.
+
+        You can, therefore, make references to arrays and array elements
+        using both macro variables and macro expressions with the restriction
+        that you cannot make the subscript references in a PRIVATE or PUBLIC
+        statement.  Also, you cannot specify the macro operator (&) in a
+        declaration statement, such as a LOCAL or STATIC statement.
+        Attempting this will generate a fatal compiler error.
+
+        This example references array elements using macro variables:
+
+        cName := "aArray"
+        nElements := 5
+        cNameElement := "aArray[1]"
+        //
+        PRIVATE &cName.[nElements]    // Creates "array" with 5
+                                      // elements
+        &cNameElement. := 100         // Assigns 100 to element 1
+        &cName.[3] := "abc"           // Assigns "abc" to element 3
+
+        You can successfully apply a macro operator (&) to an array element
+        if the reference is made using a macro expression.  A macro variable
+        reference, however, will generate a runtime error.  For example, the
+        following lists the values of all fields of the current record:
+
+        USE Customer NEW
+        aStruc := DBSTRUCT()
+        //
+        FOR nField := 1 TO LEN(aStruc)
+           ? &(aStruc[nField, 1])
+        NEXT
+
+     ^b^CFE  Code blocks^b: You can apply the macro operator (&) to a macro
+        variable or expression in a code block in most cases. There is a
+        restriction when the macro variable or macro expression contains a
+        declared variable.  A runtime error occurs if you specify a complex
+        expression (an expression that contains an operator and one or more
+        operands) that includes the macro operator (&) within a code block.
+
+        This  has important implications on the use of local and static
+        variables in the conditional clauses of commands, since these clauses
+        are blockified as they are written to the result text during
+        preprocessing.  This applies to all FOR and WHILE clauses, the SET
+        FILTER command, and the SET RELATION linking expression.  The general
+        workaround is to gather the entire expression into a single macro
+        variable then apply the macro operator (&) to the variable.
+
+     ^b^CFE  Macro conditions:^b When using the macro operator (&) to specify
+        conditional clauses of database commands such as FOR or WHILE
+        clauses, there are some restrictions based on the expression's
+        complexity and size:
+
+        ^b-^b  The maximum string size the macro compiler can process is 254
+           characters.
+
+        ^b-^b  There is a limit to the complexity of conditions (the more
+           complex, the fewer the number of conditions you can specify).
+
+     ^b^CFE  Procedures and functions^b: You can reference procedure and
+        function calls using macro variables and expressions.  With DO, the
+        macro variable reference to the procedure can be all or part of the
+        procedure name.  With a call to a function (built-in or
+        user-defined), the macro variable reference must include the function
+        name and all of its arguments.
+
+        In CA-Clipper, because of the added facility code blocks, all
+        invocations of procedures and functions using the macro operator
+        should be converted to the evaluation of code blocks.  This code
+        fragment:
+
+        cProc := "AcctsRpt"
+        .
+        .
+        .
+        DO &cProc
+
+        can be replaced with:
+
+        bProc := &( "{ || AcctsRpt() }" )
+        .
+        .
+        .
+        EVAL(bProc)
+
+        The advantage of a code block over  a macro evaluation is that the
+        result of the compilation of a string containing a code block can be
+        saved and therefore need only be compiled once.  Macro evaluations
+        compile each time they are referenced.
+
+     ^b^CFE  References into overlays:^b You must declare procedures and
+        user-defined functions that are used in macro expressions and
+        variables but not referenced elsewhere as EXTERNAL, or the linker
+        will not include them into the executable (.EXE) file.  The only
+        exception to this rule is a prelinked procedure or user-defined
+        function in a (.PLL) library.
+
+     ^b^CFE  TEXT...ENDTEXT:^b Macro variables referenced within a
+        TEXT...ENDTEXT construct are expanded.  Note that a field cannot be
+        expanded, so you must first assign the field value to a memory
+        variable then reference the memory variable as a macro variable
+        within the TEXT...ENDTEXT.  For example:
+
+        USE Customer NEW
+        myVar := Customer->CustName
+        TEXT
+        This is text with a macro &myVar
+        ENDTEXT
+
+     ^b^CFE  Nested macros:^b The processing of macro variables and
+        expressions in CA-Clipper permits  nested macro definitions.  For
+        example, after assigning a macro variable to another macro variable,
+        the original macro variable can be expanded resulting in the
+        expansion of the second macro variable and evaluation of its
+        contents:
+
+        cOne = "&cTwo"            // expand cTwo
+        cTwo = "cThree"           // yielding "cThree"
+        cThree = "hello"
+        //
+        ? &cOne                   // Result: "hello"
+!seealso: "( )" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ( )             Function or grouping indicator             (Special)
+'------------------------------------------------------------------------------
+ ^b( )^b
+ Function or grouping indicator                  (Special)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bDescription^b
+
+     Parentheses (()) in expressions group certain operations for readability
+     or to force a particular evaluation order.  Parentheses also identify a
+     function call.
+
+     When specifying the grouping operator, the item that falls within the
+     parentheses must be a valid expression.  Subexpressions may be further
+     grouped.
+
+     For function calls, a valid function name must precede the left
+     parenthesis, and the function arguments, if any, must be contained
+     within the parentheses.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example changes the default order of expression
+        evaluation:
+
+        ? 5 * (10 + 6) / 2         // Result: 40
+
+     ^b^CFE^b  The next example shows a function call:
+
+        x := SQRT(100)
+!seealso: "&" 
+'------------------------------------------------------------------------------
+
+
+
+!short: *               Multiplication--binary                     (Mathematical)
+'------------------------------------------------------------------------------
+ ^b*^b
+ Multiplication--binary                          (Mathematical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<nNumber1> * <nNumber2>
+
+ ^bType^b
+
+     Numeric
+
+ ^bOperands^b
+
+     ^b<nNumber1>^b and ^b<nNumber2>^b are the two numeric expressions to
+     multiply.
+
+ ^bDescription^b
+
+     The multiplication operator (*) is a binary operator that returns a
+     numeric value from its operation on <nNumber1> and <nNumber2>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows multiplication results using different
+        operands:
+
+        ?  3 *  0            // Result:  0
+        ?  3 * -2            // Result: -6
+        ? -3 *  2            // Result: -6
+        ? -3 *  0            // Result:  0
+        ? -1 *  3            // Result: -3
+        ? -2 * -3            // Result:  6
+        ?  2 * -3            // Result: -6
+        ?  1 * -3            // Result: -3
+!seealso: "%" "**" "+" "-" "/" "= (compound)" c52g_002.ngo:"SET DECIMALS" c52g_002.ngo:"SET FIXED" 
+'------------------------------------------------------------------------------
+
+
+
+!short: **              Exponentiation--binary                     (Mathematical)
+'------------------------------------------------------------------------------
+ ^b**^b
+ Exponentiation--binary                          (Mathematical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<nNumber1> ** <nNumber2>
+     ^b<nNumber1> ^^  <nNumber2>
+
+ ^bType^b
+
+     Numeric
+
+ ^bOperands^b
+
+     ^b<nNumber1>^b is the numeric value to raise to a power.
+
+     ^b<nNumber2>^b is the power to raise <nNumber1>.
+
+ ^bDescription^b
+
+     The exponentiation operator (**) is a binary operator that raises
+     <nNumber1> to the power of <nNumber2>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows exponentiation results to 16 decimal
+        places, using different operands:
+
+        SET DECIMALS TO 16
+        ?  3 **  0            // Result: 1.000000000
+        ?  3 **  1            // Result: 3.000000000
+        ?  3 ** -2            // Result: 0.111111111
+        ? -3 **  2            // Result: 9.000000000
+        ? -3 **  0            // Result: 1.000000000
+        ? -1 **  3            // Result: 1.000000000
+        ? -2 **  3            // Result: 8.000000000
+        ?  2 ** -3            // Result: 0.125000000
+        ?  1 ** -3            // Result: 1.000000000
+!seealso: "%" "*" "+" "-" "/" "= (compound)" c52g_002.ngo:"SET DECIMALS" c52g_002.ngo:"SET FIXED" 
+'------------------------------------------------------------------------------
+
+
+
+!short: +               Addition, unary positive, concatenation    (Math, Character)
+'------------------------------------------------------------------------------
+ ^b+^b
+ Addition, unary positive, concatenation         (Math, Character)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<nNumber1> + <nNumber2>           (addition)
+     ^b<dDate>    + <nNumber>            (addition)
+     ^b<cString1> + <cString2>           (concatenation)
+
+ ^bType^b
+
+     Character, date, memo, numeric
+
+ ^bOperands^b
+
+     ^b<nNumber1>^b is a numeric value to increment by ^b<nNumber2>^b.
+
+     ^b<dDate>^b is a date value to increment by ^b<nNumber>^b days.
+
+     ^b<cString2>^b is a character string to join to the end of
+     ^b<cString1>^b.
+
+ ^bDescription^b
+
+     The (+) operator performs a number of different operations depending on
+     the data types of the operands:
+
+     ^b^CFE  Unary positive sign (numeric):^b A numeric expression prefaced
+        with the plus (+) operator performs no operation on the operand
+        except to enforce a higher level of precedence than other numeric
+        operations except the unary minus.
+
+     ^b^CFE  Binary addition sign (numeric, date):^b If both operands are
+        numeric, <nNumber2> is added to <nNumber1> and the result is returned
+        as a numeric value.  If either operand is date data type and the
+        other operand numeric data type, the <nNumber> is added as days to
+        the <dDate> and a date value is returned.
+
+     ^b^CFE  Concatenation (character, memo):^b If both operands are
+        character, <cString2> (the right operand) is concatenated to
+        <cString1> (the left operand) returning a character string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate the various forms of the + operator:
+
+        // Binary addition (numeric)
+        ? 1 + 1                         // Result: 2
+        ? 1 + 0                         // Result: 1
+        ? 0 + 1                         // Result: 1
+
+        // Binary addition (date)
+        ? CTOD("12/12/88") + 12         // Result: 12/24/88
+        ? 12 + CTOD("12/12/88")         // Result: 12/24/88
+
+        // Concatenation (character)
+        ? "Hi " + "there"               // Result: Hi there
+!seealso: "%" "*" "**" "-" "/" "= (compound)" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ++              Increment--unary                           (Mathematical)
+'------------------------------------------------------------------------------
+ ^b++^b
+ Increment--unary                                (Mathematical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b++<idVar>         (prefix increment)
+     ^b<idVar>++         (postfix increment)
+
+ ^bType^b
+
+     Date, numeric
+
+ ^bOperands^b
+
+     ^b<idVar>^b is any valid CA-Clipper identifier including a field
+     variable.  If <idVar> is a field, it must either be prefaced with an
+     alias or declared with the FIELD statement.
+
+     The prefix increment can only be performed on an initialized value of
+     numeric or date data type.
+
+ ^bDescription^b
+
+     The increment operator (++) increases the value of its operand by one.
+     This operator adds one to the value of <idVar> and assigns the new value
+     to <idVar>.
+
+     The ++ operator can appear before or after <idVar>.  Specifying the
+     operator before <idVar> increments and assigns the value before <idVar>
+     is used.  This, prefix notation, is the most common usage.  Specifying
+     the operator after <idVar>, postfix notation, increments and assigns the
+     value after <idVar> is used.  Stated differently, postfix notation
+     delays the assignment portion of the operation until the rest of the
+     expression is evaluated, and prefix notation gives the assignment
+     precedence over all other operations in the expression.
+
+     If the reference to <idVar> is ambiguous (i.e., not declared at compile
+     time and not explicitly qualified with an alias) <idVar> is always
+     assumed to be MEMVAR.  You can assign field variables by declaring the
+     field variable name in a FIELD statement or referring to the field name
+     prefaced by the FIELD-> alias or the name of the work area.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code uses the prefix increment operator in an assignment
+        statement.  Therefore, both variables have the same value when
+        queried:
+
+        nValue := 0
+        nNewValue := ++nValue
+        ? nNewValue              // Result:   1
+        ? nValue                 // Result:   1
+
+     ^b^CFE^b  In this example, the postfix increment operator increases the
+        first operand of the multiplication operation by one, making its
+        value 11; however, the assignment of this new value to the nValue
+        variable will not take place until the entire expression is
+        evaluated.  Therefore, its value is still 10 when the multiplication
+        operation occurs, and the result of 11 * 10 is 110.  Finally, when
+        nValue is queried again after the expression is evaluated, the
+        postfix increment assignment is reflected in its new value, 11.
+
+        nValue := 10
+        ? nValue++ * nValue      // Result: 110
+        ? nValue                 // Result:  11
+!seealso: "+" "--" ":=" "= (compound)" 
+'------------------------------------------------------------------------------
+
+
+
+!short: -               Subtraction, unary negative, concatenation (Math, Character)
+'------------------------------------------------------------------------------
+ ^b-^b
+ Subtraction, unary negative, concatenation      (Math, Character)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<nNumber1> - <nNumber2>          (subtraction)
+     ^b<dDate1>   - <dDate2>            (subtraction)
+     ^b<dDate>    - <nNumber>           (subtraction)
+     ^b<cString1> - <cString2>          (concatenation)
+
+ ^bType^b
+
+     Character, date, memo, numeric
+
+ ^bOperands^b
+
+     ^b<nNumber1>^b is a numeric value to decrement by ^b<nNumber2>^b.
+
+     ^b<dDate1>^b is a date value to decrement by ^b<dDate2>^b.
+
+     ^b<dDate>^b is a date value to decrement by ^b<nNumber>^b days.
+
+     ^b<cString2>^b is a character string to join to the end of
+     ^b<cString1>^b after trimming the trailing blanks from <cString1>.
+
+ ^bDescription^b
+
+     The (-) operator performs different operations depending on the data
+     types of the operands:
+
+     ^b^CFE  Unary negative sign (numeric):^b A numeric expression prefaced
+        with the minus (-) operator performs the equivalent of multiplying
+        the operand by (-1), returning a negative numeric value.
+
+     ^b^CFE  Binary subtraction (numeric, date):^b If both operands are
+        numeric data type, <nNumber2> is subtracted from <nNumber1> and the
+        result is returned as a numeric value.  If both operands are date
+        data type, <dDate2> is subtracted from <dDate1> and the result is
+        returned as a numeric value representing the number of days between
+        the two dates.  If the left operand is date data type and the right
+        operand numeric data type, the <nNumber> is subtracted as days from
+        <dDate> and a date value is returned.  If the order of operands is
+        reversed, a runtime error occurs.
+
+     ^b^CFE  Concatenation (character, memo):^b If both operands are
+        character data type, <cString2> is joined  to <cString1>, returning a
+        character string. Trailing blanks are trimmed from <cString1> and
+        joined to the end of the return string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate the various forms of the - operator:
+
+        // Binary subtraction (numeric)
+        ? 1 - 1                         // Result: 0
+        ? 1 - 0                         // Result: 1
+        ? 0 - 1                         // Result: -1
+
+        // Binary subtraction (date)
+        ? CTOD("12/12/88") - 12         // Result: 11/30/88
+
+        ? 12 - CTOD("12/12/88")         // Result: Runtime error
+
+        // Concatenation (character)
+        ? "Hi " - "There" + "*"         // Result: Hithere *
+!seealso: "%" "*" "**" "+" "/" "= (compound)" 
+'------------------------------------------------------------------------------
+
+
+
+!short: --              Decrement--unary                           (Mathematical)
+'------------------------------------------------------------------------------
+ ^b--^b
+ Decrement--unary                                (Mathematical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b--<idVar>      (prefix decrement)
+     ^b<idVar>--      (postfix decrement)
+
+ ^bType^b
+
+     Date, numeric
+
+ ^bOperands^b
+
+     ^b<idVar>^b is any valid CA-Clipper identifier, including a field
+     variable.  If <idVar> is a field, you must reference it prefaced with an
+     alias or declare it with the FIELD statement.
+
+     In addition, you must initialize <idVar> to a value before performing
+     the decrement operation, and it must be either numeric or date data
+     type.
+
+ ^bDescription^b
+
+     The decrement operator (--) decreases the value of its operand by one.
+     This operator subtracts one from the value of <idVar> and assigns the
+     new value to <idVar>.
+
+     The -- operator can appear before or after <idVar>.  Specifying the
+     operator before <idVar> decrements and assigns the value before the
+     value is used.  This is prefix notation and is the most common usage.
+     Specifying the operator after <idVar> decrements and assigns the value
+     after it is used.  This is postfix notation.  Stated differently,
+     postfix notation delays the assignment portion of the operation until
+     the rest of the expression is evaluated, and prefix notation gives the
+     assignment precedence over all other operations in the expression.
+
+     If the reference to <idVar> is ambiguous (i.e., not declared at compile
+     time and not explicitly qualified with an alias), <idVar> is always
+     assumed to be MEMVAR.  You can assign field variables by declaring the
+     field variable name in a FIELD statement or by referring to the field
+     name prefaced by the FIELD-> alias or by the name of the work area.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example of the postfix decrement operator the
+        assignment takes place before the original variable is decremented,
+        thus the two values are not the same when queried:
+
+        nValue := 1
+        nNewValue := nValue--
+        ? nNewValue                 // Result:   1
+        ? nValue                    // Result:   0
+
+     ^b^CFE^b  In this example, the prefix decrement operator decreases the
+        first operand of the multiplication by one, making its value 9.
+        Then, the assignment of this new value to the nValue variable takes
+        place before the rest of the expression is evaluated.  Thus, the new
+        value is used to perform the multiplication operation, and the result
+        of 9 * 9 is 81:
+
+        nValue := 10
+        ? --nValue * nValue         // Result:  81
+        ? nValue                    // Result:   9
+!seealso: "++" "-" ":=" "= (compound)" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ->              Alias assignment--binary                   (Special)
+'------------------------------------------------------------------------------
+ ^b->^b
+ Alias assignment--binary                        (Special)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<idAlias>-><idField>
+     ^b<idAlias>->(<exp>)
+     ^b(<nWorkArea>)-><idField>
+     ^b(<nWorkArea>)->(<exp>)
+     ^bFIELD-><idVar>
+     ^bMEMVAR-><idVar>
+
+ ^bOperands^b
+
+     ^b<idAlias>^b is the name of the unselected work area to access and must
+     refer to a work area with a database file in USE.
+
+     ^b<nWorkArea>^b is the number of the unselected work area to access.
+
+     ^b<idField>^b is the name of a field in the specified work area.
+
+     ^b<exp>^b is an expression of any data type to be executed in the
+     specified work area.  If an expression more complicated than a single
+     field reference is used as the second operand, the expression must be
+     enclosed in parentheses (()).
+
+     ^b<idVar>^b is any valid CA-Clipper identifier.  Depending on whether
+     you specify FIELD or MEMVAR, the identifier will be forced to a database
+     field or memory variable (public or private) reference.
+
+ ^bDescription^b
+
+     When used with an <idAlias> as the first operand, the alias operator
+     (->) accesses field information or evaluates an expression in the
+     indicated work area.  The alias operator implicitly SELECTs the
+     <idAlias> before evaluating the <idField> or <exp> operand.  When the
+     evaluation is complete, the original work area is SELECTed again.  An
+     alias reference can be in an expression or on a line by itself:
+
+     ? Customer->Name
+     Customer->(UpdateTransaction())
+
+     Using the alias operator lets you:
+
+     ^b^CFE^b  Access information from unselected work areas within
+        expressions
+
+     ^b^CFE^b  Access environmental information from unselected work areas
+
+     ^b^CFE^b  Access information from unselected work areas in modes such as
+        REPORT and LABEL FORMs
+
+     ^b^CFE^b  Write more compact code
+
+     In addition to allowing expression and field evaluation in unselected
+     work areas, the alias operator makes an explicit reference to a field or
+     variable using either the FIELD or the MEMVAR keyword aliases.  MEMVAR
+     forces <idVar> to refer to a memory variable name, and FIELD forces it
+     to reference a database field.  These special alias identifiers allow
+     you to avoid ambiguity when there are conflicts between field and memory
+     variable names.  Remember that a reference to a variable identifier not
+     prefaced with an alias defaults to a field if there are both field and
+     memory variables with the same name.  To override this, use the (/V)
+     option when compiling.
+
+     In addition to specifying the alias as an identifier, you can access the
+     target work area using an expression that returns the work area number
+     if the expression is enclosed by parentheses.  This lets you use work
+     area numbers as handles which is useful for passing references to work
+     areas without using macros, aliases, names, etc.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example accesses database and work area information in an
+        unselected work area:
+
+        USE Customer NEW
+        USE Invoices NEW
+        ? Customer->CustName             // Result: Bill Smith
+        ? Customer->(RECNO())            // Result: 1
+        ? Customer->(FOUND())            // Result: .F.
+        ? Customer->(City + ", " + State + ;
+           "  " + Zip)                   // Result: ShadowVille,
+                                         //         CA  90415
+
+     ^b^CFE^b  This example uses a user-defined function (MySeek()) as an
+        operand of the alias operator for a common operation that normally
+        requires many more statements:
+
+        IF Invoices->(MySeek(CustNum))
+           <process customer>...
+        ELSE
+           <process no find>...
+        ENDIF
+        RETURN
+
+        FUNCTION MySeek( cSearch )
+           SEEK cSearch
+        RETURN (FOUND())
+
+        ^bNote^b:  This example is just an illustration of the alias operator
+        with a user-defined function.  CA-Clipper's DBSEEK() could be used
+        instead of MySeek()
+
+     ^b^CFE^b  This example explicitly references field and memory variables
+        with the same name:
+
+        USE Customer NEW
+        MEMVAR->CustName = "Bill Smith"      // Create a memvar
+                                             // CustName
+        LOCATE FOR MEMVAR->CustName = FIELD->CustName
+
+     ^b^CFE^b  This example uses an expression as a work area handle to
+        create a work area-independent database operation:
+
+        cTable1 := "C:Myfile.dbf"
+        cTable2 := "D:Myfile.dbf"
+        USE (cTable1) NEW
+        hArea1 = SELECT()
+        USE (cTable2) NEW
+        hArea2 = SELECT()
+        DoStuff( hArea1, hArea2 )
+
+        FUNCTION DoStuff( hArea1, hArea2 )
+           LOCAL nCount, nSave
+           nSave := SELECT()
+           SELECT (hArea1)
+           FOR nCount := 1 TO FCOUNT()
+              FIELDPUT( nCount, ( hArea2 )-> ;
+                 ( FIELDGET( nCount )))
+           NEXT
+           SELECT (nSave)
+           RETURN NIL
+!seealso: c52g_004.ngo:"FIELD" c52g_001.ngo:"FIELDNAME()" c52g_001.ngo:"FIELDPOS()" c52g_001.ngo:"FIELDGET()" c52g_002.ngo:"SELECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: .AND.           Logical AND--binary                        (Logical)
+'------------------------------------------------------------------------------
+ ^b.AND.^b
+ Logical AND--binary                             (Logical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<lCondition1> .AND. <lCondition2>
+
+ ^bType^b
+
+     Logical
+
+ ^bOperands^b
+
+     ^b<lCondition1>^b and ^b<lCondition2>^b are logical expressions to AND.
+
+ ^bDescription^b
+
+     The .AND. operator is a binary logical operator that executes a logical
+     AND operation using the following modified Boolean rules:
+
+     ^b^CFE^b  Returns true (.T.) if both <lCondition1> and <lCondition2>
+        evaluate to true (.T.).
+
+     ^b^CFE^b  Returns false (.F.) if either <lCondition1> and <lCondition2>
+        evaluate to false (.F.).
+
+     ^bWarning! ^b In a departure from Summer '87 and other dialect behavior,
+     CA-Clipper shortcuts the evaluation of .AND. operands.  This means that
+     <lCondition1> and <lCondition2> are both evaluated only when
+     <lCondition1> evaluates to true (.T.).  If <lCondition1> evaluates to
+     false (.F.), the .AND. operation is false (.F.) and <lCondition2> is
+     therefore not evaluated.
+
+     For backward compatibility, shortcutting can be suppressed by compiling
+     with the /Z option.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows .AND. results using different operands:
+
+        ? .T. .AND. .T.            // Result: .T.
+        ? .T. .AND. .F.            // Result: .F.
+        ? .F. .AND. .T.            // Result: .F.   (shortcut)
+        ? .F. .AND. .F.            // Result: .F.   (shortcut)
+!seealso: ".NOT." ".OR." 
+'------------------------------------------------------------------------------
+
+
+
+!short: .NOT.           Logical NOT--unary                         (Logical)
+'------------------------------------------------------------------------------
+ ^b.NOT.^b
+ Logical NOT--unary                              (Logical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b! <lCondition>
+     ^b.NOT. <lCondition>
+
+ ^bType^b
+
+     Logical
+
+ ^bOperands^b
+
+     ^b<lCondition>^b is a logical expression to not.
+
+ ^bDescription^b
+
+     The ! (not) operator is a unary logical operator that returns the
+     logical inverse of <lCondition>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows .NOT. results using different operands:
+
+        ? ! (.T.)             // Result: .F.
+        ? ! 1 > 2             // Result: .T.
+        ? .NOT. 1 > 2         // Result: .T.
+!seealso: ".AND." ".OR." 
+'------------------------------------------------------------------------------
+
+
+
+!short: .OR.            Logical OR--binary                         (Logical)
+'------------------------------------------------------------------------------
+ ^b.OR.^b
+ Logical OR--binary                              (Logical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<lCondition1> .OR. <lCondition2>
+
+ ^bType^b
+
+     Logical
+
+ ^bOperands^b
+
+     ^b<lCondition1>^b and ^b<lCondition2>^b are logical expressions.
+
+ ^bDescription^b
+
+     The .OR. operator is a binary logical operator that executes a logical
+     OR operation using the following modified Boolean rules:
+
+     ^b^CFE^b  Returns true (.T.) if either <lCondition1> or <lCondition2>
+        evaluate to true (.T.).
+
+     ^b^CFE^b  Returns false (.F.) if both <lCondition1> and <lCondition2>
+        evaluate to false (.F.).
+
+     ^bWarning! ^b In a departure from the Summer '87 and other dialect's
+     behavior, CA-Clipper shortcuts the evaluation of .OR. operands.  This
+     means that <lCondition1> and <lCondition2> are both evaluated only when
+     <lCondition1> evaluates to false (.F.).  If <lCondition1> evaluates to
+     true (.T.), the .OR. operation is true (.T.) and <lCondition2> is
+     therefore not evaluated.
+
+     For backward compatibility, shortcutting can be suppressed by compiling
+     with the /Z option.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows .OR. results using different operands:
+
+        ? .T. .OR. .T.            // Result: .T.   (shortcut)
+        ? .T. .OR. .F.            // Result: .T.   (shortcut)
+        ? .F. .OR. .T.            // Result: .T.
+        ? .F. .OR. .F.            // Result: .F.
+!seealso: ".AND." ".NOT." 
+'------------------------------------------------------------------------------
+
+
+
+!short: /               Division--binary                           (Mathematical)
+'------------------------------------------------------------------------------
+ ^b/^b
+ Division--binary                                (Mathematical)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<nNumber1> / <nNumber2>
+
+ ^bType^b
+
+     Numeric
+
+ ^bOperands^b
+
+     ^b<nNumber1>^b is the dividend of the division operation.
+
+     ^b<nNumber2>^b is the divisor of the division operation.
+
+ ^bDescription^b
+
+     / returns a numeric value from the division of <nNumber1> by <nNumber2>.
+
+     ^bNote: ^b Dividing <nNumber1> with zero value for <nNumber2> results in
+     a runtime error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows division results to 16 decimal places,
+        using different operands:
+
+        SET DECIMALS TO 16
+        ?  3 /  0            // Result: Runtime error
+        ?  3 / -2            // Result: -1.500000000
+        ? -3 /  2            // Result: -1.500000000
+        ? -3 /  0            // Result: Runtime error
+        ? -1 /  3            // Result: -0.333333333
+        ? -2 /  3            // Result: -0.666666667
+        ?  2 / -3            // Result: -0.666666667
+        ?  1 / -3            // Result: -0.333333333
+!seealso: "%" "*" "**" "+" "-" "= (compound)" c52g_002.ngo:"SET DECIMALS" c52g_002.ngo:"SET FIXED" 
+'------------------------------------------------------------------------------
+
+
+
+!short: :               Send--binary                               (Object)
+'------------------------------------------------------------------------------
+ ^b:^b
+ Send--binary                                    (Object)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<object>:<message>[(<argument list>)]
+
+ ^bType^b
+
+     Object
+
+ ^bOperands^b
+
+     ^b<object>^b is the name of the object that is to receive the message.
+
+     ^b<message>^b is the name of a method or instance variable.
+
+     ^b<argument list>^b is a list of parameters that are passed to the
+     specified message.  The parentheses surrounding the argument list are
+     optional if no parameters are supplied in the message send.  By
+     convention, however, parentheses distinguish a message send with no
+     parameters from an access to an exported instance variable.
+
+ ^bDescription^b
+
+     Each class defines a set of operations that can be performed on objects
+     of that class.  Perform these operations by sending a message to the
+     object using the send operator (:).
+
+     When a message is sent to an object, the system examines the message.
+     If the object is of a class that defines an operation for that message,
+     the system automatically invokes a method to perform the operation on
+     the specified object.  If the class does not define a method for the
+     specified message, a runtime error occurs.
+
+     Executing a message send produces a return value, much like a function
+     call.  The return value varies depending on the operation performed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, myBrowse is the name of a variable that
+        contains a TBrowse object reference.  pageUp() is a method that
+        specifies the operation to be performed.  The available operations
+        and corresponding methods vary depending on the class of the object.
+        The classes, Error, Get, TBColumn, and TBrowse, are documented in
+        this chapter.
+
+        myBrowse:pageUp()
+!seealso: c52g_020.ngo:"Error" c52g_021.ngo:"Get" c52g_023.ngo:"TBColumn" c52g_022.ngo:"TBrowse" 
+'------------------------------------------------------------------------------
+
+
+
+!short: :=              Inline assign--binary                      (Assignment)
+'------------------------------------------------------------------------------
+ ^b:=^b
+ Inline assign--binary                           (Assignment)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<idVar> := <exp>
+
+ ^bType^b
+
+     All
+
+ ^bOperands^b
+
+     ^b<idVar>^b is a valid variable identifier of any storage class,
+     including a field variable.  If <idVar> is not visible or does not
+     exist, a private variable is created and assigned the result of <exp>.
+
+     ^b<exp>^b is the expression whose result is assigned to <idVar>.
+
+ ^bDescription^b
+
+     The inline assignment operator (:=) assigns values of any data type to
+     variables of any storage class.  The operator evaluates <exp>, assigns
+     the resulting value to <idVar>, and returns the resulting value as the
+     return value of the operation.  This latter behavior permits multiple
+     assignments such as idVar1 := idVar2 := value.  Unlike the simple assign
+     operator (=), the inline assignment operator (:=) can be used anywhere
+     an expression or constant is allowed, including variable declaration
+     statements.  With a variable declaration statement, assignment
+     initializes a variable.  Note, however, you cannot declare an array and
+     initialize elements within the same program statement.
+
+     If the reference to <idVar> is ambiguous (i.e., not declared at compile
+     time and not explicitly qualified with an alias), <idVar> is always
+     assumed to be MEMVAR.  At runtime, if no private or public variable
+     exists with the specified name, a private variable is created.  You can
+     assign field variables with the := operator by declaring the field
+     variable name in a FIELD statement or referring to the field name
+     prefaced by the FIELD-> alias or the name of the work area.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Several examples of inline assignment follow:
+
+        LOCAL nValue := 10
+        //
+        IF (dDate := (DATE() - 1000)) = CTOD("12/20/79")
+        //
+        ? SQRT(nValue := (nValue ** 2))
+        //
+        cTransNo := cSortNo := (CustId + DTOC(DATE()))
+
+     ^b^CFE^b  This last example performs multiple assignments using the
+        inline assignment operator as you would with the STORE command.  When
+        := is used in this way, the assignments are executed from right to
+        left.  This feature is particularly useful when you need to store the
+        same value to many different fields, possibly in different database
+        files:
+
+        CustFile->CustId := TransFile-> ;
+           TransNo := (CustId + DTOC(DATE())
+!seealso: "++" "--" "= (assign)" "= (compound)" c52g_002.ngo:"STORE*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: <               Less than--binary                          (Relational)
+'------------------------------------------------------------------------------
+ ^b<^b
+ Less than--binary                               (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> < <exp2>
+
+ ^bType^b
+
+     Character, date, logical, memo, numeric
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of the same data type to
+     compare.
+
+ ^bDescription^b
+
+     < (less than) is a binary operator that compares two values of the same
+     data type and returns true (.T.) if <exp1> is less than <exp2>.
+
+     ^b^CFE  Character:^b The comparison is based on the underlying ASCII
+        code.  ASCII codes for alphabetic characters are ascending (e.g., the
+        code for "A" is 65 and the code for "Z" is 90).
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value.
+
+     ^b^CFE  Logical:^b False (.F.) is less than true (.T.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  Numeric:^b Compared based on magnitude.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate how the less than operator (<)
+        behaves with different data types:
+
+        // Character
+        ? "Z" < "A"              // Result: .F.
+        ? "ZA" < "A"             // Result: .F.
+        ? "Z" < "AZ"             // Result: .F.
+
+        // Date
+        ? CTOD("12/12/88") < ;
+           CTOD("12/11/88")      // Result: .F.
+
+        // Logical
+        ? .F. < .T.              // Result: .T.
+
+        // Numeric
+        ? 2 < 1                  // Result: .F.
+        ? 1 < 2                  // Result: .T.
+!seealso: "$" ">" "<=" "<>" "= (equality)" "==" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: <=              Less than or equal--binary                 (Relational)
+'------------------------------------------------------------------------------
+ ^b<=^b
+ Less than or equal--binary                      (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> <= <exp2>
+
+ ^bType^b
+
+     Character, date, logical, memo, numeric
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of the same data type to
+     compare.
+
+ ^bDescription^b
+
+     <= (less than or equal) is a binary operator that compares two values of
+     the same data type and returns true (.T.) if <exp1> is less than or
+     equal to <exp2>.
+
+     ^b^CFE  Character:^b The comparison is based on the underlying ASCII
+        code.  ASCII codes for alphabetic characters are ascending (e.g., the
+        code for "A" is 65 and the code for "Z" is 90).
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value.
+
+     ^b^CFE  Logical^b: False (.F.) is less than true (.T.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  Numeric:^b Compared based on magnitude.
+
+ ^bExamples^b
+
+     ^b^CFE^b  To illustrate how the less than or equal operator (<=) behaves
+        with different data types:
+
+        // Character
+        ? "Z" <= "A"             // Result: .F.
+        ? "ZA" <= "A"            // Result: .F.
+        ? "Z" <= "AZ"            // Result: .F.
+
+        // Date
+        ? CTOD("12/12/88") <= ;
+           CTOD("12/11/88")      // Result: .F.
+
+        // Logical
+        ? .F. <= .T.             // Result: .T.
+
+        // Numeric
+
+        ? 2 <= 1                 // Result: .F.
+        ? 1 <= 2                 // Result: .T.
+        ? 1 <= 1                 // Result: .T.
+!seealso: "$" "<" "<>" "= (equality)" "==" ">" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: <> != #         Not equal--binary                          (Relational)
+'------------------------------------------------------------------------------
+ ^b<> != #^b
+ Not equal--binary                               (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> <> <exp2>
+     ^b<exp1> != <exp2>
+     ^b<exp1> #  <exp2>
+
+ ^bType^b
+
+     Character, date, logical, memo, NIL, numeric
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of the same data type or NIL
+     to compare for inequality.
+
+ ^bDescription^b
+
+     The <> (not equal) is a binary operator that compares two values of the
+     same data type and returns true (.T.) if <exp1> is not equal to <exp2>
+     according to the following rules:
+
+     ^b^CFE  Character:^b The comparison is based on the underlying ASCII
+        code and is the inverse of the equal operator (=).  This means that
+        the comparison is sensitive to the current EXACT SETting.  See the
+        examples below.
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value.
+
+     ^b^CFE  Logical:^b False (.F.) is not equal to true (.T.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  NIL:^b All values compared to NIL other than NIL return true
+        (.T.).
+
+     ^b^CFE  Numeric:^b Compared based on magnitude.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate how the not equal operator (<>)
+        behaves with different data types:
+
+        // Character
+        SET EXACT ON
+
+        ? "123" <> "12345"         // Result: .T.
+        ? "12345" <> "123"         // Result: .T.
+        ? "123" <> ""              // Result: .T.
+        ? "" <> "123"              // Result: .T.
+        SET EXACT OFF
+        ? "123" <> "12345"         // Result: .T.
+        ? "12345" <> "123"         // Result: .F.
+        ? "123" <> ""              // Result: .F.
+        ? "" <> "123"              // Result: .T.
+
+        // Date
+        ? CTOD("12/12/88") <> ;
+           CTOD("12/12/88")        // Result: .F.
+
+        // Logical
+        ? .T. <> .T.               // Result: .F.
+        ? .T. <> .F.               // Result: .T.
+
+        // NIL
+        ? NIL <> NIL               // Result: .F.
+        ? NIL <> 12                // Result: .T.
+        ? NIL <> "hello"           // Result: .T.
+
+        // Numeric
+        ? 2 <> 1                   // Result: .T.
+        ? 1 <> 1                   // Result: .F.
+!seealso: "$" "<" "<=" "= (equality)" "==" ">" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: = (assign)      Simple assign--binary                      (Assignment)
+'------------------------------------------------------------------------------
+ ^b= (assign)^b
+ Simple assign--binary                           (Assignment)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<idVar> = <exp>
+
+ ^bType^b
+
+     All
+
+ ^bOperands^b
+
+     ^b<idVar>^b is a valid variable identifier of any storage class,
+     including a field variable.  If <idVar> is not visible or does not
+     exist, a private variable is created and assigned the result of <exp>.
+
+     ^b<exp>^b is the expression whose result is assigned to <idVar>.
+
+ ^bDescription^b
+
+     The simple assignment operator (=) assigns a value to a variable.  It is
+     identical in operation to the STORE command that initializes a single
+     variable and must be specified as a program statement.  The inline
+     assignment operator (:=) is like the = operator except that you can
+     specify it within expressions.  If you specify the simple assign
+     operator (=) within an expression, it is interpreted as the equality (=)
+     operator.
+
+     ^bNote: ^b You cannot initialize a specific variable using the simple
+     assign operator (=) in a declaration statement.  Only the inline assign
+     (:=) operator can be used for this purpose.
+
+     If the reference to <idVar> is ambiguous (i.e., not declared at compile
+     time and not explicitly qualified with an alias) <idVar> is always
+     assumed to be MEMVAR.  At runtime, if no private or public variable
+     exists with the specified name, a private variable is created.  To
+     assign a field variable with the = operator, you must declare the field
+     variable name in a FIELD statement or refer to the field name prefaced
+     by the FIELD-> alias or the name of the work area.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples are valid simple assignment statements:
+
+        nValue = 25
+        nNewValue = SQRT(nValue) ** 5
+        nOldValue = nValue
+
+     ^b^CFE^b  In this example, the two lines are equivalent:
+
+        FIELD->CustAge = 20
+        REPLACE CustAge WITH 20
+!seealso: "++" "--" ":=" "= (compound)" c52g_002.ngo:"STORE*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: = (compound)    Compound assignment--binary                (Assignment)
+'------------------------------------------------------------------------------
+ ^b= (compound assign)^b
+ Compound assignment--binary                     (Assignment)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+
+     ^b<idVar>  += <cString>         (concatenation)
+     ^b<idVar>  += <nNumber>         (addition)
+     ^b<idVar>  -= <cString>         (concatenation)
+     ^b<idVar>  -= <nNumber>         (subtraction)
+     ^b<idVar>  -= <dDate>           (subtraction)
+     ^b<idVar>  *= <nNumber>         (multiplication)
+     ^b<idVar>  /= <nNumber>         (division)
+     ^b<idVar>  %= <nNumber>         (modulus)
+     ^b<idVar>  ^^= <nNumber>         (exponentiation)
+
+ ^bType^b
+
+     Character, date, memo, numeric
+
+ ^bOperands^b
+
+     ^b<idVar>^b is a variable identifier of any storage class, including a
+     field variable.  The variable must be initialized to a value before
+     performing the operation.
+
+     If the reference to <idVar> is ambiguous (i.e., not declared at compile
+     time and not explicitly qualified with an alias), <idVar> is assumed to
+     be MEMVAR.  You can assign field variables by declaring the field
+     variable name in a FIELD statement or referring to the field name
+     prefaced by the FIELD-> alias or the name of the work area.
+
+     ^b<cString>^b is the character string used in the operation with
+     <idVar>.
+
+     ^b<nNumber>^b is the numeric expression used in the operation with
+     <idVar>.
+
+     ^b<dDate>^b is the date value used in the operation with <idVar>.
+
+ ^bDescription^b
+
+     In addition to the simple and inline assignment operators (= and :=),
+     there are a series of compound assignment operators that perform an
+     operation then assign a value.  They have the form:
+
+     <idVar> <operator>= <exp>
+
+     Each compound assignment expression is equivalent to the assignment
+     expression:
+
+     <idVar> := ( <idVar> <operator> <exp> )
+
+     For each data type that supports an operator, the compound assignment
+     operator performs the same operation before performing the assignment
+     operation.  The  following table details all of the compound operators:
+
+     ^bCompound Operators^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bOperator  Defined as     Operations^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     a += b    a := (a + b)   concatenation, addition
+     a -= b    a := (a - b)   concatenation, subtraction
+     a *= b    a := (a * b)   multiplication
+     a /= b    a := (a / b)   division
+     a %= b    a := (a % b)   modulus
+     a ^^= b    a := (a ^^ b)   exponentiation
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bNote: ^b The exponentiation operator (**) does not have a
+     corresponding compound assignment operator.  The exponentiation compound
+     assignment operator is ^^=.
+
+     Since the compound assignment operators are based on the inline
+     assignment  operator (:=), the operation returns the result of its
+     operation as the value of the expression.  This means you can use these
+     operators within expressions just like the inline assignment  operator
+     (:=).
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples use the compound addition and concatenation
+        assignment operator:
+
+        // Character (concatenation)
+        LOCAL cString := "Hello"
+        ? cString += " there"               // Result: "Hello there"
+
+        // Date (addition)
+        LOCAL dDate := CTOD("12/12/90")
+        dDate += 12                         // Result: 12/24/90
+
+        // Numeric (addition)
+        LOCAL nValue := 10
+        ? SQRT(nValue += 15)                // Result:  5
+        ? nValue                            // Result: 25
+
+     ^b^CFE^b  These examples use the compound subtraction and concatenation
+        assignment operator:
+
+        // Character (concatenation)
+        LOCAL cString := "Hello   "
+        ? cString -= "There"                // Result: HelloThere
+
+        // Date (subtraction)
+        LOCAL dDate := CTOD("12/24/90")
+        dDate -= 12                         // Result: 12/12/90
+
+        // Numeric (subtraction)
+        LOCAL nValue := 10
+        ? newValue := (nValue -= 5) ** 2    // Result: 25
+        ? nValue                            // Result:  5
+
+     ^b^CFE^b  This example uses the compound multiplication assignment
+        operator:
+
+        LOCAL nValue := 10
+        ? newValue := (nValue *= 5) + 100   // Result: 150
+        ? nValue                            // Result:  50
+
+     ^b^CFE^b  This example uses the compound division assignment operator:
+
+        LOCAL nValue := 10
+        ? newValue := (nValue /= 5) + 100   // Result: 102
+        ? nValue                            // Result:   2
+
+     ^b^CFE^b  This example uses the compound modulus assignment operator:
+
+        LOCAL nValue := 10
+        ? newValue := (nValue %= 4) * 100   // Result: 200
+        ? nValue                            // Result:   2
+
+     ^b^CFE^b  This example uses the compound exponentiation assignment
+        operator:
+
+        LOCAL nValue := 10
+        ? newValue := (nValue ^^= 3) + 50    // Result: 1050
+        ? nValue                            // Result: 1000
+!seealso: "%" "*" "**" "+" "++" "-" "--" "/" ":=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: = (equality)    Equal--binary                              (Relational)
+'------------------------------------------------------------------------------
+ ^b= (equality)^b
+ Equal--binary                                   (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> = <exp2>
+
+ ^bType^b
+
+     Character, date, logical, memo, NIL, numeric
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of the same data type to
+     compare.
+
+ ^bDescription^b
+
+     The = (equal) is a binary operator that compares two values of the same
+     data type and returns true (.T.) if <exp1> is equal to <exp2> according
+     to the following rules:
+
+     ^b^CFE  Character:^b The comparison is based on the underlying ASCII
+        code.  ASCII codes for alphabetic characters are ascending (e.g., the
+        code for "A" is 65 and the code for "Z" is 90).
+
+        When EXACT is OFF two character strings are compared according to the
+        following rules; assume two character strings, cLeft and cRight,
+        where the expression to test is (cLeft = cRight):
+
+        ^b-^b  If cRight is null, return true (.T.).
+
+        ^b-^b  If LEN(cRight) is greater than LEN(cLeft), return false (.F.).
+
+        ^b-^b  Compare all characters in cRight with cLeft.  If all
+           characters in cRight equal cLeft, return true (.T.); otherwise
+           return false (.F.).
+
+        With EXACT ON, two strings must match exactly, except for trailing
+        blanks.
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value.
+
+     ^b^CFE  Logical:^b True (.T.) is equal to true (.T.) and false (.F.)
+        equal to false (.F.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  NIL:^b True (.T.) if compared to a NIL value; false (.F.) if
+        compared to a value of any other data type.
+
+     ^b^CFE  Numeric:^b Compared based on magnitude.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate how the equal operator (=) behaves
+        with different data types:
+
+        // Character
+        SET EXACT ON
+        ? "123" = "123  "        // Result: .T.
+        ? " 123" = "123"         // Result: .F.
+        SET EXACT OFF
+        ? "123" = "12345"        // Result: .F.
+        ? "12345" = "123"        // Result: .T.
+        ? "123" = ""             // Result: .T.
+        ? "" = "123"             // Result: .F.
+
+        // Date
+        ? CTOD("12/12/88") = ;
+           CTOD("12/12/88")      // Result: .T.
+
+        // Logical
+        ? .T. = .T.              // Result: .T.
+        ? .F. = .F.              // Result: .T.
+
+        // NIL
+        ? NIL = NIL              // Result: .T.
+        ? NIL = 12               // Result: .F.
+        ? NIL = CTOD("")         // Result: .F.
+
+        // Numeric
+        ? 2 = 1                  // Result: .F.
+        ? 1 = 1                  // Result: .T.
+!seealso: "$" "<" "<=" "<>" "==" ">" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ==              Exactly equal--binary                      (Relational)
+'------------------------------------------------------------------------------
+ ^b==^b
+ Exactly equal--binary                           (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> == <exp2>
+
+ ^bType^b
+
+     All
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of the same data type to
+     compare.
+
+ ^bDescription^b
+
+     == is a binary operator that compares two values of the same data type
+     for exact equality depending on the data type.  It returns true (.T.) if
+     <exp1> is equal to <exp2> according to the following rules:
+
+     ^b^CFE  Array:^b Compares for identity.  If <exp1> and <exp2> are
+        variable references to the same array, returns true (.T.); otherwise
+        returns false (.F.).
+
+     ^b^CFE  Character:^b Comparison is based on the underlying ASCII code.
+        ASCII codes for alphabetic characters are ascending (e.g., the code
+        for "A" is 65 and the code for "Z" is 90).  Unlike the (=) relational
+        operator, true (.T.) is returned if <exp1> and <exp2> are exactly
+        equal including trailing spaces; otherwise the comparison returns
+        false (.F.).  SET EXACT has no effect.
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value; behaves the same as the relational equality operator (=).
+
+     ^b^CFE  Logical:^b True (.T.) is exactly equal to true (.T.), and false
+        (.F.) is exactly equal to false (.F.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  NIL:^b True (.T.) if compared to a NIL value; false (.F.) if
+        compared to a value of any other data type.
+
+     ^b^CFE  Numeric:^b Compared based on magnitude; behaves the same as the
+        relational equality operator (=).
+
+     ^b^CFE  Object:^b Treated the same as array.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate how the == operator behaves with
+        different data types:
+
+        // Character
+        ? "A" == "A"             // Result: .T.
+        ? "Z" == "A"             // Result: .F.
+        ? "A" == "A "            // Result: .F.
+        ? "AA" == "A"            // Result: .F.
+
+        // Array or object
+        aOne := { 1, 2, 3 }
+        aTwo := { 1, 2, 3 }
+        aThree := aOne
+        ? aOne == aTwo           // Result: .F.
+        // values within the arrays are equal, but the arrays,
+        // themselves, are separate and distinct
+
+        ? aOne == aThree         // Result: .T.
+!seealso: "$" "<" "<=" "<>" "= (equality)" ">" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: >               Greater than--binary                       (Relational)
+'------------------------------------------------------------------------------
+ ^b>^b
+ Greater than--binary                            (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> > <exp2>
+
+ ^bType^b
+
+     Character, date, logical, memo, numeric
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of any type to be compared.
+
+ ^bDescription^b
+
+     > (greater than) is a binary operator that compares two values of the
+     same data type and returns true (.T.) if <exp1> is greater than <exp2>.
+
+     ^b^CFE  Character:^b The comparison is based on the underlying ASCII
+        code.  ASCII codes for alphabetic characters are ascending (e.g., the
+        code for "A" is 65 and the code for "Z" is 90).
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value.
+
+     ^b^CFE  Logical:^b True (.T.) is greater than false (.F.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  Numeric:^b Compared based on magnitude.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate how the greater than operator (>)
+        behaves with different data types:
+
+        // Character
+        ? "Z" > "A"            // Result: .T.
+        ? "ZA" > "A"           // Result: .T.
+        ? "Z" > "AZ"           // Result: .T.
+
+        // Date
+        ? CTOD("12/12/88") > ;
+           CTOD("12/11/88")    // Result: .T.
+
+        // Logical
+        ? .T. > .F.            // Result: .T.
+
+
+        // Numeric
+        ? 2 > 1                // Result: .T.
+        ? 1 > 2                // Result: .F.
+!seealso: "$" "<" "<=" "<>" "= (equality)" "==" ">=" 
+'------------------------------------------------------------------------------
+
+
+
+!short: >=              Greater than or equal--binary              (Relational)
+'------------------------------------------------------------------------------
+ ^b>=^b
+ Greater than or equal--binary                   (Relational)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<exp1> >= <exp2>
+
+ ^bType^b
+
+     Character, date, logical, memo, numeric
+
+ ^bOperands^b
+
+     ^b<exp1>^b and ^b<exp2>^b are expressions of any data type to be
+     compared.
+
+ ^bDescription^b
+
+     The >= (greater than or equal to) is a binary operator that compares two
+     values of the same data type and returns true (.T.) if <exp1> is greater
+     than or equal to <exp2>.
+
+     ^b^CFE  Character:^b The comparison is based on the underlying ASCII
+        code.  ASCII codes for alphabetic characters are ascending (e.g., the
+        code for "A" is 65 and the code for "Z" is 90).
+
+     ^b^CFE  Date:^b Dates are compared according to the underlying date
+        value.
+
+     ^b^CFE  Logical:^b True (.T.) is greater than false (.F.).
+
+     ^b^CFE  Memo:^b Treated the same as character.
+
+     ^b^CFE  Numeric:^b Compared based on magnitude.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These examples illustrate how the greater than or equal
+        operator (>=) behaves with different data types:
+
+        // Character
+        ? "Z" >= "A"             // Result: .T.
+        ? "ZA" >= "A"            // Result: .T.
+        ? "Z" >= "AZ"            // Result: .T.
+
+        // Date
+        ? CTOD("12/12/88") >= ;
+           CTOD("12/11/88")      // Result: .T.
+
+
+        // Logical
+        ? .T. >= .F.             // Result: .T.
+
+        // Numeric
+        ? 2 >= 1                 // Result: .T.
+        ? 1 >= 2                 // Result: .F.
+!seealso: "$" "<" "<=" "<>" "= (equality)" "==" ">" 
+'------------------------------------------------------------------------------
+
+
+
+!short: @               Pass-by-reference--unary                   (Special)
+'------------------------------------------------------------------------------
+ ^b@^b
+ Pass-by-reference--unary                        (Special)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b@<idVar>
+
+ ^bOperands^b
+
+     ^b<idVar>^b is any valid CA-Clipper variable identifier, other than a
+     database field or an array element, to pass by reference.  Database
+     fields and array elements can only be passed by value.
+
+ ^bDescription^b
+
+     The pass-by-reference operator (@) passes variables by reference to
+     functions or procedures invoked with function-calling syntax.  It is a
+     unary prefix operator whose operand may be any variable name.
+
+     Passing a variable by reference means that a reference to the value of
+     the argument is passed instead of a copy of the value.  The receiving
+     parameter then refers to the same location in memory as the argument.
+     If the called routine changes the value of the receiving parameter, it
+     also changes the argument passed from the calling routine.
+
+     Passing a variable by value means that the argument is evaluated and its
+     value is copied to the receiving parameter.  Changes to a receiving
+     parameter are local to the called routine and lost when the routine
+     terminates.  The default method of passing arguments is by value for all
+     data types including references to arrays and objects.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example demonstrates the difference between passing a
+        user-defined function argument by reference and by value:
+
+        LOCAL nNum := 1                   // Initial values
+        LOCAL aArr := { "a", "b", "c" }
+        //
+        CLS
+        // Print initial values
+        ? VALTYPE(nNum), nNum
+        ? VALTYPE(aArr), aArr[1], aArr[2], aArr[3]
+        //
+
+        Udf1(nNum)                        // Pass by value (default)
+        ? VALTYPE(nNum), nNum             // Result:  N, 1
+        //
+        Udf1(aArr[1])                     // Pass by value (default)
+        ? VALTYPE(aArr), aArr[1],;
+              aArr[2], aArr[3]            // Result:  A, "a" "b" "c"
+        //
+        Udf2( aArr                         // Pass a reference to
+           ? VALTYPE(aArr), aArr[1],;      // the array (default)
+              aArr[2], aArr[3]             // A, "Oi" "b" "c"
+        //
+        Udf1(@nNum)                        // Force pass by reference
+        ? VALTYPE(nNum), nNum              // Result:  N, 1000
+        //
+        Udf3(@aArr)                        // Pass array by reference
+        ? VALTYPE(aArr)                    // Result:  N
+        //
+        RETURN NIL
+
+
+        FUNCTION Udf1(nParam)              // Receive as a local
+        ? nParam                           // parameter
+        nParam := 1000
+        ? nParam
+        RETURN NIL
+        //
+        FUNCTION Udf2( aParam )            // Receive as a local
+        ? VALTYPE(aParam), aParam[1]       // parameter
+        aParam[1] := "Oi!"
+        ? aParam[1]
+        RETURN NIL
+        //
+        FUNCTION Udf3(aParam)              // Receive as a local
+        ? VALTYPE(aParam), aParam[1]       // parameter
+        aParam := 1000
+        ? aParam
+        RETURN NIL
+!seealso: c52g_004.ngo:"FUNCTION" c52g_004.ngo:"PROCEDURE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: [ ]             Array element indicator                    (Special)
+'------------------------------------------------------------------------------
+ ^b[ ]^b
+ Array element indicator                         (Special)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b<aArray>[<nSubscript>, ... ]
+     ^b<aArray>[<nSubscript1>][<nSubscript2>] ...
+
+ ^bOperands^b
+
+     ^b<aArray>^b is an expression that returns a reference to an array.
+     This is generally a variable identifier or instance variable.
+
+     ^b<nSubscript>^b is a numeric expression that addresses an individual
+     element in the specified array or subarray.  Each subscript corresponds
+     to a dimension of the array.
+
+ ^bDescription^b
+
+     The subscript operator ([]) specifies a single array element.  The name
+     of a previously declared array must precede the left bracket and the
+     array element subscript must appear as a numeric expression within the
+     brackets.  You can make array element references using Pascal or C-style
+     syntax.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example accesses each element in a two-dimensional array
+        of known dimensions:
+
+        LOCAL i, j
+        FOR i := 1 TO 5
+           FOR j := 1 TO 10
+              ? aOne[i, j]
+           NEXT
+        NEXT
+
+     ^b^CFE^b  These examples specify an <aArray> expression:
+
+        LOCAL aArray := { 1, 2, 3, 4, 5 }
+        //
+        ? ArrayFunc()[]
+        ? { {1, 2}, {3, 4} }[1][2]           // Result: 2
+        ? aArray[5]                          // Result: 5
+
+     ^b^CFE^b  This example queries and assigns a static array encapsulated
+        within a function definition:
+
+        ? ArrayFunc()[1]                     // Result: 1
+        ArrayFunc()[1] := 10
+        ? ArrayFunc()[1]                     // Result: 10
+
+        FUNCTION ArrayFunc
+           STATIC aArray := { 1, 2 }
+           RETURN aArray
+!seealso: c52g_001.ngo:"ARRAY()" c52g_004.ngo:"LOCAL" c52g_004.ngo:"PRIVATE" c52g_004.ngo:"PUBLIC" c52g_004.ngo:"STATIC" 
+'------------------------------------------------------------------------------
+
+
+
+!short: { }             Literal array and code block delimiters    (Special)
+'------------------------------------------------------------------------------
+ ^b{ }^b
+ Literal array and code block delimiters         (Special)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^b{ <exp list> }                   (literal array)
+     ^b{ |<param list>| <exp list> }    (code block definition)
+
+ ^bOperands^b
+
+     ^b<exp list>^b is a list of expressions of any type.  If the item is a
+     literal array definition, it can contain another literal array
+     definition.
+
+     ^b<param list>^b is a list of variables to receive parameters passed to
+     a code block from an invocation of the EVAL() function.  The parameter
+     list is comma-separated and must be enclosed by vertical bars (||).
+     Variables specified in this list are declared local to the code block
+     and are visible only within the code block definition.
+
+ ^bDescription^b
+
+     Curly braces ({}) delimit references to literal arrays or code blocks.
+     If the reference is a literal array, you can use them to create an array
+     in either an assignment or a variable declaration statement.  If the
+     reference is a variable declaration, the array can contain expressions
+     of any kind as elements, unless STATIC is the declaration statement.  In
+     this case, the literal array can only contain constant values.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses literal arrays in declaration statements to
+        create a variable and initialize it with an array reference:
+
+        LOCAL aPerson := { "Name", "Address", DATE() }
+        STATIC aNumList := { 1, 2, 3, 4, 5, 6, 7, 8 }
+
+     ^b^CFE^b  This example creates a multiple dimension literal array:
+
+        aMulti := { {1, 2, 3}, {"A", "B", "C"} }
+
+     ^b^CFE^b  This example uses curly braces to formulate a simple code
+        block with a single parameter:
+
+        LOCAL bSayBlock
+        bSayBlock := { |x| QOUT(x) }
+        EVAL(bSayBlock, 10)               // Result: 10
+!seealso: c52g_001.ngo:"EVAL()" c52g_004.ngo:"LOCAL" c52g_004.ngo:"PRIVATE" c52g_004.ngo:"PUBLIC" c52g_004.ngo:"STATIC" 
+'------------------------------------------------------------------------------
+
+
+

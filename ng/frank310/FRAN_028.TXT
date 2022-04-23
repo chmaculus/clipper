@@ -1,0 +1,999 @@
+!short: ADblankscn()      ^rm^r Blanks the screen
+'------------------------------------------------------------------------------
+^bADblankscn( [xMsg], [nDuration], [bUnblank] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Blanks the screen and displays a message until a key is pressed, or
+ a mouse button is clicked, or the mouse is moved, at which time, the
+ original screen is restored.  The message moves from one location to
+ another location on the screen.
+
+ [xMsg] is the message line to display.  Defaults to "Press any key".  It
+ may also be an array of lines.
+
+ [nDuration] is the number of seconds the message stays on the same
+ location.  Defaults to 10 seconds.
+
+ [bUnblank] is an optional codeblock that gets EVALed whenever the user
+ requests to unblank the screen.  The request is granted, that is, the
+ screen is unblanked if the codeblock returns a TRUE.
+
+ v3.00 -> v3.10
+ --------------
+ 1.  Added the third parameter, [bUnblank]
+
+ v2.1 -> 2.2
+ -----------
+ 1.  Now polls for mouse movement too.  It exits if the mouse moves.
+ 2.  At exit, it now waits for the mouse button to be released before
+     restoring the screen.
+ 3.  [xMsg] may now be an array of message lines.
+
+ Example:
+ -------
+ #include "frankie.ch"
+ func main()
+ local cString := "The Frankie Library for Clipper"
+ local getlist[0]
+ local bUnblank := {||ADr_password() == "frankie"}
+ local bConfig := {||ADr_timeout( 3, {||ADblankscn( ,, bUnblank )} )}
+
+ cls
+ @10,10 adget cString
+ ADread( getlist, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbox()             Draws a box on the screen
+'------------------------------------------------------------------------------
+^bADbox( <nT>, <nL>, <nB>, <nR>, [cColor], [cFrame], [xShadow], [lExplode] )
+^b      --> <aSavedScreen>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Draws a box on the screen.  Returns an array, <aSavedScreen>, that defines
+ the overwritten screen, which may be restored by passing <aSavedScreen> to
+ ADrestscn().
+
+ <nT>, <nL>, <nB>, <nR> are the coordinates of the box.
+
+ [cColor] is a color string.  Defaults to the current standard color.
+
+ [cFrame] is the box frame.  Defaults to "ÕÍ¸³¾ÍÔ³ ".
+
+ [xShadow] is a flag with these possible values and meaning:
+
+    NIL, .T.,         - N+/N shadow
+    .F., ""           - no shadow
+    Color Specifier   - shadow with the specified color
+    "N/N"             - ignored
+
+ [lExplode] is a logical value.  If it is TRUE, the box explodes when drawn.
+ Defaults to TRUE.
+
+ Example:
+ --------
+ aScn := ADbox( 10,10,20,69 )
+ inkey(0)
+ ADrestscn( aScn )
+
+ 2.3
+ ---
+ The seventh parameter [xShadow] used to accept only logical values
+ corresponding to with or without a N+/N shadow.  Now the color shadow
+ may be specified, as well.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADchgcolor()        Changes the color of a screen section
+'------------------------------------------------------------------------------
+^bADchgcolor( <nT>, <nL>, <nB>, <nR>, <cColor> ) --> <aOverwrittenScreen>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Changes the color of a screen section bounded by <nT>, <nL>, <nB>, <nR> to
+ <cColor>.  Before changing the color, it saves the affected screen and
+ returns it later as <aOverwrittenScreen> which can be passed to ADrestscn()
+ to restore it.
+
+ NOTE:  ADchgcolor() will ignore "N/N".
+
+ Example:
+ --------
+ func main()
+ local aScn := ADchgcolor( 10,10,20,69, "R/B" )
+ inkey(0)
+ ADrestscn( aScn )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADcls()             Clears a screen section
+'------------------------------------------------------------------------------
+^bADcls( [cFillChar], [cColor], [nT], [nL], [nB], [nR], [lResetColor] )
+^b      --> <aRetval>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Clears the screen.
+
+ [cFillChar] - a single character to fill the cleared screen with.  Defaults
+ to a space.
+
+ [cColor] - color to shade the cleared area with.  Defaults to
+ "W+/BG,GR+/R,nil,nil,GR+/G" and "W/N,N/W,nil,nil,N/W" in color and mono,
+ respectively.
+
+ [nT], [nL], [nB], [nR] - boundaries of screen to be cleared.  Default to
+ 0, 0, maxrow() and maxcol(), respectively.
+
+ [lResetColor] - is a logical value.  If it is TRUE, the default colors will
+ be set to [cColor].  Defaults to FALSE.
+
+ <aRetval> - the return value is an array of 2 elements:
+
+ 1 - the current color.  It is NIL if [lResetColor] is FALSE.
+ 2 - the overwritten screen.
+
+ Example:
+ --------
+ func main()
+ local aScn := ADcls( "°", "R/W", 10,10,20,69 )[2]
+ inkey(0)
+ ADrestscn( aScn )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADcsay()            Displays a string in the middle of two column positions
+'------------------------------------------------------------------------------
+^bADcsay( <nRow>, <nCol1>, <nCol2>, <cString>, [cColor], [lPad] )
+       --> <nStartCol>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a string in the middle of two columns.
+
+ <nRow> is the row position where the string is to be displayed
+
+ <nCol1> and <nCol2> are the column positions between which <cString> is to
+ be displayed.
+
+ <cString> is the string to display.  Note that it is never displayed on
+ <nCol1> and <nCol2>.  If it is longer than the space between (and not
+ including) the two column positions, it will be truncated and will be
+ displayed starting on (<nCol1> + 1) up to (<nCol2> - 1).
+
+ [nColor] is an optional color specifier to display <cString> in.  It
+ defaults to the standard color.
+
+ [lPad] is an optional logical flag.  If it is TRUE, ADcsay() will center
+ pad <cString> so that it occupies the whole length from <nCol1> to
+ <nCol2>.  Defaults to FALSE.
+
+ <nStartCol> is the return value.  It is the column position where the
+ display starts.
+
+ v2.30 -> v3.00
+ --------------
+ Added the [lPad] parameter.
+
+ v2.1 -> 2.2
+ -----------
+ Now ADcsay() returns a numeric value.
+
+ Example:
+ --------
+ ADcsay( maxrow(), 0, maxcol(), "Middle of the Bottom Line" )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdisparray()       Displays an array of strings in different colors.
+'------------------------------------------------------------------------------
+^bADdisparray( <aStringColor> ) --> ""
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays an array of strings in different colors at the current cursor
+ location.
+
+ <aStringColor> is an array of subarrays.  Each subarray has 2 elements:
+
+   1 - the string to display
+   2 - the color to display it in
+
+ ^bExample
+ ^b-------
+ @10,10 ADdisparray({;
+                        { "Red",             "R/W"      },;
+                        { "Blue",            "B/W"      },;
+                        { "Yellow",          "GR+/W"    },;
+                        { "Green",           "G/W"      },;
+                        { "Cyan",            "BG/W"     },;
+                        { "Magenta",         "BR/W"     };
+                    })
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdisplist()        Displays a list of strings in different colors.
+'------------------------------------------------------------------------------
+^bADdisplist( [cStringColor..] ) --> ""
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a list of strings in different colors at the current cursor
+ location.
+
+ [cStringColor..] is a list of strings and color specifiers.  The list must
+ be in this format: s1, c1, s2, c2, s3, c3, s4, c4 where the s's are the
+ strings and the c's are their corresponding colors.  There can only be a
+ maximum of 4 of such pairs.  If you need to have more, use ADdisparray()
+ which supports an unlimited number of pairs.
+
+ ^bExample
+ ^b-------
+ @10,10 say ADdisplist( "Red",             "R/W",;
+                        "Blue",            "B/W",;
+                        "Yellow",          "GR+/W",;
+                        "Green",           "G/W";
+                      ) +;
+            ADdisplist( "Cyan",            "BG/W",;
+                        "Magenta",         "BR/W";
+                      )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADenhcolor()        Returns the current enhanced color setting.
+'------------------------------------------------------------------------------
+^bADenhcolor() --> <cEnhancedColor>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the current Clipper enhanced color setting.
+
+ ^bExample
+ ^b-------
+ ? ADenhcolor()      // "W/N"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhorline()         Draws a horizontal line.
+'------------------------------------------------------------------------------
+^bADhorline( <nRow>, <nCol1>, <nCol2>, [cFrame], [cColor] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Draws a horizontal line.
+
+ <nRow> is the row position to display the line.
+
+ <nCol1> is the column position where the line starts.
+
+ <nCol2> is the column position where the line ends.
+
+ [cFrame] is an optional string of 3 line characters.  The first and last
+ characters will be the first and last characters to be used for the line.
+ The second character will be used for anything in between.  Defaults to
+ "ÆÍµ"
+
+ [cColor] is the color to display it in.  Defaults to the current standard
+ color setting.
+
+ ^bExample
+ ^b-------
+ ADhorline( 10, 10, 14 )            // "ÆÍÍÍµ"
+ ADhorline( 11, 10, 14, "+-+" )     // "+---+"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADiscolor()         Checks for a color monitor, or if mono is to be forced
+'------------------------------------------------------------------------------
+^bADiscolor() --> <lColor>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns a logical value, <lColor>, indicating the application's color mode.
+ This typically is the value of iscolor(), unless "MONO" was passed as a Dos
+ command line argument to force a mono display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADlegend()          Displays 2-line formatted menu.
+'------------------------------------------------------------------------------
+^bADlegend( <aPrompt>, [aTrigger], [aAltTrigger], [aColor], [nRow], [nCol1],;
+^b      [nCol2], [nPad] ) --> <aRetval>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a 2-line formatted menu similar to:
+
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄ
+    AppendBlank ³ Delete ³ Recall ³ Index ³ reFresh ³ Order ³
+
+
+ <aPrompt> - an array of prompt strings to be displayed on 2nd line.  In the
+ above illustration, <aPrompt> would be { "AppendBlank", "Delete", "Recall",
+ "Index", "reFresh",; "Order" }.  NOTE that there must be at least 2 options.
+
+ [aTrigger] - an array of trigger positions.  Defaults to { 1, .., 1 }.  In
+ the above illustration, [aTrigger] would be { 1,1,1,1,3,1 }.
+
+ [aAltTrigger] - an array of alternate trigger key names.  Defaults to
+ { "".."" }.  These names are displayed on the 1st line on top of their
+ respective equivalents.  In the above example, had { "F2", "F3", "F4",
+ "F5", "F6" } been passed, then the menu would have been:
+
+ ÄÄÄF1ÄÄÄÄÄÄÄÄÄÄÂÄF2ÄÄÄÄÄÂÄF3ÄÄÄÄÄÂÄF4ÄÄÄÄÂÄF5ÄÄÄÄÄÄÂÄF6ÄÄÄÄÂÄÄÄ
+    AppendBlank ³ Delete ³ Recall ³ Index ³ reFresh ³ Order ³
+
+
+ [aColor] - an array of { standard, trigger } colors.
+
+ [nRow] - the row position of the first line,  Default = maxrow() - 1
+
+ [nCol1] - the starting column,  Default = 0
+
+ [nCol2] - the ending column.  Default = maxcol()
+
+ [nPad] - the number of spaces to pad around a prompt string.  Default = 1
+
+ <aRetval> - the return value is an array:
+
+   1 - the overwritten screen.
+
+   2 - an array of hot spots, one spot for each menu option.
+
+   3 - an array of hot keys, two for each menu option.  In the above
+       illustration, this array would be:
+
+       {;
+          K_a, K_d, K_r, K_i, K_f, K_o,;
+          K_A, K_D, K_R, K_I, K_F, K_O;
+       }
+
+
+ Example:
+ --------
+ aLegend := ADlegend(;
+                       { "AppendBlank", "Delete", "Recall", "Pack", "Index" },;
+                       {  1,            1,        1,        1,      1       };
+                    )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADmessage()         Displays a boxed message.
+'------------------------------------------------------------------------------
+^bADmessage( <xMsg>, [nTop], [nLeft], [lPause], [lAddPrompt], [aColor],;
+^b        [cHelpID], [cHelpHeader] ) --> <xRetval>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a boxed message on the screen.
+
+ <xMsg> is either an array of strings to be displayed
+
+        ADmessage( { "Hello", "World" } )
+        ADmessage( { "Hello" } )
+
+ or a single value of any type (not array elements)
+
+        ADmessage( "Hello" ) // note there are no curly braces {}
+        ADmessage( 1 )       // in these examples
+        ADmessage( date() )
+        ADmessage( .F. )
+
+ [nTop], [nLeft] is the top/left corner of the box.  The box is centered if
+ they are not passed.
+
+ [lPause] - is a logical.  If it is TRUE, the program pauses execution until
+ a key is pressed, or a mouse button is clicked, at which time the message is
+ cleared and the program execution is resumed.  If it is FALSE, the app
+ program continues right after the message is displayed.  Defaults to TRUE.
+
+ [lAddPrompt] - is a logical value.  If it is TRUE, the message is modified
+ in accordance to the following rules:
+
+   1.  If [lPause] is TRUE, another line "Press any key..." is added to the
+       displayed message.
+
+   2.  If [lPause] is FALSE, three dots, "..." are added to the last line.
+
+ [aColor] - is an array of color strings:
+
+   1 - color of the box and message lines.  Defaults to "GR+/RB" and "W/N"
+       in color and mono, respectively.
+
+   2 - color of "Press any key" if it is added.  Defaults to "B+/RB" and
+       "W+/N" in color and mono, respectively.
+
+   3 - color of the "...".  Defaults to "G*/RB" and "W*/N" in color and mono,
+       respectively.
+
+ [cHelpID] - is an Help Identifier string used by the Help Facility.
+
+ [cHelpHeader] is an optional Help Header string.
+
+ <xRetval> the return value.  Its type and meaning depend on the value of
+ [lPause].  If [lPause] is TRUE, the return value is an array:
+
+   1 - inkey code of the pressed key that resumes program execution
+
+   2 - the mouse button that was clicked (0=None, 1=Left, 2=Right)
+
+   3 - the row position of the mouse cursor
+
+   4 - the column position of the mouse cursor
+
+ If [lPause] is FALSE, the return value is the overwritten screen variable.
+
+ v2.30 -> v3.00
+ --------------
+ The <xMsg> parameter can now accept a single value of any type.
+
+ Example:
+ --------
+ aMsg := { "This is a message" }
+ ADmessage( aMsg, 10, 10,,, { "W+/G", "R/G", "GR+/G" } )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADmsg_bare()        Displays a bare message.
+'------------------------------------------------------------------------------
+^bADmsg_bare( <nRow>, <nCol>, <cMsg>, [cColor], [lPause] ) --> <xRetval>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a bare message, that is, without any box.
+
+ <nRow>, <nCol> are the coordinates of the location where the message is
+ displayed.
+
+ <cMsg> is a one-liner message string.
+
+ [cColor] is the color to display the <cMsg> in.   Defaults to the standard
+ color.
+
+ [lPause] is a logical that specifies whether or not the program should
+ pause after displaying the message, or not.  If it is TRUE (the default),
+ the program pauses until a key is pressed, or a mouse button is clicked, at
+ which time the overwritten screen is restored and the program resumes.
+
+ <xRetval> is the return value.  If [lPause] is TRUE the return value is an
+ array similar to ADwait()'s return value.  If it is FALSE, the return
+ value is an array that the defines the overwritten screen.  This value may
+ be used by ADrestscn() to restore the screen at some future time.
+
+ ^bExample
+ ^b-------
+ aScn := ADmsg_bare( 10,10, "WAIT", "B*/R", .f. )
+ // more code here
+ ADrestscn( aScn )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADmsg_boxattr()     Globally configures the box attributes of ADmessage()
+'------------------------------------------------------------------------------
+^bADmsg_boxattr( <aAttr> ) --> <aOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Globally configures the box attributes of ADmessage().
+
+ <aAttr> is an array of three elements:
+
+    1 - the frame string
+    2 - the shadow color
+    3 - the explode flag
+
+ <aOld> is an array similar in structure to <aAttr>.  It is the current
+ configuration before the ADmsg_boxattr() call.
+
+ Example:
+ --------
+ func main()
+ local aMsg := { "This is a test message." }
+
+ ADmessage( aMsg )
+ ADmsg_boxattr( { "+-+|+-+| ", "R/W", .f. } )
+ ADmessage( aMsg )
+ return nil
+!seealso: "ADmessage()" "ADmsg_colors()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADmsg_colors()      Globally configures the ADmessage() colors
+'------------------------------------------------------------------------------
+^bADmsg_colors( <aColors> ) --> <aOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Globally configures the ADmessage() colors.
+
+ <aColors> is an array of three elements:
+
+    1 - the box and text color
+    2 - the 'Press any key' color
+    3 - the '...' color
+
+ <aOld> is an array similar in structure to <aColors>.  It is the current
+ configuration before the ADmsg_colors() call.
+
+ Example:
+ --------
+ func main()
+ local aMsg := { "This is a test message." }
+
+ ADmessage( aMsg )
+ ADmsg_colors( { "GR+/B", "R+/B", "W/B" } )
+ ADmessage( aMsg )
+ return nil
+!seealso: "ADmessage()" "ADmsg_boxattr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADmsg_pop()         Displays ADccast'ed values
+'------------------------------------------------------------------------------
+^bADmsg_pop( xValue1, xValue2,.., xValue14 ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays the ADccast'ed values of up to 14 passed values.  Then pauses prog
+ execution until a key is pressed, or a button is clicked, at which time the
+ display is cleared, and program execution is resumed.
+
+ Example:
+ --------
+ local xx := date(), yy := 1, zz := "ABC"
+ ADmsg_pop( xx, yy, zz )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADmsg_prompt()    ^rn^r Globally redefines the "Press any key" prompt of ADmessage()
+'------------------------------------------------------------------------------
+^bADmsg_prompt( <cPrompt> ) --> <cOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Globally redefines the "Press any key" prompt of ADmessage().
+
+ <cPrompt> is the new prompt.
+
+ <cOld> is the old prompt.
+
+ Example
+ -------
+ func fatal_error()
+ ADmsg_prompt( "!@#$%^&*" )
+ ADmessage( { "WARNING: A fatal error was encountered.",;
+              "         Please exit the program now!";
+            };
+          )
+ return NIL
+!seealso: "ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADprintscn()        Prints a screen section
+'------------------------------------------------------------------------------
+^bADprintscn( [nT], [nL], [nB], [nR], [cFile], [cMode] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Prints the screen area bounded by [nT], [nL], [nB], [nR].  If these values
+ are not passed, the entire screen is printed.  Output is sent to the
+ [cFile].  [cMode] is either an "A" or "C".  If it is "C", then a new file is
+ created.  If it is "A", [cFile] is appended if it is already existing, or
+ created if it does not exist.  If [cFile] is "PRN", the output is sent
+ directly to the printer.  If [cFile] is not passed, output is sent to
+ "FRANKIE.SCN".  ADprintscn() does not check for printer-readiness.
+
+ Example:
+ --------
+ ADprintscn( 10,10,20,69 )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrestcsr()         Restores a saved cursor state
+'------------------------------------------------------------------------------
+^bADrestcsr( <aCursor> ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Restores the cursor state saved by ADsavecsr().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrestscn()         Restores a saved screen
+'------------------------------------------------------------------------------
+^bADrestscn( <aScreen> ) --> <aOverwrittenScreen>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Restores a previously saved screen, and at the same time saves the current
+ screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsavecsr()         Saves the current cursor status
+'------------------------------------------------------------------------------
+^bADsavecsr( [nCursor] ) --> <aCursor>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Saves the current status of the cursor, and optionally changes its shape to
+ [nCursor] whose valid values are #defined in SETCURSR.CH.  The return value,
+ <aCursor> may later be passed to ADrestcsr() to restore the saved state.
+ <aCursor> is an array containing this elements:
+
+ 1 - the current cursor size
+ 2 - the current row position
+ 3 - the current column position
+
+ Example:
+ --------
+ func main()
+ local aCursor
+
+ @ 24,0
+ inkey(0)
+ aCursor := ADsavecsr(4)
+ @ 0,0
+ inkey(0)
+ ADrestcsr( aCursor )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsavescn()         Saves a screen section
+'------------------------------------------------------------------------------
+^bADsavescn( <nT>, <nL>, <nB>, <nR> ) --> <aSavedScreen>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Saves the screen section bounded by <nT>, <nL>, <nB>, <nR>, and returns a
+ value that may be passed to ADrestscn() to restore the saved screen.
+ <aSavedScreen> is an array of 5 elements:
+
+ 1 - top
+ 2 - left
+ 3 - bottom
+ 4 - right
+ 5 - saved screen string
+
+ Example:
+ --------
+ func main()
+ local aScn := ADsavescn( 10,10,20,69 )
+ cls
+ inkey(0)
+ ADrestscn( aScn )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsay()             Displays a string on the screen
+'------------------------------------------------------------------------------
+^bADsay( <nRow>, <nCol>, <cLine>, [cColor] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a string, <cLine> at location <nRow>, <nCol> and shades it with
+ [cColor].  If [cColor] is not passed, it defaults to the current standard
+ color.  This function is functionally the same as:
+
+ setpos( <nRow>, <nCol> ); dispout( <cLine>, [cColor] )
+
+ Example:
+ --------
+ ADsay( 10,10, "Frankie", "R/W" )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADscn_hcenter()     Returns start column for horizontal centering
+'------------------------------------------------------------------------------
+^bADscn_hcenter( <nWidth> ) --> <nStartColumn>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the starting column position of an intention to horizontally center
+ something on the screen.
+
+
+ <nWidth> is the width of the "something" to be centered.
+
+ <nStartRow> is the starting column position of the "something" to be
+ centered.
+
+ ^bExample
+ ^b-------
+ nHeight := 10
+ nWidth := 10
+ nTop := ADscn_vcenter( nHeight )
+ nLeft := ADscn_hcenter( 10 )
+ ADbox( nTop, nLeft, nTop + nHeight + 1, nLeft + nWidth + 1 )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADscn_vcenter()     Returns start row for vertical centering
+'------------------------------------------------------------------------------
+^bADscn_vcenter( <nHeight> ) --> <nStartRow>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the starting row position of an intention to vertically center
+ something on the screen.
+
+ <nHeight> is the height of the "something" to be centered.
+
+ <nStartRow> is the starting row position of the "something" to be centered.
+
+ ^bExample
+ ^b-------
+ nHeight := 10
+ nWidth := 10
+ nTop := ADscn_vcenter( nHeight )
+ nLeft := ADscn_hcenter( 10 )
+ ADbox( nTop, nLeft, nTop + nHeight + 1, nLeft + nWidth + 1 )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstat_init()       Initializes the ADstat_..() set.
+'------------------------------------------------------------------------------
+ ^bADstat_init( [cMsg], [nSize], [nRow], [nCol], [cColor], [cFrame],;
+      [xShadow], [lExplode] ) --> <aScn>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Initializes and displays an initialized one-line status box.
+
+ [cMsg] is a string displayed inside the box toward the left side.
+ Defaults to "Status: ".
+
+ [nSize] is the size allocated for the status update string.  Defaults
+ to 5.
+
+ [nRow], [nCol] are the top/left corner of the status box.  The box is
+ centered on the screen by default.
+
+ [cColor], [cFrame], [xShadow] and [lExplode] are the color, frame, shadow
+ and explode flag of the box, which have the same meaning as ADbox()
+ parameters of the same name.
+
+ v2.30 -> v3.00
+ --------------
+ The [cFrame], [xShadow] and [lExplode] parameters were added.
+
+ Note:
+ -----
+ The ADstat_..() functions make up a set of functions that display
+ information about the status of a process loop.  The functions are:
+
+ ADstat_init() - initializes the set.
+ ADstat_update() - updates the information in the status box.
+ ADstat_clear() - clears the set.
+
+
+ Example
+ -------
+ func main()
+ use hotel
+ cls
+
+ ? "demo #1: Basic Implementation"
+ one()
+
+ ? "demo #2: Configured Message and Color"
+ two()
+
+ ? "demo #3: Configured Update Info Color"
+ three()
+
+ ? "demo #4: Press Esc or click the right mouse button to interrupt"
+ four()
+
+ use
+ return NIL
+
+
+ func one()
+ ADstat_init()
+ dbgotop()
+
+ do while !eof()
+    ADstat_update( recno() )
+    dbskip()
+
+    // do something
+    inkey(.01)
+ enddo
+
+ ADstat_clear()
+ return NIL
+
+
+
+ func two()
+ local cInitText := "Processing " + alltrim( str( lastrec() ) ) + " Records: "
+ local cInitColor :=  "W+/B"
+ ADstat_init( cInitText,,,, cInitColor )
+ dbgotop()
+
+ do while !eof()
+    ADstat_update( recno() )
+    dbskip()
+
+    // do something
+    inkey(.01)
+ enddo
+
+ ADstat_clear()
+ return NIL
+
+
+
+ func three()
+ local cInitText := "Processing Record: "
+ local cInitColor :=  "W+/B"
+ local nUpdateLength := 10
+ local cUpdateText
+ local cUpdateColor := "GR+/B"
+ local cLastRec := alltrim( str( lastrec() ) )
+
+ ADstat_init( cInitText, nUpdateLength,,, cInitColor )
+ dbgotop()
+
+ do while !eof()
+    cUpdateText := alltrim( str( recno() ) ) + " of " + cLastRec
+    ADstat_update( cUpdateText, cUpdateColor )
+    dbskip()
+
+    // do something
+    inkey(.01)
+ enddo
+
+ ADstat_clear()
+ return NIL
+
+
+ func four()
+ local cInitText := "Processing " + alltrim( str( lastrec() ) ) + " Records: "
+ local cInitColor :=  "W+/B"
+ ADstat_init( cInitText,,,, cInitColor )
+ dbgotop()
+
+ do while !eof()
+    ADstat_update( recno() )
+    dbskip()
+
+    // do something
+    inkey(.01)
+
+    if nextkey() == 27 .or. ADm_button() == 2
+       if ADboxmenu( "Processing Interupted", { "Resume", "Abort" } ) == 2
+             exit
+       endif
+    endif
+ enddo
+
+ ADstat_clear()
+ return NIL
+!seealso: "ADstat_update()" "ADstat_clear()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstat_update()     Updates the ADstat_..() set.
+'------------------------------------------------------------------------------
+ ^bADstat_update( <xStatusInfo>, [cColor] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Updates the info displayed in the status box.
+
+ <xStatusInfo> is the information displayed inside the status box.
+ It may be a numeric or character string.
+
+ [cColor] is the color of the status info.  Defaults to the color set
+ by ADstat_init().
+
+ Example:  See ADstat_init()
+!seealso: "ADstat_init()" "ADstat_clear()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstat_clear()      Clears the ADstat_..() set.
+'------------------------------------------------------------------------------
+ ^bADstat_clear()
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Clears the status box from the screen.
+
+ Example:  See ADstat_init()
+!seealso: "ADstat_init()" "ADstat_update()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstdcolor()        Returns the current standard color setting.
+'------------------------------------------------------------------------------
+^bADstdcolor() --> <cStandardColor>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the current Clipper standard color setting.
+
+ ^bExample
+ ^b-------
+ ? ADstdcolor()      // "N/W"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADverline()         Draws a vertical line.
+'------------------------------------------------------------------------------
+^bADverline( <nCol>, <nRow1>, <nRow2>, [cFrame], [cColor] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Draws a vertical line.
+
+ <nCol> is the column position to display the line.
+
+ <nRow1> is the row position where the line starts.
+
+ <nRow2> is the row position where the line ends.
+
+ [cFrame] is an optional string of 3 line characters.  The first and last
+ characters will be the first and last characters to be used for the line.
+ The second character will be used for anything in between.  Defaults to
+ "Ñ³Ï"
+
+ [cColor] is the color to display it in.  Defaults to the current standard
+ color setting.
+
+ ^bExample
+ ^b-------
+ func main()
+ ADverline( 10, 10, 20 )
+ ADverline( 14, 10, 20, "+|+" )
+ ADverline( 18, 10, 20, NIL, "R/B" )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADunscolor()        Returns the current unselected color setting.
+'------------------------------------------------------------------------------
+^bADunscolor() --> <cUnselectedColor>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the current Clipper unselected color setting.
+
+ ^bExample
+ ^b-------
+ ? ADunscolor()      // "W/N"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

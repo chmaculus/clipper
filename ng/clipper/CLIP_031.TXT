@@ -1,0 +1,34 @@
+'------------------------------------------------------------------------------
+^BRELEASE^B
+
+    RELEASE deletes memory variables.
+
+^USyntax^U
+
+    RELEASE <memvar list> / [ALL[LIKE/EXCEPT <skeleton>]]
+
+^UArguments^U
+
+    <memvar list> is a list of memory variables to delete.
+
+    <skeleton> is a wildcard mask specifying a group of memory variables to
+    delete or exclude from deletion.
+
+^UUsage^U
+
+    RELEASE deletes memory variables in two basic ways.  If the scope of
+    the deletion is a list, then the specified memory variables are deleted
+    regardless of the memory variable scope unless they are hidden.  This
+    means that PUBLIC and private memory variables declared in higher level
+    procedures are RELEASEd.  If, however, the ALL clause is specified,
+    then only memory variables defined in the current procedures are
+    RELEASEd.
+
+    Note that a hidden memory variable does not become accessible when the
+    local copy is RELEASEd but only when the procedure in which it was
+    declared PRIVATE terminates.
+!seealso: ???.ngo:"CLEAR ALL" ???.ngo:"CLEAR MEMORY" clip_027.ngo:"QUIT" 
+'------------------------------------------------------------------------------
+
+
+

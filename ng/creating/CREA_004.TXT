@@ -1,0 +1,392 @@
+!short: ^^                Character Attributes
+'------------------------------------------------------------------------------
+^b ^^                      Character Attributes^b
+
+  ^bPurpose^b
+
+    The ^^ character is an escape character used to enter special
+    characters and character attributesÄÄsuch as boldface, underlined,
+    and reverse video.
+
+  ^bFormat^b
+
+     ^^b       ^bBold attribute^b
+     ^^n       Normal attribute
+     ^^r       ^rReverse video attribute^r
+     ^^u       ^uUnderline (different color on color screen)^u
+     ^^^^       Display the ^^ character
+
+     ^^Axx          Turn on attribute specified by the hexadecimal number xx
+     ^^Cxx          Display character specified by the hexadecimal number xx
+
+    The letters can be either uppercase or lowercase; for example, ^^b or
+    ^^B.
+
+  ^bDescription^b
+
+    The caret character is used for two different purposes: to change
+    character attributes (for example, bold or underline); and to display
+    special characters (for example, the symbol for ASCII 9, which is
+    normally treated as a Tab, rather than displayed).
+
+  ^bSetting Character Attributes^b
+
+    You can include underline, bold, reverse video and other attributes
+    in the text of both long and short entries by surrounding the text
+    with the desired caretÄcharacter pair. For example, the following
+    line would appear in the Guides window in bold:
+     ^^b^bThis line is boldface.^b^^b
+
+^b       Note:^b    You should actually type the caret character (the shifted
+                6 key), rather than holding down the Ctrl key and typing
+                the letter. (If you actually want the characters ^^B to
+                appear in the text, rather than turning on boldface, type
+                two carets: ^^^^B.)
+
+    Only one attribute can be on at a time. For example, if bold is on,
+    turning on underline automatically turns off bold. Attributes are
+    also automatically turned off at the end of each line.
+
+    Only four attributesÄÄnormal, bold, underline, and reverse videoÄÄare
+    defined for all monitors; these attributes are translated to display
+    reasonably on all monitors.
+
+    In addition to these four attributes, you can insert any arbitrary
+    attribute using the ^^Axx sequence, where xx is the hexadecimal value
+    of the attribute you wish to set. Unlike the basic attributes, ^^Axx
+    attributes; are not translated for the different monitors. This means
+    that attributes visible as colors on a color screen may not appear at
+    all on a monochrome display.
+
+  ^bDisplaying Special Characters^b
+
+    The ^^Cxx sequence displays any ASCII character. This is useful when
+    you want to display a character that you can't enter with your word
+    processor. For example, ASCII 13 is normally interpreted as carriage
+    return. The IBM PC can display ASCII 13 as a musical note, however.
+    To display the musical note, use ^C0D (0D hex = 13 decimal). Other
+    characters that are often hard to enter are ^C08 (Backspace), ^C09
+    (Tab), ^C0A (Line Feed).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: '                Add a Comment
+'------------------------------------------------------------------------------
+^b '                       Add a Comment^b
+  ^bPurpose^b
+
+    Comments are lines that the compiler and linker ignore entirely.
+
+  ^bFormat^b
+
+     'text of comment
+
+      ^bNotes:^b    The single quote must be in the first screen column.
+
+                Use two single quotes at the start of the line if you
+                want a line in your long entry to start with a single
+                quote.
+
+  ^bDescription^b
+
+    You can add comment lines to data files and the menu link control
+    file by starting the line with a single quote. A comment can be a
+    whole line only; you cannot add a comment at the end of a line of
+    text in a long entry, or on the same line as a bang command (e.g.,
+    !short or !file). The Guides compiler and linker ignore comments.
+    (They also ignore blank lines, except those found in long entries,
+    where they are taken to be part of the text.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: !Credits:        Include Copyright and Credits
+'------------------------------------------------------------------------------
+^b !Credits:               Include Copyright and Credits^b
+
+  ^bPurpose^b
+
+    You may wish to include a copyright notice in your database file. In
+    response to the !credits command, the linker will insert a fiveÄline
+    copyright notice near the beginning of the `.NG' database file. In
+    addition to appearing in the database file, the text that follows the
+    !credits command also appears at the bottom of the Guides help
+    screen.
+
+  ^bFormat^b
+
+    !credits:
+    up to five lines of 65 characters each
+
+  ^bDescription^b
+
+    The !credits: command, if used, must be in the menu link control file
+    between the !name field and the the first menu definition:
+
+          !name: some database name
+          '
+          'Some comments
+          '
+          !credits:
+          Put your copyright notice and up to five lines total
+          of text here.
+          !menu: first menu name
+                            .
+                            .
+                            .
+
+    The text in the !credits field can be anything you want. Although we
+    expect most people to use this field for copyright notices, you could
+    use it to insert additional text in the help screen.
+
+       ^bNote:^b    Start typing the !credits text into the line ^bafter^b the
+                !credits command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: !File:           Reference to Another File
+'------------------------------------------------------------------------------
+^b !File:                  Reference to Another File^b
+
+  ^bPurpose^b
+
+    Use the !file command when you wish to create a short entry that
+    points to another list of short entries.
+
+  ^bFormat^b
+
+    !file: filename.ngo
+
+    The !file command, like all other bang commands, must be typed
+    starting in the leftmost screen column.
+
+  ^bDescription^b
+
+    Most of the time, a short entry will expand to a single long entry.
+    It is possible, however, to create a short entry that expands to
+    another list of short entries. Unlike a long entry, which can be
+    typed directly under its short entry, a list of short entries must be
+    placed in a separate file. The !file command is used to specify this
+    separate file.
+
+    For example, if the file SHRTLIST.DAT contained a list of short
+    entries, we could write a short entry that expanded to that list with
+    the following two lines:
+
+           !short: This short entry expands into a list.
+           !file: SHRTLIST.NGO
+
+^b      Notes:^b    You must specify the compiled object file, which will
+                have the .NGO extension.
+
+                Like all ! commands, !file: must be typed starting in the
+                first column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: !menu:           Define a Menu
+'------------------------------------------------------------------------------
+^b !Menu:                  Define a Menu^b
+
+  ^bPurpose^b
+
+    Define and name a menu and its menu items.  The !menu command is used
+    in the menu link control file.
+
+  ^bFormat^b
+
+            !menu:  menu name
+                    item 1 name         file-1.ngo
+                         .
+                         .
+                    item n name         file-n.ngo
+
+  ^bDescription^b
+
+    The !menu: command starts a new menu definition. There can be at most
+    ten menu definitions for each Norton Guides database. Menus appear in
+    the menu bar in the same order that they are defined in the menu link
+    control file. (The Linker does no checking on the length of menu
+    names; if the menu names are too wide to fit, some menu names will be
+    off the screen, although the menus themselves will still work
+    properly.)
+
+    `Item name' is the name that will be used for the menu item. Menu
+    items appear in the menu in the same order in which they are defined
+    in the control file. A menu can have up to eight menu items.
+
+    The filename that follows `item name' specifies the name of the
+    compiled object file that supplies the data for the menu item.
+    (Compiled object files have the .NGO extension.)
+!seealso: "!name:" 
+'------------------------------------------------------------------------------
+
+
+
+!short: !Name:           Name the Database
+'------------------------------------------------------------------------------
+^b !Name:                  Name the Database^b
+
+  ^bPurpose^b
+
+    The !name command names the database with up to 40 characters of
+    text.
+
+  ^bFormat^b
+
+    !name: Up to 40-character name
+
+  ^bDescription^b
+
+    The menu link control file always starts with the !name field. This
+    is the name that will appear in the scroll box when a database is
+    selected from the Options/Database menu.
+!seealso: "!menu:" 
+'------------------------------------------------------------------------------
+
+
+
+!short: !Seealso:        Cross References
+'------------------------------------------------------------------------------
+^b !Seealso:               Cross References^b
+
+  ^bPurpose^b
+
+    Seealso references are references from one long entry to other long
+    entries. The list of seealso references appears in a window above the
+    long entry.
+
+  ^bFormat^b
+
+        !seealso: key-words[space or tab key-words]
+
+    where key-words is one of the following:
+         text-from-a-short-entry
+    or
+         filename.ngo:text-from-a-short-entry
+    or
+         filename.ngo:seealso-title
+
+      Notes:    !Seealso, like all other bang commands, must be typed
+                starting in the leftmost screen column.
+
+                The textÄfromÄaÄshortÄentry must appear at the start of
+                the short entry that expands to the long entry you want.
+                The text can be any number of words, starting at the
+                beginning of the short entry, and ending with a space or
+                tab. The short entry can be either in the current data
+                file, or another file.
+
+                The third format of !seealso allows you to include a
+                reference to any long entry that's in a file by itself.
+                In this case, there's no short entry from which to draw
+                text for the Seealso window, so you simply make up the
+                text for seealsoÄtitle. The Guides then puts
+                seealsoÄtitle in the Seealso window.
+
+                A table is often implemented as a long entry directly off
+                a menu item, and is thus in a file by itself. You can use
+                this format to incorporate a !seealso reference to such a
+                table.
+
+  ^bDescription^b
+
+    The !seealso command moves the user to another long entry. The text
+    after !seealso comes from a short entry; when the user highlights
+    that text in the Seealso window and presses Return, he is taken
+    automatically to the long entry that lies underneath the highlighted
+    short entry.
+
+    You do not need to use the entire text of the short entry. For
+    example, if the long entry you are referring to is under a short
+    entry that reads:
+
+           !short:Cross References      Using !seealso in Long Entries
+
+    your seealso could read:
+
+           !seealso: Cross
+       or
+           !seealso: "Cross References"
+
+    In other words, you need only include enough text to uniquely
+    identify the short entry. The text must, however, be taken from the
+    beginning of the entry.
+
+    Multiple references in a single !seealso command are separated by one
+    or more spaces or tabs. If the keyÄwords text includes embedded
+    spaces, tabs, or colons, it must be enclosed within double quotation
+    marks, as in the second example above. If the ^ukeyÄwords^u text happens
+    to include a double quote mark, enclose the ^ukeyÄwords^u text within
+    single quote marks, instead of doubles, like this: !seealso:'a
+    seeÄalso entry containing " marks'.
+
+    The keyÄwords text can come from a short entry either in the same
+    file, or in a different file. To indicate a reference to a short
+    entry in another file, precede the keyÄwords text with the filename,
+    as in:
+
+           !seealso: otherfil.ngo:"More Info"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: !Short:          Define a Short Entry
+'------------------------------------------------------------------------------
+^b !Short:                 Define a Short Entry^b
+
+  ^bPurpose^b
+
+    Short entries provide a concise summary of a topic and serve as an
+    easyÄtoÄscan pointer to a more complete description.
+
+  ^bFormat^b
+
+         !short:[line-of-text]
+         text of long entry
+         [!seealso: references]
+
+    or
+
+         !short:[line-of-text]
+         !file: filename
+
+  ^bDescription^b
+
+    A short entry is a single line of text. Short entries generally
+    appear as part of a list with other short entries; the list can be
+    thought of as an index into longer, more complete descriptions. These
+    underlying long descriptions are accessed via the Expand menu of the
+    Norton Guides.
+
+    A short entry can point to either a single long entry, or to another
+    list of short entries (see the description of !file for the details
+    on the latter).
+
+    A short entry must begin with the command !short:, starting in column
+    1. All text after the colon, including spaces and tabs, will appear
+    in the text of the short entry in the database, exactly as it was
+    typed into the source file (with the exception of the special
+    handling of ^ character sequences, described under Character
+    Attributes).
+
+  ^bTips and Suggestions^b
+
+    To create an attractive and easyÄtoÄscan list of short entries, you
+    may wish to insert empty (blank) short entries at critical points
+    within the list. Although you will be able to move the highlight bar
+    to the blank lines, they will have no other functional effect (as
+    long as nothing is defined under them).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

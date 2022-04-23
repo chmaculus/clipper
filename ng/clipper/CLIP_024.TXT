@@ -1,0 +1,43 @@
+'------------------------------------------------------------------------------
+^BPRIVATE^B
+
+    PRIVATE allows you to hide memory variables declared PUBLIC or in
+    higher-level procedures from the current and lower-level
+    procedures.  PRIVATE can also declare a private array and at the same
+    time hide any PUBLIC array or private array of the same name from a
+    higher-level procedure.
+
+^USyntax^U
+
+    PRIVATE <memvar list>
+
+^UArguments^U
+
+    <memvar list> is the list of memory variables to hide or arrays to
+    declare.  The list can be any combination of memory variables and
+    arrays.
+
+^UUsage^U
+
+    When a memory variable is declared PRIVATE in a procedure, the existing
+    copy is hidden and not accessible until the declaring procedure
+    terminates.  PRIVATE, unlike PUBLIC, does not create a logical
+    variable.  Instead, the new variable is undefined (TYPE() will return
+    "U").  Once created, the scope of the new copy is the current procedure
+    and therefore automatically released when the procedure terminates.
+
+    ^BArrays^B: In addition to declaring memory variables private, you can
+    declare private arrays using the PRIVATE statement.  Declaring an array
+    PRIVATE works exactly the same as making any other memory variable
+    PRIVATE; PUBLIC arrays and private arrays created in higher-level
+    procedures are hidden.  The array declaration using PRIVATE works the
+    same as DECLARE with the exception that you can mix array and memory
+    variable declarations.  For more information on arrays, see DECLARE.
+
+    ^BNote^B: The ALL, LIKE, and EXCEPT clauses are not supported in
+    Clipper.
+!seealso: ???.ngo:"DECLARE" clip_023.ngo:"PARAMETERS" clip_026.ngo:"PUBLIC" 
+'------------------------------------------------------------------------------
+
+
+

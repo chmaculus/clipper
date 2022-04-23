@@ -1,0 +1,52 @@
+'------------------------------------------------------------------------------
+^BIF^B
+
+    IF is a structured programming command that enables conditional
+    processing of commands.  It must terminate with ENDIF.
+
+^USyntax^U
+
+    IF <condition>
+       <commands>
+    [ELSEIF <condition>]
+       <commands>
+    [ELSE]
+       <commands>
+    ENDIF
+
+^UArgument^U
+
+    <condition> is a control expression.  If it evaluates to true (.T.),
+    all following commands are executed until an ELSEIF, ELSE, or ENDIF is
+    encountered.
+
+^UOptions^U
+
+    ^BElseif^B: The ELSEIF clause identifies commands to be executed when
+    the <condition> evaluates to true (.T.).  You can specify any number of
+    ELSEIF statements within the same IF...ENDIF control structure.
+
+    ^BElse^B: The ELSE clause identifies commands to be executed when the
+    <condition> evaluates to false (.F.).
+
+^UUsage^U
+
+    IF <condition> sets up a conditional statement which is a logical
+    expression such as (A=B or Numvar<11) for evaluation.  If <condition>
+    evaluates to logical True, all subsequent commands are carried out
+    until an ELSEIF, ELSE, or ENDIF is reached.  Program control then goes
+    to the first command after ENDIF.  If no condition evalutes to true
+    (.T.), control passes to the first statement following the ELSE
+    statement.
+
+    Note that IF...ENDIF structures may be nested within other IF...ENDIF
+    structures and other structured programming commands.  These
+    structures, however, must be properly nested.
+
+    Note also that like all Clipper control structures, only the first
+    three characters of the END statement are significant.
+!seealso: ???.ngo:"DO CASE" clip_094.ngo:"IF()" 
+'------------------------------------------------------------------------------
+
+
+

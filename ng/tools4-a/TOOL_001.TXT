@@ -1,0 +1,365 @@
+!short: Introduction Functions For IBM PC-LAN
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This chapter includes network functions for IBM PC LAN/Microsoft MS-NET
+     software.
+
+ ^bPC LAN/MS-NET^b
+
+     PC LAN/MS-NET is software that has been offered for networks by IBM and
+     Microsoft.  Both programs are based upon the NETBIOS protocol;
+     CA-Clipper does not directly affect the NETBIOS protocol.  All internal
+     function calls to the network software occur under DOS, which requires
+     version 3.1 or higher.  The functions in this group are in the format
+     NETXXX().
+
+     An exception is the NETDISK() function.  It can also determine whether a
+     drive is local or remote under other network software.  This assumes
+     that the network software properly supports DOS in the background.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NETCANCEL()  Releases the redirection of a local device
+'------------------------------------------------------------------------------
+ ^bNETCANCEL()^b
+ Releases the redirection of a local device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETCANCEL(<cLocalDevice>) --> lReleased
+
+ ^bArgument^b
+
+     ^b<cLocalDevice> ^b Designates the name for the local device, for which
+     an existing redirection in the network is released.
+
+ ^bReturns^b
+
+     NETCANCEL() returns .T. when a redirection existed for the designated
+     device and it was released.
+
+ ^bDescription^b
+
+     NETWORK CANCEL REDIRECTION
+     With NETCANCEL(), an existing redirection for a local device can be
+     released.  You call the function by simply specifying the device name,
+     d: or LPTn:.
+
+     If the return value is .F., the device did not exist or was not
+     previously redirected.
+
+ ^bNote^b
+
+     ^bWARNING! ^b Make sure that no drive on which files are still open is
+     rendered invalid when you use NETCANCEL().  This situation leads to
+     problems, and under certain circumstances, to data loss.
+
+ ^bExample^b
+
+     Make all redirected printer devices local
+
+     nCounter    :=  0
+     cLocalName  :=  NETLOCNAME(nCounter)
+     DO WHILE .NOT. EMPTY(cLocalName)
+        IF cLocalName $"LPT1:LPT2:LPT3:PRN:"   // Is device a printer?
+           NETCANCEL(cLocalName)
+        ENDIF
+        nCounter    := nCounter +1
+        cLocalName  := NETLOCNAME(nCounter)
+     ENDDO
+!seealso: "NETREDIR()" "NETLOCNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NETDISK()    Determines whether a drive is local or resident on the server
+'------------------------------------------------------------------------------
+ ^bNETDISK()^b
+ Determines whether a drive is local or resident on the server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETDISK(<cDrive>) --> lServerDrive
+
+ ^bArgument^b
+
+     ^b<cDrive> ^b Designates the drive that is tested in a range from A to
+     Z.
+
+ ^bReturns^b
+
+     NETDISK() returns .T. when the specified drive is a network drive.
+
+ ^bDescription^b
+
+     NETWORK DISK
+     This function allows you to determine if a drive in the range of A: to
+     Z: is local or remote.  Remote means that a drive is actually resident
+     on a file server and that the local device address has been redirected
+     through DOS.
+
+ ^bNote^b
+
+     ^b^CFE^b  Since this is DOS information, this function works correctly
+        with those networks that support DOS.
+
+ ^bExample^b
+
+     Test all drives to determine if they are local or resident on the
+     server:
+
+     FOR I = ASC("A") TO ASC("Z")
+        ? NETDISK(CHR(I))
+     NEXT I
+!seealso: "NETREDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NETLOCNAME() Determines the name of a local redirected device
+'------------------------------------------------------------------------------
+ ^bNETLOCNAME()^b
+ Determines the name of a local redirected device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETLOCNAME(<nDevice>) --> cDeviceName
+
+ ^bArgument^b
+
+     ^b<nDevice> ^b Designates the location within the DOS redirection table.
+
+ ^bReturns^b
+
+     NETLOCNAME() returns the local name for the designated location in the
+     DOS redirection table (<nDevice>), or a null string if no name is
+     available.
+
+ ^bDescription^b
+
+     NETWORK LOCAL NAME
+     Under PC LAN/MS-NET, server devices can be redirected to local devices
+     using the NET USE <local> <remote> command.  DOS logs these redirections
+     in its redirection table.  In this way, NETLOCNAME() allows you to
+     determine all the local devices that have been redirected to a server
+     device.
+
+ ^bNote^b
+
+     ^b^CFE^b  Using NETRMTNAME() allows you to determine the name of the
+        corresponding server device.
+
+ ^bExample^b
+
+     Determine all the local devices that have been redirected to a server
+     device:
+
+     nCounter    :=  0
+     cLocalName  :=  NETLOCNAME(nCounter)
+     DO WHILE .NOT. EMPTY(cLocalName)
+        ? cLocalName                      // Display local device
+        nCounter    := nCounter +1
+        cLocalName  := NETLOCNAME(nCounter)
+     ENDDO
+!seealso: "NETRMTNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NETPRINTER() Determines if the current printer is a local or network printer
+'------------------------------------------------------------------------------
+ ^bNETPRINTER()^b
+ Determines whether the current printer is a local or network printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETPRINTER() --> lServerPrinter
+
+ ^bReturns^b
+
+     NETPRINTER() returns .T. when the printer installed using the CA-Clipper
+     SET PRINTER TO <LPTn> command has been redirected onto a network server.
+
+ ^bDescription^b
+
+     NETWORK PRINTER
+     This function allows you to determine if the printer installed using the
+     CA-Clipper SET PRINTER TO <LPTn> command is local or resides on a
+     network server.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot be used in a Novell network, because
+        there the redirection occurs on a deeper level (INT 17h).  However,
+        you can use the NNETCAPACT() function in a Novell Network.
+
+ ^bExample^b
+
+     Determine whether LPT1 and LPT2 are local or remote:
+
+     SET PRINTER TO LPT1
+     ? NETPRINTER()                        // .F., local printer
+     SET PRINTER TO LPT2
+     ? NETPRINTER()                        // .T., network printer
+!seealso: "NETREDIR()" tool_014.ngo:"NNETWORK()" tool_005.ngo:"NNETCAPACT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NETREDIR()   Redirects a local device to a server
+'------------------------------------------------------------------------------
+ ^bNETREDIR()^b
+ Redirects a local device to a server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETREDIR(<cLocalDevice>, <cServerDevice>,
+     ^b   [<cPassword>])    --> lRedirection
+
+ ^bArguments^b
+
+     ^b<cLocalDevice> ^b Designates the name of the local device (LPTn:,
+     PRN:, or d:).
+
+     ^b<cServerDevice> ^b Designates the complete path for the server
+     (\\<Servername>\<Devicename>).
+
+     ^b<cPassword> ^b Can designate a password when it is required by the
+     server.
+
+ ^bReturns^b
+
+     NETREDIR() returns .T. when the specified local device has been
+     redirected to the selected server device.
+
+ ^bDescription^b
+
+     NETWORK REDIRECTION
+     Under PC LAN/MS-NET, server devices can be redirected to local devices
+     using the NET USE <local> <remote> command.  Exactly the same thing can
+     be accomplished using the NETREDIR() function from within an
+     application.  The function returns .T. when the redirection has been
+     carried out.  A return of .F. could occur for several reasons:
+
+     ^b^CFE^b  The designated drive is not accepted.  Either this drive is
+        already physically available or LASTDRIVE in CONFIG.SYS has to be set
+        higher.
+
+     ^b^CFE^b  The device is not available on the server.  Use NET SHARE on
+        the selected server to review all the devices available there.
+
+     ^b^CFE^b  The password is incorrect.  Check the password that the server
+        has designated for the device.
+
+     ^b^CFE^b  Too many devices have already been allocated.  In this
+        instance you must change some of the flags with the NET START command
+        (see PC LAN/MS-NET manual).
+
+ ^bNote^b
+
+     ^b^CFE^b  The redirections accomplished here are not listed when you use
+        NET USE.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create a new drive H:
+
+        ? NETREDIR("H:", "\\SERVER\DRIVEC")            // .T. if OK
+
+     ^b^CFE^b  In this example, the server device asks for a password:
+
+        ? NETREDIR("H:", "\\SERVER\DRIVEC", "SECRET")  // .T. if OK
+
+     ^b^CFE^b  Allocate a server printer to LPT2:
+
+        ? NETREDIR("LPT2:", "\\SERVER\PRINTER")        // .T. if OK
+!seealso: "NETCANCEL()" "NETLOCNAME()" "NETRMTNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NETRMTNAME() Determines the name of a server device for a local device
+'------------------------------------------------------------------------------
+ ^bNETRMTNAME()^b
+ Determines the name of a server device for a local device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETRMTNAME(<nDevice>) --> cServerDevice
+
+ ^bArgument^b
+
+     ^b<nDevice> ^b Designates the location within the DOS redirection table.
+
+ ^bReturns^b
+
+     NETRMTNAME() returns the local name for the designated location in the
+     DOS redirection table (<nDevice>), or a null string if no name is
+     available.
+
+ ^bDescription^b
+
+     NETWORK REMOTE NAME
+     Under PC LAN/MS-NET server devices can be redirected to local devices
+     using the NET USE <local> <remote> command.  DOS logs these redirections
+     in its redirection table.  In this way, NETRMTNAME() allows you to
+     determine all the local devices that have been redirected to a server
+     device.
+
+ ^bNote^b
+
+     ^b^CFE^b  Using NETLOCNAME() allows you to determine the name of the
+        corresponding local device.
+
+ ^bExamples^b
+
+     Determine all the devices used by the server:
+
+     nCounter     :=  0
+     cDeviceName  :=  NETRMTNAME(nCounter)
+     DO WHILE .NOT. EMPTY(cDeviceName)
+        ? cDeviceName                     // Display server device
+        nCounter     := nCounter +1
+        cDeviceName  := NETRMTNAME(nCounter)
+     ENDDO
+!seealso: "NETLOCNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NETWORK()    Tests to see if a network is active
+'------------------------------------------------------------------------------
+ ^bNETWORK()^b
+ Tests to see if a network is active
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNETWORK() --> lActiveNet
+
+ ^bReturns^b
+
+     NETWORK() returns .T. when a PC LAN/MS-NET or a Novell network is
+     available.
+
+ ^bDescription^b
+
+     With NETWORK(), you can determine whether or not an IBM PC LAN/MS-NET or
+     Novell network is available and active.  Using NNETWORK() allows you to
+     further differentiate to see if you are dealing with a Novell network.
+
+ ^bExample^b
+
+     Test to see if one of the two networks is available:
+
+     IF NETWORK()
+        * ...
+     ENDIF
+!seealso: tool_014.ngo:"NNETWORK()" 
+'------------------------------------------------------------------------------
+
+
+

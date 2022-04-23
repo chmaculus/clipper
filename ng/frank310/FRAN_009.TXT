@@ -1,0 +1,1091 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhormenu()         ^rm^r The engine function
+'------------------------------------------------------------------------------
+ ADhormenu( <aMenu>, [aTrigger], [xProcess], [bConfig], [xHelpID],;
+    [xHelpHeader] ) --> <nSel>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a horizontal menu, where the options are displayed horizontally
+ on one line. The Esc key is not active, by default, but can be activated
+ with the API, ADhm_setescape().
+
+ <aMenu> - is an array of string menu options
+
+ [aTrigger] - is an optional array of the positions of the options' trigger
+ characters.  If it is not passed, it defaults to an array of 1's, i.e, the
+ first characters are the triggers.   The trigger characters are highlighted
+ in the menu.  NOTE: If an '&' is embedded in a menu option, its relative
+ position supercedes whatever is specified in [aTrigger].  ANOTHER NOTE: If
+ an '&' is embedded in a menu option, all the other options _must_ also be
+ &-embedded, i.e. you cannot mix the use of [aTrigger] with the use of
+ &-embedding.  This marker may be changed with ADg_trigmarker().
+
+ [xProcess] - is an optional specifier of what is to be done with the
+ selected option.  It can be a single codeblock or an array of codeblocks.
+ If it is a single codeblock, ADhormenu() EVALuates it when a selection is
+ made, passing to it the index position of the selected option.  If it is an
+ array of codeblocks, ADhormenu() EVALuates the block corresponding to the
+ selected option.
+
+ NOTE:  ADhormenu() does not exit after EVALuating the codeblock.  If
+ [xProcess] is not passed, the menu exits when a selection is made.
+
+ [bConfig] - is the optional Configuration Specifier.  It is a codeblock that
+ ADhormenu() EVALuates to configure itself.  It is typically a call to one or
+ a series of the APIs.
+
+ [xHelpID] - an optional Help identifier, or an array of such identifiers,
+ used by the Frankie Help Facility to display context-sensitive Help.
+
+ [xHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.  If it is
+ passed as a string, it will be used as title for the Help screens of all the
+ menu options.  If passed as an array, each element in the array must
+ correspond to each menu option.
+
+ <nSel> - is the return value.  It is the index position of the selected
+ option at exit.  It is zero, if ADhormenu() is aborted. Typically, <nSel>
+ is important to the program only if [xProcess] is not passed.
+
+ v3.00 -> v3.10
+ --------------
+ 1.  The mouse cursor is automatically moved to the initially highlighted
+     option when the menu is displayed if the AutoMoveMouse flag is set to
+     TRUE by ADg_autommove().
+
+ v2.30 -> v3.00
+ --------------
+ 1.  Added the 6th parameter, [xHelpHeader].
+
+ v2.1 -> v2.2 changes
+ --------------------
+ 1. [xHelpId] used to accept a character string only.  It was the Help
+    identifier for all the menu items.  Now it can accept an array of
+    identifiers, one for each menu item.  This makes for option-sensitive
+    Help screens.
+
+ 2. In v2.1 and earlier, the Esc key and the right mouse button are not
+    active by the default.  In v2.2, they are active, and their default
+    behavior is to exit the menu.
+
+ 3. In v2.2, the menu options may be deactivated.
+
+ 4. Added support for global hot keys that are defined with ADg_keys().
+
+ Example 1
+ ---------
+ // A basic implementation of ADhormenu().
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ ADhormenu( aMenu )
+ return nil
+
+ Example 2
+ ---------
+ // Trigger keys, other than the first characters, are specified in this
+ // example.
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local aTrigger := { 3, 5, 5, 3 }
+ ADhormenu( aMenu, aTrigger )
+ return nil
+
+ Example 3
+ ---------
+ // ADhormenu passed with a codeblock in [xProcess]
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Fox", "Exit" }
+ ADhormenu( aMenu,, {|n| Xprocess(n)} )
+ return nil
+
+
+ func Xprocess( nSel )
+ if nSel == 1
+ ADmessage( { "The" } )
+ elseif nSel == 2
+ ADmessage( { "Quick" } )
+ elseif nSel == 3
+ ADmessage( { "Brown" } )
+ elseif nSel == 4
+ ADmessage( { "Fox" } )
+ elseif nSel == 5
+ ADmessage( { "Exit" } )
+ ADhm_abort()
+ endif
+ return nil
+
+
+ Example 4
+ ---------
+ // ADhormenu() passed with an array of codeblocks in [xProcess]
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper", "Exit" }
+ local aProcess := {;
+                 {|| ADmessage( { "The" } )},;
+                 {|| ADmessage( { "Quick" } )},;
+                 {|| ADmessage( { "Brown" } )},;
+                 {|| ADmessage( { "Fox" } )},;
+                 {|| ADmessage( { "Exit" } ),;
+                         ADhm_abort() };
+                 }
+
+ ADhormenu( aMenu,, aProcess )
+ return nil
+
+
+ Example 5
+ ---------
+ // Reconfigures the colors
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ bConfig := {|| ADhm_colors( { "N/W*", "GR+/R", "BG+" } )}
+ setblink( .f. )
+ ADhormenu( aMenu,,, bConfig )
+ setblink( .t. )
+ return nil
+!seealso: fran_008.ngo:"ADvermenu()" "ADpdmenu()" fran_031.ngo:"ADg_trigmarker()" fran_031.ngo:"ADg_autommove()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ THE CONFIG APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhm_color()          Reconfigures the default colors
+'------------------------------------------------------------------------------
+ ADhm_color( [aColor] ) --> <aOldColors>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the default colors.
+
+ [aColor] is an array of 4 elements:
+
+ 1 - the standard color. Default is "B/W", "W/N" for color and monochrome,
+     respectively.
+ 2 - the enhanced color. Default is "GR+/W", "I" for color and monochrome,
+     respectively
+ 3 - the foreground part of the trigger color.  Default is "R", "W+" for
+     color and monochrome, respectively.
+ 4 - the foreground part of the inactive color.  Default is "N+"
+
+ v2.1 -> v2.2
+ ------------
+ The 4th element was added in v2.2.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ bConfig := {|| ADhm_colors( { "N/W*", "GR+/R", "BG+" } )}
+ setblink( .f. )
+ ADhormenu( aMenu,,, bConfig )
+ setblink( .t. )
+ return nil
+!seealso: "ADhmg_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_ends()           Sets the horizontal limits of the menu
+'------------------------------------------------------------------------------
+ ADhm_ends( <nLeftColumn>, <nRightColumn> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the horizontal limits of the menu.
+
+ <nLeftColumn> is the column position where the menu starts.  The first
+ option is displayed at <nLeftColumn> + 1.
+
+ <nRightColumn> is the column position where the menu ends. When ADhormenu()
+ starts, it clears the line from <nLeftColumn> to <nRightColumn>.  When it
+ exits, it restores it.
+
+ NOTE: ADhormenu() does not check if there are too many options to fit within
+ the space allocated by the two end column positions.  If there are too many
+ the options will overflow.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ bConfig := {|| ADhm_ends( 10, 40 )}
+ ADcls( "°" )
+ ADhormenu( aMenu,,, bConfig )
+ return nil
+!seealso: "ADhm_row()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_escape()         Defines the Esc and right-button behavior
+'------------------------------------------------------------------------------
+ ADhm_escape( <bEscape> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a codeblock that gets EVALuated when the Esc key is pressed, or when
+ the right mouse button is clicked.  If the Esc key is currently not active
+ (it is active by default, but may be reset with ADhm_setescape()) this
+ codeblock never gets EVALuated.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig, aScn, bEscape
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bEscape := {|| aScn := ADmessage( { "Exiting..." },,, .f., .f. ),;
+                inkey( 3 ),;     // do housekeeping here
+                ADrestscn( aScn );
+            }
+bConfig := {|| ADhm_escape( bEscape )}
+ADhormenu( aMenu,,, bConfig )
+return nil
+!seealso: "ADhm_setescape()" "ADhm_abort()" "ADhm_select()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_extra()          Defines entry and exit behaviors
+'------------------------------------------------------------------------------
+ ADhm_extra( [bDispBegin], [bDispEnd], [bUndisplay] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a set of behaviors associated with the displaying and the exiting
+ of the menu.
+
+ [bDispBegin] - an optional codeblock that ADhormenu() EVALuates just before
+ displaying the menu.
+
+ [bDispEnd] - an optional codeblock that ADhormenu() EVALuates just after
+ displaying the menu.
+
+ [bUndisplay] - an optional codeblock that ADhormenu() EVALuates at exit
+ after un-displaying the menu.
+
+ Example
+ -------
+ // Horizontal menu in a window
+ func main()
+ local aScn
+ local aMenu := { "Databases", "Utilities", "Quit" }
+ local bDispBegin := {|| ADhm_colors( { "N/W*",;
+                                        "GR+/R",;
+                                        "BG+";
+                                       };
+                                     ),;
+                         aScn := ADbox( 4,4,20,49,;
+                                        ADhm_colors()[1];
+                                      ),;
+                         ADcsay( 6,4,49,;
+                                 "Ã" + repl( "Ä", 44 ) + "´",;
+                                 ADhm_colors()[1];
+                               );
+                     }
+ local bConfig := {|| ADhm_extra( bDispBegin,;
+                                  NIL,;
+                                  {|| ADrestscn( aScn )};
+                                ),;
+                      ADhm_row( 5 ),;
+                      ADhm_ends( 5, 48 );
+                  }
+
+ setblink( .f. )
+ ADhormenu( aMenu,,, bConfig )
+ setblink( .t. )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_initsel()        Specifies the initially highlighted option
+'------------------------------------------------------------------------------
+ ADhm_initsel( <nInitSel> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the index position of the option to be initially highlighted.
+
+ Example:
+ -------
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ bConfig := {|| ADhm_initsel(3)} // initial highlight at #3
+ ADhormenu( aMenu,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_invkey()         Defines an invalid key handler.
+'------------------------------------------------------------------------------
+ ADhm_invkey( <bBlock> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a behavior that the menu will assume if an invalid key is
+ pressed.  An invalid key is any key that is not one of: Esc, Enter,
+ the cursor keys, F1, Alt-0, and defined hot keys.
+
+ <bBlock> is a code block that is EVALed when such an invalid key is
+ pressed.  It is automatically passed the inkey code of the pressed
+ key and the engine id.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bConfig := {||ADhm_invkey( {|n,e|Xinvkey(n,e)} )}
+
+ ADhormenu( aMenu,,, bConfig )
+ return NIL
+
+
+ static func Xinvkey( nKey, nEngine )
+ ADmessage( { ADn2s( nKey ) +;
+              " is an invalid key in menu engine " +;
+              ADn2s( nEngine );
+            } )
+ return NIL
+!seealso: "ADhm_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_keys()           Defines hot keys
+'------------------------------------------------------------------------------
+ ADhm_keys( <aKeys>, <bHandler>, [lAdditive] ) -->NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys local to the menu.
+
+ <aKeys> is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ <bHandler> is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+        1 - the index position of the pressed key
+        2 - the inkey code of the pressed key
+
+ [lAdditive] is an optional logical parameter.  If it is TRUE, <aKeys> and
+ <bHandler> are chained to currently defined hot keys.  If it is FALSE,
+ <aKeys> and <bHandler> replace currently defined ones.  Defaults to FALSE.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ bConfig := {|| ADhm_keys( { K_F8, K_F9, K_F10 },;
+                           {|n,k| Xhandler(n,k)};
+                         );
+            }
+ ADhormenu( aMenu,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nKeyCode )
+ if nKeyCode == K_F8
+    ADhm_jump( 3 )
+ elseif nKeyCode == K_F9
+    ADhm_abort()
+ elseif nKeyCode == K_F10
+    ADhm_select()
+ endif
+ return nil
+!seealso: fran_027.ngo:"ADg_keys()" "ADhm_invkey()" "ADhm_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_lbuttons()       Defines left button hot spots
+'------------------------------------------------------------------------------
+ ADhm_lbuttons( <aSpots>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse left button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+        1 - the index position of the clicked spot
+        2 - the mouse cursor row position when the hot spot was clicked
+        3 - the corresponding mouse column position
+
+ [lAdditive] is an optional logical parameter.  If it is TRUE, <aSpots> and
+ <bHandler> are chained to currently defined hot spots.  If it is FALSE,
+ <aSpots> and <bHandler> replace currently defined ones.  Defaults to FALSE.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig, aSpots
+
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ aSpots := {;
+             { 0,0,0,0 },;
+             { maxrow(), maxcol(), maxrow(), maxcol() };
+           }
+ bConfig := {|| ADhm_lbuttons( aSpots,;
+                               {|n,r,c| Xhandler(n,r,c)};
+                             );
+            }
+ ADhormenu( aMenu,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nRow, nCol )
+ if nIndexPos == 1
+    ADhm_abort()
+ elseif nIndexPos == 2
+    ADhm_select()
+ endif
+ return nil
+!seealso: "ADhm_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_move()           Defines "move" behaviors
+'------------------------------------------------------------------------------
+ ADhm_move( <bMoveBegin>, <bMoveEnd> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines two codeblocks that are EVALuated when the highlight bar moves.
+ <bMoveBegin> is EVALuated just before unhighlighting the current option;
+ <bMoveEnd> just after highlighting the new option.
+
+ Example
+ -------
+ func main()
+ local aMenu, bConfig, bMoveEnd, aScn, aMsg
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ aMsg := { "THE", "QUICK", "BROWN", "FOX" }
+ bMoveEnd := {|| ADsay( 23,1, padc( aMsg[ADhm_current()], 78 ) )}
+ bConfig := {|| ADhm_move( , bMoveEnd )}
+ aScn := ADbox(22,0,24,79,,, .f., .f.)
+ ADhormenu( aMenu,,, bConfig )
+ ADrestscn( aScn )
+ return nil
+!seealso: "ADhm_extra()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_pad()            Specifies the #spaces to insert between options
+'------------------------------------------------------------------------------
+ ADhm_pad( <nSpaces> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the number of spaces <nSpaces> to insert between options.
+ Defaults to 3.
+
+ Example 1:
+ ---------
+ ADhormenu( { "One", "Two", "Four" } )
+ /*
+        One   Two   Four        // default of 3 spaces between options
+ /*
+
+ Example 2:
+ ---------
+ ADhormenu( { "One", "Two", "Four" },,, {||ADhm_pad( 6 )} )
+ /*
+        One      Two      Four        // 6 spaces between options
+ /*
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_poll()           Polls for another event.
+'------------------------------------------------------------------------------
+ ADhm_poll( <bEvent>, <bHandler> --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Polls for another event (in addition to regular keyboard and mouse events
+ normally polled by ADhormenu()).
+
+ <bEvent> is the polling codeblock.  It must return a numeric.  A return
+ value of 0 means that no event occurred.  A non-zero value means that
+ an event occurred.
+
+ <bHandler> is a codeblock that processes the returned value of <bEvent>.
+ Note that it is EVALed only if <bEvent> returns a non-zero value.  It is
+ passed two parameters:
+
+     1 - the returned value of <bEvent>
+     2 - the numeric engine id
+
+ Example
+ -------
+ #include "inkey.ch"
+ #include "frankie.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bConfig := {||ADhm_poll( {||Xpoller()},;
+                                {|x,e|Xhandler(x,e)};
+                              );
+                  }
+ ADhormenu( aMenu,,, bConfig )
+ return NIL
+
+
+ func Xpoller()
+ return ascan( { K_RT_SHIFT, K_LF_SHIFT, K_CTRL, K_ALT }, {|x|ADkbflag(x)} )
+
+
+ func Xhandler( nEvent, nEngine )
+ local cKey
+
+ if nEvent == 1
+     cKey := "Right Shift"
+ elseif nEvent == 2
+     cKey := "Left Shift"
+ elseif nEvent == 3
+     cKey := "Ctrl"
+ elseif nEvent == 4
+     cKey := "Alt"
+ endif
+
+ ADmessage( { cKey + " key is pressed " } )
+ return NIL
+!seealso: "ADhm_sleep()" "ADhm_timeout()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_pulldown()       Specifies the options to be auto-pulled-down
+'------------------------------------------------------------------------------
+ ADhm_pulldown( <aPositions> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies which options in the horizontal menu get automatically "pulled
+ down" when the highlight is moved to it.  <aPositions> is an array of the
+ index positions of options to be auto-pulled-down.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four", "Quit" }
+ local bConfig := {||ADhm_pulldown( { 2,3 } )}  // the routines corresponding
+                                                // to options 2 and 3 will be
+                                                // automatically called as
+                                                // soon as the highlight
+                                                // falls on them.  You do not
+                                                // have to press Enter.
+ local bProcess := {|n|Xprocess(n)}
+ ADhormenu( aMenu,, bProcess, bConfig )
+ return NIL
+
+ func Xprocess( nSel )
+ if nSel == 1
+     ADmessage( { "One" } )
+ elseif nSel == 2
+     ADmessage( { "Two" } )
+ elseif nSel == 3
+     ADmessage( { "Four" } )
+ elseif nSel == 4
+     ADhm_abort()
+ endif
+ return NIL
+!seealso: fran_008.ngo:"ADvermenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_rbuttons()       Defines right mouse button hot spots
+'------------------------------------------------------------------------------
+ ADhm_rbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse right button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ Example
+ -------
+ // deactivate the right mouse button
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Clipper" }
+ bConfig := {|| ADhm_rbuttons( { { 0,0,maxrow(),maxcol() } }, {||NIL} )}
+ ADhormenu( aMenu,,, bConfig )
+ return nil
+!seealso: "ADhm_keys()" "ADhm_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_row()            Sets the row position of the menu
+'------------------------------------------------------------------------------
+ ADhm_row( <nRow> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the row position, <nRow> of the menu.  Defaults to row #0.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADhm_row( 10 )}
+ ADcls( "°" )
+ ADhormenu( aMenu,,, bConfig )
+ return nil
+!seealso: "ADhm_ends()" "ADhm_col()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_setescape()      Toggles behavior of the Esc key and right mouse button
+'------------------------------------------------------------------------------
+ ADhm_setescape( <lEscape> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Toggles the Esc key as an abort key.  If <lEscape> is TRUE, the Esc key will
+ be an abort key.  If Esc is an abort key, so is the right mouse button.  By
+ default, the Esc key is active.
+
+ Example:
+ -------
+ // The escape key is inactivated as an abort key
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADhm_setescape( .f. )}
+ ADhormenu( aMenu,,, bConfig )
+ return nil
+!seealso: "ADhm_escape()" "ADhm_abort()" "ADhm_select()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_sleep()          Deactivates ADhormenu's default event handler.
+'------------------------------------------------------------------------------
+ ADhm_sleep( <lSleep>, [bSleep] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADhormenu's event handler to go to sleep, that is, not poll for
+ events.  Optionally, events may be diverted to another handler.
+
+ <lSleep> - a logical value that tells ADhormenu() whether to sleep or
+ not.  Defaults to TRUE.
+
+ [bSleep] is an optional codeblock that acts as the event handler for
+ ADhormenu() if <lSleep> is TRUE.  This codeblock is passed two
+ parameters:
+
+     1 - the menu engine id
+     2 - events in the form of an array similar to the return value of
+         ADwait().
+
+ Note that if <lSleep> is TRUE and [bSleep] is NIL, the engine will
+ go on an indefinite sleep, making it appear that the system hung.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown" }
+ local bConfig := {||ADhm_sleep( .t., {|e,a|Xhandler(e,a)} )}
+
+ ADhormenu( aMenu,,, bConfig )
+ return NIL
+
+
+ func Xhandler( e, aEvents )
+ if aEvents[1] != 0
+     if aEvents[1] == K_ALT_Q
+         ADhm_abort()
+     else
+         ADmessage( { "Key (" + ADn2s( aEvents[1] ) + ") was pressed" } )
+     endif
+ elseif aEvents[2] == 1
+     ADm_rwait()
+     ADmessage( { "Mouse Left Button was clicked at " + ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] ) } )
+ elseif aEvents[2] == 2
+     ADm_rwait()
+     ADmessage( { "Mouse Right Button was clicked at " + ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] ) } )
+ endif
+ return NIL
+!seealso: "ADhm_timeout()" "ADhm_poll()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_timeout()        Designates a timeout routine.
+'------------------------------------------------------------------------------
+ ADhm_timeout( <nTimeOut>, <bTimeout> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Designates a time-out routine.
+
+ <nTimeOut> is the number of idle seconds to pass before the timeout routine
+ is invoked.
+
+ <bTimeOut> is a codeblock that ADhormenu() EVALuates after <nTimeOut>
+ seconds of inactivity.
+
+ Example: Blank the screen after 5 seconds of idle time.
+ ------------------------------------------------------
+ ADhormenu({"One", "Two", "Four"},,, {||ADhm_timeout(5, {||ADblankscn()})})
+!seealso: "ADhm_sleep()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_toggle()         Defines the options' "active" status.
+'------------------------------------------------------------------------------
+ ADhm_toggle( <xOption>, <lStatus> ) --> <aOldStatus>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines the "active" status of options.  An inactive is always displayed in
+ the "inactive color" (which is grey by default) and cannot be highlighted
+ nor selected.
+
+ <xOption> may either be a numeric value or an array of numeric values.  If
+ it is the former, then the status of the option pointed to by it is switched
+ to <lStatus>.  If <xOption> is an array, the options pointed to by its
+ elements are switched.
+
+ <lStatus> is a logical value that stands for the active status to switch to.
+ If <lStatus> is TRUE, then the pointed to option is activated.
+
+ <aOldStatus>, the return value, is an array of the previous status of menu
+ options.
+
+ NOTE: ADhm_toggle() may be used as an Action API as well.  That means you
+       can toggle the option's active status anytime by calling this API.
+
+ Example
+ -------
+ // Deactivate option #2
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bConfig := {||ADhm_toggle( 2, .f. )}
+
+ ADhormenu( aMenu,,, bConfig )
+ return NIL
+
+ Example
+ -------
+ // Initially deactivate option #2 and deactivate on the fly the other
+ // options sometime later.  Press F10 to initiate the deactivating
+ // routine
+ #include "inkey.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bConfig := {||ADhm_toggle( 2, .f. ),;
+                     ADhm_keys( {K_F10}, {||Xtoggle()} );
+                  }
+
+ ADhormenu( aMenu,,, bConfig )
+ return NIL
+
+ func Xtoggle()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bConfig := {||ADvm_taglist()}
+ local aSel := ADvermenu( ,, aMenu,,, bConfig )
+
+ if len( aSel ) == 4
+     ADmessage( { "You may not deactivate all options" } )
+ elseif len( aSel ) > 0
+     ADhm_toggle( {1,2,3,4}, .t. )       // activate all options first
+     ADhm_toggle( aSel, .f. )            // deactivate selected options
+     ADhm_refresh()
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ THE ACTION APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhm_abort()          Aborts the menu
+'------------------------------------------------------------------------------
+ ADhm_abort( [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Aborts the menu, and at the same time, sets the exit code to [nExitCode].
+ If [nExitCode] is not passed, it defaults to HMX_ABORT, which is #defined in
+ Frankie.ch
+
+ Example: See ADhm_keys()
+!seealso: "ADhm_keys()" "ADhm_select()" "ADhm_escape()" "ADhm_setescape()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_jump()           Jumps the highlight to another option
+'------------------------------------------------------------------------------
+ ADhm_jump( <nOptionPosition> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves the highlight to the option whose index position is <nOptionPosition>.
+
+ Example:  See ADhm_keys()
+!seealso: "ADhm_initsel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_refresh()        Refreshes the menu
+'------------------------------------------------------------------------------
+ ADhm_refresh() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Refreshes the menu.  You would typically call this API if you deactivate/
+ activate a menu option on the fly to change its color.
+
+ Example
+ -------
+ See ADhm_toggle()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_select()         Makes a selection
+'------------------------------------------------------------------------------
+ ADhm_select( [xExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Selects the currently highlighted option.
+
+ [xExitCode] is an optional parameter whose meaning depends on its type.
+
+   Logical - If it is TRUE, the menu exits after making the selection, and
+             posts HMX_SELECT (#defined in Frankie.ch) as the exit code.
+             If it is FALSE, the menu does not exit, and does not post an
+             exit code.
+
+   Numeric - The menu exits after making the selection, and posts
+             [xExitCode] as the exit code.
+
+   NIL     - The menu exits after making the selection, and posts
+             HMX_SELECT as the exit code.
+
+ v2.1 -> v2.2
+ ------------
+ In v2.1, [xExitCode] could not be a logical.
+
+ Example: See ADhm_keys()
+!seealso: "ADhm_abort()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ THE INFO APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhm_col()            Returns the column position of the highlighted option
+'------------------------------------------------------------------------------
+ ADhm_col() --> <nCurrentColumnPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the starting column position of the currently highlighted selection.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADhm_keys( {-9},;
+                                {|| ADmessage( {ADn2s(ADhm_col())} )};
+                              );
+                  }
+ ADhormenu( { "One", "Two", "Four" },,, bConfig )
+ return NIL
+!seealso: "ADhm_row()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_current()        Returns the currently highlighted option
+'------------------------------------------------------------------------------
+ ADhm_current() --> <nCurrentPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the index position of the currently highlighted option.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADhm_keys( {-9},;
+                                {|| ADmessage( {ADn2s(ADhm_current())} )};
+                              );
+                  }
+ ADhormenu( { "One", "Two", "Four" },,, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_exitcode()       Returns the last exitcode
+'------------------------------------------------------------------------------
+ ADhm_exitcode() --> < nExitCode>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the exit code of the last exited horizontal menu.  If the menu was
+ exited after a keypress, the exit code is simply the inkey code of the key.
+ At other times it will be one of the following values #defined in
+ Frankie.ch.
+
+ //ADhormenu() special exit codes
+ #define HMX_ABORT   -102  // when menu is aborted with the mouse right button
+                           // or programatically with ADhm_abort()
+ #define HMX_SELECT  -103  // when a menu option is selected with the mouse
+                           // left button or programatically selected with
+                           // ADhm_select()
+
+ NOTE:  Both ADhm_abort() and ADhm_select() accept an optional numeric
+        parameter to which the exit code is set.
+
+ Example
+ -------
+ ADhormenu( { "one", "two", "four" } )
+ ?ADhm_exitcode()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhm_version()        Returns the ADhormenu() version number as a string
+'------------------------------------------------------------------------------
+ ADhm_version() --> <cVersionNumber>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the version of ADhormenu() as a string.
+
+ Example
+ -------
+ ? ADhm_version()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ GLOBAL APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhmg_color()         Globally sets the menu colors
+'------------------------------------------------------------------------------
+ ADhmg_color( <aNewColors> ) --> <aOldColors>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Globally sets the menu colors.  Once the colors are globally set, all
+ succeeding ADhormenu() calls will use these values until they are globally
+ reset, or until they are locally set with ADhm_color().
+
+ <aNewColors> is an array of new settings.  See ADhm_color() for a discussion
+ of its elements.
+
+ <aOldColors> is the array of old values.
+
+ NOTE:  ADhmg_color(), and all Global APIs, must be called OUTSIDE bConfig.
+
+ v2.1 -> v2.2
+ ------------
+ As in ADhm_color(), <aNewColors> can now have 4 elements, the new 4th
+ element being the foreground of the inactive color.
+
+ Example:
+ --------
+ ADhmg_color( { "R/W", "B/W", "W+" } )
+!seealso: "ADhm_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ SPECIALIZED FUNCTIONS ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpulldown()        ^ro^r Implements a pulldown ADvermenu() from an ADhormenu()
+'------------------------------------------------------------------------------
+ ADpulldown( <aVMMenu>, [aVMTrigger], [xVMProcess] ) --> <nVMSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a pulldown ADvermenu() from an ADhormenu().  This API is now
+ obsolete.  Use ADpdmenu(), instead.
+
+ <aVMMenu>, [aVMTrigger] and [xVMProcess] are the vertical menu's options
+ array, triggers array, and options processor. Their meanings are similar to
+ the corresponding <aMenu>, [aTrigger] and [xProcess] parameters of
+ ADvermenu().
+
+ [aColors] is an array of colors used by the pulled down ADvermenu().  Its
+ elements are:
+
+         1 - the standard color
+         2 - the enhanced color
+         3 - the header color
+         4 - the foreground of the trigger color (the background
+             is always the background of the standard color)
+
+ If any of the 4 elements is nil, the corresponding color is not
+ changed.  The default colors are:
+
+         Color       Mono
+         -----       ----
+         1 - "W+/W"      "W/N"
+         2 - "GR+/R"     "I"
+         3 - "B/W"       "W+/N"
+         4 - "B"         "W+"
+
+ [aBoxAttr] is an array of vertical menu box attributes.  Its elements are:
+
+ 1 - Frame.  Default is "ÑÍÑ³¾ÍÔ³ "
+ 2 - Shadow.  Default is .T.
+ 3 - Explode.  Default is .T.
+ 4 - Pad.  Default is 1, that is 1 space padding between
+         the left of the box and the column start of the options
+         list, and similarly at the right.
+
+
+ <nVMSelection> is the return value similar to that of ADvermenu().
+!seealso: "ADpdmenu()" fran_008.ngo:"ADvermenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpdmenu()            Implements a pulldown ADvermenu() from an ADhormenu()
+'------------------------------------------------------------------------------
+ ADpdmenu( <aMenu>, [aTrigger], [xProcess], [bConfig], [cHelpID] ) --> <nSel>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a pulldown ADvermenu() from an ADhormenu().  Replaces
+ ADpulldown().  In a pulled down menu, the options of the parent horizontal
+ menu are still active via the mouse left button, and the ALT key
+ combinations of their triggers.
+
+ <aMenu>, [aTrigger], [xProcess], [bConfig], and [cHelpID] are the vertical
+ menu's options array, triggers array, and options processor, configuration
+ block, and Help identifier string.  Their meanings are similar to the
+ corresponding ADvermenu() parameters.
+
+ <nSel> is the return value similar to that of ADvermenu().
+
+ NOTE:  Never call ADpdmenu() independently from ADhormenu().
+
+ Example
+ -------
+ func main()
+ local aScn
+ local aMenu := { "One", "Two", "Quit" }
+ local bConfig := {||ADhm_pulldown( { 1,2 } ),;
+                     ADhm_extra( {||aScn := ADsavescn(1,0,1,79),;
+                                    ADsay( 1,0,;
+                                           repl( "Í", 80 ),;
+                                           ADhm_color()[1];
+                                         );
+                                 },;
+                                 ,;
+                                 {||ADrestscn( aScn )};
+                               );
+                  }
+ local bProcess := {|n|Xprocess(n)}
+ ADhormenu( aMenu,, bProcess, bConfig )
+ return NIL
+
+ func Xprocess( nSel )
+ if nSel == 1
+     ADpdmenu( { "The", "Quick", "Brown" } )
+ elseif nSel == 2
+     ADpdmenu( { "Jumps", "Over", "The", "Lazy", "Dog" } )
+ elseif nSel == 3
+     ADhm_abort()
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,673 @@
+!short: GKI_CreateBitMapBrush      Create a brush with a bitmap pattern
+'------------------------------------------------------------------------------
+void GKI_CreateBitMapBrush(*Bitmap)
+
+Creates a brush whose pattern is specified by a bitmap.
+
+^BParameter^B
+
+^Uint *Bitmap^U
+Identifies the bitmap. Bitmaps should be 8 pixels by 8
+pixels in a pattern defined by 8 bytes arranged as 8 rows 
+top to bottom. The most significant bit is on the left.
+
+
+!seealso: dge5_008.ngo:"GKI_BoundaryFill" "GKI_CreateSolidBrush" dge5_008.ngo:"GKI_Polygon" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_CreateHatchBrush       Create a brush with a hatched pattern
+'------------------------------------------------------------------------------
+void GKI_CreateHatchBrush(nHatchIndex)
+
+Creates a brush that has the specified hatched pattern.
+Currently not implemented.
+
+^BParameter^B
+
+^Uint nHatchIndex^U
+Specifies the hatch style of the brush.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_CreateNullBrush        Create a null brush
+'------------------------------------------------------------------------------
+void GKI_CreateNullBrush()
+
+Creates a null brush.
+
+
+!seealso: "GKI_CreateNullPen" dge5_008.ngo:"GKI_Polygon" dge5_008.ngo:"GKI_Rectangle" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_CreateNullPen          Create a null pen
+'------------------------------------------------------------------------------
+void GKI_CreateNullPen()
+
+Creates a null pen.
+
+
+!seealso: dge5_008.ngo:"GKI_Rectangle" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_CreatePen              Create a pen
+'------------------------------------------------------------------------------
+void GKI_CreatePen(nStyle, nWidth, nPitch)
+
+Creates a pen having the specified style, width, and pitch.
+
+^BParameters^B
+
+^Uint nStyle^U
+Specifies the pen style. The parameter can have one of the 
+following values.
+
+     Value                       Meaning
+     컴컴컴컴컴컴컴컴컴          컴컴컴컴컴컴컴컴컴�
+     PENNULL          0          Creates a null pen.
+     PENSOLID         1          Creates a solid pen.
+     PENDASH          2          Creates a dashed pen.
+
+^Uint nWidth^U
+Currently not implemented.
+
+^Uint nPitch^U
+Currently not implemented.
+
+
+!seealso: dge5_008.ngo:"GKI_Ellipse" dge5_008.ngo:"GKI_LineTo" dge5_008.ngo:"GKI_Rectangle" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_CreateSolidBrush       Create a solid brush
+'------------------------------------------------------------------------------
+void GKI_CreateSolidBrush()
+
+Creates a solid brush.
+
+
+!seealso: dge5_008.ngo:"GKI_BoundaryFill" "GKI_CreateBitMapBrush" dge5_008.ngo:"GKI_Polygon" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_DeviceToVirtual        Change coordinates from device to virtual 
+'------------------------------------------------------------------------------
+void GKI_DeviceToVirtual(*arrXY, nPts)
+
+Transforms an array of coordinates from device to virtual 
+coordinates, overwriting the source array.
+
+^BParameters^B
+
+^Uint *arrXY^U
+Identifies an array containing a series of consecutive X, Y
+pairs. The array is overwritten with the  transformed 
+coordinates.
+
+^Uint nPts^U
+Number of coordinate pairs.
+
+
+!seealso: "GKI_VirtualToDevice" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetBgColor             Get the current background color for fills
+'------------------------------------------------------------------------------
+void GKI_GetBgColor()
+
+Reports the current background color for fills and bitmap
+functions.
+
+^BReturns^B
+Color index number.
+
+
+!seealso: "GKI_SetBgColor" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetBgMode              Get the current background mode
+'------------------------------------------------------------------------------
+void GKI_GetBgMode()
+
+Reports the current background mode.
+
+^BReturns^B
+Integer indicating the current background mode.
+
+       Value                 Meaning
+       컴컴컴컴컴컴컴컴컴    컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+       BGOPAGQUE        0    The background for a fill pattern will replace
+                             the image underneath the pattern.
+
+       BGTRANSPARENT    1    An underlying image will show through the gaps 
+                             between the lines of a fill pattern.
+
+
+!seealso: "GKI_SetBgMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetClipRgn             Get the current clipping region
+'------------------------------------------------------------------------------
+void GKI_GetClipRgn(*Buffer)
+
+Gets the current clipping region.
+
+^BParameter^B
+
+^Uint *Buffer^U
+Identifies a structure to receive coordinates for the clipping
+region.
+
+  ClipRgnStruct   STRUC
+         cr_xTL     dw      ?
+         cr_yTL     dw      ?
+         cr_xBR     dw      ?
+         cr_yBR     dw      ?
+  ClipRgnStruct   ENDS
+
+
+!seealso: "GKI_SetClipRgn" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetFgColor             Get the current foreground color
+'------------------------------------------------------------------------------
+void GKI_GetFgColor()
+
+Reports the current foreground color for all drawing
+operations.
+
+^BReturns^B
+Color index number.
+
+
+!seealso: "GKI_SetFgColor" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetPalette             Get the current color palette
+'------------------------------------------------------------------------------
+int GKI_GetPalette(*Palette) => length in bytes
+
+Gets the current color palette.
+
+^BParameters^B
+
+^Uint *Palette^U
+Identifies a buffer to receive the palette. The size must be 
+sufficient to hold the full palette.
+
+          Colors    Length
+          컴컴컴    컴컴컴컴컴�
+            16        48 bytes
+           256       768 bytes
+
+^BReturns^B
+The length of the palette in bytes.
+
+
+!seealso: "GKI_SetPalette" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetPolyFillMode        Get the current polygon fill mode
+'------------------------------------------------------------------------------
+void GKI_GetPolyFillMode()
+
+Gets the current polygon fill mode.
+
+^BReturns^B
+Pologon fill mode. Currently there is only one.
+
+          Value
+          컴컴컴컴컴컴컴컴컴
+          WINDING          0
+
+
+!seealso: "GKI_SetPolyFillMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetROP2                Get the current raster operation
+'------------------------------------------------------------------------------
+void GKI_GetROP2()
+
+Get the current raster operation.
+
+^BReturns^B
+Integer indicating the ROP2 mode.
+
+          Value
+          컴컴컴컴컴컴컴컴
+          ROPREPLACE     0
+          ROPOR          1
+          ROPXOR         2
+          ROPNOT         3
+          ROPAND         4
+
+!seealso: "GKI_SetROP2" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetVideoInfo           Get properties of the current video mode
+'------------------------------------------------------------------------------
+void GKI_GetVideoInfo(*Buffer)
+
+Returns a structure defining the properties of the video 
+mode currently selected. The structure is based on that 
+returned from the VESA BIOS. Several fields are only of 
+relevance to VESA modes.
+
+^BParameter^B
+
+^Uint *Buffer^U
+Identifies a structure defining the properties of the current
+video mode.
+
+  ModeInfoStruct  STRUC
+    ModeAttributes   dw  ?  ; mode attributes
+    WinAAttributes   db  ?  ; window A attributes
+    WinBAttributes   db  ?  ; window B attributes
+
+
+    WinGranularity   dw  ?  ; window granularity
+    WinSize          dw  ?  ; window size
+    WinASegment      dw  ?  ; window A start segment
+    WinBSegment      dw  ?  ; window B start segment
+
+
+    WinFuncPtr       dd  ?  ; pointer to window function
+    BytesPerScanLine dw  ?  ; bytes per scan line
+    XResolution      dw  ?  ; horizontal resolution
+    YResolution      dw  ?  ; vertical resolution
+
+
+    XCharSize        db  ?  ; character cell width
+    YCharSize        db  ?  ; character cell height
+    NumberOfPlanes   db  ?  ; number of memory planes
+    BitsPerPixel     db  ?  ; bits per pixel
+    NumberOfBanks    db  ?  ; number of banks
+    MemoryModel      db  ?  ; memory model type
+    BankSize         db  ?  ; bank size in kb
+  ModeInfoStruct  ENDS
+
+
+!seealso: "GKI_SetGMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetVirtualCoords       Get the current virtual coordinates
+'------------------------------------------------------------------------------
+void GKI_GetVirtualCoords(*Buffer)
+
+Returns the current virtual coordinates in a structure.
+
+^BParameter^B
+
+^Uint *Buffer^U
+Identifies a structure to receive the current virtual 
+coordinates for the screen.
+
+  VCoordsStruct   STRUC
+        vc_xTL     dw      ?
+        vc_yTL     dw      ?
+        vc_xBR     dw      ?
+        vc_yBR     dw      ?
+  VCoordsStruct   ENDS
+
+
+
+!seealso: "GKI_SetVirtualCoords" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_LoadDriver             Load a screen driver
+'------------------------------------------------------------------------------
+void GKI_LoadDriver(nDriver_id)
+
+Loads a screen driver.
+
+^BParameter^B
+
+^Uint nDriver_id^U
+Specifies the driver to load.
+
+          Value         Meaning
+          컴컴컴�       컴컴컴컴컴컴컴컴컴컴컴컴컴�
+          DRV2             2 color CGA/MCGA/Hercules.
+          DRV16           16 color EGA/VGA/SVGA
+          DRV256         256 color VGA/SVGA
+
+
+!seealso: "GKI_ResetCRTC" "GKI_SetGMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_ResetCRTC              Reset CRT controller to defaults
+'------------------------------------------------------------------------------
+void GKI_ResetCRTC()
+
+Resets CRT controller to defaults. This only applies to the 
+16 color driver, and may need to be called if there are 
+problems with mouse drivers.
+
+!seealso: "GKI_LoadDriver" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_ResetPalette           Reset color palette to defaults
+'------------------------------------------------------------------------------
+void GKI_ResetPalette()
+
+Reset color palette to defaults.
+
+!seealso: "GKI_GetPalette" "GKI_SetPalette" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetBgColor             Set the background color for fills
+'------------------------------------------------------------------------------
+void GKI_SetBgColor(nColor)
+
+Sets the current background color for fills and bitmaps to 
+the specified color.
+If the background mode is OPAQUE, the background color 
+is used to fill the gaps between hatched lines in patterned
+brushes and bitmaps.
+
+^BParameter^B
+
+^Uint nColor^U
+Color index number.
+
+
+!seealso: "GKI_GetBgColor" "GKI_SetBgMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetBgMode              Set opaque or transparent mode
+'------------------------------------------------------------------------------
+void GKI_SetBgMode(nMode)
+
+Sets the mode by which a background color is combined 
+with any underlying image.
+This is not universally implemented for bitmap and fill 
+functions.
+
+^BParameter^B
+
+^Uint nMode^U
+Specifies the background mode to be set.
+
+          Value                  Meaning
+          컴컴컴컴컴컴컴컴�      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+          BGOPAGQUE       0      The background for a fill pattern will
+                                 replace the image underneath the pattern.
+
+          BGTRANSPARENT   1      An underlying image will show through the 
+                                 gaps between the lines of a fill pattern.
+
+
+!seealso: "GKI_GetBgMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetClipRgn             Set the clipping region
+'------------------------------------------------------------------------------
+void GKI_SetClipRgn(nX0, nY0, nX1, nY1)
+
+Sets the clipping region for drawing operations.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the clipping window.
+
+^Uint nY0^U
+Y coordinate for the top of the clipping window.
+
+^Uint nX1^U
+X coordinate for the right edge of the clipping window.
+
+^Uint nY1^U
+Y coordinate for the bottom of the clipping window.
+
+
+!seealso: "GKI_GetClipRgn" "GKI_VirtualToDevice" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetFgColor             Set the foreground color
+'------------------------------------------------------------------------------
+void GKI_SetFgColor(nColor)
+
+Sets the foreground color for all drawing operations.
+
+^BParameter^B
+
+^Uint nColor^U
+Color index number.
+
+
+!seealso: "GKI_GetFgColor" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetGMode               Select and set a graphics mode
+'------------------------------------------------------------------------------
+int GKI_SetGMode(nMode) => 0 if fail
+
+Selects and sets a graphics mode.
+
+^BParameter^B
+
+^Uint nMode^U
+Graphics mode to set.
+
+          Mode             Adapter        Driver
+          컴컴컴컴컴컴     컴컴컴컴       컴컴컴�
+          M640200_2          CGA          DRV2
+          M720348_2          Herc         DRV2
+          M640350_16         EGA          DRV16
+          M640480_2          MCGA         DRV2
+          M640480_16         VGA          DRV16
+          M320200_256        VGA          DRV256
+          M800600_16         SVGA         DRV16
+          M1024768_16        SVGA         DRV16
+          M640480_256        SVGA         DRV256
+          M800600_256        SVGA         DRV256
+          M1024768_256       SVGA         DRV256
+
+^BReturns^B
+Zero on failure, otherwise non-zero.
+
+
+!seealso: "GKI_LoadDriver" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetPalette             Set the current color palette
+'------------------------------------------------------------------------------
+void GKI_SetPalette(nType, nStart, nLength, *Palette)
+
+Sets the current color palette.
+
+^BParameters^B
+
+^Uint nType^U
+Indicates the type of palette to set.
+
+          Value         Meaning
+          컴컴컴컴�     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+          PALRGB16      RGB EGA as sequence of register values.
+          PALDAC16      DAC palette as sequence of rgb triplets.
+          PALDAC256     DAC 256 color palette as sequence of rgb triplets.
+
+^Uint nStart^U
+Number of the starting register to reprogram.
+
+^Uint nLength^U
+Number of triplets or registers to reprogram.
+
+^Uint *Palette^U
+Identifies an array of palette entries. The array should 
+contain three-byte triplets, one byte for Red, a second for 
+Green, and a third for Blue. The value of each should fall in
+the range 0 to 255.
+
+  struct RGBtriple {
+         unsigned char Red;
+         unsigned char Green;
+         unsigned char Blue;
+  };
+
+
+!seealso: "GKI_GetPalette" "GKI_ResetPalette" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetPolyFillMode        Set the polygon fill mode
+'------------------------------------------------------------------------------
+void GKI_SetPolyFillMode(nMode)
+
+Sets the polygon fill mode.
+
+^BParameter^B
+
+^Uint nMode ^U
+Pologon fill mode. Currently there is only one.
+
+          Value
+          컴컴컴컴컴컴컴컴컴
+          WINDING          0
+
+
+!seealso: "GKI_GetPolyFillMode" dge5_008.ngo:"GKI_Polygon" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetROP2                Set the raster operation mode
+'------------------------------------------------------------------------------
+void GKI_SetROP2(nRop)
+
+Sets the pixel combination mode (raster operation) for all 
+drawing functions.
+
+^BParameter^B
+
+^Uint nRop^U
+Integer indicating the ROP2 mode.
+
+          Value
+          컴컴컴컴컴컴컴컴컴
+          ROPREPLACE     0
+          ROPOR          1
+          ROPXOR         2
+          ROPNOT         3
+          ROPAND         4
+
+
+!seealso: "GKI_GetROP2" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetTMode               Return to text mode
+'------------------------------------------------------------------------------
+void GKI_SetTMode()
+
+Resets to text mode.
+
+!seealso: "GKI_SetGMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetVirtualCoords       Set virtual coordinates for the screen
+'------------------------------------------------------------------------------
+void GKI_SetVirtualCoords(nX0, nY0, nX1, nY1)
+
+Sets the virtual coordinates for the screen in terms of the 
+coordinate values at the extreme top left and bottom right.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the screen.
+
+^Uint nY0^U
+Y coordinate for the top of the screen.
+
+^Uint nX1^U
+X coordinate for the right edge of the screen.
+
+^Uint nY1^U
+Y coordinate for the bottom of the screen.
+
+
+!seealso: "GKI_GetVirtualCoords" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_VirtualToDevice        Change virtual to device coordinates
+'------------------------------------------------------------------------------
+void GKI_VirtualToDevice(*arrXY, nPts)
+
+Transforms virtual to device coordinates. The 
+transformation is effected between the coordinates defined 
+by GKI_SetVirtualCoords and the physical dimensions of 
+the screen in its current video mode. The result is in terms 
+of pixel rows and columns which can be passed directly as 
+arguments to GKI drawing functions.
+
+^BParameters^B
+
+^Uint *arrXY^U
+Identifies an array containing a series of consecutive X, Y 
+pairs. The array is overwritten with the  transformed 
+coordinates.
+
+^Uint nPts^U
+Number of coordinate pairs.
+
+
+!seealso: "GKI_DeviceToVirtual" "GKI_SetVirtualCoords" 
+'------------------------------------------------------------------------------
+
+
+

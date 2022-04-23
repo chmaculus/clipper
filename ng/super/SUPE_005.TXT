@@ -1,0 +1,612 @@
+!short:Functions by Category
+!short:Array Functions
+'------------------------------------------------------------------------------
+
+ ^bArray
+
+ ASORTMULTR()   Sort multiple arrays based on sort of primary array
+                (descending)
+ ASORTMULT()    Sort multiple arrays based on sort of primary array
+ ASTDDEV()      Determines the standard deviation of an array with
+                optional conditional set
+ ASUM()         Determines the sum of an array with optional
+                conditional set
+ AMSUM()        Sum on a given element of multi-dim array
+ ARRAY2DBF()    Replaces the current record with the values in an array
+ AMVARIANCE()   Variance on a given element of multi-dim array
+ AMSTDDEV()     Standard Deviation on a given element of multi-dim array
+ DELARRAY()     Deletes all elements of an array
+ DBF2ARRAY()    Returns an array of values for the current record
+ FILLARR()      Fill type, length, decimal arrays
+ AUPDATED()     Determines if an array contains updated values for the
+                current record
+ AVARIANCE()    Determines the variance of an array with optional
+                conditional set
+ BLDARR()       Builds an array from a delimited string
+ BIGELEM()      Returns length of longest string in an array
+ A2TOSING()     Copies a given element from an array of arrays
+ AFTYPESX()     Returns an array of field types for current dbf
+ AFLENSX()      Returns an array of field LENGTHS for current dbf
+ AKOUNT()       Counts exact matches of value in array
+ AASKIP()       Use for skipblock for arrays in Tbrowse
+ AFDECIX()      Returns an array of field DECIMALS for current dbf
+ AFIELDSX()     Returns an array of field names for current dbf
+ AEXTRACT()     Extract and return a conditional set from an array
+ AFIELDSTYPE()  Returns an array of field names of particular type
+ AMATCHES()     Counts the matches of an array with optional
+                conditional set
+ AAVERAGE()     Determines the average of an array with optional
+                conditional set
+ AMAVERAGE()    Average on a given element of multi-dim array
+ ALENG()        Actual length of an array, less trailing nil elements
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Conversion Functions
+'------------------------------------------------------------------------------
+
+ ^bConversion
+
+ NOZDIV()       Prevents divide-by-zero
+ NBR2STR()      Correctly orders numerics where negative
+ TRUEVAL()      Returns val of ALL numerics in a string
+ AT2CHAR()      Returns the String color equivalent of a color attribute
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DBF Functions
+'------------------------------------------------------------------------------
+
+ ^bDBF
+
+ PICKNDX()      Allows user to select indexes to open
+ BLDDBF()       Create a DBF from a delimited string or an array
+ OPENIND()      Opens an array of indexes
+ PURGEM()       Deletes records
+ QFLDSTYPE()    Count # of fields of a given type or types
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Date Functions
+'------------------------------------------------------------------------------
+
+ ^bDate
+
+ DATECALC()     Adds/subtracts days,weeks,months,years to a date
+ DTOW()         Converts date to words
+ STOD()         Returns date from string in the form YYYYMMDD
+ WOYEAR()       Calculates week of the year (# of 7 day periods)
+ DTDIFF()       Returns difference between dates
+ DAYSIN()       Calculates number of days in a month
+ BOYEAR()       Determine beginning of year a date falls in
+ BOM()          Calculates beginning of the month date
+ DOYEAR()       Calculates day of the year from date
+ SETCENT()      Determines if century is on/off
+ WOMONTH()      Calculates week of the month (# of 7 day periods)
+ BEGEND()       Determines beginning or end of week,month or quarter
+ SET_DATE()     Sets and restores date format
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Development Functions
+'------------------------------------------------------------------------------
+
+ ^bDevelopment
+
+ SFRR_HCODE()   Output report definition to .PRG code
+ HELPMOD()      Interactively build and modify help screens
+ SCMOD()        Maintains scroller.dbf - see scroller()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Environment Functions
+'------------------------------------------------------------------------------
+
+ ^bEnvironment
+
+ SETEXACT()     Determines if exact is on/off
+ GETDFP()       Gets SET DEFAULT path
+ ISLOADED()     Determines  function is loaded or not
+ RESTSETKEYS()  Restores  set keys saved with SAVESETKEYS()
+ SAVESETKEYS()  Saves all active set keys to an array, optionally
+                clearing them
+ PRNPORT()      Determine Printer Port to use
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Event Functions
+'------------------------------------------------------------------------------
+
+ ^bEvent
+
+ RAT_EVENT()    Event handler - inkey() with mouse awareness
+ RAT_ERBHD()    Determines if right mouse button is held down
+ RAT_ISMOUSE()  Determines mouse usage by RAT_EVENT()
+ RAT_ELBHD()    Determines if left mouse button is held down
+ RAT_EQMCOL()   Returns mouse column at last press
+ RAT_EQMROW()   Returns mouse row at last press
+ IFMOUSEHD()    Checks if mouse held down,evals codeblock while it is
+ ISMOUSEAT()    Checks for mouse click within passed coordinates
+ MBRZCLICK()    Checks for mouse click on current Tbrowse row/col
+ MBRZMOVE()     Checks for mouse click at and moves to Tbrowse row/col
+ MOUSEHOTAT()   Checks for mouse click from array of hot coordinates
+ RAT_LASTEV()   Returns the last event recorded by RAT_EVENT()
+ R_ISRATREAD()  Determines if RAT_READ() is current get system
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Expression Functions
+'------------------------------------------------------------------------------
+
+ ^bExpression
+
+ FIELDLENX()    Returns length of field
+ EXPBLOCK()     Returns a codeblock to evaluate an expresson
+ FIELDTYPEX()   Returns type of field
+ FIELDPOSX()    Returns position of field named in expression
+ FIELDDECX()    Returns decimals of field
+ PARSFIELD()    Exracts the name of the field from an expression
+ BLANKREC()     Blanks out a record
+ PARSALIAS()    Exracts the name of the alias from an expression
+ WORKBLOCK()    Returns a set-get block for field named in an expression
+ BLANKFIELD()   Returns a blank value corresponding to a field
+ ISBLANKREC()   Determines if a record is blank
+ ISFIELD()      Determines if an expression is the name of a field
+ ISTHISAREA()   Determines if expression is the name of a field in
+                this area
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:File Functions
+'------------------------------------------------------------------------------
+
+ ^bFile
+
+ STRIP_PATH()   Strip path and optionally extension from a filespec
+ ISVALFILE()    Checks a file name for validity
+ FMOVE2PRIOR()  Moves to beginning of previous CRLF delimited line in
+                a text file
+ FMOVE2NEXT()   Move to beginning of next line in a text file
+ FILEINFO()     Returns file date,time,size
+ NKEY()         Gets key of an index file
+ SFREADLINE()   Reads in text up to the next CRLF in a text file
+ WRITEFILE()    Writes a line or lines  to a text file
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Get system Functions
+'------------------------------------------------------------------------------
+
+ ^bGet system
+
+ SMALLKCLR()    Clears GET-HOTKEY lookup combinations set up with
+                SMALLKSET()
+ POPUPKCLR()    Clears GET hotkey popups set up with POPUPKSET()
+ PMREADER()     Creates specialized PLUS/MINUS get reader block
+ SMALLKSET()    Sets up GET-HOTKEY lookup combinations using SMALLS()
+ PICKREADER()   Creates specialized picklist reader block
+ POPUPWHEN()    Allows use of a popup for a GET WHEN clause
+ POPUPKSET()    Set a popup for hotkey access from a GET, with auto
+                assignment
+ POPUPVALID()   Allows use of a popup for a GET VALID clause
+ CALENDVALID()  Uses GETDATE() popup calendar function as a GET VALID
+                clause
+ CALCKCLR()     Clears hot keys set by CALCKSET()
+ CALCKSET()     Allows use of GETCALC() calculator in GETS
+ SMALLWHEN()    Uses SMALLS() in a WHEN condition for a GET
+ CALENDWHEN()   Uses GETDATE() function as a GET WHEN clause
+ CALCWHEN()     Uses GETCALC() calculator function as a GET WHEN clause
+ SMALLVALID()   Uses SMALLS() in a VALID condition for a GET
+ CALCVALID()    Uses GETCALC() calculator function as a GET VALID clause
+ RAT_READ()     Mouseable read
+ GENVAL()       Generic VALID clause validation with message
+ GENREADER()    Creates specialized user defined get reader block
+ GETAKEY()      Gets intent of last keystroke
+ SBREADER()     Creates specialized spacebar spinner get reader block
+ ED_G_PIC()     Returns appropriate picture for getting a field
+ CALENDKSET()   Allows use of GETDATE() calendar in GETS
+ YNREADER()     Creates specialized Yes/No get reader block
+ CALENDKCLR()   Clears hot keys set up by CALENDKSET()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Help Functions
+'------------------------------------------------------------------------------
+
+ ^bHelp
+
+ HELP()         Provides context sensitive popup help
+ OLD()          On Line Documentation - TOPIC oriented help system
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Hp Laserjet Functions
+'------------------------------------------------------------------------------
+
+ ^bHp Laserjet
+
+ SL_OVERCOL()   Move the printer cursor right/left # columns relative
+                to position
+ SL_PUSHCURS()  Pushes the printer cursor position for later popping
+ SL_RESET()     Resets the printer to user defaults
+ SL_POPCURS()   Pops the printer cursor position for later popping
+ SL_PORT()      Sets the laserjet orientation to PORTRAIT
+ SL_TOPMARG()   Designates the number of lines of top margin
+ SL_UNDEROFF()  Sets automatic text underlining off
+ SL_VLINE()     Draws a vertical  line from row,col to endrow,col
+ SL_UNDER()     Sets automatic text underlining on
+ SL_RIGHTMARG() Sets the right margin to the right edge of the
+                specified column
+ SL_SETCPI()    Sets characters per inch
+ SL_WRAP()      Sets line wrapping on or off
+ SL_SETLPI()    Sets the lines per inch for the laserjet
+ SL_PAGESIZE()  Sets the page size on the laserjet
+ SL_LANDS()     Sets laserjet orientation to LANDSCAPE
+ SL_ITALICOFF() Sets font style to upright (non italic)
+ SL_LEFTMARG()  Sets the left margin to the left edge of the specified
+                column
+ SL_NORMAL()    Sets font stroke weight to NORMAL (non bold)
+ SL_HLINE()     Draws a horizontal line from row,col to row,endcol
+ SL_ITALIC()    Sets font style to italic
+ SL_FILL()      Fills a rectangle with shading or a pattern.
+ SL_GOTO()      Move the printer cursor to row/col
+ SL_BOX()       Draws a box line from row,col to endrow,endcol
+ SL_COPIES()    Sets the laserjet to print n copies of each page
+ SL_BOLD()      Sets font stroke weight to BOLD (ultra black)
+ SL_EJECT()     Ejects the current page
+ SL_DOWNROW()   Move the printer cursor up/down by # rows, relative to
+                position
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Keyboard Functions
+'------------------------------------------------------------------------------
+
+ ^bKeyboard
+
+ KBDESC()       Keyboards character 27 (escape) when key pressed
+ CTRLW()        Sends chr(23) (Control-W) to the keyboard
+ SHIFTY()       Determines shift key settings
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Lookup Functions
+'------------------------------------------------------------------------------
+
+ ^bLookup
+
+ ISINLOOK()     Checks for existence of a value in a lookup dbf
+ SMALLS()       Lookup tables on dbf with optional KEYBOARD or code block
+ ISNOTDUP()     Checks for a duplicate field
+ SCROLLER()     Hotkey lookup tables with dbf storage
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Menu Functions
+'------------------------------------------------------------------------------
+
+ ^bMenu
+
+ SLOTUSMENU()   1-2-3 style menu
+ PULLDN()       Pulldown menu creator, handler
+ PSTABMENU()    Popup tabular (grid style) )menu
+ RAT_MENU2()    Mouseable MENU TO emulation
+ STABMENU()     Tabular (grid style) menu
+ MENU_V()       Vertical popup menu from variable # parameters
+ BUNGDROP()     Causes dropdown during BUNGEE() menu def sequence
+ BUNGEE()       Mouseable, multi-level dropdown menu with triggers
+ BUNGEND()      Ends a BUNGEE() menu array definition sequence
+ BUNGOPTION()   Adds option during a BUNGEE() menu definition sequence
+ BUNGSTART()    Starts a BUNGEE() menu array definition sequence
+ BUNGUNDROP()   Ends dropdown during BUNGEE() menu def sequence
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Metafunction Functions
+'------------------------------------------------------------------------------
+
+ ^bMetafunction
+
+ SEARCHME()     Search a DBF with user-specified criteria
+ SCONVDELIM()   Convert a delimited file to a DBF
+ SEXPORT()      Export DBF to delimited or SDF files
+ BLDNDX()       Interactively create a new index
+ APPENDIT()     Intelligent APPEND FROM replacement
+ REPORTER()     Create, modify, execute reports
+ BROWSESDF()    Tbrowse an SDF file
+ VIEWPORT()     Multi-optional data entry engine
+ BUILDEX()      Interactively builds and returns an expression string
+ WGT_MEAS()     A Weights and Measures conversion metafunction
+ BROWSEDELIM()  Tbrowse a delimited file
+ SAPPOINT()     Appointments manager - uses popup calendar.
+ QUERY()        Popup Interactive query by example condition builder
+ FASTFORM()     Prints a selected formletter for current record
+ EDITDB()       Customized database browser with edit/add/search
+                capabilities
+ SUPERSUPER()   Datafile management proc - uses all applicable
+                Metafunctions
+ GLOBREP()      Performs global selective replace of a field
+ GENED()        Generic dbf editing screen
+ MODIFY()       Create or modify DBF structures
+ FULLDIR()      Interactively navigate directories
+ LISTER()       Build, format,print lists to printer,screen,file
+ DBSTATS()      Statistical report on current dbf,
+                sum/avg/min/max/std/var/count
+ SUM_AVE()      Interactive sum or average on a dbf field
+ DUPLOOK()      Locates possible duplicates based on user criteria
+ DUPHANDLE()    Duplicate record finder with delete/copy options
+ COPYITOUT()    Copies records to a new DBF
+ TIMEPER()      Time Period (date sensitive) DBF analysis
+ FILEREAD()     Lists a text file of unlimited size
+ TODOLIST()     Simple todo list manager
+ CLABEL()       Menu driven module for label management
+ SMAILMERGE()   Creates mailmerge files for WordPerfect & MS Word
+ TAGIT()        Tag records in a dbf for later action
+ COPYFIELDS()   Copies selected fields of selected records to new dbf
+ FORMLETR()     Interactive formletter and mailmerge utility
+ FREQANAL()     Performs a frequency analysis on a DBF
+ FORMULATE()    Builds a free-form formula or User Defined Field
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Misc/Other Functions
+'------------------------------------------------------------------------------
+
+ ^bMisc/Other
+
+ ISPART()       Determines if a value is part of a set
+ CURD()         Return current drive letter
+ SBROWS()       Determine number of rows in a box
+ ISPRN()        Detects printer ready (or not) on LPT1, 2 or 3
+ SBCENTER()     Centers box coordinates
+ SBCOLS()       Determine number of columns in a box
+ EVALQ()        Evaluates a logical condition in a string
+ ENDSWITH()     Determines if a string ends with another string
+ PRNTFRML()     Prints a formletter created by formletr()
+ CDIR()         Change Directory
+ VARLEN()       Returns length of a variable  of any type
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Mouse Functions
+'------------------------------------------------------------------------------
+
+ ^bMouse
+
+ RAT_OFF()      Sets the mouse cursor off
+ RAT_LEFTB()    Determines if the left mouse button has been pressed
+ RAT_POSIT()    Positions the mouse cursor at row,column coordinates
+ RAT_ON()       Sets the mouse cursor on
+ RAT_RBHD()     Determines if the mouse right button is currently
+                depressed
+ RAT_COLL()     Returns mouse column at the last left button press
+ RAT_COL()      Current mouse column
+ RAT_LBHD()     Determines if the mouse left button is currently depressed
+ RAT_EXIST()    Determines if a mouse is available
+ RAT_COLR()     Returns mouse column at the last right button press
+ RAT_ROWL()     Returns mouse row at the last left button press
+ RAT_ROW()      Current mouse row
+ RAT_ROWR()     Returns mouse row at the last right button press
+ RAT_AREA()     Limits the mouse to a rectangular area of the screen
+ RAT_RIGHTB()   Determines if the right mouse button has been pressed
+ RAT_RESET()    Resets the mouse to its default values
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:NETWORK Functions
+'------------------------------------------------------------------------------
+
+ ^bNETWORK
+
+ SADD_REC()     Attempts to append a blank record
+ UNIQFNAME()    Creates a unique file name
+ SREC_LOCK()    Attempts to lock a record
+ SNET_USE()     Attempts to  pen a DBF
+ SFIL_LOCK()    Attempts to lock a file
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Popup Functions
+'------------------------------------------------------------------------------
+
+ ^bPopup
+
+ TAGMARRAY()    Tag elements in muti-dimensioned array
+ STAGFIELDS()   Tag fields
+ UNBOX()        Removes a box created by makebox()
+ SPOPORDER()    Popup allows user to change viewing (index) order
+ SPOPSEEK()     Popup seek based on present index keys
+ VIEWMEMOS()    Popup viewing (non-edit mode) of memos
+ VERTVIEW()     Pops up a vertical view of the current record
+ TAGARRAY()     Tag selected elements of an array
+ SGETMANY()     Virtual (scrolling) gets in a popup box
+ AMSG()         Pop up message box for an array of messages
+ POPUPDIR()     Popup of a given directory for file selection
+ POPREAD()      Pops up a box with 1-5 say-get combinations
+ POPVDATE()     Pops up a picklist of virtual dates
+ POPEX()        Pops up an achoice for a certain filespec
+ POPMONTH()     Popup month selection
+ POPCOLSEL()    Popup color grid for selecting a single color
+ PROGINDEX()    Perform an index with a progress box
+ PROGEVAL()     Perform a Database DBEVAL() with a progress box
+ POPVYEAR()     Pops up a picklist of virtual years
+ PROGCOUNT()    Perform a count with a progress box
+ PROGDISP()     Displays progress bar in box created with PROGON()
+ PROGOFF()      Removes a progress bar box created by PROGON()
+ MESSYN()       Popup YesNo prompt box
+ MCHOICE()      Creates a box for an Achoice call
+ MFIELDS()      Pops up an selection box for current dbf fields
+ GETDATE()      Point and shoot calendar
+ MAKEBOX()      Draws a box on the screen with optional shadow,
+                returns saved screen
+ PLSWAIT()      Pops up a 'Please Wait' window or removes it
+ ONE_READ()     Pop-up window with 1-4 Say/Get combinations
+ MULTMSGYN()    Multi-line popup message - yes -no
+ MFIELDSTYPE()  Pops up a list of fields of given type(s)
+ MSG()          Displays up to a 9 line message in a window
+ HARDCOPY()     Prints current record or memo fields to printer
+ EDITMEMO()     Performs a windowed memoedit() on a memo field
+ ASCIITABLE()   Pops up an ASCII table for character selection
+ DELREC()       Dialog box to delete/undelete current record
+ EDITMEMOV()    Performs a windowed memoedit() on a string
+ BROWSE2D()     Popup tbrowse of 2 dimension array (array of arrays)
+ SBUNSHADOW()   Removes shadow drawn with SBSHADOW()
+ ABORT()        Pops up dialog box asking: Abort  Don't Abort
+ SBSHADOW()     Draw a shadow around a box
+ PROGON()       Initialize and display a progress bar box
+ QUIKREPORT()   Runtime pre-defined report printing module
+ P_READY()      Determines if printer is ready, prompts user
+ SACHOICE()     Achoice replacement, uses TBROWSE, accepts exception
+                codeblock
+ S1LABEL()      Prints a single label
+ GETCALC()      Pops up a quick 'solar' calculator
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Screen Functions
+'------------------------------------------------------------------------------
+
+ ^bScreen
+
+ SS_SLICE()     Restores screen in a slicing fashion. Alternative to
+                restscreen()
+ SS_SLIDELEFT() Restores screen in a slide left fashion. Alternative
+                to restscreen()
+ SS_SLIDERIGHT()Restores screen in a slide right fashion. Alternative
+                to restscreen()
+ SS_IMPLODE()   Restores screen in an imploding fashion. Alternative
+                to restscreen()
+ SS_RISE()      Restores screen in a rise from bottom fashion.
+                Alternative to restscreen()
+ SS_HBLINDS()   Restores screen in a horizontal blind fashion.
+                Alternative to restscreen()
+ STANDARD()     Returns color integer for standard setting
+ SS_WIPEV()     Restores screen in a wipe from top fashion.
+                Alternative to restscreen()
+ SS_SPLIT()     Restores screen in a split from middle fashion.
+                Alternative to restscreen()
+ SS_VBLINDS()   Restores screen in a vertical blind fashion.
+                Alternative to restscreen()
+ SS_WIPEH()     Restores screen in a wipe from left fashion.
+                Alternative to restscreen()
+ COLPIK()       Allows selection of colors from a list
+ ENHANCED()     Returns color integer for ENHANCED setting
+ BXX()          Draws a box on the screen of a given color
+ ATT()          Colors a section of the screen, leaving the text intact
+ PRNT()         Writes a string of a given color at row, column
+ CLS()          Clear the screen with optional color,character
+ UNSELECTED()   Returns color integer for UNSELECTED setting
+ SS_FOLD()      Restores screen in a fold to middle fashion.
+                Alternative to restscreen()
+ SS_FADE()      Restores screen in a fadeaway fashion. Alternative to
+                restscreen()
+ SS_CLOSEV()    Restores screen in a vertical close fashion.
+                Alternative to restscreen()
+ SS_FALL()      Restores screen in a fall from top fashion.
+                Alternative to restscreen()
+ XBXX()         Draws an exploding box on the screen of a given color
+ FADEAWAY()     Fades screen away , alternative to restscreen()
+ SS_CLOSEH()    Restores screen in a horizontal close fashion.
+                Alternative to restscreen()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:String Functions
+'------------------------------------------------------------------------------
+
+ ^bString
+
+ SUBPLUS()      Returns multiple substrings
+ STRPULL()      Extract text between 2 characters
+ TAKEOUT()      Extract a portion of a string between delimiters at
+                nth occurrance
+ CRUNCH()       Moves spaces in a string to end of string
+ ADDSPACE()     Pads right of string with spaces
+ ARRANGE()      Rearranges text in a string
+ CENTR()        Centers a string in x spaces
+ _WILDCARD()    Wild Card String Compare
+ ALLBUT()       Returns all but last x characters
+ STRETCH()      Imbeds characters in a string
+ LJUST()        Left justifies a string
+ STARTSW()      Determines if a string starts with another string
+ VAR2CHAR()     Converts any type variable to character type
+ RJUST()        Right justifies a string
+ PROPER()       Capitalizes first letters of string, lowers rest
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SuperLib Environment Functions
+'------------------------------------------------------------------------------
+
+ ^bSuperLib Environment
+
+ SETCOLORS()    Interactive color setting interface
+ SATTPOP()      Pops previously pushed SuperLib interface variables
+ SATTPUSH()     Pushes the current SuperLib interface variables
+ SATTPICKPUT()  Stores SuperLib environment variables to COLORS.DBF
+                with picklist
+ SATTPICKDEL()  Picklist deletion of stored color sets
+ SATTPUT()      Stores current SuperLib environment variables to DBF
+ SLS_*()        Series of functions for system settings and colors
+ SLSF_*()       Series of functions to determine system file names and
+                locations
+ INITSUP()      Sets SuperLib system interface vars for MONO or COLOR
+ SATTDIRECT()   Sets up the the system color and interface settings directly
+ SATTGET()      Sets up SuperLib environment variables from COLORS.DBF
+ SATTCOLOR()    Sets up the the system color and interface settings
+                for color monitor
+ SATTPICK()     Sets up SuperLib environment vars by selecting from
+                stored definitions
+ SATTMONO()     Sets up the the system color and interface settings
+                for MONOCHROME monitor
+ SATTGETMEM()   Sets up SuperLib environment variables from old
+                COLORS.MEM file
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

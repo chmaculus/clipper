@@ -1,0 +1,61 @@
+'------------------------------------------------------------------------------
+^BSTUFF()^B
+
+    STUFF() deletes, inserts, and/or replaces characters in a character
+    string.
+
+^USyntax^U
+
+    STUFF(<expC1>,<expN1>,<expN2>,<expC2>0
+
+^UArguments^U
+
+    <expC1> is the target character string.
+
+    <expN1> is the starting position in the target string where the
+    replacement occurs.
+
+    <expN2> is the number of characters to replace in the target string
+    (<expC1>).
+
+    <expC2> is the replacement string.
+
+^UReturns^U
+
+    A character string.
+
+    Essentially STUFF() replaces <expN2> characters in the target string
+    (<expC1> beginning at <expN1> with <expC2>.
+
+^UUsage^U
+
+    With this basic structure STUFF() can perform the following six
+    operations:
+
+    ^BInsert^B: If you specify zero for <expN2>, no characters are removed
+    from <expC1>, the replacement string (<expC2>) is inserted at <expN1>,
+    and the entire string is returned.
+
+    ^BReplace^B: If you specify a replacement string (<expC2>) the same length
+    as <expN2>, <expC2> replaces characters beginning at <expN1>.
+
+    ^BDelete^B: If replacement string (<expC2>) is a null string (""), the
+    number of characters specified by <expN2> are removed from <expC1> and
+    the string is returned without any added characters.
+
+    ^BReplace and Insert^B: If the replacement string (<expC2>) is longer than
+    <expN2>, all characters from <expN1> are replaced and the rest of the
+    replacement string (<expC2> is inserted.
+
+    ^BReplace and Delete^B: If the length of the replacement string (<expC2>)
+    is less than <expN2>, all characters in the target string (<expC1>) are
+    deleted from the end of <expC2> up to <expN2>.
+
+    ^BReplace and Delete Rest^B: If <expN2> is greater than the length of the
+    target string (<expC1>), the replacement string (<expC2>) is inserted
+    at <expN1> and the rest of <expC1> is deleted.
+!seealso: ???.ngo:"AT" ???.ngo:"LEFT" ???.ngo:"RIGHT" clip_126.ngo:"RAT" clip_141.ngo:"STRTRAN" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+

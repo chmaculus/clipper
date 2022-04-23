@@ -1,0 +1,35 @@
+'------------------------------------------------------------------------------
+^BTEXT^B
+
+    TEXT is used to display blocks of text to the screen or printer.  The
+    command provides a simple, convenient way to write to the output
+    device.
+
+^USyntax^U
+
+    TEXT [TO PRINT] [TO FILE <file>]
+    <text>...
+    ENDTEXT
+
+^UArgument^U
+
+    <text> is the block of literal characters to display to the screen.
+    Text is displayed exactly as formatted.
+
+^UOptions^U
+
+    ^BPrint^B: The TO PRINT clause echoes the display to the printer.
+
+    ^BFile^B: The TO FILE clause echoes the display to the specified
+    <file>.  If no extension is specified, (.txt) is added.
+
+^UUsage^U
+
+    Macro variables found within TEXT..ENDTEXT are expanded.  Note,
+    however, that TEXT..ENDTEXT has no provision for word-wrapping.  Text
+    is displayed exactly as encountered.
+!seealso: ???.ngo:"?/??" ???.ngo:"@...SAY...GET" clip_115.ngo:"MLCOUNT()" clip_109.ngo:"MEMOLINE()" 
+'------------------------------------------------------------------------------
+
+
+

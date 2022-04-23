@@ -1,0 +1,1437 @@
+!short: Introduction Numbers/Bit Manipulation
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+ ^bNumber and Bit Manipulation^b
+
+     This module discusses  number and bit manipulation.  Specifically, the
+     numeric section deals with conversions between two different number
+     systems, and the creation of random numbers.
+
+     The bit manipulation section covers such required binary operations as
+     AND, OR, XOR, and NOT, and how to test, set and clear bits.  The
+     NUMLOW() and NUMHIGH() functions are important for CA-Clipper Tools
+     functions that take two 8-bit values and return them as combined 16-bit
+     numbers.  An example is the GETCURSOR() function from the Extended
+     Drivers module.
+
+     Many of the functions in this module have a <value> parameter type.  In
+     this case, a number can be in the range of 0 to 65535 (or 4 294 967 295)
+     and/or a hexadecimal string in the range of "0000" to "FFFF" (or
+     "FFFFFFFF").
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: BITTOC()     Converts position-dependent bits into characters
+'------------------------------------------------------------------------------
+ ^bBITTOC()^b
+ Converts position-dependent bits into characters
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBITTOC(<nInteger>,<cBitpattern>,[<lMode>])
+     ^b    --> cCharacterstring
+
+ ^bArguments^b
+
+     ^b<nInteger>^b  Designates a number in the range of 0 to 65535, which
+     corresponds to a bit pattern.
+
+     ^b<cBitpattern>^b  Designates a character string with a maximum of 16
+     characters.  Each character corresponds to a bit in <nInteger>, where
+     the last character corresponds to the lowest-value bit.
+
+     ^b<lMode>^b  When this optional parameter is designated as .T., 0 bits
+     change to blanks.  The default is no change.
+
+ ^bReturns^b
+
+     The returned string contains the corresponding characters passed by the
+     bit pattern.
+
+ ^bDescription^b
+
+     The BITTOC() function changes the bits of a number into a sequence of
+     corresponding characters.  This facilitates work with such bit-coded
+     information as file attributes.  Depending on the <lMode> logical
+     parameter (the l in lMode symbolizes logical), 0 bits either displays no
+     character (.F.) or a blank (.T.).
+
+ ^bNote^b
+
+     ^b^CFE^b  If <lMode> is designated as .T., the string length that
+        results always corresponds to <cBitpattern>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Change file attributes:
+
+     ^b^CFE^b  The number 2 corresponds to a binary "00000010":
+
+        ? BITTOC(2, "ADVSHR")            // "H" as the next to
+                                         // last character
+
+     ^b^CFE^b  The number 5 corresponds to a binary "00000101":
+
+        ? BITTOC(5, "ADVSHR")            // "SR"
+
+     ^b^CFE^b  The number 5, with the 0 bit displayed as a blank:
+
+        ? BITTOC(5, "ADVSHR", .T.)       // "   S R"
+
+!seealso: "CTOBIT()" "CTON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CELSIUS()    Converts a Fahrenheit temperature value into Celsius
+'------------------------------------------------------------------------------
+ ^bCELSIUS()^b
+ Converts a Fahrenheit temperature value into Celsius
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCELSIUS(<nFahrenheit>) --> nCelsius
+
+ ^bArgument^b
+
+     ^b<nFahrenheit>^b  Designates a temperature in Fahrenheit.
+
+ ^bReturns^b
+
+     CELSIUS() returns the converted temperature in degrees Celsius.
+
+ ^bDescription^b
+
+     This function converts Fahrenheit temperature values directly into
+     Celsius values.
+
+ ^bExample^b
+
+     Convert to Celsius:
+
+     CODEX = CELSIUS(33.8)   // Result:  1
+     CELSIUS(338.0)          // Result:  170
+     CELSIUS(3380.0)         // Result:  1860
+     CELSIUS(-33.8)          // Result:  -36.555555...
+
+!seealso: "FAHRENHEIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEARBIT()   Clears one or more bits within a number to zero
+'------------------------------------------------------------------------------
+ ^bCLEARBIT()^b
+ Clears one or more bits within a number to zero
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLEARBIT(<nLONG|cHexLONG>,<nBitPos1>,
+     ^b   [...<nBitPos32>]) -->  nNewValue
+
+ ^bArguments^b
+
+     ^b<nLONG|cHexLONG>^b  Designates either a decimal number or hexadecimal
+     character string.
+
+     ^b<nBitPos32>^b  Designates the bit numbers to delete.
+
+ ^bReturns^b
+
+     CLEARBIT() returns a value in which the designated bits are cleared.
+
+ ^bDescription^b
+
+     CLEARBIT() resets particular bits within a field to change something
+     like a serial port register.  In contrast to NUMAND(), the bit numbers
+     are given and do not need to be converted beforehand.  The value 1
+     represents the bit with the lowest value, and the value 32, the bit with
+     the highest value.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a result of -1.
+
+ ^bExample^b
+
+     Bits 3, 4, and 6 are cleared in a bit pattern:
+
+     nBitPattern  := 255
+     nBitPattern  := CLEARBIT(nBitPattern, 3, 4, 6)   // Result:  211
+
+!seealso: "ISBIT()" "SETBIT()" "NUMAND()" "NUMNOT()" "NUMOR()" "NUMXOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CTOBIT()     Converts a character string into a bit pattern
+'------------------------------------------------------------------------------
+ ^bCTOBIT()^b
+ Converts a character string into a bit pattern
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCTOBIT(<cCharacterstring>,<cBitpattern>) --> nWORD
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates a character sequence.  When this
+     sequence occurs in the second character string, each corresponding bit
+     is set to 1.
+
+     ^b<cBitpattern> ^b Designates a sequence, with a maximum of 16
+     characters, from which the bit position is assigned.
+
+ ^bReturns^b
+
+     CTOBIT() returns a number in the range of 0 to 65535 that corresponds to
+     the created bit pattern.
+
+ ^bDescription^b
+
+     The CTOBIT() function delivers a bit pattern that corresponds to a
+     string of individual characters.  When used in conjunction with its
+     sister function BITTOC(), it facilitates work with such bit-coded
+     information as file attributes.
+
+ ^bNote^b
+
+     ^b^CFE^b  Characters in <cCharacterstring> that are not found in
+        <cBitpattern> are ignored.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The second bit in the resulting value is set, since the letter
+        "H" appears in the next-to-last position in "ADVSHR":
+
+        ? CTOBIT("H", "ADVSHR")          // Result:  00000010
+
+     ^b^CFE^b  Two characters also in ADVSHR, appear at the first and final
+        positions in this 6-character string:
+
+        ? CTOBIT("RA", "ADVSHR")         // Result:  00100001
+
+     ^b^CFE^b  <cBitpattern> ignores previously unavailable characters:
+
+        ? CTOBIT("XRYA", "ADVSHR")       // Result:  00100001
+
+!seealso: "BITTOC()" "NTOC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CTOF()       Converts a special 8-byte string into a floating point number
+'------------------------------------------------------------------------------
+ ^bCTOF()^b
+ Converts a special 8-byte string into a floating point number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCTOF(<cFloatingPointNumber>) --> nFloatingPointNumber
+
+ ^bArgument^b
+
+     ^b<cFloatingPointNumber>^b  Designates an 8-byte character string that
+     contains a CA-Clipper number in the 64-bit floating point format.
+
+ ^bReturns^b
+
+     CTOF() returns the number that corresponds in the passed string.
+
+ ^bDescription^b
+
+     Character strings created with FTOC() or XTOC() are changed into
+     CA-Clipper numbers.  Note that when you use XTOC(), character strings or
+     portions of character strings, can be switched back, if they have been
+     displayed as CA-Clipper floating point numbers.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Change a number and then change it back:
+
+        CTOF(FTOC(1234.55))        // Result:  1234.55
+
+     ^b^CFE^b  This also works for XTOC():
+
+        ? CTOF(XTOC(1234.55))      // Result:  1234.55
+
+!seealso: "FTOC()" tool_014.ngo:"XTOC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CTON()       Converts a numeric string into a different base
+'------------------------------------------------------------------------------
+ ^bCTON()^b
+ Converts a numeric string into a different base
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCTON(<cNumericstring>,[<nBase>],[<lMode>])
+     ^b    --> nInteger
+
+ ^bArguments^b
+
+     ^b<cNumericstring>^b Designates a numeric string to convert into a
+     number in base <nBase>.
+
+     ^b<nBase>^b  Designates the number base to use in the conversion.  Can
+     be in the range of 2 to 36.  The default is the decimal system, base 10.
+
+     ^b<lMode>^b  When designated as .T., allows a negative result.  The
+     default allows only positive results.
+
+ ^bReturns^b
+
+     CTON() returns the converted number that corresponds to the string.  The
+     values lie in the range of 0 and 65535 or, if <lMode> is .T., in the
+     range of -32768 and +32767.
+
+ ^bDescription^b
+
+     CTON() offers a number of ways to covert a number string into numeric
+     data format.  Almost any number can be converted, as long as the base
+     <nBase>  for the number system lies between 2 and 36.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The <cNumericstring> string is automatically TRIMmed left and
+        right.
+
+     ^b^CFE^b  If you have invalid parameters or combinations, the function
+        returns a value of 0.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Convert to base 10:
+
+        ? CTON("60000")                    // Result:  60000
+
+     ^b^CFE^b  Convert to base 2:
+
+        ? CTON("11", 2)                    // Result:  3
+
+        ? CTON("1110101001100000", 2)      // Result:  60000
+
+     ^b^CFE^b  Convert to base 16:
+
+        CTON("A", 16)                      // Result:  10
+
+        ? CTON("ABCD", 16)                 // Result:  43981
+
+        ? CTON("FFFF", 16, .T.)            // Result:  -1
+
+     ^b^CFE^b  Convert to base 36:
+
+        ? CTON("XXP", 36)                  // Result:  43981
+
+!seealso: "NTOC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EXPONENT()   Determines the exponent of a floating point number (base 2)
+'------------------------------------------------------------------------------
+ ^bEXPONENT()^b
+ Determines the exponent of a floating point number (base 2)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEXPONENT(<nFloatingPointNumber>) --> nExponent
+
+ ^bArgument^b
+
+     ^b<nFloatingPointNumber>^b  Designates any decimal number.
+
+ ^bReturns^b
+
+     EXPONENT() returns the exponent of the <nFloatingPointNumber> number in
+     base 2.
+
+ ^bDescription^b
+
+     CA-Clipper stores all numbers in a floating point format (called
+     "double" in C).  EXPONENT() only returns exponents in this format, and
+     they are always expressed in base 2.
+
+ ^bNote^b
+
+     ^b^CFE^b  The expression EXPONENT(0) returns a value of 0.  However, the
+        expression 20 returns a value of 1.  In this case, the mantissa must
+        also equal 0 (see MANTISSA()).
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following calculation produces the original number:
+        ^^2 EXPONENT(nValue) * MANTISSA(nValue)= nValue
+
+        ? EXPONENT(0)                     // Result:  0
+        ? EXPONENT(INFINITY())            // Result:  1023
+        ? EXPONENT(100)                   // Result:  6
+
+     ^b^CFE^b  The sign for nValue will not be considered:
+
+        ? EXPONENT(-100)                  // Result:  6
+        ? EXPONENT(-1.01)                 // Result:  0
+        ? EXPONENT(-2.01)                 // Result:  1
+
+     ^b^CFE^b  Values in the range of -1 < nValue < +1, yield negative
+        exponents regardless of the sign:
+
+        ? EXPONENT(0.01)                  // Result:  -7
+        ? EXPONENT(-0.01)                 // Result:  -7
+
+!seealso: "MANTISSA()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FAHRENHEIT() Converts a temperature value from Celsius into Fahrenheit
+'------------------------------------------------------------------------------
+ ^bFAHRENHEIT()^b
+ Converts a temperature value from Celsius into Fahrenheit
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFAHRENHEIT(<nCelsius>) --> nFahrenheit
+
+ ^bArgument^b
+
+     ^b<nCelsius>^b Designates a temperature in Celsius.
+
+ ^bReturns^b
+
+     FAHRENHEIT() returns the converted temperature in degrees Fahrenheit.
+
+ ^bDescription^b
+
+     This function converts Celsius temperatures into Fahrenheit equivalents.
+
+ ^bExample^b
+
+     Convert the following Celsius temperatures to Fahrenheit:
+
+     FAHRENHEIT(12.5)            // Result:  54.5
+     FAHRENHEIT(125.0)           // Result:  257
+     FAHRENHEIT(1250.0)          // Result:  2282
+     FAHRENHEIT(-155.0)          // Result:  -247
+
+!seealso: "CELSIUS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FTOC()       Converts a floating point number into a special 8-byte string
+'------------------------------------------------------------------------------
+ ^bFTOC()^b
+ Converts a floating point number into a special 8-byte string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFTOC(<nFloatingPointNumber>) --> cFloatingPointNumber
+
+ ^bArguments^b
+
+     ^b<nFloatingPointNumber>^b  Designate any CA-Clipper number.
+
+ ^bReturns^b
+
+     FTOC() returns an 8-byte character string.
+
+ ^bDescription^b
+
+     CA-Clipper internal numbers are displayed as 64-bit floating point
+     numbers.  FTOC() returns these 64 bits as an 8-byte string.  In this
+     way, numbers can be locked and/or saved more compactly.
+
+ ^bNote^b
+
+     ^b^CFE^b  The XTOC() function converts floating point numbers in the
+        same way.
+
+ ^bExample^b
+
+     It is not useful to display the return value on the screen:
+
+     NumberString  :=  FTOC(274711.335)      // 8 byte string
+
+!seealso: "CTOF()" tool_014.ngo:"XTOC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INFINITY()   Creates the largest number possible (21023)
+'------------------------------------------------------------------------------
+ ^bINFINITY()^b
+ Creates the largest number possible (21023)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINFINITY() --> nLargestNumber
+
+ ^bReturns^b
+
+     INFINITY() returns the largest number possible.
+
+ ^bDescription^b
+
+     When you divide by zero, use the INFINITY() value as a result (i.e., for
+     comparisons).
+
+ ^bNote^b
+
+     ^b^CFE^b  The number value is approximately (1.999 * 21023).
+
+ ^bExample^b
+
+     Display the largest number possible in CA-Clipper:
+
+     ? INFINITY()
+
+!seealso: "EXPONENT()" "MANTISSA()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INTNEG()     Converts an unsigned integer into a signed integer
+'------------------------------------------------------------------------------
+ ^bINTNEG()^b
+ Converts an unsigned integer into a signed integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINTNEG(<nUnsigned|cHexUnsigned>,[<l32Bit>)
+     ^b    --> nSigned
+
+ ^bArguments^b
+
+     ^b<nUnsigned|cHexUnsigned>^b  Designates either a numeric value or
+     hexadecimal digit string to convert into a 16-bit or 32-bit signed
+     integer.
+
+     ^b<32Bit>^b  If this optional parameter is designated as .T., the
+     function processes the designated value as a 32-bit unsigned integer.
+     The default value is a 16-bit unsigned integer (.F.).
+
+ ^bReturns^b
+
+     INTNEG() returns a signed 16-bit or 32-bit integer.
+
+ ^bDescription^b
+
+     This function converts unsigned integers into signed integers.
+
+     All 16-bit or 32-bit integers are accepted, depending on whether there
+     is a second parameter and the logical value is assigned.  For the 16-bit
+     variant, all values for <nUnsigned|cHexUnsigned> that are less than or
+     equal to +32767 (hex=7FFF), are positive.  Values in the range of +32768
+     (hex=8000) to +65535 (hex=FFFF), have a negative result.  When you work
+     with 32-bit values, the positive range goes to 2147483647 (inclusive).
+     All values beyond that are negative.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function returns a value of 0 for invalid, too large, or
+        negative parameters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show valid parameters:
+
+        ? INTNEG(0)                   // Result:  0
+        ? INTNEG(-1)                  // Result:  0
+        ? INTNEG(30000)               // Result:  30000
+        ? INTNEG(32767)               // Result:  32767
+        ? INTNEG(32768)               // Result: -32768
+        ? INTNEG(32769)               // Result: -32767
+        ? INTNEG(60000)               // Result: -5536
+        ? INTNEG(65535)               // Result: -1
+        ? INTNEG("FFFF")              // Result: -1
+        ? INTNEG("D0000000", .T.)     // Result: -805306368
+        ? INTNEG("FFFFFFFF", .T.)     // Result: -1
+
+     ^b^CFE^b  Show incorrect instructions or instructions that are too
+        large:
+
+        ? INTNEG("GGGG")              // Result:  0
+        ? INTNEG(90000)               // Result:  0
+        ? INTNEG("FFFFFFFFF")         // Result:  0
+
+!seealso: "INTPOS()" "NUMAND()" "NUMOR()" "NUMXOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INTPOS()     Converts a signed integer into an unsigned integer
+'------------------------------------------------------------------------------
+ ^bINTPOS()^b
+ Converts a signed integer into an unsigned integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINTPOS(<nSigned|cHexSigned>,[<l32Bit>])
+     ^b    --> nUnsigned
+
+ ^bArguments^b
+
+     ^b<nUnsigned|cHexUnsigned> ^b Designates either a numeric value or
+     hexadecimal digit string to convert into a 16-bit or 32-bit unsigned
+     integer.
+
+     ^b<l32Bit> ^b If this optional parameter is designated as .T., the
+     function processes the designated value as a 32-bit signed integer.  The
+     default value is a 16-bit signed integer (.F.).
+
+ ^bReturns^b
+
+     INTPOS() returns an unsigned 16-bit or 32-bit integer.
+
+ ^bDescription^b
+
+     This function converts signed 16-bit or 32-bit integers into the
+     corresponding unsigned number.  Based on the optional parameter and the
+     logical value it is assigned, you can work with 16-bit or 32-bit values.
+
+     For the 16-bit variant, all values in the 0 to 32767 range are
+     unchanged.  However, all negative values from -1 to -32768 are changed.
+     When the optional parameter is designated as .T., the range of values
+     stretches from -2147483648 to +2147483647.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function returns a 0 result for invalid paramerters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show simple conversions:
+
+        ? INTPOS(-1)               // 65535
+        ? INTPOS(-2)               // 65534
+        ? INTPOS(30000)            // 30000
+        ? INTPOS(60000)            // 60000
+
+     ^bWarning!^b  When working with 16-bit values INTPOS(0) = INTPOS(65536):
+
+        ? INTPOS(0)                // 0
+        ? INTPOS(65536)            // 0
+
+     ^b^CFE^b  Show values larger than 65536 in 16-bit mode.  For example,
+        the difference between 90000 and 65536 is 24464:
+
+        ? INTPOS(90000)            // 24464
+
+     ^b^CFE^b  However, in 32-bit mode:
+
+        ? INTPOS(90000, .T.)       // 90000
+        ? INTPOS(-1, .T.)          // 4294967295
+                                   // (largest 32-bit number)
+        ? INTPOS(-60000, .T.)      // 4294907296
+        ? INTPOS(-90000, .T.)      // 4294877296
+
+!seealso: "INTNEG()" "NUMAND()" "NUMOR()" "NUMXOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISBIT()      Tests the bits in a number
+'------------------------------------------------------------------------------
+ ^bISBIT()^b
+ Tests the bits in a number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISBIT(<nLONG|cHexLONG>,[<nBitPos>]) --> lSet
+
+ ^bArguments^b
+
+     ^b<nLONG|cHexLONG>^b Designates either a decimal number or hexadecimal
+     digit string.
+
+     ^b<nBitPos>^b  Designates the bit number to test.  The value can lie in
+     the range of 1 to 32.  The default is the least-significant bit.
+
+ ^bReturns^b
+
+     When the designated bit is set, the function returns a result of .T..
+
+ ^bDescription^b
+
+     ISBIT() tests a particular bit within a numeric field, without having to
+     mask it or do a comparison.
+
+ ^bExample^b
+
+     Tests the BREAK bit in the line status register of the COM1 serial
+     interface:
+
+     IF ISBIT(COM_LSR(1), 5)
+        ? "BREAK condition detected!"
+     ENDIF
+
+!seealso: "NUMAND()" "NUMNOT()" "NUMOR()" "NUMXOR()" "SETBIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LTON()       Converts a logical value into a numeric value
+'------------------------------------------------------------------------------
+ ^bLTON()^b
+ Converts a logical value into a numeric value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bLTON([<lValue>]) --> nLogicalValue
+
+ ^bArgument^b
+
+     ^b<lValue>^b  Designates the logical expression to convert.  The default
+     value is .F..
+
+ ^bReturns^b
+
+     If you designate a .T., LTON() returns a 1; with .F., it returns a 0.
+
+ ^bDescription^b
+
+     LTON() converts a logical value into a numeric value.  This allows
+     indexing on a logical field.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function treats a missing parameter as .F..
+
+ ^bExample^b
+
+     Determines the number of days in a year:
+
+     ? "The year has " + STR(365 + LTON(ISLEAP()), 3) + "  days."
+
+!seealso: "CTON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MANTISSA()   Determines the mantissa of a floating point number (base2)
+'------------------------------------------------------------------------------
+ ^bMANTISSA()^b
+ Determines the mantissa of a floating point number (base2)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMANTISSA(<nFloatingPointNumber>) --> nMantissa
+
+ ^bArguments^b
+
+     ^b<nFloatingPointNumber>^b  Designates any decimal number.
+
+ ^bReturns^b
+
+     MANTISSA() returns the mantissa of the <nFloatingPointNumber> number.
+
+ ^bDescription^b
+
+     This function supplements EXPONENT() to return the mantissa of the
+     <nFloatingPointNumber> number.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The mantissa value can be 0 or in the range of 1 to 2.
+
+     ^b^CFE^b  The following calculation reproduces the original value:
+
+       MANTISSA(<nFloatingPointNumber>)* 2^^EXPONENT(<FloatingPointNumber =
+        <nFloatingPointNumber>)
+
+ ^bExample^b
+
+     Display the mantissa for the following values:
+
+     ? MANTISSA(0)            // Result:  0.00
+     ? MANTISSA(100)          // Result:  1.56
+     ? MANTISSA(INFINITY)     // Result:  2.00
+     ? MANTISSA(0.01)         // Result:  1.28
+     ? MANTISSA(-100)         // Result: -1.56
+     ? MANTISSA(-0.01)        // Result: -1.28
+     ? MANTISSA(-1.01)        // Result: -1.01
+     ? MANTISSA(-2.01)        // Result: -1.01
+
+!seealso: "EXPONENT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NTOC()       Converts numbers in a digit string into a different number base
+'------------------------------------------------------------------------------
+ ^bNTOC()^b
+ Converts the numbers in a digit string into a different number base
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNTOC(<nLONG|cHexLONG>,[<nBase>],[<nLength>],
+     ^b   [<cPad>]) --> cCharacterstring
+
+ ^bArguments^b
+
+     ^b<nLONG|cHexLONG> ^b Corresponds to a decimal number or hexadecimal
+     character string to convert.
+
+     ^b<nBase> ^b Designates the number system base, from 2 to 36
+     (inclusive), to use in the result.  The default is the decimal system,
+     base 10.
+
+     ^b<nLength>^b  Designates the length of the string that results.  The
+     maximum length is 255.  The default is the length required for the
+     conversion.
+
+     ^b<cPad>^b  Designates a pad character to pad the string result on the
+     left.  The default value is a space.
+
+ ^bReturns^b
+
+     NTOC() returns a character string that contains the conversion result of
+     <nLONG|cHexLONG> into the <nBase> number system.
+
+ ^bDescription^b
+
+     NTOC() converts a decimal number or hexadecimal string into a number
+     string.  The result is a number in base <nBase> or, if <nBase> is not
+     specified, in base 10.  Use <nLength> to determine the length of the
+     result string.  However, if <nLength> is longer than the length
+     necessary for the result, the result string is padded on the left with
+     spaces or with a character selected with <cPad>.
+
+ ^bNote^b
+
+     ^b^CFE^b  If incompatible parameter combinations are specified, NTOC()
+        returns one or more asterisks (*) as a result.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Convert to base 10:
+
+        ? NTOC (60000)                //"60000"
+        ? NTOC (60000, 10, 7)         //"    60000"
+
+     ^b^CFE^b  Convert to base 2:
+
+        ? NTOC(60000, 2)              // "1110101001100000"
+        ? NTOC("FFFF", 2)             // "1111111111111111"
+        ? NTOC("30", 2, 8, "0")       // "00110000"
+
+     ^b^CFE^b  Convert to base 16:
+
+        ? NTOC(43981, 16)             // "ABCD"
+
+     ^b^CFE^b  Convert to base 36:
+
+        ? NTOC(43981, 36, 4)          // "XXP"
+
+     ^b^CFE^b  Invalid parameters (overflow):
+
+        ? NTOC("GGGG", 2)             // "*"
+        ? NTOC(60000, 10, 3)          // "***"
+        ? NTOC(60000, 1, 4)           // "****"
+
+!seealso: "CTON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMAND()     Performs a 16-bit "AND" of a list of numbers
+'------------------------------------------------------------------------------
+ ^bNUMAND()^b
+ Performs a 16-bit "AND" of a list of numbers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMAND(<nWORD1|cHexWORD1>,<nWORD2|cHexWORD2>,
+     ^b   [...<nWORDn|<cHexWORDn>]) --> nWORD-AND
+
+ ^bArgument^b
+
+     ^b<nWORD1|cHexWORD1>, <nWORD2|cHexWORD2>, ...<nWORDn|cHexWORDn>^b
+     Designates either decimal or hexadecimal number strings.
+
+ ^bReturns^b
+
+     NUMAND() joins all designated parameters with the logical "AND" and
+     returns the result.
+
+ ^bDescription^b
+
+     This function makes it simple to test several bits in a number
+     simultaneously.  If bits are connected in an AND configuration, you can
+     mask out specific bits and the unneeded bits are reset to 0.  All the
+     numbers specified as parameters are then connected with AND.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a result of -1.
+
+ ^bExample^b
+
+     Test an interface register:
+
+     The register contains:         00011101
+     The constant in binary:        00000111
+                                    ________
+     The result: (5)                00000101
+     nStatus  := COM_MSR()
+     IF NUMAND(nStatus, 7) = 5
+        ? "Bit 1 and Bit 2 are set!"
+     ENDIF
+
+!seealso: "NUMNOT()" "NUMOR()" "NUMXOR()" "SETBIT()" "ISBIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMCOUNT()   Uses the internal CA-Clipper Tools counter
+'------------------------------------------------------------------------------
+ ^bNUMCOUNT()^b
+ Uses the internal CA-Clipper Tools counter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMCOUNT([<nIncrement|nStartValue>,[<lMode>]])
+     ^b    --> nNewCounterValue
+
+ ^bArguments^b
+
+     ^b<nIncrement|nStartValue>^b  Designates the incremental value for the
+     internal counter or a new starting value.
+
+     ^b<lMode>^b  Designates whether <nIncrement|nStartValue> is a new
+     starting value (.T.) or an increment (.F.).  The default is increment
+     (.F.).
+
+     () Without parameters, the current counter value is returned.
+
+ ^bReturns^b
+
+     When called without parameters, this function returns the current
+     counter value; otherwise, it always returns the new counter value.
+
+ ^bDescription^b
+
+     Always increment count variables and retain the current status when you
+     program counting events.  Use NUMCOUNT() to simplify this process.  When
+     you call NUMCOUNT(), the internal counter is increased and the new
+     counter status is returned to the calling program.  The count variable
+     is then queried and actualized in one step.
+
+ ^bExample^b
+
+     Data is not output with line numbers, but with a running counter:
+
+     NUMCOUNT(0, .T.)      // Set 0 as a starting value..
+     LIST OFF NUMCOUNT(1), CUST FOR REBATE
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMHIGH()    Returns the higher value byte in a 16-bit number
+'------------------------------------------------------------------------------
+ ^bNUMHIGH()^b
+ Returns the higher value byte in a 16-bit number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMHIGH(<nWORD|cHexWORD>) --> nByte
+
+ ^bArgument^b
+
+     ^b<nWORD|cHexWORD>^b  Designates either a decimal number or hexadecimal
+     digit string.
+
+ ^bReturns^b
+
+     The higher value byte of the <nWORD|cHexWORD> 16-bit number is returned.
+
+ ^bDescription^b
+
+     NUMHIGH() breaks down a 16-bit number into its two bytes and returns the
+     higher byte as a result.  Use this for such functions as SCANKEY() or
+     GETCURSOR(), because NUMHIGH() separates the two bytes of the keyboard
+     scan code.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a value of -1.
+
+ ^bExample^b
+
+     Break down the combined return value of GETCURSOR():
+
+     ? "Starting line for the cursor is:", NUMHIGH(GETCURSOR())
+
+!seealso: "NUMLOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMLOW()     Returns the lower value byte in a 16-bit number
+'------------------------------------------------------------------------------
+ ^bNUMLOW()^b
+ Returns the lower value byte in a 16-bit number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMLOW(<nWORD|cHexWORD>) --> nByte
+
+ ^bArgument^b
+
+     ^b<nWORD|cHexWORD>^b  Designates either a decimal number or hexadecimal
+     digit string.
+
+ ^bReturns^b
+
+     The lower value byte in the <nWORD|cHexWORD> 16 bit number is returned.
+
+ ^bDescription^b
+
+     NUMLOW() breaks down a 16-bit number into its two bytes and returns the
+     higher byte as a result.  Use NUMLOW() with such functions as SCANKEY()
+     or GETCURSOR(), so you can separate the two bytes of the keyboard scan
+     code.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a value of -1.
+
+ ^bExample^b
+
+     Breaks down the combined return value of GETCURSOR():
+
+     ? "Last line for the cursor is:", NUMLOW(GETCURSOR())
+
+!seealso: "NUMHIGH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMMIRR()    Mirrors 8-bit or 16-bit values
+'------------------------------------------------------------------------------
+ ^bNUMMIRR()^b
+ Mirrors 8-bit or 16-bit values
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMMIRR(<nNumber|cNumber>,[<l8/16bit>])
+     ^b    --> nResult
+
+ ^bArguments^b
+
+     ^b< nNumber/cNumber>^b  Designates a numeric value in the range of 0 to
+     65535, or a hexadecimal string within which 8 or 16 bits are mirrored.
+
+     ^b<l8/16bit> ^b Designates whether 16 bits (.F.) or 8 bits (.T.) are
+     mirrored.  The default value is .F..
+
+ ^bReturns^b
+
+     NUMMIRR() returns a value by which the bit opposite the first parameter
+     is mirrored.  If there is an invalid parameter, a value of -1 is
+     returned.
+
+ ^bDescription^b
+
+     Use this function in the accompanying font editor to mirror characters
+     with bit patterns.  Bits with values in 0 to 65535 range are mirrored.
+     When you mirror bit 16, bit 1 interchanges with bit 16, bit 2 with bit
+     15, etc..  You can also designate the first parameter as a hexadecimal
+     string in "0ABE" form and the result is always numeric.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Initialize the number to mirror:
+
+        nVar  :=  128 + 64 + 8 + 2                // 00000000 11001010
+
+     ^b^CFE^b  Mirror bit 16:
+
+        ? NTOC(NUMMIRR(nVar), 2, 16, "0")         // 01010011 00000000
+
+     ^b^CFE^b  Only mirror bit 8:
+
+        ? NTOC(NUMMIRR(nVar, .T.), 2, 16, "0")    // 00000000 01010011
+
+!seealso: "NUMAND()" "NUMHIGH()" "NUMLOW()" "NUMNOT()" "NUMOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMNOT()     Performs a 16-bit "NOT" of a number
+'------------------------------------------------------------------------------
+ ^bNUMNOT()^b
+ Performs a 16-bit "NOT" of a number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMNOT(<nWORD|cHexWORD>) --> nNegatedWORD
+
+ ^bArgument^b
+
+     ^b<nWORD|cHexWORD>^b  Designates either a decimal number or hexadecimal
+     digit string.
+
+ ^bReturns^b
+
+     NUMNOT() returns the negated binary value of the <.nWORD|cHexWORD>
+     parameter.  The 0 bits become 1, and 1 bits become 0.
+
+ ^bDescription^b
+
+     This function is especially useful with file attributes, error codes,
+     and when you manipulate bit fields.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The function returns the 1's complement of a number.
+
+     ^b^CFE^b  An invalid parameter returns a result of -1.
+
+ ^bExample^b
+
+     Show the 1's complement of a number:
+
+     The number:         00000101  00000000
+     The complement:     11111010  11111111
+     ? NUMNOT(5)         // Result: 65530
+
+!seealso: "NUMAND()" "NUMOR()" "NUMXOR()" "SETBIT()" "ISBIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMOR()      Performs a 16-bit "OR" of a list of numbers
+'------------------------------------------------------------------------------
+ ^bNUMOR()^b
+ Performs a 16-bit "OR" of a list of numbers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMOR(<nWORD1|cHexWORD1>,<nWORD2|cHexWORD2>,
+     ^b   [<nWORDncHexWORDn>]) --> nWORD-OR
+
+ ^bArgument^b
+
+     ^b<nWORD1|cHexWORD1>...<nWORDn|cHexWORDn>^b  Designates either decimal
+     numbers or hexadecimal digit strings.
+
+ ^bReturns^b
+
+     The returned value corresponds to all the values designated as
+     parameters joined with a logical OR.
+
+ ^bDescription^b
+
+     NUMOR() allows you to target and set a single bit or multiple bits.  For
+     example, use this to set a file attribute.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a result of -1.
+
+ ^bExample^b
+
+     Set bit 5 in the MCR interface register of port 1, without changing any
+     other bits:
+
+     The register contains:      00000011
+     The constant in binary:     00010000
+                                 ________
+     The result: (19)            00010011
+     COM_MCR(1, NUMOR(COM_MCR(1), 16))
+
+!seealso: "NUMAND()" "NUMNOT()" "NUMXOR()" "SETBIT()" "ISBIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMROL()     Performs a 16-bit left rotation of a number
+'------------------------------------------------------------------------------
+ ^bNUMROL()^b
+ Performs a 16-bit left rotation of a number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMROL(<nWORD1|cHexWORD1>,<nWORD2|cHexWORD2>,
+     ^b   [<lLowByte>]) --> nWORDLeft-Rotated
+
+ ^bArguments^b
+
+     ^b<nWORD1|cHexWORD1>^b  Designates a numeric or hexadecimal value in the
+     range of 0 to 65535.
+
+     ^b<nWORD2|cHexWORD2>^b  Designates a number of rotations in the range of
+     1 to 15 (1 to 7); as either numeric or hexadecimal.
+
+     ^b<lLowByte> ^b If this optional parameter is designated as .T., then
+     the low byte of the specified WORD is rotated.  The default is a 16-bit
+     rotation (.F.).
+
+ ^bReturns^b
+
+     NUMROL() returns the rotation result.
+
+ ^bDescription^b
+
+     This function rotates bits to the left in a number between 0 and 65535
+     (16-bit value).  When the high bit rotates it is not just moved out to
+     the left, it is also moved in on the right.  Use the optional logical
+     parameter to determine if all 16 or only the low value 8 bits are to
+     rotate.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If a value of > 15(7) is designated for <nWORD1|cHexWORD1>,
+        the actual number of rotations for the remainder corresponds to a
+        value divided by 16(8).
+
+     ^b^CFE^b  A right rotation is also possible.  One rotation to the right
+        corresponds to 15(or 7) rotations to the left, etc..
+
+ ^bExamples^b
+
+     ^b^CFE^b  Rotate the 1 value three times to the left:
+
+        00000000 00000001  00000000 00001000
+        ? NTOC(1, 2, 16, "0"), NTOC(NUMROL(1, 3), 2, 16, "0")
+                                         // Display as binary
+
+     ^b^CFE^b  Value of 60000 -- only rotate the low 8-bit value:
+
+        11101010 01100000  11101010 10000001
+        NUMROL(60000, 2, .T.)
+
+     ^b^CFE^b  Construct a rotation two places to the right:
+
+        00000000 00000100  00000000 00000001
+        ? NUMROL(4, 14)
+
+     ^b^CFE^b  In parameter 2 > 15, there is only one rotation:
+
+        ? NUMROL(1, 33)                  // Result:  2
+
+!seealso: "NTOC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMXOR()     Performs a 16-bit "XOR" of two numbers
+'------------------------------------------------------------------------------
+ ^bNUMXOR()^b
+ Performs a 16-bit "XOR" of two numbers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMXOR(<nWORD1|cHexWORD1>,<nWORD2|cHexWORD2>)
+     ^b    --> nWORD-XOR
+
+ ^bArgument^b
+
+     ^b<nWORD1|cHexWORD1>^b and^b <nWORD2|cHexWORD2>^b  Designates as either
+     decimal numbers or hexadecimal digit strings.
+
+ ^bReturns^b
+
+     The returned value corresponds to all the values designated as
+     parameters joined with a logical exclusive OR.
+
+ ^bDescription^b
+
+     Only those bits that are different in the 2-bit fields and that you want
+     to link together, are set to 1 in the result value.  Use NUMXOR() to
+     encode smaller numbers.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a result of -1.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Link two numbers with NUMXOR():
+
+        Value 1 in binary:      00000011
+        Value 2 in binary:      00000101
+                                ________
+        The result: (6)         00000110
+        ? NUMXOR(3, 5)                  // Result:  6
+
+     ^b^CFE^b  Encode and decode numbers:
+
+        ? NUMXOR(NUMXOR(nNumber, 9), 9)
+
+!seealso: "NUMAND()" "NUMNOT()" "NUMOR()" "SETBIT()" "ISBIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RAND()       Generates random numbers
+'------------------------------------------------------------------------------
+ ^bRAND()^b
+ Generates random numbers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRAND([<nStartValue>]) --> nRandomValue
+
+ ^bArgument^b
+
+     ^b<nStartValue>^b  Designates a beginning value for the random number
+     generator.
+
+ ^bReturns^b
+
+     RAND() returns a random number between 0 and 1.
+
+ ^bDescription^b
+
+     In contrast to RANDOM(), this function works with a seed algorithm.
+     Multiple calls always returns the same random number sequence when it
+     has the same start value.  When you first call RANDOM() without a
+     parameter, it starts as if 100001 is specified as a parameter.
+     Subsequent random numbers can then be influenced by the < nStartValue>.
+     If this value is less than or equal to 0, the clock time is brought into
+     the process.
+
+     If you call the function with 100001 as a parameter, it allows you to
+     restart the generator.  Then, if you call the function several times
+     without parameter, it returns the "standard sequence" of numbers.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Call after program start:
+
+        ? STR(RAND(), 18, 15)            // 0.831051100158447
+        ? STR(RAND(), 18, 15)            // 0.557946857971956
+
+     ^b^CFE^b  If the parameter equals 0, the clock time is incorporated.
+        Even if the clock has not yet advanced, subsequent values are still
+        different:
+
+        ? STR(RAND(), 18, 15)            // Time dependent
+        ? STR(RAND(), 18, 15)            // Subsequent time
+                                         // dependent value
+
+     ^b^CFE^b  Use a number greater than 0:
+
+        ? STR(RAND(23), 18, 15)          // 0.121169930053736
+        ? STR(RAND(23), 18, 15)          // 0.121169930053736
+
+     ^b^CFE^b  Show a "new start":
+
+        ? STR(RAND(100001), 18, 15)      // 0.831051100158447
+        ? STR(RAND(), 18, 15)            // 0.557946857971956
+
+!seealso: "RANDOM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RANDOM()     Generates random numbers
+'------------------------------------------------------------------------------
+ ^bRANDOM()^b
+ Generates random numbers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRANDOM([<lMode>]) --> nRandomWORD
+
+ ^bArgument^b
+
+     ^b<lMode> ^b Designates whether or not to return negative numbers.  The
+     default creates only positive numbers.
+
+ ^bReturns^b
+
+     RANDOM() returns a random number in the range of 0 to 65535 or when
+     <lMode> is designated as .T., in the range of -32768 to +32767.
+
+ ^bDescription^b
+
+     RANDOM() produces random numbers to create a random distribution of test
+     data for DEMO programs or any other application.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the <lMode> parameter is not specified, only positive
+        numbers are returned.  When < lMode> is set to .T., the function
+        returns the same number of positive and negative numbers.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create a random number between 0 and 65535:
+
+        ? RANDOM()
+
+     ^b^CFE^b  Create a random number between 0 and 1:
+
+        ? RANDOM()/65535
+
+     ^b^CFE^b  Create a random whole number between 1 and 16:
+
+        ? RANDOM()%16 +1
+
+     ^b^CFE^b  Create a random number between -32768 and +32767:
+
+        ? RANDOM(.T.)
+
+!seealso: "RAND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETBIT()     Sets one or more bits in a number
+'------------------------------------------------------------------------------
+ ^bSETBIT()^b
+ Sets one or more bits in a number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETBIT(<nLONG|cHexLONG>,<nBitPos1>,
+     ^b   [<nBitPos32>]) --> nNewValue
+
+ ^bArguments^b
+
+     ^b<nLONG|cHexLONG>^b  Designates either a decimal number or hexadecimal
+     number string.
+
+     ^b<nBitPos1>^b ...  ^b<nBitPos32>^b  Designates which bit numbers to
+     set.
+
+ ^bReturns^b
+
+     SETBIT() sets the designated bits and returns the result.
+
+ ^bDescription^b
+
+     For example, SETBIT() allows you to set one or more bits to change a
+     serial interface register.  This is in contrast to NUMOR(), where the
+     bit numbers can be set and do not need to be previously converted.  The
+     value 1 represents the bit with the lowest value; 32 is the bit with the
+     highest value.
+
+ ^bNote^b
+
+     ^b^CFE^b  An invalid parameter returns a result of -1.
+
+ ^bExample^b
+
+     Set bits 1, 2, and 5 in a numeric field:
+
+     nBitfield  :=  0
+     nBitfield  :=  SETBIT(nBitfield, 1, 2, 5)   // Result:  19
+
+!seealso: "NUMAND()" "NUMNOT()" "NUMOR()" "NUMXOR()" "ISBIT()" 
+'------------------------------------------------------------------------------
+
+
+

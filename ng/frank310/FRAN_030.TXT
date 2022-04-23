@@ -1,0 +1,253 @@
+!short: ADcurdrive()        Returns the current drive
+'------------------------------------------------------------------------------
+ ^bADcurdrive() --> <cDrive>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the current drive as "A", "B", "C", etc.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADcurpath()         Returns the current path
+'------------------------------------------------------------------------------
+ ^bADcurpath() --> <cPath>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the current path including the drive and the trailing "\", e.g.,
+ "C:\", "C:\CLIPPER\SOURCE\".
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdrives()          Returns a list of drives
+'------------------------------------------------------------------------------
+ ^bADdrives( [nMode] ) --> <xList>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns a list of available drives.  The value of [nMode] determines the form
+ of the return value <xList>.  Its valid values are #defined in FRANKIE.CH:
+
+ #define DRIVE_STRING            1    // string of drive letters
+
+    <xList> is a string of drive identifiers, e.g., "ABCD"
+
+ #define DRIVE_LETTER_ONLY       2    // drive letters
+
+    <xList> is an array of drive letters, e.g., { "A", "B", "C", "D" }
+
+ #define DRIVE_LETTER_COLON      3    // drive letters + ":"  (Default)
+
+    <xList> is an array of drive letters plus colon, e.g.,
+           { "A:", "B:", "C:", "D:" }
+
+ #define DRIVE_LETTER_PATH       4    // drive letters + path
+
+    <xList> is an array of drive letters plus path, e.g.,
+           { "A:\", "B:\", "C:\CLIPPER5\FRANKIE\", "D:\UTIL\" }
+
+ [nMode] defaults to DRIVE_LETTER_COLON
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADisfloppy()        Checks if a floppy drive is ready
+'------------------------------------------------------------------------------
+ ^bADisfloppy( <cDrive> ) --> <lReady>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the ready-status of a floppy drive.  <cDrive> is either "A" or "B".
+ If <cDrive> refers to a hard drive or a logical drive, the function always
+ returns a FALSE.
+!seealso: "ADiswriteable()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADisparam()         Checks if a string was passed as a command line argument
+'------------------------------------------------------------------------------
+ ^bADisparam( <cString> ) --> <lPassed>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Checks if <cString> was passed as a Dos Command Line argument.  Checking is
+ not case sensitive.
+
+ ^bExample
+ ^b-------
+ ADisparam( "/f" )
+ ADisparam( "/F" )       // is similar to the first example
+ See also ADpname()
+!seealso: "ADpname()" "ADpcount()" "ADpposition()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADispath()          Checks if a path exists
+'------------------------------------------------------------------------------
+ ^bADispath( <cPath> ) --> <lExist>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Checks if a path exists.
+
+ <cPath> is the path to check
+
+ <lExist> is a logical value (TRUE=it exists, FALSE=it does not exist)
+
+ ^bExample
+ ^b-------
+
+  ? ADispath( "C:\" )             // .t.
+  ? ADispath( "C:\NOSUCHD.IR" )   // .f.
+!seealso: "ADcurpath()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADiswriteable()     Checks if a drive is writeable
+'------------------------------------------------------------------------------
+ ^bADiswriteable( <cDrive> ) --> <lWriteable>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Checks if a drive is writeable.
+
+ <cDrive> is the one-letter identifier of the drive to check (e.g. "A").
+
+ <lWriteable> is a logical value (TRUE=writeable, FALSE=not writeable)
+
+ ^bExample
+ ^b-------
+
+ if ADisfloppy( "A" )
+      ? ADiswriteable( "A" )
+ endif
+!seealso: "ADisfloppy()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADnfloppy()         Returns the number of floppy drives
+'------------------------------------------------------------------------------
+ ^bADnfloppy() --> <nFloppyDrives>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the number of floppy drives attached to the system.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADnhandle()         Returns the number of available DOS file handles
+'------------------------------------------------------------------------------
+ ^bADnhandle() --> <nAvailDosHandles>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the number of still available DOS file handles.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADnlogical()        Returns the number of logical drives
+'------------------------------------------------------------------------------
+ ^bADnlogical() --> <nLogicalDrives>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the number of logical drives attached to the system.  This number
+ includes floppies, hard drives and virtual drives.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADprogname()        Returns the name of the running application.
+'------------------------------------------------------------------------------
+ ^bADprogname() --> <cAppName>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the name of the running application program.
+
+ Example:
+ --------
+ // The program that is running is MYPROG.EXE.
+ ? ADprogname()         // "MYPROG.EXE"
+!seealso: "ADprogpath()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADprogpath()        Returns the home directory of the running application
+'------------------------------------------------------------------------------
+ ^bADprogpath() --> <cHomeDirectory>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the directory from where the running application program was
+ loaded.
+
+ Example:
+ --------
+ // MYPROG.EXE is located in C:\MYPROG\EXEC.  You are running the program
+ // off C:\MYPROG\DATA.
+ ? ADprogpath()      // "C:\MYPROG\EXEC\"
+!seealso: "ADprogname()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpcount()          Returns the number of command line arguments
+'------------------------------------------------------------------------------
+ ^bADpcount() --> <nCommandLineArgs>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the number of Dos Command Line arguments.
+
+ Example: See ADpname()
+!seealso: "ADpname()" "ADpposition()" "ADisparam()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpname()           Returns a command line argument
+'------------------------------------------------------------------------------
+ ^bADpname( <nthArg> ) --> <cArg>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the <nthArg> command line argument.
+
+ ^bExample
+ ^b-------
+ If you entered the command "MYAPP //INFO /c", the following calls will yield:
+
+ ? ADpcount()            // 2
+ ? ADpname(0)            // ""
+ ? ADpname(1)            // "//INFO"
+ ? ADpname(2)            // "/c"
+ ? ADisparam( "/c" )     // .t.
+ ? ADisparam( "/C" )     // .t.
+ ? ADisparam( "/" )      // .f.
+ ? ADisparam( "c" )      // .f.
+!seealso: "ADpcount()" "ADpposition()" "ADisparam()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpposition()       Returns the position of a command line parameter
+'------------------------------------------------------------------------------
+ ^bADpposition( <cParam> ) --> <nParamPos>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the position <nParam> of a Dos Command Line parameter <cParam>.
+ Returns 0 if <cParam> is not a parameter.
+
+ ^bExample
+ ^b-------
+ If you entered the command "MYAPP //INFO /c", the following calls will yield:
+
+ ? ADpposition( "//INFO" )     // 1
+ ? ADpposition( "/c" )         // 2
+!seealso: "ADpcount()" "ADpname()" "ADisparam()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,36 @@
+'------------------------------------------------------------------------------
+^BRESTORE^B
+
+    RESTORE retrieves and activates memory variables from a memory file.
+
+^USyntax^U
+
+    RESTORE FROM <filename> [ADDITIVE]
+
+^UDefaults^U
+
+    A .mem file extension is assumed unless otherwise specified.
+
+^UUsage^U
+
+    When you RESTORE memory variables in a program file, all of the
+    currently active memory variables are deleted unless ADDITIVE is
+    specified.  Unless you redeclare memory variables as PUBLIC in a
+    program file, the variables are restored as PRIVATE.  Memory variables
+    you restore from the dot prompt, however, always come back as PUBLIC.
+
+    No more than 64,000 memory variables may be active at any time.
+
+^UOptions^U
+
+    To retain the current memory variables, include the ADDITIVE option,
+    which causes the RESTOREd memory variables to be added to the current
+    one.  Any current memory variables with the same name are overwritten.
+    To restore variables in a memory file as PUBLIC, you must redeclare
+    them as PUBLIC before you RESTORE the memory file and use the ADDITIVE
+    option.
+!seealso: clip_026.ngo:"PUBLIC" clip_031.ngo:"RELEASE" clip_039.ngo:"SAVE" clip_081.ngo:"STORE" 
+'------------------------------------------------------------------------------
+
+
+

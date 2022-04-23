@@ -1,0 +1,46 @@
+'------------------------------------------------------------------------------
+^BFUNCTION^B
+
+    FUNCTION declares user-defined functions in Clipper.
+
+^USyntax^U
+
+    FUNCTION <procedure>...RETURN <exp>
+
+^UArguments^U
+
+    <procedure> is the declared name of the user-defined function.
+    Procedure and user-defined function names can be up to 10 characters in
+    length.
+
+    <exp> is the function return value.  All user-defined functions must
+    return a value.
+
+^UUsage^U
+
+    User-defined functions are the same as procedures with two exceptions.
+    They must begin with the FUNCTION declaration and contain a RETURN
+    statement with an argument (in order to return a value).
+
+    To call a user -defined function, use the same notation as you would
+    when calling Clipper functions:
+
+    ^Bfunction(<parameter list>)^B
+
+    If you are not concerned with the return value, you can use the same
+    notation to place a user-defined function on a line by itself.  In this
+    case the return value is ignored.
+
+    ^BPassing parameters^B: Parameters passed to user-defined functions are
+    passed by value with two exceptions.  First, if the actual parameter is
+    an array reference, the entire array is passed by reference.  Second,
+    if the actual parameter is preceded by the "at" sign (@), it is passed
+    by reference.
+
+    For a more detailed discussion on passing parameters, refer to the
+    entry for PARAMETERS in this chapter.
+!seealso: clip_025.ngo:"PROCEDURE" clip_023.ngo:"PARAMETERS" clip_037.ngo:"RETURN" 
+'------------------------------------------------------------------------------
+
+
+

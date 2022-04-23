@@ -1,0 +1,32 @@
+'------------------------------------------------------------------------------
+^BGO^B
+
+    GO/GOTO positions the record pointer to a specified record in the
+    active database file.
+
+^USyntax^U
+
+    GO/GOTO <expN>/BOTTOM/TOP
+
+^UArgument^U
+
+    <expN> is the specific record to move the record pointer to.  GOTO
+    moves the record pointer to this record even if DELETED is ON or it
+    falls outside the scope of the current filter.
+
+^UOptions^U
+
+    ^BBottom^B: GO/GOTO BOTTOM moves to the last logical record in the
+    current work area if there is an active index or LASTREC() if there
+    isn't one.  If DELETED is ON or there is an active FILTER, this is the
+    last record in the filter scope.
+
+    ^BTop^B: GO/GOTO TOP moves to the first logical record in the
+    current work area if there is an active index or record 1 if there
+    is no index in USE.  If DELETED is ON or there is an active FILTER,
+    this is the first record in the filter scope.
+!seealso: clip_079.ngo:"SKIP" clip_103.ngo:"LASTREC()" clip_128.ngo:"RECNO()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,47 @@
+'------------------------------------------------------------------------------
+^BMEMOTRAN()^B
+
+    MEMOTRAN() replaces carriage return/line feed pairs.
+
+^USyntax^U
+
+    MEMOTRAN (<expC1>[,<expC2>[,<expC3>]])
+
+^UArguments^U
+
+    <expC1> is the character string or memo field to replace soft or hard
+    carriage returns in.
+
+    <expC2> is the character you specify to replace a hard carriage
+    return/line feed pair.
+
+    <expC3> is the character you specify to replace a soft carriage
+    return/line feed pair.
+
+^UReturns^U
+
+    A character string.
+
+    If you do not specify <expC2> and <expC3>, MEMOTRAN() replaces all hard
+    carriage returns (CHR(13)) with semicolons, all soft carriage returns
+    (CHR(141) with spaces, and eliminates all line feeds.
+
+^UUsage^U
+
+    The default replacement values accommodate the requirements of the
+    REPORT FORM command.
+
+    If you invoke a REPORT FORM that uses MEMOTRAN() and do not use
+    MEMOTRAN() anywhere else in the program, be sure to declare MEMOTRAN()
+    to the linker with EXTERNAL.
+
+^UExample^U
+
+    To strip all formatting characters from a memofield:
+
+            ^RREPLACE Notes WITH MEMOTRAN(Notes," "," ")^R
+!seealso: clip_108.ngo:"MEMOEDIT()" clip_033.ngo:"REPLACE" clip_093.ngo:"HARDCR" clip_109.ngo:"MEMOLINE" clip_110.ngo:"MEMOREAD" clip_113.ngo:"MEMOWRIT" clip_115.ngo:"MLCOUNT" 
+'------------------------------------------------------------------------------
+
+
+

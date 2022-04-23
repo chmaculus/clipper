@@ -1,0 +1,449 @@
+!short: Introduction Devices and Forms
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     Netware provides the ability to manage printer and form information in a
+     database (NET$PRN.DAT).  The functions of this chapter allow a read
+     access to the contents of NET$PRN.DAT and make it possible to connect an
+     application's printer management with Netware.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETPDEV()   Determines the names of defined devices
+'------------------------------------------------------------------------------
+ ^bNNETPDEV()^b
+ Determines the names of defined devices
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPDEV([<cServer>,<nConId>]) --> aDevices
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     device definition is used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPDEV() returns a one-dimensional array that contains the names of
+     the defined devices.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT DEVICES
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  NNETPDEV() allows you to access this database and use
+     the information in your application.  The function returns an array that
+     contains the names of the defined devices.
+
+ ^bExample^b
+
+     Determine and display the defined devices:
+
+     aDevices = NNETPDEV()
+     FOR i = 1 TO LEN(aDevices)
+     ? aDevices[i]
+     NEXT i
+!seealso: "NNETPFORMS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPFLEN()  Determines the page length of a form definition
+'------------------------------------------------------------------------------
+ ^bNNETPFLEN()^b
+ Determines the page length of a form definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPFLEN(<cForm>,[<cServer>|<nConId>]) --> nLength
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cForm>^b  Designates the name of the form for which the page length
+     is determined.
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     form's definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPFLEN() returns the number of lines per page for <cForm>.  If an
+     error occurs (for example, if <cForm> is not found), the function
+     returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT FORM LENGTH
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  The CA-Clipper Tools functions allow you to access this
+     database and use the information in your application.  With NNETPFLEN(),
+     you can determine the number of lines per page for <cForm>.  The number
+     of lines has an informative character only and is not evaluated by
+     Netware.
+
+ ^bExample^b
+
+     Query the page length for the form INVOICE:
+
+     ? NNETPFLEN('INVOICE')
+!seealso: "NNETPFWDTH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPFNUM()  Determines the number of the form
+'------------------------------------------------------------------------------
+ ^bNNETPFNUM()^b
+ Determines the number of the form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPFNUM(<cForm>,[<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cForm>^b  Designates the name of the form for which the number is
+     determined.
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     form뭩 definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPFNUM() returns the number of <cForm> in the definition file.  A
+     return value of -1 indicates an error.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT FORM NUMBER
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  A name and a unique number are assigned to each form.
+     NNETPFNUM() allows you to determine the form number of <cForm>.
+
+ ^bExample^b
+
+     Determine the number for the form INVOICE:
+
+     ? NNETPFNUM('INVOICE')
+!seealso: "NNETPFORMS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPFORMS() Determines the names of the defined forms
+'------------------------------------------------------------------------------
+ ^bNNETPFORMS()^b
+ Determines the names of the defined forms
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPFORMS([<cServer>,<nConId>]) --> aForms
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     form뭩 definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPFORMS() returns a one-dimensional array that contains the names of
+     the defined forms.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT FORMS
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  NNETPFORMS() allows you to access this database and use
+     the information in your application.  The function returns an array that
+     contains the names of the defined forms.
+
+ ^bExample^b
+
+     Determine and define the defined forms:
+
+     aForms = NNETPFORMS()
+     FOR i = 1 TO LEN(aForms)
+     ? aForms[i]
+     NEXT i
+!seealso: "NNETPDEV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPFUNCO() Determines the control sequences of a function definition
+'------------------------------------------------------------------------------
+ ^bNNETPFUNCO()^b
+ Determines the control sequences of a function definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPFUNCO(<cDevice>,<cFunc>,[<cServer>,<nConId>])
+     ^b   --> cControl
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cDevice>^b  Designates the name of the device that is processed.
+
+     ^b<cFunc>^b  Designates the name of a function that is established for
+     <cDevice>.
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     device definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPFUNCO() returns the control sequence defined in NET$PRN.DAT for the
+     function <cFunc> of <cDevice>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT FUNCTION CODES
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  For each device, functions are defined to put the device
+     into specific modes.  With NNETPFUNCO(), you can determine the control
+     sequence for <cFunc> of <cDevice>.  This allows you to link the printer
+     control to the Netware printer management within your application.
+
+ ^bExample^b
+
+     Determine the control sequence for the reset function of the device
+     HPLJ, and send it to the printer:
+
+     PRINTSEND(NNETPFUNCO('HPLJ', 'RESET'))
+!seealso: "NNETPFUNCS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPFUNCS() Determines the function name for a device
+'------------------------------------------------------------------------------
+ ^bNNETPFUNCS()^b
+ Determines the function name for a device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPFUNCS(<cDevice>,[<cServer>,<nConId>]) --> aFuncs
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cDevice>^b  Designates the name for the device for which the
+     functions are determined.
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     device definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPFUNCS() returns a one-dimensional array that contains the names of
+     the functions defined for <cDevice>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT FUNCTIONS
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  For each device, functions are defined to put the device
+     into specific modes.  NNETPFUNCS() returns a list of functions defined
+     for <cDevice>.  This allows you to link the printer control to the
+     Netware printer management within your application.
+
+ ^bExample^b
+
+     Determine and display the functions for device HPLJ:
+
+     aFuncs = NNETPFUNCS('HPLJ')
+     FOR i = 1 TO LEN(aFuncs)
+     ? aFuncs[i]
+     NEXT i
+!seealso: "NNETPFUNCO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPFWDTH() Determines the form width of a form definition
+'------------------------------------------------------------------------------
+ ^bNNETPFWDTH()^b
+ Determines the form width of a form definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPFWDTH(<cForm>,[<cServer>|<nConId>]) --> nLength
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cForm>^b  Designates the name of the form for which the form width
+     (characters per line) is determined.
+
+     ^b<cServer>^b  Designates the name of the file server for which the form
+     definitions are to be used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPFWDTH() returns the number of characters per line for <cForm>.  If
+     an error occurs (for example, if <cForm> is not found), the function
+     returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT FORM WIDTH
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  The CA-Clipper Tools functions allow you to access this
+     database and use the information in your application.  With
+     NNETPFWDTH(), you can determine the number of characters per line for
+     <cForm>.  The number of lines has an informative character only and is
+     not evaluated by Netware.
+
+ ^bExample^b
+
+     Query the number of characters for the form INVOICE:
+
+     ? NNETPFWDTH('INVOICE')
+!seealso: "NNETPFLEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPMODES() Determines the mode name for a device
+'------------------------------------------------------------------------------
+ ^bNNETPMODES()^b
+ Determines the mode name for a device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPMODES(<cDevice>,[<cServer>,<nConId>]) --> aModes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cDevice>^b  Designates the name of the device for which the modes are
+     determined.
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     device definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPMODES() returns a one-dimensional array that contains the names of
+     the modes defined for <cDevice>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT MODES
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  For each device you can define modes that contain
+     functions for <cDevice>.  NNETPMODES() returns a list of modes defined
+     for <cDevice>.
+
+ ^bExample^b
+
+     Determine and display the modes for device HPLJ:
+
+     aModes = NNETPMODES('HPLJ')
+     FOR i = 1 TO LEN(aModes)
+     ? aModes[i]
+     NEXT[i]
+!seealso: "NNETPMODFU()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPMODFU() Determines the functions of a mode definition
+'------------------------------------------------------------------------------
+ ^bNNETPMODFU()^b
+ Determines the functions of a mode definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPMODFU(<cDevice>,<cModus>,[<cServer>,<nConId>])
+     ^b   --> aFuncs
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cDevice>^b  Designates the name of the device that is processed.
+
+     ^b<cMode>^b  Designates the name of a mode established for <cDevice>.
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     device definitions are used.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates connection ID of your workstation on <cServer>.
+
+ ^bReturns^b
+
+     NNETPMODFU() returns a one-dimensional array that contains the names of
+     the functions for  <cMode> of <cDevice>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT MODE FUNCTIONS
+     Netware allows you to manage printer and form information in a database
+     (NET$PRN.DAT).  For each device you can define modes that contain a
+     number of functions for <cDevice>.  NNETPMODFU() returns a list of the
+     functions for <cMode> .
+
+ ^bExample^b
+
+     Determine and display the functions of the plain mode for device HPLJ:
+
+     aFuncs = NNETPMODFU('HPLJ', 'PLAIN')
+     FOR i = 1 TO LEN(aFuncs)
+     ? aFuncs[i]
+     NEXT[i]
+!seealso: "NNETPMODES()" 
+'------------------------------------------------------------------------------
+
+
+

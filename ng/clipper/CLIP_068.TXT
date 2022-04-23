@@ -1,0 +1,33 @@
+'------------------------------------------------------------------------------
+^BSET ORDER^B
+
+    SET ORDER identifies the specified open index as the controlling index.
+
+^USyntax^U
+
+    SET ORDER TO [<exp N> ]
+
+^UArgument^U
+
+    <expN> specifies the index to make the controlling index by pointing to
+    its position in the list of open indexes in the current work area.
+    This number can be in the range of zero to 15.
+
+    SETting ORDER TO 0 restores the database file to natural order (record
+    number order) while leaving all indexes open.
+
+^UUsage^U
+
+    When you SET ORDER TO a new controlling index, all indexes are properly
+    updated when you either append or edit records.  Unlike dBASE III PLUS,
+    this includes SET ORDER TO 0.  After a change of controlling indexes,
+    the record pointer still points to the same record number in the new
+    index allowing you to switch orders efficiently.
+
+    To return the ordinal position of the current controlling index, use
+    INDEXORD().
+!seealso: clip_013.ngo:"INDEX" clip_030.ngo:"REINDEX" clip_063.ngo:"SET INDEX" clip_088.ngo:"USE" clip_095.ngo:"INDEXEXT()" clip_096.ngo:"INDEXKEY()" clip_097.ngo:"INDEXORD()" 
+'------------------------------------------------------------------------------
+
+
+

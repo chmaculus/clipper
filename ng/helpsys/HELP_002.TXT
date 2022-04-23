@@ -1,0 +1,313 @@
+!short: ^bSelections prefixed with a '*' are in the registered version^b
+!short:  pushvstk()      Save video information to the stack
+'------------------------------------------------------------------------------
+FUNCTION  pushvstk()
+
+     This function will save the pertinent cursor information before
+you do some screen changes.  When invoking popvstk() the previous
+cursor attributes will be restored.  This information includes the
+cursor type, row, column and color.
+
+     Before calling popvstk(), the pushvstk() function must have been
+called.  There is a one to one relationship between the pushvstk() and
+popvstk() function calls.
+
+RETURNS   None.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  popvstk()       Retrieve video information from the stack
+'------------------------------------------------------------------------------
+FUNCTION  popvstk()
+
+     This function will save the pertinent cursor information before
+you do some screen changes.  When invoking popvstk() the previous
+cursor attributes will be restored.  This information includes the
+cursor type, row, column and color.
+
+     Before calling popvstk(), the pushvstk() function must have been
+called.  There is a one to one relationship between the pushvstk() and
+popvstk() function calls.
+
+RETURNS   None.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  PrintAlert()    Print an Alert message to the screen
+'------------------------------------------------------------------------------
+FUNCTION  PrintAlert(Message)
+
+     This function will display a single line Alert message in a
+window.  The title 'Press ANYKEY to continue' will also be displayed.
+Once a key has been pressed, the contents under the alert will be
+restored as well as the cursor position, etc. (thanks to puskvstk())
+
+     The Message parameter must be a string.
+
+RETURNS   None.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SetShadowChar()  Set the Default Help Filename to use for HelpSys
+'------------------------------------------------------------------------------
+FUNCTION  SetShadowChar(Value)               Set default shadow character
+
+     The SetShadowChar() function will allow you to use a different
+attribute for your winodw shadow.  The default value is 126.  In certain
+color combinations, the default shadow attribute doesn't look as good as
+it could.  Play around with various color attributes.  Refer to your clipper
+numeric color chart for foreground and background color combinations.
+
+RETURNS   Current shadow attribute being used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: *SetHelpFile()   Set the Default Help Filename to use for HelpSys
+'------------------------------------------------------------------------------
+FUNCTION  SetHelpFile(filename)              Set default help file name
+
+     The SetHelpFile() function will allow you to use a different
+filename to store your help text information.  The default file name
+is HELPSYS.  You can use your own naming convention (upto seven (7)
+characters are allowed).  The needed indexes will automatically follow
+this same naming convention.  This also allows for multiple help files
+to be used if the need should arise.
+
+RETURNS   Current help file being used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: *SetHelpPath()   Set the default file path for the HelpSys files
+'------------------------------------------------------------------------------
+FUNCTION  SetHelpPath(path)             Set default help file path
+
+     When storing your help file databases some place other than the
+current directory, you can use the SetHelpPath function to specify an
+alternative path to use when opening your help database.
+
+RETURNS   The current helppath.  By default, this is null and the
+          current directory will be used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  SetTop()        Set the coordinates to the top help window
+'------------------------------------------------------------------------------
+FUNCTION  SetTop(top, left, bottom, right)      Set the top window coordinates
+
+     The SetTop() and SetBottom() functions will set the default help
+window coordinates.  Once called, any help invoked from then on, until
+the next SetTop() and SetBottom() calls, the help invoked will be
+displayed at the new coordinates.
+
+     The appropriate Help window is automatically selected based on if
+the cursor is located under the top window.  If so, the bottom window
+is then selected.  It is recommended that both windows do not overlap
+for that reason.
+
+RETURNS   None.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  SetBottom()     Set the coordinates to the bottom help window
+'------------------------------------------------------------------------------
+FUNCTION  SetBottom(top, left, bottom, right)   Set the bottom window
+                                                coordinates
+
+     The SetTop() and SetBottom() functions will set the default help
+window coordinates.  Once called, any help invoked from then on, until
+the next SetTop() and SetBottom() calls, the help invoked will be
+displayed at the new coordinates.
+
+     The appropriate Help window is automatically selected based on if
+the cursor is located under the top window.  If so, the bottom window
+is then selected.  It is recommended that both windows do not overlap
+for that reason.
+
+RETURNS   None.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  SetWinColor()   Set the help windows border colors
+'------------------------------------------------------------------------------
+FUNCTION  SetWinColor(ColorString) Set the window border colors
+          SetTxtColor(ColorString) Set the window text colors
+
+     Both the SetWinColor() and SetTxtColor() functions are used to
+change the default help window colors.  The SetWinColor() will set the
+default window colors using the standard SETCOLOR color codes for
+compatibility.  The order of the color fields are as follows:
+
+          Standard       All screen output commands and functions
+          Enhanced       GETs and selection highlights
+          Border         Border around screen, not supported on EGA and VGA
+          Background     Not supported
+          Unselected     Unselected GETs
+
+     See your Clipper reference manual or Norton Guides file for a
+reference of valid colors.
+
+     The SetTxtColor() function will change the colors with-in the
+help window.  This color will be used from then on until the next
+SetWinColor() or SetTxtColor() function call.
+
+RETURNS   Current Text or Window colors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  SetTxtColor()   Set the help windows text colors
+'------------------------------------------------------------------------------
+FUNCTION  SetTxtColor(ColorString) Set the window text colors
+
+     Both the SetWinColor() and SetTxtColor() functions are used to
+change the default help window colors.  The SetWinColor() will set the
+default window colors using the standard SETCOLOR color codes for
+compatibility.  The order of the color fields are as follows:
+
+          Standard       All screen output commands and functions
+          Enhanced       GETs and selection highlights
+          Border         Border around screen, not supported on EGA and VGA
+          Background     Not supported
+          Unselected     Unselected GETs
+
+     See your Clipper reference manual or Norton Guides file for a
+reference of valid colors.
+
+     The SetTxtColor() function will change the colors with-in the
+help window.  This color will be used from then on until the next
+SetWinColor() or SetTxtColor() function call.
+
+RETURNS   Current Text or Window colors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  SetHTWinColor() Set the HelpTopic window border colors
+'------------------------------------------------------------------------------
+FUNCTION  SetHTWinColor(ColorString)    Set the HelpTopic window
+                                        border colors
+
+     Both the SetHTWinColor() and SetHTTxtColor() functions are used
+to change the default help topic window colors.  The SetHTWinColor()
+will set the default window colors using the standard SETCOLOR color
+codes for compatibility.  The order of the color fields are as
+follows:
+
+          Standard       All screen output commands and functions
+          Enhanced       GETs and selection highlights
+          Border         Border around screen, not supported on EGA and VGA
+          Background     Not supported
+          Unselected     Unselected GETs
+
+     See your Clipper reference manual or Norton Guides file for a
+reference of valid colors.
+
+     The SetHTTxtColor() function will change the colors with-in the
+help topic window.  This color will be used from then on until the
+next SetHTWinColor() or SetHTTxtColor() function call.
+
+RETURNS   Current Help Topic Text or Window colors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  SetHTTxtColor() Set the HelpTopic window text colors
+'------------------------------------------------------------------------------
+FUNCTION  SetHTTxtColor(ColorString)    Set the HelpTopic window text colors
+
+     Both the SetHTWinColor() and SetHTTxtColor() functions are used
+to change the default help topic window colors.  The SetHTWinColor()
+will set the default window colors using the standard SETCOLOR color
+codes for compatibility.  The order of the color fields are as
+follows:
+
+          Standard       All screen output commands and functions
+          Enhanced       GETs and selection highlights
+          Border         Border around screen, not supported on EGA and VGA
+          Background     Not supported
+          Unselected     Unselected GETs
+
+     See your Clipper reference manual or Norton Guides file for a
+reference of valid colors.
+
+     The SetHTTxtColor() function will change the colors with-in the
+help topic window.  This color will be used from then on until the
+next SetHTWinColor() or SetHTTxtColor() function call.
+
+RETURNS   Current Help Topic Text or Window colors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  OpenWindow()    Open a text window
+'------------------------------------------------------------------------------
+FUNCTION  ^bOpenWindow(Top, Left, Bottom, Right, WindowTitle, ^b
+                     ^bBottomWindowTitle, Shadow)^b
+
+     The OpenWindow() function does exactly that.  It will open a
+window on the screen (including a heading, footer and border and even
+a shadow if desired).  Top, Left, Bottom and Right are window
+coordinates.  The WindowTitle and BottomWindowTitle are text strings
+used for the window border display and Shadow is a .T. if a window
+shadow is desired and a .F. otherwise.
+
+RETURNS   None
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  CloseWindow()   Close the last window opened
+'------------------------------------------------------------------------------
+FUNCTION  CloseWindow()
+
+     The CloseWindow() function closes the last window opened with the
+OpenWindow() function.
+
+RETURNS   None
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: *PrintWindow()   Print text in the last opened window
+'------------------------------------------------------------------------------
+FUNCTION  ^bPrintWindow(Row, Col, Text)^b
+
+     This function will allow you to print text at Row, Column
+coordinates from the edge of the currently active window.  If the
+length of the text is greater than the length of the window, the text
+will automatically wrap around.  If the Row or Column parameters are
+Zero (0) the PrintWindow() will continue from that last PrintWindow()
+functions call cursor coordinates.
+
+     The Text parameter is a String to be printed.  This MUST be a
+string or unexpected results can occur.
+
+RETURNS   None
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

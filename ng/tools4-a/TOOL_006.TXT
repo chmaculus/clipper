@@ -1,0 +1,447 @@
+!short: Introduction Drive Mapping
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions in this chapter let you manipulate the drive mapping of
+     workstations.  New mappings can be executed, and existing mappings can
+     be deleted.  Furthermore, you can query information about current
+     mappings.  The basic function of this group of functions is NNETMAP().
+     NNETMAP() is used to create or delete an allocation.  All extended
+     possibilities, such as search drives and fake roots, are supported.
+     Drive mappings can be defined temporarily.  Temporary mappings are
+     deleted automatically at the end of an application.
+
+     In conjunction with the ability to log in a user with NNETLOGIN(), the
+     functions of this chapter allow you to set up the complete network
+     environment of a workstation within an application.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETDELFAK() Deletes the fake root mapping for a drive
+'------------------------------------------------------------------------------
+ ^bNNETDELFAK()^b
+ Deletes the fake root mapping for a drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDELFAK([<cDrive>]) --> NIL
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates a drive (A to .Z) or a search drive that has
+     been mapped to a network directory as a fake root.  When called without
+     the parameter, NNETDELFAK() uses the default drive.
+
+ ^bDescription^b
+
+     NOVELL NET DELETE FAKE ROOT MAPPING
+     NNETDELFAK() deletes an existing fake root mapping for <Drive>.  The
+     function does not affect the drive mapping.  After the fake root mapping
+     has been deleted, you can also access parent directories of the fake
+     root on <cDrive>.
+
+ ^bNote^b
+
+     ^b^CFE^b  Fake roots require Novell shell version 3.01 or higher.
+
+ ^bExample^b
+
+     Map drive M: as a fake root, then delete the fake root mapping and
+     change to the parent directory of the fake root:
+
+     NNETMAP('M','SYS:PAUL',.T.)
+     NNETDELFAK('M')
+     DIRCHANGE('M:..')
+!seealso: "NNETMAP()" "NNETFAKDEP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETFAKDEP() Determines the relative directory depth under a fake root
+'------------------------------------------------------------------------------
+ ^bNNETFAKDEP()^b
+ Determines the relative directory depth under a fake root
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETFAKDEP([<cDrive>]) --> nDepth
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates a drive (A to .Z) or a search drive (S1 to
+     .S16) that has been mapped to a network directory as fake root.  When
+     called the parameter, the function uses the default drive.
+
+ ^bReturns^b
+
+     NNETFAKDEP() returns the relative depth under the fake root directory.
+     If the specified drive has not been mapped as fake root, NNETFAKDEP()
+     returns -1.  If <cDrive> does not exist, the return value is -2.
+
+ ^bDescription^b
+
+     NOVELL NET FAKE DEPTH
+     If a network drive has been mapped as a so-called fake root, it becomes
+     the apparent root of the allocated drive.  After a directory change,
+     NNETFAKDEP() returns the number of directories under the fake root.
+     Depth 0 is assigned to the root directory.  Additionally, NNETFAKDEP()
+     allows you to determine if a drive has been mapped as a fake root
+     (return value => 0) or a normal drive (return value < 0).
+
+ ^bNote^b
+
+     ^b^CFE^b  Fake roots require shell version 3.01 or higher.
+
+ ^bExample^b
+
+     Map drive M: as a fake root, then change the directory, and query the
+     relative directory depth:
+
+     NNETMAP('M','SYS:PAUL',.T.)
+     DIRCHANGE('M:\DATA')
+     ? NNETFAKDEP('M')                        // Returns: 1
+!seealso: "NNETDELFAK()" "NNETMAP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMAP()    Maps and unmaps drives
+'------------------------------------------------------------------------------
+ ^bNNETMAP()^b
+ Maps and unmaps drives
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMAP([<cDrive>],[<cPath>],[<lFake>],[<lTemp>]
+     ^b   [<lInsert>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cDrive>^b  Designates the drive that is mapped or unmapped.  Valid
+     identifiers are "A" to "Z" and "S1" to "S16" (search drives).  When
+     called without this parameter, the function uses the current drive.
+
+     ^b<cPath>^b  Designates the path on a server volume that is assigned to
+     <cDrive>.  This parameter must be passed if a drive is mapped.  When
+     called without <cPath>, NNETMAP() deletes a mapping for <cDrive>.
+
+     ^b<lFake>^b  Designates whether <cPath> is created as fake root (.T.) or
+     not (.F.).  The default value (.F.) designates that <cPath> is not a
+     fake root..
+
+     ^b<lTemp>^b  Designates whether the mapping is permanent (.F.) or
+     temporary (.T.).  The default value is .F..
+
+     ^b<lInsert>^b  Designates whether the mapped search drive (S1 to S16)
+     replaces an existing search drive (.F.) or is inserted on the position
+     before the old entry (.T.).  This parameter is only important if
+     <cDrive> is a search drive.  The default value is .F..
+
+ ^bReturns^b
+
+     NNETMAP() returns .T. if the operation has been successful.
+
+ ^bDescription^b
+
+     NOVELL NET MAP
+     NNETMAP() allows you to map or unmap drives and search drives within an
+     application.  If NNETMAP() is called with only the <cDrive> parameter,
+     the mapping for the drive is deleted.
+
+     To map a drive, NNETMAP() must be called with the arguments <cDrive> and
+     <cPath>.  The path can contain a local drive designator, path, server
+     name, volume name, and already mapped drives as well as search drives.
+     The default mapping is permanent which means that the mapping continues
+     after the application that created the mapping terminates.  If the
+     mapping is terminated with the application, the parameter <lTemp> must
+     be set to .T..
+
+     The directory <cPath> becomes the root of <cDrive> if the parameter
+     <lFake> is set to .T..
+
+     NNETMAP() allows you to create search drives.  Up to 16 search drives,
+     "S1" to "S16" can be addressed.  If a search drive is created (Sn,
+     n=1..16), NNETMAP() determines the first available drive designator with
+     a descending search that starts with "Z".  If no designator is
+     available, NNETMAP() cannot perform the allocation and returns .F..  If
+     a designator is available, <cPath> is mapped to the drive designator and
+     the drive is set on position n in the path environment variable.  The
+     previous entry in the path variable is replaced.  If <lInsert> is set to
+     .T., the drive  designator is placed before position n in the path list.
+     To delete the mapping for a search drive, <cDrive> can be passed either
+     with the search drive (S1 to S16) or the drive designator.  The drive
+     designator is removed from the path variable.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Fake roots require Novell shell version 3.01 or higher.  If
+        version 3.01 or higher is not available, the attempt to map a fake
+        root fails (<cFake>=.T.) and NNETMAP() returns .F..
+
+     ^b^CFE^b  You cannot add a new search drive if the path environment
+        variable already contains 16 entries.
+
+     ^b^CFE^b  Do not create temporary search drives because the drive
+        mapping is canceled in the program; the invalid drive designator is
+        not removed from the path variable.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Map drive L: to directory PUBLIC on server NANGERTOOLS2,
+        volume SYS:
+
+        ? NNETMAP('L','NANGERTOOLS2/SYS:PUBLIC')
+
+     ^b^CFE^b  Map directory ABC to the next available drive designator,
+        starting from drive L:
+
+        ? NNETMAP(NNETNXTFRE(),'L:ABC')
+
+     ^b^CFE^b  Create directory SYS:DATA as a permanent search drive on the
+        current server, and insert the search drive on position 5 in the path
+        variable.  The directory becomes the root for the new drive:
+
+        ? NNETMAP('S5','SYS:DATA',.T.,,.T.)
+
+     ^b^CFE^b  Terminate the mapping for drive K:
+
+        NNETMAP('K')
+
+     ^b^CFE^b  If K: was a search drive, it is removed from the PATH
+        variable.
+!seealso: "NNETNXTFRE()" "NNETMAPINF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMAPINF() Determines the mapping for a drive
+'------------------------------------------------------------------------------
+ ^bNNETMAPINF()^b
+ Determines the mapping for a drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMAPINF([<cDrive>],[<lExpand>]) --> cPath
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cDrive>^b  Designates the drive for which the mapping is determined.
+     Without this parameter, NNETMAPINF() returns the mapping for the default
+     drive.  Values from "A" to "Z" for a normal drive and "S1" to "S16" for
+     a search drive are possible.
+
+     ^b<lExpand>^b  Designates how the search drives are handled.  When
+     called without this parameter, or when the parameter is .F., the
+     function returns the drive that corresponds to a search drive
+     designator, followed by a colon and a period.  When called with
+     <lExpand> equal to .T., NNETMAPINF() returns the network path assigned
+     to the drive designator.  The default value is .F..
+
+ ^bReturns^b
+
+     NNETMAPINF() returns the path that has been mapped to <cDrive> with the
+     function NNETMAP().  For normal network drives, the return value
+     contains the server name, the volume name, and the directory.  For
+     search drives, the return value depends on the parameter <lExpand>.  If
+     this parameter is set to .F., the function returns the drive, followed
+     by a colon and a period.  If this parameter is set to .T., the complete
+     network path is returned.  If <cDrive> contains a local drive,
+     NNETMAPINF() returns the drive designator, followed by a colon.  An
+     empty string is returned if the designated drive does not exist.
+
+ ^bDescription^b
+
+     NOVELL NET MAP INFORMATION
+     In a Novell environment, NNETMAPINF() allows you to differentiate
+     between local, network, or unassigned drive designators.  For a network
+     drive, the function returns the server name, the volume name, and the
+     path allocated to <cDrive>.  For a search drive, you can determine the
+     drive designator.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the mapping for drive C:
+
+        ? NNETMAPINF('C')         // C: is a local hard disk
+
+     ^b^CFE^b  Determine the mapping for drive J:
+
+        ? NNETMAPINF('J')         // Login directory
+        NANGERTOOLS2/SYS:LOGIN
+
+     ^b^CFE^b  Determine the mapping for search drive S13:
+
+        ? NNETMAPINF('S13')       // Returns: Z:.
+
+     ^b^CFE^b  Determine the mapping for search drive S13 as a complete path:
+
+        ? NNETMAPINF('S13',.T.)
+        NNANGERTOOLS2/SYS:PUBLIC
+!seealso: "NNETMAP()" "NNETMAPMOD()" "NNETSEARCH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMAPMOD() Determines the mapping mode for a drive
+'------------------------------------------------------------------------------
+ ^bNNETMAPMOD()^b
+ Determines the mapping mode for a drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMAPMOD([<cDrive>]) --> nMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive (A to Z, S1 to S16) for which the
+     mapping mode is determined.  Without this parameter, NNETMAPMOD() uses
+     the default drive.
+
+ ^bReturns^b
+
+     NNETMAPMOD returns a numeric value that contains the mapping mode for
+     <cDrive>.
+
+ ^bDescription^b
+
+     NOVELL NET MAP MODE
+     NNETMAPMOD() allows you to determine the mapping mode for a specified
+     drive.  For example, you can determine if a drive is allocated to a
+     network directory, if the mapping is temporary or permanent, or if a
+     local drive is "masked".  For valid return values, see the following
+     table:
+
+     ^bTable 22.1:  NNETMAPMOD() return values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Hex  Bin         Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       0    00000000    Drive unknown
+     1       1    00000001    Drive mapped permanently
+     2       2    00000010    Drive mapped temporarily
+     128     8    010000000   Local drive
+     129     8    110000001   Drive mapped permanently, initially local drive
+     130     8    210000010   Drive mapped temporarily, initially local drive
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the mapping mode for drive Y:
+
+        ? NNETMAPMOD('Y')                  // Returns: 0
+
+       Drive Y: is currently unavailable.
+
+     ^b^CFE^b  Determine the mapping mode for drive J:
+
+        ? NNETMAPMOD('J')                  // Returns: 1
+
+       Drive J: has been mapped permanently.
+!seealso: "NNETMAP()" "NNETMAPINF()" "NNETSEARCH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETNXTFRE() Returns the next available drive designator
+'------------------------------------------------------------------------------
+ ^bNNETNXTFRE()^b
+ Returns the next available drive designator
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETNXTFRE([<lRevers>]) --> cDrive
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<lRevers>^b Designates whether the search is performed in ascending
+     order, starting from drive designator "A", or in descending order,
+     starting from drive designator "Z".  The default value (.F.) designates
+     that the search is performed in ascending order.
+
+ ^bReturns^b
+
+     NNETNXTFRE() returns the designator of the determined drive.  If no
+     further drive designator is available, the function returns an empty
+     string ("").
+
+ ^bDescription^b
+
+     NOVELL NET NEXT FREE
+     NNETNXTFRE() is used mainly in conjunction with the function NNETMAP().
+     NNETNEXTFRE() allows you to determine the next available drive
+     designator before a drive mapping.  For example, you can avoid deleting
+     existing mappings.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the next available drive designator, starting from
+        "A":
+
+        ? NNETNXTFRE()                  // Returns:  K
+
+     ^b^CFE^b  Determine the next available drive designator, starting from
+        "Z":
+
+        ? NNETNXTFRE(.T.)               // Returns:  Y
+!seealso: "NNETMAP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSEARCH() Determines the index of a search drive in the path variable
+'------------------------------------------------------------------------------
+ ^bNNETSEARCH()^b
+ Determines the index of a search drive in the path variable
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEARCH([<cDrive>]) --> nSearchDrive
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive (A to Z) for which the index in the
+     path variable is determined.  Without this parameter, the function uses
+     the default drive.
+
+ ^bReturns^b
+
+     NNETSEARCH() returns a numeric value that indicates the position of
+     <cDrive> in the form "<cDrive>:.", in the path variable.  The return
+     value is between 0 and 16.  If <cDrive> is not a search drive, the
+     function returns 0.
+
+ ^bDescription^b
+
+     NOVELL NET SEARCH
+     NNETSEARCH() determines if the specified drive is a search drive and
+     returns the drive's position in the path environment variable.
+     NNETSEARCH() assumes that the path variable contains search drives in
+     the form "X:.", where "X" can be any drive designator from "A" to "Z".
+     If <cDrive> is not a search drive, NNETSEARCH() returns 0.
+
+ ^bExample^b
+
+     Determine the search drive position for drive Z:
+
+     ? NNETSEARCH('Z')                     // Returns: 13
+!seealso: "NNETMAP()" "NNETMAPINF()" "NNETMAPMOD()" 
+'------------------------------------------------------------------------------
+
+
+

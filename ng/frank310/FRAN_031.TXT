@@ -1,0 +1,458 @@
+!short: ADdevblock()        Returns the current Developer's block
+'------------------------------------------------------------------------------
+ ^bADdevblock( [bDeveloper] ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the current Developer's Block.  Optionally sets it to a new value,
+ [bDeveloper].  The Developer's Block is a codeblock that gets EVALuated
+ whenever the Developer's key, ALT-0, is pressed when a Frankie engine pauses
+ to wait for a user response.  The default block is a do-nothing block.
+
+ ^bExample
+ ^b-------
+ ADdevblock( {||ADaview( ADtrace() )} )     // displays the call stack
+ ADdevblock( {||ADmessage( { ADn2s( memory(0) ) } )} )  // displays
+                                                        // avail memory
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdevtools()      ^rm^r Activates the Frankie developer's tools.
+'------------------------------------------------------------------------------
+ ^bADdevtools( [aParam] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Activates the Frankie developer's tools.  It consists of a growing number
+ of tools designed to help the developer in his development work.  Typically,
+ ADdevtools() is called via the Developer's Block like this:
+
+    ADdevblock( {||ADdevtools( aParam )} )
+
+ Whenever a Frankie engine is active, the tools can then be activated by
+ pressing the Developer's key ALT-0.
+
+ The tools are presented in the form of a vertical picklist like this:
+
+          ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+          ³ 1 Screen Capture        ³
+          ³ 2 DOS Shell             ³
+          ³ 3 Ruler                 ³
+          ³ 4 Notes Editor          ³
+          ³ 5 File Handles          ³
+          ³ 6 Memory                ³
+          ³ 7 Aliases in Use        ³
+          ³ 8 Database Operations.. ³
+          ³ 9 View a Text File      ³
+          ³ A Edit Help File        ³
+          ³ B Index Help File       ³
+          ³ C User Defined          ³
+          ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+
+ The tools currently consists of the following:
+
+ 1  Screen Capture.  Captures the screen into a text file.
+ 2. DOS Shell.  Shells to DOS.  This requires that Command.com is in the DOS
+    path.
+ 3. Ruler.  Displays a ruler or cross-hairs that you can move around.
+ 4. Notes Editor.  Gives you a quick way to jot down your notes and
+    observations while running the application.
+ 5. File Handles.  Displays the number of available DOS file handles.
+ 6. Memory.  Displays available memory.
+ 7. Aliases in Use.  Displays a list of all the database aliases currently
+    in use, then ADbrowse()'s a selected alias.
+ 8. Database Operations - opens up to another picklist
+
+          ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+          ³ 1 Screen Capture        ³
+          ³ 2 DOS Shell             ³
+          ³ 3 Ruler                 ³
+          ³ 4 Notes Editor          ³
+          ³ 5 File Handles          ³
+          ³ 6 Memory                ³
+          ³ 7 Aliases in Use        ³
+          ³ 8 Database Operations.. ³
+          ³ 9ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+          ³ A³ 1 Browse a Database      ³
+          ³ B³ 2 Create a Database      ³
+          ³ C³ 3 Append from a Database ³
+          ÔÍÍÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+
+ 9. View a Text File.  Views a textfile you select from a picklist.
+ A. Edit Help File.
+ B. Index Help File.
+ C. User Defined.  Hook to a user-defined codeblock.
+
+ 8. Browse a Database.  Browses a database that you select from a picklist
+    of dbfs in the current directory.
+ <aParam> is an array of 5 elements:
+
+ 1 - A function name that calls Command.com.  If this element is NIL,
+     ADdevtools() uses the RUN command.  Note that this is a function
+     name with a pair of parentheses and enclosed in quotes.  If you pass
+     a 3rd party swap function, make sure that it is linked into the
+     application.
+
+ 2 - The command name of an external text editor.  If this element is NIL,
+     ADdevtools() uses a full screen MEMOEDIT() with 256 line length.  If you
+     use an external editor make sure it can accept the name of a file as an
+     argument.
+
+ 3 - The name of a text file that is opened by the text editor.  It is also
+     the file where the Screen Capture tool sends its output.  If this
+     element is NIL, it defaults to XXXXXXXX.nts, where XXXXXXXX is the base
+     name of the currently running application.
+
+ 4 - The name of the Help file.  If this element is NIL, it defaults to
+     XXXXXXXX.hlp, where XXXXXXXX is the base name of the currently running
+     application.
+
+ 5 - The user-defined codeblock.  It does not accept any parameter.
+     Defaults to a Frankie ADmessage().
+
+ Example1:
+ --------
+ ADdevblock( {||ADdevtools()} )
+
+ Example2:
+ --------
+ ADdevblock( {||ADdevtools( { "SWPRUNCMD()",;   // Blinker's swap function
+                              "\BRIEF\B",;      // text editor
+                              "MYNOTES.TXT",;   // textfile
+                              "MYHELP.HLP",;    // Help file
+                              {||mytools()};    // user defined codeblock
+                            };
+                          );
+             };
+           )
+
+ v3.00 -> v3.10
+ --------------
+ Added the 'Browse a Database' and 'View a Text File' options.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADerrtrace()        A simple ERRORSYS replacement
+'------------------------------------------------------------------------------
+ ^bADerrtrace( <oError> ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ A simple ERRORSYS replacement that captures the procedure trace to an
+ array and a text file.  The array is displayed and the text file is named
+ 'ERROR.TXT'.
+
+ To activate ADerrtrace(), post it with ERRORBLOCK() like this:
+
+   errorblock( {|o|ADerrtrace(o)}
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_autommove()   ^rn^r Set/Gets the global AutoMoveMouse flag
+'------------------------------------------------------------------------------
+ ^bADg_autommove( <lSetting> ) --> <lOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Set/Gets the global AutoMoveMouse flag.  This flag affects ADvermenu(),
+ ADhormenu(), and ADboxmenu().  If this flag is set to TRUE, the mouse
+ cursor is automatically moved to the initially highlighted option.  The
+ default setting is FALSE.
+
+ Example:
+ --------
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Fox" }
+ local bConfig := {|| ADvm_initsel(2)}
+
+ ADg_autommove(.t.)
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return NIL
+!seealso: fran_008.ngo:"ADvermenu()" fran_009.ngo:"ADhormenu()" fran_010.ngo:"ADboxmenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_hidproc()     ^rn^r Set/Gets the global Help ID processor block
+'------------------------------------------------------------------------------
+ ^bADg_hidproc( [bHelpID] ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Set/Gets the global Help ID processor block.  This block is EVALed when
+ Alt-F1 is pressed while in an engine wait state.  The block is automatically
+ passed the engine's Help ID.  The default processor is
+ {|cHelpID|ADmessage(cHelpID)}.  This processor may become handy during
+ development of an application program's Help file.
+
+ Alt-F1 may be deactivated with ADg_hidproc( {||NIL} ).
+
+ Example
+ -------
+ /*
+    Alt-F1 will call my Brief editor to open F_TOUR.HLP and search for
+    the first occurrence of the Help identifier, "HELPHELP".
+ */
+ func main()
+ local aScn, cKeys
+
+ ADg_hidproc( {|c|aScn := ADsavescn(),;
+                  cKeys := "{f5}",;
+                  cKeys += '"' + c + '"',;
+                  cKeys += "{enter}",;
+                  ADmessage( cKeys ),;
+                  swpkeybrd( cKeys ),;
+                  swpruncmd( "b f_tour.hlp" ),;
+                  ADrestscn( aScn );
+              };
+            )
+ ADpl_files(,,,,,,, "HELPHELP" )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_progress()      Set/Gets the Frankie progress monitor type
+'------------------------------------------------------------------------------
+ ^bADg_progress( [nType], [xArg] ) --> <aOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Set/Gets the Frankie progress monitor type, which defaults to a default
+ progress bar created with ADSBarCreate().  A number of the Frankie APIs,
+ e.g. ADdb_list(), ADfs_print(), use it to display the progress of their
+ operations.
+
+ <nType> is a numeric flag that indicates how the progress is displayed.
+ The valid values are #defined in Frankie.ch as follows:
+
+  #define PROGRESS_NONE       1 // no display
+  #define PROGRESS_BAR        2 // with a progress bar, default
+  #define PROGRESS_STATUS     3 // with a status box
+  #define PROGRESS_MESSAGE    4 // with a message box
+
+ [xArg] is an optional parameter whose value depends on <nType>.
+
+   If <nType> is DBL_PROGRESS_NONE, it is disregarded.
+
+   If <nType> is DBL_PROGRESS_BAR, it is a configuration block, similar
+   to that passed to ADSBarCreate().
+
+   If <nType> is DBL_PROGRESS_STATUS, it is an array of 6 elements:
+
+      1 - similar to the [cMsg] parameter of ADstat_init()
+      2 - similar to the [cColor] parameter of ADstat_init()
+      3 - similar to the [cColor] parameter of ADstat_update()
+      4 - similar to the [cFrame] parameter of ADstat_init()
+      5 - similar to the [xShadow] parameter of ADstat_init()
+      6 - similar to the [lExplode] parameter of ADstat_init()
+
+   If <nType> is DBL_PROGRESS_MESSAGE, it is an array of 3 elemenst:
+
+      1 - similar to the [xMsg] parameter of ADmessage()
+      2 - similar to the [aColor][1] parameter of ADmessage()
+      3 - similar to the [aColor][3] parameter of ADmessage()
+
+ Example1
+ --------
+ // Uncomment the ADg_progress() setting you want to try
+ #include "frankie.ch"
+ #include "inkey.ch"
+ func main
+ local bConfig := {||ADdb_keys( { K_F10 },;
+                                {||ADdb_list( {||ADdbl_file( "my.txt" )} )};
+                              );
+                  }
+
+ ADg_progress( PROGRESS_BAR,;
+               {||ADSBarColor( { "R/W", "R+/W" } )};
+             )
+
+ /*
+ ADg_progress( PROGRESS_STATUS,;
+               { "Printing", "R/W", "R+/W",,, };
+             )
+ */
+
+ /*
+ ADg_progress( PROGRESS_MESSAGE,;
+               { "Printing", "R/W", "R+/W" };
+             )
+ */
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+
+ Example2
+ --------
+ // Uncomment the ADg_progress() setting you want to try
+ #include "inkey.ch"
+ #include "frankie.ch"
+ func main()
+
+ local bConfig := {||ADfs_keys( { K_ALT_P }, {||ADfs_print() )} )}
+ local e := ADfs_create( "my.txt", bConfig )
+
+ ADg_progress( PROGRESS_BAR,;
+               {||ADSBarLength( 70 ),;
+                  ADSBarHeader( " % Printed " );
+               };
+             )
+ /*
+ ADg_progress( PROGRESS_STATUS,;
+               { "Printing", "R/W", "R+/W",,, };
+             )
+ */
+
+ /*
+ ADg_progress( PROGRESS_MESSAGE,;
+               { "Printing", "R/W", "R+/W" };
+             )
+ */
+
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: fran_018.ngo:"ADSBarCreate()" fran_014.ngo:"ADdb_list()" fran_016.ngo:"ADfs_print()" "ADg_reqcancel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_reqcancel()     Set/Gets the Frankie request cancel procedure
+'------------------------------------------------------------------------------
+ ^bADg_reqcancel( [bReqCancel] ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Set/Gets the Frankie request cancel procedure.  This procedure is typically
+ called when a process is interrupted, e.g. printing.  The default procedure
+ displays an ADboxmenu() with a "Process Interrupted - Resume/Cancel" prompt.
+ This procedure is used by Frankie engines that involves processing data
+ over a long period of time, e.g. ADdb_list() and ADfs_print(), and is
+ invoked when the Esc key is pressed.
+
+ [bReqCancel] is a code block that returns a TRUE or FALSE, where TRUE
+ confirms the cancellation.
+
+ Example1
+ --------
+ // Cancel the operation when the Esc key is pressed.
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_file( "myfile.txt" )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADg_reqcancel( {||if( nextkey() == K_ESC, ( inkey(), .t. ), .f. )} )
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+
+ Example2
+ --------
+ // Cancel the operation when the Esc key is pressed.
+ #include "inkey.ch"
+ func main()
+ local e := ADfs_create( "c:\autoexec.bat" )
+
+ ADg_reqcancel( {||if( nextkey() == K_ESC, ( inkey(), .t. ), .f. )} )
+ ADfs_keys( e, { K_ALT_P }, {||ADfs_print(e))} )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: fran_014.ngo:"ADdb_list()" fran_016.ngo:"ADfs_print()" "ADg_progress()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_trigmarker()    Set/Gets the trigger marker character
+'------------------------------------------------------------------------------
+ ^bADg_trigmarker( [cMarker] ) --> <cOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Set/Gets the trigger marker character.  This is the character that
+ identifies the trigger in a menu or button.  It defaults to an ampersand
+ (&).
+
+ [cMarker] is the new marker.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "^One", "^Two", "Thre^e", "^Four", "Fi^ve" }
+
+ ADg_trigmarker( "^" )
+ ADvermenu( ,, aMenu )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADnextmonth()       Returns next month's date
+'------------------------------------------------------------------------------
+ ^bADnextmonth( <d> ) --> <dNextMonth>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the date exactly one month (not 30 days) from <d>.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADnotyet()          Displays a "Not yet implemented" message
+'------------------------------------------------------------------------------
+ ^bADnotyet( [cMessage] ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Displays a "Not Yet Implemented" message.  If [cMessage] is passed, it will
+ be displayed also.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADprevmonth()       Returns the previous month's date
+'------------------------------------------------------------------------------
+ ^bADprevmonth( <d> ) --> <dPrevMonth>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the date exactly one month (not 30 days) prior to <d>.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADruler()           Displays a ruler or cross hairs.
+'------------------------------------------------------------------------------
+ ^bADruler() --> <aIntersection>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Displays a ruler on the screen.  The cross hairs move as you move the
+  mouse, intersecting on the current mouse location.  The coordinates of the
+  mouse location are displayed if you press the mouse left button.  The ruler
+  exits if you press the right mouse button, returning the coordinates of
+  the intersection in the format { nRow, nColumn }.
+
+  v2.30 -> v3.00
+  --------------
+  Prior to v3.00, ADruler() returned a NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADtrace()           Returns the call stack
+'------------------------------------------------------------------------------
+ ^bADtrace() --> <aStack>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Creates a file called "TRACE.TXT" which contains a list of procedure calls.
+ Returns an array consisting of the procedure calls.
+
+ ^bExample
+ ^b-------
+ ADaview( ADtrace() )    // displays a scrollable array of the call stack
+ ADfview( "trace.txt" )  // displays the newly created "trace.txt"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

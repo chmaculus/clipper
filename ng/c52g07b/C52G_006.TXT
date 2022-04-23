@@ -1,0 +1,346 @@
+!short:   Chapter 6: DBFNDX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 6: DBFNDX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBFNDX is the dBASE III PLUS compatible RDD for CA-Clipper.  The DBFNDX
+     driver uses the CA-Clipper driver architecture to access dBASE III PLUS
+     compatible index files within a CA-Clipper program.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short:      In This Chapter
+'------------------------------------------------------------------------------
+ ^bIn This Chapter^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This chapter explains how to install DBFNDX and how to use it in your
+     applications.  The following major topics are discussed:
+
+     ^b^CFE^b  Overview of the DBFNDX RDD
+
+     ^b^CFE^b  Installing DBFNDX Driver Files
+
+     ^b^CFE^b  Linking the DBFNDX Driver
+
+     ^b^CFE^b  Using the DBFNDX Driver
+
+     ^b^CFE^b  Compatibility with dBASE III PLUS
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Overview of the DBFNDX RDD
+'------------------------------------------------------------------------------
+ ^bOverview of the DBFNDX RDD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNDX database driver allows creation, access, and updating of
+     dBASE III and dBASE III PLUS compatible index (.ndx) files.  Index files
+     (.ndx) created with CA-Clipper  are exactly the same as those created by
+     dBASE III PLUS.  All operations that can be performed on standard
+     CA-Clipper index (.ntx) files can be performed on (.ndx) files using the
+     DBFNDX database driver.
+
+     In a network environment, the DBFNDX driver supports the CA-Clipper
+     file and record locking scheme.  The multiuser behavior is the same as
+     the default DBFNTX driver.  This means that the DBFNDX database driver
+     supports concurrent access to (.ndx) files between CA-Clipper
+     applications only.  Concurrent access to (.ndx) files between dBASE III
+     PLUS and CA-Clipper programs is not supported.
+
+     ^bImportant! ^b Updating database (.dbf) and index (.ndx) files shared
+     between dBASE III PLUS and CA-Clipper programs may corrupt the (.dbf)
+     and any of its associated (.ndx) files.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Installing DBFNDX Driver Files
+'------------------------------------------------------------------------------
+ ^bInstalling DBFNDX Driver Files^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNDX database driver is supplied as the file, DBFNDX.LIB.
+
+     The CA-Clipper installation program installs this driver in the
+     \CLIPPER5\LIB subdirectory on the drive that you specify, so you need
+     not install the driver manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Linking the DBFNDX Database Driver
+'------------------------------------------------------------------------------
+ ^bLinking the DBFNDX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To link the DBFNDX database driver into an application program, you must
+     specify DBFNDX.LIB to the linker in addition to your application object
+     files (.OBJ).
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> ,,, DBFNDX
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList> LIB DBFNDX
+
+     ^bNote: ^b These link commands all assume the LIB, OBJ, and PLL
+     environment variables are set to the standard locations.  They also
+     assume that the CA-Clipper programs were compiled without the /R option.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Using the DBFNDX Database Driver
+'------------------------------------------------------------------------------
+ ^bUsing the DBFNDX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To use (.ndx) files in a CA-Clipper program:
+
+     1. Place a REQUEST DBFNDX at the beginning of your application or at the
+        top of the first program file (.prg) that opens a database file using
+        the DBFNDX driver.
+
+     2. Specify the VIA "DBFNDX" clause if you open the database file with
+        the USE command.
+
+        -OR-
+
+     3. Specify "DBFNDX" for the <cDriver> argument if you open the database
+        file with the DBUSEAREA() function.
+
+        -OR-
+
+     4. Use RDDSETDEFAULT("DBFNDX") to set the default driver to DBFNDX.
+
+        Except in the case of REQUEST, the RDD name must be a literal
+        character string or a variable.  In all cases it is important that
+        the driver name be spelled correctly.
+
+     The following program fragments illustrate:
+
+     REQUEST DBFNDX
+     .
+     .
+     .
+     USE Customers INDEX Name, Address NEW VIA "DBFNDX"
+
+     -OR-
+
+     REQUEST DBFNDX
+     RDDSETDEFAULT( "DBFNDX" )
+     .
+     .
+     .
+     USE Customers INDEX Name, Address NEW
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Using (.ntx) and (.ndx) Files Concurrently
+'------------------------------------------------------------------------------
+ ^bUsing (.ntx) and (.ndx) Files Concurrently^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You can use (.ndx) and (.ntx) files concurrently in a CA-Clipper program
+     like this:
+
+     REQUEST DBFNDX
+
+     // (.ntx) file using default DBFNTX driver
+     USE File1 INDEX File1 NEW
+
+     // (.ndx) files using DBFNDX driver
+     USE File2 VIA "DBFNDX" INDEX File2 NEW
+
+     Note, however, that you cannot use (.ndx) and (.ntx) files in the same
+     work area.  For example, the following does not work:
+
+     USE File1 VIA "DBFNDX" INDEX File1.ntx, File2.ndx
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Compatibility with dBASE III PLUS
+'------------------------------------------------------------------------------
+ ^bCompatibility with dBASE III PLUS^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     When accessing dBASE III PLUS (.ndx) files, there are several
+     compatibility issues of which you must be aware.  These issues are
+     discussed below.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Supported Data Types
+'------------------------------------------------------------------------------
+ ^bSupported Data Types^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNDX database driver supports the following data types for key
+     expressions:
+
+     ^b^CFE^b  Character
+
+     ^b^CFE^b  Numeric
+
+     ^b^CFE^b  Date
+
+     This is consistent with dBASE III PLUS.
+
+     The DBFNDX database driver does not support indexing with logical key
+     expressions as does the default DBFNTX database driver.  This is
+     actually a dBASE III PLUS limitation and is not supported by the DBFNDX
+     driver in order to enforce compatibility with dBASE III PLUS.
+
+     To work around this limitation, index logical values by converting them
+     to character values like this:
+
+     INDEX ON IIF(<lExp>, "T", "F") TO <logicalIndex>
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Supported Key Expressions
+'------------------------------------------------------------------------------
+ ^bSupported Key Expressions^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     When you create (.ndx) files using the DBFNDX driver, you must use only
+     CA-Clipper  or user-defined functions compatible with dBASE III PLUS.
+     Use of the other functions will render the (.ndx) file unreadable in
+     dBASE III PLUS.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           FIND vs SEEK
+'------------------------------------------------------------------------------
+ ^bFIND vs SEEK^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In CA-Clipper, you can use the FIND command only to locate keys in
+     indexes where the index key expression is character type.  This differs
+     from dBASE III PLUS where FIND supports character and numeric key
+     values.
+
+     ^bNote: ^b In CA-Clipper  programs, always use the SEEK command or the
+     DBSEEK() function to search an index for a key value.
+
+     The DBFNDX driver lets you recover from a data type error raised during
+     a FIND or SEEK.  However, since Error:canDefault, Error:canRetry, or
+     Error:canSubstitute are set to false (.F.), you should use BEGIN
+     SEQUENCE...END to handle a SEEK or FIND data type error.  Within the
+     error block for the current operation, issue a BREAK() using the error
+     object the DBFNDX database driver generates, like this:
+
+     bOld := ERRORBLOCK({|oError| BREAK(oError)})
+     .
+     .
+     .
+     BEGIN SEQUENCE
+        SEEK xVar
+     RECOVER USING oError
+     // Recovery code
+     END
+     .
+     .
+     .
+     ERRORBLOCK(bOld)
+
+     There is an extensive discussion of the effective use of the CA-Clipper
+     error system in the Error Handling Strategies chapter of the Programming
+     and Utilities guide.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Sharing Data on a Network
+'------------------------------------------------------------------------------
+ ^bSharing Data on a Network^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     As mentioned above, the DBFNDX driver does not support dBASE III PLUS
+     file and record locking schemes.  Instead, the DBFNDX driver supports
+     the DBFNTX file and record locking scheme.  This means that if the same
+     database and index files are open in CA-Clipper and dBASE III PLUS,
+     CA-Clipper program locks are not visible to dBASE III PLUS and vice
+     versa.
+
+     ^bWarning!^b Database integrity is not guaranteed and index corruption
+     will occur if CA-Clipper and dBASE III PLUS programs attempt to write to
+     a database or index file at the same time.  For this reason, concurrent
+     use of the same database (.dbf) and index (.ndx) files by dBASE III PLUS
+     and CA-Clipper  programs is strongly discouraged and not supported by
+     Computer Associates.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Compatibility with dBASE IV
+'------------------------------------------------------------------------------
+ ^bCompatibility with dBASE IV^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Specific compatibility with dBASE IV is provided through the DBFMDX
+     driver.  It includes (.dbf), (.mdx), and (.dbt) file format
+     compatibility and is described in detail in the previous chapter.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Summary
+'------------------------------------------------------------------------------
+ ^bSummary^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In this chapter, you were given an overview of the features and benefits
+     of the DBFNDX RDD.  You learned how to link this driver and how to use
+     it in your applications, and were given an overview of the compatiblity
+     issues.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

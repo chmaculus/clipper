@@ -1,0 +1,1389 @@
+!short:  1. Implementing a basic mouseable database browser
+'------------------------------------------------------------------------------
+ Implementing a basic mouseable database browser is easy - simply call
+ ADdbview(), like this:
+
+  func main()
+  use mydbf
+  ADdbview()
+  return NIL
+
+ The browse will occupy the whole screen.  You may limit the window size by
+ passing the top, left, bottom, right coordinates like this:
+
+  ADdbview( ^b10,10,20,69^b )
+
+ When the browse exits, it restores the overwritten screen.
+!seealso: fran_013.ngo:"ADdbview()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  2. Configuring the browser's colors
+'------------------------------------------------------------------------------
+ ^bConfiguring the browser's colors
+
+ Configuring the colors is easy - simply call ADdb_color() in the [bConfig]
+ passed to ADdbview() like this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_color( { "N/W",;   // standard color
+  ^b                                  "R/N";    // enhanced color
+  ^b                                };
+  ^b                              );
+  ^b                 }
+  use mydbf
+  ADdbview( ,,,, ^bbConfig^b )
+  return NIL
+
+ Or you may use the global API ADdbg_color() like this:
+
+  func main()
+  ^bADdbg_color( { "N/W",;   // standard color
+  ^b               "R/N";    // enhanced color
+  ^b             };
+  ^b           )
+  use mydbf
+  ADdbview()
+  return NIL
+
+^bNOTE^b ADdbg_color() affects only the browsers created after the global call.
+ Those that have been previously created will not be affected.
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_color()" fran_013.ngo:"ADdbg_color()" fran_013.ngo:"ADdb_colset()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  3. Configuring the browser's box attributes
+'------------------------------------------------------------------------------
+ ^bConfiguring the browser's box attributes
+
+ Configuring the box attributes is easy - simply call ADdb_color() in the
+ [bConfig] passed to ADdbview() like this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_box( "ÚÄ¿³ÙÄÀ³ ",;   // frame
+  ^b                              "ÃÄ´",;         // heading separator
+  ^b                              " ³ ",;         // column separator
+  ^b                              .T.,;           // cast a shadow
+  ^b                              .T.;            // explode
+  ^b                            );
+  ^b                 }
+  use mydbf
+  ADdbview( ,,,, ^bbConfig^b )
+  return NIL
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_box()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  4. Some notes on the Configuration Block [bConfig]
+'------------------------------------------------------------------------------
+ ^bSome notes on the Configuration Block [bConfig]
+
+ The 5th parameter in ADdbview() is called the Configuration Block and is
+ often referred to as [bConfig] in the documentation.  As shown in the
+ previous sections, this is where the instructions to configure the browse
+ are placed.
+
+ [bConfig] can accept more than one configuration instruction.  For
+ example, we can combine the previous examples into one, like this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_color( { "N/W",;
+  ^b                                  "R/N";       // configure the color
+  ^b                                };
+  ^b                              ),;
+  ^b                    ADdb_box( "ÚÄ¿³ÙÄÀ³ ",;
+  ^b                              "ÃÄ´",;         // configure the box
+  ^b                              " ³ ",;         // attributes
+  ^b                              .T.,;
+  ^b                              .T.;
+  ^b                            );
+  ^b                 }
+  use mydbf
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+ Now that we know this, we can continue to explore ADdbview()'s power and
+ flexibility, which is mostly derived from [bConfig].
+!seealso: fran_013.ngo:"ADdbview()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  5. Specifying what columns to include from one or more databases
+'------------------------------------------------------------------------------
+ ^bSpecifying what columns to include from one or more databases
+
+ There are at least 3 ways to specify what columns to include in our
+ browse:  ADdb_fields(), ADdb_columns() and ADdb_defcolumn().
+
+ The most straightforward way is with ADdb_fields(), like this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_fields( { 2, 5 } )}   // include only the 2nd
+  ^b                                               // and 5th fields
+
+  use hotel
+  ADdbview( ,,,50, bConfig )
+  return NIL
+
+ While ADdb_fields() is very easy to use, it is also limited.  By itself, it
+ can only specify fields from _one_ database.  This limitation can be
+ overcome by using ADdb_defcolumn() in tandem with ADdb_fields().  An
+ example will follow later.  But first let us see what ADdb_columns() can
+ do.
+
+ ADdb_columns() can specify columns in various ways.  You can use field
+ positions as in ADdb_fields(), field names, and codeblocks.  Let us redo the
+ ADdb_fields() example we did above.
+
+  func main()
+  ^blocal aColumns := {;
+  ^b                      { "Name of Hotel", 2 },;    // field #2
+  ^b                      { "State",         5 };     // field #5
+  ^b                  }
+  ^blocal bConfig := {||ADdb_columns( aColumns )}
+
+  use hotel
+  ADdbview( ,,,55, bConfig )
+  return NIL
+
+ Note that we are still displaying the same fields.  But now, we are able
+ explicitly specify the column headings.
+
+ Sometimes the field positions are not the best column specifiers, since
+ the database structure may be rearranged. If that happens, we are forced to
+ re-visit our code and change the hard-coded field position specifiers.  A
+ better way would be to use field names, assuming that the names have
+ not been changed.  Our code would now look like this:
+
+  func main()
+  local aColumns := {;
+  ^b                      { "Name of Hotel", "NAME" },;
+  ^b                      { "State",         "STATE" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns )}
+
+  use hotel
+  ADdbview( ,,,55, bConfig )
+  return NIL
+
+ Let us say we want to display the complete State name, instead of only its
+ 2-character code.  Hotel.dbf does not contain such a field.  However,
+ States.dbf does.  We can set a relation between Hotel and States, and
+ display States->State_name instead of Hotel->State.  Our code will now
+ look like this:
+
+  func main()
+  ^bfield state
+  ^blocal aColumns := {;
+  ^b                      { "Name of Hotel", "NAME" },;
+  ^b                      { "State",         "STATE_NAME", "STATES" };
+  ^b                  }
+  local bConfig := {||ADdb_columns( aColumns )}
+
+  ^bselect 0
+  ^buse states index states
+  ^bselect 0
+  ^buse hotel
+  ^bset relation to state into states
+  ADdbview( ,,,55, bConfig )
+  return NIL
+
+ We can even specify the columns as codeblocks, like this:
+
+  func main()
+  field state
+  local aColumns := {;
+  ^b                      { "Name of Hotel", {||HOTEL->NAME} },;
+  ^b                      { "State",         {||STATES->STATE_NAME} };
+                    }
+  local bConfig := {||ADdb_columns( aColumns )}
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,55, bConfig )
+  return NIL
+
+ We can also do the above with an ADdb_fields()/ADdb_defcolumn()
+ combination, like this:
+
+  func main()
+  field state
+  ^blocal bConfig := {||ADdb_fields( { 2, 0 } ),;
+  ^b                    ADdb_defcolumn( 1, "Name of Hotel" );
+  ^b                    ADdb_defcolumn( 2, "State", {||STATES->STATE_NAME} );
+  ^b                 }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,55, bConfig )
+  return NIL
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_fields()" fran_013.ngo:"ADdb_columns()" fran_013.ngo:"ADdb_defcolumn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  6. Do you want your column headings displayed in a different color?
+'------------------------------------------------------------------------------
+ ^bDo you want your column headings displayed in a different color?
+
+ Easy!  Simply use ADdb_color(), like this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_color( { ,,, "G/W" } )}  // 4th element
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ The default headings color is "W+/B".  Thus if you change the body
+ color, and not change the headings color, then you would have _indirectly_
+ changed the header color.  Take a look at this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_color( { "G/W" } )}   // 1st element
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ Then, of course, you can also use the global API ADdbg_color().
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_color()" fran_013.ngo:"ADdbg_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  7. Would you like to add resizing capability to your browse?
+'------------------------------------------------------------------------------
+ ^bWould you like to add resizing capability to your browse?
+
+ Simply configure your [bConfig] with ADdb_tmdrag(), like this:
+
+  func main()
+  ^blocal bConfig := {||ADdb_tmdrag()}
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ Now you can resize by dragging any corner to the desired location!
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_tmdrag()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  8. Everything has been so easy so far!  How about editing a cell?
+'------------------------------------------------------------------------------
+ ^b How do we edit a cell?
+
+ Everything has been so easy so far!  Editing a cell is just as easy!  Simply
+ call ADdb_fldread() inside [bConfig]!
+
+  func main()
+  local bConfig := {||ADdb_fldread()}
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ Now when you press the Enter key, the current cell goes into edit mode!
+ Do you like to use the mouse?  Then click the current cell instead of
+ pressing Enter.
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_fldread()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  9. Additional notes on [bConfig]
+'------------------------------------------------------------------------------
+ ^bAdditional notes on [bConfig]
+
+ Everything we did with [bConfig] has been ^bextremely easy^b so far!  But
+ hold on to your seat because we will shift to high gear shortly.  But
+ first, here's a brief summary of what we already know of [bConfig].
+
+ 1.  [bConfig] is where we configure ADdbview().
+ 2.  [bConfig] is a codeblock.  It can take one API like
+
+       bConfig := {||ADdb_color( something )}
+
+     or a comma-separated list of APIs like
+
+       bConfig := {||ADdb_color( something ),;
+                     ADdb_box( something ),;
+                     ADdb_fldread(),;
+                     ADdb_tmdrag();
+                  }
+
+ Now all the APIs we have been using so far are called Config APIs, so
+ called because they reconfigure the engine.  There are also Action APIs
+ and Info APIs.  Action APIs instruct ADdbview() to do something.  The
+ action is usually done at the instant the API is called, or may be delayed
+ until the next stabilization of the browse.  If this gets a little
+ confusing, relax because this will change as soon as we see some examples.
+
+ The Info APIs returns information about the current state of the engine.
+ This information may sometimes be necessary in order for an Action API to
+ act properly.
+
+ To introduce us to Action APIs, let us consider ADdb_adget().  When this
+ API is called, it instructs ADdbview() to place the current cell into edit
+ mode.  But what triggers this action?  Either a keyboard or mouse event.
+ The APIs ADdb_keys() and ADdb_lbuttons() may be used to set up keyboard
+ and mouse event traps to trigger an action API like ADdb_adget().  Let us
+ use ADdb_keys() to illustrate this:
+
+  ^b#include "inkey.ch"
+  func main()
+  ^blocal bConfig := {||ADdb_keys( { K_ENTER },;
+  ^b                               {||ADdb_adget()};
+  ^b                             );
+  ^b                 }
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ The point I am trying to bring out is this:  An action API needs a trigger
+ event in order to be activated.  That trigger may be either a keyboard or
+ mouse event.  ADdbview() must be configured to trap such a trigger and to
+ call the triggered Action API by configuring it with a Config API like
+ ADdb_keys() and ADdb_lbuttons().
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_keys()" fran_013.ngo:"ADdb_lbuttons()" fran_013.ngo:"ADdb_adget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10. Editing an ADdbview() cell with ADdb_adget()
+'------------------------------------------------------------------------------
+ ^bEditing an ADdbview() cell with ADdb_adget()
+
+ If you have not read the section 'Additional notes on [bConfig]' yet,
+ please do so now before continuing with this section.
+
+  In that section this piece of code was introduced.
+
+  #include "inkey.ch"
+  func main()
+  local bConfig := {||ADdb_keys( { K_ENTER },;
+                                 {||ADdb_adget()};
+                               );
+                   }
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ When we press the Enter key, or when we click the current cell, the
+ current cell goes into edit mode.  Then when we are done with our editing,
+ we press the Enter key again.  The current cell leaves edit mode and the
+ highlight goes to the next cell.  Sometimes we want the highlight to stay
+ in the same cell.  To effect this, we configure ADdb_adget() with its
+ own configuration API ADdbget_stay(), like this:
+
+  #include "inkey.ch"
+  func main()
+  local bConfig := {||ADdb_keys( { K_ENTER },;
+^b                                 {||ADdb_adget( {||ADdbget_stay()};
+^b                                              );
+^b                                 };
+                               );
+                   }
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ Just before the current cell goes into Edit mode, the record is locked.
+ Then it is unlocked immediately after editing.  This is accomplished by
+ calling RLOCK() and DBUNLOCK(), respectively.  If we want to implement
+ other record locking and unlocking procedures, instead of the defaults, we
+ can configure ADdb_adget() with ADdbget_lock(), like this:
+
+  func main()
+^b local bLock := {||rlock()}      // you may re-define these with your own
+^b local bUnlock := {||dbunlock()} // routines
+  local bConfig := {||ADdb_keys( { K_ENTER },;
+^b                                 {||ADdb_adget( {||ADdbget_lock( bLock,;
+^b                                                                 bUnlock;
+^b                                                               )};
+^b                                              );
+^b                                 };
+                               );
+                   }
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ We may also want to add PICTURE, WHEN and VALID clauses to our Get.  For
+ instance, we may not want the first field to be edited.  Also we may want
+ all character type fields to be in upper case.  No field must be left
+ blank.  And we may want to limit the possible values for the State field
+ to "CA", "VA" and "FL" (only for demo purposes!).  We simply configure
+ ADdb_adget() with ADdbget_dict(), like this:
+
+  #include "inkey.ch"
+  func main()
+^b  local aDict := {;
+^b                    { "999", {||.f.} },;
+^b                    { "@!",, {||!empty( ADr_varget() )} },;
+^b                    { "@!",, {||!empty( ADr_varget() )} },;
+^b                    { "@!",, {||!empty( ADr_varget() )} },;
+^b                    { "!!",, {||ascan({"CA","VA","FL"}, ADr_varget()) > 0}},;
+^b                    { "99999",, {||!empty( ADr_varget() )} };
+^b                 }
+  local bConfig := {||ADdb_keys( { K_ENTER },;
+^b                                 {||ADdb_adget( {||ADdbget_dict( aDict )} )};
+                               );
+                   }
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+^b Aside from demonstrating how to use ADdb_adget(), my goal for this
+^b section is to focus on another important feature of Action APIs - that
+^b some of them may be reconfigurable, and this is done via their own local
+^b [bConfig] parameters.  I hope you did get that impression.
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_adget()" fran_013.ngo:"ADdbget_stay()" fran_013.ngo:"ADdbget_lock()" fran_013.ngo:"ADdbget_extra()" fran_013.ngo:"ADdbget_dict()" fran_011.ngo:"ADr_varget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 11. Editing a cell with ADdb_colget()
+'------------------------------------------------------------------------------
+^b Editing a cell with ADdb_colget()
+
+ If you have not studied the Section, 'Specifying what columns to include
+ from one or more databases', please do so now, then come back here.
+
+ In a previous section we discussed editing with ADdb_adget().  In this
+ section we will discuss editing with ADdb_colget().  What is the
+ difference between them?  Simply put, we use ADdb_colget() when ADdbview()
+ is configured with ADdb_columns().  We use ADdb_adget() at all other
+ times.
+
+ Here's a browse of fields from two related databases, configured with
+ ADdb_columns().  It has three columns, Hotel->Num, Hotel->Name and
+ States->State_name.
+
+ func main()
+ field state
+ local aColumns := {;
+                        { "ID#", 1 },;
+                        { "Property Name", "NAME" },;
+                        { "State", "STATE_NAME", "STATES" };
+                   }
+ local bConfig := {||ADdb_columns( aColumns )}
+
+ select 0
+ use states index states
+ select 0
+ use hotel
+ set relation to state into states
+ ADdbview( ,,,, bConfig )
+ return NIL
+
+ Let us add an edit cell feature.
+
+  func main()
+  field state
+  local aColumns := {;
+                         { "ID#", 1 },;
+                         { "Property Name", "NAME" },;
+                         { "State", "STATE_NAME", "STATES" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns ),;
+^b                      ADdb_enter( {||ADdb_colget()} );
+                   }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+ ADdb_colget() may itself be configured.  Let us change the Get color.
+
+  func main()
+  field state
+^b  local bGetConfig := {||ADdbcg_color( "G/W" )}
+  local aColumns := {;
+                         { "ID#", 1 },;
+                         { "Property Name", "NAME" },;
+                         { "State", "STATE_NAME", "STATES" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns ),;
+                      ADdb_enter( {||ADdb_colget( ^bbGetConfig^b )} );
+                   }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+ Now let us display an "Edit Mode" message while the browse is in edit
+ mode.
+
+  func main()
+  field state
+^b  local aScn
+^b  local bBegin := {||aScn := ADmsg_bare( 0, 2, "Edit Mode",, .f. )}
+^b  local bEnd := {||ADrestscn( aScn )}
+  local bGetConfig := {||ADdbcg_color( "G/W" ),;
+^b                         ADdbcg_extra( bBegin, bEnd );
+                      }
+  local aColumns := {;
+                         { "ID#", 1 },;
+                         { "Property Name", "NAME" },;
+                         { "State", "STATE_NAME", "STATES" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns ),;
+                      ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                   }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+ Now let us add PICTURE clauses.
+
+  func main()
+  field state
+^b  local aDict := {;
+^b                    { "999" },;
+^b                    { "@!"  },;
+^b                    { "@!"  };
+^b                 }
+  local aScn
+  local bBegin := {||aScn := ADmsg_bare( 0, 2, "Edit Mode",, .f. )}
+  local bEnd := {||ADrestscn( aScn )}
+  local bGetConfig := {||ADdbcg_color( "G/W" ),;
+                         ADdbcg_extra( bBegin, bEnd ),;
+^b                         ADdbcg_dict( aDict );
+                      }
+  local aColumns := {;
+                         { "ID#", 1 },;
+                         { "Property Name", "NAME" },;
+                         { "State", "STATE_NAME", "STATES" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns ),;
+                      ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                   }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+ Now let us disallow the editing of the ID number.
+
+  func main()
+  field state
+  local aDict := {;
+                    { "999", ^b{||.F.}^b },;
+                    { "@!"  },;
+                    { "@!"  };
+                 }
+  local aScn
+  local bBegin := {||aScn := ADmsg_bare( 0, 2, "Edit Mode",, .f. )}
+  local bEnd := {||ADrestscn( aScn )}
+  local bGetConfig := {||ADdbcg_color( "G/W" ),;
+                         ADdbcg_extra( bBegin, bEnd ),;
+                         ADdbcg_dict( aDict );
+                      }
+  local aColumns := {;
+                         { "ID#", 1 },;
+                         { "Property Name", "NAME" },;
+                         { "State", "STATE_NAME", "STATES" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns ),;
+                      ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                   }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+ Now let us re-allow editing of ID# but accept only values lower than 300.
+
+  func main()
+  field state
+  local aDict := {;
+                    { "999",, ^b{||ADr_varget() < "300"}^b },;
+                    { "@!"  },;
+                    { "@!"  };
+                 }
+  local aScn
+  local bBegin := {||aScn := ADmsg_bare( 0, 2, "Edit Mode",, .f. )}
+  local bEnd := {||ADrestscn( aScn )}
+  local bGetConfig := {||ADdbcg_color( "G/W" ),;
+                         ADdbcg_extra( bBegin, bEnd ),;
+                         ADdbcg_dict( aDict );
+                      }
+  local aColumns := {;
+                         { "ID#", 1 },;
+                         { "Property Name", "NAME" },;
+                         { "State", "STATE_NAME", "STATES" };
+                    }
+  local bConfig := {||ADdb_columns( aColumns ),;
+                      ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                   }
+
+  select 0
+  use states index states
+  select 0
+  use hotel
+  set relation to state into states
+  ADdbview( ,,,, bConfig )
+  return NIL
+
+@seealso: db.ngo:ADdbview() db.ngo:ADdb_colget() db.ngo:ADdbcg_color() db.ngo:ADdbcg_dict() db.ngo:ADdbcg_extra() db.ngo:ADdbcg_lock() db.ngo:ADdbcg_stay() screen.ngo:ADmsg_bare()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 12. Would you like to display deleted records in a different color?
+'------------------------------------------------------------------------------
+ ^bWould you like to display deleted records in a different color?
+
+ This requires an Action API, ADdb_colset(), which allows you to define a
+ set of records and display them in a different color.  In this section,
+ we will define the set as all deleted records.  Here's the code for that:
+
+  #include "inkey.ch"
+  func main()
+  local bConfig := {||ADdb_keys( { K_ENTER },;
+^b                                   {||ADdb_colset( {||deleted()} )};
+                               );
+                   }
+  use y:hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ When we have run the above for two or three times, we might ask ourselves:
+ Why do I have to press Enter to initiate the effect of ADdb_colset()?  Can
+ I not make the action effective as soon as the browse is initially
+ displayed?  The answer is both No and Yes.  It is No because, an Action
+ API needs a fully _set_ engine to work on when it is called.  While the
+ engine is configuring itself when it EVALuates [bConfig], it is not
+ guaranteed to be fully set yet.  Thus, a runtime error could occur if we
+ try to force it to call an Action API during the configuration process.
+ An action API is guaranteed to work properly _only_ when the engine is
+ already full _set_, and an engine is guaranteed to be fully set _only_
+ after it has completely configured itself.  Thus calling an Action API
+ within [bConfig] is not a recommended practice.
+
+ The following code
+
+  local bConfig := {||ADdb_colset( {||deleted()} )}
+
+ will not work.
+
+ On the other hand, it is possible to have ADdb_colset() already in effect
+ as soon as the browse is initially displayed.  Try this:
+
+  func main()
+^b  local bConfig := {||ADdb_extra( {||NIL},;
+^b                                  {||ADdb_colset( {||deleted()} )};
+^b                                );
+^b                   }
+  use y:hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ The above code makes use of ADdb_extra().  We will describe this API in
+ the next section.
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_keys()" fran_013.ngo:"ADdb_colset()" fran_013.ngo:"ADdb_extra()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 13. ADdb_extra() - the link between Config APIs and Action APIs.
+'------------------------------------------------------------------------------
+^b ADdb_extra() - the link between Config APIs and Action APIs.
+
+ In the previous section we had this code:
+
+  func main()
+  local bConfig := {||ADdb_extra( {||NIL},;
+                                  {||ADdb_colset( {||deleted()} )};
+                                );
+                   }
+  use y:hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ We used ADdb_extra() to allow our browse to display deleted records in a
+ different color without having to trap an event via ADdb_keys() or
+ ADdb_lbuttons().
+
+ We also said in the previous section that when ADdbview() EVALuates its
+ [bConfig], the engine is not fully set yet.  So if we force it to call
+ an Action API then, it might generate a runtime error.  There are times
+ however when we want the engine to call Action APIs before displaying
+ itself.  This is where ADdb_extra() comes into play.
+
+ ADdb_extra() takes three parameters, all of which are codeblocks and are
+ optional.  The first block, usually referred in the Frankie docs as
+ [bDispBegin], is EVALuated just before the engine displays itself.  The
+ second block, usually referred to as [bDispEnd], is EVALed after the engine
+ has displayed itself and just before it waits for a user input.  At this
+ particular time, the engine is already fully _set_.  This is the codeblock
+ that we need in the context of what we are trying to do here.
+
+ The code
+
+  local bConfig := {||ADdb_extra( {||NIL},;
+                                  {||ADdb_colset( {||deleted()} )};
+                                );
+                   }
+
+ places the ADdb_colset() call in [bDispEnd].
+
+ When we run this example, we will soon realize that the browse first
+ displays itself, then colors the deleted records.  We may want this
+ two-part action to take place just once.  Clipper's DISPBEGIN() and
+ DISPEND() come in handy here.  Take a look at this:
+
+ func main()
+^b local bConfig := {||ADdb_extra( {||dispbegin()},;
+                                 {||ADdb_colset( {||deleted()} ),;
+^b                                    dispend();
+                                 };
+                              );
+                  }
+ use y:hotel
+ ADdbview(,,,, bConfig )
+ return NIL
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_extra()" fran_013.ngo:"ADdb_colset()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 14. Let us add scroll bars to our browse
+'------------------------------------------------------------------------------
+^b Let us add scroll bars to our browse
+
+ Adding scroll bars is very easy now that we understand ADdb_extra() and
+ Action APIs.  We simply have to call the scroll bar APIs ADdb_horsbar()
+ and ADdb_versbar() within the [bDispEnd] parameter of ADdb_extra() like
+ this:
+
+ func main()
+ local bConfig := {||ADdb_extra( {||dispbegin()},;
+^b                                 {||ADdb_versbar(),;
+^b                                    ADdb_horsbar(),;
+                                    dispend();
+                                 };
+                              );
+                  }
+ use y:hotel
+ ADdbview(,,,, bConfig )
+ return NIL
+
+ Let us take a look at ADdb_versbar() more closely.  As we might have
+ guessed, it needs certain database functions to do its job.  First of all,
+ it needs to know the number of records in the database.  It gets this
+ piece of information with LASTREC().  Then, it also needs to know what the
+ current record position is in order to correctly position the scroll
+ character in the scroll bar.  It gets this information with RECNO().
+ Finally, it needs to know how to jump to a specific record position so
+ that if we click on the scroll bar, ADdbview() can jump to the
+ corresponding record.  The Clipper function it uses is DBGOTO().
+
+ Based on our experience developing scroll bar functions, we know that the
+ Clipper functions RECNO(), LASTREC() and DBGOTO() work only with un-indexed
+ databases.  Unfortunately, there are no corresponding functions for
+ indexed databases.  Fortunately, there are 3rd party RDDs that have.  The
+ ones that I have worked with are SIx and Comix.
+
+ With SIx, this is the way to implement ADdb_versbar():
+
+ local bConfig := {||ADdb_extra( {||dispbegin()},;
+^b                                 {||ADdb_versbar( {||Sx_KeyNo()},;
+^b                                                  {|n|Sx_KeyGoto(n)},;
+^b                                                  {||Sx_KeyCount()};
+^b                                                ),;
+                                    dispend();
+                                 };
+                              );
+                  }
+ ADdbview(,,,, bConfig )
+
+ And with Comix:
+
+ local bConfig := {||ADdb_extra( {||dispbegin()},;
+^b                                 {||ADdb_versbar( {||cmxKeyNo()},;
+^b                                                  {|n|cmxKeyGoto(n)},;
+^b                                                  {||cmxKeyCount()};
+^b                                                ),;
+                                    dispend();
+                                 };
+                              );
+                  }
+ ADdbview(,,,, bConfig )
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_extra()" fran_013.ngo:"ADdb_versbar()" fran_013.ngo:"ADdb_horsbar()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 15. Let us restrict the scope of our browse
+'------------------------------------------------------------------------------
+^b Let us restrict the scope of our browse
+
+ One of the fields in our test database, Hotel.dbf, is State.  Let us open
+ our database indexed on State, then limit the scope of our browse to all
+ records where State is "CA".
+
+ func main()
+ local bConfig := {||ADdb_extra( {||dispbegin()},;
+^b                                 {||ADdb_scope( "CA" ),;
+                                    dispend();
+                                 };
+                              ),;
+                     ADdb_columns( { { "Property Name", "NAME" },;
+                                     { "State", "State" };
+                                   };
+                                 );
+                  }
+ use y:hotel index y:h_state
+ ADdbview(,,,, bConfig )
+ return NIL
+
+ Note that ADdb_scope() is an Action API and therefore has to be called
+ inside the [bDispEnd] parameter of ADdb_extra() as in the above example, or
+ via an event trapper like ADdb_keys() as in the example below.
+
+ #include "inkey.ch"
+ func main()
+^b local bConfig := {||ADdb_keys( { K_F10 },;
+^b                                {||ADdb_scope( "CA" )};
+^b                              ),;
+                     ADdb_columns( { { "Property Name", "NAME" },;
+                                     { "State", "State" };
+                                   };
+                                 );
+                  }
+ use y:hotel index y:h_state
+ ADdbview(,,,, bConfig )
+ return NIL
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_extra()" fran_013.ngo:"ADdb_scope()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 16. Defining hot keys
+'------------------------------------------------------------------------------
+^b Defining hot keys
+
+ Defining hot keys is quite straightforward.  We merely configure ADdbview()
+ with ADdb_keys(), which we have already met in previous sections.  For
+ example the code:
+
+  #include "inkey.ch"
+  func main()
+  local bConfig := {||ADdb_keys( { K_ENTER },;
+                                 {||ADdb_adget()};
+                               );
+                   }
+
+  use hotel
+  ADdbview(,,,, bConfig )
+  return NIL
+
+ defines the Enter key as a hot key to initiate editing of the current
+ cell.
+
+ Let us examine ADdb_keys() more closely.  Its first parameter, [aKeys] is
+ an array of inkey codes that we want to set as hot keys.  Its 2nd
+ parameter, [bHandler], is a codeblock that handles or processes the hot
+ keys. ADdbview() automatically passes to [bHandler] 2 parameters: the
+ index position (within [aKeys]) of the pressed key, and its inkey code.
+ Thus by interrogating the values of these two parameters (usually only one
+ of them), [bHandler] can determine which hot key was pressed.  Here's an
+ example:
+
+ #include "inkey.ch"
+ func main()
+^b local bConfig := {||ADdb_keys( { K_ALT_V, K_ALT_F, K_ALT_X },;
+^b                                {|n,k|xHandler(n)};
+^b                              ),;
+                     ADdb_columns( { { "Property Name", "NAME" },;
+                                     { "State", "State" };
+                                   };
+                                 );
+                  }
+ use y:hotel index y:h_state
+ ADdbview(,,,, bConfig )
+ return NIL
+
+^b func xHandler(n)
+^b if n == 1
+^b    ADdb_scope( "VA" )
+^b elseif n == 2
+^b    ADdb_scope( "FL" )
+^b elseif n == 3
+^b    ADdb_scope()
+^b endif
+^b return NIL
+
+ Note in the above example, we are passing the index position of the
+ pressed key to [bHandler].  We could very well pass the inkey code like
+ this:
+
+ #include "inkey.ch"
+ func main()
+ local bConfig := {||ADdb_keys( { K_ALT_V, K_ALT_F, K_ALT_X },;
+^b                                {|n,k|xHandler(k)};
+                              ),;
+                     ADdb_columns( { { "Property Name", "NAME" },;
+                                     { "State", "State" };
+                                   };
+                                 );
+                  }
+ use y:hotel index y:h_state
+ ADdbview(,,,, bConfig )
+ return NIL
+
+^b func xHandler(k)
+^b if k == K_ALT_V
+^b    ADdb_scope( "VA" )
+^b elseif k == K_ALT_F
+^b    ADdb_scope( "FL" )
+^b elseif k == K_ALT_X
+^b    ADdb_scope()
+^b endif
+^b return NIL
+
+ Note that hot keys set with ADdb_keys() are local to the engine that was
+ so configured.  If we need global hot keys, we will use ADg_keys(), but
+ that deserves a separate section.
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_keys()" fran_027.ngo:"ADg_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 17. Defining mouse hot spots
+'------------------------------------------------------------------------------
+^b Defining mouse hot spots
+
+ Let us define hot spots to help us navigate through the browse. We will
+ display arrow _icons_ at the top/left corner of the browse frame.  Then
+ we will define these as hot spots so that when we click on them, the
+ browse highlight will move to the direction of the clicked arrow.  Here's
+ the code:
+
+ #include "frankie.ch"
+ func main()
+^b local bConfig := {||ADdb_extra( NIL,;
+^b                                 {||ADsay( 0,2,;
+^b                                           "[][][][" + chr(26) + "]",;
+^b                                           "R+/B";
+^b                                         );
+^b                                 };
+^b                               ),;
+^b                     ADdb_hotedges(.f.),;
+^b                     ADdb_lbuttons( {;
+^b                                      { 0,2,0,4 },;
+^b                                      { 0,5,0,7 },;
+^b                                      { 0,8,0,10 },;
+^b                                      { 0,11,0,13 };
+^b                                    },;
+^b                                    {|n,r,c|xHandler(n)};
+^b                                  );
+^b                  }
+ use y:hotel
+ ADdbview(,,,, bConfig )
+ return NIL
+
+^b func xHandler(n)
+^b if n == 1
+^b    ADdb_navigate( DBNAVIGATE_UP )
+^b elseif n == 2
+^b    ADdb_navigate( DBNAVIGATE_DOWN )
+^b elseif n == 3
+^b    ADdb_navigate( DBNAVIGATE_LEFT )
+^b elseif n == 4
+^b    ADdb_navigate( DBNAVIGATE_RIGHT )
+^b endif
+^b return NIL
+
+ Three APIs are called in [bConfig].  The ADdb_extra() draws the arrow
+ icons.  The ADdb_hotedges() deactivates the edges as default hot spots for
+ moving the highlight.  ADdb_lbuttons() defines the arrow icons as hot
+ spots.  Note that ADdb_lbuttons() accepts the similar parameters as
+ ADdb_keys().  However, the [bHandler] of ADdb_lbuttons() is passed 3
+ parameters instead of 2.
+
+ Note also that the [bHandler] of the above example makes use only of the
+ first parameter passed to it.  We can rewrite the example to make it use
+ the third parameter only:
+
+ #include "frankie.ch"
+ func main()
+ local bConfig := {||ADdb_extra( NIL,;
+                                 {||ADsay( 0,2,;
+                                           "[][][][" + chr(26) + "]",;
+                                           "R+/B";
+                                         );
+                                 };
+                               ),;
+                     ADdb_hotedges(.f.),;
+^b                     ADdb_lbuttons( {;
+^b                                      { 0,2,0,13 };
+^b                                    },;
+^b                                    {|n,r,c|xHandler(c)};
+                                  );
+                  }
+ use y:hotel
+ ADdbview(,,,, bConfig )
+ return NIL
+
+^b func xHandler(c)
+^b if c <= 4
+    ADdb_navigate( DBNAVIGATE_UP )
+^b elseif c <= 7
+    ADdb_navigate( DBNAVIGATE_DOWN )
+^b elseif c <= 10
+    ADdb_navigate( DBNAVIGATE_LEFT )
+^b elseif c <= 13
+    ADdb_navigate( DBNAVIGATE_RIGHT )
+ endif
+ return NIL
+
+ Both of the above examples assumes that we know exactly where the browse
+ is located so we can draw the arrow icons in their proper places.  There
+ are times when this information is not available at code time.  What we
+ want to do is write generic code, code that will determine at run time
+ where our browse is.  Four Info APIs come to the rescue: ADdb_top(),
+ ADdb_left(), ADdb_bottom() and ADdb_right().  Note how the first two are
+ used in the following example.
+
+ #include "frankie.ch"
+ func main()
+ local bConfig := {||ADdb_extra( NIL,;
+^b                                 {||ADsay( ADdb_top(), ADdb_left() + 2,;
+                                           "[][][][" + chr(26) + "]",;
+                                           "R+/B";
+                                         ),;
+                                    ADdb_lbuttons( {;
+^b                                                     { ADdb_top(),;
+^b                                                       ADdb_left()+2,;
+^b                                                       ADdb_top(),;
+^b                                                       ADdb_left()+13;
+                                                     };
+                                                   },;
+                                                   {|n,r,c|xHandler(c)};
+                                                 );
+                                 };
+                               ),;
+                     ADdb_hotedges(.f.);
+                  }
+ use y:hotel
+ ADdbview(,,,, bConfig )
+ return NIL
+
+ func xHandler(c)
+^b if c <= ADdb_left()+4
+    ADdb_navigate( DBNAVIGATE_UP )
+^b elseif c <= ADdb_left()+7
+    ADdb_navigate( DBNAVIGATE_DOWN )
+^b elseif c <= ADdb_left()+10
+    ADdb_navigate( DBNAVIGATE_LEFT )
+^b elseif c <= ADdb_left()+13
+    ADdb_navigate( DBNAVIGATE_RIGHT )
+ endif
+ return NIL
+
+ Note also that ADdb_lbuttons() was moved into the [bDispEnd] of
+ ADdb_extra().  This is so because ADdb_top() and ADdb_left() are not known
+ until after the browse is fully _set_.
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_lbuttons()" fran_013.ngo:"ADdb_hotedges()" fran_013.ngo:"ADdb_navigate()" fran_013.ngo:"ADdb_top()" fran_013.ngo:"ADdb_left()" fran_013.ngo:"ADdb_bottom()" fran_013.ngo:"ADdb_right()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 18. Manipulating browse columns
+'------------------------------------------------------------------------------
+^b Manipulating browse columns
+
+ Frankie contains a set of browse column manipulation APIs.  These are
+ classified as Action APIs so they may be called via ADdb_keys().  Take
+ a look at the following:
+
+ #include "inkey.ch"
+ func main()
+ local bConfig := {||ADdb_keys( {;
+                                    asc( "H" ),;  // hide column
+                                    asc( "h" ),;
+                                    asc( "U" ),;  // unhide column
+                                    asc( "u" ),;
+                                    asc( "M" ),;  // move column
+                                    asc( "m" ),;
+                                    asc( "C" ),;  // change color
+                                    asc( "c" ),;
+                                    asc( "F" ),;  // freeze
+                                    asc( "f" ),;
+                                    asc( "+" ),;  // increase width
+                                    asc( "-" );   // decrease width
+                                },;
+                                {|n,k|xHandler(k)};
+                              );
+                  }
+ use y:hotel
+ ADdbview(,,,, bConfig )
+ return NIL
+
+
+ func xHandler(k)
+ static aHidden[0]
+ local nWidth, aHeadings, nSel
+
+ if k == asc( "H" ) .or. k == asc( "h" )
+    if ADdb_object():colcount() > 1       // only if there are 2 or more
+^b        aadd( aHidden, ADdbc_hide() )
+    endif
+ elseif k == asc( "U" ) .or. k == asc( "u" )
+    if len( aHidden ) > 0
+        aHeadings := {}
+        aeval( aHidden, {|o|aadd( aHeadings, o:heading )} )
+        nSel := ADvermenu( ,, aHeadings,,, {||ADvm_header( "UnHide Which?" )} )
+        if nSel > 0
+^b            ADdbc_unhide( , aHidden[nSel] )
+            adel( aHidden, nSel )
+            asize( aHidden, len( aHidden ) - 1 )
+        endif
+    endif
+ elseif k == asc( "M" ) .or. k == asc( "m" )
+^b    ADdbc_move( , 1)        // move to first column position
+ elseif k == asc( "C" ) .or. k == asc( "c" )
+    xChgColor()
+ elseif k == asc( "F" ) .or. k == asc( "f" )
+^b    ADdbc_freeze( ADdb_object():colpos )
+ elseif k == asc( "+" )
+^b    nWidth := ADdbc_width()
+^b    ADdbc_width( , nWidth + 1 )
+ elseif k == asc( "-" )
+^b    nWidth := ADdbc_width()
+    if nWidth > 1
+^b        ADdbc_width( , nWidth - 1 )
+    endif
+ endif
+ return NIL
+
+
+ func xChgColor()
+ static aColors := { { "W+/B", "GR+/R" },;
+                     { "W/B",  "R/W" };
+                   }
+^b local aOld := ADdbc_color()
+
+ if alltrim( aOld[1] ) == alltrim( aColors[2][1] )
+^b    ADdbc_color( , aColors[1][1], aColors[1][2] )
+ else
+^b    ADdbc_color( , aColors[2][1], aColors[2][2] )
+ endif
+ return NIL
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_keys()" fran_013.ngo:"ADdbc_color()" fran_013.ngo:"ADdbc_freeze()" fran_013.ngo:"ADdbc_hide()" fran_013.ngo:"ADdbc_unhide()" fran_013.ngo:"ADdbc_width()" fran_013.ngo:"ADdbc_move()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 19. Working with several (nested or otherwise) engines
+'------------------------------------------------------------------------------
+^b Working with several (nested or otherwise) engines
+
+ There are two important factors to consider when working with several
+ engines:
+
+ 1. When we call an Action API, we must make sure that we are applying that
+    API to the right engine.  This can be achieved in two ways:
+
+       a. Whenever an API requires an optional engine ID, supply it
+       b. Change the engine focus with ADdb_engine() to the engine you want
+          to apply the API on.
+
+ 2. Make sure that the database that owns the engine we are working on is
+    current.  If we use the alias operator (->) on all our Action API calls,
+    we will not have to worry about problems arising from database/engine
+    incompatibility.
+
+ In the following examples, we will work with 3 databases, Customer.dbf,
+ Hardware.dbf and Software.dbf.  Note how the above principles are applied.
+
+ #include "inkey.ch"
+ static eCustomer, eHardware, eSoftware     // engine IDs
+ static eFocus                              // focused engine
+
+ func main()
+ local aScnHardware, aScnSoftware, aScnCustomer // overwritten screens
+
+ ADdevblock( {||ADmsg_pop( ADdb_engine() )} )
+ // create the engines
+ xCreateCustomer( 0,0,11,79 )     // open Customer and create its engine
+ xCreateHardware( 12,0,24,39 )    // open Hardware and create its engine
+ xCreateSoftware( 12,40,24,79 )   // open Software and create its engine
+
+ //display the browses but do not activate
+ aScnHardware := ^bhardware->^b( ADdb_display( ^beHardware^b ) )
+ aScnSoftware := ^bsoftware->^b( ADdb_display( ^beSoftware^b ) )
+ aScnCustomer := ^bcustomer->^b( ADdb_display( ^beCustomer^b ) )
+
+ // activate the main browse
+ eFocus := eCustomer
+
+ do while .t.
+    if eFocus == 0
+        exit
+    else
+        // highlight the focused window
+^b        ADdb_engine( eFocus )   // move focus
+        ADdb_color( { "GR+/W" } )
+
+        if eFocus == eCustomer
+            ^bcustomer->^b( ADdb_activate( ^beCustomer^b, .f. ) )
+        elseif eFocus == eHardware
+            ^bhardware->^b( ADdb_activate( ^beHardware^b, .f. ) )
+        elseif eFocus == eSoftware
+            ^bsoftware->^b( ADdb_activate( ^beSoftware^b, .f. ) )
+        endif
+    endif
+ enddo
+
+ // restore the overwritten screens
+ ADrestscn( aScnSoftware )
+ ADrestscn( aScnHardware )
+ ADrestscn( aScnCustomer )
+
+ // kill the engines
+ ADdb_kill( ^beSoftware^b )
+ ADdb_kill( ^beHardware^b )
+ ADdb_kill( ^beCustomer^b )
+
+ // close all databases
+ dbcloseall()
+ return NIL
+
+ func xCreateCustomer( nT, nL, nB, nR )
+ local bConfig := {||ADdb_keys( { K_TAB },;
+                                {||ADdb_color( { "W+/B" } ),;
+                                   ADdb_display( ^beCustomer^b ),;
+                                   ADdb_exit(),;
+                                   eFocus := eHardware;
+                                };
+                              ),;
+                     ADdb_keys( { K_SH_TAB },;
+                                {||ADdb_color( { "W+/B" } ),;
+                                   ADdb_display( ^beCustomer^b ),;
+                                   ADdb_exit(),;
+                                   eFocus := eSoftWare;
+                                },;
+                                .t.;
+                              ),;
+                     ADdb_keys( { K_ESC },;
+                                {||ADdb_exit(),;
+                                   eFocus := 0;
+                                },;
+                                .t.;
+                              ),;
+                     ADdb_fldread();
+                  }
+ select 0
+ use customer
+ eCustomer := ADdbview( nT, nL, nB, nR, bConfig, .f. )
+ return NIL
+
+
+ func xCreateHardware( nT, nL, nB, nR )
+ local bConfig := {||ADdb_keys( { K_TAB },;
+                                {||ADdb_color( { "W+/B" } ),;
+                                   ADdb_display( ^beHardware^b ),;
+                                   ADdb_exit(),;
+                                   eFocus := eSoftware;
+                                };
+                              ),;
+                     ADdb_keys( { K_SH_TAB },;
+                                {||ADdb_color( { "W+/B" } ),;
+                                   ADdb_display( ^beHardware^b ),;
+                                   ADdb_exit(),;
+                                   eFocus := eCustomer;
+                                },;
+                                .t.;
+                              ),;
+                     ADdb_keys( { K_ESC },;
+                                {||ADdb_exit(),;
+                                   eFocus := 0;
+                                },;
+                                .t.;
+                              ),;
+                     ADdb_fldread();
+                  }
+
+ select 0
+ use hardware
+ eHardware := ADdbview( nT, nL, nB, nR, bConfig, .f. )
+ return NIL
+
+
+ func xCreateSoftware( nT, nL, nB, nR )
+ local bConfig := {||ADdb_keys( { K_TAB },;
+                                {||ADdb_color( { "W+/B" } ),;
+                                   ADdb_display( ^beSoftware^b ),;
+                                   ADdb_exit(),;
+                                   eFocus := eCustomer;
+                                };
+                              ),;
+                     ADdb_keys( { K_SH_TAB },;
+                                {||ADdb_color( { "W+/B" } ),;
+                                   ADdb_display( ^beSoftware^b ),;
+                                   ADdb_exit(),;
+                                   eFocus := eHardware;
+                                },;
+                                .t.;
+                              ),;
+                     ADdb_keys( { K_ESC },;
+                                {||ADdb_exit(),;
+                                   eFocus := 0;
+                                },;
+                                .t.;
+                              ),;
+                     ADdb_fldread();
+                  }
+
+ select 0
+ use software
+ eSoftware := ADdbview( nT, nL, nB, nR, bConfig, .f. )
+ return NIL
+!seealso: fran_013.ngo:"ADdbview()" fran_013.ngo:"ADdb_display()" fran_013.ngo:"ADdb_activate()" fran_013.ngo:"ADdb_kill()" fran_013.ngo:"ADdb_engine()" fran_013.ngo:"ADdb_keys()" 
+'------------------------------------------------------------------------------
+
+
+

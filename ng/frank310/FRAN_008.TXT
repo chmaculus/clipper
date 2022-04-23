@@ -1,0 +1,2043 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADvermenu()         ^rm^r The engine function
+'------------------------------------------------------------------------------
+ ADvermenu( [nTop], [nLeft], <aMenu>, [aTrigger], [xProcess], [bConfig],;
+    [xHelpID], [xHelpHeader] ) --> <xSel>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ [nTop] and [nLeft] - are the top/left corner coordinates of the menu box.
+ Defaults to the center of the screen.
+
+ <aMenu> - is an array of string menu options.  If an '&' is embedded inside
+ a string, the character that follows it becomes the trigger key of the
+ option.
+
+ [aTrigger] - is an optional array of the positions of the option's trigger
+ characters.  If it is not passed, it defaults to an array of 1's, i.e, the
+ first characters are the triggers.   The trigger characters are highlighted
+ in the menu.  If you do not want to highlight any trigger, specify a number
+ higher than the length of the option.  NOTE: If an '&' is embedded in a
+ menu option, its relative position supercedes whatever is specified in
+ [aTrigger].  ANOTHER NOTE: If an '&' is embedded in a menu option, all
+ the other options _must_ also be &-embedded, i.e. you cannot mix the use
+ of [aTrigger] with the use of &-embedding.  This marker may be changed
+ with ADg_trigmarker().
+
+ [xProcess] - is an optional specifier of what is to be done with the selected
+ option.  It can be a single codeblock or an array of codeblocks.  If it is a
+ single codeblock, ADvermenu() EVALuates it when a selection is made.  If it
+ is an array of codeblocks, ADvermenu() EVALuates the block corresponding to
+ the selected option.  ADvermenu() passes one parameter to the codeblock: the
+ selected option.  It could be the index position of the selection (numeric),
+ or the menu option itself (character), or even an array, depending on the
+ ADvermenu() configuration.  By default it is the index position.
+
+ NOTE:  ADvermenu() does not exit after EVALuating the codeblock.  If
+ [xProcess] is not passed, the menu exits when a selection is made.
+
+ [bConfig] - is the optional Configuration Specifier.  It is a codeblock that
+ ADvermenu() EVALuates to configure itself.  It is typically a call to one or
+ a series of the APIs.  See the examples below.
+
+ [xHelpID] - is either a Help Identifier string, or an array of such strings,
+ one for each menu option.
+
+ [xHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.  If it is
+ passed as a string, it will be used as title for the Help screens of all the
+ menu options.  If passed as an array, each element in the array must
+ correspond to each menu option.
+
+ <xSel> - is the return value.  It is the index position of the selected
+ option at exit.  It is zero, if ADvermenu() was aborted.  Typically, <xSel>
+ is important to the program only if [xProcess] is not passed.
+
+ NOTE:  If ADvermenu() is configured as a taglist, <xSel> becomes an array.
+
+ v3.00 -> v3.10
+ --------------
+ The mouse cursor is automatically moved to the initially highlighted
+ option when the menu is displayed if the AutoMoveMouse flag is set to
+ TRUE with ADg_autommove().
+
+ v2.30 -> v3.00
+ --------------
+ 1.  Added the 8th parameter, [xHelpHeader].
+
+ 2.  Allows embedding of '&' in menu options to identify trigger keys.
+
+ v2.1 -> v2.2
+ ------------
+ 1.  In v2.1, the centering of the menu box did not work properly when
+     ADvermenu() is configured with a header.  This was fixed in v2.2.
+
+ 2.  In v2.1, the foreground color of inactive options was Black even
+     though the documentation reported it to be Gray.  This was corrected in
+     v2.2.
+
+ 3.  Added support for global hot keys that are defined with ADg_keys().
+
+ Example 1:
+ ----------
+ ? ADvermenu(  10,10,;                 // top/left corner of box
+               {;                      // menu options
+                  "ADvermenu()",;
+                  "ADhormenu()",;
+                  "ADboxmenu()",;
+                  "ADdbview()",;
+                  "ADread()";
+               },;
+               { 3,3,3,3,3 };          // trigger key positions
+            )
+
+ Example 2:
+ ----------
+ // Add a header to the menu
+ ? ADvermenu(  10,10,;                 // top/left corner of box
+               {;                      // menu options
+                     "ADvermenu()",;
+                     "ADhormenu()",;
+                     "ADboxmenu()",;
+                     "ADdbview()",;
+                     "ADread()";
+               },;
+               { 3,3,3,3,3 },;         // trigger key positions
+               NIL,;
+               {|e| ADvm_header( e, "Engine Functions" )};
+            )
+
+ Example 3:
+ ----------
+ // change the default colors and box attributes
+ ? ADvermenu( 10,10,;            // top/left corner of box
+              {;                 // menu options
+                  "ADvermenu()",;
+                  "ADhormenu()",;
+                  "ADboxmenu()",;
+                  "ADdbview()",;
+                  "ADread()";
+              },;
+              { 3,3,3,3,3 },;    // trigger key positions
+              NIL,;
+              {|e| ADvm_header( e, "Engine Functions",;// header
+                                   "ÃÄ´";              // head sep
+                              ),;
+                   ADvm_boxattr( e, {;
+                                       "ÚÄ¿³ÙÄÀ³ ",;    // box frame
+                                       NIL,;
+                                       NIL,;
+                                       10;              // padding
+                                    };
+                               ),;
+                   if( iscolor(),;
+                       ADvm_colors( e, {;
+                                          "GR+/W",; // std color
+                                          "B+/W",;  // enh color
+                                          "R+/W",;  // header color
+                                          "G+";     // trigger color
+                                       };
+                                  ),;
+                       NIL;
+                     );
+             };
+           )
+!seealso: fran_009.ngo:"ADhormenu()" fran_009.ngo:"ADpdmenu()" fran_031.ngo:"ADg_trigmarker()" fran_031.ngo:"ADg_autommove()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ CONFIG APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADvm_boxattr()        Reconfigures the box attributes
+'------------------------------------------------------------------------------
+ ADvm_boxattr( [aAttr] ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the box attributes.  [aAttr] contains 4 elements:
+
+ 1 - Frame.  Default is "ÕÍ¸³¾ÍÔ³ "
+ 2 - Shadow definition.  Default is "N+/N".  The meaning of this element
+     is similar to the [xShadow] parameter of ADbox().
+ 3 - Explode.  Default is .T.
+ 4 - Pad.  Default is 1, that is, 1 space padding between the left of the box
+     and the starting column of the options list.  There is an equal amount
+     of padding at the right.
+
+ <aOld> is the old array of attributes.
+
+ Example:
+ -------
+ aMenu := { "111", "222", "333", "444", "555", "666", "777" }
+ bConfig := {|| ADvm_boxattr(;
+                         {;
+                                 "ÚÄ¿³ÙÄÀ³ ",; // frame
+                                 .f.,;    // no shadow
+                                 .f.,;    // do not explode
+                                 10;      // pad with 10 spaces
+                         };
+                         );
+         }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+!seealso: "ADvmg_boxattr()" fran_028.ngo:"ADbox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_color()          Sets the ADvermenu() colors
+'------------------------------------------------------------------------------
+ ADvm_color( <aColors> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the ADvermenu() colors. [aColors] is an array with 5 elements:
+
+ 1 - the standard color
+ 2 - the enhanced color
+ 3 - the box and header color.  If this is not specified, it takes the value
+     of the standard color.
+ 4 - the foreground of the trigger color (the background is always the
+     background of the standard/enhanced color)
+ 5 - the foreground of the inactive color
+
+ If any of the 5 elements is nil, the corresponding color is not changed.
+ The default colors are:
+
+     Color       Mono
+     -----       ----
+ 1 - "W+/W"      "W/N"           standard color
+ 2 - "GR+/R"     "I"             enhanced color
+ 3 - "B/W"       "W+/N"          box and header color
+ 4 - "B"         "W+"            trigger foreground color
+ 5 - "N+"        "W+"            inactive foreground color
+
+
+ Example:
+ -------
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_color(;
+                             {;
+
+                                 "B+/GR*",;  // standard color
+                                 "N+/W*",;   // enhanced color
+                                 "N+/GR*",;  // box color
+                                 "R",;       // trigger color
+                                 "W";        // inactive color
+                             };
+
+                          );
+            }
+ setblink( .f. )
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ setblink( .t. )
+!seealso: "ADvmg_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_escape()         Defines the Esc key and mouse right button behavior
+'------------------------------------------------------------------------------
+ ADvm_escape( <bEscape> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies how ADvermenu() will behave when the Esc key is pressed, or when
+ the right button is clicked.  The default action is to abort the menu.
+
+ <bEscape> - a codeblock that ADvermenu() EVALuates.
+
+ Example:
+ -------
+ // beep the speaker when Esc is pressed
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_escape( {|| tone(100,1)} )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+!seealso: "ADvm_abort()" "ADvm_select()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_extra()          Defines entry and exit behaviors
+'------------------------------------------------------------------------------
+ ADvm_extra( [bDispBegin], [bDispEnd], [bUndisplay], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a set of behaviors associated with the displaying and the exiting of
+ the menu.
+
+ [bDispBegin] - an optional codeblock that ADvermenu() EVALuates just before
+ displaying the menu.
+
+ [bDispEnd] - an optional codeblock that ADvermenu() EVALuates just after
+ displaying the menu.
+
+ [bUndisplay] - an optional codeblock that ADvermenu() EVALuates after
+ un-displaying the menu.
+
+ [lAdditive] - an optional logical flag that tells ADvermenu() whether to
+ replace behaviors that are already in place, or augment them with the
+ above.  Defaults to FALSE - the existing behaviors will be replaced.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig, aScn, bDispEnd, bDispBegin, bUndisplay
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bDispBegin := {|| dispbegin()}
+ bDispEnd := {|| aScn := ADmessage( { "Choose One" },,, .F. ),;
+                 dispend();
+         }
+ bUndisplay := {|| ADrestscn( aScn )}
+ bConfig := {|| ADvm_extra( bDispBegin, bDispEnd, bUndisplay )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return nil
+
+ v2.3
+ ----
+ Added the [lAdditive] parameter.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_header()         Specifies a header for the menu
+'------------------------------------------------------------------------------
+ ADvm_header( <cHeader>, [cDivider] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies a header for the menu.
+
+ <cHeader> - the header string to be displayed at the top of the menu box.  A
+ multi-line header may be defined by embedding semi-colons.
+
+ [cDivider] is a three-character string defining the separator between the
+ header and the menu options.  Defaults to "ÆÍµ".  The significance of these
+ characters are:
+
+ 1st char - joins the separator with the left side of the menu box
+ 3rd char - joins the separator with the right side of the menu box
+ 2nd char - the rest of the separator is built from this character
+
+ Example:
+ -------
+ bConfig := {|| ADvm_header( "Typing Test" )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_helpid()         Specifies a Help identifiers and headers
+'------------------------------------------------------------------------------
+ ADvm_helpid( <xHelpID>, [xHelpHeader] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies Help identifiers and headers for the menu.
+
+ <xHelpID> is either a string or an array of strings.  If it is a string,
+ all the menu options will use it as their Help identifier.  If it is an
+ array, there must be one string for each menu option.
+
+ [xHelpHeader] is an optional string or array of character strings.  If it
+ is a string, it will be used as the Help screen header (or title) by all
+ the menu options. If it is an array, there must be a string for each menu
+ option.  If it is not passed, the Frankie Help facility will supply the
+ default string "HELP" for all the menu options.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local aHelpID := { "HELP_ONE", "HELP_TWO", "HELP_FOUR" }
+ local aHelpheader := { "Header One", "Header Two", "Header Four" } )
+
+ ADvermenu( ,, aMenu,,,, aHelpID, aHelpHeader )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_immediate()      Defines the trigger behavior
+'------------------------------------------------------------------------------
+ ADvm_immediate( <lImmediate> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies how ADvermenu() behaves when a trigger key is pressed, or when a
+ menu item is clicked.  By default, if the menu has not been configured as a
+ taglist, and there is only one page full of options (that is, it does not
+ scroll), the highlight jumps to the option that corresponds to the pressed
+ trigger, the option is selected and processed.  Sometimes, it is desirable
+ to delay the processing of the selection until after the Enter key or a
+ defined hot key is pressed, or a defined hot spot is clicked.  This can be
+ done by passing a FALSE in ADvm_immediate()
+
+ Example:
+ -------
+ bConfig := {|| ADvm_immediate( .f. )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_initsel()      ^rm^r Specifies the initially highlighted/marked option/s
+'------------------------------------------------------------------------------
+ ADvm_initsel( [xInitSel] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Specifies the index position(s) of the option to be initially
+ highlighted/marked.  [xInitSel] must be a numeric value if ADvermenu() is a
+ picklist;  it must be an array of numeric values if it is a taglist.
+
+ Example1
+ --------
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_initsel(3)} // initial highlight at #3
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+ Example2
+ --------
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_taglist(),;
+                ADvm_initsel( {1,3} )} // initial marks on #1 and #3
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+ Note:  If the number of initally tagged options is more than the specified
+        maximum allowable tags, only the maximum allowable will be actually
+        tagged.
+
+ v3.00 -> v3.10
+ --------------
+ Limited the number of options that are actually tagged initially to the
+ number of maximum tags allowable, if the menu is configured as a taglist
+ and such a max is actually specified.
+!seealso: "ADvm_taglist()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_invkey()         Defines an invalid key handler.
+'------------------------------------------------------------------------------
+ ADvm_invkey( <bBlock> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines an invalid key handler.  An invalid key is any key that is not one
+ of: Esc, Enter, the cursor keys, F1, Alt-0, and defined hot keys.
+
+ <bBlock> is a code block that is EVALed when such an invalid key is pressed.
+ It is automatically passed the inkey code of the pressed key and the engine
+ id.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bConfig := {||ADvm_invkey( {|n,e|Xinvkey(n,e)} )}
+ local nEngine
+
+ nEngine := ADvm_create( 1, 1, aMenu,,, bConfig )
+ ADvm_display( nEngine )
+ ADvm_activate( nEngine )
+ ADvm_undisplay( nEngine )
+ ADvm_kill( nEngine )
+ return NIL
+
+ static func Xinvkey( nKey, nEngine )
+ ADmessage( { ADn2s( nKey ) +;
+              " is an invalid key in menu engine " +;
+              ADn2s( nEngine );
+            } )
+ return NIL
+!seealso: "ADvm_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_keys()           Defines hot keys
+'------------------------------------------------------------------------------
+ ADvm_keys( <aKeys>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys local to the menu.
+
+ [aKeys] is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+   1 - the index position of the pressed key
+   2 - the inkey code of the pressed key
+
+ [lAdditive] is a logical value.  If it is FALSE, the hot keys defined now
+ will supersede all previous definitions, if any.  If it is TRUE, the new
+ definitions are added or chained to existing ones.  The default is FALSE.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_keys( { K_F9, K_F10 },;
+                           {|n,k| Xhandler(n,k)};
+                         );
+            }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nKeyCode )
+ if nKeyCode == K_F9
+    ADvm_abort()
+ elseif nKeyCode == K_F10
+    ADvm_select()
+ endif
+ return nil
+!seealso: "ADvm_lbuttons()" "ADvm_rbuttons()" "ADvm_invkey()" fran_027.ngo:"ADg_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_lbuttons()       Defines left button hot spots
+'------------------------------------------------------------------------------
+ ADvm_lbuttons( <aSpots>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse left button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ [lAdditive] is a logical value.  If it is FALSE, the hot spots defined now
+ will supersede all previous definitions, if any.  If it is TRUE, the new
+ definitions are added or chained to existing ones.  The default is FALSE.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig, aSpots
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ aSpots := {;
+             { 0,0,0,0 },;
+             { maxrow(), maxcol(), maxrow(), maxcol() };
+           }
+ bConfig := {|| ADvm_lbuttons( aSpots,;
+                               {|n,r,c| Xhandler(n,r,c)};
+                             );
+            }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nRow, nCol )
+ if nIndexPos == 1
+    ADvm_abort()
+ elseif nIndexPos == 2
+    ADvm_select()
+ endif
+ return nil
+!seealso: "ADvm_keys()" "ADvm_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_maxright()       Specifies a right limit for the menu box
+'------------------------------------------------------------------------------
+ ADvm_maxright( [nRight] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines the rightmost column position to be used by ADvermenu(). By default,
+ ADvermenu() automatically calculates the right column position, based on the
+ value of the left column position, and the length of the longest option.  If
+ the calculated right is more than maxcol()-1, it is pegged at maxcol()-1.
+ This calculated value may be overridden with ADvm_maxright(), and the left
+ position is adjusted accordingly.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_maxright( 10 )}
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: "ADvm_maxbottom()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_maxbottom()      Specifies a bottom limit for the menu box
+'------------------------------------------------------------------------------
+ ADvm_maxbottom( [nBottom] ) -> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines the lowest bottom row position to be used by ADvermenu().  By
+ default, ADvermenu() automatically calculates the bottom row position, based
+ on the number of menu options. If the calculated bottom is more than
+ maxrow()-1, it is pegged at maxrow()-1, and ADvermenu() scrolls.  This
+ calculated value may be overridden with ADvm_maxbottom().
+
+ Example:
+ -------
+ /*
+ Only 5 menu options will be displayed at a time because the bottom is pegged
+ at row #10.
+ */
+ aMenu := { "111", "222", "333", "444", "555", "666", "777" }
+ bConfig := {|| ADvm_maxbottom( 10 )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+!seealso: "ADvm_maxright()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_move()           Defines "move" behaviors
+'------------------------------------------------------------------------------
+ ADvm_move( [bMoveBegin], [bMoveEnd], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Assigns two Move codeblocks to ADvermenu().
+
+ [bMoveBegin] is EVALuated just before the highlight is moved to another
+ option.
+
+ [bMoveEnd] is EVALuated after the highlight has been moved.  It is also
+ EVALuated at startup after the initial screen is displayed.
+
+ [lAdditive] - an optional logical flag that tells ADvermenu() whether to
+ replace behaviors that are already in place, or augment them with the
+ above.  Defaults to FALSE - the existing behaviors will be replaced.
+
+ Example:
+ -------
+ /*
+ Displays an option-sensitive message
+ */
+ func main()
+ local aMenu, bConfig, bMoveEnd, aMsg, aScn
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ aMsg := {;
+            "First word",;
+            "Second word",;
+            "Third word",;
+            "Fourth word";
+         }
+
+ // code block that displays the appropriate message
+ bMoveEnd := {|| ADsay( 24,0,;
+                        padc( aMsg[ADvm_current()], 80 ),;
+                        "GR+/B";
+                      );
+             }
+
+ bConfig := {|| ADvm_move( , bMoveEnd )}
+
+ // saves the screen to be overwritten by message area
+ aScn := ADsavescn( 23,0,24,79 )
+
+ // prepares the message area
+ scroll( 23,0,24,79,0 )
+ ADsay( 23, 0, repl( "Í", 80 ), "GR+/B" )
+ ADsay( 24, 0, repl( " ", 80 ), "GR+/B" )
+
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+ // restores the screen overwritten by the message area
+ ADrestscn( aScn )
+ return nil
+
+ v2.3
+ ----
+ Added the [lAdditive] parameter.
+!seealso: "ADvm_extra()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_poll()           Polls for another event
+'------------------------------------------------------------------------------
+ ADvm_poll( <bEvent>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Polls for another event (in addition to regular keyboard and mouse events
+ normally polled by ADvermenu()).
+
+ <bEvent> is the polling codeblock.  It must return a numeric.  A return
+ value of 0 means that no event occurred.  A non-zero value means that
+ an event occurred.
+
+ <bHandler> is a codeblock that processes the returned value of <bEvent>.
+ Note that it is EVALed only if <bEvent> returns a non-zero value.  It is
+ passed two parameters:
+
+     1 - the returned value of <bEvent>
+     2 - the numeric engine id
+
+ Example
+ -------
+ #include "inkey.ch"
+ #include "frankie.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown" }
+ local bConfig := {||ADvm_poll( {||Xpoller()},;
+                                {|x,e|Xhandler(x,e)};
+                              );
+                  }
+ ADvermenu( ,, aMenu,,, bConfig )
+ return NIL
+
+ func Xpoller()
+ return ascan( { K_RT_SHIFT, K_LF_SHIFT, K_CTRL, K_ALT }, {|x|ADkbflag(x)} )
+
+ func Xhandler( nEvent, nEngine )
+ local cKey
+
+ if nEvent == 1
+     cKey := "Right Shift"
+ elseif nEvent == 2
+     cKey := "Left Shift"
+ elseif nEvent == 3
+     cKey := "Ctrl"
+ elseif nEvent == 4
+     cKey := "Alt"
+ endif
+
+ ADmessage( { cKey + " key is pressed " } )
+ return NIL
+!seealso: "ADvm_sleep()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_rbuttons()       Defines right mouse button hot spots
+'------------------------------------------------------------------------------
+ ADvm_rbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse right button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ Example
+ -------
+ // deactivate the right button
+ func main()
+ local aMenu, bConfig, aSpots
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ aSpots := { { 0,0,maxrow(),maxcol() } }
+ bConfig := {|| ADvm_rbuttons( aSpots,;
+                               {|n,r,c| NIL};
+                             );
+            }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return nil
+!seealso: "ADvm_keys()" "ADvm_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_returntype()     Specifies the type of the return value
+'------------------------------------------------------------------------------
+ ADvm_returntype( <cReturnType> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the type of ADvermenu's return value.  <cReturnType> is either "C"
+ or "N".  If it is "N" the return value is the numeric index position of the
+ selected option.  If it is "C", it is the option string itself.  Defaults to
+ "N".
+
+ Example:
+ --------
+ // Returns the option string, instead of its numeric index position
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_returntype( "c" )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_sleep()          Deactivates the engine's default event handler
+'------------------------------------------------------------------------------
+ ADvm_sleep( <lSleep>, [bSleep] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADvermenu's event handler to go to sleep, that is, not poll for
+ events.  Optionally, events may be diverted to another handler.
+
+ <lSleep> - a logical value that tells ADvermenu() whether to sleep or not.
+ Defaults to TRUE.
+
+ [bSleep] is an optional codeblock that acts as the event handler for
+ ADvermenu() if <lSleep> is TRUE.  This codeblock is passed two parameters:
+
+     1 - the menu engine id
+     2 - events in the form of an array similar to the return value of
+         ADwait().
+
+ Note that if <lSleep> is TRUE and [bSleep] is NIL, the engine will go on an
+ indefinite sleep, making it appear that the system hung.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown" }
+ local bConfig := {||ADvm_sleep( .t., {|e,a|Xhandler(e,a)} )}
+
+ ADvermenu( ,, aMenu,,, bConfig )
+ return NIL
+
+ func Xhandler( e, aEvents )
+ if aEvents[1] != 0
+     if aEvents[1] == K_ALT_Q
+        ADvm_abort()
+     else
+         ADmessage( { "Key (" + ADn2s( aEvents[1] ) + ") was pressed" } )
+     endif
+ elseif aEvents[2] == 1
+     ADmessage( { "Mouse Left Button was clicked at " + ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] ) } )
+ elseif aEvents[2] == 2
+     ADmessage( { "Mouse Right Button was clicked at " + ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] ) } )
+ endif
+ return NIL
+!seealso: "ADvm_poll()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_taglist()      ^rm^r Configures ADvermenu() to behave as a taglist
+'------------------------------------------------------------------------------
+ ADvm_taglist( [cTagChars], [lTagImmediately], [nMaxTags] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures ADvermenu() to be a taglist, instead of a picklist.
+
+ [cTagChars] - an optional charcater string.  If it is passed, it will be
+ used to tag selected options.  It defaults to the checkmark chatacter û.
+
+ [lTagImmediately] - an optional logical flag.  Pressing a trigger key
+ tags/untags the corresponding option, unless [lTagImmediately] is set to
+ FALSE.  The flag defaults to TRUE.
+
+ [nMaxTags] - is an optional numeric value that sets the maximum number
+ of options that can be tagged.  Defaults to all options.  If this
+ parameter is passed, ADvm_tagall() and ADvm_revtag() are disabled.
+
+ When ADvermenu() is a taglist, its behavior changes:
+
+ 1.  Pressing the Spacebar, as well as clicking an option, tags/untags the
+ highlighted option.
+
+ 2.  To select all tagged options, press the Enter key.
+
+ 3.  [cTagChars] may consist of more than one character.  The first unused
+ character is used. Since a used character is not used a second time, the
+ maximum number of options that may be tagged is equal to the number of
+ characters in [cTagChars].
+
+ 4.  The return value is an array of the tagged options.  If no option was
+ tagged, the return value is {}.  The elements will either be index positions
+ (default), or menu options depending on the configuration of ADvermenu().
+ Use ADvm_returntype() to change this configuration.
+
+ 5.  If [cTagChars] consists of more than one character, the return value is
+ sorted according to their tags.
+
+ Example 1:
+ ---------
+ // configures the menu as a taglist
+ bConfig := {|| ADvm_taglist() }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+
+ Example 2:
+ ---------
+ // uses the asterisk as the tagging character, instead of the default
+ // checkmark
+ bConfig := {|| ADvm_taglist( "*" ) }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+
+ Example 3:
+ ---------
+ // a maximum of three options may be tagged with one each of "1", "2" and
+ // "3".  At exit, the selected options will be sorted according to their
+ // tagmarks.
+ bConfig := {|| ADvm_taglist( "123" ) }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+
+ Example 4:
+ ---------
+ // the return value is an array of menu options, not index positions
+ bConfig := {|| ADvm_taglist(), ADvm_returntype( "C" )}
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+
+ v3.00 -> v3.10
+ --------------
+ Added the [nMaxTags] parameter.
+
+!seealso: "ADvm_tagcurrent()" "ADvm_tagall()" "ADvm_revtag()" "ADvm_clrtag()" "ADvm_istagged()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_timeout()        Designates a timeout routine.
+'------------------------------------------------------------------------------
+ ADvm_timeout( <nTimeOut>, <bTimeout> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Designates a time-out routine.
+
+ <nTimeOut> is the number of idle seconds to pass before the timeout routine
+ is invoked.
+
+ <bTimeOut> is a codeblock that ADvermenu() EVALuates after <nTimeOut>
+ seconds of inactivity.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_timeout( 5, {||ADblankscn()} )}
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: fran_028.ngo:"ADblankscn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_toggle()         Defines the options' "active" status.
+'------------------------------------------------------------------------------
+ ADvm_toggle( <xOption>, <lStatus> ) --> <aOldStatus>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines the "active" status of options.  An inactive option is always
+ displayed in the "inactive color" (which is grey by default) and cannot be
+ highlighted nor selected.
+
+ <xOption> may either be a numeric value or an array of numeric values.  If
+ it is the former, then the status of the option pointed to by it is switched
+ to <lStatus>.  If <xOption> is an array, the options pointed to by its
+ elements are switched.
+
+ <lStatus> is a logical value that stands for the active status to switch to.
+ If <lStatus> is TRUE, then the pointed to option is activated.
+
+ <aOldStatus>, the return value, is an array of the previous status of menu
+ options.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "The",;
+                  "-----",;
+                  "Quick",;
+                  "Brown",;
+                  "Fox",;
+                  "Jumps",;
+                  "-----",;
+                  "Over";
+                }
+ local bConfig := {||ADvm_toggle( {1,2,7}, .F. )} // Inactivates first option
+ ADvermenu( ,, aMenu,,{|n|Xprocess(n)}, bConfig ) // and the separating lines
+ return NIL
+
+
+ static func Xprocess( nSel )
+ if nSel == 8       // "Over"
+    if ADvm_toggle()[1]                // "The" is currently active
+        ADvm_toggle( {1}, .f. )        // Therefore inactivate it
+        ADvm_toggle( {3,4,5,6}, .t. )  // and activate the middle options
+    else
+        ADvm_toggle( {1}, .t. )        // Otherwise, activate it
+        ADvm_toggle( {3,4,5,6}, .f. )  // and inactivate the middle options
+    endif
+
+    ADvm_refresh()                     // Refresh the menu
+ else
+    ADnotyet()                         // Only "Over" is processed in
+                                       // this demo
+ endif
+ return NIL
+
+
+ NOTE:
+ -----
+ This API is useful only in non-scrollable menus, that is, if the number of
+ options can be contained in one menu screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_versbar()        Adds a vertical scroll bar to ADvermenu()
+'------------------------------------------------------------------------------
+ ADvm_versbar( [bConfig] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a vertical scroll bar to ADvermenu()
+
+ [bConfig] is an optional Configuration Block for the scroll bar.  This is
+ where you define the scroll bar characters and colors.  See also the
+ Vertical Scroll Bar Engine.
+
+ NOTE: This API MUST be called via the [bDispEnd] parameter of the
+ ADvm_extra() API.
+
+ NOTE: If ADvermenu() does not scroll because there are only a few menu
+ options, this API will be disregarded.
+
+ Example:
+ -------
+ func main()
+ local aMenu[120], xx
+
+ for xx := 1 to 120
+     aMenu[xx] := ADn2s( xx)
+ next
+
+ ADvermenu(,,aMenu ,,, {|| ADvm_extra( ,{||ADvm_versbar()}),;
+                           ADvm_taglist();
+                       };
+          )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_wrap()           Specifies ADvermenu() to wraps
+'------------------------------------------------------------------------------
+ ADvm_wrap() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ By default, vertical menus and picklists do not wrap.  That is, if the
+ first option is currently highlighted, and the Up arrow is pressed, the
+ highlight stays on option #1.  It does not wrap to the last option.  The
+ same behavior is true when the highlight is at the last option and the
+ Down arrow is pressed.  This API configures ADvermenu() to wrap.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_wrap()}
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ ACTION APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADvm_abort()          Aborts the menu
+'------------------------------------------------------------------------------
+ ADvm_abort( [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Instructs the menu to abort, setting the exit code to [nExitCode].  If
+ [nExitCode] is not passed, it defaults to VMX_ABORT, which is #defined in
+ Frankie.ch
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_keys( { K_F9, K_F10 },;
+                           {|n,k| Xhandler(n,k)};
+                         );
+            }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nKeyCode )
+ if nKeyCode == K_F9
+    ADvm_abort()
+ elseif nKeyCode == K_F10
+    ADvm_select()
+ endif
+ return nil
+!seealso: "ADvm_escape()" "ADvm_select()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_activate()       Activates a menu engine
+'------------------------------------------------------------------------------
+ ADvm_activate( <nEngine> ) --> <xSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Activates a vertical menu engine.
+
+ <nEngine> is the numeric ID of the target engine.
+
+ <xSelection> is the value of the selected option.  This value is returned
+ when the menu exits, or is passed to [bConfig].  By default it is the
+ numeric index position of the selected option.  However, if the menu is
+ configured to return a character string with ADvm_returntype(), then it is
+ the actual menu option itself.  If the menu is configured to behave as a
+ taglist with ADvm_taglist(), then it is an array of tagged options.
+
+ Example:
+ --------
+ See ADvm_create()
+!seealso: "ADvm_create()" "ADvm_display()" "ADvm_undisplay()" "ADvm_kill()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_clrtag()         Clears all tags in a taglist
+'------------------------------------------------------------------------------
+ ADvm_clrtag() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Clears all tags in a taglist.
+
+ Example: See ADvm_tagall()
+!seealso: "ADvm_taglist()" "ADvm_tagcurrent()" "ADvm_revtag()" "ADvm_clrtag()" "ADvm_istagged()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_create()         Creates vertical menu engine
+'------------------------------------------------------------------------------
+ ADvm_create( [nTop], [nLeft], <aMenu>, [aTrigger], [xProcess], [bConfig];
+     [xHelpID] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a vertical menu engine
+
+ [nTop], [nLeft] are the top/left coordinates of the menu box.  If they are
+ not passed, the box will be centered.
+
+ <aMenu> is an array of menu options.
+
+ [aTrigger] is an array of numeric values that correspond to the trigger keys
+ of the menu options.  If it is not passed, or if an element is not defined,
+ the trigger key will be the first character.  The trigger char is colored
+ differently from the rest of the menu option.
+
+ [xProcess] is the optional Process Parameter.  If it is not passed, the
+ menu will exit as soon as a selection is made.  It may be passed as either
+ one single codeblock or an array of codeblocks.  If it is a single
+ codeblock, it will be EVALed whenever a selection is made.  If it is an
+ array, the corresponding element is EVALed when a selection is made.  In
+ both cases, the codeblock is passed the selection value and the engine id.
+ Then, after the EVALuation, control is returned to the menu, that is, it
+ does not exit.  The passed selection value may either be a numeric, a
+ character or even an array, depending on how the menu was configured with
+ ADvm_returntype() and ADvm_taglist().
+
+ [bConfig] is the optional Config Parameter.  If it is not passed, the
+ menu will take on default behavior attributes.  It may be
+ a single codeblock or a blockified list of Config APIs.
+
+ [xHelpID] is the optional Help identifier that works in conjunction with
+ the Frankie Help system.  If the Help system is installed, pressing the F1
+ key will display a Help screen corresponding to the value of [xHelpID],
+ which may be a single string or an array of strings.  If it is an array,
+ each element corresponds to a menu option (option-sensitive Help).
+
+ <nEngine> is a numeric value that identifies the engine that was created.
+
+ Example:
+ --------
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+ local bProcess := {|n,e|Xprocess(n,e)}
+ local nEngine
+
+ nEngine := ADvm_create( 1, 1, aMenu,, bProcess )
+ ADvm_display( nEngine )
+ ADvm_activate( nEngine )
+ ADvm_undisplay( nEngine )
+ ADvm_kill( nEngine )
+ return NIL
+
+ //-------------------------------------
+ static func Xprocess( nIndex, nEngine )
+ // Remove the menu from the screen
+ ADvm_undisplay( nEngine )
+
+ // Do what you have to do
+ ADmessage( { str( nIndex ) } )
+
+ // Re-display the menu
+ ADvm_display( nEngine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_display()        Displays a vertical menu engine
+'------------------------------------------------------------------------------
+ ADvm_display( <nEngine> ) --> <aOverwrittenScreen>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a vertical menu engine
+
+ <nEngine> is the numeric ID of the target engine.
+
+ <aOverwrittenScreen> is a screen value that was overwritten by the displayed
+ menu.  It may be used by ADrestscn() to restore it.
+
+ Example:
+ --------
+ See ADvm_create()
+!seealso: "ADvm_create()" "ADvm_activate()" "ADvm_undisplay()" "ADvm_kill()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_kill()           Kills the engine
+'------------------------------------------------------------------------------
+ ADvm_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills the engine.
+
+ <nEngine> is the numeric ID of the target engine.
+
+ Example:
+ --------
+ See ADvm_create()
+!seealso: "ADvm_create()" "ADvm_display()" "ADvm_undisplay()" "ADvm_activate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_navigate()       Moves the highlight bar.
+'------------------------------------------------------------------------------
+ ADvm_navigate( <nDirection> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves the menu highlight bar in the direction indicated by <nDirection>.
+ The valid values of <nDirection> are #DEFINEd in Frankie.ch as:
+
+ #define VMNAVIGATE_UP           1
+ #define VMNAVIGATE_DOWN         2
+
+ Example
+ -------
+ #include"inkey.ch"
+
+ func main()
+ local aMenu[20], xx
+
+ for xx := 1 to 20
+     aMenu[xx] := ADn2s( xx)
+ next
+
+ ADvermenu(,,aMenu ,,, {||ADvm_keys( {K_F10, K_F9},;
+                                     {|n,k|ADvm_navigate( if( n==1,;
+                                                              VMNAVIGATE_UP,;
+                                                              VMNAVIGATE_DOWN;
+                                                            );
+                                                        );
+                                     };
+                                   );
+                       };
+          )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_refresh()        Repaints the menu display.
+'------------------------------------------------------------------------------
+ ADvm_refresh() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Repaints the screen.  You typically would want to do this if you change
+ the menu attributes programatically, as when you deactivate/activate
+ options.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four", "Six", "Eight", "Nine" }
+ local bConfig := {||ADvm_keys( {-9,-8,-7}, {|n,k|Xrefresh(k)} )}
+ ADvermenu( ,, aMenu,,, bConfig )
+ return NIL
+
+ func Xrefresh( nKey )
+ if nKey == -9
+     ADvm_toggle( 3, .f. )
+ elseif nKey == -8
+     ADvm_toggle( 3, .t. )
+ elseif nKey == -7
+     ADvm_color( { "R/W", "W/B",, "GR+" } )
+ endif
+
+ ADvm_refresh()
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_revtag()       ^rm^r Reverses the tags in a taglist
+'------------------------------------------------------------------------------
+ ADvm_revtag() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reverses the tags in a taglist
+
+ Example: See ADvm_tagall()
+
+ NOTE
+ ----
+ This feature is not active if a maximum number of tags was specified in
+ ADvm_taglist().
+
+ v3.00 -> v3.10
+ --------------
+ Calls to this function are ignored if a maximum number of tags is
+ specified in ADvm_taglist().
+!seealso: "ADvm_taglist()" "ADvm_tagcurrent()" "ADvm_tagall()" "ADvm_clrtag()" "ADvm_istagged()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_select()         Makes a selection
+'------------------------------------------------------------------------------
+ ADvm_select( [xExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Instructs the menu to select, setting the exit code to [xExitCode].  If
+ [xExitCode] is not passed or it is a logical value, it defaults to
+ VMX_SELECT, which is #defined in Frankie.ch.  Moreover, if [xExitCode] is
+ a FALSE, the menu does not exit.
+
+ Example:
+ -------
+ func main()
+ local aMenu, bConfig
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ bConfig := {|| ADvm_keys( { K_F9, K_F10 },;
+                           {|n,k| Xhandler(n,k)};
+                         );
+            }
+ ADvermenu( 4, 4, aMenu,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nKeyCode )
+ if nKeyCode == K_F9
+    ADvm_abort()
+ elseif nKeyCode == K_F10
+    ADvm_select()
+ endif
+ return nil
+
+ v2.1 -> v2.2
+ ------------
+ Old behavior:  When this API is called, it causes the menu to do the
+ following actions:
+
+        a. select the highlighted option
+        b. EVAL the Process Block, if one was passed to ADvermenu()
+        c. exit the menu
+        d. set the exit code to [xExitCode] if one was passed or to
+           VMX_SELECT if none was passed.
+
+ v2.2 behavior:  The passed parameter may either be a logical or numeric.
+ If it is numeric, then it acts the same way as previously.  If it is a
+ logical then actions 3 and 4 are modified according to these rules:
+
+        a.  If a FALSE is passed, the menu does not exit
+        b.  the exit code is set to VMX_SELECT
+!seealso: "ADvm_escape()" "ADvm_abort()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_tagall()       ^rm^r Tags all options in a taglist
+'------------------------------------------------------------------------------
+ ADvm_tagall() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tags all options in a taglist.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local aMenu := { "1", "2", "3" }
+ local bConfig := {||ADvm_taglist(),;
+                     ADvm_keys( {K_F10, K_F9, K_F8}, {|n,k| Xtag(k)} )}
+
+ ADvermenu( 10,10, aMenu,,, bConfig )
+ return nil
+
+
+ //----------
+ func Xtag(k)
+ if k == K_F10
+     ADvm_tagall()
+ elseif k == K_F9
+     ADvm_clrtag()
+ elseif k == K_F8
+     ADvm_revtag()
+ endif
+ return NIL
+
+ NOTE
+ ----
+ This feature is not active if a maximum number of tags was specified in
+ ADvm_taglist().
+
+ v3.00 -> v3.10
+ --------------
+ Calls to this function are ignored if a maximum number of tags is
+ specified in ADvm_taglist().
+!seealso: "ADvm_taglist()" "ADvm_tagcurrent()" "ADvm_revtag()" "ADvm_clrtag()" "ADvm_istagged()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_tagcurrent()     Tags/untags the current option in a taglist.
+'------------------------------------------------------------------------------
+ ADvm_tagcurrent() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tags/untags the current option in a taglist.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+
+ ADvermenu(,,aMenu,,, {||ADvm_taglist(),;
+                         ADvm_keys( {K_F10}, {||ADvm_tagcurrent()} );
+                      };
+          )
+ return NIL
+!seealso: "ADvm_taglist()" "ADvm_tagall()" "ADvm_revtag()" "ADvm_clrtag()" "ADvm_istagged()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_undisplay()      Removes the menu display from te screen
+'------------------------------------------------------------------------------
+ ADvm_undisplay( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Removes the menu display from the screen.  It does not however kill the
+ engine, which may be re-displayed and re-activated again.
+
+ <nEngine> is the numeric ID of the target engine.
+
+ Example:
+ --------
+ See ADvm_create()
+!seealso: "ADvm_create()" "ADvm_activate()" "ADvm_display()" "ADvm_kill()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ INFO APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADvm_bottom()         Returns the menu box bottom
+'------------------------------------------------------------------------------
+ ADvm_bottom() --> <nBottomRowPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the row position of the menu box.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADn2s( ADvm_bottom() ) } )};
+                               );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: "ADvm_top()" "ADvm_left()" "ADvm_right()" "ADvm_row()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_current()        Returns the currently highlighted option
+'------------------------------------------------------------------------------
+ ADvm_current() --> <xCurrentOption>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the index position (if the return type is configured as "N") of the
+ currently highlighted option, or the highlighted option itself (if the
+ return type is configured as "C").
+
+ Example 1
+ ---------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADn2s( ADvm_current() ) } )};
+                               );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+
+ Example 2
+ ---------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADvm_current() } )};
+                               ),;
+                      ADvm_returntype( "C" );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_exitcode()       Returns the last exitcode
+'------------------------------------------------------------------------------
+ ADvm_exitcode() --> <nExitCode>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the exit code of the last exited menu.  If the menu exited after a
+ keypress (e.g. Escape, Enter), the exit code is the inkey code of the
+ pressed key. Otherwise, it is one of the values #defined in Frankie.ch:
+
+ //ADvermenu() special exit codes
+ #define VMX_ABORT           -102   // if the menu is exited by the mouse
+                                    // right button or is programatically
+                                    // aborted with ADvm_abort()
+ #define VMX_SELECT          -103   // if the menu is exited after an option
+                                    // is selected with the left mouse button
+                                    // or is programatically selected with
+                                    // ADvm_select()
+ #define VMX_MENU_ISEMPTY    -104   // if the menu does not contain any
+                                    // option and therefore is immediately
+                                    // exited
+ #define VMX_MENU_ISNOTARRAY -105   // if the menu array is not actually an
+                                    // array and therefore immediately exited
+
+ NOTE:  Both ADvm_abort() and ADvm_select() accept an optional numeric
+        parameter to which the exit code is set.
+
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ ADvermenu( ,,aMenu )
+ ? ADvm_exitcode()
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_istagged()       Checks if a taglist option is tagged
+'------------------------------------------------------------------------------
+ ADvm_istagged( [nOption] ) --> <lTagged>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Checks if a taglist option # [nOption] is currently tagged.  If [nOption] is
+ not passed, it defaults to the currently highlighted option.
+
+ Example:
+ --------
+ func main()
+ local aMenu := { "1", "2", "3" }
+ local bConfig := {||ADvm_taglist(),;
+                     ADvm_keys( {K_F10}, {|| Xprocess()} )}
+
+ ADvermenu( 10,10, aMenu,,, bConfig )
+ return nil
+
+
+ //-------------
+ func Xprocess()
+ if ADvm_istagged(1)
+     ADmessage( { "#1 is currently tagged" } )
+ else
+     ADmessage( { "#1 is not currently tagged" } )
+ endif
+ return NIL
+!seealso: "ADvm_taglist()" "ADvm_tagcurrent()" "ADvm_tagall()" "ADvm_revtag()" "ADvm_clrtag()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_left()           Returns the menu box left coordinate
+'------------------------------------------------------------------------------
+ ADvm_left() --> <nLeftColumnPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the column position of the left of the menu box.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADn2s( ADvm_left() ) } )};
+                               );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: "ADvm_top()" "ADvm_bottom()" "ADvm_right()" "ADvm_row()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_right()          Returns the menu box right coordinate
+'------------------------------------------------------------------------------
+ ADvm_right() --> <nRightColumnPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the column position of the right of the menu box.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADn2s( ADvm_right() ) } )};
+                               );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: "ADvm_top()" "ADvm_bottom()" "ADvm_left()" "ADvm_row()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_row()            Returns the row position of the highlighted option
+'------------------------------------------------------------------------------
+ ADvm_row() --> <nRowPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the row position of the currently highlighted option.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADn2s( ADvm_row() ) } )};
+                               );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: "ADvm_top()" "ADvm_bottom()" "ADvm_left()" "ADvm_right()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_top()            Returns the menu box top coordinate
+'------------------------------------------------------------------------------
+ ADvm_top() --> <nTopRowPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the row position of the top of the menu box.
+
+ Example
+ -------
+ func main()
+ local aMenu := { "One", "Two", "Four" }
+ local bConfig := {|| ADvm_keys( {-9},;
+                                 {||ADmessage( { ADn2s( ADvm_top() ) } )};
+                               );
+                  }
+
+ ADvermenu( ,,aMenu,,, bConfig )
+ return NIL
+!seealso: "ADvm_row()" "ADvm_bottom()" "ADvm_left()" "ADvm_right()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvm_version()        Returns ADvermenu() version number as a string.
+'------------------------------------------------------------------------------
+ ADvm_version() --> <cVersionNumber>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the version of ADvermenu() as a string.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ GLOBAL APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADvmg_boxattr()       Globally sets the box attributes
+'------------------------------------------------------------------------------
+ ADvmg_boxattr( <aNewAttr> ) --> <aOldAttr>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Globally sets the box attributes.  Once the attributes are globally set,
+ all succeeding ADvermenu() calls will use these values until they are
+ globally reset, or they are locally set with ADvm_boxattr().
+
+ <aNewAttr> is an array of new settings.  See ADvm_boxattr() for a discussion
+ of its elements.
+
+ <aOldAttr> is the array of old values.
+
+ NOTE:  ADvmg_boxattr() and all Global APIs must be called OUTSIDE bConfig.
+
+ Example:
+ --------
+ ADvmg_boxattr( { "ÚÄ¿³ÙÄÀ³ ", .f., .f., 6 } )
+!seealso: "ADvm_boxattr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADvmg_color()         Globally sets the menu colors
+'------------------------------------------------------------------------------
+ ADvmg_color( <aNewColors> ) --> <aOldColors>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Globally sets the menu colors.  Once the colors are globally set, all
+ succeeding ADvermenu() calls will use these values until they are globally
+ reset, or they are locally set with ADvm_color().
+
+ <aNewColors> is an array of new settings.  See ADvm_color() for a discussion
+ of its elements.
+
+ <aOldColors> is the array of old values.
+
+ NOTE:  ADvmg_color() and all Global APIs must be called OUTSIDE bConfig.
+
+ v2.1 -> v2.2
+ ------------
+ In v2.1, the color array in ADvmg_color() was taken in the wrong order.
+ The box color was interchanged with the trigger color.  This was corrected
+ in v2.2.
+
+ Example:
+ --------
+ ADvmg_color( { "R/W", "B/W", "W+" } )
+!seealso: "ADvm_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ SPECIALIZED MENUS ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpl_dirs()           Directories picklist
+'------------------------------------------------------------------------------
+ ADpl_dirs( [nTop], [nLeft], [cPath], [bProcess], [bConfig], [cHelpID],;
+            [cHelpHeader], [lDots] )
+     --> <xSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements an ADvermenu-derived directories picklist.
+
+ [nTop] and [nLeft] are the top/left coordinates of the picklist box.  Just
+ like ADvermenu(), they default to the center of the screen.
+
+ [cPath] is the path identifier from which the directories will be read.  It
+ defaults to the current directory of the current drive.  If a null string is
+ passed, it takes the root directory of the current drive.
+
+ [bProcess] is a codeblock that gets EVALuated when a dir is selected.  It is
+ automatically passed the currently highlighted directory (character string).
+
+ [bConfig] has the same meaning as the [bConfig] of ADvermenu().
+
+ [cHelpID] is an optional Help identifier string.
+
+ [cHelpHeader] is an optional Help Box header.
+
+ [lDots] is an optional flag.  If TRUE (default is TRUE), the parent and
+ currrent directories ("." and "..") will be included in the list.
+
+ <xSelection> is the return value.  It is either the selected directory or an
+ array of tagged directories, depending on whether, the picklist is
+ configured as a taglist or not.
+
+ NOTE:  Unlike ADvermenu(), ADpl_dirs() may not be configured to return the
+ numeric index position of the selection.  It always returns the selection
+ itself (a character string).
+
+ Example
+ -------
+ ? ADpl_dirs(,, "c:\" )
+
+ v3.00 -> v3.10
+ --------------
+ Added the [cHelpHeader] and [lDots] parameters.
+!seealso: "ADpl_files()" "ADpl_drives()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpl_drives()         Drives picklist
+'------------------------------------------------------------------------------
+ ADpl_drives( [nTop], [nLeft], [nMode], [bProcess], [bConfig], [cHelpId] )
+      --> <xSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements an ADvermenu-derived drives picklist.
+
+ [nTop] and [nLeft] are the top/left coordinates of the picklist box.  Just
+ like ADvermenu(), they default to the center of the screen.
+
+ [nMode] is a numeric code that specifies the display format. The valid
+ values are #defined in Frankie.ch
+
+ #define DRIVE_LETTER_ONLY       2    // drive letters
+ #define DRIVE_LETTER_COLON      3    // drive letters + ":"
+ #define DRIVE_LETTER_PATH       4    // drive letters + path
+
+ The default value is DRIVE_LETTER_COLON
+
+ [bProcess] is a codeblock that gets EVALuated when a drive is selected.  It
+ is automatically passed the currently highlighted drive (character string).
+
+ [bConfig] has the same meaning as the [bConfig] in ADvermenu().
+
+ [cHelpID] is an optional Help identifier string.
+
+ <xSelection> is the return value.  It is either the selected drive or an
+ array of tagged drives, depending on whether the picklist is configured as
+ a taglist or not.
+
+ NOTE:  Unlike ADvermenu(), ADpl_drives() may not be configured to return the
+ numeric index position of the selection.  It always returns the selection
+ itself (a character string).
+
+ Example
+ -------
+ #include "tour\frankie.ch"
+ ? ADpl_drives( ,, DRIVE_LETTER_PATH )
+!seealso: "ADpl_files()" "ADpl_dirs()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpl_fields()         Fields picklist
+'------------------------------------------------------------------------------
+ ADpl_fields( [nTop], [nLeft], [bProcess], [bConfig], [cInclude], [cFormat],;
+     [cHelpID] ) --> <xSel>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A specialized and ADvermenu-derived picklist of field names of the current
+ database.  The parameters, [nTop], [nLeft], [bProcess], [bConfig], and
+ [cHelpID], and the return value, <xSel> have the same significance as those
+ of the same name as in ADvermenu().  Refer to ADvermenu() for a more
+ detailed description of them.
+
+ [nTop], nLeft] - the top/left corner of the box.
+
+ [bProcess] - a codeblock that is EVALuated when a selection is made.  The
+ current selection is automatically passed to it.
+
+ [bConfig] - is a codeblock used to configure ADpl_fields().
+
+ [cInclude] - is a string containing the characters "C", "N", "D", "L" and
+ "M" used to specify the types of fields to include in the picklist.  A value
+ of "CN" will include only the character and numeric fields.  A value of ""
+ will include nothing.  A value of NIL will include all.
+
+ [cFormat] - is a string containing the characters "T", "L" and "D" used to
+ specify what information to include in the picklist.  A value of "TLD" will
+ include type, length and decimal information, in addition to the field
+ names.  A value of NIL will include only the field names.
+
+ [cHelpID] - is a Help identifier string.
+
+ [xSel] - the return value, is either a field name, a field position, or even
+ an array, depending on how ADpl_fields() is configured.
+
+ Example:
+ --------
+ func main()
+ local bConfig := {|| ADvm_returntype( "C" ),;
+                      ADvm_taglist();
+                  }
+ local bProcess := {|x| aadd( x, NIL ),;
+                        aadd( x, NIL ),;
+                        ains( x, 1 ),;
+                        ains( x, 1 ),;
+                        x[1] := "Selected Fields",;
+                        x[2] := "---------------",;
+                        ADmessage( x );
+                   }
+ select 0
+ use mydbf
+ ADpl_fields( 4, 4, bProcess, bConfig )
+ use
+ return nil
+!seealso: "ADpl_headings()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpl_files()          Files picklist
+'------------------------------------------------------------------------------
+ ADpl_files( [nTop], [nLeft], [cPath], [cPattern], [bProcess], [bConfig],;
+     [bPLConfig], [cHelpID] ) --> <xSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements an ADvermenu-derived files picklist.
+
+ [nTop] and [nLeft] are the top/left coordinates of the picklist box.  Just
+ like ADvermenu(), they default to the center of the screen.
+
+ [cPath] is the path identifier from which the files info will be read.  It
+ defaults to the current directory of the current drive.  If a null string is
+ passed, it takes the root directory of the current drive.
+
+ [cPattern] is the Dos file pattern.  Accepts the wildcard values "*" and
+ "?".  Defaults to "*.*"
+
+ [bProcess] is a codeblock that gets EVALuated when a dir is selected.  It is
+ automatically passed the currently highlighted file (character string).
+
+ [bConfig] has the same meaning as the Configuration Specifier of ADvermenu().
+
+ [bPLConfig] is the Picklist Configuration Specifier.  Its use is similar to
+ [bConfig].  No parameter is passed to it.
+
+ <xSelection> is the return value.  It is either the selected file or an
+ array of tagged files, depending on whether, the picklist is configured as a
+ taglist or not.
+
+ NOTE:  Unlike ADvermenu(), ADpl_files() may not be configured to return the
+ numeric index position of the selection.  It always return the selection
+ itself (a character string).
+
+ Example 1: Picklist of all .PRG files
+ -------------------------------------
+ ? ADpl_files(,,, "*.PRG")
+
+ Example 2: Picklist contains file size, date and time stamp information
+ -----------------------------------------------------------------------
+ ? ADpl_files( ,,, "*.PRG",,, {|| ADpl_filformat( "SDT" )} )
+!seealso: "ADpl_dirs()" "ADpl_drives()" "ADpl_filattr()" "ADpl_filformat()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpl_filattr()        Specifies the attributes of files for ADpl_files()
+'------------------------------------------------------------------------------
+ ADpl_filattr( <cAttr> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An API specific to the files picklist, ADpl_files().  It tells ADpl_files()
+ what type of files to include in the picklist, in addition to the "A" or
+ normal files.  <cAttr> is a string concatenated from the following file
+ attribute values:
+
+ "S" - system file
+ "R" - read only file
+ "H" - hidden file
+ "A" - normal file.  This is always included.
+ "D" - directory
+ "V" - volume label
+
+ Example 1: All normal files plus the read, hidden and system files
+ ------------------------------------------------------------------
+ ? ADpl_files( ,, "c:\",,,, {|| ADpl_filattr( "RHS" )} )
+
+ Example 2: All normal files plus the directories
+ ------------------------------------------------
+ ? ADpl_files( ,, "c:\",,,, {|| ADpl_filattr( "D" )} )
+
+ Example 3: All normal files plus the volume label
+ ------------------------------------------------
+ ? ADpl_files( ,, "c:\",,,, {|| ADpl_filattr( "V" )} )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpl_filformat()      Defines the display format of ADpl_files()
+'------------------------------------------------------------------------------
+ ADpl_filformat( <cFormat> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An API specific to the files picklist.  It tells ADpl_files() what format to
+ use when displaying the picklist. <cFormat> is a string concatenated from
+ the following file information values:
+
+ "S" - include file size information
+ "D" - include file date information
+ "T" - include file time information
+ "A" - include file attributes information
+ "B" - do not include the file extension. ("B" for bare)
+
+ Example 1:  Basic ADpl_files()
+ ------------------------------
+ ADpl_files( ,,, "*.PRG" )
+ /*
+ ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+ ³ MYPROG.PRG   ³
+ ³ OURPROG.PRG  ³
+ ³ YOURPROG.PRG ³
+ ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+ */
+
+ Example 2: Without file extension
+ ---------------------------------
+ ADpl_files( ,,, "*.PRG",, {||ADplfil_format( "B" )} )  // bare
+ /*
+ ÕÍÍÍÍÍÍÍÍÍÍ¸
+ ³ MYPROG   ³
+ ³ OURPROG  ³
+ ³ YOURPROG ³
+ ÔÍÍÍÍÍÍÍÍÍÍ¾
+ */
+
+ Example 3: With file date and time stamp
+ ----------------------------------------
+ ADpl_files( ,,, "*.PRG",, {||ADplfil_format( "DT" )} )  // bare
+ /*
+ ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+ ³ MYPROG.PRG     03/26/93 13:53:16 ³
+ ³ OURPROG.PRG    05/26/93 23:57:12 ³
+ ³ YOURPROG.PRG   11/13/92 09:45:02 ³
+ ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+ */
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpl_headings()       Picklist of browse column headings
+'------------------------------------------------------------------------------
+ ADpl_headings( [nTop], [nLeft], [bProcess], [bConfig], [cHelpID] )
+     --> <xSel>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A specialized and ADvermenu-derived picklist of column headings of the
+ current database browser.  The parameters, [nTop], [nLeft], [bProcess],
+ [bConfig] and [cHelpID], and the return value, <xSel> have the same
+ significance as those of the same name in ADvermenu().  Refer to
+ ADvermenu() for a more detailed description of them.
+
+ [nTop], nLeft] - the top/left corner of the box.
+
+ [bProcess] - a codeblock that is EVALuated when a selection is made.  The
+ current selection is automatically passed to it.
+
+ [bConfig] - is a codeblock used to configure ADpl_headings().
+
+ [cHelpID] - is a Help identifier string.
+
+ [xSel] - the return value, is either a heading, a column position, or even
+ an array, depending on how ADpl_headings() is configured.
+
+
+ Example:
+ -------
+ func main()
+ local bPL_Config := {|| ADvm_header( "Column Headings" )}
+ local bDB_Config :=  {|| ADdb_colheadings( {;
+                                                 "Function;Name",;
+                                                 "Is It;Mouseable?",;
+                                                 "Number of;Parameters",;
+                                                 "Description",;
+                                                 "Date Last;Updated";
+                                            };
+                                          ),;
+                          ADdb_enter( {|| ADpl_headings( 7,12,, bPL_Config )} );
+                      }
+ local aScn
+
+ use mydbf
+ aScn := ADmessage( { "Press Enter to popup a picklist of column headings" },;
+                    18,, .f., .f. )
+ ADdbview( 4,10,16,69, bDB_Config )
+ ADrestscn( aScn )
+ use
+ return nil
+!seealso: "ADpl_fields()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,326 @@
+!short: ADacolumns()        Creates an array of column objects
+'------------------------------------------------------------------------------
+ ^bADacolumns( [aFldPos] ) --> <aColumns>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Creates an array of column objects from fields from the current database.
+ [nFldPos] is an array of the database positions of the fields for which
+ column objects are to be created.  If an element is zero, an empty column
+ object is created for it.  If [aFldPos] is not passed, it will default to
+ all fields.
+
+ ^bSpecial NOTE on memo fields
+ ^b---------------------------
+ 1.  The retrieval block is {|| "< memo >"}
+
+ ^bSpecial NOTES on "empty columns"
+ ^b-------------------------------
+ 1.  The heading is an empty string.
+ 2.  The retrieval block is {|| "< calc >"}
+
+ ^bSpecial NOTES on the cargo instance variable:
+ ^b---------------------------------------------
+ The cargo instance variable of each column object is filled with an array
+ of values useful to the Frankie database browser engine, ADdbview().  The
+ array has 6 elements, listed below (NOT in chronological order)
+
+ 1 - NIL; reserved for the developer's use
+ 6 - the field position.  This value is taken form [aFldPos]
+ 5 - the field name.  If the field position is zero, the field name is an
+     empty string.
+ 2 - field type.  If the field position is zero, the field type is reported
+     as "U"
+ 3 - an alternate retrieval block.  This is specially intended for a memo
+     field whose retrieval block is merely {|| "< memo >"}.  This element
+     is filled with a block that retrieves the actual field value.  For
+     other data types, this is NIL.
+ 4 - an array of 4 elements whose values are all NIL.
+
+ NOTE:  Except for element #1, these elements MUST NOT be directly changed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADafldpos()       ^rn^r Converts an array of field names to field positions
+'------------------------------------------------------------------------------
+ ^bADafldpos( <aFldNames> ) --> <aFldPos>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Converts an array of field names into an array of their corresponding
+ field positions.
+
+ <aFldNames> is an array of field names.
+
+ <aFldPos> is an array of field positions.
+
+ Example
+ -------
+ func main()
+ local aFldName := { "NUM", "NAME", "CITY" }
+ local aFldPos, aRec
+
+ use hotel
+ aFldPos := ADafldpos( aFldname )
+ aRec := ADgetflds( aFldPos )
+ if ADg_many( aRec )
+      ADputflds( aFldPos, aRec )
+ endif
+ return NIl
+!seealso: "ADgetflds()" "ADputflds()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADamemo()           Checks for memo fields
+'------------------------------------------------------------------------------
+ ^bADamemo() --> <aIsMemo>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Checks for memo fields in the current database.  Returns an array of logical
+ values: TRUE if the corresponding field is a memo, FALSE if otherwise.
+
+ ^bExample
+ ^b-------
+ use demo
+ aMemo := ADamemo()  // { .f., .f., .f., .t., .f. }
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADchgfldname()      Changes the name of a field in a closed dbf file
+'------------------------------------------------------------------------------
+ ^bADchgfldname( <cDbf>, <cOldName>, <cNewName> ) --> <lSuccess>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Changes the name of a field in closed database file.
+
+ <cDbf> is the name of a database.  It must be closed.
+
+ <cOldName> is the old name of the field to change.
+
+ <cNewName> is the new name.  It must follow the rules for field names.  If
+ it is longer than 10 characters, it will be truncated.
+
+ Example
+ -------
+ ADchgfldname( "CUSTOMER", "CUST_ID", "CUST_NUM" )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgetflds()       ^rn^r Returns a set of field values from the current record
+'------------------------------------------------------------------------------
+ ^bADgetflds( <aFldPos>, [nMemoLen] ) --> <aFldValues>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns an array of field values from the current record.  This function
+ is somewhat similar to ADgetrec().
+
+ <aFldPos> is an array of field positions whose corresponding values will
+ be gathered into an array.
+
+ [nMemoLen] is an optional numeric value. If it is passed, the length of each
+ memo field is compared with [nMemoLen].  If the length is less than
+ [nMemoLen] the corresponding <aRec> element is padded with spaces so it will
+ be [nMemoLen] in length.
+
+ <aFldValues> is an array of field values corresponding to the array of
+ field positions, <aFldPos>
+
+ Example
+ -------
+ func main()
+ local aFldName := { "NUM", "NAME", "CITY" }
+ local aFldPos, aRec
+
+ use hotel
+ aFldPos := ADafldpos( aFldname )
+ aRec := ADgetflds( aFldPos )
+ if ADg_many( aRec )
+      ADputflds( aFldPos, aRec )
+ endif
+ return NIl
+!seealso: "ADputflds()" "ADafldpos()" "ADgetrec()" "ADputrec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgetrec()          Returns the current record as an array
+'------------------------------------------------------------------------------
+ ^bADgetrec( [nMemoLen] ) --> <aRec>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the current record as an array, <aRec>
+
+ [nMemoLen] is an optional numeric value. If it is passed, the length of each
+ memo field is compared with [nMemoLen].  If the length is less than
+ [nMemoLen] the corresponding <aRec> element is padded with spaces so it will
+ be [nMemoLen] in length.
+
+ ^bExample
+ ^b-------
+ use MYDBF
+ go bottom
+ aRec := ADgetrec() // returns the last record as an array.  Each element
+                    // in the array corresponds to a field in the record.
+ if ADg_many( aRec )    // edits the record
+   ADputrec( aRec )     // stores back the record if it was edited
+ endif
+!seealso: "ADputrec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfile2struct()   ^rn^r Creates a dbf structure array from info in a text file
+'------------------------------------------------------------------------------
+ ^bADfile2struct( <cFile> ) --> <aStructure>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Creates a dbf structure array from info in a text file.
+
+ <cFile> is the name of the text file that contains the structure info.
+
+ <aStructure> is the array that is created and returned.
+
+ The text file must be in a format similar to this:
+
+ NAME         C     25  0
+ PHONE        C     10  0
+ BIRTH        D      8  0
+ EMPLOYED     L      1  0
+ DEPENDENTS   N      2  0
+ NOTES        M     10  0
+
+ The number of spaces or tabs between two columns is not important.  But
+ there must be no empty line between two field definitions.
+
+ The above text file will be converted into this array:
+
+ {;
+    { "NAME"      ,   "C",     25,  0 },;
+    { "PHONE"     ,   "C",     10,  0 },;
+    { "BIRTH"     ,   "D",      8,  0 },;
+    { "EMPLOYED"  ,   "L",      1,  0 },;
+    { "DEPENDENTS",   "N",      2,  0 },;
+    { "NOTES"     ,   "M",     10,  0 };
+ }
+!seealso: "ADstruct2file()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADputflds()       ^rn^r Stores an array of field values into the current record
+'------------------------------------------------------------------------------
+ ^bADputflds( <aFldPos>, <aFldValues> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Stores an array of field values into the current record. This function
+ is somewhat similar to ADputrec().
+
+ <aFldPos> is an array of field positions where the field values will
+ be stored.
+
+ <aFldValues> is an array of field values that will be stored in the fields
+ corresponding to the field positions, <aFldPos>
+
+ Example
+ -------
+ func main()
+ local aFldName := { "NUM", "NAME", "CITY" }
+ local aFldPos, aRec
+
+ use hotel
+ aFldPos := ADafldpos( aFldname )
+ aRec := ADgetflds( aFldPos )
+ if ADg_many( aRec )
+      ADputflds( aFldPos, aRec )
+ endif
+ return NIl
+!seealso: "ADgetflds()" "ADafldpos()" "ADgetrec()" "ADputrec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADputrec()          Stores an array into the current record
+'------------------------------------------------------------------------------
+ ^bADputrec( aRec ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Stores an array, <aRec> into the current record.  Note that the number of
+ elements in <aRec> must be equal to the number of fields in the database.
+ Also, their corresponding data types must be the same.
+
+ ^bExample: See ADgetrec()
+!seealso: "ADgetrec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrestarea()        Restores saved workarea state
+'------------------------------------------------------------------------------
+ ^bADrestarea( <aArea> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Restores the state of the current workarea.
+
+ <aArea> is the saved state, which is an array of 4 elements:
+
+   1 - the workarea numeric handle
+   2 - the current record number
+   3 - the controlling index order
+   4 - the current _SET_DELETED setting
+!seealso: "ADsavearea()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsavearea()        Saves current workarea state
+'------------------------------------------------------------------------------
+ ^bADsavearea() --> <aArea>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Saves the state of the current workarea.
+
+ <aArea> is an array of 4 elements:
+
+   1 - the workarea numeric handle
+   2 - the current record number
+   3 - the controlling index order
+   4 - the current _SET_DELETED setting
+!seealso: "ADrestarea()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstruct2file()   ^rn^r Writes the structure of current dbf to a text file
+'------------------------------------------------------------------------------
+ ^bADstruct2file( <cFile> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Writes the structure of the current dbf to a text file.
+
+ <cFile> is the name of the file where the dbf structure will be written.
+
+ The text file will have this format:
+ NAME         C     25  0
+ PHONE        C     10  0
+ BIRTH        D      8  0
+ EMPLOYED     L      1  0
+ DEPENDENTS   N      2  0
+ NOTES        M     10  0
+!seealso: "ADfile2struct()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADzaprec()          Blanks the current record
+'------------------------------------------------------------------------------
+ ^bADzaprec() --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Blanks the current record.
+
+ ^bExample:
+ ^b-------
+ use MYDBF  // assume there are 4 fields
+ go bottom
+ ADzaprec()
+ ? empty( fieldget(1) )    // .T.
+ ? empty( fieldget(2) )    // .T.
+ ? empty( fieldget(3) )    // .T.
+ ? empty( fieldget(4) )    // .T.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

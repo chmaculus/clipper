@@ -1,0 +1,2857 @@
+!short: Introduction Print Queue Management
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions in this chapter cover the entire area of print queue
+     control under Netware.  Print queues can be created or deleted.  Users,
+     operators, and print servers for a print queue can be defined or
+     removed.  The queue functions allow you to manipulate jobs within a
+     queue.  All settings for a print job can be queried or modified if the
+     job is not currently processed (provided that you have sufficient access
+     rights).  Jobs can be deleted or moved within a queue.
+
+     ^bImportant!^b  Within the Netware documentation the term "job" is used
+     to describe a print job within a queue and also to describe a set of
+     capture parameters (print job definition).  Within this chapter the term
+     "job" only describes a print job.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETADDQOP() Adds operators to a print queue
+'------------------------------------------------------------------------------
+ ^bNNETADDQOP()^b
+ Adds operators to a print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETADDQOP(<cQueue>,<cUser>|<aUser>,[<cServer>|
+     ^b   <nConId>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates a print queue on the default server or on
+     <cServer>|<nConId>.
+
+     ^b<cUser>^b  Designates the name of a user that is added as an operator
+     of <cQueue>.
+
+     ^b<aUser>^b  Designates a number of elements of the type string.  Each
+     element contains the name of a user that is added as an operator of
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETADDQOP() returns the number of users that have been added
+     successfully as operators of <cQueue>.  A value of 0 indicates that no
+     operator has been added.
+
+ ^bDescription^b
+
+     NOVELL NET ADD QUEUE OPERATOR
+     NNETADDQOP() allows you to add one or more users as operators of a print
+     queue.  To add one user, the login name of the user must be passed in
+     <cUser>.  To add more users, an array containing all user names can be
+     passed in <aUser>.  With the parameters <cServer> or <nConId>, the
+     operation can be performed on any attached server.  The connection ID of
+     a server can be determined with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights are required on the related file server to add a user
+     as a queue operator.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETADDQOP() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add user MICK as an operator of the queue LINEPRINTER:
+
+        IF NNETADDQOP('LINEPRINTER','MICK')>0
+           ? 'User added successfully!'
+        ELSE
+           ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Add users PETER, MIKE, and JIM as operators of the queue
+        LINEPRINTER:
+
+        NNETADDQOP('LINEPRINTER',{'PETER','MIKE','JIM'})
+!seealso: "NNETREMQOP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETADDQSV() Adds a print server
+'------------------------------------------------------------------------------
+ ^bNNETADDQSV()^b
+ Adds a print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETADDQSV(<cQueue>,<cPServer>|<aPServer>,[<cServer>|
+     ^b   <nConId>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates a print queue on the default server or on
+     <cServer>|<nConId>.
+
+     ^b<cPServer>^b  Designates the name of a print server that is added as
+     the server for <cQueue>.
+
+     ^b<aPServer>^b  Designates a number of elements of the type string.
+     Each element contains the name of a print server that is added as the
+     server for <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETADDQSV() returns the number of print servers that have been added
+     successfully as servers of <cQueue>.  A value of 0 indicates that no
+     server has been added.
+
+ ^bDescription^b
+
+     NOVELL NET ADD QUEUE SERVER
+     NNETADDQSV() allows you to add one or more print servers as servers of a
+     print queue.  To add one server, the name of the server must be passed
+     in <cPServer>.  To add more servers, an array containing all print
+     server names can be passed in <aPServer>.  With the parameters <cServer>
+     or <nConId>, the operation can be performed on any attached server.  The
+     connection ID of a server can be determined with NNETATTACH() or
+     NNETLOGIN().
+
+     Supervisor rights are required on the related file server to add a print
+     server as the server for a queue.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETADDQSV() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add the print server PSERVERTOOLS1 as the server for the queue
+        LINEPRINTER:
+
+        IF NNETADDQSV('LINEPRINTER','PSERVERTOOLS1')>0
+        ? 'Print server added successfully!'
+        ELSE
+        ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Add the print servers PSERVERTOOLS1 and PSERVERDEV1 as servers
+        for the queue LINEPRINTER:
+
+        NNETADDQSV('LINEPRINTER',{'PSERVERTOOLS1','PSERVERDEV1'})
+!seealso: "NNETREMQSV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETADDQUS() Adds a queue user
+'------------------------------------------------------------------------------
+ ^bNNETADDQUS()^b
+ Adds a queue user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETADDQUS(<cQueue>,<cUser>|<aUser>,[<cServer>|
+     ^b   <nConId>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates a print queue on the default server or on
+     <cServer>|<nConId>.
+
+     ^b<cUser>^b  Designates the name of a user that is added as a user of
+     <cQueue>.
+
+     ^b<aUser>^b  Designates a number of elements of the type string.  Each
+     element contains the name of a user that is added as a user of <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates  the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETADDQUS() returns the number of users that have been added
+     successfully as users of <cQueue>.  A value of 0 indicates that no user
+     has been added.
+
+ ^bDescription^b
+
+     NOVELL NET ADD QUEUE USER
+     NNETADDQUS() allows you to add one or more users as users of a print
+     queue.  To add one user, the login name of the user must be passed in
+     <cUser>.  To add more users, an array containing all user names can be
+     passed in <aUser>.  With the parameters <cServer> or <nConId>, the
+     operation can be performed on any attached server.  The connection ID of
+     a server can be determined with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights are required on the related file server to add a user
+     as a queue operator.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETADDQUS() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add user MICK as a user of the queue LINEPRINTER:
+
+        IF NNETADDQUS('LINEPRINTER','MICK')>0
+           ? 'User added successfully!'
+        ELSE
+           ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Add users PETER, MIKE, and JIM as users of the queue
+        LINEPRINTER:
+
+        NNETADDQUS('LINEPRINTER',{'PETER','MIKE','JIM'})
+!seealso: "NNETREMQUS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPJOB() Determines the job number of most recently opened capture job
+'------------------------------------------------------------------------------
+ ^bNNETCAPJOB()^b
+ Determines the job number of the most recently opened capture job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPJOB([<nPrinterNo>]) --> nJob
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nPrinterNo>^b  Designates the LPT device for which the job number is
+     determined.  LPT1 (1) to LPT3 (3) are possible.  The default value is 1.
+
+ ^bReturns^b
+
+     NNETCAPJOB() returns the job number of the last opened capture job for
+     <nPrinterNo>.  If an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     NOVELL NET CAPTURE JOB
+     To maintain the jobs within a queue, Netware internally uses job
+     numbers.  The job number is a 16-bit integer.  This number has nothing
+     to do with the logical position of a job within a queue; for example,
+     the first job within a queue is not automatically job number 1.  The job
+     number is assigned to a print job by the Queue Management Services (QMS)
+     and cannot be foreseen.  It is only used to identify a job
+     unambiguously.
+
+     After a job has been created, the job number determined with
+     NNETCAPJOB() can be used to access and manipulate specific jobs with the
+     NNETJXXX() functions.  However, the start of a capture process with
+     NNETCAPBEG() does not immediately create a job.  Therefore, a call of
+     the function NNETCAPJOB() immediately after a call of NNETCAPBEG()
+     returns the number of a job that was called earlier.  A new job is not
+     created before the first output via the LPT device.  After the first
+     output you can determine the number of the current job using
+     NNETCAPJOB().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the job number of the last opened capture job on
+        LPT2:
+
+        ? NNETCAPJOB(2)
+
+     ^b^CFE^b  Start the capture mode for LPT1, send output to the queue
+        LINEPRINTER, and set the job description to "! CONFIDENTIAL !":
+
+        NNETCAPSSF(1)
+        NNETCAPBEG(1)
+        NNETSETQ(1,'LINEPRINTER')
+        SET PRINTER ON
+        ? 'Hello'   // A new job is created!
+        NNETJDESC('LINEPRINTER',NNETCAPJOB(1),'! CONFIDENTIAL !')
+        NNETCAPFLU(1)
+!seealso: "NNETJDESC()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCRTQ()   Creates a new print queue
+'------------------------------------------------------------------------------
+ ^bNNETCRTQ()^b
+ Creates a new print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCRTQ(<cQueue>,[<cQueuePath>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the queue that is created.
+
+     ^b<cQueuePath>^b  Designates the directory where the new queue is
+     created.
+
+ ^bReturns^b
+
+     NNETCRTQ() returns .T. if the new queue (<cQueue>) has been created
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+ NOVELL NET CREATE QUEUE
+
+     NNETCRTQ() allows you to create a new print queue on a file server.  In
+     addition to the name of the queue (<cQueue>), you can specify the
+     directory (<cQueuePath>) where the new queue is created.  If no
+     directory is passed, the queue directory is established in the
+     SYS:SYSTEM directory of the default server.  Supervisor rights are
+     required to create a new print queue.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create the queue LINEPRINTER on the default server:
+
+        IF NNETCRTQ('LINEPRINTER')
+        ? 'Queue created successfully!'
+        ELSE
+        ? 'Queue could not be created!'
+        ENDIF
+
+     ^b^CFE^b  Create the queue LINEPRINTER on the file server DEV:
+
+        NNETCRTQ('LINEPRINTER','DEV/SYS:SYSTEM')
+!seealso: "NNETADDQUS()" "NNETDELQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDELQ()   Deletes a print queue
+'------------------------------------------------------------------------------
+ ^bNNETDELQ()^b
+ Deletes a print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDELQ(<cQueue>,[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is deleted.
+
+     ^b<cServer>^b  Designates the name of the file server where <cQueue> is
+     established.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDELQ() returns .T. if the queue (<cQueue>) has been deleted
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+     NOVELL NET DELETE QUEUE
+     NNETDELQ() allows you to delete an entire queue.  After a queue has been
+     deleted with NNETDELQ(), all jobs of <cQueue> are canceled, all job
+     files are deleted, and all queue directories are removed.  Supervisor
+     rights are required to delete a queue.
+
+ ^bExample^b
+
+     Delete the queue LINEPRINTER on the default server:
+
+     IF NNETDELQ('LINEPRINTER')
+     ? 'Queue has been deleted successfully!'
+     ELSE
+     ? 'Queue could not be deleted!'
+     ENDIF
+!seealso: "NNETCRTQ()" "NNETJDEL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJBAN()   Determines if a banner page is printed for a job
+'------------------------------------------------------------------------------
+ ^bNNETJBAN()^b
+ Determines if a banner page is printed for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJBAN(<cQueue>,<nJob>,[<lNewTitle>],[<cServer>|
+     ^b   <nConId>]) --> lTitle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<lNewTitle>^b  Designates whether a banner page for <nJob> is printed
+     (.T.) or not (.F.).
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJBAN() returns .T. if a banner page is printed.
+
+ ^bDescription^b
+
+     NOVELL NET JOB BANNER PAGE
+     Under Netware, a banner page can be printed before each print job to
+     show the user name.  However, if a banner page is not necessary, it can
+     be suppressed by passing the parameter <lNewTitle> with .F..
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine if a banner page is printed for the first job in the
+        queue LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJBAN('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Suppress the banner page for the first job in the queue
+        LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJBAN('LINEPRINTER', nJob, .F.)
+!seealso: "NNETJBFILE()" tool_010.ngo:"NNETPJBAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJBFILE() Sets or determines the file names in the banner text of a job
+'------------------------------------------------------------------------------
+ ^bNNETJBFILE()^b
+ Sets or determines the file names in the banner text of a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJBFILE(<cQueue>,<nJob>,[<cNewName>],[<cServer>|
+     ^b   <nConId>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNewName>^b  Designates a new file name that is set for the banner
+     text.  The file name can be up to 12 characters long.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJBFILE() returns the file name that is printed on the banner page of
+     <nJob>.
+
+ ^bDescription^b
+
+     NOVELL NET JOB BANNER FILE
+     The banner page of a job contains the user name of the job owner and the
+     name of the printed file.  NNETJBFILE() allows you to set or to
+     determine the file name.  The default name is LST:.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the file name to be printed on the banner page of
+        the first job in the queue LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJBFILE('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the file name to be printed on the banner page of the
+        first job in the queue LINEPRINTER to STONES.TXT:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJBFILE('LINEPRINTER', nJob, 'STONES.TXT')
+!seealso: "NNETJBAN()" "NNETJBNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJBNAME() Sets or determines the banner name for a job
+'------------------------------------------------------------------------------
+ ^bNNETJBNAME()^b
+ Sets or determines the banner name for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJBNAME(<cQueue>,<nJob>,[<cNewName>],[<cServer>|
+     ^b   <nConId>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNewName>^b  Designates a new banner name that is set for <nJob>.
+     The banner name can be up to 12 characters long.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJBNAME() returns the user name that is printed on the banner page of
+     <nJob>.
+
+ ^bDescription^b
+
+ NOVELL NET JOB BANNER NAME
+
+     The banner page of a job contains the user name of the job owner and the
+     name of the printed file.  NNETJBNAME() allows you to set or to
+     determine the user name.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the user name that is printed on the banner page of
+        the first job in the queue LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJBNAME('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the user name that is printed on the banner page of the
+        first job in the queue LINEPRINTER to MICK:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJBNAME('LINEPRINTER', nJob, 'MICK')
+!seealso: "NNETJBAN()" "NNETJBFILE()" tool_010.ngo:"NNETPJBNAM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJCNT()   Determines the number of jobs in a print queue
+'------------------------------------------------------------------------------
+ ^bNNETJCNT()^b
+ Determines the number of jobs in a print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJCNT(<cQueue>,[<cServer>|<nConId>]) --> nJobs
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJCNT() returns the number of jobs that are currently in a print
+     queue.  If an error occurs (for example, non existing print queue), the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET JOB COUNT
+     NNETJCNT() allows you to determine when it is safe to modify certain
+     characteristics of a queue (for example, the connection to a print
+     server).  You should wait until the queue is empty to modify certain
+     characteristics of the queue.  NNETJCNT() can be used to count the jobs
+     in a number of queues.  With NNETSETQ() you can then assign a job to the
+     queue with the lowest number of jobs.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine the number of jobs in the queue LINEPRINTER:
+
+     ? 'Jobs:',NNETJCNT('LINEPRINTER')
+!seealso: "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJCOPY()  Sets or determines the number of copies for a job
+'------------------------------------------------------------------------------
+ ^bNNETJCOPY()^b
+ Sets or determines the number of copies for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJCOPY(<cQueue>,<nJob>,[<nNewCopies>],[<cServer>|
+     ^b   <nConId>]) --> nCopies
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<nNewCopies>^b  Designates the new number of copies for <nJob>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJCOPY() returns the number of copies of <nJob> that are printed.  If
+     an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET JOB COPIES
+     The queue management allows you to print out more than one copy of a
+     print job.  With NNETJCOPY(), you can set or determine the number of
+     copies of <nJob>.  To query the number of copies, do not pass a value
+     for <nNewCopies>.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of copies for the first job in the queue
+        LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJCOPY('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the number of copies for the first job in the queue
+        LINEPRINTER to 5:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJCOPY('LINEPRINTER', nJob, 5)
+!seealso: tool_010.ngo:"NNETPJCOPY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJCPL()   Sets or determines the number of characters per line for a job
+'------------------------------------------------------------------------------
+ ^bNNETJCPL()^b
+ Sets or determines the number of characters per line for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJCPL(<cQueue>,<nJob>,[<nNewChar>],[<cServer>|
+     ^b   <nConId>]) --> nChar
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNewChar>^b  Designates the new number of characters per line for
+     <nJob>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJCPL() returns the number of characters per line for  <nJob>.  If an
+     error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET CHARACTERS PER LINE
+     With NNETJCPL(), you can set or determine the number of characters per
+     line for <nJob>.  To query the number of copies, do not pass a value for
+     <nNewChar>.  A new number of characters can be set by passing the
+     selected number.  The number of characters is simply informative; this
+     information is not evaluated by Netware.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of characters for the first job in the
+        queue LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJCPL('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the number of characters for the first job in the queue
+        LINEPRINTER to 72:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJCPL('LINEPRINTER', nJob, 72)
+!seealso: "NNETJLPP()" "NNETJTXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJDEL()   Deletes a job from a print queue
+'------------------------------------------------------------------------------
+ ^bNNETJDEL()^b
+ Deletes a job from a print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJDEL(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is deleted from
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJDEL() returns .T. if the job has been deleted successfully.  If an
+     error occurs, the function returns .F.  An error can occur if <cQueue>
+     does not exist or the requesting user does not have the required access
+     rights.
+
+ ^bDescription^b
+
+     NOVELL NET JOB DELETE
+     NNETJDEL() allows you to delete a job from a queue.  The job that is
+     deleted is specified by its job number.  The job number has nothing to
+     do with the logical position of a job within a queue.  The job number
+     can be determined with NNETCAPJOB() or NNETJLIST().  A job that is
+     already in process is canceled immediately by a call of NNETJDEL().
+
+ ^bNote^b
+
+     ^b^CFE^b  The user of a queue can delete a job only if the user
+        submitted it to the queue.  The queue operator can remove any job.
+
+ ^bExample^b
+
+     Delete the second job from the queue LINEPRINTER:
+
+     nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),3,2))
+     IF NNETJDEL('LINEPRINTER',nJob)
+     ? 'Job has been deleted successfully!'
+     ELSE
+     ? 'Job could not be deleted!'
+     ENDIF
+!seealso: "NNETCAPJOB()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJDESC()  Reads and modifies the job description
+'------------------------------------------------------------------------------
+ ^bNNETJDESC()^b
+ Reads and modifies the job description
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJDESC(<cQueue>,<nJob>,[<cDescription>],
+     ^b   [<cServer>|<nConId>]) --> cDescription
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cDescription>^b  Designates the new job description for <nJob>.  The
+     job description can be up to 49 characters long.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJDESC() returns the job description of <nJob> in <cQueue>.  If an
+     error occurs (for example, if <cQueue> does not exist), the function
+     returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET JOB DESCRIPTION
+     NNETJDESC() allows you to read or to modify the description of each job
+     in a queue.  The description can be up to 49 characters long and is
+     printed on the banner page.  By passing the parameter <cDescription>,
+     you can overwrite the default description "LPTnCatch".  The operation
+     has been successful if the returned character string is identical to the
+     parameter <cDescription>.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue.  The
+     job number can be determined with NNETCAPJOB() or NNETJLIST().
+
+ ^bNotes^b
+
+     ^b^CFE^b  The reading of a job description requires that the requesting
+        user has access to the queue as a user or an operator.  The right to
+        modify a job description is reserved for the user who has created the
+        job and for the queue operator.
+
+     ^b^CFE^b  A job that is already in progress cannot be modified.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the job description for the first job in the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+        ? NNETJDESC('LINEPRINTER',nJob)
+
+     ^b^CFE^b  Start the capture mode for LPT1, send output to the queue
+        LINEPRINTER, and set the description of the resulting job to
+        "!CONFIDENTIAL!":
+
+        NNETCAPSSF(1)
+        NNETCAPBEG(1)
+        NNETSETQ(1,'LINEPRINTER')
+        SET PRINTER ON
+        ? 'Hello'
+        NNETJDESC('LINEPRINTER',NNETCAPJOB(1),'!CONFIDENTIAL!')
+        NNETCAPFLU(1)
+
+     ^b^CFE^b  The new job is always created at the first output (? "Hello"),
+        not by calling NNETCAPBEG().  Therefore, NNETJDESC() must be called
+        after the first output.  If NNETJDESC() is not called after the first
+        output, NNETCAPJOB() returns the number of the previous capture job
+        and the wrong description is modified.
+!seealso: "NNETCAPJOB()" "NNETJBNAME()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJEDATE() Determines the entry date of a job
+'------------------------------------------------------------------------------
+ ^bNNETJEDATE()^b
+ Determines the entry date of a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJEDATE(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> dDate
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJEDATE() returns the date when <nJob> was placed in <cQueue>.  If an
+     error occurs (for example, if <cQueue> does not exist), the function
+     returns an empty date.
+
+ ^bDescription^b
+
+     NOVELL NET JOB ENTRY DATE
+     The Queue Management System (QMS) provides each new job with a date and
+     time stamp.  With NNETJEDATE(), you can determine the entry date of
+     <nJob> in <cQueue>.  The required job is specified by its job number.
+     The job number has nothing to do with the logical position of a job
+     within a queue.  The job number can be determined with NNETCAPJOB() or
+     NNETJLIST().
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine the entry date of the first job in the queue LINEPRINTER:
+
+     nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+     ? NNETJEDATE('LINEPRINTER',nJob)
+!seealso: "NNETCAPJOB()" "NNETJETIME()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJETIME() Determines the entry time of a job
+'------------------------------------------------------------------------------
+ ^bNNETJETIME()^b
+ Determines the entry time of a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJETIME(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> cTime
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJETIME() returns the time when <nJob> was placed in <cQueue> as a
+     string in the form ("HH:MM:SS").  If an error occurs (for example, if
+     <cQueue> does not exist), the function returns an empty string ("  :  :
+     ").
+
+ ^bDescription^b
+
+     NOVELL NET JOB ENTRY TIME
+     The Queue Management System (QMS) provides each new job with a date and
+     time stamp.  With NNETJETIME(), you can determine the entry time of
+     <nJob> in <cQueue>.  The required job is specified by its job number.
+     The job number has nothing to do with the logical position of a job
+     within a queue.  The job number can be determined with NNETCAPJOB() or
+     NNETJLIST().
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine the entry time of the first job in the queue LINEPRINTER:
+
+     nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+     ? NNETJETIME('LINEPRINTER',nJob)
+!seealso: "NNETCAPJOB()" "NNETJEDATE()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJFILE()  Determines the name of a job file
+'------------------------------------------------------------------------------
+ ^bNNETJFILE()^b
+ Determines the name of a job file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJFILE(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> cFile
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJFILE() returns the name of the job file of the job <nJob> in
+     <cQueue>.  If an error occurs (for example, if <cQueue> does not exist),
+     the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET JOB FILE
+     Netware stores the contents of a job in a separate file.  The queue
+     itself only contains references to these files.  With NNETJFILE(), you
+     can determine the size of the job files.  The required job is specified
+     by its job number.   The job number has nothing to do with the logical
+     position of a job within a queue.  The job number can be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+     NNETJFILE() only returns file names and file identification.  The file
+     name is assigned to a job by the Queue Management System (QMS) when the
+     job is created and cannot be modified.  The job file directory can be
+     determined with NNETQDIR().
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine the job file name of the second job in the queue LINEPRINTER:
+
+     nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),3,2))
+     ? 'File name:', NNETJFILE('LINEPRINTER',nJob)
+!seealso: "NNETCAPJOB()" "NNETJLIST()" "NNETJSIZE()" "NNETQDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJFLAGS() Reads and sets the job control flag
+'------------------------------------------------------------------------------
+ ^bNNETJFLAGS()^b
+ Reads and sets the job control flag
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJFLAGS(<cQueue>,<nJob>,[<nNewFlags>],[<cServer>|
+     ^b   <nConId>]) --> nFlags
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<nNewFlags>^b  Designates an optional parameter that contains a bit-
+     coded value to change the control flags of <nJob> in <cQueue>.  The
+     definition of the bits can be seen in table below.  To set multiple
+     bits, the decimal values of the attributes must be added.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJFLAGS() returns a numeric value that contains the job flags.  The
+     flags correspond to a bit position within this value.
+
+     ^bTable 25.1:  Coding of Job Control Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Value     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     4       8         Service autostart flag
+     5       16        Service restart flag.  When this flag is set, a job
+                       that is canceled by a job server remains in the queue.
+                       Otherwise, the job is deleted from the queue.
+     6       32        Entry open flag.  This bit indicates that a job has not
+                       been released by a user and therefore is not ready for
+                       servicing.
+     7       64        User hold flag.  The job remains in the queue without
+                       being serviced until the user or the queue operator
+                       clears this flag.
+     8       128       Operator hold flag.  The job remains in the queue
+                       without being serviced until a queue operator clears
+                       this flag.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs (for example, if <cQueue> does not exist), the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET JOB FLAGS
+     Job control flags can provide important information about <nJob>.  The
+     required job is specified by its job number.  The job number has nothing
+     to do with the logical position of a job within a queue.  The job number
+     can be determined with NNETCAPJOB() or NNETJLIST().
+
+     With NNETJFLAGS() you can determine if a job is ready for processing or
+     if the user has not yet closed the job (entry open flag).  You can see
+     if a job is in waiting state (user or operator hold flag).  By passing
+     <nNewFlags>, one or more flags can be set or deleted.  For example, a
+     job can be set into a waiting state with the user hold flag.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The reading of the job control flags requires that the
+        requesting user has access to <cQueue> as a user or a queue operator.
+
+     ^b^CFE^b  Netware does not prevent a user who has created a job from
+        changing the operator hold flag.  Therefore, it does not make sense
+        to differentiate between a user and an operator hold flag when using
+        NNETJFLAGS().  A difference between these two flags can arise in an
+        application specific interpretation, like the one that is implemented
+        in the Novell utility PCONSOLE.
+
+     ^b^CFE^b  A job that is already in progress cannot be modified.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check to see if job 1 in the queue LINEPRINTER has already
+        been closed by the user::
+
+        nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+        IF ISBIT(NNETJFLAGS('LINEPRINTER',nJob),6)
+        ? 'Job closed!'
+        ELSE
+        ? 'Job not ready!'
+        ENDIF
+
+     ^b^CFE^b  Start the capture mode for LPT1, send output in the queue
+        LINEPRINTER, and set the user hold flag:
+
+        NNETCAPSSF(1)
+        NNETCAPBEG(1)
+        NNETSETQ(1,'LINEPRINTER')
+        SET PRINTER ON
+        ? 'Hello'
+        nJob=NNETCAPJOB(1)
+        nOldFlags=NNETJFLAGS('LINEPRINTER',nJob)
+        nNewFlags=NUMAND(nOldFlags,64)
+        NNETJFLAGS('LINEPRINTER',nJob,nNewFlags)
+        NNETCAPFLU(1)
+
+     ^b^CFE^b  The new job is always created at the first output (? "Hello"),
+        not by calling NNETCAPBEG().  Therefore, NNETJFLAGS() must be called
+        after the first output.  If NNETJFLAGS() is not called after the
+        first output, NNETCAPJOB() returns the number of the previous capture
+        job and the job control flags are modified for the wrong job.
+!seealso: "NNETCAPJOB()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJFORM()  Sets or determines the form name for a job
+'------------------------------------------------------------------------------
+ ^bNNETJFORM()^b
+ Sets or determines the form name for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJFORM(<cQueue>,<nJob>,[<cNewName>],[<cServer>|
+     ^b   <nConId>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNewName>^b  Designates an optional parameter that contains a new
+     form name that is set for <nJob>.  The form name can be up to 15
+     characters long.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJFORM() returns the name of the form required for <nJob>.
+
+ ^bDescription^b
+
+     NOVELL NET JOB FORM
+     Before a job is serviced, the print server checks to see if the form
+     mounted in the printer matches the form specified in <nJob>.  If the
+     form in the printer differs from the specified form, the print server
+     waits for a form change.  NNETJFORM() allows you to set or determine the
+     form name for <nJob>.  To query the form name, do not pass a value for
+     <cNewName>.  A new form can be set with this parameter.  However, the
+     function does not check to see if <cNewName> exists.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the form name for the first job in the queue
+        LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJFORM('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the form name for the first job in the queue LINEPRINTER
+        to INVOICE:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJFORM('LINEPRINTER', nJob, 'INVOICE')
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJLIST()  Determines a list of job numbers in a queue
+'------------------------------------------------------------------------------
+ ^bNNETJLIST()^b
+ Determines a list of job numbers in a queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJLIST(<cQueue>,[<cServer>|<nConId>]) --> cJobNum
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJLIST() returns a string in form of a byte sequence that contains
+     the job numbers of the jobs in <cQueue>.  Two bytes correspond to one
+     job number.  If an error occurs (for example, if <cQueue> does not
+     exist), the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET JOB LIST
+     Netware internally uses job numbers in form of 16-bit integers for the
+     administration of jobs within a queue.  The job number has nothing to do
+     with the logical position of a job within a queue; for example, the
+     first job in a queue is not automatically job number 1.  The job number
+     is assigned to a job by the Queue Management System (QMS) when the job
+     is placed in the queue.  Job numbers are used only to identify a job
+     unambiguously.
+
+     You must know the job number to work with the functions (NNETJXXX()).
+     NNETJLIST() returns the job numbers in a queue as a string where two
+     bytes contain one job number. With the functions SUBSTR() and BIN2I(),
+     you can extract each job number (see the example).  The sequence of the
+     job numbers in the string corresponds to the logical job sequence.  The
+     first two bytes represent the job with the highest priority in the
+     queue.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine and output the job numbers for the queue LINEPRINTER:
+
+     cJobs=NNETJLIST('LINEPRINTER')
+     FOR i= 0 TO LEN(cJobs)/2-1
+     ? BIN2I(SUBSTR(cJobs,2*i+1,2))
+     NEXT i
+!seealso: "NNETCAPJOB()" "NNETJCNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJLPP()   Sets or determines the number of lines per page for a job
+'------------------------------------------------------------------------------
+ ^bNNETJLPP()^b
+ Sets or determines the number of lines per page for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJLPP(<cQueue>,<nJob>,[<nNewLines>],[<cServer>|
+     ^b   <nConId>]) --> nLines
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNewLines>^b  Designates the new number of lines per page that are
+     set for <nJob>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJLPP() returns the number of lines per page for <nJob>.  If an error
+     occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET LINES PER PAGE
+     With NNETJLPP(), you can set or determine the number of lines per page
+     for <nJob>.  To query the number of lines, do not pass a value for
+     <nNewChar>.  A new number of characters can be set by passing the
+     selected number.  The number of lines is simply informative; this
+     information is not evaluated by Netware.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of lines per page for the first job in
+        the queue LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJLPP('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the number of lines to 62 per page for the first job in
+        the queue LINEPRINTER:
+
+        nJob = BIN2I(LEFT(NNETJLIST('LINEPRINTER'), 2))
+        ? NNETJLPP('LINEPRINTER', nJob, 62)
+!seealso: "NNETJCPL()" "NNETJTXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJOWNER() Determines the login name of a job owner
+'------------------------------------------------------------------------------
+ ^bNNETJOWNER()^b
+ Determines the login name of a job owner
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJOWNER(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> cUser
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJOWNER() returns the login name of the user who has placed <nJob> in
+     <cQueue>.  If an error occurs (for example, if <cQueue> does not exist),
+     the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET JOB OWNER
+     Internally, the Queue Management System (QMS) saves the login name (the
+     object ID) of the user who has created the job.  NNETJOWNER() allows you
+     to query this information.  The required job is specified by its job
+     number.  The job number has nothing to do with the logical position of a
+     job within a queue; for example, the job with the highest priority in a
+     queue is not automatically job number 1.  The job number must be
+     determined with NNETCAPJOB() or NNETJLIST().
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine the creator of the third job in the queue LINEPRINTER:
+
+     nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+     ? NNETJOWNER('LINEPRINTER',nJob)
+!seealso: "NNETCAPJOB()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJPOINT() Determines if a job is serviced at an interrupt
+'------------------------------------------------------------------------------
+ ^bNNETJPOINT()^b
+ Determines if a job is serviced at an interrupt
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJPOINT(<cQueue>,<nJob>,[<lNewMode>],[<cServer>|
+     ^b   <nConId>]) --> lMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<lNewMode>^b  Designates an optional parameter that specifies if
+     <nJob> is serviced by a print server when the job file has not been
+     closed correctly.  If the parameter is designated .T., the QMS submits
+     <nJob> to a print server.  If the parameter is set to .F., QMS discards
+     the <nJob> when the job file has not been closed correctly.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     The return value of NNETJPOINT() indicates whether a job is printed
+     (.T.) or discarded (.F.) when the job file has not been closed
+     correctly.
+
+ ^bDescription^b
+
+     NOVELL NET JOB PRINT ON INTERRUPT
+     NNETJPOINT() allows you to determine whether or not a job is printed
+     when the job file has not been closed correctly.  To query the current
+     setting for <nJob>, do not pass a value for <lNewMode>.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine if the first job in the queue LINEPRINTER is printed
+        when the job file has not been closed correctly:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJPOINT('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Determine that the first job in the queue LINEPRINTER is
+        printed when the job file has not been closed correctly:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJPOINT('LINEPRINTER', nJob, .T.)
+!seealso: "NNETJFLAGS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJPOS()   Determines or changes the position of a job in a queue
+'------------------------------------------------------------------------------
+ ^bNNETJPOS()^b
+ Determines or changes the position of a job in a queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJPOS(<cQueue>,<nJob>,[<nNewPos>],[<cServer>|
+     ^b   <nConId>]) --> nPos
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<nNewPos>^b  Designates an optional parameter that contains the new
+     position of <nJob> in the logical sequence of <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJPOS() returns the new position of <nJob> in the logical sequence of
+     <cQueue>.  If an error occurs (for example, if  <cQueue> does not
+     exist), the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET JOB POSITION
+     Within a queue, the jobs are organized as a waiting line.  Generally,
+     the jobs are put into a queue in the sequence of their creation.  With
+     NNETJPOS(), you can determine the position of a job within a queue.  The
+     job with position 1 is serviced first.  The required job is specified by
+     its job number.  The job number has nothing to do with the logical
+     position of a job within a queue; for example, the job with the highest
+     priority in a queue is not automatically job number 1.  The job number
+     must be determined with NNETCAPJOB() or NNETJLIST().
+
+     NNETJPOS() allows a queue operator to change the position of <nJob> in
+     <cQueue> by passing the parameter <nNewPos>.
+
+ ^bNote^b
+
+     ^b^CFE^b  To determine a job position, the requesting user must have
+        access to the queue as a user or a queue operator.  The modification
+        of a job position is reserved for queue operators.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the position of the last created capture job via
+        LPT1 in the queue LINEPRINTER:
+
+        ? NNETJPOS('LINEPRINTER',NNETCAPJOB(1))
+
+     ^b^CFE^b  Change the priority of the job:
+
+        IF NNETJPOS('LINEPRINTER',NNETCAPJOB(1),1)<>1
+        ? 'No queue operator rights!'
+        ENDIF
+!seealso: "NNETCAPJOB()" "NNETJLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJSDATE() Queries and sets a job start date
+'------------------------------------------------------------------------------
+ ^bNNETJSDATE()^b
+ Queries and sets a job start date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJSDATE(<cQueue>,<nJob>,[<dNew>],[<cServer>|
+     ^b   <nConId>]) --> dDate
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<dNew>^b  Designates a new job start date that is set for <nJob>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJSDATE() returns the earliest date for <nJob> in <cQueue>.  The
+     function returns an empty date if the job start date has not been set or
+     if an error occurs (for example, if <cQueue> does not exist).
+
+ ^bDescription^b
+
+     NOVELL NET JOB START DATE
+     The Queue Management System (QMS) allows you to provide each job with a
+     retention period.  A job is not serviced before that date (job start
+     date).  With NNETJSDATE(), you can query or set the job start date of
+     <nJob> in <cQueue>.  The required job is specified by its job number.
+     The job number has nothing to do with the logical position of a job
+     within a queue; for example, the job with the highest priority in a
+     queue is not automatically job number 1.  The job number must be
+     determined with NNETCAPJOB() or NNETJLIST().
+
+     NNETJSDATE() returns the job start date.  An empty date indicates that
+     no date has been set.  In this case, the job is serviced as soon as a
+     print server is available.  ( An empty date can also indicate an error.
+     A differentiation is possible with the NNETERROR() function.)
+
+     A new job start date can be set by passing a date with the <dNew>
+     parameter.  If <dNew> contains an empty date, a previously set job start
+     date is removed.  If you reset a job start date, the job start time is
+     removed automatically.
+
+     To avoid an incorrect interpretation by the QMS of a time that has not
+     been initialized, always set a job start time with the job start date.
+
+ ^bNotes^b
+
+     ^b^CFE^b  To determine a job start date, the requesting user must have
+        access to the queue as a user or an operator.  The modification of a
+        job start date is reserved for the user who created the job or for
+        queue operators.
+
+     ^b^CFE^b  A job that is already in progress cannot be modified.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the job start date for the first job in the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+        ? NNETJSDATE('LINEPRINTER',nJob)
+
+     ^b^CFE^b  Create the capture job, set the job start date for the
+        following day, and set the job start time for 10 PM:
+
+        NNETCAPSSF(1)
+        NNETCAPBEG(1)
+        NNETSETQ(1,'LINEPRINTER')
+        SET PRINTER ON
+        ? 'Hello'
+        nJob=NNETCAPJOB(1)
+        NNETJSDATE('LINEPRINTER',nJob,DATE()+1)
+        NNETJSTIME('LINEPRINTER',nJob,'22:00:00')
+        NNETCAPFLU(1)
+
+     ^b^CFE^b  The new job is always created at the first output (? "Hello"),
+        not by calling NNETCAPBEG()  Therefore, NNETJSDATE() must be called
+        after the first output.  If NNETJSDATE() is not called after the
+        first output, NNETCAPJOB() returns the number the previous capture
+        job and the job start date is modified for the wrong job.
+
+     ^b^CFE^b  Remove the retention period for the first job in the queue
+        LINEPRINTER (date and time):
+
+        nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+        ? NNETJSDATE('LINEPRINTER',nJob,CTOD(''))
+!seealso: "NNETCAPJOB()" "NNETJLIST()" tool_014.ngo:"NNETSTIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJSIZE()  Determines the size of a job file
+'------------------------------------------------------------------------------
+ ^bNNETJSIZE()^b
+ Determines the size of a job file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJSIZE(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJSIZE() returns the size of the job file assigned to <nJob> in
+     bytes.  If an error occurs (for example, if <cQueue> does not exist),
+     the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET JOB SIZE
+     Netware stores the contents of a job in a separate file.  The queue
+     itself only contains references to these files.  With NNETJSIZE(), you
+     can determine the size of the job files.  If the job is not completed at
+     the function call, NNETJSIZE() returns the temporary size.  The required
+     job is specified by its job number.   The job number has nothing to do
+     with the logical position of a job within a queue.  The job number can
+     be determined with NNETCAPJOB() or NNETJLIST().
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Determine the size of the first job in the queue LINEPRINTER:
+
+     nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+     ? 'Size:', NNETJSIZE('LINEPRINTER',nJob)
+!seealso: "NNETJFILE()" "NNETJLIST()" "NNETQDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJSRV()   Sets or determines the target or the processing print server
+'------------------------------------------------------------------------------
+ ^bNNETJSRV()^b
+ Sets or determines the target or the processing print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJSRV(<cQueue>,<nJob>,[<cNewPServer>],[<cServer>|
+     ^b   <nConId>]) --> cPServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNewPServer>^b  Designates an optional parameter that contains a new
+     target print server that is set for <nJob>.  If <nJob> is already in
+     service on another print server, this parameter is meaningless.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     If <nJob> is not yet in service, NNETJSRV() returns the name of the new
+     target print server.  If an error occurs or if no specific printer is
+     set, the function returns an empty string.  With NNETERROR(), you can
+     determine if an error occurred.
+
+     If <nJob> is already in service, NNETJSRV() returns the name of the
+     processing print server.
+
+ ^bDescription^b
+
+     NOVELL NET JOB SERVER
+     The Queue Management System (QMS) allows you to set a target server for
+     each print job.  If more than one print server has access to <cQueue>,
+     you can define a specific print server for <nJob>.  To allow any print
+     server to process <nJob>, an empty string must be passed for
+     <cNewPServer>.  You can query the current target print server by calling
+     NNETJSRV() without a value for <cNewPServer>.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the target or the processing server for the first job in
+        the queue LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJSRV('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Set the target server for the first job in the queue
+        LINEPRINTER to PSERVER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJPOINT('LINEPRINTER', nJob, 'PSERVER')
+
+     ^b^CFE^b  Reset the target server for the first job in the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJSRV('LINEPRINTER', '')
+
+     ^b^CFE^b  Wait until the first job in the queue LINEPRINTER is serviced,
+        and then display the name of the processing server:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        DO WHILE .NOT. NNETJWORK('LINEPRINTER', nJob)
+        ENDDO
+        ? NNETJSRV('LINEPRINTER', nJob)
+!seealso: "NNETJWORK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJSTIME() Queries or sets the job start time
+'------------------------------------------------------------------------------
+ ^bNNETJSTIME()^b
+ Queries or sets the job start time
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJSTIME(<cQueue>,<nJob>,[<cNew>],[<cServer>|
+     ^b   <nConId>]) --> cTime
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cNew>^b  Designates a new job start time for <nJob>.  The time must
+     be passed as a string in the form ("HH:MM:SS").
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJSTIME() returns the earliest time for <nJob> in <cQueue> as a
+     string in the form ("HH:MM:SS").  The function returns an empty string
+     ("  :  :  ") if the job start time has not been set or if an error
+     occurs (for example, if <cQueue> does not exist).
+
+ ^bDescription^b
+
+     NOVELL NET JOB START DATE
+     The Queue Management System (QMS) allows you to provide each job with a
+     retention period.  A job is not serviced before the specified time (job
+     start time).  With NNETJSTIME(), you can query or set the job start time
+     of <nJob> in <cQueue>.  The required job is specified by its job number.
+     The job number has nothing to do with the logical position of a job
+     within a queue; for example, the job with the highest priority in a
+     queue is not automatically job number 1.  The job number must be
+     determined with NNETCAPJOB() or NNETJLIST().
+
+     NNETJSTIME() returns the job start time.  An empty string indicates that
+     no time has been set.  In this case, the job is serviced as soon as a
+     print server is available.  ( An empty string can also indicate an
+     error.  A differentiation is possible with the NNETERROR() function.)
+
+     A new job start time can be set by passing a time with the <dNew>
+     parameter.  If <dNew> contains an empty time string ("  :  :  "), a
+     previously set job start date is removed.  If you reset a job start
+     time, the job start date is removed automatically.
+
+     To avoid an incorrect interpretation by the QMS of a date that has not
+     been initialized, always set a job start date with the job start time.
+
+ ^bNotes^b
+
+     ^b^CFE^b  To determine a job start time, the requesting user must have
+        access to the queue as a user or an operator.  The modification of a
+        job start time is reserved for the user who created the job or for
+        queue operators.
+
+     ^b^CFE^b  A job that is already in progress cannot be modified.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the job start time for the first job in the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+        ? NNETJSTIME('LINEPRINTER',nJob)
+
+     ^b^CFE^b  Create the capture job, set the job start date for the
+        following day, and set the job start time for 10 PM:
+
+        NNETCAPSSF(1)
+        NNETCAPBEG(1)
+        NNETSETQ(1,'LINEPRINTER')
+        SET PRINTER ON
+        ? 'Hello'
+        nJob=NNETCAPJOB(1)
+        NNETJSDATE('LINEPRINTER',nJob,DATE()+1)
+        NNETJSTIME('LINEPRINTER',nJob,'22:00:00')
+        NNETCAPFLU(1)
+
+     ^b^CFE^b  The new job is always created at the first output (? "Hello"),
+        not by calling NNETCAPBEG().  Therefore, NNETJSTIME() must be called
+        after the first output.  If NNETJSTIME() is not called after the
+        first output, NNETCAPJOB() returns the number of the previous capture
+        job and the job start date is modified for the wrong job.
+
+     ^b^CFE^b  Remove the retention period for the first job in the queue
+        LINEPRINTER (date and time):
+
+        nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+        ? NNETJSDATE('LINEPRINTER',nJob,('  :  :  '))
+!seealso: "NNETCAPJOB()" "NNETJLIST()" tool_014.ngo:"NNETSDATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJSUPFF() Checks to see if the form feed at end of a job is suppressed
+'------------------------------------------------------------------------------
+ ^bNNETJSUPFF()^b
+ Checks to see if the form feed at the end of a job is suppressed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJSUPFF(<cQueue>,<nJob>,[<lNewMode>],[<cServer>|
+     ^b   <nConId>]) --> lMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<lNewMode>^b  Designates an optional parameter.  The value .T. causes
+     the print server to ignore form feeds (CHR(12)) in <nJob>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     The return value of NNETJSUPFF() indicates if a form feed at the end of
+     <nJob> is suppressed (.T.) or not (.F.).
+
+ ^bDescription^b
+
+     NOVELL NET JOB SUPPRESS FORM FEEDS
+     Netware automatically creates a form feed at the end of each print job.
+     With NNETJSUPFF(), a form feed can be suppressed by designating
+     <lNewMode> with .T..  To query the current setting, do not pass a value
+     for <lNewMode>.
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check to see if a form feed is created for the first job in
+        the queue LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJSUPFF('LINEPRINTER', nJob)
+
+     ^b^CFE^b  Suppress the form feed for the first job in the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        ? NNETJSUPFF('LINEPRINTER', nJob, .T.)
+!seealso: "NNETJBAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJTABS()  Sets or determines the tab setting for a job
+'------------------------------------------------------------------------------
+ ^bNNETJTABS()^b
+ Sets or determines the tab setting for a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJTABS(<cQueue>,<nJob>,<nNewTabs>,[<cServer>|
+     ^b   <nConId>]) --> nTabs
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<nNewTabs>^b  Designates an optional parameter that contains the
+     number of spaces to which the tabs are expanded.  The value 0 indicates
+     that the tabs are not expanded.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJTABS() returns the number of spaces to which the tabs (CHR(9)) are
+     expanded.  The value 0 indicates that the tabs have not been expanded.
+     If an error occurs, the function returns -1.
+
+     The return value makes only sense if <nJob> is a text job.
+
+ ^bDescription^b
+
+     The Queue Management System (QMS) differentiates between text and binary
+     jobs.  In text jobs, QMS is able to replace tabs (CHR(9)) with spaces.
+     The number of spaces per tab can be queried or set with NNETJTABS().
+
+     The required job is specified by its job number.  The job number has
+     nothing to do with the logical position of a job within a queue; for
+     example, the job with the highest priority in a queue is not
+     automatically job number 1.  The job number must be determined with
+     NNETCAPJOB() or NNETJLIST().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of spaces per tab created for the first
+        job in the queue LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        IF NNETJTXT('LINEPRINTER', nJob)
+        ? NNETJTABS('LINEPRINTER', nJob)
+        ELSE
+        ? 'No text job'
+        ENDIF
+
+     ^b^CFE^b  Create five spaces per tab in the first job of the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),5,2))
+        IF NNETJTXT('LINEPRINTER', nJob)
+        ? NNETJTABS('LINEPRINTER', nJob, 5)
+        ELSE
+        ? 'No text job'
+        ENDIF
+!seealso: "NNETJTXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJTXT()   Determines how the contents of a job file are interpreted
+'------------------------------------------------------------------------------
+ ^bNNETJTXT()^b
+ Determines if the contents of a job file are interpreted as text or a binary
+ byte sequence
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJTXT(<cQueue>,<nJob>,[<lNewMode>],[<cServer>|
+     ^b   <nConId>]) --> lMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<lNewMode>^b  Designates an optional parameter that indicates if
+     <nJob> contains text (.T.) or binary data (.F.).
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJTXT() returns .T. if <nJob> is a text job.  The value .F. indicates
+     a binary job or an error.  By calling the function NNETERROR(), you can
+     determine if the return value .F. is the result of an error.
+
+ ^bDescription^b
+
+     NOVELL NET JOB TEXT
+     The Queue Management System (QMS) differentiates between text and binary
+     jobs.  NNETJTXT() allows you to query or set the mode for <nJob>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the mode for the second job in the queue
+        LINEPRINTER:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),3,2))
+        IF NNETJTXT('LINEPRINTER', nJob)
+        ? 'Text job'
+        ELSE
+        ? 'Binary job'
+        ENDIF
+
+     ^b^CFE^b  Define the second job of the queue LINEPRINTER as a text job:
+
+        nJob=BIN2I(SUBSTR(NNETJLIST('LINEPRINTER'),3,2))
+        NNETJTXT('LINEPRINTER', nJob, .T.)
+!seealso: "NNETJTABS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETJWORK()  Checks to see if a job is currently in service on print server
+'------------------------------------------------------------------------------
+ ^bNNETJWORK()^b
+ Checks to see if a job is currently in service on a print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETJWORK(<cQueue>,<nJob>,[<cServer>|<nConId>])
+     ^b   --> lProcess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<nJob>^b  Designates the job number of the job that is processed in
+     <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETJWORK() returns .T. if <nJob> is currently in service.  If a job is
+     not yet in service or if an error occurs, the function returns .F..
+     With NNETERROR() you can determine if the return value .F. results from
+     an error.
+
+ ^bDescription^b
+
+     NOVELL NET JOB WORK
+     NNETJWORK() allows you to determine whether or not a job is in service.
+     If a job is already in service, its attributes cannot be modified.
+
+ ^bExample^b
+
+     Check to see if the first job in the queue LINEPRINTER is already in
+     service:
+
+     nJob=BIN2I(LEFT(NNETJLIST('LINEPRINTER'),2))
+     IF NNETJWORK('LINEPRINTER', nJob)
+     ? 'Job in service'
+     ENDIF
+!seealso: "NNETJSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETNQSRVS() Determines number of print servers that service a print queue
+'------------------------------------------------------------------------------
+ ^bNNETNQSRVS()^b
+ Determines the number of print servers that service a print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETNQSRVS(<cQueue>,[<lAll>],[<cServer>|<nConId>])
+     ^b   --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is accessed.
+
+     ^b<lAll>^b  Designates whether all print servers that have access to
+     <cQueue> (.T.) or only the print servers that are currently logged in at
+     <cQueue> (.F.) are counted.  The default value is .F..
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETNQSRVS() returns the number of print servers currently logged in at
+     <cQueue> (<lAll> = .F.) or the number of print servers that have access
+     to <cQueue> (<lAll> = .T.).  If an error occurs (for example, if the
+     <cQueue> does not exist), the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET NUMBER OF QUEUE SERVERS
+     NNETNQSRVS() allows you to determine if any print server has access to a
+     specified queue, if a print server is currently logged in at a queue, or
+     if the queue is "dead".
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Set the queue LINEPRINT to LPT1 for the capture mode if it is serviced
+     by at least one print server:
+
+     IF NNETNQSRVS('LINEPRINT')>0
+     NNETSETQ(1,'LINEPRINT')
+     ELSE
+     ? 'Queue is currently not serviced !'
+     ENDIF
+!seealso: "NNETQSRVS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETQDIR()   Determines the queue directory
+'------------------------------------------------------------------------------
+ ^bNNETQDIR()^b
+ Determines the queue directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETQDIR(<cQueue>,[<cServer>|<nConId>]) --> cDir
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the queue for which the directory is
+     determined.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETQDIR() returns the directory of the job files of <cQueue>. If an
+     error occurs, the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET QUEUE DIRECTORY
+     Netware stores the contents of a job in a separate file.  The queue only
+     contains references to these files.  NNETQDIR() allows you to determine
+     the directory of the job files.  By default, the job directory is a
+     subdirectory of SYS:SYSTEM.  The name of the subdirectory consists of
+     the queue ID and the extension .QDR.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETQDIR() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExample^b
+
+     Display the directory for the print queue QUEUE1:
+
+     ? NNETQDIR('QUEUE1')
+!seealso: "NNETJFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETQOPS()   Determines the list of queue operators
+'------------------------------------------------------------------------------
+ ^bNNETQOPS()^b
+ Determines the list of queue operators
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETQOPS(<cQueue>,[<cServer>|<nConId>]) --> aQOps
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the print queue.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETQOPS() returns a one-dimensional array that contains the names of
+     the operators of <cQueue>.
+
+ ^bDescription^b
+
+     NOVELL NET QUEUE OPERATORS
+     NNETQOPS() allows you to determine the operators of <cQueue>.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETQOPS() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExample^b
+
+     Determine and display the operators for the print queue QUEUE1:
+
+     aOps=NNETQOPS('QUEUE1')
+     FOR i=1 TO LEN(aOps)
+        ? aOps[i]
+     NEXT i
+!seealso: "NNETQUSERS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETQSRVS()  Determines the list of print servers that service a print queue
+'------------------------------------------------------------------------------
+ ^bNNETQSRVS()^b
+ Determines the list of print servers that service a print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETQSRVS(<cQueue>,[<lAll>],[<cServer>|<nConId>])
+     ^b   --> aPrintServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue for which the print
+     servers are determined.
+
+     ^b<lAll>^b  Designates whether the names of all the print servers that
+     have access to <cQueue> (.T.) or only the names of the print servers
+     that are currently logged in at <cQueue> (.F.) are determined.  The
+     default value is .F..
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETQSRVS() returns an array that contains the names of print servers
+     currently logged in at <cQueue> (<lAll> = .F.) or the number of print
+     servers that have access to <cQueue> (<lAll> = .T.).  If an error occurs
+     (for example, if <cQueue> does not exist), the function returns an empty
+     array.
+
+ ^bDescription^b
+
+     NOVELL NET QUEUE SERVERS
+     NNETQSRVS() allows you to determine the names of print servers that are
+     currently logged in <cQueue> or have access to <cQueue>.  This
+     information can be used to access one or more print servers with the
+     print server functions of CA-Clipper Tools.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExample^b
+
+     Display a list of print servers that have access to the queue LINEPRINT
+     and a list of print servers currently logged in at the queue LINEPRINT:
+
+     aPServer=NNETQSRVS('LINEPRINT',.T.)
+     ? 'Access to LINEPRINT have:'
+     FOR i = 1 TO LEN(aPServer)
+     ? aPServer[i]
+     NEXT i
+
+     aPServer=NNETQSRVS('LINEPRINT')
+     ? 'Currently logged in are:'
+     FOR i = 1 TO LEN(aPServer)
+     ? aPServer[i]
+     NEXT i
+!seealso: "NNETNQSRVS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETQSTAT()  Sets or reads a print queue status
+'------------------------------------------------------------------------------
+ ^bNNETQSTAT()^b
+ Sets or reads a print queue status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETQSTAT(<cQueue>,[<nStatus>],[<cServer>|<nConId>])
+     ^b   --> nStatus
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the name of the print queue that is processed.
+
+     ^b<nStatus>^b  Designates an optional parameter that sets the queue
+     status.  <nStatus> must be passed as a bit-coded value according to
+     table 25.3.  To change more attributes, the decimal values of the
+     required definitions must be added.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cQueue>
+     is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETQSTAT() returns a bit-coded value which describes the queue status.
+     The following table contains the definitions of the bits:
+
+     ^bTable 25.3:  Queue Status Coding ^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Value     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     2       2         No new jobs can be added to queue.
+     3       4         Currently, no further print servers can be logged in
+                       at queue currently.
+     5       16        No jobs are being serviced in queue currently
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs (for example, if <cQueue> does not exist), the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET QUEUE STATUS
+     NNETQSTAT() allows you not only to query, but also to set a new queue
+     status.  For example, this can be used to stop the print output for a
+     queue temporarily.  To change the queue status, the requesting user must
+     have access to the queue as an operator.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the requesting user have access to
+        the queue as a user or an operator.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check to see if jobs can be added to the queue LINEPRINTER:
+
+        IF ISBIT(NNETQSTAT('LINEPRINTER'),2)
+        ? 'No new jobs can be added!'
+        ELSE
+        ? 'New jobs can be added!'
+        ENDIF
+
+     ^b^CFE^b  Prevent the servicing of jobs in the queue LINEPRINTER:
+
+        NNETQSTAT('LINEPRINTER',16)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETQUSERS() Determines the list of queue users
+'------------------------------------------------------------------------------
+ ^bNNETQUSERS()^b
+ Determines the list of queue users
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETQUSERS(<cQueue>,[<cServer>|<nConId>])
+     ^b   --> aQBenutzer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates the print queue.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETQUSERS() returns a one-dimensional array that contains the names of
+     the users of <cQueue>.
+
+ ^bDescription^b
+
+     NOVELL NET QUEUE USERS
+     NNETQUSERS() allows you to determine the users of <cQueue>.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETQUSERS() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExample^b
+
+     Determine and display the users for the print queue QUEUE1:
+
+     aUser=NNETQUSERS('QUEUE1')
+
+     FOR i=1 TO LEN(aUser)
+        ? aUser[i]
+     NEXT i
+!seealso: "NNETQOPS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETREMQOP() Removes a queue operator
+'------------------------------------------------------------------------------
+ ^bNNETREMQOP()^b
+ Removes a queue operator
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETREMQOP(<cQueue>,<cOperator>|<aOperators>,
+     ^b   [<cServer>|   <nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates a print queue on the default server or on
+     <cServer>|<nConId>.
+
+     ^b<cOperator>^b  Designates the name of a user that is removed from the
+     operator list of <cQueue>.
+
+     ^b<aOperators>^b  Designates a number of elements of the type string.
+     Each element designates the name of a user that is removed from the
+     operator list of <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETREMQOP() returns the number of operators that are successfully
+     removed from the operator list of <cQueue>.  The value 0 indicates that
+     no operator has been deleted.
+
+ ^bDescription^b
+
+     NOVELL NET REMOVE QUEUE OPERATOR
+     NNETREMQOP() allows you to remove one or more users from the operator
+     list of a print queue.  To remove one operator, the user name must be
+     passed in <cOperator>.  By passing an array containing the user names as
+     elements (<aOperators>), more operators can be deleted.  With the
+     parameters <cServer> or <nConId>, the operator list of any attached
+     server can be modified.  The connection ID of a server can be determined
+     with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights of the requesting user on the related file server are
+     required to remove users from an operator list.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETREMQOP() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove user MICK from the operator list of the queue
+        LINEPRINTER:
+
+        IF NNETREMQOP('LINEPRINTER','MICK')>0
+              ? 'Operator removed successfully!'
+        ELSE
+              ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Remove JIM, PETER, and MIKE from the operator list of the
+        queue LINEPRINTER:
+
+        NNETREMQOP('LINEPRINTER',{'JIM','PETER','MIKE'})
+!seealso: "NNETADDQOP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETREMQSV() Removes a queue server
+'------------------------------------------------------------------------------
+ ^bNNETREMQSV()^b
+ Removes a queue server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETREMQSV(<cQueue>,<cPServer>|<aPServer>,[<cServer>|
+     ^b   <nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates a print queue on the default server or on
+     <cServer>|<nConId>.
+
+     ^b<cPServer>^b  Designates the name of a print server that is removed
+     from the server list of <cQueue>.
+
+     ^b<aPServer>^b  Designates a number of elements of the type strings.
+     Each element designates the name of a print server that is removed from
+     the server list of <cQueue>.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETREMQSV() returns the number of print servers that have been removed
+     successfully from the server list of <cQueue>.  The value 0 indicates
+     that no print server has been deleted.
+
+ ^bDescription^b
+
+     NOVELL NET REMOVE QUEUE SERVER
+     NNETREMQSV() allows you to remove one or more print servers from the
+     server list of a print queue.  To remove one print server, the server
+     name must be passed in <cPServer>.  By passing an array containing the
+     server names as elements (<aPServer>), more print servers can be
+     deleted.  With the parameters <cServer> or <nConId>, the server list of
+     any attached server can be modified.  The connection ID of a server can
+     be determined with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights of the requesting user on the related file server are
+     required to remove print servers from a server list.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETREMQSV() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove the print server PSERVER from the server list of the
+        queue LINEPRINTER:
+
+        IF NNETREMQSV('LINEPRINTER','PSERVER')>0
+           ? 'Print server removed successfully!'
+        ELSE
+           ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Remove the print servers PSERVERTOOLS1 and PSERVERDEV1 from
+        the server list of the queue LINEPRINTER:
+
+        NNETREMQOP('LINEPRINTER',{'PSERVERTOOLS1','PSERVERDEV1'})
+!seealso: "NNETADDQSV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETREMQUS() Removes a queue user
+'------------------------------------------------------------------------------
+ ^bNNETREMQUS()^b
+ Removes a queue user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETREMQUS(<cQueue>,<cUser>|<aUser>,[<cServer>|
+     ^b   <nConId>])    --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cQueue>^b  Designates a print queue on the default server or on
+     <cServer>|<nConId>.
+
+     ^b<cUser>^b  Designates the login name of a user that is removed from
+     the user list of <cQueue>.
+
+     ^b<aUser>^b  Designates a number of elements of the type string.  Each
+     element designates the name of a user that is removed from the user list
+     of <cQueue>.
+
+     ^b<cServer>^b Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETREMQUS() returns the number of users that have been removed
+     successfully from the user list of <cQueue>.  The value 0 indicates that
+     no user has been deleted.
+
+ ^bDescription^b
+
+     NOVELL NET REMOVE QUEUE USER
+     NNETREMQUS() allows you to remove one or more users from the user list
+     of a print queue.  To remove one user, the user name must be passed in
+     <cUser>.  By passing an array containing the user names as elements
+     (<aUser>), more users can be deleted.  With the parameters <cServer> or
+     <nConId>, the user list of any attached server can be modified.  The
+     connection ID of a server can be determined with NNETATTACH() or
+     NNETLOGIN().
+
+     Supervisor rights of the requesting user on the related file server are
+     required to remove users from an user list.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETREMQUS() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove user MICK from the user list of the queue LINEPRINTER:
+
+        IF NNETREMQUS('LINEPRINTER','MICK')>0
+           ? 'User removed successfully!'
+        ELSE
+           ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Remove the users JIM, PETER, and MIKE from the user list of
+        the queue LINEPRINTER:
+
+        NNETREMQUS('LINEPRINTER',{'JIM','PETER','MIKE'})
+!seealso: "NNETADDQOP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSETQ()   Sets a print queue for the capture mode
+'------------------------------------------------------------------------------
+ ^bNNETSETQ()^b
+ Sets a print queue for the capture mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSETQ(<nPrinter>,<cPrintQueue>) --> lLoggedIn
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nPrinter>^b  Designates to which LPT device a new print queue is
+     redirected.  LPT1(1) to LPT3(3) are valid.
+
+     ^b<cPrintQueue>^b  Designates the name of the print queue on the default
+     server where the future print output is created.
+
+ ^bReturns^b
+
+     NNETSETQ() returns .T. when the designated print queue has been found
+     and redirected.
+
+ ^bDescription^b
+
+     NOVELL NET SET QUEUE
+     You can use NNETSETQ() to determine which print queue of the default
+     server generates the future print output.  If the queue is on another
+     server, then you must switch over using NNETSETSRV().  All other
+     settings required for printing can be done using the NNETCAPSSF()
+     function.
+
+ ^bNote^b
+
+     ^b^CFE^b  The currently logged in user must have rights to use the
+        designated queue.
+
+ ^bExample^b
+
+     Redirect the queue USER:
+
+     ? NNETSETQ("USER")         // .T., when successful
+!seealso: tool_004.ngo:"NNETSETSRV()" tool_005.ngo:"NNETCAPSSF()" 
+'------------------------------------------------------------------------------
+
+
+

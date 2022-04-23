@@ -1,0 +1,47 @@
+'------------------------------------------------------------------------------
+ What's New in the File Viewer Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADfview() - modified.  Added a 5th parameter, [cHelpHeader].
+
+ û ADfv_rbnoexit() - new.  Prevents exiting of the engine when the
+   right mouse button is clicked.
+
+ û ADfv_vermenu() - modified.  It now inherits the timeout properties of
+   its mother ADfview().  Also it now accepts 2 more parameters for
+   defining Help properties.
+
+ û ADfv_vmboxattr() - new.  Configures the box attributes of ADfv_vermenu().
+
+ û ADfv_vmcolor() - new.  Configures the colors of ADfv_vermenu().
+
+ ^rVersion 2.3
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û The 'Print' option now correctly ejects the last page.
+
+ ^rVersion 2.2
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADfv_timeout() - new.  Now you can define a timeout routine for ADfview().
+
+ û ADfv_linelength() - modified.  Now you can define big horizontal skips
+   if the width of the viewer is wider than the window.
+
+ û ADfv_printer() - new.  Specifies the LPT port where to send the print
+   output.
+
+ ^rVersion 2.1
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û (new) ADfv_footer() - Config API that changes the default footer
+
+ û (new) ADfv_memo() - Config API that tells ADfview() it is a memo field
+   that is to be viewed, instead of a text file.
+
+ û (modified) ADfv_prompt() - Config API that changes the F10 prompt.  In
+   Frankie 1, only the substring following "F10:" was user-changeable.  Now
+   the whole string is.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,1829 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADread()                The Read engine
+'------------------------------------------------------------------------------
+ ADread( <getlist>, [bConfig], [nInitGet], [lKill], [xHelpID],;
+    [xHelpHeader] ) --> <aReadRetval>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADread() is a replacement of the original Clipper Read command.  See also
+ NOTE 1 below and the Tutorial section of this NG.
+
+ <getlist> is the array of Get objects to read.  If this is not passed,
+ ADread() exits immediately with an exit code of RX_NOGETLIST (#defined in
+ Frankie.ch).
+
+ [bConfig] - is the optional Configuration Specifier.  It is a codeblock that
+ the engine EVALuates to configure itself.  It is typically a call to one or
+ a series of configuration functions.  See the examples below.
+
+ [nInitGet] is the numeric index position of the Get to initially focus.
+ Defaults to 1.  If the WHEN clause of [nInitGet] returns a FALSE, the
+ next-in-line Gets' WHENs are EVALuated one at a time until a TRUE is
+ returned, at which time the rest of the EVALuations are discontinued and
+ the focus set on the Get that returned a TRUE.  If no Get returned a TRUE,
+ then ADread() immediately exits with an exitcode of RX_ALLGETS_NOT_AVAIL-
+ ABLE, which is #defined in Frankie.ch.  If ADr_setscan() is set to FALSE,
+ and [nInitGet] returns a FALSE in its WHEN EVALuation, ADread() exits
+ immediately with an exit code of RX_INITGET_NOT_AVAILABLE.
+
+ [lKill] is a logical value.  If it is FALSE, the Read engine created by
+ ADread() is preserved alive, and may be reactivated using the API,
+ ADr_again().  Defaults to TRUE.
+
+ [xHelpID] an optional Help Identifier string or array of identifiers.  If
+ only one string is passed, it will be treated as the ID for all Gets.  If an
+ array is passed, each Get will have its own ID.
+
+ [xHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.  If it is
+ passed as a string, it will be used as title for the Help screens of all the
+ Gets.  If passed as an array, each element in the array must correspond to
+ each Get.
+
+ <aReadRetval> is the return value.  It is an array of the following
+ structure:
+
+   1 - the numeric identifier of the Read engine created by ADread().  This
+   value is nil if ADread() has not been configured to preserve the engine at
+   exit.  By default it is automatically killed.  The  engine identifier is
+   the gateway to reconfiguring the behavior of ADread().  See Config.rd for
+   a full discussion of how to change its behavior via the various APIs.
+
+   2 - is the numeric exit code.  It is equal to the inkey() code of the
+   exit key unless:
+
+     a. ADread was exited with the mouse right button, in which case its
+        value is RX_ABORT
+     b. ADread was exited because SET CONFIRM was FALSE, and the current Get
+        is the last Get, and it exited when the Get edit buffer was fully
+        filled.  The exit code is then RX_NOCONFIRM.
+     c. ADread was programatically aborted.  (RX_ABORT).
+     d. ADread was programatically saved/exited.  (RX_SAVE).
+
+     NOTE: RX_NOCONFIRM, RX_ABORT and RX_SAVE are #DEFINEd in Frankie.Ch.
+
+
+ NOTE 1: This is the equivalent command
+ --------------------------------------
+ @ .., .. [SAY ..] ADGET .. [PICTURE ..] [VALID ..] [WHEN ..]
+ -------------------------------------------------------------
+ There is only one syntax difference between this and CA's command:  It is
+ not a GET; it's an ADGET.  In addition, you use ADread( getlist ) instead
+ of READ.  Behaviorwise, there is a host of differences, the main ones being
+ (1) the Gets are now mousified, and (2) any @S-pictured Get may be
+ expanded into a memoedit() by pressing the Tab key when the Get is in
+ focus.
+
+ NOTE 2:  There are certain subtleties that you must know about the
+ implementation of the VALID clause.
+ ------------------------------------------------------------------
+ 1.  When the VALID clause is invoked, the cursor stays on its current
+ location.  This behavior is different from CA's GetSys where the cursor is
+ typed out of the Get buffer.
+
+ 2.  The current values of the Get variables are not directly available from
+ within a VALID function.  Use ADr_varget() instead.  For example:
+
+ func main()
+ local getlist[0]
+ local cName := "Frankie"
+
+ @10,10 say "Name" adget cName valid myfunc( cName )
+ ADread( getlist )
+ return nil
+
+
+ func myfunc( cName )
+ ? cName             // will always yield "frankie" even if the Get
+                     //   was edited
+ ? ADr_varget()      // will yield the current value
+ return .t.
+
+ For the same reason, updating a Get variable directly from within a VALID
+ clause is not encouraged.  Use ADr_varput().
+
+ This discussion is also applicable to WHEN clauses.
+
+ v2.30 -> v3.00
+ --------------
+ Added the 6th parameter, [xHelpHeader].
+
+ v2.1 -> v2.2
+ ------------
+ Added support for global hot keys that are defined with ADg_keys().
+
+
+ Example 1:
+ ----------
+ // The simplest implementation of ADread()
+ local getlist[0]
+ @10,10 say "Short string" adget cShort
+ @11,10 say "Long string " adget cLong picture "@S20"
+ aScn := Xinfo1()
+ ADread( getlist )
+
+ Example 2:
+ ----------
+ // Note how ADr_varget() is used within the VALID function to
+ // access the Get variable.
+
+ @10,10 say "Date" adget dDate valid Xval2_date()
+
+ static func Xval2_date()
+ if ADr_varget() < date()
+ ADmessage( { "A past date is not acceptable" } )
+ return .f.
+ endif
+ return .t.
+
+
+ Example 3:
+ ----------
+ // You may specify the Get to be initially focused
+ ADread( getlist,, 3 )        // initial focus on 3rd Get
+
+ Example 4:
+ ----------
+ // You may preserve the ADread engine at exit, and recall it some
+ // time later.
+ #define DO_NOT_KILL     .F.
+ #define DO_NOT_BLANK    .F.
+ ADread( getlist,,, DO_NOT_KILL )     // keep the Read engine alive
+ nEngine := ADr_engine()              // Remember the engine identifier
+ .
+ .
+ ADr_activate( nEngine,, DO_NOT_BLANK )  // Resurrect the Read, preserving
+                                         // the current values of the Gets
+
+ Example 5:
+ ----------
+ // How to define hot keys.
+ func main()
+ local getlist[0]
+ local cOne := "111"
+ local cTwo := "222"
+ local cThree := "333"
+ // defines the hot keys and the hot key handler
+ local bConfig := {|e| ADr_keys( {K_F10, K_F9, K_F8, K_F7},;
+                                 {|ee,nth,nkey| Xkeys5(nkey)};
+                                 );
+                 }
+
+ @10,10 say "One  " adget cOne
+ @11,10 say "Two  " adget cTwo
+ @12,10 say "Three" adget cThree
+ ADread( getlist, bConfig )
+ return nil
+
+
+ static func Xkeys5( nKey )
+
+ if nKey == K_F10
+    ADr_blank()              // blank current Get
+ elseif nKey == K_F9
+    ADr_jump( 2 )            // jump to Get #2
+ elseif nKey == K_F8
+    ADr_abort()              // abort current Get and exit
+ elseif nKey == K_F7
+    ADr_save()               // save current Get and exit
+ endif
+ return nil
+
+
+ static func Xinfo5()
+ return ADmessage( {;
+    "The simplest implementation of ADread().  Try jumping from one Get to",;
+    "another with the mouse.  Try expanding 'Long string' into a memoedit",;
+    "by pressing the Tab key while it is on focus.";
+                   },;
+                   18,, .f., .f.;
+                 )
+
+ Example 6:
+ ----------
+ // How to get-wrap ADread()
+ func main()
+ local getlist[0], aScn
+ local cOne := "111"
+ local cTwo := "222"
+ local cThree := "333"
+
+ @10,10 say "One  " adget cOne valid Xwrap6()
+ @11,10 say "Two  " adget cTwo
+ @12,10 say "Three" adget cThree valid Xwrap6()
+ ADread( getlist )
+ return nil
+
+
+ static func Xwrap6()
+ local nthGet := ADr_nthGet()
+ local nExitCode := ADr_exitcode()
+
+ if nthGet == 1
+   if nExitCode == K_UP
+      ADr_jump( 3 )
+   endif
+ elseif nthGet = 3
+   if nExitCode == K_DOWN
+     ADr_jump( 1 )
+   endif
+ endif
+ return .t.
+
+ Example 7:
+ ----------
+ // How to define hot spots.
+ func main()
+ local nT := 0, nL := 0, nB := 6, nR := 11
+ local getlist[0], aScn2
+ local cOne := "111"
+ local cTwo := "222"
+ local cThree := "333"
+ // defines the hot spots and the hot spot handler
+ local bConfig := {|e| ADr_lbuttons( {;
+                                        {nT+1,nL+1,nT+1,nR-1},;
+                                        {nT+3,nL+1,nT+3,nR-1},;
+                                        {nT+5,nL+1,nT+5,nR-1};
+                                     },;
+                                     {|ee,nth,mrow,mcol| Xbuttons7(nth)};
+                                   );
+                  }
+
+
+ ADcls( "°" )
+ aScn2 := Xspots7(nT,nL,nB,nR)       // paints the mouse _icons_
+ @10,10 say "One  " adget cOne
+ @11,10 say "Two  " adget cTwo
+ @12,10 say "Three" adget cThree
+ ADread( getlist, bConfig )
+ ADrestscn( aScn2 )
+ return nil
+
+
+ static func Xspots7(nT,nL,nB,nR)
+ local aScn := ADbox( nT, nL, nB, nR )
+ ADsay( nT+1,nL+1,  "Blank Gets" )
+ ADsay( nT+2,nL, "Ã" + repl( "Ä", nR - nL - 1 )  + "´" )
+ ADsay( nT+3,nL+1, "Abort" )
+ ADsay( nT+4,nL, "Ã" + repl( "Ä", nR - nL - 1 ) + "´" )
+ ADsay( nT+5,nL+1,  "Save" )
+ return aScn
+
+
+ static func Xbuttons7( nthSpot )
+ if nthSpot == 1
+   ADr_blank( {} )         // blank all Gets
+ elseif nthSpot == 2
+   ADr_abort()             // abort current Get and exit
+ elseif nthSpot == 3
+   ADr_save()              // save current Get and exit
+ endif
+ return nil
+
+ Example 8:
+ ----------
+ // How to use ADr_required() and ADr_popup()
+ func main()
+ local getlist[0]
+ local dDate := ctod("")
+ local cName := space(11)
+ local aValidNames := { "ADvermenu()", "ADhormenu()", "ADboxmenu()",;
+                        "ADdbview()", "ADread()" }
+
+ @10,10 say "DATE" adget dDate;
+                   valid ADr_required()
+ @11,10 say "NAME" adget cName;
+                   valid ADr_popup( 10, 40, aValidNames, {3,3,3,3,3} ) > 0
+ ADread( getlist )
+ return nil
+
+ Example 9:
+ ----------
+ // An example of validating the whole Read
+ func main()
+ local getlist[0]
+ local cOne := "   "
+ local cTwo := "   "
+ local cThree := "   "
+ local bConfig := {|e| ADr_exit( {||Xvalread9()} )}
+
+ @10,10 say "One  " adget cOne picture "@!"
+ @11,10 say "Two  " adget cTwo
+ @12,10 say "Three" adget cThree
+ ADread( getlist, bConfig )
+ return nil
+
+ static func Xvalread9()
+ local lValid := .t.
+ local bValRead := {|| ADr_filled( {2,3},;
+                                   {|| ADmessage( { "Two and Three may not be left blank" } )};
+                                 );
+                   }
+
+ lValid := eval( bValRead )
+
+ if lValid
+    if ADr_varget(1) != "ABC"
+       ADmessage( { "The only valid entry for One is 'ABC'" } )
+       lValid := .f.
+    endif
+ endif
+
+ return lValid
+
+ Example 10:
+ -----------
+ // Demonstration of key validation
+ func main()
+ local getlist[0]
+ local cPartNum := space(6)
+ local nQuantity := 0
+ local bConfig := {|e| ADr_keyval( {|c,p,n,b|Xkeyval10(c,p,n,b)} )}
+
+ @10,10 say "Part number" adget cPartNum picture "@R !-9999"
+ @11,10 say "Quantity   " adget nQuantity
+ ADread( getlist, bConfig )
+ return nil
+
+
+//------------------------------------------------
+static func Xkeyval10( cKey, nPos, nGet, cBuffer )
+local lValid := .t.
+
+if nGet == 1 .and. nPos == 1
+if ascan( {"A", "B", "C" }, upper( cKey ) ) == 0
+        ADmessage( { "Enter either 'A', 'B', or 'C' in the first position" } )
+        lValid := .f.
+endif
+endif
+return lValid
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADr_escape()            Assigns an Abort behavior
+'------------------------------------------------------------------------------
+ ADr_escape( <bEscape> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Assigns an Abort codeblock to the Read engine.  This codeblock is EVALuated
+ when the user attempts to abort (not Save/Exit ) the Read.  It must return a
+ logical value.  If this return value is TRUE, the Read terminates as
+ requested.  Otherwise, it stays.
+
+ Example:
+ -------
+ /*
+ User is asked to confirm an abort.
+ */
+ bConfig := {|| ADr_escape( {||ADboxmenu( "Abort?",;
+                                          { "Yes", "No" };
+                                        ) == 1;
+                            };
+                          );
+            }
+ ADread( getlist, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_exit()              Assigns an Exit behavior
+'------------------------------------------------------------------------------
+ ADr_exit( <bExit> ) --> nil
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Assigns an Exit codeblock to the Read engine.  This codeblock is EVALuated
+ when the user attempts to save/exit (not abort) the Read.  It must return a
+ logical value.  If this return value is TRUE, the Read terminates as
+ requested.  Otherwise, it stays.
+
+ Example:
+ --------
+ /*
+ User is asked to confirm a save/exit
+ */
+ bConfig := {|| ADr_exit( {||ADboxmenu( "Done?",;
+                                        { "Yes", "No" };
+                                      ) == 1;
+                          };
+                        );
+            }
+ ADread( getlist, bConfig )
+!seealso: "ADr_keyvalid()" "ADr_popup()" "ADr_tbpopup()" "ADr_abort()" "ADr_save()" "ADr_exitcode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_expattr()         ^rm^r Redefines the attributes of the expanded Get
+'------------------------------------------------------------------------------
+ ADr_expattr( [aCoords], [cColor], [cFrame], [cPrompt], [nExpKey],;
+   [bTooLong], [bAbort] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Redefines the attributes of the memoedit.
+
+ [aCoords] - the memoedit window coordinates. Defaults to {8,20,16,59}.
+
+ [cColor] - the window color.  Defaults to the current standard color.
+
+ [cFrame] - the window frame string.  Defaults to "ÕÍ¸³¾ÍÔ³ ".
+
+ [cPrompt] - the prompt displayed at the bottom of the window.  Defaults to
+ "Esc:Abort    Tab:Save    F1:Help".
+
+ [nExpkey] - optional expand key.  Defaults to K_TAB.
+
+ [bTooLong] - an optional codeblock that defines the behavior of ADread()
+ during expanded mode when the entry is nearing or is already over the
+ Get's length.  Of course, if the Get is a memo, then it is allowed to grow
+ in length, and therefore [bTooLong] is ignored.  Defaults to
+ {||tone(100,1)}.
+
+ [bAbort] - an optional codeblock that is EVALed when an attempt is made to
+ abort the Get which was expanded and saved.  The codeblock must return
+ a TRUE to allow the abort request to proceed, or a FALSE to cancel the
+ abort request.  Defaults to an ADboxmenu()-type codeblock.
+
+ Example:
+ -------
+ ADread( getlist, {|| ADr_expattr( {12,10,26,69},;
+                                   "GR+/R",;
+                                   "ÚÄ¿³ÙÄÀ³ ",;
+                                   "Abandon     Save    Help";
+                                 );
+                  };
+       )
+
+ v3.00 -> v3.10
+ --------------
+ Added the [bAbort] parameter.
+
+ v2.1 -> 2.2
+ -----------
+ Added [nExpKey] and [bTooLong].
+!seealso: "ADrg_expattr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_initget()           An alternate way of specifying the initial focus
+'------------------------------------------------------------------------------
+ ADr_initget( <nInitGet>, [lSetScan] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the Get to be initially focused.  This is an alternate way.  The
+ direct way is by passing [nInitGet] in ADread().
+
+ <nInitGet> is the index position of the Get to be initially focused.
+
+ [lSetScan] is an optional logical value used to set ADr_setscan().  If you
+ do not care about ADr_setscan(), do not pass this parameter.
+
+ Example:
+ --------
+ ADread( getlist,, 2 )
+
+ is equivalent to:
+
+ ADread( getlist, {||ADr_initget(2)} )
+!seealso: "ADr_jump()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_keys()              Defines hot keys
+'------------------------------------------------------------------------------
+ ADr_keys( [aKeys], [bKeysHandler] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys local to the Read.
+
+ [aKeys] is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+   1 - the index position of the pressed key
+   2 - the inkey code of the pressed key
+
+ Example:
+ --------
+ bConfig := {|| ADr_keys( {K_F9, K_F10}, {|n,k|Xhandler(n,k)} )}
+ ADread( getlist, bConfig )
+
+ func Xhandler( nPos, nKeyCode )
+ if nPos == 1         // same as: if nKeyCode == K_F9
+   ADmessage( { "Pressed F9" } )
+ elseif nPos = 2     // same as: if nKeyCode == K_F10
+   ADmessage( { "Pressed F10" } )
+ endif
+ return nil
+
+ Note: If you use ADr_keys() to implement nested Get/Reads, always save the
+ cursor state before going down one level, and restore it when returning.
+!seealso: fran_027.ngo:"ADg_keys()" "ADr_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_keyvalid()          Defines a key-wise validation behavior
+'------------------------------------------------------------------------------
+ ADr_keyvalid( <bValid> ) --> nil
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a codeblock that is EVALuated whenever a non-hotkey is pressed.  The
+ codeblock typically validates the keystroke.  It is passed 4 parameters:
+
+   1 - the character (chr() value) of the pressed key
+   2 - the position of the cursor relative to the Get buffer
+   3 - the index position of the current Get
+   4 - the contents of the current Get buffer just prior to the key press.
+       Note that this value contains non-picture template characters, if any.
+
+ The codeblock must return a logical value.  If it returns a TRUE, the
+ pressed key is accepted and placed in the Get buffer. Otherwise, it is
+ rejected.
+
+ Typically <bValid> is an IF..ELSEIF..ELSE..ENDIF construct.
+
+ Example:
+ --------
+ // Only "A", "B", and "C" are acceptable in the first position of the Get.
+ func main()
+ local getlist[0], cEmpNum := "    "
+
+ @10,10 say "Employee Number" adget cEmpNum picture "@A-999"
+ ADread( getlist,;
+         {|| ADr_keyvalid( {|c,p,n,b|Xkeyvalid(c,p,n,b)} )};
+       )
+ return nil
+
+ func Xkeyvalid( cKey, nPos, nGet, cBuffer )
+ local lValid := .t.
+
+ if nPos == 1
+   if ascan( { "A", "B", "C" }, upper( cKey ) ) = 0
+      lValid := .f.
+   endif
+ endif
+ return lValid
+!seealso: "ADr_exit()" "ADr_popup()" "ADr_tbpopup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_lbuttons()          Defines left-button hot spots
+'------------------------------------------------------------------------------
+ ADr_lbuttons( [aSpots], [bLBHandler] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse left button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+   1 - the index position of the clicked spot
+   2 - the mouse cursor row position when the hot spot was clicked
+   3 - the corresponding mouse column position
+
+ Example:
+ -------
+ func main()
+ local getlist[0], bConfig
+ local cVar1 := "Frankie", cVar2 := "Clipper"
+ bConfig := {|| ADr_lbuttons( { { 14,10,16,17 } },;
+                              {|n,r,c| Xlbhandler(r)};
+                            );
+            }
+ @10,10 adget cVar1
+ @11,10 adget cVar2
+
+ @14,10 say "HotSpot1"       // hot spots
+ @15,10 say "HotSpot2"
+ @16,10 say "HotSpot3"
+ ADread( getlist, bConfig )
+ return nil
+
+ func Xlbhandler( nRow )
+ // Interrogate where the mouse cursor was when the left button was clicked.
+ if nRow == 14
+   ADmessage( { "HotSpot1" } )
+ elseif nRow == 15
+   ADmessage( { "HotSpot2" } )
+ elseif nRow == 16
+   ADmessage( { "HotSpot3" } )
+ endif
+ return nil
+
+ Note: If you use ADr_lbuttons() to implement nested Get/Reads, always save
+ the cursor state before going down one level, and restore it when returning.
+!seealso: "ADr_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_readexit()          Toggles Up/Down and Left/Right as exit keys
+'------------------------------------------------------------------------------
+ ADr_readexit( [lUpDown], [lLeftRight] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines whether the Up/Down keys and the Left/Right keys will be considered
+ exit keys.  By default, they are not.
+
+ [lUpDown] is a logical value.  If it is TRUE, the up/down keys are treated
+ as exit keys.  ADread() will exit if the current Get is the first (or last)
+ Get.
+
+ [lLeftRight] is a logical value.  If it is TRUE, then the left/right keys
+ are treated as exit keys.  If they are exit keys, then the Read behavior is
+ modified as follows:
+
+  û If the cursor is on the first position, pressing the Left key moves the
+    focus to the preceding Get, or exits ADread() if the current Get is the
+    first Get.
+
+  û If the cursor is on the last position, pressing the Right key moves the
+    focus to the next Get, or exits ADread() if the current Get is the last
+    Get.
+!seealso: "ADr_exitcode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_setscan()           Defines how ADread() locates the next Get to focus.
+'------------------------------------------------------------------------------
+ ADr_setscan( <lScan> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines how ADread() locates the next Get to focus in the following
+ situations:
+
+   1.  At startup, if the WHEN of the initially-to-be-focused Get returns a
+       FALSE.  See ADread()'s discussion of the [nInitGet] parameter.
+
+   2.  When a jump is called (via ADr_jump() or a mouse click to an unfocused
+       Get), and the intended Get's WHEN returns a FALSE.  See ADr_jump().
+
+  <lScan> is a logical value to which the ADr_setscan() switch is set.  By
+  default, this switch is set to TRUE.
+
+  NOTE: The setting of ADr_setscan() is disregarded if ADr_valjump() is set
+        to FALSE.
+
+  Example
+  -------
+  ADread( getlist, {||ADr_setscan( .f. )} )
+!seealso: "ADr_jump()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_timeout()           Defines a timeout behavior
+'------------------------------------------------------------------------------
+ ADr_timeout( <nSeconds>, <bTimeOut> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures ADread() to timeout after <nSeconds> of idle time, and EVALuates
+ <bTimeOut>.
+
+ Example:
+ -------
+ // beep the speaker every one second of inactivity
+ ADread( getlist, {|| ADr_timeout( 1, {||tone(100,1)} )} )
+
+ // abort after 10 seconds of inactivity
+ ADread( getlist, {|| ADr_timeout( 10, {||ADr_abort()} )} )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_valjumps()          Configures ADread() to (or not to) execute Valid
+'------------------------------------------------------------------------------
+ ADr_valjumps( <lValidate> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Focus is moved from Get to Get by various ways: by pressing the
+ Up/Down/Enter keys, by pressing a JUMPKEY (see JUMPKEY), by clicking on
+ an unfocused Get, or programmatically, by calling ADr_jump().  By default,
+ the VALID clause, if one is defined, is EVALed before the focus is moved
+ away from the current Get.  There may be times when such a VALID EVALuation
+ may not be needed.  ADr_valjumps() toggles this behavior on/off.
+
+   NOTE: ADr_valjumps() works only on Jumps initiated with ADr_jump(),
+   JUMPKEY and a mouse click.  Movement initiated by the Up/Down/Enter keys
+   is not affected.
+
+ If ADr_valjump() is set to FALSE, the jump is immediately done without even
+ bothering to EVALuate the Valid clause.  Furthermore, any intervening
+ Valids and Whens are not EVALuated.
+
+ NOTE:  If ADr_valjump() is set to FALSE, ADr_setscan()'s setting is dis-
+        regarded.
+
+ Example
+ -------
+ @10,10 adget xxx valid .f.
+ @11,10 adget yyy
+ @12,10 adget zzz
+ ADread( getlist, {||ADr_valjump( .f. )} )
+
+ In the above example, assume that 'xxx' is the current Get and an
+ unfocused Get is clicked, the focus will jump to that Get.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                         clauses when jumping
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADr_abort()             Aborts the Read
+'------------------------------------------------------------------------------
+ ADr_abort( [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Aborts ADread(), optionally sets the exit code to [nExitCode].  If
+ [nExitCode] is not passed, it is set to RX_ABORT which is #defined in
+ Frankie.ch.
+
+ Example:
+ -------
+ // abort after 10 seconds of inactivity
+ ADread( getlist, {|| ADr_timeout( 10, {||AD_abort()} )} )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_activate()          Activates a dormant Read
+'------------------------------------------------------------------------------
+ ADr_activate( <nEngine>, [nInitGet], [lBlank], [lRetainUpdated] )
+    --> <nExitCode>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Re-activates an exited (but not killed) ADread().  If the [lKill] parameter
+ in ADread() is set to FALSE, ADread() preserves the Read engine when it
+ exits.  By invoking ADr_activate(), you may activate this Read engine again.
+
+ [nInitGet] is the index position of the Get to initially focus at
+ reactivation time.  Defaults to 1.
+
+ [lBlank] is a logical value.  If TRUE, the reactivated Gets will be blanked
+ at reactivation time.  Defaults to TRUE.
+
+ [lRetainUpdated] is a logical value.  If TRUE, the Gets will retain their
+ updated status from the previous Read.  Defaults to FALSE.  Note that this
+ is only relevant if [lBlank] is FALSE.
+
+ Example:
+ --------
+ ADread( getlist,,, .F. )    // preserve the engine at exit
+ nEngine := ADr_engine()     // remember the engine identifier
+ //
+ // more code here
+ //
+ ADr_activate( nEngine )     // re-activates the engine
+
+ Note that if [lKill] is specified as FALSE in ADread(), the engine must be
+ explicitly killed using ADr_kill() when no longer needed.
+!seealso: "ADr_save()" "ADr_exit()" "ADr_exitcode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_blank()             Blanks one or more Gets
+'------------------------------------------------------------------------------
+ ADr_blank( [xGets] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Blanks one or more Gets.
+
+ [xGets] identifies which Gets to blank, according to these rules:
+
+   [xGets] == NIL, the current Get is blanked
+   [xGets] == {}, all the Gets are blanked
+   [xGets] == {n1,n2,..}, the Gets identified by n1,n2,.. are blanked
+   [xGets] == n1, Get #n1 is blanked
+
+ Example:
+ -------
+ // Blank all the Gets when F10 is pressed
+ bConfig := {|| ADr_keys( {K_F10}, {|| ADr_blank( {} )} )}
+ ADread( getlist, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_jump()              Jumps to another Get
+'------------------------------------------------------------------------------
+ ADr_jump( <nthGet> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Jumps to a Get number <nthGet>.
+
+ NOTE:  When ADr_jump() is called,  the following series of actions happen:
+ --------------------------------------------------------------------------
+ 1.  First, the VALID clause of the current Get is EVALuated.  If it returns
+     a FALSE, then the focus stays in the current Get.
+ 2.  Then, the WHEN clause of <nthGet> is EVALuated.  If it returns a FALSE,
+     the focus stays where it was originally.
+ 3.  If action #2 returns a TRUE, the WHEN clause of the next-in-line Get is
+     EVALuated.  If it returns a FALSE, the focus stays there.
+ 4.  If action #3 returns a TRUE, the VALID of that Get is EVALuated.  If it
+     returns a FALSE, the focus stays there.
+ 5.  If action #4 returns a TRUE, the next-in-line EVALuations (actions 3
+     and 4) are done, and so on until the <nthGet>.
+
+ Steps 3,4 and 5 may be skipped by setting ADr_setscan() to FALSE.  In such a
+ case, if action #2 returns a TRUE, the focus immediately goes to <nthGet>.
+
+ NOTE:  If ADr_valjump() is set to FALSE, the above will not be carried out.
+        The jump will immediately take effect.
+
+ Example:
+ -------
+ func main()
+ local getlist[0], bConfig
+ local nVar1 := 1
+ local nVar2 := 2
+ local nVar3 := 3
+ local nVar4 := 4
+ bConfig := {|| ADr_keys( {K_F10}, {|| ADr_jump( 1 )} )}
+
+ @10,10 adget nVar1
+ @11,10 adget nVar2
+ @12,10 adget nVar3
+ @13,10 adget nVar4 valid Xvalid()
+ ADread( getlist, bConfig )
+ return nil
+
+ func Xvalid()
+ if ADr_varget() == 0
+   ADr_jump(1)
+ endif
+ return .t.
+!seealso: "ADr_setscan()" "ADr_valjumps()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_kill()              Kills a live Read engine
+'------------------------------------------------------------------------------
+ ADr_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Kills the ADread engine identified by <nEngine>.  Typically used to kill an
+ engine created by an ADread() call that was passed a FALSE [lKill].
+
+ If you specify a non-existent engine, or the currently "reading" engine,
+ you will get a runtime error.
+
+ Example: See ADr_engine().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_save()              Saves the Read
+'------------------------------------------------------------------------------
+ ADr_save( [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Exits the current ADread after saving the current Get. Optionally sets the
+ exit code to [nExitCode].  If no parameter is passed, the exit code is set to
+ RX_SAVE which is #defined in Frankie.ch.
+
+ Note that the save request is ignored if the current Get does not pass the
+ VALID clause, if any.
+
+ Example:
+ -------
+ // Assigns the F10 key to save and exit the Read.
+ bConfig := {|| ADr_keys( {K_F10}, {|| ADr_save()} )}
+ ADread( getlist, bConfig )
+!seealso: "ADr_abort()" "ADr_exitcode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_varput()            Puts a value into a Get
+'------------------------------------------------------------------------------
+ ADr_varput( <xValue>, [nthGet], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Puts a specified value into a Get.
+
+ <xValue> is the value to put.  Its type must correspond to the type of the
+ target Get, otherwise a runtime error will occur.
+
+ [nthGet] is the index position of the target Get.  It defaults to the current
+ Get if it is not specified.
+
+ [nEngine] is the identifier of the target engine.  It defaults to the current
+ engine if it is not specified.
+
+ Example:
+ -------
+ /*
+ Assigns the F10 key to put the current date into the current Get (assuming
+ that the current Get is a date variable).
+ */
+ bConfig := {|| ADr_keys( {K_F10}, {|| ADr_varput( date() )} )}
+ ADread( getlist, bConfig )
+!seealso: "ADr_varput()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADr_engine()            Returns the currently active Read engine
+'------------------------------------------------------------------------------
+ ADr_engine() --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the currently active ADread engine.  This function may be called
+ during the Read via the WHEN clause, VALID clause, a hot key, or hot spot
+ handler.  It may also be called right after an ADread() that was called with
+ a FALSE [lKill] exits.
+
+ Example
+ -------
+ func main()
+ local aaa := "aaaaaa"
+ local bbb := "bbbbbb"
+ local ccc := "cccccc"
+ local ddd := "dddddd"
+ local eee := "eeeeee"
+ local getlist[0], nEngine, aScn
+
+ ADcls(,,,,,, .t.)
+ aScn := ADbox( 9,8,15,17 )
+ @10,10 adget aaa valid {||ADmessage( {str( ADr_engine() )} ), .t.}
+ @11,10 adget bbb
+ @12,10 adget ccc
+ @13,10 adget ddd
+ @14,10 adget eee when {||ADmessage( {str( ADr_engine() )} ), .t.}
+ ADread( getlist, {||ADr_keys({-9}, {||ADmessage( {str( ADr_engine() )} )})},,.f. )
+ nEngine := ADr_engine()
+ ADrestscn( aScn )
+ ADmessage( {str( ADr_engine() )} )     // 1
+ aScn := ADbox( 9,8,15,17 )
+ ADr_activate( nEngine,, .f. )
+ ADr_kill( nEngine )
+ ADmessage( {str( ADr_engine() )} )     // 0
+ ADrestscn( aScn )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_exitcode()          Returns the last exitcode
+'------------------------------------------------------------------------------
+ ADr_exitcode( [nEngine] ) --> <nExitCode>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the exit code of the last Get.  If the ADread() was exited after the
+ Get was exited, then this is also the exit code of the ADread().  The exit
+ code is normally the inkey code of the key used to exit the Get.  If it was
+ exited via other means, e.g. ADr_save(), ADr_abort() or ADr_jump() the exit
+ code may be one of the following, which are #defined in Frankie.ch:
+
+ RX_NOCONFIRM - when SET CONFIRM is FALSE, and the Get was automatically
+                exited because the Get buffer was full
+ RX_SAVE      - when an ADr_save() with no parameter was called
+ RX_ABORT     - when an ADr_abort() with no parameter was called
+ RX_JUMP      - when an ADr_jump() was called
+ RX_NOGETLIST - when the ADread() was called with no getlist passed to it.
+                When this happens, ADread() exits right away.
+ RX_ALLGETS_NOT_AVAILABLE - when the initial Get is not available,
+                            ADr_setscan() is TRUE, and all the succeeding
+                            Gets are also not available.
+ RX_INITGET_NOT_AVAILABLE - when the initial Get is not available and
+                            ADr_setscan() is set to FALSE.
+
+ [nEngine] is an optional engine ID.  It defaults to the last created or
+ activated engine.
+!seealso: "ADr_abort()" "ADr_save()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_getobj()            Returns the currently active Get object.
+'------------------------------------------------------------------------------
+ ADr_getobj( [nEngine] ) --> <oGet>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns a reference to the currently focused Get object of the Read engine,
+ [nEngine] (defaults to the currently active engine).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_issaved()           Returns a logical indicating whether the last Read was
+'------------------------------------------------------------------------------
+ ADr_issaved() --> <lSaved>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns a logical value indicating whether the last exited ADread() was
+ saved or not.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                         saved or not
+!short: ADr_nextget()           Returns the index position of the next Get
+'------------------------------------------------------------------------------
+ ADr_nextget() --> <nNthGet>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the index position of the Get intended to be focused next.  ADread()
+ updates this value every time it detects an intention to change focus.  The
+ return value of this API depends only on intention of the user, and not
+ whether the intended change in focus was actually accomplished or not.
+
+ In the following scenarios, assume that there are two Gets in a Read. If
+ Get#1 is currently focused, and
+
+ 1. the Enter or Down key is pressed, ADr_nextget() will return 2.
+ 2. the PgUp or Up key is pressed, ADr_nextget() will return 0.
+ 3. the PgDn key is pressed, ADr_nextget() will return a 3.
+
+ If the currently focused Get is #2, and
+
+ 1. the Enter, Down or PgDn key is pressed, ADr_nextget() will return 3.
+ 2. the Up key is pressed, ADr_nextget() will return 1.
+ 3. the PgUp key is pressed, ADr_nextget() will return 0.
+
+ If a Get is clicked, ADr_nextget() will return the index position of that
+ Get.
+
+ At startup, ADr_nextget()'s value is the Get specified to be initially
+ focused.
+
+ See also ADr_prevget() and ADr_nthget().
+!seealso: "ADr_nthget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_ngets()             Returns the number of Gets in the Read
+'------------------------------------------------------------------------------
+ ADr_ngets() --> <nGets>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the number of Gets in the current Read.  Please note that this
+ is callable only while the Read is active.  At other times,it may cause
+ a runtime error.
+!seealso: "ADr_nthget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_nthget()          ^rm^r Returns the index position of a Get
+'------------------------------------------------------------------------------
+ ADr_nthget( [nEngine], [xVarName] ) --> <nNthGet>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the index position of a Get.
+
+ [nEngine] is the engine ID.  Defaults to the current engine.
+
+ [xVarName] is an optional Get identifier.  It can have any of the following
+ forms:
+
+    1.  the Get variable name in upper case. If the Get is an array element,
+        it must be in the form of "A[xx]", "A[xx,yy]", "A[xx,yy,zz]", etc.
+
+    2.  the subscript of the Get if it is an array element.  If the GetList
+        is a one-dimensional array, the subscript may be in the form of
+        xx or {xx}.  If the GetList is a multi-dimensional array, the
+        subscript must be in the form {xx,yy,zz,...}.
+
+    3.  NIL, in which case, ADr_nthget() returns the index position of the
+        current Get.
+
+ NOTE:
+ -----
+ When does the Get's focus change?  It changes when the user attempts to
+ change it.  The focus is immediately moved to the intended Get as soon as
+ the post-block returns a TRUE.  If it is not possible to lodge in the
+ intended Get, as when the pre-block returns a FALSE, the focus moves away
+ from it.  Otherwise, it stays there until the user attempts to move it
+ again.  Thus, during post-validation, the focused Get is the one that is
+ being post-validated.  During pre-validation, the focused get is the one
+ being pre-validated.
+
+ When ADread() is waiting for a user response, NTHGET is the current Get.
+ While a WHEN clause is being EVALuated, NTHGET is temporarily set to the Get
+ that is being pre-validated.  After pre-validation, its value becomes
+ whatever Get gets focused.  At any other times, NTHGET is the Get in focus.
+ Its value does not change at exit.  Its value is 0 just before it focuses
+ on the Get to be initially highlighted.
+
+ See also ADr_prevget() and ADr_nextget().
+
+ v3.00 -> v3.10
+ --------------
+ Added the [xVarName] parameter.
+!seealso: "ADr_nextget()" "ADr_prevget()" "ADr_ngets()" "ADr_varname()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_prevget()           Returns the index position of the previous Get
+'------------------------------------------------------------------------------
+ ADr_prevget() --> <nNthGet>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the index position of the previously focused Get.
+
+ Description of operation:  ADread() keeps track of the index positions of
+ three types of Gets: (1) the current Get, (2) the Get that was in focus
+ before the current Get was focused, and (3) the Get that the user intends to
+ focus.  For the sake of this discussion, we will refer to them as NTHGET,
+ PREVGET and NEXTGET, and they are returned respectively by the 3 APIs
+ ADr_nthget(), ADr_prevget() and ADr_nextget().
+
+ When ADread() is waiting for a user response, NTHGET is the current Get.
+ While a WHEN clause is being EVALuated, NTHGET is temporarily set to the Get
+ that is being pre-validated.  After pre-validation, its value becomes
+ whatever Get gets focused.  At any other times, NTHGET is the Get in focus.
+ Its value does not change at exit.  Its value is 0 just before it focuses
+ on the Get to be initially highlighted.
+
+ At startup, PREVGET is 0.  Its value changes when the focus changes.  Unlike
+ NTHGET, PREVGET's value during pre-validation does not change.  Its value
+ does not change at exit.
+
+ At startup, NEXTGET's value is the Get specified to be initially focused.
+ Its value always changes when the user does something (e.g. presses the
+ cursor keys) to change focus.  NEXTGET returns the intended Get,
+ irrespective of whether that particular Get actually gets the focus or not.
+!seealso: "ADr_nthget()" "ADr_nextget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_spot()              Returns the screen coordinates of a Get.
+'------------------------------------------------------------------------------
+ ADr_spot( [nthGet], [nEngine] ) --> <aSpot>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the screen coordinates of the Get buffer.
+
+ [nthGet] is the target Get.  It defaults to the current Get.
+
+ [nEngine] is the target engine.  It defaults to the current engine.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_type()              Returns the type of a Get
+'------------------------------------------------------------------------------
+ ADr_type( [nthGet], [nEngine] ) --> <cType>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the type of a Get.
+
+ [nthGet] is the target Get.  It defaults to the current Get.
+
+ [nEngine] is the target engine.  It defaults to the current engine.
+!seealso: "ADr_varname()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_updated()           Returns an array of update status of the Gets
+'------------------------------------------------------------------------------
+ ADr_updated( [nEngine] ) --> <aUpdatedStatus>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the array of update status of the Gets.  When ADread() is called,
+ all the elements of this array are initialized with FALSE.  When a Get is
+ edited, the corresponding element is set to TRUE.
+
+ [nEngine] is an optional engine ID.  if there is an active engine when
+ ADr_updated() is called, it defaults to the current engine.  Otherwise, it
+ defaults to the last created or activated engine.  To return the update
+ status of the last exited engine, pass a -1 to the function.
+
+ NOTE: If ADread() exits, and its engine is not killed, the update status of
+       the Gets is preserved.  When the engine is subsequently reactivated,
+       this status info may be restored or re-initialized to FALSE.  See
+       ADr_activate().
+!seealso: "ADr_issaved()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_varget()            Returns the current value of a Get
+'------------------------------------------------------------------------------
+ ADr_varget( [nthGet], [nEngine] ) --> <xValue>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the current value of a Get.  This is the preferred way of inter-
+ rogating the current values of the Gets while the engine is active, e.g.,
+ inside Valid and When clauses, or within routines called via hot keys and
+ hot spots.
+
+ Example
+ -------
+ local nAge := 0, getlist[0]
+ @10,10 ADget nAge valid Xvalidate()
+ ADread( getlist )
+
+ func Xvalidate()
+ local lValid := .t.
+
+ if ADr_varget() < 18
+   ADmessage( { "Under age!" } )
+   lValid := .f.
+ endif
+ return lValid
+!seealso: "ADr_varput()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_varname()           Returns the name of a Get variable
+'------------------------------------------------------------------------------
+ ADr_varname( [nthGet] ) --> <cName>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the name of the Get variable identified by [nthGet].  If [nthGet]
+ is not passed, the current Get's name is returned.  If the Get is an array
+ element, the return value will contain an element index number.
+!seealso: "ADr_type()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_version()           Returns the ADread() number as a string.
+'------------------------------------------------------------------------------
+ ADr_version() --> <cVersionNumber>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the version number of ADread() as a string.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Global APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short:  ADrg_expattr()       ^rn^r Configures the expanded Get attributes
+'------------------------------------------------------------------------------
+ ADrg_expattr( <aAttributes> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the expanded Get attributes.  The meaning of <aAttributes> is
+ the same as in ADr_expattr(), except that here they are passed as an
+ array, while in ADr_expattr() they are passed as a list.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local getlist[0]
+ local cDesc
+
+ use demo
+ cDesc := demo->descriptn
+
+ ADcls()
+ ADrg_expattr( { {12,10,24,69},;
+                 "GR+/R",;
+                 "ÚÄ¿³ÙÄÀ³ ",;
+                 "Abandon     Save    Help";
+               };
+            )
+ @10,10 adget cDesc picture "@S20"
+ ADread( getlist )
+ return NIL
+!seealso: "ADr_expattr()" "ADrg_insert()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  ADrg_insert()          Configures the Insert/Overwrite toggle attributes
+'------------------------------------------------------------------------------
+ ADrg_insert( <aAttributes> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the Insert/Overwrite toggle attributes.  By default, ADread()
+ starts with Overwrite mode, and the cursor size that corresponds to this mode
+ is the solid cursor.  With this API, you can change these default values.
+ <aAttributes> is an array of 3 elements:
+
+   1 - logical.  If it is TRUE, ADread() starts with Insert mode.  Otherwise,
+       it starts with Overwrite mode.
+
+   2 - numeric.  Cursor size indicator for Overwrite mode.  Defaults to
+       SC_SPECIAL1 (full block).
+
+   3 - numeric.  Cursor size indicator for Insert mode.  Defaults to
+       SC_NORMAL (underscore).
+
+ Example
+ -------
+ ADrg_insert( { .t., 1, 2 } )
+ @..adget..
+ ADread( getlist )
+!seealso: "ADrg_expattr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Valid APIsÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADr_filled()            Tests if a Get has been filled with data
+'------------------------------------------------------------------------------
+ ADr_filled( [aGetPositions], [bNotFilled], [nEngine] ) --> <lFilled>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tests if the specified Gets have been filled with data. Typically used in
+ validating the whole Read.
+
+ [aGetPositions] is an array containing the index positions of the Gets to be
+ checked.  Optional.  Defaults to all Gets.
+
+ [bNotFilled] is an optional codeblock that is EVALuated if at least one of
+ the <aGets> is empty.
+
+ <lFilled> is the logical return value.  It is TRUE if all the Gets in
+ [aGetPositions] contain data.
+
+ v2.1 -> v2.2
+ ------------
+ made [aGetPositions] optional.
+
+ Example
+ -------
+ func main()
+ local xx := "123"
+ local yy := "abc"
+ local getlist[0]
+ local bNotFilled := {||ADmessage( { "Not all Gets are filled" } )}
+ cls
+ @10,10 ADget xx
+ @11,10 ADget yy
+ ADread( getlist, {||ADr_exit( {||ADr_filled( {1,2}, bNotFilled )} )} )
+ return NIL
+!seealso: "ADr_exit()" "ADr_popup()" "ADr_tbpopup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_popup()             Pops up a picklist of valid entries
+'------------------------------------------------------------------------------
+ ADr_popup( [nRow], [nCol], <aOptions>, [aTrigger], [lForce], [bConfig] )
+     --> <lSelected>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Pops up a picklist of valid selections.  The selected option is automatically
+ entered into the Get.  Typically used within a VALID clause.
+
+ [nRow], [nCol] are the top and left coordinates of the window. Default to
+ just underneath the Get.
+
+ <aOptions> is an array of valid selections.
+
+ [aTrigger] is an array of the column positions of the trigger keys.  Defaults
+ to an array of 1s.  Note that if you do not want any trigger, specify numbers
+ higher than the length of the options.
+
+ [lForce] is a logical value.  If it is TRUE, then it forces the opening of
+ the picklist even when the current Get value is valid.  Also, the initially
+ highlighted option will be the current Get value.  Defaults to FALSE.
+
+ [bConfig] is a Configuration Block similar to the [bConfig] of ADvermenu().
+
+ [lSelected] is a logical value.  It is TRUE if a selection was made.  If
+ [lForce] is TRUE, then the selected option has to be different from the
+ current Get value for [lSelected] to be set to TRUE.
+
+ Example:
+ -------
+ func main()
+ local getlist[0]
+ local cVar := "   "
+ local aVar := { "AAA", "BB", "C" }
+
+ @11,10 adget cVar valid ADr_popup( 4, 4, aVar )
+ ADread( getlist )
+ return nil
+!seealso: "ADr_tbpopup()" "ADrpu_selection()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrpu_selection()     ^rn^r Returns the last value selected from ADr_popup()
+'------------------------------------------------------------------------------
+ ADrpu_selection( <cMode> ) --> <xSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the last value selected from the last ADr_popup().
+
+ <cMode> is a numeric flag that determines the type of the return value.
+
+ <xSelection> is the last value selected from the last ADr_popup().  This
+ value changes everytime ADr_popup() is used.  If <cMode> is "N",
+ <xSelection> is the index position of the selected option within the array
+ of selections used by ADr_popup().  If <cMode> is "C", <xSelection> is the
+ actual selection itself.
+
+ Example
+ -------
+ #include "frankie.ch"
+
+ func main()
+ local aPickList := { "One", "Two", "Four" }
+ local cMyVar := "    "
+ local getlist[0]
+
+ ADcls()
+ @10,10 say "Enter something:";
+        adget cMyVar;
+        valid {||ADr_popup( ,, aPickList )}
+ ADread( getlist )
+
+ ? ADrpu_selection( "N" )   // 1, if "One" was selected
+ ? ADrpu_selection( "C" )   // "One"
+ return NIL
+!seealso: "ADr_popup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_required()          Checks to see if the current Get contains data
+'------------------------------------------------------------------------------
+ ADr_required( [bNotFilled] ) --> <lFilled>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Checks if the current Get contains data.
+
+ [bNotFilled] is a codeblock that is EVALuated if the current Get is empty. It
+ defaults to:
+
+   {||ADmessage( { "May not be left blank" } )}
+
+ [lFilled] is a logical.  It is TRUE if the current Get is not empty.
+
+ Example:
+-------
+ // Beep the speaker if the current Get is empty.
+ @11,10 adget cVar2 valid ADr_required( {||tone(100,1)} )
+!seealso: "ADr_filled()" "ADr_popup()" "ADr_tbpopup()" "ADr_exit()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_tbpopup()           Pops up a picklist of valid entries from a database
+'------------------------------------------------------------------------------
+ ADr_tbpopup( [aCoords], [xDummy], [aIndexOrders], [aForce], [bConfig],;
+     [cHelpID], [cHelpHeader] ) --> <lSelected>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Pops up a picklist of valid selections with a database tbrowse.  The selected
+ value is automatically entered into the Get.  Typically used within a VALID
+ clause.
+
+ [aCoords] is an optional array of the browse window coordinates.  If it is
+ not passed, it defaults to { nRow, nCol, maxrow(), maxcol() } where nRow
+ and nCol default to just underneath the Get.
+
+ [xDummy] is not used.  It is provided for compatibility with v2.0
+
+ [aIndexOrders] is an array of three elements:
+
+   1 - the display index order.  This refers to the index used to display
+       the tbrowse.
+   2 - the value index order.  This refers to the index that is SEEKed for
+       the Get value.  If it is not found the tbrowse is popped up.  If the
+       user makes a selection, it is the value corresponding to the indexkey
+       of this order that will be entered into the Get, unless element 3 is
+       passed.
+
+   3 - is an optional codeblock whose EVALuated value is entered into the Get
+       when the user makes a selection from the tbrowse.  If this element is
+       not passed, element #2 is used to enter a value into the Get.
+
+ If [aIndexOrders] is not passed, it defaults to {1,1, NIL}.
+
+ [aForce] is an array of two logical values that determine whether the popup
+ is forced to open when the Get is valid and/or empty.  The elements are:
+
+   1 - if this is TRUE, the tbrowse is forced to popup even when the Get is
+       valid.  Defaults to FALSE.
+   2 - if this is TRUE, the tbrowse is forced to popup when the Get is empty.
+       Defaults to FALSE.
+
+ [bConfig] is a Configuration Block similar to the [bConfig] of ADdbview().
+
+ [cHelpID] and [cHelpHeader] are aoptional Help identifier and Help window
+ header, respectively.
+
+ [lSelected] is a logical value.  It is TRUE if a selection was made.
+
+ v2.0 -> v2.1
+ -------------
+ In v2.0, only the top/left corner of the browse window can be specified.
+ This was done by passing the top and left coordinates as the first and
+ second parameter.  In v2.1, all 4 coordinates may be specified.  This is
+ done by passing [aCoords] in the first parameter.  For compatibility to
+ v2.0, the second parameter was retained although it is no longer used by
+ the API.  Because of this syntax change, your code may have to be modified
+ as follows:
+
+    1.  Old: ADr_tbpopup( NIL, NIL, .. )
+        New: No change
+
+    2.  Old: ADr_tbpopup( nRow, nCol, .. )
+        New: ADr_tbpopup( { nRow, nCol, Nil, NIL }, NIL, .. )
+
+    3.  Old: ADr_tbpopup( nRow, NIL, .. )
+        New: ADr_tbpopup( { nRow, NIL, Nil, NIL }, NIL, .. )
+
+    4.  Old: ADr_tbpopup( NIL, nCol, .. )
+        New: ADr_tbpopup( { NIL, nCol, Nil, NIL }, NIL, .. )
+
+ Also, element #3 is new in v2.1.
+
+
+ Example:
+ -------
+ func main()
+ local cIdnum := "     "
+ local bDBConfig := {|| ADdb_color( "R/W", "GR+/B" )}
+
+ use ..\employee
+ set index to ..\emp_num, ..\emp_name
+ ADcls( "°",,,,,, .t. )
+ ADg_oneb(4,4,, "ID number", @cIDnum,,;
+          {||employee->( ADr_tbpopup(,, {1,2}, {.f.,.f.}, bDBConfig ) )};
+         )
+ return NIL
+!seealso: "ADr_popup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADg_many()              Boxed Gets Engine
+'------------------------------------------------------------------------------
+ ADg_many()
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ SEE the Boxed Gets Engine
+!seealso: fran_012.ngo:"ADg_many()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_one()               Boxed 1-Get
+'------------------------------------------------------------------------------
+ ADg_one( [nTop], [nLeft], [aColor], <cLabel>, <xVar>, [cPic], [bValid],;
+    [bConfig], [xHelpId], [cClause] ) --> <lSaved>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a boxed one-Get ADread() that looks like this:
+
+        Õ Enter library name: ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+        ³ Frankie Clipper Library by The Programmer's Desk ³
+        ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+
+ [nTop], [nLeft] are the top/left coordinates of the box.  If they are not
+ passed, the box is centered on the screen.
+
+ [aColor] is an array of color specifiers.  It has two elements:  the color of
+ the box, and the color of the Get.  If it is not passed, the elements default
+ to the current standard and enhanced settings.
+
+ <cLabel> is a label displayed on the top of the box.  Note that the length of
+ this label must be less than the length of the Get.  If it is not, use
+ ADg_oneb(), instead.
+
+ <xVar> is the Get variable.  It must be passed by reference.
+
+ [cPic] is the Picture string.
+
+ [bValid] is the VALID codeblock
+
+ [bConfig] is a Configuration block that has a similar meaning with ADread's
+ parameter of the same name.  In version 1, ADg_one() was not configurable.
+
+ [xHelpID] is a Help parameter that can take either of these forms:
+
+    1. cHelpID
+    2. { cHelpID }
+    3. { cHelpID, cHelpHeader }
+
+    where cHelpID is a Help identifier string and cHelpHeader is a Help
+    Header string.
+
+ [cClause] is an optional ADread() clause: "CALC" or "MEMO".
+
+ [lSaved] is the logical return value.  It is TRUE if the Get was saved.
+
+ v1.0 -> 2.0
+ -----------
+ If xVar is longer than the screen width less 4 columns, the Get will scroll
+ horizontally.  If the TAB key is then pressed, it will expand to a memoedit.
+ This feature was absent in version 1.
+
+ v2.1 -> 2.2
+ -----------
+ Added a 10th optional parameter [cClause].  If passed, this should be
+ either "CALC" or "MEMO".
+
+ Example:
+ -------
+ cString := "Frankie Clipper Library by The Programmer's Desk"
+ aColor := { "R/B", "W+/GR" }
+ cLabel := "Enter library name:"
+ ADg_one( ,, aColor, cLabel, @cString )
+!seealso: "ADg_oneb()" fran_012.ngo:"ADg_many()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADg_oneb()              Another boxed 1-Get
+'------------------------------------------------------------------------------
+ ADg_oneb( [nTop], [nLeft], [aColor], <cLabel>, <xVar>, [cPic], [bValid],;
+     [bConfig], [xHelpId], [cClause] ) --> <lSaved>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ This is a variant of ADg_one().  The only difference between these two
+ functions is the way the boxed Get is displayed.  ADg_one() is the preferred
+ variant when the label is longer than the Get like the following.
+
+        ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+        ³ Enter Library Name: Frankie ³
+        ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+
+ The parameters and return value have the same meaning as in ADg_one().
+
+ v2.1 -> 2.2
+ -----------
+ Added a 10th optional parameter [cClause].  If passed, this should be
+ either "CALC" or "MEMO".
+
+ Example:
+ -------
+ cString := "Frankie"
+ aColor := { "R/B", "W+/GR" }
+ cLabel := "Enter library name:"
+ ADg_oneb( ,, aColor, cLabel, @cString )
+!seealso: "ADg_one()" fran_012.ngo:"ADg_many()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADr_password()        ^rn^r Gets a password.
+'------------------------------------------------------------------------------
+ ADr_password( [nRow], [nCol], [nLength], [cLabel], [aColor], [xTimeOut] )
+    --> <cPassword>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Gets a password via a boxed one-get ADread().  Asterisks are echoed during
+ input.
+
+ [nRow], [nCol] are the screen coordinates of the top/left corner of the
+ box.  The box is centered on the screen if they are not passed.
+
+ [nLength] is the maximum length of the password.  Defaults to 8.
+
+ [cLabel] is the prompt.  Defaults to "Password".
+
+ [aColor] is an array of two elements:
+
+   1 - the color of the box.  Defaults to "W+/B".
+   2 - the color of the Get.  Defaults to "GR+/R".
+
+ [xTimeOut] is an optional parameter defining timeout behavior.  It can be
+ passed as a numeric value or as an array of two elements.  If it is
+ passed as a numeric, it signifies the number of idle seconds before
+ aborting.  If it is passed as an array, its elements are:
+
+   1 - the number of seconds before timing out.
+   2 - an optional codeblock to EVAL when it times out. Defaults to an
+       instruction to abort.
+
+ Example
+ -------
+ func main()
+ local aTimeOut := { 3, {||ADblankscn()} }
+ ADr_password( ,,,,, aTimeOut )
+ return nil
+!seealso: "PASSWORD" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ CLAUSES ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: CALC                    Designates a calculator-like Reader
+'------------------------------------------------------------------------------
+ @.. [SAY..] ADGET.. [CALC]
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A command clause that specifies a calculator-style Get reader.  This is
+ applicable only to numeric and character Gets.  It will not work properly on
+ logicals and dates.
+
+ Note:
+ -----
+ If xVar is longer than the screen width less the length of the label and
+ less 4 columns, the Get will scroll horizontally.  If the TAB key is then
+ pressed, it will expand to a memoedit.  This feature was absent in version
+ 1.
+
+ Example:
+ -------
+
+ local xx := 0
+ local yy := "         "
+ local zz := date()
+ local getlist[0]
+
+ @10,10 say "Number" adget xx calc
+ @11,10 say "String" adget yy calc
+ @12,10 say "Date  " adget zz calc   // will not work here
+ ADmessage( { "Number and String are calculator-style.",;
+              "The entry is keyed in from the right.";
+            }, 16,, .F., .F.;
+          )
+ ADread( getlist )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: JUMPKEY                 Assigns a "jump key" to a Get
+'------------------------------------------------------------------------------
+ @.. [SAY..] ADGET.. [JUMPKEY <nkey>]
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A command clause that assigns a "jump key" to a Get. When a jump key is
+ pressed, focus is immediately moved to the Get to which the key is attached.
+
+ v2.1 -> v2.2
+ ------------
+ In v2.1, if the same jump key is assigned to more than one Get, everytime
+ that key is pressed, the focus jumps to the first Get that owns the key.
+ In v2.2, the focus rotates among the Gets that own the same key.
+
+ Example:
+ --------
+ local cName := space(20)
+ local cAddress := space(40)
+ local dBirth := ctod("")
+ local getlist[0]
+
+ @10,10 say ADdisplist( "N",             "R/BG",;
+                        "ame         ",  "W+/BG"  );
+       adget cName jumpkey K_ALT_N
+ @11,10 say ADdisplist( "A",             "R/BG",;
+                        "ddress      ",  "W+/BG"  );
+       adget cAddress jumpkey K_ALT_A
+ @12,10 say ADdisplist( "Date of ",      "W+/BG",;
+                        "B",             "R/BG",;
+                        "irth",          "W+/BG"  );
+       adget dBirth jumpkey K_ALT_B
+ ADread( getlist )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: MEMO                    Tells ADread() that the Get is a memo field.
+'------------------------------------------------------------------------------
+ @.. [SAY..] ADGET.. [MEMO]
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A command clause that tells ADread() that the corresponding Get is a memo
+ field.  ADread() needs this information so that it will expand to a memoedit
+ when the Tab key is pressed, and it will allow the length of the Get to
+ grow.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: REMOVECR                Tells ADread() to remove CRs from an expanded memo.
+'------------------------------------------------------------------------------
+ @.. [SAY..] ADGET.. [REMOVECR]
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADread() to remove carriage returns from expanded memos.  Note that
+ this is applicable only to memos.  Expanded character Gets are
+ automatically stripped of carriage returns.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: PASSWORD              ^rn^r Tells ADread() that the claused Get is a password
+'------------------------------------------------------------------------------
+ @.. [SAY..] ADGET.. [PASSWORD]
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADread() that the claused Get is a password.  A password Get behaves
+ differently than a regular Get:
+
+  û The keystrokes are displayed as asterisks (*).
+  û The Ins, Del, Right, Left, Ctrl-Left, Ctrl-Right, Home and End keys are
+    not active.
+  û The only way to edit the entry is with the Back Space key.
+  û Only Character Gets may be PASSWORDed.
+
+ Example:
+ --------
+ #include "frankie.ch"
+ func main()
+ local cUserID := space(20)
+ local cPassword := space(8)
+ local getlist[0]
+
+ ADcls()
+ @11,10 say "User ID: " adget cUserID
+ @12,10 say "Password:" adget cPassword password
+ ADread( getlist )
+ ? cUserID
+ ? cPassword
+ return NIL
+!seealso: "ADr_password()" 
+'------------------------------------------------------------------------------
+
+
+

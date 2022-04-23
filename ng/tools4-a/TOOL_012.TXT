@@ -1,0 +1,370 @@
+!short: Introduction Semaphores
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     A semaphore controls certain states: for example, the states between two
+     applications that run on different workstations.  To enable all stations
+     to access existing semaphores, each Netware file server has a table
+     available to manage these semaphores.
+
+     Semaphores can be interpreted as variables kept on the file server.
+     Each semaphore is assigned a name when it is created.  A semaphore name
+     can be up to 127 characters long and is not case sensitive.  An
+     application can access a semaphore by opening the semaphore with its
+     name (NNETSEMOPN()).
+
+     A semaphore can be opened by any number of workstations.  For each
+     workstation, the semaphore has the same value.  The semaphore value
+     cannot be modified; however, by using specific functions it can be
+     incremented (NNETSEMSNG()) or decrements (NNETSEMWAI())
+     by 1.
+
+     Each semaphore is assigned information in addition to the semaphore
+     value.  For each semaphore, the file server counts the number of
+     stations currently accessing the semaphore.  This information can be
+     determined with the function NNETSEMOPC().  For example, a semaphore
+     named after an application can be used to limit a resource to this
+     application.
+
+     Semaphores are often used to implement logical lockings for any kind of
+     resource.  A semaphore is assigned to each resource.  Before the
+     resource is accessed, the application tries to decrement the semaphore's
+     value by one (NNETSEMWAI()).  If the resulting value is negative, the
+     resource is locked by another station.  When an application is finished
+     using a semaphore's resource, the function NNETSEMSNG() must be called
+     to increment the semaphore's value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETSEMCLO() Closes a semaphore
+'------------------------------------------------------------------------------
+ ^bNNETSEMCLO()^b
+ Closes a semaphore
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEMCLO(<nHandle>,[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the semaphore handle that is returned by
+     NNETSEMOPN() when the semaphore is opened.
+
+     ^b<cServer>^b  Designates the name of the file server on which <nHandle>
+     has been created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID for your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSEMCLO() returns .T. if the semaphore specified by <nHandle> has
+     been closed successfully.  If an error occurs (for example, if the
+     handle is invalid), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET SEMAPHOR CLOSE
+     NNETSEMCLO() allows you to close a semaphore that is no longer needed.
+     The semaphore is specified by a handle.  If the closing workstation is
+     the only workstation using the semaphore, the related file server
+     removes the semaphore from its semaphore table.
+
+ ^bExample^b
+
+     Open and close semaphore:
+
+     nHandle=NNETSEMOPN("superacc")
+     NNETSEMCLO(nHandle)
+!seealso: "NNETSEMOPN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSEMOPC() Determines the number of stations that have opened a semaphore
+'------------------------------------------------------------------------------
+ ^bNNETSEMOPC()^b
+ Determines the number of stations that have opened a particular semaphore
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEMOPC(<nHandle>,[<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the semaphore handle that is returned by
+     NNETSEMOPN() when the semaphore is opened.
+
+     ^b<cServer>^b  Designates the name of the file server on which <nHandle>
+     has been created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID for your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSEMOPC() returns the number of stations that have opened the
+     semaphore specified by <nHandle>.  If an error occurs (for example, if
+     the handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET SEMAPHOR OPEN COUNT
+     NNETSEMOPC() allows you to determine the number of stations currently
+     accessing a specific semaphore.  The semaphore is specified by a handle.
+     The file server manages two values for each semaphore.  This function
+     determines the number of stations that have opened <nHandle>.  This
+     information has nothing to do with the semaphore's value.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open semaphore TEST and determine the number of stations that
+        have also opened this semaphore:
+
+        nHandle=NNETSEMOPN("test")
+        ? "Number of stations:", NNETSEMOPC(nHandle)
+
+     ^b^CFE^b  The evaluation of the return value of  NNETSEMOPC() in an "if"
+        statement allows you to limit the access to a semaphore's resource.
+!seealso: "NNETSEMVAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSEMOPN() Opens and initializes a semaphore
+'------------------------------------------------------------------------------
+ ^bNNETSEMOPN()^b
+ Opens and initializes a semaphore
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEMOPN(<cName>,[<nValue>],[<cServer>|<nConId>]),
+     ^b   --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b  Designates the name of the semaphore that is opened.
+
+     ^b<nValue>^b  Designates a start value between -128 and 127 for the
+     semaphore <cName>.  The default value is 1.  The file server accepts the
+     assignment only if <cName> is created by the function call.
+
+     ^b<nHandle>^b  Designates the semaphore handle that has been returned by
+     NNETSEMOPN() when the semaphore is opened.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cName>
+     is created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID for your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSEMOPN() returns the handle of the semaphore that has been opened.
+     The handle is used by the file server to manage the semaphores.  If an
+     error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     NOVELL NET SEMAPHOR OPEN
+     NNETSEMOPN() allows you to open an existing semaphore or to create a new
+     semaphore.  If the specified semaphore does not exist on the file
+     server, the semaphore is created and entered into the file server's
+     semaphore table.  The new semaphore can be assigned a start value by
+     passing <nValue>.
+
+     The function returns the handle used by the file server for the
+     semaphore <cName>.  Handles are used to save variables because they are
+     needed as identification characteristics for other operations.  Once a
+     semaphore has been opened successfully, it is exclusively addressed with
+     the handle returned by NNETSEMOPN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create semaphore SUPERACC, and check to see if the semaphore
+        has been opened successfully with the handle:
+
+        nHandle=NNETSEMOPN("superacc")
+        IF nHandle=0
+           ? 'Error during opening the semaphore!'
+        ENDIF
+
+     ^b^CFE^b  Create semaphore TEST and assign a start value of  3, if it
+        does not already exist:
+
+        nHandle=NNETSEMOPN("test",3)
+!seealso: "NNETSEMCLO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSEMSGN() Increments a semaphore
+'------------------------------------------------------------------------------
+ ^bNNETSEMSGN()^b
+ Increments a semaphore
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEMSGN(<nHandle>,[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the semaphore handle that is returned by
+     NNETSEMOPN() when the semaphore is opened.
+
+     ^b<cServer>^b  Designates the name of the file server on which <nHandle>
+     has been created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID for your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSEMSGN() returns .T. if the semaphore has been incremented
+     successfully.  If an error occurs (for example, if the handle is
+     invalid), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET SEMAPHOR SIGNAL
+     With NNETSEMSGN(), a station signal is completed using a semaphore's
+     <nHandle> resource.  The semaphore is specified by a handle.  Another
+     station waiting for the semaphore can access the semaphore if
+     NNETSEMSGN() has been executed successfully.
+
+ ^bExample^b
+
+     Open, lock, and release the semaphor:
+
+     nHandle=NNETSEMOPN('Test')
+     IF NNETSEMWAI(nHandle)
+        // Execute action
+        ...
+        // Release semaphore
+        NNETSEMSGN(nHandle)
+     ENDIF
+!seealso: "NNETSEMWAI()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSEMVAL() Determines a semaphore's value
+'------------------------------------------------------------------------------
+ ^bNNETSEMVAL()^b
+ Determines a semaphore's value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEMVAL(<nHandle>,[<cServer>|<nConId>]) --> nValue
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the semaphore handle that is returned by
+     NNETSEMOPN() when the semaphore is opened.
+
+     ^b<cServer>^b  Designates the name of the file server on which <nHandle>
+     has been created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID for your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSEMVAL() returns the current value of the semaphore <nHandle>.  If
+     an error occurs (for example, if the handle is invalid), the function
+     returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET SEMAPHOR VALUE
+     NNETSEMVAL() allows you to determine the current value of a semaphore.
+     The semaphore is specified by a handle.  The file server manages two
+     values for each semaphore.  This function determines the semaphore's
+     value.  This information has nothing to do with the number of stations
+     that have opened <nHandle>.
+
+ ^bExample^b
+
+     Open semaphore TEST, and determine its current value:
+
+     nHandle=NNETSEMOPN("test")
+     ? 'Value:',NNETSEMVAL(nHandle)
+!seealso: "NNETSEMOPC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSEMWAI() Decrements a semaphore
+'------------------------------------------------------------------------------
+ ^bNNETSEMWAI()^b
+ Decrements a semaphore
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSEMWAI(<nHandle>,[<nTimeout>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the semaphore handle that is returned by
+     NNETSEMOPN() when the semaphore is opened.
+
+     ^b<nTimeout>^b  Designates a time period in 1/18 seconds that
+     NNETSEMWAI() must wait if the semaphore <nHandle> cannot be locked
+     successfully.  The default value is 0.5 seconds (9).
+
+     ^b<cServer>^b  Designates the name of the file server on which <nHandle>
+     has been created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID for your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSEMWAI() returns .T. if the semaphore has been locked successfully
+     (the semaphore's value is greater than 0).  If the semaphore has not
+     been locked successfully (the semaphore뭩 value is equal to 0), the
+     function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET SEMAPHOR WAIT
+     NNETSEMWAI() tries to lock a semaphore.  The semaphore is specified by a
+     handle.  NNETSEMWAI() decrements the value of the semaphore <nHandle> by
+     1.  A semaphore is locked if the value is greater than or equal to 0
+     after it decrements..  In this case, NNETSEMWAI() returns .T..  If the
+     value is negative, NNETSEMWAI() waits for a specific time period.  If
+     the value does not become positive within the specified time period,
+     NNETSEMWAI() resets the value to its start value and returns .F.. The
+     time period is calculated by multiplying  <nTimeout>  with 1/18 seconds.
+
+ ^bExample^b
+
+     Open the semaphore, and then try to lock the semaphore:
+
+     nHandle=NNETSEMOPN('TEST')
+     IF NNETSEMWAI(nHandle)
+        ? 'Semaphore locked successfully!'
+     ELSE
+        ? 'Semaphor could not be locked!'
+     ENDIF
+!seealso: "NNETSEMSGN()" 
+'------------------------------------------------------------------------------
+
+
+

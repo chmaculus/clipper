@@ -1,0 +1,406 @@
+!short: ^bRelease Note #10 -- Advanced Extend System Notes^b
+'------------------------------------------------------------------------------
+ Document:   ^bRelease Note #10^b
+             ^bAdvanced Extend System Notes^b
+
+             Copyright (c) 1991, Nantucket Corporation
+
+ Version:    5.01a (April 19, 1991)
+
+ Summary:    This document contains notes as background information for
+             users who wish to gain a deeper technical understanding of
+             the internal organization of Clipper.  Some advanced
+             techniques for handling character values in Extend
+             functions are also discussed.  Note that the information
+             presented here is not necessary for proper use of the
+             Extend System.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: 1   Internal Representation of Values
+'------------------------------------------------------------------------------
+ ^b1   Internal Representation of Values^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Internally, Clipper represents data values using a small data
+     structure called a VALUE.  The contents and format of a VALUE
+     differ depending on the type of data it represents.  Simple data,
+     such as integers, are coded directly into the VALUE.  Larger data,
+     such as strings or arrays, cannot be directly contained in a
+     VALUE.  Instead the VALUE contains a "reference" to the string or
+     array (references are discussed below).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2   The Eval Stack
+'------------------------------------------------------------------------------
+ ^b2   The Eval Stack^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Internally, Clipper is organized as a stack based machine.  It uses
+     an area of memory called the ^bEval Stack^b to contain operands,
+     function parameters, and intermediate results.  The Eval Stack is
+     simply a contiguous group of VALUEs that are accessed as a stack.
+     Its use is analogous to the way the processor stack is used by C
+     programs.
+
+     For example, in a Clipper function call, parameters are placed
+     (pushed) onto the Eval Stack before the function is executed.  The
+     function operates on the top-most items in the Eval Stack and
+     produces a result.  After the function completes, the parameter
+     values are removed (popped) from the Eval Stack and replaced with
+     the function result.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 3   Variables
+'------------------------------------------------------------------------------
+ ^b3   Variables^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The internal representation of a Clipper variable depends on the
+     variable's storage class (these are discussed briefly below).  For
+     all storage classes, retrieving a variable's value consists of
+     pushing its VALUE onto the Eval Stack.  Assigning to a variable
+     consists of copying a VALUE from the Eval Stack into the variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4   LOCAL Storage Class
+'------------------------------------------------------------------------------
+ ^b4   LOCAL Storage Class^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     LOCAL variables are the simplest variables.  They are, in effect,
+     simply locations within the Eval Stack.  To push a LOCAL variable,
+     the system simply copies a VALUE from one position in the Eval
+     Stack to another.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 5   STATIC Storage Class
+'------------------------------------------------------------------------------
+ ^b5   STATIC Storage Class^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     STATIC variables are similar to LOCAL variables.  Since they do not
+     come and go with function activations, however, they cannot be
+     interspersed with the other contents of the Eval Stack.  Instead
+     they are assigned fixed locations at one end of the Eval Stack.
+     Like LOCAL variables, pushing a STATIC variable consists simply of
+     copying its VALUE.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 6   MEMVAR Storage Class
+'------------------------------------------------------------------------------
+ ^b6   MEMVAR Storage Class^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     MEMVAR is the storage class of PRIVATE and PUBLIC variables.  These
+     variables are more complex than LOCAL or STATIC variables because
+     they consist of more than just a VALUE: they also have an
+     associated symbolic name that allows them to be referred to by name
+     during execution (e.g., in macros).  MEMVAR variables are stored in
+     a dedicated virtual memory segment.  Pushing a MEMVAR involves
+     locating the VALUE that is currently associated with the variable's
+     name and copying that VALUE onto the Eval Stack.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 7   FIELD Storage Class
+'------------------------------------------------------------------------------
+ ^b7   FIELD Storage Class^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     FIELD variables differ from the other storage classes because they
+     have no memory location at all.  To push a FIELD, the system
+     generates a request to a database driver.  The database driver
+     creates an appropriate VALUE which is then copied onto the Eval
+     Stack.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 8   References
+'------------------------------------------------------------------------------
+ ^b8   References^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     It is important to distinguish between the different meanings of
+     the word "reference."  In Clipper, there are two distinct kinds of
+     references:
+
+     1. ^bAn object reference (an OREF):^b  This is a special internal
+        quantity that identifies the location of a character, array, or
+        code block value in virtual memory.  Because these kinds of
+        values can be very large, a VALUE cannot directly contain them.
+        Instead, the VALUE contains an OREF that allows the data to be
+        located when needed.  Whenever necessary, the system performs a
+        de-referencing operation in order to convert an OREF into an
+        actual memory address.
+
+     2. ^bA variable reference (a VREF):^b  Like an OREF, a VREF is a
+        special internal quantity.  Instead of referring to a piece of
+        data, however, a VREF refers to a Clipper variable.  A VREF is
+        created whenever a variable is passed by reference in a function
+        call or DO...WITH statement.  VREFs are special in that they
+        only exist on the Eval Stack, and only as parameters during a
+        function call.  A VREF cannot be assigned to a variable or
+        stored in an array.
+
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        ^b Notes^b
+
+        ^B^CFE^B  A bug in Clipper 5.0/5.01 allows a VREF to be assigned
+           to a variable in certain cases.  This behavior is
+           unintentional and will be eliminated in future releases.
+
+        ^B^CFE^B  When dealing with C, the terminology of references
+           becomes somewhat murky.  This is because C programmers often
+           use the words reference and pointer interchangeably.  Where
+           Clipper is involved, however, the two words have very
+           distinct meanings.  A reference is one of the special
+           quantities discussed above.  A pointer is an actual memory
+           address or a C variable containing such an address.
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 9   Array Values
+'------------------------------------------------------------------------------
+ ^b9   Array Values^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     As noted, a VALUE cannot directly contain an array.  Instead, it
+     contains an OREF for the array.  When an array is assigned to a
+     variable, the system simply overwrites the variable's VALUE with a
+     new VALUE containing an OREF to the array.  The array itself is
+     simply a group of VALUEs stored in virtual memory.  Each element of
+     the array is a VALUE and, since any VALUE can contain an OREF, each
+     element can refer to another array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10  Character Values
+'------------------------------------------------------------------------------
+ ^b10  Character Values^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     As noted, a VALUE cannot directly contain character data; instead,
+     it contains an OREF that allows the data to be located when it is
+     needed.  As with arrays, assigning a character value to a variable
+     simply overwrites the variable's VALUE with a new VALUE containing
+     an OREF to the character data.  Note that, as with arrays,
+     assigning a character value from one variable to another simply
+     duplicates the VALUE (i.e., the OREF); the character data itself is
+     not duplicated.
+
+     Note that this reference-based memory management technique is the
+     same for strings, arrays, and code blocks.  Clipper's garbage
+     collector monitors OREFs.  When there are no longer any references
+     to a particular piece of data, the space occupied by that data is
+     automatically reclaimed.
+
+     For arrays, the reference technique is easily observed at the
+     Clipper level: if the same array reference is assigned to two
+     variables, either variable can be used to modify the array.
+
+     With character data, however, the reference handling is not noticed
+     at the Clipper level.  This is simply because Clipper operators and
+     functions never act directly on character data--they always create
+     a new character value as their result.
+
+     Although unnoticed at the Clipper level, the reference technique
+     does have an effect at the Extend system level.  This is discussed
+     below.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 11  Parameters
+'------------------------------------------------------------------------------
+ ^b11  Parameters^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     At the Clipper level, passing a parameter by reference means that
+     Clipper will create a VREF (see above) and place it onto the Eval
+     Stack before calling the function.  This allows the function
+     (whether written in Clipper or C) to gain access to the variable.
+
+     Passing by value, on the other hand, means that Clipper simply
+     places a copy of the specified VALUE onto the Eval Stack.  Note, in
+     particular, that passing a string by value does not mean that
+     Clipper will make a duplicate copy of the string.  Only the VALUE
+     (i.e., the OREF) is copied, not the string itself.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 12  The _parc() Function
+'------------------------------------------------------------------------------
+ ^b12  The _parc() Function^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Extend system's _parc() function is used to access
+     character-type parameters passed from Clipper.  It returns a
+     pointer to a series of bytes representing the parameter value.
+
+     In order to obtain this pointer, _parc() first locates the
+     parameter's VALUE.  If the parameter was a reference to a variable
+     (a VREF), _parc() finds the variable first and retrieves the VALUE
+     from there.  Otherwise, the VALUE is present on the Eval Stack and
+     _parc() can obtain it directly.  Once _parc() has obtained the
+     VALUE, it extracts the OREF from it and performs a de-referencing
+     operation.  It then places a lock on the virtual memory segment
+     containing the character data (preventing it from moving in
+     conventional memory) and returns a pointer to the first byte of the
+     data.
+
+     As noted above, the fact that OREFs are often duplicated when
+     character values are assigned, although transparent at the Clipper
+     level, can become an issue when _parc() is used.  If a string's
+     OREF has been duplicated, it means that the string may be referred
+     to by several variables or array elements at the same time.  This
+     is why the documentation for _parc() warns that the pointer
+     obtained from _parc() should not be used to modify the string
+     directly--doing so may have the effect (at the Clipper level) of
+     modifying several variables at once.
+
+     Note that Summer '87 also allowed multiple references to the same
+     string in certain cases.  Generally, however, when a string was
+     assigned to a variable, it was duplicated, giving each variable its
+     own copy of the string.  The Summer '87 documentation is not clear
+     about the effect of modifying a string via the pointer returned
+     from _parc(), saying only that _parc() "does not make a copy" of
+     the string.
+
+     In Clipper 5.01, _parc() has been changed to better mimic the
+     Summer '87 behavior.  It does this by automatically duplicating the
+     string in certain cases.  This change is sufficient to produce
+     compatible behavior for many older Extend functions.  For new
+     functions, however, you should take the necessary steps to
+     guarantee that you are working with a dedicated copy of the
+     string.  This can be done using the techniques described in the
+     Programming and Utilities Guide or using the new technique
+     discussed below.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 13  The _storc() and _storclen() Functions
+'------------------------------------------------------------------------------
+ ^b13  The _storc() and _storclen() Functions^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Extend system's _storc() function is used to assign a new
+     character value to a Clipper variable (if passed by reference) or
+     an array element.
+
+     To do this, _storc() first allocates space for the data and copies
+     the specified string into it.  It then creates a new VALUE
+     containing an OREF to the newly allocated area.  It then looks into
+     the Eval Stack to find the specified parameter.  If the parameter
+     is a reference to a variable (a VREF), _storc() locates the
+     variable and overwrites its VALUE with the new VALUE.  If the
+     specified parameter is an array, _storc() uses the array's OREF to
+     locate the array.  It then overwrites the specified array element
+     with the new VALUE.  If the specified parameter is neither a VREF
+     nor an array, _storc() simply copies the new VALUE over the
+     parameter's Eval Stack entry.  This changes the parameter value (as
+     seen, for example, by _parc() ) but has no effect on any variable
+     or array element.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 14  Interaction between _parc() and _storc()
+'------------------------------------------------------------------------------
+ ^b14  Interaction between _parc() and _storc()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     _parc() examines the VALUE associated with a parameter and returns
+     a pointer to the data referred to by that VALUE.  _storc() creates
+     a new VALUE and copies it to a specified location (variable, array
+     element, or Eval Stack entry).  Thus _storc() affects the pointer
+     returned by _parc().  After a _storc(), the pointer returned by
+     _parc() will point to the new data created by the _storc().  You
+     can take advantage of this to avoid allocating fixed buffers and
+     making temporary copies of string values.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 15  Passing a NULL Pointer to _storc() or _storclen()
+'------------------------------------------------------------------------------
+ ^b15  Passing a NULL Pointer to _storc() or _storclen()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Passing a NULL pointer to _storc() or _storclen() has a special
+     meaning: it means you wish to create a true duplicate copy of the
+     parameter's current value.  If the specified parameter or array
+     element is a character value, a new (duplicate) copy of the data is
+     created and stored.  This allows you to modify a string in place
+     without locking two copies of it.  Note that, for _storclen(), the
+     existing data is duplicated to the extent possible within the
+     specified length.  If the specified length is longer than the
+     existing value, the excess bytes in the copy are uninitialized.  If
+     the existing value is not character type, the new string is left
+     uninitialized.  For example:
+
+     ^B^CFE^B  Storing a new string into an array element:
+
+        char far *p;
+
+        /* create new string in first element of third param */
+        _storclen(NULL, 10, 3, 1);
+
+        /* get a locked pointer to the new string */
+        p = _parc(3, 1);
+
+        /* put some bytes in the new string */
+        strcpy(p, "some bytes");
+
+     ^B^CFE^B  Modifying an array element in place:
+
+        char far *p;
+
+        /* first dupe the element, expanding the length if needed */
+        _storclen(NULL, 100, 3, 1);
+
+        /* get a locked pointer to the copy */
+        p = _parc(3, 1);
+
+        /* modify the string */
+        strcpy(p + 50, "YOW!");
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

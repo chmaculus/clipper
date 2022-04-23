@@ -1,0 +1,31 @@
+'------------------------------------------------------------------------------
+^BKEYBOARD^B
+
+    KEYBOARD stuffs the keyboard input buffer with the given string.  Each
+    execution of KEYBOARD flushes the type-ahead buffer.  Multiple keyboard
+    commands cannot be used to queue multiple strings.  However, KEYBOARD
+    "" can be used to clear the buffer.
+
+^USyntax^U
+
+    KEYBOARD <exp C>
+
+^UUsage^U
+
+    KEYBOARD is used in combination with commands and functions that expect
+    keyboard input as data and control information.  These can be wait
+    states such as ACCEPT, INPUT, and READ. or interface functions such as
+    ACHOICE() and DBEDIT().
+
+    As a typical example, you can use KEYBOARD from within a SET KEY
+    procedure to reassign keys in a wait state.  Another use is within the
+    ACHOICE() user function.  here you KEYBOARD the keys you want ACHOICE()
+    to execute before returning control to it.  The same concept applies to
+    the DBEDIT() user function.
+
+    Each execution of KEYBOARD clears the keyboard buffer.
+!seealso: clip_065.ngo:"SET KEY" clip_102.ngo:"LASTKEY()" clip_120.ngo:"NEXTKEY()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,57 @@
+'------------------------------------------------------------------------------
+
+
+ ^bOld style PUBLICs vs. new functions
+
+ In SuperLibs previous to 3.0, a scheme of PUBLIC
+ variables was used to represent certain global SuperLib
+ environment settings. To avoid PUBLICs, a new set of functions
+ exists to set and retrieve these previously PUBLIC variables.
+
+ All of the functions are of the SET/RETRIEVE type. In
+ other words, they will always return the current setting, but
+ you can also pass them a new setting as a parameter. For
+ example, previously the normal color setting was done via the
+ PUBLIC variable C_NORMCOL and was accessed like so:
+
+         SETCOLOR(c_normcol)             // retrieve
+         c_normcol = "W/N,N/W,,+W/N"     // set new
+
+ Where now it would be:
+
+         SETCOLOR( sls_normcol()  )      // retrieve
+         sls_normcol("W/N,N/W,,+W/N")    // set new
+
+ Here is a comparison of the old PUBLICs versus the
+ new functions:
+
+ OLD PUBLIC   FUNCTION        MEANING
+ C_NORMCOL    sls_normcol()   Normal colors
+ C_NORMMENU   sls_normmenu()  Normal colors - menu
+ C_POPCOL     sls_popcol()    Popup colors
+ C_POPMENU    sls_popmenu()   Popup colors - menu
+ C_FRAME      sls_frame()     Popup box frames
+ C_SHADATT    sls_shadatt()   Shadow attribute
+ C_SHADPOS    sls_shadpos()   Shadow position
+ C_XPLODE     sls_xplode()    Popups explode/implode
+ QUERY_EXP    sls_query()     Last stored query
+ _SUPERPRN    sls_prn()       Default printer
+ _CHECKPRN    sls_prnc()      Check the printer
+ _SUPISCOLOR  sls_iscolor()   Is this a color monitor
+ _REPORTS     slsf_report()   Name of REPORTS file
+ _FORMS       slsf_form()     Name of FORMS file
+ _QUERIES     slsf_query()    Name of QUERIES file
+ _LISTER      slsf_list()     Name of LISTS file
+ _TODODBF     slsf_todo()     Name of TODO file
+ _TODONTX1    slsf_tdn1()     Name of TODO index 1
+ _TODONTX2    slsf_tdn2()     Name of TODO index 2
+ _TODONTX3    slsf_tnd3()     Name of TODO index 3
+ _HELP        slsf_help()     Name of HELP file
+ _SCROLLER    slsf_scroll()   Name of  scroller file
+ _COLORS      slsf_color()    Name of COLORS file
+                       (This is now a DBF - was a .MEM)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

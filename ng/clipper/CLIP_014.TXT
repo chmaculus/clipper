@@ -1,0 +1,29 @@
+'------------------------------------------------------------------------------
+^BINPUT^B
+
+    INPUT is used to enter an expression from the keyboard and place the
+    result in a specified memory variable.
+
+^USyntax^U
+
+    INPUT [<prompt>] TO <memvar>
+
+^UArgument^U
+
+    <memvar> is the name of the memory variable where the result of the
+    evaluation is placed.
+
+^UUsage^U
+
+    INPUT takes entry from the keyboard as an expression of any data type.
+    It then evaluates it placing the result into a newly created memory
+    variable of the same data type.  Pressing Return confirms entry.  If
+    Return is the only key pressed, INPUT terminates but does not create
+    the memory variable.  Note that Esc does not terminate INPUT.
+
+    Entering an invalid expression generates a runtime error.
+!seealso: ???.ngo:"ACCEPT" clip_089.ngo:"WAIT" 
+'------------------------------------------------------------------------------
+
+
+

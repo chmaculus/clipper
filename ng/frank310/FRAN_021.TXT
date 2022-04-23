@@ -1,0 +1,633 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADrb_create()         Creates a radio buttons engine
+'------------------------------------------------------------------------------
+ ADrb_create( [bConfig], [cHelpID], [cHelpHeader] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a "bare" radio buttons engine.
+
+ [bConfig] is an optional configuration block.  You use it to call the
+ engine's Config APIs that reconfigures the engine.
+
+ [cHelpID] is an optional Help ID.
+
+ [cHelpHeader] is an optional Help Header string.
+
+ <nEngine> is the numeric return value.  You use it to send messages to the
+ engine.
+
+ Example
+ -------
+ func main()
+ local e := ADrb_create()
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADmessage( { "Selected #" + ADn2s( ADrb_activate( e ) ) } )
+ ADrb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADrb_boxattr()        Configures the box attributes.
+'------------------------------------------------------------------------------
+ ADrb_boxattr( <aAttr> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the box attributes.
+
+ <aAttr> is an array of 3 elements:
+
+    1 - the box frame.  Defaults to "ÕÍ¸³¾ÍÔ³ ".
+    2 - box shadow definition.  Defaults to "N+/N".  It has the same
+        meaning as the [xShadow] parameter of ADbox().
+    3 - exploding box?  Defaults to FALSE.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local e := ADrb_create( {||ADrb_boxattr( {FRAME11, .f., .t.} )} )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+!seealso: fran_028.ngo:"ADbox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_bracket()        Configures the bracket and tag characters.
+'------------------------------------------------------------------------------
+ ADrb_bracket( [cBracket], [cTag] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the bracket and tag characters.
+
+ [cBracket] is a pair of brackets which defaults to "()"
+
+ [cTag] is the tag character which defaults to chr(7)
+
+ Example:
+ --------
+ func main()
+ local e := ADrb_create( {||ADrb_bracket( "<>", "*" )} )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_chkbox()         Configures the radio buttons to behave as a checkbox
+'------------------------------------------------------------------------------
+ ADrb_chkbox( [cBracket], [ctag] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the radio buttons to behave as a checkbox.  The buttons may then
+ be toggled "on" or "off", and as many buttons as desired may be toggled
+ "on".
+
+ [cBracket] is a pair of brackets which defaults to "[]"
+
+ [cTag] is the tag character which defaults to "û"
+
+ Example
+ -------
+ func main()
+ local e := ADrb_create( {|| ADrb_chkbox()} )
+
+ ADrb_add( e,2,2, "The" )          // button #1
+ ADrb_add( e,4,2, "Quick" )        // button #2
+ ADrb_add( e,6,2, "Brown" )        // button #3
+ ADrb_add( e,8,2, "Fox" )          // button #4
+ cls
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_colors()         Configures the colors
+'------------------------------------------------------------------------------
+ ADrb_colors( [aColors] ) --> <aOldColors>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the colors of the buttons.
+
+ [aColors] is an array of 3 elements:
+
+    1 - the standard color (box and labels) - defaults to "W+/W", "W/N" in
+        color and mono, respectively
+    2 - the trigger color - defaults to "R", "W+" in color and mono,
+        respectively
+    3 - the button colors - defaults to "GR+", "W+" in color and mono,
+        respectively
+
+ <aOldColors> is the return value.  It is an array of the old colors.
+
+ Example:
+ --------
+ func main()
+ local e := ADrb_create( {||ADrb_colors( {"W+/B", "GR+", "R+" }),;
+                            ADrb_okbutton( " Proceed ", 2, { "G/W", "G+" } );
+                         };
+                       )
+ ADrb_add( e,12,14, "The" )                  // button #1
+ ADrb_add( e,13,14, "Quick Brown Clipper" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )                // button #3
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_extra()          Defines entry and exit behaviors.
+'------------------------------------------------------------------------------
+ ADrb_extra( [bDispBegin], [bDispEnd], [bUndisplay] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a set of behaviors associated with the displaying and the exiting of
+ the engine.
+
+ [bDispBegin] - an optional codeblock that gets EVALed just before displaying
+ the buttons.
+
+ [bDispEnd] - an optional codeblock that gets EVALed just after displaying
+ the buttons.
+
+ [bUndisplay] - an optional codeblock that gets EVALed after un-displaying
+ the buttons.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_keys()           Defines hot keys
+'------------------------------------------------------------------------------
+ ADrb_keys( <aKeys>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys local to the menu.
+
+ [aKeys] is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+   1 - the index position of the pressed key
+   2 - the inkey code of the pressed key
+
+ [lAdditive] is a logical value.  If it is FALSE, the hot keys defined now
+ will supersede all previous definitions, if any.  If it is TRUE, the new
+ definitions are added or chained to existing ones.  The default is FALSE.
+
+ Example:
+ -------
+ #include "inkey.ch"
+ func main()
+ local e := ADrb_create( {||ADrb_keys( { K_F9, K_F10 },;
+                                       {|n,k|Xhandler(k)};
+                                     );
+                         };
+                       )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+
+ func Xhandler( nKey )
+ if nKey == K_F9
+    ADmessage( { "Pressed F9" } )
+ else
+    ADmessage( { "Pressed F10" } )
+ endif
+ return NIL
+!seealso: "ADrb_lbuttons()" "ADrb_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_lbuttons()       Defines left button hot spots
+'------------------------------------------------------------------------------
+ ADrb_lbuttons( <aSpots>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse left button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ [lAdditive] is a logical value.  If it is FALSE, the hot spots defined now
+ will supersede all previous definitions, if any.  If it is TRUE, the new
+ definitions are added or chained to existing ones.  The default is FALSE.
+
+ Example:
+ -------
+ #include "inkey.ch"
+ #define TOPROW     { 0, 0, 0, maxcol() }
+ #define BOTTOMROW  { maxrow(), 0, maxrow(), maxcol() }
+ func main()
+ local e := ADrb_create( {||ADrb_lbuttons( { TOPROW, BOTTOMROW },;
+                                           {|n,r,c|Xhandler(r)};
+                                         );
+                         };
+                       )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+
+ func Xhandler( nRow )
+ ADm_rwait()
+ if nRow == 0
+    ADmessage( { "Clicked top row" } )
+ else
+    ADmessage( { "Clicked bottom row" } )
+ endif
+ return NIL
+!seealso: "ADrb_keys()" "ADrb_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_okbutton()       Configures the "OK" pushbutton
+'------------------------------------------------------------------------------
+ ADrb_okbutton( [cLabel], [nTrigger], [aColors] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the "OK" pushbutton.
+
+ [cLabel] is the label of the "OK" button.  Defaults to "Okay"
+
+ [nTrigger] is the index position of the button's trigger.  Defaults to 1.
+
+ [aColors] is an array of two elements:
+
+    1 - the standard color.  Defaults to "W+/B" and "N/W" in color and BW
+        monitors, respectively
+
+    2 - the foreground color of the trigger.  The background is the same as
+        the standard color.  Defaults to "R+" and "W+" in color and BW
+        monitors, respectively.
+
+ Example
+ -------
+ #define OKAY_LABEL      "Accept"
+ #define OKAY_TRIGGER    1
+ #define OKAY_STDCOLOR   "GR+/BR"
+ #define OKAY_TRGCOLOR   "G+"
+
+ func main()
+ local e := ADrb_create( {|| ADrb_okbutton( OKAY_LABEL,;
+                                            OKAY_TRIGGER,;
+                                            { OKAY_STDCOLOR, OKAY_TRGCOLOR };
+                                          );
+                         };
+                       )
+
+ ADrb_add( e,2,2, "The" )          // button #1
+ ADrb_add( e,4,2, "Quick" )        // button #2
+ ADrb_add( e,6,2, "Brown" )        // button #3
+ ADrb_add( e,8,2, "Fox" )          // button #4
+ cls
+ ADrb_show( e )
+ ADrb_activate( e, 3 )
+ ADrb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_rbuttons()       Defines right mouse button hot spots
+'------------------------------------------------------------------------------
+ ADrb_rbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse right button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ Example
+ -------
+ // deactivate the right mouse button
+ func main()
+ local e := ADrb_create( {||ADrb_rbuttons( { {0,0,maxrow(),maxcol()} },;
+                                           {||NIL};
+                                         );
+                         };
+                       )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADrb_activate( e )
+ ADrb_kill( e )
+ return NIL
+!seealso: "ADrb_keys()" "ADrb_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_timeout()        Defines a timeout behavior for ADrb_activate()
+'------------------------------------------------------------------------------
+ ADrb_timeout( <nSeconds>, <bTimeOut> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a timeout behavior for ADrb_activate().
+
+ <nSeconds> is the number of seconds of inactivity before timing out.
+
+ <bTimeOut> is a codeblock that is EVALed at timeout.  When the codeblock
+ exits, control is returned to ADrb_activate(), unless ADrb_abort() is
+ called inside the block.  When control is returned to ADrb_activate(),
+ counting of <nSeconds> starts at zero again.
+
+ Example
+ -------
+ func main()
+ local nSel
+ local bConfig := {||ADrb_timeout( 5, {||ADblankscn()} )}
+ local e := ADrb_create( bConfig )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ nSel := ADrb_activate( e )
+ ADmessage( { "Selected " + ADn2s( nSel ) } )
+ ADrb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADrb_abort()          Aborts ADrb_activate().
+'------------------------------------------------------------------------------
+ ADrb_abort() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Aborts ADrb_activate().
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ local bConfig := {||ADrb_keys( { K_F10 }, {||ADrb_abort()} )}
+ local e := ADrb_create( bConfig )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADmessage( { "Selected #" + ADn2s( ADrb_activate( e ) ) } )
+ ADrb_kill( e )
+ return NIL
+!seealso: "ADrb_activate()" "ADrb_select()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_activate()       Activates a radio buttons engine.
+'------------------------------------------------------------------------------
+ ADrb_activate( <nEngine>, [xInit] ) --> <xSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Activates a radio buttons engine, <nEngine>.  This API does not display the
+ buttons, but merely activates them, that is, pauses the program until
+ a button is selected, or until the engine is aborted.  Use ADrb_show() to
+ display the buttons.
+
+ [xInit] is an optional value designating the options(s) to be initially
+ toggled "on".  If the buttons are operating as a checkbox, [xInit] is an
+ array of logical values, one element for each button.  A TRUE indicates an
+ "on" position.  If the buttons are operating as radiobuttons (the default),
+ [xInit] is a numeric value indicating the index position of the button that
+ will be initially turned "on".
+
+ <xSelection> is the return value.  If the buttons are operating as
+ radiobuttons, it is the index position of the selected button (0 if
+ aborted).  If it is operating as a checkbox, it is an array of logical
+ values (one for each button, TRUE="on", empty array if aborted).
+
+ Example
+ -------
+ See ADrb_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_add()            Adds a button into the engine
+'------------------------------------------------------------------------------
+ ADrb_add( <nEngine>, <nRow>, <nCol>, <cLabel>, [nTrigger], [lToggle] )
+     --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a button into the engine.
+
+ <nEngine> is the numeric identifier of the push button engine.
+
+ <nRow>, <nCol> is the starting position of the added button.
+
+ <cLabel> is the label of the added button
+
+ [nTrigger] is the index position of the trigger key.  It defaults to 1.
+ NOTE: If an '&' is embedded in the label, its relative position supercedes
+ whatever is specified in [nTrigger].
+
+ [lToggle] is an optional logical value that may be passed when the buttons
+ are configured as a checkbox.  A TRUE designates, that it is turned "on"
+ initially.  Note that ADrb_activate() may also be used to designate the
+ initial settings of the buttons.  ADrb_activate() takes precedence over
+ ADrb_add().
+
+ Example
+ -------
+ See ADrb_create()
+
+ v2.30 -> v3.00
+ --------------
+ Allows embedding of '&' in the label to identify trigger key.
+!seealso: fran_031.ngo:"ADg_trigmarker()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_kill()           Kills a push button engine.
+'------------------------------------------------------------------------------
+ ADrb_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills a radio buttons engine, <nEngine>.  If an engine is not killed after
+ exiting, it remains alive in a dormant condition.  A dormant engine may be
+ reactivated with:
+
+    ADrb_show( nEngine ); ADrb_activate( nEngine )
+
+ A resurrected engine restores the settings of the toggles at the time the
+ engine was last exited.
+
+ Example
+ -------
+ See ADrb_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_select()         Selects the tagged item(s) in ADrb_activate().
+'------------------------------------------------------------------------------
+ ADrb_select() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Selects the tagged item(s) in ADrb_activate().
+
+ Example 1
+ ---------
+ #include "inkey.ch"
+ func main()
+ local bConfig := {||ADrb_keys( { K_F10 }, {||ADrb_select()} )}
+ local e := ADrb_create( bConfig )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ ADmessage( { "Selected #" + ADn2s( ADrb_activate( e ) ) } )
+ ADrb_kill( e )
+ return NIL
+
+ Example 2
+ ---------
+ #include "inkey.ch"
+ func main()
+ local aSel
+ local bConfig := {||ADrb_keys( { K_F10 }, {||ADrb_select()} ),;
+                     ADrb_chkbox();
+                  }
+ local e := ADrb_create( bConfig )
+ ADrb_add( e,12,14, "The" )              // button #1
+ ADrb_add( e,13,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,14,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ aSel := ADrb_activate( e )
+ ADaModify( aSel, {|x|if( x, "Tagged", "Not Tagged" )} )
+ ADaview( aSel )
+ ADrb_kill( e )
+ return NIL
+!seealso: "ADrb_abort()" "ADrb_activate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_show()           Displays the buttons in the engine.
+'------------------------------------------------------------------------------
+ ADrb_show( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays the buttons in the engine.
+
+ <nEngine> is the numeric engine identifier.
+
+ Example
+ -------
+ See ADrb_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADrb_triggers()       Returns an array of trigger keys.
+'------------------------------------------------------------------------------
+ ADrb_triggers( <nEngine> ) --> <aKeys>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array of trigger keys.
+
+ <nEngine> is the numeric engine identifier.
+
+ <aKeys> is the return value.  Each button in the engine is mapped to two
+ trigger keys in <aKeys>, an upper case, and a lower case.  Thus the number
+ of elements in <aKeys> is twice as many buttons there are in the engine.
+
+ Example
+ -------
+ func main()
+ local e := ADrb_create()
+ cls
+ ADrb_add( e,1,14, "The" )              // button #1
+ ADrb_add( e,2,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,3,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ setpos( 10, 0 )
+ aeval( ADrb_triggers( e ), {|x| qout( x )} )   // 84  -> "t"
+                                                // 116 -> "T"
+                                                // 81  -> "q"
+                                                // 113 -> "Q"
+                                                // 66  -> "b"
+                                                // 98  -> "B"
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrb_spots()          Returns the corresponding hot spots of the buttons
+'------------------------------------------------------------------------------
+ ADrb_spots( <nEngine> ) --> <aSpots>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array of the corresponding hot spots of the buttons.
+
+ <nEngine> is the numeric engine identifier.
+
+ <aSpots> is the return value.
+
+ Example
+ -------
+ func main()
+ local e := ADrb_create()
+ cls
+ ADrb_add( e,1,14, "The" )              // button #1
+ ADrb_add( e,2,14, "Quick Brown Fox" )  // button #2
+ ADrb_add( e,3,14, "Jumps" )            // button #3
+ ADrb_show( e )
+ setpos( 10, 0 )
+ aeval( ADrb_spots( e ),;
+        {|x| aeval( x, {|y| qqout( y, " " )} ), qout("");
+        };
+      )         // 1 14 1 20
+      )         // 2 14 2 32
+      )         // 3 14 3 22
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,49 @@
+'------------------------------------------------------------------------------
+^BFIND^B
+
+    FIND searches an indexed database file for the first record with an
+    index key that matches the specified character string or number.  FIND
+    conducts a very rapid record search.
+
+^USyntax^U
+
+    FIND <character string>/(<expC>)
+
+^UArgument^U
+
+    <character string> is all or part of the index key of a record you are
+    searching for.  if an expression (<expC>) is specified instead of a
+    literal character string, FIND operates the same as SEEK.
+
+^UUsage^U
+
+    FIND searches the controlling index starting with the first key and
+    proceeds until a match is found or there is a key value greater than
+    the search argument.  If there is a match, the record pointer is
+    positioned to the record number found in the index.  If SOFTSEEK is OFF
+    (the default) and FIND does not find a record, the record pointer is
+    positioned to LASTREC() + 1, EOF() returns true (.T.), and FOUND()
+    returns false (.F.).  If SOFTSEEK is ON, the record pointer is
+    positioned to the record with the first key value greater than the
+    search argument and FOUND() returns false (.F.).  In this case, EOF()
+    only returns true (.T.) if there are no keys in the index greater than
+    the search argument.
+
+    ^BLeading blanks^B: If a literal search argument has leading blanks, it
+    must be delimited with quote marks and have the same number of leading
+    blanks as the index key.
+
+    ^BMacro substitution^B: The search argument can be a macro variable if
+    not bounded by parentheses.  The syntax for this is &<memvar>.
+
+    ^BNumeric keys^B: Clipper stores numeric index keys with leading zeros.
+    This means that to FIND a numeric key with a literal search argument,
+    you must pad it with leading zeros so there are as many digits in the
+    search argument as there are whole number digits in the index key.  The
+    number of decimal digits does not matter unless the number contains
+    decimal values other than zero.
+!seealso: clip_013.ngo:"INDEX" clip_063.ngo:"SET INDEX" clip_068.ngo:"SET ORDER" clip_075.ngo:"SET SOFTSEEK" clip_019.ngo:" LOCATE" clip_041.ngo:"SEEK" 
+'------------------------------------------------------------------------------
+
+
+

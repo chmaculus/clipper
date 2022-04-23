@@ -1,0 +1,1294 @@
+!short: Command line switches
+'------------------------------------------------------------------------------
+^BCommand line switches
+
+
+ You can prefix command line switches with either a slash or a
+ dash (/ or -).  Switches and qualifiers can be either lower or
+ upper case.  Rescue5 accepts switches either as the first
+ parameter on the command line (immediately after the word
+ Rescue5), or as the last (immediately after the .EXE file name
+ to decompile), or in both positions.
+
+ You can also combine switches, provided directory names are
+ separated by a space from switches that follow them.
+
+ The following command lines are all equivalent:
+
+     ^A1Arescue /g /ts2 anapp.exe /klplo\source /mh^A1A
+     ^A1Arescue anapp /g /ts2 /kl /pl /o\source /mh^A1A
+     ^A1Arescue -GTs2KlPlMhO\source anapp          ^A1A
+
+ Rescue5 also supports the definition of an MS-DOS environment
+ variable:
+
+     ^A1Aset RESCUE=<command line switches>^A1A
+
+ For example:
+
+     ^A1Aset RESCUE=/gts2klplmhi\rescue5\udt^A1A
+
+ You can use the environment variable and MS-DOS command line
+ switches in combination.  Rescue5 reads the environment
+ variable first followed by the command line.  Where switches
+ are defined more than once, the latter switch takes effect with
+ the result that command line switches may override environment
+ switches.
+
+
+ ^BCommand line switches that control formatting
+
+ ^A1A/g       Convert graphics to chr()'s
+
+   By default, Rescue5 outputs graphic characters (printable
+   characters over ASCII code 127 and under 32) as character
+   strings.  Use the /g switch to force Rescue5 to output calls
+   to the chr() function instead.  This feature is useful if you
+   need to process the code in software that does not support
+   the upper ASCII characters (such as some word processors).
+
+ ^A1A/kl      Output key words in lower case
+ ^A1A/kp      Output key words in proper case
+ ^A1A/ku      Output key words in upper case
+
+   /k allows you to change the case of CA-Clipper key words from
+   the Rescue5 default of upper case.  /kp will cause key words
+   to be given an initial upper case letter with the rest of the
+   word in lower case.
+
+ ^A1A/mh      Assume memvars are hungarian
+ ^A1A/ml      Output memvars in lower case
+ ^A1A/mp      Output memvars in proper case
+ ^A1A/mu      Output memvars in upper case
+
+   /m allows you to change the case of public, private and auto
+   (undeclared) memory variables from the default of upper case.
+
+   /m also determines the case of local and static variable
+   names recovered from code linked with the CA-Clipper /b
+   switch (it has no effect on Rescue5 generated local and
+   static variable names, which are always output in the format
+   they are specified in the <.EXE name>.VAR file).
+
+   /mh causes Rescue5 to assume hungarian notation and make the
+   initial character of the memvar name lower case, the second
+   character upper case, then all subsequent characters lower
+   case.
+
+ ^A1A/pl      Output procedures in lower case
+ ^A1A/pp      Output procedures in proper case
+ ^A1A/pu      Output procedures in upper case
+
+   /p allows you to change the case of all procedure, function
+   and class method names from the default of upper case.
+   Rescue5 treats class instance variables as methods for
+   formatting purposes.
+
+ ^A1A/r<n>    Right margin setting
+
+   The right margin setting is the column at which Rescue5
+   inserts a semicolon and carriage return/line feed.  The
+   margin defaults to 74.  /r0 disables line splitting
+   altogether.
+
+   Literal strings are not split by Rescue5; it is possible for
+   a string to exceed the specified right margin.
+
+ ^A1A/s<n>    Size in lines for LIB grouping
+
+   Rescue5 decides which procedures to group in LIB.UDF, based
+   on number of lines of code.  Procedures that exceed this
+   threshold are recovered into separate files, named after the
+   procedure concerned.  The default threshold is 30 lines,
+   setting it to 0, for example, will cause every non-static
+   procedure to be given its own file; 65535 would cause every
+   procedure to be written into LIB.UDF.
+
+   Note that threshold size has no effect on procedures that are
+   grouped together because of static interdependency.  These
+   will always be grouped into the same file (see the section on
+   the decompilation process).
+
+ ^A1A/ts<n>   Tabstop (space) mode
+
+   Following common practice, Rescue5 indents flow control
+   structures cumulatively, each level of nesting being indented
+   more deeply than the previous level.
+
+   By default, Rescue5 uses 3 spaces for each level of flow
+   control indentation, equivalent to /ts3.  You can adjust
+   indenting to suit the configuration of your editor.
+
+ ^A1A/tt<n>   Tab mode
+
+   In tab mode a single tab is used as the indent character.
+
+   <n> is the size of tabstop (i.e. equivalent number of spaces)
+   used by Rescue5 in calculating where to split lines that
+   exceed the /r setting.  For example, /tt2 inserts a single
+   tab for each level of indent, but Rescue5 treats each tab as
+   if it were two spaces for the purpose of splitting long
+   lines.
+
+
+ ^BOther command line switches
+
+ ^A1A/1       Force Pass 1 behaviour
+
+   /1 causes Rescue5 to ignore (and therefore recreate) existing
+   <.EXE name>.VAR and <.EXE name>.GRP files.  This has the same
+   effect as deleting the files created from the first pass and
+   running Rescue5 again.
+
+ ^U/c       Change grouped code generation strategy
+
+   Code grouping is the placing of a comma-separated list of
+   expressions within parentheses:
+
+   cName := (cust->(dbsetorder(2), dbseek('123')), cust->name)
+
+   The expressions are evaluated from left to right, the
+   result of the entire group being the value of the last
+   expression.
+
+   It is possible (although very unusual) for Rescue not to group
+   code that was originally grouped.  The /c switch forces Rescue5
+   to try to group ambiguous code, eliminating errors introduced by
+   the default grouping strategy.
+
+   /c should be used with caution, since it can introduce other problems
+   by causing Rescue to attempt to group code that was not originally
+   grouped.
+
+   You should only use /c if you encounter a code generation error.
+
+ ^A1A/h       Help
+
+   /h displays the valid command line switches.
+
+ ^A1A/i<dir>  Include directory for user defined type files
+
+   Files 'included' in a user defined type file with the @
+   command are searched for as follows:
+
+     the current directory is searched first
+     a directory specified with the /i switch is searched second
+     a directory specified with the /o switch is searched third
+     the directory rescue.exe is in is searched last
+
+   Unless a path is specified in which case the path supplied is
+   searched alone.
+
+   For example, the command @mytypes.udt will cause Rescue5 to
+   look for the file mytypes.udt in the current directory first,
+   then the /i directory if one is set, then the /o directory if
+   one is set and finally the directory that rescue.exe was
+   started from.  The first copy found will be the one included.
+   If the command @\rescue\types\mytypes.udt was used instead,
+   then RESCUE5 would only look in the directory \rescue\types
+   and nowhere else.
+
+ ^A1A/n       No pause
+
+   Unless you use the /q switch Rescue5 will wait for a key
+   stroke after completing the decompilation.  /n causes Rescue5
+   to return to the MS-DOS prompt immediately.
+
+ ^A1A/o<dir>  Output directory
+
+   By default, Rescue5 writes recovered code into the current
+   directory.  If you specify a new output directory it must
+   already exist.
+
+ ^A1A/q       Quiet mode (no screen i/o)
+
+   In quiet mode Rescue5 displays a rotating triangle,
+   suppressing all other screen output.  Since screen i/o takes
+   time, decompilation will be slightly faster with /q.
+
+ ^A1A/u<file> User defined type file
+
+   By default, Rescue5 reads variable base names from the file
+   called VARIABLE.UDT.  The /u switch can be used to force
+   Rescue5 to use the specified file instead.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Decompilation screen
+'------------------------------------------------------------------------------
+^BThe decompilation screen
+
+
+ The decompilation screen is divided into five regions:
+
+ 1) The Configuration region displays the current Rescue5
+    settings.
+
+^A1A            EXE file:  Name of the .EXE file being decompiled
+^A1A         Indent mode:  /tt or /ts setting
+^A1A        Right margin:  /r setting
+^A1A       LIB threshold:  /s setting
+^A1A       Graphic chars:  /g setting
+^A1A           Key words:  /k setting
+^A1A             Memvars:  /m setting
+^A1A          Procedures:  /p setting
+
+ 2) The Procedures region displays information about the
+    procedures in the .EXE file.  The first column of figures
+    contains the symbol number, the second the percentage
+    processed so far.
+
+    The type of the procedure currently being processed is
+    ticked.
+
+    The "protected" figures will always be zero.  This slot is
+    reserved for procedures that have been individually
+    protected by APTware's protection utility.
+
+^A1A           Name: Procedure being processed
+^A1A         Normal: Total and % of non static, init or exit procedures
+^A1A         Static: Total and % of static procedures
+^A1A           Init: Total and % of init procedures
+^A1A           Exit: Total and % of exit procedures
+^A1A          C/ASM: Total and % of non CA-Clipper procedures
+^A1A      Protected: Total and % of protected procedures
+
+
+ 3) In the centre of the screen is a progress bar
+    that indicates the status of the current operation.
+
+ 4) The Decompilation region displays information about the
+    decompilation of the current procedure.
+
+^A1A            Name:  Name of the procedure being decompiled
+^A1A      Parameters:  Number of local parameters
+^A1A          Locals:  Number of local variables
+^A1A         Memvars:  Number of publics, privates and autos
+^A1A     Code blocks:  Number of code blocks
+^A1A   Sticky blocks:  Code blocks with detached activation stacks*
+^A1A    Flow nesting:  Deepest flow control nesting level
+^A1A   Block nesting:  Deepest level of code block nesting
+
+  *A "sticky block" is a code block that refers to a local or
+   static variable declared outside itself.  When this happens,
+   CA-Clipper links the code block to the activation stack of
+   the procedure in which it was created, ensuring that the
+   correct locals and statics are in scope wherever the code
+   block is evaluated. The procedure's activation stack in
+   effect "sticks" to the block.
+
+ 5) The Output region shows information about the files the
+    decompiled code is written into.
+
+^A1A        Module:  Module name and number of lines of code.
+^A1A          Name:  Procedure name and number of lines of code.
+
+^A1A         Total modules:  Number of modules written
+^A1A      Total procedures:  Number of procedures written
+^A1A           Total lines:  Number of lines of code written
+^A1A           Total bytes:  Number of bytes written
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Files produced during decompilation
+'------------------------------------------------------------------------------
+^BFiles produced during decompilation
+
+
+ Rescue5 reads and writes information from and to a number of
+ different files during decompilation.
+
+ 1) Files containing recovered source code
+
+    ^A1AMAIN.UDF
+
+    Created to contain the first user-defined non init or exit
+    procedure encountered.
+
+    ^A1ALIB.UDF
+
+    Created to contain the procedures below the /s threshold not
+    included in a  <procedure>.UDF file (see below).
+
+    ^A1A<procedure name>.UDF
+
+    Each procedure over the /s threshold is written into a
+    separate source file.  Procedures that are interdependent
+    through referencing common static variables or procedures are
+    grouped together in the same file.
+
+    Duplicate file names are resolved by having an ordinal number
+    inserted into the name.
+
+    ^A1AORPHAN.UDF
+
+    Unreferenced individual static procedures will be placed in a
+    file called ORPHAN.UDF.  ORPHAN files are rare since the
+    procedures they contain are "dead" code.
+
+    ^A1AMODULEnnn.UDF
+
+    A MODULE file is created for each group of interrelated
+    static procedures that call each other but are never called
+    from anywhere else.  MODULE files are rare since the
+    procedures they contain are "dead" code.
+
+    ^A1A[path\]<original PRG name>.SRC
+
+    Code that was compiled with the CA-Clipper /b switch is
+    recovered into file(s) with the same name as the original
+    .PRG file, but with a .SRC extension.
+
+    If the original .PRG was compiled in a specific directory,
+    Rescue5 will create an equivalent directory for the recovered
+    file, using the output directory as root.  Drive names are
+    converted to directory names by the drive letter being
+    prefaced the word 'drive_'.  Relative paths are resolved to
+    absolute.
+
+    For example, assume the .EXE contains the code from two .PRG
+    files of the same name but different paths:
+
+^A1A       clipper f:\lib\source\myprog.prg /b /n clipper
+^A1A       g:\lib\source\myprog.prg /b /n
+
+    If these are recovered with the command line:
+
+^A1A       rescue myapp.exe /omyapp
+
+    Rescue5 will create:
+
+^A1A       c:\rescue5\myapp\drive_f\lib\source\myprog.src
+^A1A       c:\rescue5\myapp\drive_g\lib\source\myprog.src
+
+ 2) Configuration files
+
+    ^A1AVARIABLE.UDT / <user defined file>
+
+    Variable base name definition files are read by Rescue5 on
+    the first pass and are used to create the <EXE name>.VAR
+    file for the .EXE being decompiled.
+
+    Variable base name files can be created or modified with a
+    text editor.
+
+    ^A1A<.EXE name>.GRP
+
+    Rescue5 creates a grouping file for the .EXE being
+    decompiled during the first pass.  The file can be modified
+    with a text editor, and is read by Rescue5 during subsequent
+    passes.
+
+    During subsequent passes Rescue5 uses the contents of the
+    <EXE name>.GRP file to determine which procedures to write
+    into which source files.
+
+    Note that Rescue5 ignores entries for groups that were
+    originally compiled with the CA-Clipper /b switch (these are
+    always placed in .SRC files with the same name as the
+    original .PRG).
+
+    ^A1A<.EXE name>.VAR
+
+    During the first pass Rescue5 uses the definitions in the
+    VARIABLE.UDT file to generate names for local and static
+    variables, writing the suggested names into the <.EXE
+    name>.VAR file.  The file can be modified with a text
+    editor, and is read by Rescue5 during subsequent passes.
+
+    During subsequent passes Rescue5 uses the contents of the
+    <EXE name>.VAR file to determine static and local variable
+    names, which are written into the recovered source.
+
+    A <.EXE name>.VAR file is not written if all the source code
+    in the application was compiled with the CA-Clipper /b
+    switch, since Rescue5 recovers local and static variable
+    names from the debugger information.
+
+
+ 3) Other files
+
+    ^A1AERROR
+
+    If any errors occur during decompilation Rescue5 will write
+    them into a file called ERROR.
+
+    ^A1A<.EXE name>.RMK
+    ^A1A<.EXE name>.LNK
+
+    RMake and linker script files with which to rebuild the
+    application.
+
+    ^A1AREPORT
+
+    The REPORT file lists some overall statistics about the
+    application, the states of Rescue5 settings and the contents
+    of each of the source modules recovered.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Decompilation process
+'------------------------------------------------------------------------------
+^BThe decompilation process
+
+
+ Rescue5 decompiles in one-pass, with optional further passes to
+ change source code grouping and/or local and static variable
+ names (privates, publics, undeclared memvar variables and all
+ procedure names are recovered as per the original source,
+ except that the CA-Clipper compiler truncates these names to
+ only 10 characters).
+
+ 1) Rescue5 locates the symbol table in the .EXE file and
+    calculates the address of the p-code for each CA-Clipper
+    procedure.
+
+ 2) Rescue5 works out symbol grouping based on static symbol
+    frames.
+
+ 3) Rescue5 reads variable base types and names from the
+    VARIABLE.UDT and user defined type files.
+
+ 4) Rescue5 decompiles and outputs source code and additional
+    information.
+
+ 5) If Rescue5 is run a second time, the local and static
+    variable names suggested in the file called <.EXE name>.VAR
+    will be used instead of the default ordinal naming
+    convention.  Procedures will be grouped into source files
+    according to the structure defined in <.EXE name>.GRP.
+
+    Rescue5 can be run iteratively on the same .EXE as required,
+    with settings, variable names and source grouping being
+    changed until the code is close to the original.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Quality of the recovered code
+'------------------------------------------------------------------------------
+^BQuality of the recovered code
+
+
+ The code Rescue5 recovers is similar to a formatted version of
+ the .PPO code emitted when you specify the /p switch with the
+ CA-Clipper compiler, except that the code recovered has
+ undergone compiler optimisation.
+
+ This means that the code recovered is procedure instead of
+ command based (all CA-Clipper commands, except flow-control
+ statements, are pre-processed to procedure calls).  This has
+ the following implications:
+
+ 1) Some CA-Clipper "internals" may be referenced
+    directly in the source code.  For example, an @ .. GET
+    command becomes a sequence of function calls including a
+    call to _GET_(), the QUIT command becomes a call the _QUIT()
+    function etc.  This has no effect on the compatibility of
+    the code with the original system.
+
+ 2) Manifest constants are lost (K_F2 becomes -1 etc.).
+
+ 3) The CA-Clipper optimiser will have removed some redundant
+    code.  In most cases this makes statements more logical:
+
+    Original PRG code
+    -----------------
+    ^A1AUSE clients
+
+    PPO output (CA-Clipper /p switch)
+    ---------------------------------
+    ^A1Adbusearea(.f.,,"clients",,if(.f. .or. .f., !.f., nil), .f.)
+
+    The code Rescue5 recovered
+    --------------------------
+    ^A1Adbusearea(.f.,NIL,"clients",NIL,NIL,.f.)
+
+    In the above example, if(.f. .or. .f., !.f., nil) has been
+    resolved by the CA-Clipper optimiser to the constant nil.
+
+
+ In addition to the above, the following code statements may be
+ recovered in a slightly different form to that originally
+ written.  In all cases this is because the CA-Clipper compiler
+ has produced p- code that can be decompiled in more than one
+ way.  Note that the code recovered by Rescue5 is functionally
+ identical to the original:
+
+ 1) DO CASE may become IF ELSEIF
+
+    Under some circumstances it is impossible to
+    differentiate between IF..ELSEIF..ENDIF and DO
+    CASE..ENDCASE, since both sometimes compile to the same
+    p-code.  Rescue5 generates an IF construct.  Since both
+    constructs have exactly the same effect this does not change
+    the functionality of the program.
+
+ 2) Unary increment and decrement
+
+    Where a unary increment or decrement operator appears on a
+    line by itself, CA-Clipper produces p-code for the "pre"
+    version, even if the "post" version was used in the original
+    code (nCount++ on a line by itself will become ++nCount).
+    Outside compound statements the two expressions are
+    arithmetically equivalent.
+
+ 3) Declared but unreferenced static variables become 'file-wide'
+
+    Rescue5 determines whether a static variable is file-wide
+    or function-scoped according to its actual usage.  Therefore
+    a function that declared a static variable but never
+    actually references it cannot 'claim ownership' of the
+    variable.
+
+ 4) Logically equivalent IF statements
+
+    CA-Clipper produces the same p-code for:
+
+    ^A1A  if x    ^A1A
+    ^A1A    if y  ^A1A
+    ^A1A     :    ^A1A
+    ^A1A    endif ^A1A
+    ^A1A  endif   ^A1A
+
+    and
+
+    ^A1A  if x .and. y^A1A
+    ^A1A     :        ^A1A
+    ^A1A  endif       ^A1A
+
+    Since the two are functionally equivalent, Rescue5 generates
+    the second, less verbose version.
+
+ 5) Code grouping
+
+    A technique that is widely used, code grouping is the
+    placing of a comma-separated list of expressions within
+    parentheses:
+
+      ^A1AcName := (cust->(dbsetorder(2), dbseek('123')), cust->name)^A1A
+
+    The expressions are evaluated from left to right, the result
+    of the entire group being the value of the last expression.
+    Thus the expression above is the equivalent of:
+
+      ^A1Acust->(dbsetorder(2)) ^A1A
+      ^A1Acust->(dbseek('123')) ^A1A
+      ^A1AcName = cust->name    ^A1A
+
+    Under rare circumstances Rescue5 may encounter p-code that
+    is ambiguous to the extent that the original code might have
+    been grouped or might not.  In these cases Rescue5 will
+    ^Unot^U group the recovered code.
+
+    ^UIt is possible (although very unusual) for Rescue not to group
+    ^Ucode that was originally grouped.  The /c switch forces Rescue5
+    ^Uto try to group ambiguous code, eliminating errors introduced by
+    ^Uthe default grouping strategy.  /c should be used with caution,
+    ^Usince it can introduce other problems by causing Rescue to attempt
+    ^Uto group code that was not originally grouped.
+
+ 6) Macro in a code block becomes a macro-ed code block
+
+    Under some circumstances the CA-Clipper compiler 'converts'
+    a code block into a macro:
+
+       ^A1Aeval({|| memvar->&"str"})^A1A
+
+    Becomes:
+
+       ^A1Aeval(&"{|| memvar->" + chr(34) + "str" + chr(34) + "}")^A1A
+
+    The two expressions are functionally identical.
+
+ 7) 'Phantom' procedures
+
+    If the original system was compiled without the /n switch,
+    CA-Clipper will have automatically declared a procedure for
+    each of the source files.
+
+    These are emitted by Rescue5 as procedures with no body (no
+    code between the procedure declaration and the return
+    statement).
+
+    It is possible for CA-Clipper to create procedures with
+    illegal names in this manner (CA- Clipper has created a
+    procedure 'internally' that it could not normally compile).
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Variable naming convention
+'------------------------------------------------------------------------------
+^BVariable naming convention
+
+
+ Rescue5 uses a modified version of Hungarian Notation, the
+ international standard used by many programmers.
+
+ Each variable name has a one character lower-case type prefix,
+ for example:
+
+^A1A   a    Array
+^A1A   b    Code block
+^A1A   c    Character
+^A1A   d    Date
+^A1A   l    Logical
+^A1A   n    Number
+^A1A   o    Object
+^A1A   u    Nil
+^A1A   x    Results of evaluating a macro
+^A1A   v    Variable (changes type)
+^A1A   _    Undefined
+
+ Rescue5 allows you to define additional types in the
+ VARIABLE.UDT file or modify the existing ones.
+
+ Local variables that are declared in code-blocks and all static
+ variables have a lower-case scope identifier following the
+ type-prefix:
+
+^A1A   b    Block local (code block parameter)
+^A1A   s    Static
+
+ Scope is not part of the Hungarian notation commonly used by
+ programmers, Rescue5 includes a scope identifier to allow
+ variables defined as having the same base name to be better
+ differentiated.
+
+ Following the scope identifier (or type-prefix if no scope
+ identifier is required) is a short qualifier, with the initial
+ letter in upper case and the rest in mixed case.
+
+ Following the qualifier is an optional scope based ordinal
+ number (used only if there is more than one variable with the
+ same base name and scope).
+
+ For example, nRow2 is the third numerical local variable within
+ the current scope, containing information relating to a screen
+ row.
+
+ The Hungarian notation outlined above takes effect on the
+ optional second pass.  Variable names after the first pass
+ follow the simpler convention of scope and ordinal:
+
+^A1A     Ln     Local variable n
+^A1A     BLn    Local variable n declared in a code-block
+^A1A     Si_n   Static variable n (i is an ordinal number)
+^A1A     Pn     Local parameter n (declared in the parentheses
+^A1A            following  a procedure name, parameters declared
+^A1A            with the PARAMETER key word are private variables
+^A1A            whose names are fully recovered)
+
+ All other symbols are recovered with the names they were
+ assigned in the original code, with the limitation that
+ CA-Clipper will have truncated long names to 10 characters.
+
+ Rescue5 will recover local, block local  and static variable
+ names from code that was originally compiled with the
+ CA-Clipper /b switch.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Supplied variable base names
+'------------------------------------------------------------------------------
+^BSupplied variable base names
+
+
+ ^A1AaArr     ^A1A  Generic array base name
+ ^A1AaDir     ^A1A  Array of directory information
+ ^A1AaLCPos   ^A1A  Array of line and column positions
+ ^A1AaRLock   ^A1A  Array of record locks
+ ^A1AaRDD     ^A1A  Array of RDD names
+ ^A1AaStruct  ^A1A  DBF structure array
+ ^A1AaSysVars ^A1A  Array of system variables
+
+ ^A1AbBlk     ^A1A  Generic code block base name
+ ^A1AbErrHnd  ^A1A  Error handler code block
+ ^A1AbField   ^A1A  Field get/set code block
+ ^A1AbFmt     ^A1A  Read format code block (.FMT)
+ ^A1AbMemVar  ^A1A  Memvar get/set code block
+ ^A1AbSetKey  ^A1A  Code block assigned to a key
+ ^A1AbWField  ^A1A  Aliased field get/set block
+
+ ^A1AcAlias   ^A1A  Alias
+ ^A1AcB16Int  ^A1A  16 bit binary integer string
+ ^A1AcB32Int  ^A1A  32 bit binary integer string
+ ^A1AcBag     ^A1A  Order bag name
+ ^A1AcBagExt  ^A1A  Order bag extension
+ ^A1AcChr     ^A1A  A single character
+ ^A1AcColor   ^A1A  Color string
+ ^A1AcCDate   ^A1A  Date as a string in DTOC format
+ ^A1AcDay     ^A1A  Day
+ ^A1AcDir     ^A1A  Directory name
+ ^A1AcEnvVar  ^A1A  Environment variable name
+ ^A1AcField   ^A1A  Field name
+ ^A1AcFilter  ^A1A  Filter expression
+ ^A1AcFLabel  ^A1A  Function key label
+ ^A1AcLFocus  ^A1A  Order set focus
+ ^A1AcLine    ^A1A  Line of text
+ ^A1AcMemo    ^A1A  Memo field or long string
+ ^A1AcMonth   ^A1A  Month name
+ ^A1AcNum     ^A1A  Number as a string
+ ^A1AcOrder   ^A1A  Order name
+ ^A1AcOrdFor  ^A1A  Order for expression
+
+ ^A1AcOrdKey  ^A1A  Order key expression
+ ^A1AcOsName  ^A1A  Operating system name
+ ^A1AcPrcNme  ^A1A  Procedure name
+ ^A1AcRDD     ^A1A  RDD name
+ ^A1AcRelat   ^A1A  Relation expression
+ ^A1AcScrn    ^A1A  Screen or region of screen
+ ^A1AcSDate   ^A1A  Date string in DTOS format
+ ^A1AcSpaces  ^A1A  String of spaces
+ ^A1AcStr     ^A1A  Generic character type base name
+ ^A1AcTime    ^A1A  Time string
+ ^A1AcType    ^A1A  Type identifier
+ ^A1AcVarName ^A1A  Variable name
+ ^A1AcVer     ^A1A  Version string
+ ^A1AcWSName  ^A1A  Workstation name
+
+ ^A1AdDte     ^A1A  Generic date base name
+ ^A1AdUpdate  ^A1A  Date last updated
+
+ ^A1AhCreate  ^A1A  Handle to a new file
+ ^A1AhHnd     ^A1A  Generic handle type
+ ^A1AhOpen    ^A1A  Handle to an existing file
+
+ ^A1AlAlpha   ^A1A  Is alphanumeric?
+ ^A1AlBof     ^A1A  Beginning of file?
+ ^A1AlClosed  ^A1A  Successfully closed?
+ ^A1AlColor   ^A1A  Is a color string?
+ ^A1AlDel     ^A1A  Is deleted?
+ ^A1AlDigit   ^A1A  Is a digit?
+ ^A1AlDone    ^A1A  Did operation complete?
+ ^A1AlEdited  ^A1A  Was updated?
+ ^A1AlEmpty   ^A1A  Is empty?
+ ^A1AlEof     ^A1A  End of file?
+ ^A1AlExist   ^A1A  Exists?
+ ^A1AlFound   ^A1A  Found?
+ ^A1AlLog     ^A1A  Generic logical base name
+ ^A1AlLower   ^A1A  Is lower case?
+ ^A1AlNetErr  ^A1A  Did a network error occur?
+ ^A1AlPrint   ^A1A  OK to print?
+ ^A1AlRLock   ^A1A  Was a record lock applied?
+ ^A1AlState   ^A1A  Logical state (ON/OFF)
+
+ ^A1AlUpper   ^A1A  Is upper case?
+ ^A1AlUsed    ^A1A  DBF file open?
+ ^A1AlValid   ^A1A  Passed validation test?
+
+ ^A1AnAbs     ^A1A  Absolute number
+ ^A1AnArea    ^A1A  Workarea number
+ ^A1AnBytes   ^A1A  Number of bytes
+ ^A1AnChoice  ^A1A  Number of the option selected
+ ^A1AnCol     ^A1A  Screen column number
+ ^A1AnDay     ^A1A  Day number
+ ^A1AnDbfHdr  ^A1A  Size of DBF header
+ ^A1AnDosErr  ^A1A  DOS error number
+ ^A1AnErrlv   ^A1A  Error level
+ ^A1AnFError  ^A1A  File i/o error number
+ ^A1AnFKeys   ^A1A  Number of function keys available
+ ^A1AnField   ^A1A  Field number
+ ^A1AnFields  ^A1A  Number of fields
+ ^A1AnFiles   ^A1A  Number of files
+ ^A1AnFound   ^A1A  Index of array element found
+ ^A1AnFState  ^A1A  State of low level i/o operation
+ ^A1AnGet     ^A1A  Get object index in getlist array
+ ^A1AnKFree   ^A1A  Kilobytes free
+ ^A1AnKey     ^A1A  Inkey code
+ ^A1AnLen     ^A1A  Length of a string
+ ^A1AnLines   ^A1A  Number of lines
+ ^A1AnLog     ^A1A  Logarithm
+ ^A1AnMonth   ^A1A  Month number
+ ^A1AnNum     ^A1A  Generic number base name
+ ^A1AnOffset  ^A1A  Offset into a string/file
+ ^A1AnOrder   ^A1A  Index order number
+ ^A1AnPCol    ^A1A  Printer column
+ ^A1AnParams  ^A1A  Parameter count
+ ^A1AnPrcLne  ^A1A  Procedure line number
+ ^A1AnPRow    ^A1A  Printer row
+ ^A1AnRecno   ^A1A  Record number
+ ^A1AnRecs    ^A1A  Number of records
+ ^A1AnRemain  ^A1A  Modulus
+ ^A1AnRow     ^A1A  Screen row
+ ^A1AnRSize   ^A1A  Record size
+ ^A1AnSecs    ^A1A  Number of seconds
+
+ ^A1AnSetCur  ^A1A  Cursor shape number
+ ^A1AnSqrt    ^A1A  Square root
+ ^A1AnYear    ^A1A  Year number
+ ^A1Ans16Int  ^A1A  16 bit signed integer
+ ^A1Ans32Int  ^A1A  32 bit signed integer
+ ^A1Anu16Int  ^A1A  16 bit unsigned integer
+
+ ^A1AoErr     ^A1A  Error object
+ ^A1AoGet     ^A1A  Get object
+ ^A1AoObj     ^A1A  Generic object base name
+ ^A1AoSelf    ^A1A  Reference to self
+ ^A1AoTb      ^A1A  TBrowse object
+ ^A1AoTbCol   ^A1A  TBrowse column object
+ ^A1AoTbDB    ^A1A  TBrowseDB object
+
+ ^A1AuNil     ^A1A  Variable with NIL value
+
+ ^A1AvAdded   ^A1A  Value returned by aadd()
+ ^A1AvBlkRtn  ^A1A  Value returned by eval()
+ ^A1AvComp    ^A1A  Complemented value (descend())
+ ^A1AvField   ^A1A  Field value
+ ^A1AvMax     ^A1A  Maximum number or date
+ ^A1AvMin     ^A1A  Minimum number or date
+ ^A1AvSet     ^A1A  Value returned by set()
+ ^A1AvVal     ^A1A  Generic value base type
+ ^A1AvWord    ^A1A  Value returned by word()
+
+ ^A1AxMac     ^A1A  Variable assigned to by a macro
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: VARIABLE.UDT
+'------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# ^A1ARescue5 Usertype File
+# ---------------------------------------------------------------------------
+#
+# Section 1 lists a variable base name for each of the data types that Rescue5
+# will recognise when it creates a VARIABLE file.  Each entry is a one word
+# description followed by a base name, consisting of a one character lower-case
+# type identifier, followed by up to 6 characters of mixed-case qualifier.
+#
+# Generic variable base names are used to create the names of local and static
+# variables that are initialised by an operation on two expressions of the
+# same type but different qualifiers.
+#
+# To define a new generic base name, add it to the list following the
+# conventions specified above.  To edit an existing base name, overtype the
+# name to the right of the description.  To remove a base name, comment it
+# out with a '#' sign.  Descriptions are abitrary for new base names, but
+# do not change the descriptions for the base names supplied with Rescue5.
+#
+# Section 2 lists the types and qualifiers used to create the names of local
+# and static variables that are initialised through function calls.  The name
+# of each function is listed on the left with the variable base name on the
+# right.  This list can be extended or modified at will.
+#
+# Rescue5 supports the inclusion of user defined type files using the @
+# command.  Place a command in the format
+#
+# @<filename>.UDT
+#
+# anywhere in USERTYPE.  <filename> can include a DOS path if the file is not
+# in the current directory or the directory specified with the /i switch.
+#
+# User defined type files can contain any or all of the following:
+#
+#       - # comments
+#       - @ include statements
+#       - Generic base name definitions (as Section 1 in USERTYPE)
+#       - Function return base name definitions (as Section 2 in USERTYPE)
+#
+# If Rescue5 encounters duplicate generic base names or function names
+# it will use the first it encountered and output a warning into the
+# REPORT file.
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# Section 1
+# ---------------------------------------------------------------------------
+#
+# The 1st character type prefix may be anything, with the exception that 'v'
+# is reserved for variable.
+#
+# Do not change any of the following descriptions (you may change the base
+# names):
+
+^A1AGenericBaseNames:
+Array           aArr
+Block           bBlk
+Date            dDte
+Logical         lLog
+Macro           xMac
+Number          nNum
+Object          oObj
+String          cStr
+Nil             uNil
+Variable        vVar
+Undefined       _Def
+
+# User defined types (you may change the description and/or the base name of
+# these, or add your own):
+
+Handle          hHnd
+
+# ---------------------------------------------------------------------------
+# Section 2
+# ---------------------------------------------------------------------------
+#
+# An entry with the same type prefix must appear in Section 1
+#
+#
+
+^A1AFunctionBaseNames:
+aadd            vAdded
+abs             nAbs
+achoice         nChoice
+aclone          aArr
+acopy           aArr
+adel            aArr
+adir            nFiles
+aeval           aArr
+afields         nFields
+afill           aArr
+ains            aArr
+alert           nChoice
+alias           cAlias
+alltrim         cStr
+altd            uNil
+array           aArr
+asc             nNum
+ascan           nFound
+asize           aArr
+asort           aArr
+at              nOffset
+bin2i           ns16Int
+bin2l           ns32Int
+bin2w           nu16Int
+bof             lBof
+break           uNil
+browse          uNil
+cdow            cDay
+chr             cChr
+cmonth          cMonth
+col             nCol
+colorselect     uNil
+ctod            dDate
+curdir          cDir
+date            dDate
+day             nDay
+dbappend        uNil
+dbclearfilter   uNil
+dbclearindex    uNil
+dbclearrelation uNil
+dbcloseall      uNil
+dbclosearea     uNil
+dbcommit        uNil
+dbcommitall     uNil
+dbcreate        uNil
+dbcreateindex   uNil
+dbdelete        uNil
+dbedit          uNil
+dbeval          uNil
+dbf             cAlias
+dbfilter        cFilter
+dbgobottom      uNil
+dbgoto          uNil
+dbgotop         uNil
+dbrecall        uNil
+dbreindex       uNil
+dbrelation      cRelat
+dbrselect       nArea
+dbseek          lFound
+dbselectarea    uNil
+dbsetdriver     cRDD
+dbsetfilter     uNil
+dbsetindex      uNil
+dbsetorder      uNil
+dbsetrelation   uNil
+dbskip          uNil
+dbstruct        aStruct
+dbunlock        uNil
+dbunlockall     uNil
+dbusearea       uNil
+deleted         lDel
+descend         vComp
+devout          uNil
+devoutpict      uNil
+devpos          uNil
+directory       aDir
+diskspace       nBytes
+dispbegin       uNil
+dispbox         uNil
+dispcount       nNum
+dispend         uNil
+dispout         uNil
+doserror        nDosErr
+dow             nDay
+dtoc            cCDate
+dtos            cSDate
+empty           lEmpty
+eof             lEof
+errorblock      bErrHnd
+errorlevel      nErrlv
+eval            vBlkRtn
+exp             nNum
+fclose          lClosed
+fcount          nFields
+fcreate         hCreate
+ferase          nFState
+ferror          nFError
+field           cField
+fieldblock      bField
+fieldget        vField
+fieldname       cField
+fieldpos        nField
+fieldput        vField
+fieldwblock     bWField
+file            lExist
+fklabel         cFLabel
+fkmax           nFKeys
+flock           lLock
+fopen           hOpen
+found           lFound
+fread           nBytes
+freadstr        cLine
+frename         nFState
+fseek           nOffset
+fwrite          nBytes
+getenv          cEnvVar
+hardcr          cLine
+header          nDbfHdr
+i2bin           cB16Int
+indexext        cBagExt
+indexkey        cOrdKey
+indexord        nOrder
+inkey           nKey
+int             nNum
+isalpha         lAlpha
+iscolor         lColor
+isdigit         lDigit
+islower         lLower
+isprinter       lPrint
+isupper         lUpper
+l2bin           cB32Int
+lastkey         nKey
+lastrec         nRecs
+left            cStr
+len             nLen
+lock            lLock
+log             nLog
+lower           cStr
+ltrim           cStr
+lupdate         dUpdate
+max             vMax
+maxcol          nCol
+maxrow          nRow
+memoedit        cMemo
+memoline        cLine
+memoread        cMemo
+memory          nKFree
+memotran        cMemo
+memowrit        lDone
+memvarblock     bMemVar
+min             vMin
+mlcount         nLines
+mlctopos        nOffset
+mlpos           nOffset
+mod             nRemain
+month           nMonth
+mpostolc        aLCPos
+neterr          lNetErr
+netname         cWSName
+nextkey         nKey
+nosnow          uNil
+os              cOsName
+outerr          uNil
+outstd          uNil
+padc            cStr
+padl            cStr
+padr            cStr
+pcol            nPCol
+pcount          nParams
+procline        nPrcLne
+procname        cPrcNme
+prow            nPRow
+qout            uNil
+qqout           uNil
+qself           oSelf
+rat             nOffset
+readkey         nKey
+readvar         cVarName
+reccount        nRecs
+recno           nRecno
+recsize         nRSize
+replicate       cStr
+restscreen      uNil
+right           cStr
+rlock           lRLock
+round           nNum
+row             nRow
+rtrim           cStr
+savescreen      cScrn
+scroll          uNil
+seconds         nSecs
+select          nArea
+set             vSet
+setblink        lState
+setcancel       lState
+setcolor        cColor
+setcursor       nSetCur
+setkey          bSetKey
+setmode         lDone
+setpos          uNil
+setprc          uNil
+soundex         cStr
+space           cSpaces
+sqrt            nSqrt
+str             cNum
+strtran         cStr
+stuff           cStr
+substr          cStr
+time            cTime
+tone            uNil
+transform       cStr
+trim            cStr
+type            cType
+upper           cStr
+used            lUsed
+val             nNum
+valtype         cType
+version         cVer
+word            vWord
+year            nYear
+__accept        vVar
+__acceptst      cStr
+__menuto        nChoice
+__wait          vVar
+
+#
+#-- object constructors
+#
+
+errornew        oErr
+getnew          oGet
+tbrowsenew      oTb
+tbrowsedb       oTbDB
+tbcolumnnew     oTbCol
+
+#
+#-- getsys
+#
+
+__killread      uNil
+__setformat     uNil
+cleargetsy      aSysVars
+getactive       oGet
+getapplykey     uNil
+getdossetkey    uNil
+getpostvalidate lValid
+getprevalidate  lValid
+getreader       uNil
+getreadvar      cVarName
+rangecheck      lState
+readexit        lState
+readformat      bFmt
+readinsert      lState
+readkill        lState
+readmodal       lEdited
+readupdated     lState
+settle          nGet
+updated         lEdited
+
+#
+#-- RDD
+#
+
+dbrlock         lRLock
+dbrlocklist     aRLock
+dbrunlock       uNil
+dbsetindex      uNil
+ordbagext       cBagExt
+ordbagname      cBag
+ordcreate       uNil
+orddestroy      uNil
+ordfor          cOrdFor
+ordkey          cOrdKey
+ordlistadd      uNil
+ordlistclear    uNil
+ordlistrebuild  uNil
+ordname         cOrder
+ordnumber       nOrder
+ordsetfocus     cLFocus
+rddlist         aRDD
+rddname         cRDD
+rddsetdefault   cRDD
+
+#
+#-- errorsys
+#
+
+errorsys        uNil
+deferror        vAction
+errormessage    cErrMsg
+
+#
+#-- FRM and LBL
+#
+
+makeastr        cStr
+occurs          nCount
+xmemoline       cLine
+xmlcount        nLines
+getcolumn       aCol
+getexpr         cExp
+listasarray     aList
+parseheader     aPgeHdr
+__frmload       aReport
+__lblload       aLabel
+
+
+#
+#-- RL
+#
+
+vcondition      lValid
+center          nCol
+ext_add         cFile
+frm_edit        lLog
+frm_error       cStr
+frm_scr         cStr
+lbl_ed          nEvent
+lbl_edit        lLog
+lbl_error       cStr
+lbl_scr         cStr
+line_chk        lValid
+saymsg          uNil
+signon          uNil
+updatecolumn    uNil
+xlate           cStr
+insert_blank    lInsert
+stuff_label     lLog
+system_exit     nEvent
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

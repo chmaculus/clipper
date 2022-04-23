@@ -1,0 +1,500 @@
+!short: Introduction PEEK/POKE Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     Despite the many capabilities of CA-Clipper Tools, there are times when
+     direct port or memory access is needed.  The functions in this chapter
+     serve this purpose.  For example, you can read memory regions by byte,
+     word, or as a string through the PEEK function.  POKE functions enable
+     you to write a byte or word to working memory, but not a string.
+
+     ^bWarning!^b  POKE functions can be very dangerous.  If you write to the
+     wrong area in memory it can cause a lot of problems you may not foresee.
+     Use POKE functions ONLY if you have extensive system knowledge.
+
+     This also applies to all the IN/OUT functions in this chapter, which
+     allow you to directly manipulate a port.  For example, if you address a
+     disk controller improperly, the result may lead to data loss.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: INBYTE()     Reads an 8 byte from a port
+'------------------------------------------------------------------------------
+ ^bINBYTE()^b
+ Reads an 8 byte from a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINBYTE(<nPort|cHexPort>) --> nByte
+
+ ^bArgument^b
+
+     ^b<nPort|cHexPort> ^b Designates a port address from which a byte is
+     read.  This value can be a decimal integer or hexadecimal string.
+
+ ^bReturns^b
+
+     INBYTE() returns the byte read from the specified port; or a value of -
+     1, if a parameter error occurs.
+
+ ^bDescription^b
+
+     CA-Clipper Tools always attempts to offer finished solutions at the
+     highest-possible level for such standared hardware as a serial interface
+     port.  However, if you read a highly specialized systems and their ports
+     from CA-Clipper, use INBYTE() or INWORD().
+
+ ^bNote^b
+
+     ^b^CFE^b  A random return value is produced for a nonexistent port or
+        one that cannot be read.
+
+ ^bExamples^b
+
+     These examples read the first port address of the first serial interface
+     port.  This is only an example, since the CA-Clipper Tools contains
+     special port functions.
+
+     ^b^CFE^b  With a decimal parameter:
+
+        ? INBYTE(1016)       // 1st Port (COM1)
+
+     ^b^CFE^b  With a hexadecimal parameter:
+
+        ? INBYTE("3F8")      // Also 1st Port (COM1)
+
+!seealso: "INWORD()" "OUTBYTE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INWORD()     Reads in a 16-bit word from a port
+'------------------------------------------------------------------------------
+ ^bINWORD()^b
+ Reads in a 16-bit word from a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINWORD(<nPort|cHexPort>) --> nWord
+
+ ^bArgument^b
+
+     ^b<nPort|cHexPort>^b  Designates a port address from which a word with a
+     16-bit value is read.  This value can be a decimal integer or
+     hexadecimal string.
+
+ ^bReturns^b
+
+     INWORD() returns the word read from the designated port, or a value of -
+     1 when an error occurs.
+
+ ^bDescription^b
+
+     CA-Clipper Tools always attempts to offer finished solutions at the
+     highest-possible level for such standard hardware as a serial interface
+     port.  However, if you read highly specialized systems and their ports
+     from CA-Clipper, use INBYTE() or INWORD().  INWORD() allows you to read
+     from interfaces that return the data from a port as a 16-bit value.
+
+ ^bNote^b
+
+     ^b^CFE^b  A returns random value for a nonexistent port or one that
+        cannot be read.
+
+ ^bExamples^b
+
+     Show a read from a 16-bit port:
+
+     ^b^CFE^b  With a decimal parameter:
+
+        ? INWORD(512)           // Read from an additional device
+
+     ^b^CFE^b  With a hexadecimal parameter:
+
+        ? INWORD("200")         // The same port address
+
+!seealso: "INBYTE()" "OUTWORD()" tool_006.ngo:"NUMHIGH()" tool_006.ngo:"NUMLOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: OUTBYTE()    Sends a byte to a port
+'------------------------------------------------------------------------------
+ ^bOUTBYTE()^b
+ Sends a byte to a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bOUTBYTE(<nPort|cHexPort>,<nOutByte|cHexOutByte>)
+     ^b    --> lSuccessful
+
+ ^bArguments^b
+
+     ^b<nPort|cHexPort>^b  Designates a port address to which you can pass a
+     byte.  This value can be a decimal integer or hexadecimal string.
+
+     ^b<nOutByte|cHexOutByte>^b  Designates the byte passed to the specified
+     port.  This value can be a decimal integer or hexadecimal string.
+
+ ^bReturns^b
+
+     OUTBYTE() returns .T. when the operation is successfully completed.  A
+     return value of .F. indicates a parameter error.
+
+ ^bDescription^b
+
+     CA-Clipper Tools always attempts to offer finished solutions at the
+     highest-possible level for such standard hardware as a serial interface
+     port..  However, if highly specialized systems and their ports are to
+     receive data from CA-Clipper, use OUTBYTE() or OUTWORD().
+
+ ^bNote^b
+
+     ^b^CFE^b  The function does not determine if a port is available, or if
+        you cannot write to it.
+
+ ^bExamples^b
+
+     Transfer a byte to the fifth port address of the first serial interface
+     port.  This is only an example, since CA-Clipper Tools has special
+     serial interface port functions.
+
+     ^b^CFE^b  With a decimal parameter:
+
+        ? OUTBYTE(1020, 1)          // 5th port COM1, DTR On
+
+     ^b^CFE^b  With a hexadecimal parameter:
+
+        ? OUTBYTE("3FC", 0)         // 5th port COM1, DTR Off
+
+!seealso: "INBYTE()" "OUTWORD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: OUTWORD()    Sends a 16-bit word to a port
+'------------------------------------------------------------------------------
+ ^bOUTWORD()^b
+ Sends a 16-bit word to a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bOUTWORD(<nPort|<cHexPort>,<nOutWord|cHexOutWord>)
+     ^b    --> lSuccessful
+
+ ^bArguments^b
+
+     ^b<nPort|HexPort> ^b Designates a port address to which a word with a 16-
+     bit value is passed.  This value can be a decimal integer or hexadecimal
+     (sedecimal) string.  The maximum is 65520 ("FFF0" Hex).
+
+     ^b<nOutWord|cHexOutWord>^b  Designates the word passed to the specified
+     port.  This value can be designated as a decimal integer or hexadecimal
+     (sedecimal) string.  The maximum is 65536 ("FFFF" Hex).
+
+ ^bReturns^b
+
+     OUTWORD() returns .T. when the operation is successfully completed.  A
+     return value of .F. indicates a parameter error.
+
+ ^bDescription^b
+
+     CA-Clipper Tools always attempts to offer finished solutions at the
+     highest-possible level for such standard hardware as the serial
+     interface port..  However, if, highly specialized systems and their
+     ports are to receive data from CA-Clipper, use OUTBYTE() or OUTWORD().
+
+ ^bNote^b
+
+     ^b^CFE^b  The function does not determine if a port is open or if you
+        cannot write to it.
+
+ ^bExamples^b
+
+     Output to a 16-bit port.
+
+     ^b^CFE^b  With a decimal parameter:
+
+        ? OUTWORD(512, 32)          // Write word to an additional device
+
+     ^b^CFE^b  With a hexadecimal parameter:
+
+        ? OUTWORD("200", "20")      // Same port, same value
+
+!seealso: "INWORD()" "OUTBYTE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PEEKBYTE()   Reads a byte from memory
+'------------------------------------------------------------------------------
+ ^bPEEKBYTE()^b
+ Reads a byte from memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPEEKBYTE(<nSegment|cHexSegment>,<nOffset|cHexOffset>)
+     ^b    --> nByte
+
+ ^bArguments^b
+
+     ^b<nSegment|cHexSegment> ^b Designates the segment address from which
+     the byte is read.  This value can be a decimal integer or hexadecimal
+     string.  The maximum is 65520 ("FFF0" Hex).
+
+     ^b<nOffset|cHexOffset>^b  Designates the offset address within the
+     segment specified by <nSegment|cHexSegment>.  This value can be a
+     decimal integer or hexadecimal string.  The maximum is 65535 ("FFFF"
+     Hex).
+
+ ^bReturns^b
+
+     PEEKBYTE() returns the byte to be read or a value of -1, if there is an
+     error.
+
+ ^bDescription^b
+
+     PEEKBYTE() reads a byte from a desired memory region within conventional
+     memory.  You must specify the segment address and offset.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show a decimal parameter:
+
+        ? PEEKBYTE(1000, 2000)       // Segment 1000d, Offset 2000d
+
+     ^b^CFE^b  Show a hexadecimal parameter:
+
+        ? PEEKBYTE("F000", "8000")   // The byte at address F800h
+
+!seealso: "PEEKWORD()" "POKEBYTE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PEEKSTR()    Reads a byte sequence from memory
+'------------------------------------------------------------------------------
+ ^bPEEKSTR()^b
+ Reads a byte sequence from memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPEEKSTR(<nSegment|cHexSegment>, <nOffset|cHexOffset>,
+     ^b   [<nLength|cHexLength>]) --> cCharacterString
+
+ ^bArguments^b
+
+     ^b<nSegment|cHex>^b  Designates the segment address from which the
+     character sequence string is read.  This value can be a decimal integer
+     or hexadecimal string.
+
+     ^b<nOffset|cHexOffset>^b  Designates the offset address within the
+     segment specified by <nSegment|cHexSegment>.  This value can be a
+     decimal integer or hexadecimal string.
+
+     ^b<nLength|cHexLength>^b   Designates the string length to read, up to a
+     maximum of 65520.  This value can be a decimal integer or a hexadecimal
+     string.  The default, PEEKSTR(), reads to the first CHR(0).
+
+ ^bReturns^b
+
+     PEEKSTR() returns the character string read from memory.
+
+ ^bDescription^b
+
+     PEEKSTR() reads an area of memory and returns it as a string.  The
+     function reads to the first CHR(0) or the length specified through
+     <nLength|cHexLength>.
+
+ ^bExample^b
+
+     The AT BIOS copyright is found at the F000:0h address.  Therefore, each
+     byte is repeated and CHARODD() is used to display it.  It reads to the
+     first CHR(0):
+
+     ? CHARODD(PEEKSTR("F000", 0))      // "19xx, 19xx Copyright...."
+
+!seealso: "PEEKBYTE()" "PEEKWORD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PEEKWORD()   Reads a 16-bit word from memory
+'------------------------------------------------------------------------------
+ ^bPEEKWORD()^b
+ Reads a 16-bit word from memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPEEKWORD(<nSegment|cHexSegment>,<nOffset|cHexOffset>)
+     ^b    --> nWord
+
+ ^bArguments^b
+
+     ^b<nSegment|cHex>^b  Designates the segment address from which a word is
+     read.  This value can be a decimal integer or a hexadecimal string.
+
+     ^b<nOffset|cHexOffset>^b  Designates the offset address within the
+     segment specified by <nSegment|cHexSegment>.  This value can be a
+     decimal integer or hexadecimal string.  The maximum is ("FFFE").
+
+ ^bReturns^b
+
+     PEEKWORD() returns the word that is read in or a value of -1, if an
+     error occurs.
+
+ ^bDescription^b
+
+     In contrast to PEEKBYTE(), this function reads 16 bits from memory.  In
+     this way, WORDS (16-bit integers) are read directly out of two memory
+     regions within conventional memory.  Therefore, you must specify a value
+     for the segment address and offset.
+
+ ^bNote^b
+
+     ^b^CFE^b  PEEKWORD() assumes that a 16-bit value is presented in the low-
+        byte/high-byte sequence.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Peek a word using a hexadecimal parameters:
+
+        ? PEEKWORD("F000", "8000")      // The WORD at address F8000h
+
+     ^b^CFE^b  Store a value in memory and then retrieve it:
+
+        POKEBYTE("9000", "F000", 1)     // 1 stored-9F000h (low byte)
+        POKEBYTE("9000", "F001", 2)     // 2 stored-9F001h (high byte)
+        ? PEEKWORD("9000", "F000")      // Word at 9F000h  513
+
+!seealso: "PEEKBYTE()" "POKEBYTE()" "POKEWORD()" tool_006.ngo:"NUMHIGH()" tool_006.ngo:"NUMLOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POKEBYTE()   Writes a byte to memory
+'------------------------------------------------------------------------------
+ ^bPOKEBYTE()^b
+ Writes a byte to memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPOKEBYTE(<nSegment|cHexSegment>,<nOffset|cHexOffset>,
+     ^b    <nByte|cHexByte>) --> lSuccessful
+
+ ^bArguments^b
+
+     ^b<nSegment|cHexSegment>^b  Designates the segment address in which a
+     byte is stored.  This value can be a decimal integer or hexadecimal
+     string.  The maximum is 65520 ("FFF0").
+
+     ^b<nOffset|cHexOffset>^b  Designates the offset address within the
+     segment specified by <nSegment|cHexSegment>.  This value can be a
+     decimal integer or hexadecimal string.  The maximum is 65535 ("FFFF").
+
+     ^b<nByte|cHexByte>^b  Designates the byte to store in memory.  This
+     value can be a decimal integer or hexadecimal string.  The maximum is
+     255 ("FF").
+
+ ^bReturns^b
+
+     POKEBYTE() returns .T., if the operation is successfully completed.  A
+     return value of .F. indicates a parameter error.
+
+ ^bDescription^b
+
+     POKEBYTE() writes a byte to a desired memory area within conventional
+     memory.  The segment address and offset are required.
+
+     ^bWarning!^b  Be aware that this is not always safe.  If you
+     inadvertently manipulate the wrong memory location, there may be serious
+     consequences.  Use POKEBYTE() ONLY when you have a thorough knowledge of
+     the system environment and there is no other solution than to directly
+     alter a memory location.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function does not check if you can store the byte in
+        memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Poke a byte using decimal parameters:
+
+        ? POKEBYTE(32768, 1000, 65)           // Can be dangerous!
+
+     ^b^CFE^b  Poke a byte using hexadecimal parameters:
+
+        ? POKEBYTE("F000", "8000", "41")      // Impossible, ROM area
+
+!seealso: "PEEKBYTE()" "POKEWORD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POKEWORD()   Writes a 16-bit word to memory
+'------------------------------------------------------------------------------
+ ^bPOKEWORD()^b
+ Writes a 16-bit word to memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPOKEWORD(<nSegment|cHexSegment>,<nOffset|cHexOffset>,
+     ^b   <nWord|cHexWord>) --> lSuccessful
+
+ ^bArguments^b
+
+     ^b<nSegment|cHex>^b  Designates the segment address where a word is
+     stored.  This value can be a decimal integer or hexadecimal string.  The
+     maximum is 65520 ("FFF0").
+
+     ^b<nOffset|cHexOffset> ^b Designates the offset address within the
+     segment specified by <nSegment|cHexSegment>.  This value can be a
+     decimal integer or hexadecimal string.  The maximum is 65534 ("FFFE").
+
+     ^b<nWord|cHexWord>^b  Designates the word to be stored in memory.  This
+     value can be a decimal integer or  hexadecimal string.  The maximum is
+     65535 ("FFFF").
+
+ ^bReturns^b
+
+     POKEWORD() returns .T. when the operation is successfully completed.  A
+     return value of .F. indicates an error.
+
+ ^bDescription^b
+
+     POKEWORD() writes a word to a desired memory area within the
+     conventional memory.  The segment address and offset are required.
+
+     ^bWarning!^b  Be aware that this is not always safe.  If you
+     inadvertently manipulate the wrong memory location, there may be serious
+     consequences.  Use POKEWORD() ONLY when you have a thorough knowledge of
+     the system environment and there is no other solution than to directly
+     alter a memory location.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The function does not test whether the word is stored in
+        memory.
+
+     ^b^CFE^b  POKEWORD() stores the <nWord|cHexWord> word in memory in the
+        low-byte/high-byte sequence.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Poke a word using decimal parameters:
+
+        ? POKEWORD(32768, 1000, 65535)          // Can be dangerous!
+
+     ^b^CFE^b  Poke a word using hexadecimal parameters:
+
+        ? POKEWORD("F000", "8000", "FFFF")      // Impossible, ROM area
+
+!seealso: "PEEKWORD()" "POKEBYTE()" 
+'------------------------------------------------------------------------------
+
+
+

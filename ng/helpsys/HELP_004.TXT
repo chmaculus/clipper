@@ -1,0 +1,132 @@
+!short: ^bSelections prefixed with a '*' are in the registered version^b
+!short: *SetShowStatus() Toggle Network function status display
+'------------------------------------------------------------------------------
+FUNCTION SetShowStatus(lStatus)
+
+     These network functions have the capability of displaying a
+retry/failure status when a possible problem occurs in the network
+environment.  By calling SetShowStatus(.T.) these status messages are
+enable and will be displayed.
+
+Parameters:
+
+     Passing a .T. will cause status messages to be displayed, .F. for
+no status messages.
+
+RETURNS   Current ShowStatus value (.T. or .F.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  NetUse()        Open a database on a network
+'------------------------------------------------------------------------------
+FUNCTION  NetUse(<cDatabase>, [<lOpenMode>], [<nSeconds>] ,
+                 [<aIndexes>], [<cAlias>])
+
+     This function will open a database and any required indexes in
+the current work area selected.  The database can be opened in either
+SHARED or EXCLUSIVE mode.  You can pass the number of total seconds
+that you would like to keep attempting to open the database incase of
+an unsuccessful attempt.  You can also pass an ALIAS to be used when
+opening the database.
+
+     If the SetShowStatus() function call was set to True, the status
+of retrying will automatically appear on the application screen as
+required.
+
+Parameters:
+     cDatabase      Database file to open
+
+     lOpenMode .T. for EXCLUSIVE mode or .F. for SHARED mode
+               (Default of .F. mode if not passed).
+
+     nSeconds  Total number of seconds to retry opening the database
+               file incase of unsuccessful open operations
+               (Defaults to 10 seconds)
+
+     aIndexes  Enter a character string of the index to open or
+               an array of indexes to open if there are more than
+               one (ie.  "HELPSYS1"  or {"HELPSYS1","HELPSYS2"} )
+
+     cAlias         Alias name to be assigned to this workarea
+
+Returns:
+     True if the database is opened successfully, False if not.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  NetFilLock()    Lock a file from access to other users
+'------------------------------------------------------------------------------
+FUNCTION  NetFilLock([<nSeconds>])
+
+     NetFilLock() will attempt to lock the current database to prevent
+access from other users.  This is generally used for a database opened
+in SHARED mode.  If a problem arises, NetFilLock() will attempt to
+retry locking the file for nSeconds.
+
+     If the SetShowStatus() function call was set to True, the status
+of retrying will automatically appear on the application screen as
+required.
+
+Parameter:
+     nSeconds  Time to keep retrying to lock the file
+               (Defaults to 10 seconds)
+Returns:
+     True if the database is locked successfully, False if not.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  NetRecLock()    Lock a record from access to other users
+'------------------------------------------------------------------------------
+FUNCTION  NetRecLock([<nSeconds>])
+
+     This function will attempt to Lock the current record in the
+database that is opened in the current work area. If a problem arises,
+NetRecLock() will attempt to retry locking the record for nSeconds.
+
+     If the SetShowStatus() function call was set to True, the status
+of retrying will automatically appear on the application screen as
+required.
+
+Parameter:
+     nSeconds  Time in seconds to keep retrying incase of record lock
+failure
+               (Defaults to 10 seconds)
+
+Returns:
+     True if the record is locked successfully, False if not.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  NetAddRec()     Add a blank record to a database
+'------------------------------------------------------------------------------
+FUNCTION  NetAddRec([<nSeconds>])
+
+     NetAddRec() will attempt to add a blank record to a database in a
+networking environment.  This is essentially the same as the APPEND
+BLANK command but has retry capabilities and message status.
+
+     If the SetShowStatus() function call was set to True, the status
+of retrying will automatically appear on the application screen as
+required.
+
+Parameter:
+     nSeconds  Time in seconds to keep retrying incase of record
+append failure.
+               (Defaults to 10 seconds)
+
+Returns:
+     True if a blank record is appended successfully, False if not.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

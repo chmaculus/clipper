@@ -1,0 +1,30 @@
+'------------------------------------------------------------------------------
+^BSET SOFTSEEK^B
+
+    SET SOFTSEEK toggles for "relative" SEEKing (looking for the next
+    higher key value when a search fails using SEEK).
+
+^USyntax^U
+
+    SET SOFTSEEK on/OFF/(<expL>)
+
+ ^UUsage^U
+
+    If SOFTSEEK is ON and a match for the SEEK argument is not found, the
+    record pointer is set to the next record in the index with a higher key
+    value than the search key.  If there is no record with higher key
+    value, the record pointer is positioned at LASTREC() + 1, EOF() returns
+    true (.T.), and FOUND() returns false (.F.).
+
+    If SOFTSEEK is OFF and a SEEK is unsuccessful, the record pointer is
+    positioned at LASTREC() + 1, EOF() returns true (.T.), and FOUND()
+    returns false (.F.).
+
+    Note that SET EXACT has no effect on a SEEK if SOFTSEEK is ON.  Note
+    also that SET RELATION ignores SOFTSEEK and so updates the record
+    pointer in child work areas as if SOFTSEEK is OFF.
+!seealso: clip_013.ngo:"INDEX" clip_041.ngo:"SEEK" clip_057.ngo:"SET EXACT" clip_073.ngo:"SET RELATION" 
+'------------------------------------------------------------------------------
+
+
+

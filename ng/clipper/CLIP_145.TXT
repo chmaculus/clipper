@@ -1,0 +1,68 @@
+'------------------------------------------------------------------------------
+^BTRANSFORM()^B
+
+    TRANSFORM() allows formatting of character and numeric data
+    without using the @...SAY command.
+
+^USyntax^U
+
+    TRANSFORM(<exp>,<exp C>)
+
+^UArguments^U
+
+    <exp> is the character, date, or numeric expression to format.
+
+    <expC> identifies the format of the returned character string.
+
+^UReturns^U
+
+    A character string.
+
+    TRANSFORM() takes the result of an expression of any data type and
+    returns a formatted character string according to the template
+    specified by <expC>.  Note that since TRANSFORM() returns a character
+    string, it does not solve the problem of formatting a totalled field in
+    a REPORT FORM.
+
+^UUsage^U
+
+    TRANSFORM() allows you to format character, date, or numeric
+    expressions in the same way you would with @...PICTURE converting each
+    to a character string matching the specified format.  The following is
+    a complete list of functions and templates that TRANSFORM() supports.
+    Refer to @..PICTURE for a complete discussion on how the picture
+    functions and templates work.
+
+                             ^BTRANSFORM FUNCTIONS^B
+
+    Function     Action
+
+       B         Displays numbers left-justified
+       C         Displays CR (credit) after positive numbers
+       D         Displays dates in SET DATE format
+       E         Displays dates in British format
+       R         Non-template characters are inserted
+       X         Displays DB (debit) after negative numbers
+       Z         Displays zeros as blanks
+       (         Encloses negative numbers in parentheses w/ leading spaces
+       !         Converts alphabetic characters to upper case
+
+                             ^BTRANSFORM TEMPLATES^B
+
+    Template    Description
+
+    A,N,X,9,#   Displays digits for any data type
+       L        Displays logicals as "T" or "F"
+       Y        Displays logicals as "Y" or "N"
+       !        Converts an alphabetic character to upper case
+       $        Displays a dollar sign in place of a leading space in a
+                numeric
+       *        Displays an asterisk in place of a leading space in a
+                numeric
+       .        Specifies a decimal point position.
+       ,        Specifies a comma position.
+!seealso: clip_106.ngo:"LOWER" clip_140.ngo:"STR" clip_149.ngo:"UPPER" 
+'------------------------------------------------------------------------------
+
+
+

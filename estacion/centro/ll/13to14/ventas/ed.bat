@@ -1,0 +1,2 @@
+@Echo off
+edit VENTAS.PRG  CAMPOS.TXT FUSION.LOG

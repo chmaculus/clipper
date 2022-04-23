@@ -1,0 +1,340 @@
+!short: Overview of Macro-Programming
+'------------------------------------------------------------------------------
+
+                 ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+                 ณ       ^UMacro-Programming^U      ณÛ
+                 ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤูÛ
+                   ฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿
+
+   Macro is an important feature of Clipper.
+   ^BMacro-Programming is also an important feature of Casual-Kit.
+
+   ^UFeatures of Macro Programming
+
+      ^BExecuted in Run-Time
+
+       A macro program will be read and interpreted by Casual-Kit in run-time.
+
+      ^BSimilar to Clipper Program
+
+       ^BA macro program consists of sequences of clipper expressions and some
+       ^Bmacro structure commands.
+
+       It is very easy to translate macro program into clipper program.
+
+   ^UWhy do we need Macro-Programming ?
+
+      In short, it ^Buses clipper to interpret clipper^B, and so, we may
+      call Macro-Programming a kind of Clipper-Interpretor.
+
+      Having Macro Programming, we can take the advantage of both Compile-
+      Language and Interpret-Language.
+
+      As there is no need to compile or link, we can debug/test macro
+      programs rather fast, as least faster than a clipper program.
+
+      Make your clipper program more flexibly.
+
+   ^uHow to use Macro-Programming ?
+
+      Macro Program is running at lower speed. So you are advised not to
+      use Macro-Programming in the whole program.
+
+      But where and how to use macro-programming ?
+
+      ^Bþ Initialize program variables
+
+        Run a macro program at the beginning of a clipper program, so that
+        we can use macro command to change the value of some important
+        variables.
+        This can make your program very flexible.
+
+      ^Bþ debug/test program
+
+        We can write a macro program first, and then translate it into a
+        clipper program after testing.
+
+      ^Bþ print form/report
+
+        Printer is a rather slow device.  Hence, attention should not be
+        focussed on the running speed.
+
+   ^BDOT.EXE is a example of Macro-Programming
+!seealso: "Functions" "Rules" "Examples" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Functions
+'------------------------------------------------------------------------------
+
+
+
+  ^uMacro Program is executed by macrof() <- macroa() <- macrop()
+
+  ^BMACROF ( <cFileName> , [<cFuncName>] , [<aArgList>] )^B
+
+    Run a macro function in a file.   <cFuncName> default is "MAIN",
+    if "Main" function is not found, macro will be run starting from
+    the first line.
+
+  ^BMACROA ( <Array/Memo> , [<cFuncName>] , [<aArgList>] )^B
+
+    Similar to macrof(), instead <cFileName> with a memo or  string array.
+
+  ^BMACROP ( <cFuncName> , [<aArgList>] )^B
+
+    This function is called by macroa(), and it can also be called in
+    macro program to activate sub-rountine.
+!seealso: "Overview" "Rules" "Examples" ck20_006.ngo:"MacroA()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rules and Structures
+'------------------------------------------------------------------------------
+
+
+                     ^URules and Structures
+
+    ^BA macro program consists of sequences of clipper expressions and
+    ^Bmacro structure commands.
+
+    ^BImportant^B
+
+       You must make sure that the functions used in macro program had
+       been linked into your program.
+
+       For example:
+
+           If your program hasn't include < Browse() > and you haven't
+           informed the linker to include the function < Browse() >, you
+           can't use this function in a macro program.
+
+           However, adding the command in your program can solve the problem :
+
+              ^Bexternal browse      // inform linker to include browse()
+
+    ^B Syntax of Structure Command 
+
+          ^B(1)   \ <Keyword> [ ( <opt1> [;<opt2> [;<opt3>]] ) ]
+          ^B(2)   \ <Keyword> [ ( <argument-list> ) ]
+
+     ^B All macro structure commands begin with '\'.
+
+      The first 4th characters of keyword are recognized.
+
+      <opt1-3> must be included with "()" and separated with ";".
+
+      It will cause error if <opt1-3> include ';' or use "," to
+       separate options
+
+      "Para/Priv/Publ/Func/Proc" commands use format (2). Arguments
+       are separated with "," and the number of arguments is not limited.
+
+
+ ^B(1) ";"  at the end of a line means continue to the next line.
+ ^B    Lines beginning with '*' or the string after "//" will be
+ ^B    regarded as remarks
+
+
+ ^B(2) Declare Variable
+
+     \ Para ( <var,...> )                 // declare parameters
+     \ Publ ( <var,...> )                 // declare public variables
+     \ Priv ( <var,...> )                 // declare private variables
+
+     for example :
+
+     \ para ( arg1, arg2, arg3, arg4, arg5 )
+     \ priv ( var1, var2, var3, var4, var5 )
+     \ publ ( pv1,  pv2,  pv3,  pv4,  pv5  )
+
+ ^B(3) Condition Structure
+                                          // ===== Example =====>
+     \ IF ( <cond> )                      //   \ if ( i>6 )
+       ......                             //      j := 10
+     \ ELSE                               //   \ else
+       ......                             //      k := 10
+     \ ENDI                               //   \ endi
+
+     \ DOCA                               //   \ docase
+       \ CASE ( <cond1> )                 //     \ case (no=1)
+         ......                           //       qout(' no=1 ')
+       \ CASE ( <condn> )                 //     \ case (no<6)
+         ......                           //       qout(' no<6 ')
+       \ CASE                             //     \ case
+         ......                           //       qout(' others ')
+     \ ENDC                               //   \endc
+
+     þ If <cond> is default in "Case" Command, it is equal to "\Case (.t.)"
+
+     þ Notice that "EndC" "EndI" command can't be abbreviated to "END"
+
+ ^B(4) Loop Structure
+                                          // ===== Example =====>
+     \ For ( <init> ; <cond>; <Loop>)     //
+       ......                             //  \for(i:=1; i<10; i:=i+1)
+       \ Loop ( [<cond>] )                //      qqout(i)
+       \ Exit ( [<cond>] )                //     \exit(i<8)
+       ......
+     \ End                                //  \next
+
+     \ While ( <cond> )                   //  \whil(i<20)
+       ......                             //     \loop ( (i:=i+1)>15 )
+       \ Loop ( [<cond>] )                //     qqout(i)
+       \ Exit ( [<cond>] )                //     \exit ( i>18 )
+       ......                             //  \end
+     \ End
+
+     þ Exit sentence in the outest level will end the macro routine.
+
+     þ "EndD" and "Next" are same as "End" command.
+
+     þ "For/While" commands run at lower speed. So, Blk_For()/Blk_While()
+        instead of "For/While" commands is recommended for the sake of
+        efficiency.
+
+ ^B(5) Goto (JMP) Structure
+
+     \ Label <AddrName>                   //  \ label demo
+                                          //    dosomething()
+     \ Goto ( <label> ; [<cond>] )        //  \ goto (demo)
+                                          //    docomething()
+     \ Skip ( <+/-Num>; [<cond>] )        //  \ skip (-2)
+
+     þ You are advised not to use <Goto> commands in macro program.
+
+ ^B(6) SubRoutine Structure
+
+     \ Do ( <file>;[<Func>];[<cond>] )    // \do (othfile;subfunc;i>10)
+     macrof(<file>,[<func>],[<argu>] )    // macrof('othfile','subfunc')
+
+     \ Call (<func>;[<argu>];[<cond>])    // \call(subfunc;{v1,v2};i>10)
+     macrop( <func>,[<argu>] )            // macrop('subfunc',{v1,v2})
+
+     \ Proc <name> [ ( <arg,...> ) ]      // define a procedure(function)
+     \ Func <name> [ ( <arg,...> ) ]      // define a function(procedure)
+
+     \RETU ( <value>[;<cond>] )       // return a value when <cond> is true
+     \QUIT ( [<cond>] )               // quit macro program
+
+     þ Arguments passed to SubRoutine must be stored in a array.
+
+     þ Macrof()/Macrop() are the same as "DO/Call" commands.
+       Macrof()/Macrop() are more flexible and faster while "DO/Call"
+       commands are more readable.
+       However,  Macrof()/Macrop() is preferable to "Do/Call" commands.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Examples
+'------------------------------------------------------------------------------
+
+
+    ^BDOT.EXE is an example of macro programming^B.  It uses the following
+    macro program :
+
+       Dot .CFG  ----  Initialize DOT, set hot-key functions
+       Dot1.MAC  ----  Macro program of file management
+       Dot2.MAC  ----  Macro program of database management
+       Dot3.MAC  ----  Macro program of dot management
+
+    Please run DOT.EXE to get more information about them.
+
+ ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+  Source code of DOT1.MAC :
+
+    Dot1.Mac defines three macro functions :
+     þ Main         ----  Main procedure of file management
+     þ DispOptions  ----  Display the menu-bar of options
+     þ FileList     ----  Make a array of file-list
+
+ ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+\PROC MAIN
+
+  \RETURN ( 0; left(sys8,5)=='DOT1 ')      // test register avoid re-entry
+   sys8 := 'DOT1 ' + sys8                  // register DOT1
+
+  \priv ( fm_scr, fm_tt, fm_no, fm_list, fm_name, fm_pos, i)
+
+   fm_scr := scr_save()
+   fm_tt  := padc('Edit',12)  + padc('Run-Macro',12) + ;  // options
+             padc('Print',12) + padc('Delete',12)
+   fm_pos := 1
+   fm_no  := 0
+   fm_list:= macrop( 'FileList' )        // make a file-list
+   macrop( 'DispOptions', fm_no )        // display options
+
+   \while (.t.)
+
+      i:=e_choice(4,25,22,76,'%%',,col2,'\'+curdir(),fm_list,,,fm_pos)
+
+      ** ------------ i=0 : Exit or Select Options ------------
+      \exit ( lastkey() = 27 )       // <Esc>  to Exit
+      \if ( i = 0 )                  // <left><right> select options
+          fm_no := ( fm_no + if(lastkey()=19,3,1) ) % 4
+          macrop( 'DispOptions', fm_no )
+          \loop
+      \endi
+
+      ** ------------ choose a directory ---------------------
+      \if ( 'Dir' $ subs( fm_list[i], 30 ) )
+          s_run( 'cd ' + left(fm_list[i],12) )
+          fm_list := macrop('FileList')
+          fm_pos  := 1
+          \loop
+      \endi
+
+      ** ------------- choose a file ------------------------
+      fm_name := left( fm_list[fm_pos:=i], 12 )
+      \docase
+         \case ( fm_no = 0 )                        // edit
+            editfile( fm_name, , 'w/n,w+/bg' )
+         \case ( fm_no = 1 )                        // run macro
+            scr_load( done( scr_save(), macrof(fm_name) ) )
+         \case ( fm_no = 2 .and. prn_ready() )      // print
+            s_copyfile(fm_name,'prn')
+         \case (fm_no=3 .and. ;                     // delete
+               m_msg('þ Are you sure to delete ['+fm_name+'] ?  Y/[N]','SRU')='Y')
+            if( ferase(fm_name)=-1, makesound(), ;
+                 fm_list[i] := strtran( fm_list[i], ' File', ' Del') )
+      \endc
+
+   \end
+   scr_load( fm_scr )                              // restore screen
+   sys8 := stuff( sys8, at('DOT1 ',sys8), 5, '' )  // reset register
+\retu
+
+** ---------- DispOptions: Display the Menu-Bar of options ------------
+\func DispOptions ( no )
+   e_dispbox( 1, 25, 3, 76, , 'w+/b' )
+   m_say( 2, 28, fm_tt, 'w/b' )
+   scr_color( 2, 28+12*no, 2, 38+12*no, 'gr+/br' )
+\retu
+
+** --------- FileList : make an array of file-list ---------------------
+\func FileList
+  \priv ( tmp, lst )
+   lst := {}
+   tl  := asort(directory('*.*','D'),,, ;
+          {|x,y|(x[5]='D'.and.y[5]#'D').or.(x[5]=y[5].and.x[1]<y[1])})
+
+   ** --- blk_for() is more faster than \For...\Next commands ----->
+
+   blk_for( 1, len(tl), 1, { |i,j,k| j:=at('.',tl[i,1]), ;
+           k := if( j=0, padr(tl[i,1],12), ;
+                    padr(left(tl[i,1],j-1),8) + padr(subs(tl[i,1],j),4) ),   ;
+           aadd( lst, k + tran(tl[i,2],' 999,999,999') + ' ' + dtoc(tl[i,3]) ;
+                 + ' ' + tl[i,4] + ' ' + if('D'$tl[i,5],'Dir','File') ) } )
+
+\retu ( if( len(lst)=0, {'===No Files=='}, lst ) )
+!seealso: "Overview" "Functions" "Rules" 
+'------------------------------------------------------------------------------
+
+
+

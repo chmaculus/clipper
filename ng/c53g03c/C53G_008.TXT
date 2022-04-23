@@ -1,0 +1,5289 @@
+!short: ^bData Structures^b
+!short:
+!short: AREA               Information to administrate the work area
+'------------------------------------------------------------------------------
+ ^bAREA^b
+ Information to administrate the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct _AREA
+     ^b{
+     ^b   struct _RDDFUNCS far * lprfsHost;
+     ^b
+     ^b   USHORT uiArea;
+     ^b   FARP   atomAlias;
+     ^b
+     ^b   USHORT  uiFieldExtent;
+     ^b   USHORT  uiFieldCount;
+     ^b   LPFIELD lpFields;
+     ^b   FARP    lpFieldExtents;
+     ^b
+     ^b   ITEM valResult;
+     ^b
+     ^b   BOOL fTop;
+     ^b   BOOL fBottom;
+     ^b   BOOL fBof;
+     ^b   BOOL fEof;
+     ^b   BOOL fFound;
+     ^b
+     ^b   DBSCOPEINFO  dbsi;
+     ^b   DBFILTERINFO dbfi;
+     ^b
+     ^b   LPDBORDERCONDINFO lpdbOrdCondInfo;
+     ^b
+     ^b   LPDBRELINFO lpdbRelations;
+     ^b   USHORT      uiParents;
+     ^b
+     ^b   HANDLE heap;
+     ^b   USHORT heapSize;
+     ^b
+     ^b   USHORT rddID;
+     ^b
+     ^b} AREA;
+     ^b
+     ^btypedef AREA far * LPAREA;
+
+ ^bElements^b
+
+     ^blprfsHost
+
+        Contains a pointer to the virtual method table for this work area (see
+        RDDFUNCS).
+
+     ^buiArea
+
+        Contains a numeric value representing the number assigned to this
+        work area.  This number is analogous to the value returned by the
+        CA-Clipper SELECT() function.
+
+     ^batomAlias
+
+        Contains a character data type value representing the CA-Clipper
+        ALIAS of the work area.
+
+     ^buiFieldExtent
+
+        Contains a numeric value specifying the total number of columns
+        allocated for the work area.  Columns are allocated by a call to
+        setFieldExtent().
+
+     ^buiFieldCount
+
+        Contains a numeric value specifying the total number of columns
+        currently in use by the work area.  uifieldCount is incremented with
+        each call to addField().
+
+     ^blpFields
+
+        Contains a pointer to an array of FIELD items.  lpFields defines all
+        the fields used by this work area including type, length, and name
+        (see FIELD).
+
+     ^blpFieldExtents
+
+        Contains a pointer to an array of additional field properties.
+
+     ^bvalResult
+
+        Contains an item that is used on occasion by the CA-Clipper runtime
+        system and may be used by the RDD developer as an all purpose result
+        holder for an operation.
+
+     ^bfTop
+
+        Contains a boolean value that is set to TRUE if the record pointer is
+        on the first logical record.
+
+     ^bfBottom
+
+        Contains a boolean value that is set to TRUE if the record pointer is
+        on the last logical record.
+
+     ^bfBof
+
+        Contains a boolean value that is set to TRUE if logical beginning of
+        file is reached.
+
+     ^bfEof
+
+        Contains a boolean value that is set to TRUE if logical end of file
+        is reached.
+
+     ^bfFound
+
+        Contains a boolean value that is set to TRUE when a seek() operation
+        successfully locates a key value.
+
+     ^bdbsi
+
+        Contains a data structure specifying the scoping condition used by
+        the CA-Clipper LOCATE command (see DBSCOPEINFO).
+
+     ^bdbfi
+
+        Contains a data structure specifying the filter condition to use for
+        the work area (see DBFILTERINFO).
+
+     ^blpdbOrdCondInfo
+
+        Contains a pointer to a data structure specifying the order condition
+        to use for the work area (see DBORDERCONDINFO).
+
+     ^blpdbRelations
+
+        Contains information about relations currently in use by the work area
+        (see DBRELINFO).
+
+     ^buiParents
+
+        Contains a numeric value specifying the number of parent work areas
+        currently in effect for this work area.
+
+     ^bheap
+
+        Contains a virtual memory handle that can be used by the RDD
+        developer to allocate a VM heap and make use of the VM heap
+        suballocation routines available through the Virtual Memory API.
+
+     ^bheapSize
+
+        Contains a numeric value indicating the size of the heap, above.
+
+     ^brddID
+
+        Reserved.
+
+     ^bNote:^b  In addition to being used by the data structures indicated
+     in the Used By section below, the AREA structure is used by all methods
+     in the RDD API.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    DBRELINFO, DBTRANSINFO
+
+!seealso: "DBRELINFO" "DBTRANSINFO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBEVALINFO         Information needed for code block evaluation on each row
+'------------------------------------------------------------------------------
+ ^bDBEVALINFO^b
+ Information needed for code block evaluation on each row of work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   ITEM        itmBlock;
+     ^b   DBSCOPEINFO dbsci;
+     ^b} DBEVALINFO;
+     ^b
+     ^btypedef DBEVALINFO far * LPDBEVALINFO;
+
+ ^bElements^b
+
+     ^bitmBlock
+
+        Contains a code block to be evaluated (with evalBlock()) on each row
+        of the work area that is in the range defined by dbsci.
+
+     ^bdbsci
+
+        Contains a data structure limiting the evaluation of itmBlock (see
+        DBSCOPEINFO).
+
+     ^bWarning!^b  You should perform code block evaluations with great
+     caution.  Save any states that are likely to change as a result of
+     re-entrance, so you can restore them after the code evaluation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    dbEval()
+
+!seealso: "dbEval()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBFIELDINFO        Information needed to define a column to the work area
+'------------------------------------------------------------------------------
+ ^bDBFIELDINFO^b
+ Information needed to define a column to the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   BYTEP  atomName;
+     ^b   USHORT uiType;
+     ^b   USHORT typeExtended;
+     ^b   USHORT uiLen;
+     ^b   USHORT uiDec;
+     ^b} DBFIELDINFO;
+     ^b
+     ^btypedef DBFIELDINFO far * LPDBFIELDINFO;
+
+ ^bElements^b
+
+     ^batomName
+
+        Contains a pointer to the null-terminated symbol name to assign to
+        the column.  When the CA-Clipper runtime encounters this symbol, it
+        assumes a reference to the column defined by this structure.  The
+        format of this column must conform to the symbolic representation
+        rules of CA-Clipper.
+
+     ^buiType
+
+        Contains a literal constant indicating the column's CA-Clipper data
+        type.  The numeric constants used to indicate the data types are
+        defined in Extend.api and have the following meanings:
+
+        ^bDBFIELDINFO Field Data Types^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        ^bConstant       Meaning^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        CHARACTER      A CA-Clipper character value
+        DATE           A CA-Clipper date value
+        DOUBLE         A CA-Clipper numeric value stored as an XDOUBLE by the
+                       Extend System
+        LOGICAL        A CA-Clipper logical value
+        MEMO           A CA-Clipper memo value
+        NUMERIC        A CA-Clipper numeric value stored as a LONG by the
+                       Extend System
+        UNDEF          The CA-Clipper NIL value
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+     ^btypeExtended
+
+        Contains a numeric value indicating a user-defined column type.  This
+        member is used to provide support for column types not supported by
+        CA-Clipper's default database (.dbf) file format.  The intrinsically
+        supported column types are Character, Numeric, Date, Logical, and
+        Memo.
+
+     ^buiLen
+
+        Contains a numeric value representing the overall length of the
+        column.  RDDs supporting floating point column types should include
+        the decimal point in this value.  By convention, variable length
+        columns should store a zero (0) in this element.
+
+     ^buiDec
+
+        Contains a numeric value indicating the number of places to the right
+        of the decimal point.  This element is only meaningful when the
+        column is a floating point value.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    addField()
+
+!seealso: "addField()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBFILTERINFO       Specifies filter condition to hide specified rows
+'------------------------------------------------------------------------------
+ ^bDBFILTERINFO^b
+ Specifies filter condition to hide specified rows from access
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   ITEM itmCobExpr;
+     ^b   ITEM abFilterText;
+     ^b   BOOL fFilter;
+     ^b} DBFILTERINFO;
+     ^b
+     ^btypedef DBFILTERINFO far * LPDBFILTERINFO;
+
+ ^bElements^b
+
+     ^bitmCobExpr / abFilterText
+
+        Contain a code block and a character string, respectively,
+        representing the condition that is evaluated at each cursor location.
+        If the result of the evaluation is FALSE, the cursor location
+        requested is invalid according to the current filter condition.
+
+     ^bfFilter
+
+        Contains a boolean value that is set to TRUE if the filter is active.
+
+     ^bWarning!^b  You should perform code block evaluations with great
+     caution.  Save any states that are likely to change as a result of
+     re-entrance, so you can restore them after the code evaluation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    AREA, setFilter()
+
+!seealso: "AREA" "setFilter()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBLOCKINFO         Information necessary to lock a row or table for exclusive access
+'------------------------------------------------------------------------------
+ ^bDBLOCKINFO^b
+ Information necessary to lock a row or table for exclusive access
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   ULONG  itmRecID;
+     ^b   USHORT uiMethod;
+     ^b   BOOL   fResult;
+     ^b} DBLOCKINFO;
+     ^b
+     ^btypedef DBLOCKINFO far * LPDBLOCKINFO;
+
+ ^bElements^b
+
+     ^bitmRecID
+
+        Contains a numeric value indicating the row to lock.  This element is
+        only meaningful if uimethod. is set to DBLM_EXCLUSIVE or
+        DBLM_MULTIPLE.
+
+     ^buiMethod
+
+        Contains a literal constant indicating the type of lock to obtain.
+        The numeric constants used for uimethod. are defined in Rdd.api and
+        have the following meanings:
+
+        ^bDBLOCKINFO Lock Type Values^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        ^bConstant          Meaning^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        DBLM_EXCLUSIVE    Lock a row, releasing currently locked rows
+        DBLM_MULTIPLE     Lock a row, maintaining currently locked rows
+        DBLM_FILE         Lock a table, releasing locks currently held
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^bfResult
+
+        Contains a boolean value specifying the success of the lock
+        operation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    lock()
+
+!seealso: "lock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBOPENINFO         Information about a data store to be opened in work area
+'------------------------------------------------------------------------------
+ ^bDBOPENINFO^b
+ Information about a data store to be opened in work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   USHORT uiArea;
+     ^b   BYTEP  abName;
+     ^b   BYTEP  atomAlias;
+     ^b   BOOL   fShared;
+     ^b   BOOL   fReadonly;
+     ^b   FARP   lpdbHeader;
+     ^b} DBOPENINFO;
+     ^b
+     ^btypedef DBOPENINFO far * LPDBOPENINFO;
+
+ ^bElements^b
+
+     ^buiArea
+
+        Contains a numeric value representing the work area number where the
+        data store will be opened.  This number corresponds directly to the
+        CA-Clipper-language level SELECT() area.
+
+     ^babName
+
+        Contains a pointer to a null-terminated string identifying the data
+        store.  In most cases, it is a file name.
+
+     ^batomAlias
+
+        Contains a pointer to a null-terminated string used from the
+        CA-Clipper-language level to access the new work area.  The atomAlias
+        element must follow CA-Clipper-level rules for valid symbolic
+        references (i.e., a valid CA-Clipper identifier).
+
+     ^bfShared
+
+        Contains a boolean value that is set to TRUE if the data store is to
+        be opened in a shared (network) mode.
+
+     ^bfReadonly
+
+        Contains a boolean value that is set to TRUE if the data store is to
+        be opened in a read-only mode.
+
+     ^blpdbHeader
+
+        Contains a pointer to a header of the data store.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    create(), open()
+
+!seealso: "create()" "open()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBORDERCONDINFO    Information needed for the creation of a conditional order
+'------------------------------------------------------------------------------
+ ^bDBORDERCONDINFO^b
+ Information needed for the creation of a conditional order
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct _DBORDERCONDINFO
+     ^b{
+     ^b   BOOL  fActive;
+     ^b   BYTEP abFor;
+     ^b   ITEM  itmCobFor;
+     ^b   ITEM  itmCobWhile;
+     ^b   ITEM  itmCobEval;
+     ^b   LONG  lStep;
+     ^b   LONG  lStartRecno;
+     ^b   LONG  lNextCount;
+     ^b   LONG  lRecno;
+     ^b   BOOL  fRest;
+     ^b   BOOL  fDescending;
+     ^b   BOOL  fScoped;
+
+     ^b   BOOL  fAll;
+     ^b   BOOL  fAdditive;
+     ^b   BOOL  fUseCurrent;
+     ^b   BOOL  fCustom;
+     ^b   BOOL  fNoOptimize;
+     ^b   FARP  lpvCargo;
+     ^b} DBORDERCONDINFO;
+     ^b
+     ^btypedef DBORDERCONDINFO far * LPDBORDERCONDINFO;
+
+ ^bElements^b
+
+     ^bfActive
+
+        Contains a boolean value indicating whether one or more valid
+        conditions have been specified in the structure.
+
+     ^babFor / itmCobFor
+
+        Contain a CA-Clipper-level reference to a string and a matching code
+        block containing the key expression defining the FOR condition to be
+        used for the creation and maintenance of the order.
+
+     ^bitmCobWhile
+
+        Contains a CA-Clipper-level reference to a code block defining the
+        WHILE condition to be used for the creation of the order.  If NIL, no
+        WHILE condition is being specified.
+
+     ^bitmCobEval
+
+        Contains a CA-Clipper-level reference to a code block defining the
+        expression to be evaluated every lStep rows (records) during the
+        creation of the order.  The code block referenced should always
+        evaluate to either TRUE (indicating that creation of the order should
+        continue normally) or FALSE (indicating that order creation should
+        terminate).  A return value of FALSE from itmCobEval does not
+        constitute an error condition but rather is the mechanism by which an
+        RDD is informed that no more rows are to be included in the order.
+
+     ^blStep
+
+        Contains a numeric value determining the frequency of the evaluation
+        of itmCobEval.
+
+     ^blStartRecno
+
+        Contains a numeric value indicating the row at which to begin
+        processing when either the lNextCount or fRest scoping options are
+        specified.
+
+     ^blNextCount
+
+        Contains a numeric value indicating the number of rows to process for
+        order creation.
+
+     ^blRecno
+
+        Contains a numeric value indicating a single row to include in the
+        order.
+
+     ^bfRest
+
+        Contains a boolean value indicating that only the rows specified by
+        lStartRecno through end of file (EOF) are to be included in the
+        order.
+
+     ^bfDescending
+
+        Contains a boolean value indicating whether the order should be
+        created in descending order.
+
+     ^bfScoped
+
+        Contains a boolean value indicating whether the order is to be
+        scoped.  fScoped will be TRUE if any of itmCobWhile, lNextCount,
+        lRecno, fRest, or fAll are specified.
+
+     ^bfAll
+
+        Contains a boolean value indicating whether all rows are to be
+        processed during order creation.
+
+     ^bfAdditive
+
+        Contains a boolean value indicating whether open orders should remain
+        open while the new order is being created.
+
+     ^bfUseCurrent
+
+        Contains a boolean value indicating whether only rows in the
+        controlling order will be included in this order.
+
+     ^bfCustom
+
+        Contains a boolean value indicating whether the new order will be a
+        custom-built order.
+
+     ^bfNoOptimize
+
+        Contains a boolean value indicating whether the FOR condition will be
+        optimized.
+
+     ^blpvCargo
+
+        Contains a pointer to a value of any data type provided as a user-
+        definable slot.  It may be used by the RDD developer as an all-
+        purpose holder.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    DBORDERCREATEINFO, orderCreate()
+
+!seealso: "DBORDERCREATEINFO" "orderCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBORDERCREATEINFO  Information needed to create a new order for the work area
+'------------------------------------------------------------------------------
+ ^bDBORDERCREATEINFO^b
+ Information needed to create a new order for the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   LPDBORDERCONDINFO lpdbOrdCondInfo;
+     ^b   BYTEP             abBagName;
+     ^b   BYTEP             atomBagName;
+     ^b   ITEM              itmOrder;
+     ^b   BOOL              fUnique;
+     ^b   ITEM              itmCobExpr;
+     ^b   ITEM              abExpr;
+     ^b} DBORDERCREATEINFO;
+     ^b
+     ^btypedef DBORDERCREATEINFO far * LPDBORDERCREATEINFO;
+
+ ^bElements^b
+
+     ^blpdbOrdCondInfo
+
+        Contains a pointer to information about the condition (if any) for
+        the order.
+
+     ^babBagName
+
+        Contains a pointer to a null-terminated string containing the index
+        file name to create.
+
+     ^batomBagName
+
+        Reserved CA-Clipper compatibility slot.
+
+     ^bitmOrder
+
+        Contains a CA-Clipper-level reference to a null-terminated string
+        containing the order name or number to create in abBagName.
+
+     ^bfUnique
+
+        Contains a boolean value specifying whether the order should contain
+        only unique keys.
+
+     ^bitmCobExpr / abExpr
+
+        Contain a CA-Clipper-level reference to a code block and a matching
+        string containing the key expression defining the order imposed on
+        the work area.
+
+     ^bWarning!^b  You should perform code block evaluations with great
+     caution.  Save any states that are likely to change as a result of re-
+     entrance, so you can restore them after the code evaluation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    orderCreate()
+
+!seealso: "orderCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBORDERINFO        Information needed to open/address an order in work area
+'------------------------------------------------------------------------------
+ ^bDBORDERINFO^b
+ Information needed to open/address an order in work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   ITEM atomBagName;
+     ^b   ITEM itmOrder;
+     ^b   ITEM itmCobExpr;
+     ^b   ITEM itmResult;
+     ^b   BOOL fAllTags;
+     ^b
+     ^b} DBORDERINFO;
+     ^b
+     ^btypedef DBORDERINFO far * LPDBORDERINFO;
+
+ ^bElements^b
+
+     ^batomBagName
+
+        Contains a CA-Clipper-level reference to a character value indicating
+        the name of the order bag.
+
+     ^bitmOrder
+
+        Contains a CA-Clipper-level reference to a character value indicating
+        the name of the order.
+
+     ^bitmCobExpr
+
+        Contains a CA-Clipper-level reference to a code block containing the
+        key expression defining the order imposed on the work area.
+
+     ^bitmResult
+
+        Contains an item that is used on occasion by the CA-Clipper runtime
+        system and may be used by the RDD developer as an all-purpose result
+        holder.
+
+     ^bfAllTags
+
+        Contains a boolean value specifying whether all tags of the index
+        file must be opened.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    orderListAdd(), orderInfo(), orderListFocus()
+
+!seealso: "orderListAdd()" "orderInfo()" "orderListFocus()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBRELINFO          List of relational information
+'------------------------------------------------------------------------------
+ ^bDBRELINFO^b
+ List of relational information
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct _DBRELINFO
+     ^b{
+     ^b   ITEM itmCobExpr;
+     ^b   ITEM abKey;
+     ^b
+     ^b   struct _AREA far * lpaParent;
+     ^b   struct _AREA far * lpaChild;
+     ^b
+     ^b   struct _DBRELINFO far * lpdbriNext;
+     ^b
+     ^b} DBRELINFO;
+     ^b
+     ^btypedef DBRELINFO far * LPDBRELINFO;
+
+ ^bElements^b
+
+     ^bitmCobExpr / abKey
+
+        Contain a code block and a character expression, respectively, used
+        to reposition the cursor of the child database when this relation is
+        resolved.
+
+     ^blpaParent
+
+        Contains a pointer to the parent work area of this relation.  When you
+        move the cursor of a parent work area to a new position, you must move
+        the cursor of each of its children to corresponding positions
+        (usually with forceRel()).  Find the corresponding position by
+        performing a seek() for the result of the abKey.
+
+     ^blpaChild
+
+        Contains a pointer to the work area containing the child in this
+        relation.
+
+     ^blpdbriNext
+
+        Contains a pointer identifying the next field in the field list.
+        Note that a null pointer in this field indicates the end of the list.
+        By convention, this list is not circular.
+
+     ^bWarning!^b  You should perform code block evaluations with great
+     caution.  Save any states that are likely to change as a result of
+     re-entrance, so you can restore them after the code evaluation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    AREA, childEnd(), childStart(), relEval(), setRel()
+
+!seealso: "AREA" "childEnd()" "childStart()" "relEval()" "setRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBSCOPEINFO        References to all CA-Clipper Xbase-style scope clause
+'------------------------------------------------------------------------------
+ ^bDBSCOPEINFO^b
+ References to all CA-Clipper Xbase-style scope clause expressions
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   ITEM itmCobFor;
+     ^b   ITEM lpstrFor;
+     ^b   ITEM itmCobWhile;
+     ^b   ITEM lpstrWhile;
+     ^b   ITEM lNext;
+     ^b   ITEM itmRecID;
+     ^b   ITEM fRest;
+
+     ^b   BOOL fIgnoreFilter;
+     ^b   BOOL fIncludeDeleted;
+     ^b   BOOL fLast;
+     ^b   BOOL fIgnoreDuplicates;
+     ^b} DBSCOPEINFO;
+     ^b
+     ^btypedef DBSCOPEINFO far * LPDBSCOPEINFO;
+
+ ^bElements^b
+
+     ^bitmCobFor / lpstrFor
+
+        Contain a code block and a character expression, respectively,
+        representing the conditional FOR clause.  FOR expressions are,
+        essentially, filters that hide rows (records) which evaluate
+        to FALSE.  The character value is provided for storage, while the
+        code block is provided as a parameter for the evalBlock() method.
+
+     ^bitmCobWhile / lpstrWhile
+
+        Contain a code block and a character expression, respectively,
+        representing the conditional WHILE clause.  WHILE clauses permit
+        continuation of a process that steps through rows until its
+        expression evaluates to FALSE.  The character value is provided for
+        storage, while the code block is provided as a parameter for the
+        evalBlock() method.
+
+     ^blNext
+
+        Contains a numeric value representing the CA-Clipper-level NEXT lNext
+        scoping clause.  This permits continuation of a process for the NEXT
+        lNext rows, while obeying FOR and WHILE clauses.
+
+     ^bitmRecID
+
+        Contains a numeric value representing the CA-Clipper-level RECORD
+        itmRecID scoping clause.  This permits continuation of a process for
+        a single record, while obeying FOR and WHILE clauses.
+
+     ^bfRest
+
+        Contains a CA-Clipper-level boolean value that is set to TRUE if a
+        process should continue stepping through data from the current
+        work area cursor position until logical end of file.
+
+     ^bfIgnoreFilter
+
+        Contains a CA-Clipper-level boolean value that is set to TRUE if a
+        process should ignore any filter condition imposed on the current
+        work area.
+
+     ^bfIncludeDeleted
+
+        Contains a CA-Clipper-level boolean value that is set to TRUE if a
+        process should include deleted rows.
+
+     ^bfLast
+
+        Contains a CA-Clipper-level boolean value that is set to TRUE if the
+        last record of the current scope is required.
+
+     ^bfIgnoreDuplicates
+
+        Contains a CA-Clipper-level boolean value that is set to TRUE if a
+        process should ignore duplicate key values.
+
+     ^bWarning!^b  You should perform code block evaluations with great
+     caution.  Save any states that are likely to change as a result of
+     re-entrance, so you can restore them after the code evaluation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    AREA, DBEVALINFO, DBTRANSINFO, setLocate()
+
+!seealso: "AREA" "DBEVALINFO" "DBTRANSINFO" "setLocate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBSORTINFO         Information needed to perform a physical sort on work area
+'------------------------------------------------------------------------------
+ ^bDBSORTINFO^b
+ Information needed to perform a physical sort on work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   DBTRANSINFO  dbtri;
+     ^b   LPDBSORTITEM lpdbsItem;
+     ^b   USHORT       uiItemCount;
+     ^b
+     ^b} DBSORTINFO;
+     ^b
+     ^btypedef DBSORTINFO far * LPDBSORTINFO;
+
+ ^bElements^b
+
+     ^bdbtri
+
+        Contains a data structure holding the destination work area, field
+        transfer information, control and optimization flags, and scoping
+        information for the sort() method (see DBTRANSINFO).
+
+     ^blpdbsItem
+
+        Contains an array of DBSORTITEM items (rows) which compose the key
+        values for the sort (see DBSORTITEM).
+
+     ^buiItemCount
+
+        Contains the number of DBSORTITEM items allocated to lpdbsItem.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    sort()
+
+!seealso: "sort()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBSORTITEM         Array of items indicating key values to use when sorting
+'------------------------------------------------------------------------------
+^bDBSORTITEM^b
+ Array of items indicating key values, in order, to use when sorting data
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   USHORT uiField;
+     ^b   USHORT uiFlags;
+     ^b} DBSORTITEM;
+     ^b
+     ^btypedef DBSORTITEM far * LPDBSORTITEM;
+
+ ^bElements^b
+
+     ^buiField
+
+        Contains a numeric value; an index into the AREA->lpFields structure
+        indicating the field on which the sort is based.
+
+     ^buiFlags
+
+        Contains literal constants that function as sort optimization and
+        control flags.  They are passed to your RDD sort() routine from the
+        high-level wrapper function for the CA-Clipper SORT command.  The
+        flag values are defined in Rdd.api and have the following meanings:
+
+        ^bDBSORTITEM Sort Flag Values^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        ^bConstant       Meaning^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        SF_ASCEND      An ascending sort
+        SF_CASE        A case-insensitive sort
+        SF_DESCEND     A descending sort
+        SF_NUM         The sort is on numeric data only
+        SF_DOUBLE      The sort is to be done exclusively with floating point
+                       numbers
+        SF_LONG        The sort is to be done exclusively with integers
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    DBSORTINFO
+
+!seealso: "DBSORTINFO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBTRANSINFO        Define global transfer of data items
+'------------------------------------------------------------------------------
+ ^bDBTRANSINFO^b
+ Define global transfer of data items from one work area to another
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   struct _AREA  far * lpaSource;
+     ^b   struct _AREA  far * lpaDest;
+     ^b   DBSCOPEINFO   dbsci;
+     ^b   USHORT        uiFlags;
+     ^b   USHORT        uiItemCount;
+     ^b   LPDBTRANSITEM lpTransItems;
+     ^b} DBTRANSINFO;
+     ^b
+     ^btypedef DBTRANSINFO far * LPDBTRANSINFO;
+
+ ^bElements^b
+
+     ^blpaSource
+
+        Contains a pointer to the source work area.
+
+     ^blpaDest
+
+        Contains a pointer to the destination work area.
+
+     ^bdbsci
+
+        Contains a data structure describing the limits of the scope of the
+        transfer (see DBSCOPEINFO).
+
+     ^buiFlags
+
+        Contains literal constants specifying transfer attributes.  The flag
+        values are defined in Rdd.api and have the following meanings:
+
+        ^bDBTRANSINFO Transfer Flag Values^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        ^bConstant       Meaning^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        DBTF_MATCH     Both this work area and the destination work area have
+                       identical row structures (i.e., all fields match)
+        DBTF_PUTREC    The RDD has the ability to transfer an entire row
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^buiItemCount
+
+        Contains a numeric value specifying the number of items in the
+        lpTransItems array, below.  (This is usually the number of fields to
+        be transferred).
+
+     ^blpTransItems
+
+        An array of character data type values, assumed to be the items to
+        transfer to the destination work area.  lpTransItems is usually a list
+        of field mappings from the source to the destination (see
+        DBTRANSITEM).
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    DBSORTINFO, trans(), transRec()
+
+!seealso: "DBSORTINFO" "trans()" "transRec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBTRANSITEM        Define single transfer item from one work area to another
+'------------------------------------------------------------------------------
+ ^bDBTRANSITEM^b
+ Define a single transfer item from one work area to another
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   USHORT uiSource;
+     ^b   USHORT uiDest;
+     ^b} DBTRANSITEM;
+     ^b
+     ^btypedef DBTRANSITEM far * LPDBTRANSITEM;
+
+ ^bElements^b
+
+     ^buiSource
+
+        Contains a numeric value; an index into the AREA->lpFields structure
+        indicating the field that is to be transferred to the destination
+        work area.
+
+     ^buiDest
+
+        Contains a numeric value; an index into the AREA->lpfields structure
+        indicating the field that is to be the recipient of the row being
+        transferred from the source work area.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    DBTRANSINFO
+
+!seealso: "DBTRANSINFO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIELD              Field (column) definitions
+'------------------------------------------------------------------------------
+ ^bFIELD^b
+ Field (column) definitions
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct _FIELD
+     ^b{
+     ^b   USHORT uiType;
+     ^b   USHORT uiTypeExtended;
+     ^b   USHORT uiLen;
+     ^b   USHORT uiDec;
+     ^b   USHORT uiArea;
+     ^b   FARP   sym;
+     ^b
+     ^b   struct _FIELD * lpfNext;
+     ^b
+     ^b} FIELD;
+     ^b
+     ^btypedef FIELD far * LPFIELD;
+
+ ^bNotes^b
+
+     The pointer to an array of FIELD structures is contained in the basic
+     AREA structure.  Each field is created by a call to the addField()
+     method for a given RDD.
+
+ ^bElements^b
+
+     ^buiType
+
+        Contains a literal constant indicating the column's CA-Clipper data
+        type.  The numeric constants used to indicate the data types are
+        defined in Extend.api and have the following meanings:
+
+        ^bFIELD Data Types^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        ^bConstant       Meaning^b
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        CHARACTER      A CA-Clipper character value
+        DATE           A CA-Clipper date value
+        DOUBLE         A CA-Clipper numeric value stored as an XDOUBLE by the
+                       Extend System
+        LOGICAL        A CA-Clipper logical value
+        MEMO           A CA-Clipper memo value
+        NUMERIC        A CA-Clipper numeric value stored as a LONG by the
+                       Extend System
+        UNDEF          The CA-Clipper NIL value
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^buiTypeExtended
+
+        Contains a numeric value indicating a user-defined column type.  This
+        member is used to provide support for column types not supported by
+        CA-Clipper's default database (.dbf) file format.  The intrinsically
+        supported column types are character, numeric, date, logical, and
+        memo.  A non-zero value in this field indicates that the column type
+        is not one of the intrinsically supported types.  This allows the RDD
+        to support column types that are not intrinsically understood by
+        CA-Clipper.  Extended types must be translated into CA-Clipper types
+        by the RDD and uiTypeExtended values are defined by the RDD.
+
+     ^buiLen
+
+        Contains a numeric value representing the overall length of the
+        column.  RDDs supporting floating point column types should include
+        the decimal point in this value.  By convention, variable length
+        columns should store a zero (0) in this element.
+
+     ^buiDec
+
+        Contains a numeric value indicating the number of places to the right
+        of the decimal point.  This element is only meaningful when the
+        column is a floating point value.
+
+     ^buiArea
+
+        Contains a numeric value indicating the work area in which the field
+        resides.  The CA-Clipper runtime system uses this field to reference
+        the appropriate work area.
+
+     ^bsym
+
+        Contains a character data type value representing the column and
+        work area to the runtime system.  The CA-Clipper runtime system will
+        interpret runtime requests (get or set actions) to this symbol as a
+        call to the your driver.
+
+     ^blpfNext
+
+        Reserved.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    AREA
+
+!seealso: "AREA" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RDDFUNCS           The virtual method table for the work area
+'------------------------------------------------------------------------------
+ ^bRDDFUNCS^b
+ The virtual method table for the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bStructure^b
+
+     ^btypedef struct _RDDFUNCS
+     ^b{
+     ^b
+     ^b   /* Movement and positioning methods */
+     ^b
+     ^b   DBENTRYP_SP  bof;
+     ^b   DBENTRYP_SP  eof;
+     ^b   DBENTRYP_SP  found;
+     ^b   DBENTRYP_V   goBottom;
+     ^b   DBENTRYP_L   go;
+     ^b   DBENTRYP_I   goToId;
+     ^b   DBENTRYP_V   goTop;
+     ^b   DBENTRYP_SI  seek;
+     ^b   DBENTRYP_L   skip;
+     ^b   DBENTRYP_L   skipFilter;
+     ^b   DBENTRYP_L   skipRaw;
+     ^b
+     ^b   /* Data management */
+     ^b
+     ^b   DBENTRYP_VP  addField;
+     ^b   DBENTRYP_S   append;
+     ^b   DBENTRYP_I   createFields;
+     ^b   DBENTRYP_V   delete;
+     ^b   DBENTRYP_SP  deleted;
+     ^b   DBENTRYP_SP  fieldCount;
+     ^b   DBENTRYP_VP  fieldDisplay;
+     ^b   DBENTRYP_SSI fieldInfo;
+     ^b   DBENTRYP_SVP fieldName;
+     ^b   DBENTRYP_V   flush;
+     ^b   DBENTRYP_PP  getRec;
+     ^b   DBENTRYP_SI  getValue;
+     ^b   DBENTRYP_SVP getVarLen;
+     ^b   DBENTRYP_V   goCold;
+     ^b   DBENTRYP_V   goHot;
+     ^b   DBENTRYP_VP  putRec;
+     ^b   DBENTRYP_SI  putValue;
+     ^b   DBENTRYP_V   recall;
+     ^b   DBENTRYP_LP  reccount;
+     ^b   DBENTRYP_ISI recInfo;
+     ^b   DBENTRYP_I   recno;
+     ^b   DBENTRYP_S   setFieldExtent;
+     ^b
+     ^b   /* Work Area/Database management */
+     ^b
+     ^b   DBENTRYP_VP  alias;
+     ^b   DBENTRYP_V   close;
+     ^b   DBENTRYP_VP  create;
+     ^b   DBENTRYP_SI  info;
+     ^b   DBENTRYP_V   new;
+     ^b   DBENTRYP_VP  open;
+     ^b   DBENTRYP_V   release;
+     ^b   DBENTRYP_SP  structSize;
+     ^b   DBENTRYP_VP  sysName;
+     ^b   DBENTRYP_VP  dbEval;
+     ^b   DBENTRYP_V   pack;
+     ^b   DBENTRYP_LSP packRec;
+     ^b   DBENTRYP_VP  sort;
+     ^b   DBENTRYP_VP  trans;
+     ^b   DBENTRYP_VP  transRec;
+     ^b   DBENTRYP_V   zap;
+     ^b
+     ^b   /* Relational Methods */
+     ^b
+     ^b   DBENTRYP_VP  childEnd;
+     ^b   DBENTRYP_VP  childStart;
+     ^b   DBENTRYP_VP  childSync;
+     ^b   DBENTRYP_V   syncChildren;
+     ^b   DBENTRYP_V   clearRel;
+     ^b   DBENTRYP_V   forceRel;
+     ^b   DBENTRYP_SVP relArea;
+     ^b   DBENTRYP_VP  relEval;
+     ^b   DBENTRYP_SVP relText;
+     ^b   DBENTRYP_VP  setRel;
+     ^b
+     ^b   /* Order Management */
+     ^b
+     ^b   DBENTRYP_VP  orderListAdd;
+     ^b   DBENTRYP_V   orderListClear;
+     ^b   DBENTRYP_VP  orderListDelete;
+     ^b   DBENTRYP_VP  orderListFocus;
+     ^b   DBENTRYP_V   orderListRebuild;
+     ^b
+     ^b   DBENTRYP_VP  orderCondition;
+     ^b   DBENTRYP_VP  orderCreate;
+     ^b   DBENTRYP_VP  orderDestroy;
+     ^b   DBENTRYP_SVP orderInfo;
+     ^b
+     ^b   /* Filters and Scope Settings */
+     ^b
+     ^b   DBENTRYP_V    clearFilter;
+     ^b   DBENTRYP_V    clearLocate;
+     ^b   DBENTRYP_V    clearScope;
+     ^b   DBENTRYP_VPLP countScope;
+     ^b   DBENTRYP_VP   filterText;
+     ^b   DBENTRYP_SI   scopeInfo;
+     ^b   DBENTRYP_VP   setFilter;
+     ^b   DBENTRYP_VP   setLocate;
+     ^b   DBENTRYP_VP   setScope;
+     ^b   DBENTRYP_VLP  skipScope;
+     ^b
+     ^b   /* Miscellaneous */
+     ^b
+     ^b
+     ^b   DBENTRYP_VP  compile;
+     ^b   DBENTRYP_VP  error;
+     ^b   DBENTRYP_I   evalBlock;
+     ^b
+     ^b   /* Network operations */
+     ^b
+     ^b   DBENTRYP_VSP rawlock;
+     ^b   DBENTRYP_VP  lock;
+     ^b   DBENTRYP_L   unlock;
+     ^b
+     ^b   /* Memo file methods */
+     ^b
+     ^b   DBENTRYP_V    closeMemFile;
+     ^b   DBENTRYP_VP   createMemFile;
+     ^b   DBENTRYP_SVP  getValueFile;
+     ^b   DBENTRYP_VP   openMemFile;
+     ^b   DBENTRYP_SVP  putValueFile;
+     ^b
+     ^b   /* Database file header methods */
+     ^b
+     ^b   DBENTRYP_V    readDBHeader;
+     ^b   DBENTRYP_V    writeDBHeader;
+     ^b
+     ^b   /* Special and reserved methods. */
+     ^b
+     ^b   DBENTRYP_SVP  whoCares;
+     ^b
+     ^b} RDDFUNCS;
+
+     ^btypedef RDDFUNCS  far * LPRDDFUNCS;
+     ^btypedef LPRDDFUNCS far * LPLPRDDFUNCS;
+
+ ^bElements^b
+
+     The elements of the RDDFUNCS structure define the slots of the virtual
+     method table.  Each slot in the table represents the location of a
+     specific method (i.e., the address of the function that acts as the
+     pseudomethod).  Methods that will not be supported by the RDD should
+     have a NULL placed in its corresponding slot.  When the RDD is
+     initialized, CA-Clipper will use the default behavior of the superclass
+     instead.  If no functionality is provided by the superclass, CA-Clipper
+     will generate an appropriate "unsupported" error.
+
+     ^bWarning!^b  Under no circumstance should the virtual method table be
+     expanded.  The size and ordinal positioning of the methods in the table
+     is critical.  Failure to adhere to this arrangement will cause
+     unpredictable results and potential memory corruption.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+ ^bUsed By^b    AREA
+
+!seealso: "AREA" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bWork Area Methods^b
+!short:
+!short: bof()              Determine logical beginning of file
+'------------------------------------------------------------------------------
+ ^bbof()^b
+ Determine logical beginning of file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE bof(
+     ^b               AREAP wa,
+     ^b               BOOLP isBof
+     ^b             )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bisBof^b is used to determine the logical beginning of file.
+
+ ^bDescription^b
+
+     bof() indicates whether the current cursor for wa is at the logical beginning
+     of file.  This method provides the return value of the CA-Clipper BOF()
+     function.
+
+ ^bDefault Behavior^b
+
+     Copies wa->fBof to isBof.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Determine wa->fBof status and then call SUPER_BOF().
+
+     ^b^CFE^b  If your RDD supports relations, update relations with a
+        forceRel() prior to determining wa->fBof status.
+
+     ^bWarning!  isBof^b must point to sizeof(BOOL) bytes of allocated
+     memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "eof()" "forceRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: eof()              Determine logical end of file
+'------------------------------------------------------------------------------
+ ^beof()^b
+ Determine logical end of file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE eof(
+     ^b               AREAP wa,
+     ^b               BOOLP isEof
+     ^b             )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bisEof^b determines the logical end of file.
+
+ ^bDescription^b
+
+     eof() indicates whether the current cursor for wa is at the logical end of
+     file.  This method provides the return value of the CA-Clipper EOF()
+     function.
+
+ ^bDefault Behavior^b
+
+     Copies wa->Eof to isEof.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Determine wa->Eof status and then call SUPER_EOF().
+
+     ^b^CFE^b  If your RDD supports relations, update relations with a
+        forceRel() prior to determining wa->Eof status.
+
+     ^bWarning!  isEof^b must point to one byte of allocated memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "bof()" "forceRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: found()            Determine outcome of the last search operation
+'------------------------------------------------------------------------------
+ ^bfound()^b
+ Determine outcome of the last search operation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE found(
+     ^b                  AREAP wa,
+     ^b                  BOOLP isFound
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bisFound^b determines the status of the last search operation.
+
+ ^bDescription^b
+
+     found() obtains the status of the last search operation for wa.  In the default
+     database driver, search operations are defined as seek() calls.  This
+     method provides the return value of the CA-Clipper FOUND() function.
+
+ ^bDefault Behavior^b
+
+     Copies wa->fFound to isFound.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Determine the setting of wa->fFound (if it is not
+        automatically set by your seek() implementation) and then call
+        SUPER_FOUND().
+
+     ^b^CFE^b  If your RDD supports relations, update relations with a
+        forceRel() prior to determining wa->fFound status.
+
+     ^bWarning!  isFound^b must point to one byte of allocated memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "forceRel()" "seek()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: go()               Position cursor at a specific physical identity (record)
+'------------------------------------------------------------------------------
+ ^bgo()^b
+ Position cursor at a specific physical identity (record)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE go(
+     ^b                  AREAP wa,
+     ^b                  ULONG row
+     ^b              )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^brow^b is the row number of the new cursor position.
+
+ ^bDescription^b
+
+     go() repositions the work area cursor for wa to the physical row number row.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Since go() repositions the pointer to a physical row number,
+        you need not consider active scopes or filters.  If the row is not in
+        the physical range of rows available, you may generate an error or
+        position the pointer at the physical end of file.
+
+     ^b^CFE^b  In CA-Clipper, the idea of a phantom row is vital to the
+        performance of certain functions.  The go() method should permit
+        access to the phantom row.  The phantom row is defined as the last
+        row + 1 and is the position at which end of file is set to TRUE.  All
+        columns of the phantom row are empty.  A row value greater than the
+        last row in the table should position the pointer to the phantom row.
+        If you do not support the concept of the phantom row in your driver,
+        you must document this fact as an incompatibility of your driver with
+        the high-level CA-Clipper syntax.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goBottom()" "goTop()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: goBottom()         Position cursor at the last logical identity (record)
+'------------------------------------------------------------------------------
+ ^bgoBottom()^b
+ Position cursor at the last logical identity (record)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE goBottom(
+     ^b                     AREAP wa
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     goBottom() repositions the work area cursor for wa to the last logical data item.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  When positioning to the last logical data item, goBottom()
+        should respect any active scopes or filters.  This method emulates
+        the CA-Clipper GOTO BOTTOM command.
+
+     ^b^CFE^b  If an order is attached to your implementation of work area,
+        you must use the bottom data item based on the correct row order and
+        respect any scoping or filtering.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "go()" "goTop()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: goToId()           Position the cursor to a specific, physical identity
+'------------------------------------------------------------------------------
+ ^bgoToId()^b
+ Position the cursor to a specific, physical identity
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE goToId(
+     ^b                     AREAP wa,
+     ^b                     ITEM itmRecID
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bitmRecID^b is the physical identity of the row.  This may be a row
+     number or some other unique identifier.
+
+ ^bDescription^b
+
+     goTold() repositions the work area cursor for wa to the physical row identifier
+     itmRecID.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  This method is used to implement the DBGOTO() function.  It is
+        designed so that the driver can identify rows using a means other
+        than the physical row number.
+
+     ^b^CFE^b  Since goToId() repositions the cursor to a physical row
+        number, you need not consider active scopes, filters, or orders.  If
+        lRec is not in the range of available rows, you can generate an error
+        or position the cursor to the physical end-of-file.
+
+     ^b^CFE^b  In CA-Clipper, the idea of a phantom row is vital to the
+        performance of certain functions.  The goToId() method should permit
+        access to the phantom row.  The phantom row is defined as the last
+        row + 1 and is the position at which end-of-file is set to TRUE.  All
+        columns of the phantom row are empty.  An lRec value greater than the
+        last row in the table should position the cursor to the phantom row.
+        If you do not support the concept of the phantom row in your driver,
+        you must document this fact as an incompatibility between your driver
+        and the high-level CA-Clipper functionality.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "go()" "goBottom()" "goTop()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: goTop()            Position cursor at the first logical identity (record)
+'------------------------------------------------------------------------------
+ ^bgoTop()^b
+ Position cursor at the first logical identity (record)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE goTop(
+     ^b                  AREAP wa
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     goTop() repositions the work area cursor for wa to the first logical data item.
+     This method emulates the CA-Clipper GOTO TOP command.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  When positioning to the first logical data item, goTop()
+        should respect any active scopes or filters.
+
+     ^b^CFE^b  If an order is attached to your implementation of work area,
+        you must use the top data item based on the correct row order and
+        respect any scoping or filtering.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goBottom()" "go()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: seek()             Position cursor at first row with matching key value
+'------------------------------------------------------------------------------
+ ^bseek()^b
+ Position cursor at first row with matching key value
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE seek(
+     ^b                  AREAP wa,
+     ^b                  BOOL isSoft,
+     ^b                  ITEM keyVal
+     ^b              )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bisSoft^b is set when a softseek is to be performed.
+
+     ^bkeyVal^b is the search value.
+
+ ^bDescription^b
+
+     seek() positions the cursor for wa to the row whose key value matches keyVal.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  The definition of seek() assumes that an order has been
+        imposed on the work area.  You must match keyVal against the key value
+        of this ordering.
+
+     ^b^CFE^b  Once the seek() has been performed, your implementation of
+        seek() should set the wa->fFound flag, if possible.  If you cannot
+        set this flag at the time of the seek(), you should investigate
+        subclassing the found() method to tailor it to your specific needs.
+
+     ^b^CFE^b  When the CA-Clipper SOFTSEEK-style SEEK is required, the
+        boolean value isSoft should be TRUE.  See SET SOFTSEEK in your
+        Reference Guide, Volumes 1 and 2 for more information.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "found()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: skip()             Reposition cursor relative to current position
+'------------------------------------------------------------------------------
+ ^bskip()^b
+ Reposition cursor relative to current position
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE skip(
+     ^b                  AREAP wa,
+     ^b                  LONG count
+     ^b              )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bcount^b is the number of rows to skip.
+
+ ^bDescription^b
+
+     skip() skips count number of rows (count may be negative, indicating
+     reverse traversal), obeying filter and scope conditions.  This method is
+     intended to provide the functionality of the CA-Clipper SKIP command.
+
+ ^bDefault Behavior^b
+
+     The default implementation of skip() calls skipFilter() and skipRaw() to
+     successfully navigate the work area.  skip() also sets wa->fTop,
+     wa->fBottom, wa->fBof, and wa->fEof, when appropriate.
+
+     ^bNote: ^b As implemented, skip() may pass a zero (0) value to skipRaw()
+     indicating that a COMMIT (flush()) is to be performed.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If an order is attached to your implementation of work area,
+        skip() should support this new ordering as well as any condition or
+        filtering behavior.
+
+     ^b^CFE^b  If your RDD supports relations, update them with a forceRel()
+        prior to attempting relative movement.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "flush()" "forceRel()" "go()" "skipFilter()" "skipRaw()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: skipFilter()       Reposition cursor respecting any filter setting
+'------------------------------------------------------------------------------
+ ^bskipFilter()^b
+ Reposition cursor respecting any filter setting
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE skipFilter(
+     ^b                        AREAP wa,
+     ^b                        LONG count
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bcount^b is the number of rows to skip.
+
+ ^bDescription^b
+
+     skipFilter() skips to the next visible record, obeying filter and scope conditions as
+     well as the deleted row settings.  skipFilter() is provided for skip()
+     optimization.
+
+ ^bDefault Behavior^b
+
+     Sets wa->fBof and wa->fEof, as appropriate.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your RDD supports relations, update relations with a
+        forceRel() prior to attempting relative movement.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "forceRel()" "skip()" "skipRaw()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: skipRaw()          Reposition cursor, regardless of filter
+'------------------------------------------------------------------------------
+ ^bskipRaw()^b
+ Reposition cursor, regardless of filter
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE skipRaw(
+     ^b                     AREAP wa,
+     ^b                     LONG numToSkip
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bnumToSkip^b is the number of rows to skip.  A positive number
+     indicates moving forward in the table, while a negative number indicates
+     backwards movement.
+
+ ^bDescription^b
+
+     skipRaw() relatively repositions the work area cursor numToSkip rows regardless of
+     filter settings.  skipRaw() is the base movement method for all relative
+     work area movements.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If an order is imposed on the work area by an index or other
+        such structure, skipRaw() should always follow that order.
+
+     ^b^CFE^b  In some systems, an absolute reposition using go() may be an
+        appropriate implementation of skipRaw().
+
+     ^b^CFE^b  skipRaw() must be able to accept a zero value for numToSkip,
+        indicating that the row at the current cursor position should be
+        committed (see flush()).
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "flush()" "go()" "skip()" "skipFilter()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bData Management Methods^b
+!short:
+!short: addField()         Add a column (field) to the work area
+'------------------------------------------------------------------------------
+ ^baddField()^b
+ Add a column (field) to the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE addField(
+     ^b                     AREAP wa,
+     ^b                     LPDBFIELDINFO lpdbFieldInfo
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbFieldInfo^b is a pointer to a structure containing information
+     about a column in the work area.
+
+ ^bDescription^b
+
+     addField() adds a column specified by lpdbFieldInfo to the wa work area.
+
+ ^bDefault Behavior^b
+
+     addField() inserts the column referred to by lpdbFieldInfo into the data
+     table referenced by the AREA structure.  The new column is added to the
+     end of the wa->lpFields structure.  wa->uiFieldCount is updated to
+     reflect the addition.
+
+     ^bNote:^b  Call setFieldExtent() prior to adding fields to the AREA
+     structure.  setFieldExtent() sizes and clears the wa->lpFields
+     structure, readying it for use.
+
+     ^bWarning!  wa->uiFieldCount^b must be less than ^bwa->uiFieldExtent^b
+     or an assertion error will be raised.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Most implementations should use the default behavior for
+        addField().  However, if you change the addField() implementation, be
+        aware of the order imposed on adding fields to the work area
+        structures.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBFIELDINFO" "createFields()" "setFieldExtent()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: append()           Append a row (record) to the work area
+'------------------------------------------------------------------------------
+ ^bappend()^b
+ Append a row (record) to the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE append(
+     ^b                  AREAP wa
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     append() appends a row to the work area defined by wa.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  append() allows the addition of a blank record to the work area
+        defined in wa and places the work area cursor at the new row position.
+
+     ^b^CFE^b  append() should make a call to goCold() before appending a row
+        and resolve (or cancel) pending relational moves.
+
+     ^b^CFE^b  On work areas marked as wa->fShared, pay strict attention to
+        network etiquette during the append.  On work areas marked as
+        wa->fReadonly, raise a recoverable error.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goCold()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: createFields()     Add all columns defined in an array to the work area
+'------------------------------------------------------------------------------
+ ^bcreateFields()^b
+ Add all columns defined in an array to the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE createFields(
+     ^b                           AREAP wa,
+     ^b                           FARP  lpvStru
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpvStru^b is a pointer to an array containing the column definitions
+     to add.  The length of this array is equal to the number of columns to
+     add.  Each element of lpvStru is a subarray containing information about
+     a single column.
+
+ ^bDefault Behavior^b
+
+     createFields() is used to implement the CA-Clipper DBCREATE() function.
+     It adds the columns, in the order specified by lpvStru, by calling
+     addField() for each subarray.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Most implementations should use the default behavior for
+        createFields().  However, if you change the createFields()
+        implementation, be aware of the order imposed on adding fields
+        to the work area structures.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBFIELDINFO" "addField()" "setFieldExtent()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: delete()           Mark a row (record) for deletion
+'------------------------------------------------------------------------------
+ ^bdelete()^b
+ Mark a row (record) for deletion
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE delete(
+     ^b                  AREAP wa
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     delete() marks the row at the current cursor location in wa for deletion.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  The delete() method marks the data item at the work area's
+        cursor for deletion.  The delete() mechanism for databases must deal
+        with the current work area cursor after the deletion.
+
+     ^b^CFE^b  If your RDD supports relations, update them with a forceRel()
+        prior to attempting the deletion.
+
+     ^b^CFE^b  On work areas marked as wa->fReadonly, raise a recoverable
+        error.  On work areas marked as wa->fShared, you must address network
+        contingencies.
+
+     ^b^CFE^b  Some RDDs may want to perform a physical table deletion.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "deleted()" "forceRel()" "pack()" "recall()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: deleted()          Determine deleted status for a row (record)
+'------------------------------------------------------------------------------
+ ^bdeleted()^b
+ Determine deleted status for a row (record)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE deleted(
+     ^b                     AREAP wa,
+     ^b                     BOOLP isDeleted
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bisDeleted^b is a pointer to a boolean value that determines whether a
+     row is deleted.
+
+ ^bDescription^b
+
+     deleted() queries the row at the current work area cursor to determine
+     if it has been marked for deletion.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your RDD supports relations, update them with a forceRel()
+        prior to attempting relative movement.
+
+     ^bWarning!  isDeleted^b must point to sizeof(BOOL) bytes of allocated
+     memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "delete()" "forceRel()" "recall()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: fieldCount()       Determine the number of columns (fields) in the work area
+'------------------------------------------------------------------------------
+ ^bfieldCount()^b
+ Determine the number of columns (fields) in the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE fieldCount(
+     ^b                        AREAP wa,
+     ^b                        USHORTP fieldCount
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bfieldCount^b is a pointer to an unsigned short integer value that
+     specifies the number of columns in the work area.
+
+ ^bDescription^b
+
+     fieldCount() gets the physical column count for wa.
+
+ ^bDefault Behavior^b
+
+     Copies wa->uiFieldCount into fieldCount.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If the number of columns is dynamic, fieldCount() should
+        return the count for the current row (record).
+
+     ^bWarning!  fieldCount^b must point to sizeof(USHORT) bytes of allocated
+     memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "fieldName()" "reccount()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: fieldDisplay()     This method is reserved for future use
+'------------------------------------------------------------------------------
+ ^bfieldDisplay()^b
+ This method is reserved for future use
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: fieldInfo()        Retrieve information about a column
+'------------------------------------------------------------------------------
+ ^bfieldInfo()^b
+ Retrieve information about a column
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE fieldInfo(
+     ^b                        AREAP  wa,
+     ^b                        USHORT uiFieldNum,
+     ^b                        USHORT uiInfoType,
+     ^b                        ITEM   itmInfo
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^buiFieldNum^b specifies the ordinal position of the column from which
+     information will be retrieved.
+
+          ^buiInfoType^b specifies the type of the information to be provided.
+
+     ^bitmInfo^b is a pointer to a CA-Clipper item which will contain the
+     field information.
+
+ ^bDescription^b
+
+     fieldInfo() retrieves information about the column.  The
+     information requested is defined by the value passed in uiInfoType.  The
+     field information that is available is defined by the RDD.  In the DBF
+     work area model, this is limited to the information stored in the DBF
+     file structure (that is, name, length, number of decimals, and data
+     type).
+
+ ^bDefault Behavior^b
+
+     The fieldInfo() method is used to implement the DBFieldInfo()
+     function.  In the default implementation, there are four properties
+     (shown in the table below) defined for each column (the numeric
+     constants are defined in the header file Rdd.api).
+
+     ^bfieldInfo() Information types^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bConstant     Meaning^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     DBS_NAME     Obtain the field's name
+     DBS_LEN      Obtain the field's length
+     DBS_DEC      Obtain the number of decimal places
+     DBS_TYPE     Obtain the field's type
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^bWarning!  itmInfo^b must be a valid item.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  You must implement new behavior for this method only if your
+        driver requires properties in addition to those listed in the previous
+        table.  Note that the properties listed above are required for every
+        implementation.
+
+     ^b^CFE^b  If your implementation of fieldInfo() cannot determine the
+        return value based on the value of uiInfoType, you should allow the
+        work area default implementation to attempt it by calling
+        SUPER_FIELDINFO().
+
+     ^b^CFE^b  If itmInfo contains a value other than NIL, it is the new
+        value for the property.  If your implementation warrants, you can
+        change itmInfo by assigning the new value to it.
+
+     ^b^CFE^b  The first 1000 possible values for uiInfoType are reserved by
+        CA-Clipper.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "info()" "orderInfo()" "recInfo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: fieldName()        Determine the name associated with a column (field) number
+'------------------------------------------------------------------------------
+ ^bfieldName()^b
+ Determine the name associated with a column (field) number
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE fieldName(
+     ^b                     AREAP wa,
+     ^b                     USHORT fieldNum,
+     ^b                     BYTEP name
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bfieldNum^b specifies the ordinal position of the column whose name is
+     to be obtained.
+
+     ^bname^b is a pointer to a buffer used to store the field name.
+
+ ^bDescription^b
+
+     fieldName() obtains the symbolic name associated with column fieldNum.
+
+ ^bDefault Behavior^b
+
+     fieldName() copies the name element of the symbol from the wa->lpFields
+     structure at fieldNum into name.  Since fieldNum is the one-based
+     CA-Clipper fieldNum column (field) number, we must subtract one to
+     correctly reference the C (zero-based) column array.
+
+     ^bWarning!^b  The character buffer referenced by name must be allocated
+     to at least 11 bytes prior to calling this method.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If you choose to reimplement this method in your subclass, you
+        must adhere to the CA-Clipper-based symbol type.  That is, symbols
+        that represent fields in work areas must be 10 or fewer characters in
+        length.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "fieldCount()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: flush()            Write data buffer to the data store
+'------------------------------------------------------------------------------
+ ^bflush()^b
+ Write data buffer to the data store
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE flush(
+     ^b                  AREAP wa
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     flush() writes active data and buffers to the work area's data store (usually a
+     disk).
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  All implementations of flush() should perform a call to
+        goCold() before physically updating the work area.
+
+     ^b^CFE^b  Use writeDBHeader() to write the contents of the header record
+        to disk.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goCold()" "writeDBHeader()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: getRec()           Retrieve the pointer to the RDD's record data buffer
+'------------------------------------------------------------------------------
+ ^bgetRec()^b
+ Retrieve the pointer to the RDD's record data buffer
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE getRec(
+     ^b                     AREAP wa,
+     ^b                     BYTEPP lplpBuffer
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blplpBuffer^b is a pointer to a pointer to the current record data
+     buffer.
+
+ ^bDescription^b
+
+     getRec() retrieves the pointer to the current record data buffer.  This
+     method is most notably used to transfer data between two similar
+     work areas.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "putRec()" "transRec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: getValue()         Obtain the current value of a column (field)
+'------------------------------------------------------------------------------
+ ^bgetValue()^b
+ Obtain the current value of a column (field)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE getValue(
+     ^b                     AREAP wa,
+     ^b                     USHORT fieldNum,
+     ^b                     ITEMP value
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bfieldNum^b specifies the ordinal position of the column whose value is
+     to be obtained.
+
+     ^bvalue^b is a pointer to a CA-Clipper item which will contain the
+     field's value.
+
+ ^bDescription^b
+
+     getValue() provides the mechanism by which the values of a row are
+     obtained for use by the CA-Clipper runtime system.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  getValue() should check wa->lpFields[fieldNum] to retrieve the
+        column information.  This permits the implementation of getValue() to
+        translate the value from the data store into an appropriate
+        CA-Clipper type.
+
+     ^b^CFE^b  getValue() is one of the few work area methods that the
+        CA-Clipper runtime calls without benefit of a higher-level wrapper
+        function.  A simple column access generates a call to this method, as
+        in:
+
+        cBobDobbs := MYDATA->BobDobbs
+
+     ^bWarning!  value^b must point to a valid item.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "getVarLen()" "putValue()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: getVarLen()        Obtain the length of a column (field) value
+'------------------------------------------------------------------------------
+ ^bgetVarLen()^b
+ Obtain the length of a column (field) value
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE getVarLen(
+     ^b                        AREAP wa,
+     ^b                        USHORT fieldNum,
+     ^b                        ULONGP length
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bfieldNum^b specifies the ordinal position of the column whose length
+     is to be obtained.
+
+     ^blength^b is a pointer to an unsigned long integer that determines the
+     length of the field.
+
+ ^bDescription^b
+
+     getVarLen() retrieves the length of the specified column for use by the CA-Clipper
+     Runtime System.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  In some cases, getting the length of the column
+        wa->lpFields[fieldNum] may be as simple as assigning
+        wa->lpFields[fieldNum].uiLen to length.  In other cases, where
+        columns are of varying length, you  may have to perform a physical
+        data read to correctly determine the length of the data.
+
+     ^bWarning!  length^b must point to sizeof(ULONG) bytes of allocated
+     memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "getValue()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: goCold()           Perform a write of work area memory to the data store
+'------------------------------------------------------------------------------
+ ^bgoCold()^b
+ Perform a write of work area memory to the data store
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE goCold(
+     ^b                  AREAP wa
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     goCold() forces the RDD to ensure that any data contained in memory
+     matches the data store (usually a disk).
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  The concept of hot and cold refers to the current state of
+        information in memory as it relates to information on disk.  If the
+        information in memory, has changed since last written to disk, it is
+        considered hot.  A cold work area's memory is in sync with its disk-
+        based counterpart.
+
+        In any implementation of goCold(), you should determine whether the
+        buffer holding the current cursor's data has been written to.  If so,
+        it is hot and must be turned cold by flushing or writing it to disk.
+
+     ^b^CFE^b  wa should remain cold until it is marked hot by goHot().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "append()" "flush()" "goHot()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: goHot()            Mark the work area data buffer as hot
+'------------------------------------------------------------------------------
+ ^bgoHot()^b
+ Mark the work area data buffer as hot
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE goHot(
+     ^b                  AREAP wa
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     goHot() informs the RDD that data in memory is not guaranteed to match
+     data in the data store (usually a disk).
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  The concept of hot and cold refers to the current state of
+        information in memory as it relates to information on disk.  If the
+        information in memory, has changed since last written to disk, it is
+        considered hot.  A cold work area's memory is in sync with its disk-
+        based counterpart.
+
+     ^b^CFE^b  When a work area goes hot in a shared environment, you must be
+        certain that all necessary locks are in place.  Going hot indicates
+        that a write is about to be performed on data.
+
+     ^b^CFE^b  You must never allow work areas marked as wa->fReadonly to call
+        goHot().  This is an ideal place to generate runtime recoverable
+        errors indicating that locks must be present or the work area must not
+        be in a read-only mode.
+
+     ^b^CFE^b  wa should remain hot until it is marked cold by goCold().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goCold()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: putRec()           Replace the current row (record)
+'------------------------------------------------------------------------------
+ ^bputRec()^b
+ Replace the current row (record)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE putRec(
+     ^b                  AREAP wa,
+     ^b                  BYTEP buffer
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bbuffer^b is the buffer at the work area cursor.
+
+ ^bDescription^b
+
+     putRec() replaces the current row's data buffer with the contents of
+     buffer.  This method is most notably used to transfer data between two
+     similar work areas.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  It is assumed that buffer points to the buffer at the work area
+        cursor.  putRec() should call goHot() prior to flushing the buffer
+        contents to disk.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "flush()" "goHot()" "transRec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: putValue()         Assign a value to the current column (field)
+'------------------------------------------------------------------------------
+ ^bputValue()^b
+ Assign a value to the current column (field)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE putValue(
+     ^b                     AREAP wa,
+     ^b                     USHORT fieldNum,
+     ^b                     ITEM value
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bfieldNum^b specifies the ordinal position of the column whose value is
+     to be assigned.
+
+     ^bvalue^b is a CA-Clipper item which contains the value to place at the
+     current cursor position.
+
+ ^bDescription^b
+
+     putValue() places a value in the column at the current work area cursor position.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  putValue() should check wa->lpFields[fieldNum] to retrieve the
+        column information.  This allows your implementation of putValue() to
+        translate the CA-Clipper value to the RDD's native data store format.
+
+     ^b^CFE^b  putValue() must address the shared and read-only status of the
+        work area.  Calling putValue() must trigger a call to goHot().
+
+     ^b^CFE^b  putValue() is one of the few work area methods that the
+        CA-Clipper runtime calls without benefit of a higher-level wrapper
+        function.  The following code generates a call to this method:
+
+        MYDATA->BobDobbs := cBobDobbs
+
+     ^b^CFE^b  If your RDD supports relations, update them with a forceRel()
+        prior to placing a value in the buffer.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "forceRel()" "getValue()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: recall()           Undelete the current row (record)
+'------------------------------------------------------------------------------
+ ^brecall()^b
+ Undelete the current row (record)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE recall(
+     ^b                  AREAP wa
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     The recall() method recalls the row marked for deletion at the work
+     area cursor position.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Assuming that your RDD supports virtual deletes, recall()
+        should bring the deleted record at the current work area cursor
+        position back from its deleted status (i.e. remove the deleted flag).
+        If your RDD does not support virtual deletes, you should generate a
+        "not supported" error.
+
+     ^b^CFE^b  A recall() usually involves a write to the data store.  This
+        means that shared and read-only access must be considered, and a call
+        to goHot() is in order before performing the recall.
+
+     ^b^CFE^b  If your RDD supports relations, update them with a forceRel()
+        prior to attempting relative movement.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "delete()" "deleted()" "pack()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: reccount()         Obtain number of rows (records) in work area's table
+'------------------------------------------------------------------------------
+ ^breccount()^b
+ Obtain number of rows (records) in work area's table
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE reccount(
+     ^b                     AREAP wa,
+     ^b                     ULONGP numRecords
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bnumRecords^b is a pointer to an unsigned long integer that determines
+     the actual number of records in the work area.
+
+ ^bDescription^b
+
+     reccount() retrieves the actual number of rows in the work area.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  reccount() should always return the physical number of rows in
+        the work area regardless of conditional or filtered settings.
+
+     ^bWarning!  numRecords^b must point to sizeof(ULONG) bytes of allocated
+     memory.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "fieldCount()" "recno()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: recInfo()          Retrieve the information about a row
+'------------------------------------------------------------------------------
+ ^brecInfo()^b
+ Retrieve the information about a row
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE recInfo(
+     ^b                     AREAP wa,
+     ^b                     ITEM itmRecID,
+     ^b                     USHORT uiInfoType,
+     ^b                     ITEM itmInfo
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bitmRecID^b is a pointer to an item that determines the current row
+     identifier and will normally be a number indicating the row number.
+
+          ^buiInfoType^b is a value that determines the type of the
+          information to be provided.
+
+     ^bitmInfo^b is a pointer to a CA-Clipper item which will contain the
+     required information.  The data type of itmInfo depends on the value of
+     uiInfoType.
+
+ ^bDescription^b
+
+     recInfo() retrieves information about the state of a record
+     (row).  The information requested is defined by the value passed in
+     uiInfoType.  The record information that is available is defined by the
+     RDD.  Some suggested values for uiInfoType (constants with "DBRI_"
+     prefix) and their associated meanings are provided in the header file
+     Rdd.api.
+
+ ^bDefault Behavior^b
+
+     recInfo() is used to implement the DBRecInfo() function and
+     is called any time information about the row is needed to perform an
+     operation.  In the default implementation there are five properties
+     (shown in the following table) defined for each row (the constants are
+     defined in Rdd.api).
+
+     ^brecInfo() Information types^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bConstant        Meaning^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     DBRI_DELETED    Check the 'deleted' status of the row
+     DBRI_LOCKED     Check if the row is locked
+     DBRI_RECNO      Get the row position number
+     DBRI_RECSIZE    Get the record size
+     DBRI_UPDATED    Check if the row was updated
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^bWarning!  itmInfo^b must be a valid item.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  You must implement new behavior for this method only if your
+        driver requires properties in addition to those listed in
+        the previous table.
+
+     ^b^CFE^b  If your implementation of recInfo() cannot determine the
+        return value based on the value of uiInfoType, you should allow the
+        work area default implementation to attempt it by calling
+        SUPER_RECINFO().
+
+     ^b^CFE^b  If itmInfo contains a value other than NIL, it is the new
+        value for the property.  If your implementation warrants, you can
+        change itmInfo by assigning the new value to it.
+
+     ^b^CFE^b  The first 1000 possible values for uiInfoType are reserved by
+        CA-Clipper.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "fieldInfo()" "info()" "orderInfo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: recno()            Get row number at current work area cursor position
+'------------------------------------------------------------------------------
+ ^brecno()^b
+ Obtain physical row number at current work area cursor position
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE recno(
+     ^b                  AREAP wa,
+     ^b                  ITEM record
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^brecord^b is a pointer to an item that determines the current row
+     identifier, and will normally be a number indicating the row number.
+
+ ^bDescription^b
+
+     recno() retrieves the physical row identifier at the current work area
+     cursor position for use by the CA-Clipper runtime system.  If your driver
+     operates on a database that does not contain record numbers, you must
+     provide a unique value to be used to identify each row.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your RDD supports relations, update them with a forceRel()
+        prior to attempting relative movement.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "forceRel()" "reccount()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: setFieldExtent()   Establish extent of the array of fields for a work area
+'------------------------------------------------------------------------------
+ ^bsetFieldExtent()^b
+ Establish the extent of the array of fields for a work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE setFieldExtent(
+     ^b                           AREAP wa,
+     ^b                           LONG extent
+     ^b                          )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bextent^b is the maximum number of fields that will be used by the
+     work area.
+
+ ^bDescription^b
+
+     setFieldExtent() establishes the maximum number of fields that the
+     work area will contain.
+
+ ^bDefault Behavior^b
+
+     Assigns extent to wa->uiFieldExtent and allocates memory for extent
+     number of fields in wa->lpFields.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Most implementations should use the default behavior of
+        setFieldExtent().  However, if your RDD allows dynamic addition of
+        fields in the table, this method should set wa->uiFieldExtent to the
+        maximum number of fields allowed for the work area (or provide for
+        resizing of wa->lpFields) and allocate enough memory (in
+        wa->lpFields) to store wa->uiFieldExtent number of fields.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "addField()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bWork Area/Database Management Methods^b
+!short:
+!short: alias()            Obtain the alias of the work area
+'------------------------------------------------------------------------------
+ ^balias()^b
+ Obtain the alias of the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE alias(
+     ^b                  AREAP wa,
+     ^b                  BYTEP alias
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^balias^b is a pointer to a buffer that is assigned the alias name.
+
+ ^bDescription^b
+
+     alias() provides the alias name of the work area.
+
+ ^bDefault Behavior^b
+
+     Places the name of the work area from wa->atomAlias into alias as a
+     null-terminated string.
+
+ ^bImplementation Notes^b
+
+     ^bWarning!^b  You must allocate at least 11 bytes to the character
+     buffer referenced by alias prior to calling this function.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "open()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: close()            Close the table in the work area
+'------------------------------------------------------------------------------
+ ^bclose()^b
+ Close the table in the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE close(
+     ^b                  AREAP wa
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     The close() method closes the data table in the work area defined by wa.
+
+ ^bDefault Behavior^b
+
+     close() clears the work area referenced by wa, and performs the following
+     additional functions:
+
+     1. Calls clearFilter() and clearLocate() passing wa to each.
+
+     2. If wa has any parent work areas, any relations pointing to the
+        work area are killed.
+
+     3. Fields are unlinked from the symbol table, and the wa->atomAlias
+        symbol is reset.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  The default implementation of close() should deallocate system
+        information hooked into the AREA structure.  Your implementation of
+        close() should clear relations, if necessary, (with clearRel()),
+        flush buffers, close physical files, call writeDBHeader(), and then
+        call SUPER_CLOSE().
+
+     ^b^CFE^b  If a memo file is involved, close() should call
+        closeMemFile().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "clearRel()" "closeMemFile()" "open()" "release()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: create()           Create a data store (table) in the specified work area
+'------------------------------------------------------------------------------
+ ^bcreate()^b
+ Create a data store (table) in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE create(
+     ^b                  AREAP wa,
+     ^b                  LPDBOPENINFO lpdbOpenInfo
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbOpenInfo^b is a pointer to a structure containing information
+     about the work area and the table to be created.
+
+ ^bDescription^b
+
+     The create() method creates an empty data store in the work area
+     referenced by wa.
+
+ ^bDefault Behavior^b
+
+     At the work area level, create() maps directly to open().
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If creation of the new data store fails, create() should
+        ensure that the work area is in a usable state by calling SELF_CLOSE()
+        before you generate a recoverable error.
+
+     ^b^CFE^b  If a memo file is involved, create() should call
+        createMemFile().
+
+     ^b^CFE^b  Use writeDBHeader() to write the contents of the header record
+        to disk.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBOPENINFO" "createMemFile()" "open()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: dbEval()           Evaluate code block for each row (record) in work area
+'------------------------------------------------------------------------------
+ ^bdbEval()^b
+ Evaluate code block for each row (record) in work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bHIDE ERRCODE dbEval(
+     ^b                        AREAP wa,
+     ^b                        LPDBEVALINFO lpdbEvalInfo
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbEvalInfo^b is a pointer to a structure containing information
+     necessary for a code block evaluation.
+
+ ^bDescription^b
+
+     dbEval() evaluates a code block for each row in scope in in the work
+     area referenced by wa.
+
+ ^bDefault Behavior^b
+
+     dbEval() emulates the CA-Clipper DBEval() function, obeying the "normal"
+     Xbase scoping conditions.  dbEval() calls evalBlock() for each row in
+     the database, using the wa's skip() method to traverse the data.  Both
+     wa and lpdbEvalInfo->itmBlock are passed to each call of evalBlock()
+     while the following conditions are met:
+
+     ^b^CFE^b  If lpdbEvalInfo->dbsci.itmRecID is set to a number,
+        evalBlock() is called once with that physical record number.
+
+     ^b^CFE^b  If lpdbEvalInfo->dbsci.lNext is set to a number n, then n
+        iterations occur.
+
+     ^b^CFE^b  Otherwise, evalBlock() is called for each record while
+        wa->fEof is not true and the lpdbEvalInfo->dbsci.itmCobWhile block
+        evaluates to TRUE.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If this method is reimplemented, care should be taken to
+        completely emulate the behavior of Xbase scoping.  This will offer
+        the CA-Clipper developer maximum compatibility with the Xbase DML.
+        Note especially that several of the scoping conditions exclude each
+        other, and many opportunities exist for optimization.  The default
+        behavior of this method provides a very high level of optimization
+        with the default Xbase scoping.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBEVALINFO" "skip()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: info()             Retrieve information about the current driver
+'------------------------------------------------------------------------------
+ ^binfo()^b
+ Retrieve information about the current driver
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE info(
+     ^b               LPAREA wa,
+     ^b               USHORT uiInfoType,
+     ^b               ITEM itmInfo
+     ^b             )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^buiInfoType^b is a value that determines the type of information to be
+     provided.
+
+     ^bitmInfo^b is a CA-Clipper item which contains the information that
+     corresponds to uiInfoType.
+
+ ^bDescription^b
+
+     info() obtains the information about the current work area.
+
+ ^bDefault Behavior^b
+
+     The info() method is used to implement the CA-Clipper DBINFO() function
+     and is called any time information about the work area is needed to
+     perform an operation.  It returns items of data in response to some
+     basic questions concerning the driver's functionality.  Those questions
+     are defined by the value passed in uiInfoType.  Some suggested values
+     for uiInfoType (constants with "DBI_" prefix) and their associated
+     meanings are provided in the header file Rdd.api.
+
+     ^bWarning!  itmInfo^b must be a valid item.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your implementation of info() cannot determine the return
+        value based on the value of uiInfoType, you should allow the work area
+        default implementation to attempt it by calling SUPER_INFO().
+
+     ^b^CFE^b  DBI_USER is a constant (defined in Rdd.api) that returns the
+        minimum value that third-party developers can use for defining new
+        uiInfoType parameters.  Values less than DBI_USER are reserved by
+        CA-Clipper.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "sysName()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: new()              Clear the work area for use
+'------------------------------------------------------------------------------
+ ^bnew()^b
+ Clear the work area for use
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE new(
+     ^b               AREAP wa
+     ^b            )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     Clears a work area for use.
+
+ ^bDefault Behavior^b
+
+     new() assures that wa is ready to be put into use.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Most implementations should use the default implementation of
+        new().  Any behavior added to a subclassed version should provide any
+        initialization of the work area needed for the RDD.
+
+     ^bWarning!^b  You should never break the inheritance chain with this
+     method.  In other words, always call SUPER_NEW( wa ) from any RDD you
+     design.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "open()" "release()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: open()             Open a data store (table) in the work area
+'------------------------------------------------------------------------------
+ ^bopen()^b
+ Open a data store (table) in the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE open(
+     ^b               AREAP wa,
+     ^b               LPDBOPENINFO lpdbOpenInfo
+     ^b             )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbOpenInfo^b is a pointer to a structure containing information
+     about the work area and the data store to be opened.
+
+ ^bDescription^b
+
+     The open() method opens the data store referenced by lpdbOpenInfo.
+
+ ^bDefault Behavior^b
+
+     The work area open() method concludes the process of opening a database
+     file by performing the following tasks:
+
+     ^b^CFE^b  Sets up the wa->atomAlias (checking for duplicate aliases or
+        bad alias names)
+
+     ^b^CFE^b  Links the fields to the symbol table
+
+     ^b^CFE^b  Adds the work area to the list of work areas that are in use
+
+     ^bNote: ^b The work area must not already be in use.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  open() assumes that the RDD has already opened the data store
+        and set up the wa->lpFields array prior to calling SUPER_OPEN().
+
+     ^b^CFE^b  If a memo file involved, open() should call openMemFile().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBOPENINFO" "close()" "create()" "openMemFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: pack()             Remove rows (records) marked for deletion from a database
+'------------------------------------------------------------------------------
+ ^bpack()^b
+ Remove rows (records) marked for deletion from a database
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE pack(
+     ^b                  AREAP wa
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     pack() physically removes rows marked for deletion from the database.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Since a pack operation must traverse the entire data store,
+        the buffer for the current work area must call goCold() before any
+        pack() operation can take place.  Further, in a shared environment,
+        you can only implement this method after the proper locks are
+        established.
+
+     ^b^CFE^b  If your RDD supports relations, resolve any pending relational
+        moves (perhaps by simply removing them) before attempting the
+        pack() operation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "delete()" "deleted()" "goCold()" "packRec()" "zap()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: packRec()          Copy a single row back to the current work area
+'------------------------------------------------------------------------------
+ ^bpackRec()^b
+ Copy a single row back to the current work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE packRec(
+     ^b                     AREAP wa,
+     ^b                     LONG lRecno,
+     ^b                     USHORTP lpfWritten
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blRecno^b is the number of a record which has to remain within the
+     file.
+
+     ^blpfWritten^b is a pointer to a boolean flag indicating whether the
+     record will remain within the file.
+
+ ^bDescription^b
+
+     packRec() copies a single row back to the work area and is called from
+     within the pack() method.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Within the pack() method, call packRec() for each single row
+        that you want to copy back to the original database file.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "pack()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: readDBHeader()     Read the database file header record in the work area
+'------------------------------------------------------------------------------
+ ^breadDBHeader()^b
+ Read the database file header record in the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE readDBHeader(
+     ^b                           AREAP wa
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     The readDBHeader() method reads the database file header in the work area
+     referenced by wa.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "writeDBHeader()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: release()          Release all references to a work area
+'------------------------------------------------------------------------------
+ ^brelease()^b
+ Release all references to a work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE release(
+     ^b                     AREAP wa
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     The release() method releases the work area referenced by wa.
+
+ ^bDefault Behavior^b
+
+     release() releases the work area referenced by wa, and performs the
+     following tasks:
+
+     ^b^CFE^b  Releases memory used by wa->lpFields
+
+     ^b^CFE^b  Removes the referenced work area from the list of open
+        work areas
+
+     ^b^CFE^b  If the referenced work area is the current work area, the
+        current work area symbol is set to NULL
+
+     ^b^CFE^b  Releases the memory held by the current AREA structure
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  It is highly recommended that you do not break the inheritance
+        chain of release() (i.e., any implementation of release() in your RDD
+        should call SUPER_RELEASE()).
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "close()" "new()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: sort()             Physically reorder a database
+'------------------------------------------------------------------------------
+ ^bsort()^b
+ Physically reorder a database
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE sort(
+     ^b               AREAP wa,
+     ^b               LPDBSORTINFO lpdbSortInfo
+     ^b             )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbSortInfo^b is a pointer to a structure containing information on
+     how to sort the work area table.
+
+ ^bDescription^b
+
+     sort() performs a physical reordering of the database by copying records
+     from the current work area to another database file in sorted order as
+     specified in lpdbSortInfo.  sort() performs as much of its operation as
+     possible in memory, then it spools to a uniquely named temporary disk
+     file.  This temporary file can be as large as the size of the source
+     database file.  It then overwrites the original database with the newly
+     sorted data.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Since a sort operation must traverse the entire data store,
+        the buffer for the current work area must call goCold() before any
+        sort()  operation can take place.  Further, in a shared environment,
+        you can only implement this method after the proper locks are
+        established.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBSORTINFO" "goCold()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: structSize()       Retrieve the size of the work area structure
+'------------------------------------------------------------------------------
+ ^bstructSize()^b
+ Retrieve the size of the work area structure
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE structSize(
+     ^b                        AREAP wa,
+     ^b                        USHORTP size
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bsize^b is a pointer to a value which is assigned the size of the
+     work area structure.
+
+ ^bDescription^b
+
+     Obtains the size of the work area structure.
+
+ ^bDefault Behavior^b
+
+     The size of AREA is copied to size.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your RDD changes the size of the AREA structure, you must
+        reimplement this method to return the true size of the new structure.
+
+     ^bWarning!  size^b must point to a valid USHORT.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "open()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: sysName()          Obtain name of replaceable database driver (RDD) subsystem
+'------------------------------------------------------------------------------
+ ^bsysName()^b
+ Obtain name of replaceable database driver (RDD) subsystem
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE sysName(
+     ^b                     AREAP wa,
+     ^b                     BYTEP name
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bname^b is a pointer to a buffer that is assigned the name of the RDD.
+
+ ^bDescription^b
+
+     sysName() obtains the name of the driver subsystem.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+     ^bWarning!  name^b must point to a preallocated buffer of at least 16
+     bytes.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Your RDD should implement sysName() by simply returning the
+        name of your driver.  For example, the DBFNTX driver copies "DBFNTX"
+        into name and returns.  There is no need to maintain the inheritance
+        chain for sysName().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "info()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: trans()            Copy one or more rows from one work area to another
+'------------------------------------------------------------------------------
+ ^btrans()^b
+ Copy one or more rows (records) from one work area to another
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE trans(
+     ^b                  AREAP wa,
+     ^b                  LPDBTRANSINFO lpdbTransInfo
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbTransInfo^b is a pointer to a structure containing information
+     about the transfer of data.
+
+ ^bDescription^b
+
+     trans() copies one or more rows between two tables in two different work
+     areas.
+
+ ^bDefault Behavior^b
+
+     Copies multiple rows by passing each wa record to transRec() while the
+     following conditions are met (these are the same conditions as
+     dbEval()):
+
+     ^b^CFE^b  If lpdbTransInfo->dbsci.itmRecID is set to a number,
+        evalBlock() is called once with that physical row (record) number
+
+     ^b^CFE^b  If lpdbTransInfo->dbsci.lNext is set to a number, n: n
+        iterations occur.
+
+        Otherwise, evalBlock() is called for each record while wa->fEof is
+        not true and the lpdbTransInfo->dbsci.itmCobWhile block evaluates to
+        TRUE.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If you perform multiple iterations of this method, be careful
+        to completely emulate the behavior of Xbase scoping.  This will offer
+        the CA-Clipper developer maximum compatibility with the Xbase DML.
+        Note especially that several of the scoping conditions exclude each
+        other, so there are many opportunities for optimization.  The default
+        behavior of this method provides a very high level of optimization
+        with the default Xbase scoping.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBTRANSINFO" "transRec()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: transRec()         Copy a single row (record) to another work area
+'------------------------------------------------------------------------------
+ ^btransRec()^b
+ Copy a single row (record) to another work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE transRec(
+     ^b                     AREAP wa,
+     ^b                     LPDBTRANSINFO lpdbTransInfo
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbTransInfo^b is a pointer to a structure containing information
+     about the transfer of data.
+
+ ^bDescription^b
+
+     transRec() copies a single row to another table.
+
+ ^bDefault Behavior^b
+
+     Copies the current row from wa to the database specified by
+     lpdbTransInfo.
+
+     ^bNote:^b  If an error occurs, the new record in lpdbTransInfo->lpaDest
+     is deleted by a call to SELF_DELETE().
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your RDD supports relations, update them in the source
+        work area with a forceRel() prior to attempting to perform the copy.
+
+     ^b^CFE^b  You should append the new copy to the target work area.
+
+     ^b^CFE^b  A reimplementation of transRec() should check locks and read-
+        only status in the target database.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBTRANSINFO" "forceRel()" "trans()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: writeDBHeader()    Write database file header record in work area back to disk
+'------------------------------------------------------------------------------
+ ^bwriteDBHeader()^b
+ Write database file header record in work area back to disk
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE writeDBHeader(
+     ^b                           AREAP wa
+     ^b                         )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     The writeDBHeader() method writes the contents of the header record to
+     the work area referenced by wa.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Normally, before writing the contents of the header record
+        using writeDBHeader(), call headerLock() to obtain a lock on the
+        header record.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "readDBHeader()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: zap()              Physically remove all rows from data store
+'------------------------------------------------------------------------------
+ ^bzap()^b
+ Physically remove all rows (records) from data store (table)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE zap(
+     ^b               AREAP wa
+     ^b             )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     zap() physically removes all rows from the data store referenced by wa.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  You may only implement zap() with the appropriate network
+        locks in place while the work area is not in read-only mode.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "pack()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bRelational Operation Methods^b
+!short:
+!short: childEnd()         Report end of relation
+'------------------------------------------------------------------------------
+ ^bchildEnd()^b
+ Report end of relation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE childEnd(
+     ^b                     AREAP wa,
+     ^b                     LPDBRELINFO lpdbRelInfo
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbRelInfo^b is a pointer to a structure containing information on a
+     relation.
+
+ ^bDescription^b
+
+     childEnd() indicates that one of wa's parent work areas is no longer related.
+
+ ^bDefault Behavior^b
+
+     childEnd() indicates that the referenced work area is related to one less
+     parent by decrementing wa->uiParents.  This method does not physically
+     unhook a child from a parent.
+
+     ^bWarning!^b  There is no check to guarantee that ^bwa->uiParents^b will
+     wrap from 0 to 255 after the decrement.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your RDD supports relations, ensure that the child work area
+        (denoted by wa) does not have a pending relational move that relies
+        upon the existence of the parent referenced by lpdbRelInfo.  If such
+        a movement exists, it must be resolved by a call to SELF_FORCEREL()
+        prior to removal.
+
+     ^b^CFE^b  In most driver implementations, parent-child relations will be
+        stored exclusively in the parent work area.  clearRel() removes all
+        child relations from a parent; there is no way to remove a single
+        relation from a parent's relation list using the CA-Clipper DML.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "childStart()" "clearRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: childStart()       Report initialization of a relation
+'------------------------------------------------------------------------------
+ ^bchildStart()^b
+ Report initialization of a relation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE childStart(
+     ^b                        AREAP wa,
+     ^b                        LPDBRELINFO lpdbRelInfo
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbRelInfo^b is a pointer to a structure containing information on a
+     relation.
+
+ ^bDescription^b
+
+     childStart() informs the child work area referenced by wa that it will
+     be attached to the parent specified in lpdbRelInfo.
+
+ ^bDefault Behavior^b
+
+     Increments the wa->uiParents field.  Parents can be sent relation
+     information for initialization with the setRel() method.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  A call to SELF_CHILDSYNC() should be made within any
+        implementation of this method to force the child work area to begin
+        life in sync with its parent.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "childEnd()" "setRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: childSync()        Post a pending relational movement
+'------------------------------------------------------------------------------
+ ^bchildSync()^b
+ Post a pending relational movement
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE childSync(
+     ^b                     AREAP wa,
+     ^b                     LPDBRELINFO lpdbRelInfo
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbRelInfo^b is a pointer to a structure containing information on a
+     relation.
+
+ ^bDescription^b
+
+     childSync() posts lpdbRelInfo as a pending relational movement indicating
+     that the child work area referenced by wa has been affected by a
+     parental movement.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Note that grandchildren must have relative movements posted in
+        them after the child moves.  This means that any implementation of
+        this method should make a call to syncChildren() after doing its
+        business.
+
+     ^b^CFE^b  childSync() does not physically move the child's cursor.
+        childSync() should simply post notification that a relational
+        movement is pending.  It can later be resolved (if necessary) by
+        forceRel().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "forceRel()" "syncChildren()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: clearRel()         Clear all relations in the specified work area
+'------------------------------------------------------------------------------
+ ^bclearRel()^b
+ Clear all relations in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE clearRel(
+     ^b                     AREAP wa
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     clearRel() clears all relations currently in use by a specified
+     work area.
+
+ ^bDefault Behavior^b
+
+     clearRel() removes all relations from wa->lpdbRelations.  clearRel()
+     traverses the relation list and releases the memory used by each
+     relation structure (DBRELINFO) in wa->lpdbRelations.  For each relation
+     killed, childEnd() is called to notify the child of its parent's
+     abandonment.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If this method is replaced, be certain to properly deallocate
+        items and memory used by DBRELINFO.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "childEnd()" "setRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: forceRel()         Force relational seeks in the specified work area
+'------------------------------------------------------------------------------
+ ^bforceRel()^b
+ Force relational seeks in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE forceRel(
+     ^b                     AREAP wa
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     forceRel() causes any pending relational seeks in the work area
+     referenced by wa to be performed immediately.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  The ideal implementation for forceRel() would have a pending
+        relation structure (DBRELINFO) defined as a part of the subclassed
+        AREA structure.  Using this information, forceRel() should ensure
+        that the work area buffer is not hot and call SELF_RELEVAL() to
+        position the work area.
+
+     ^b^CFE^b  This is one of the rare instances when wa->fFound should be
+        set if the relational move is successful.  While this is not a
+        seek(), part of the specification of the CA-Clipper implementation of
+        FOUND() is to return TRUE if a relational seek is successful.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "relEval()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: relArea()          Obtain the logical number of the specified work area
+'------------------------------------------------------------------------------
+ ^brelArea()^b
+ Obtain the logical number of the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE relArea(
+     ^b                     AREAP wa,
+     ^b                     USHORT relNum,
+     ^b                     USHORTP nArea
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^brelNum^b is an unsigned short integer that specifies the relation
+     number for which to obtain the work area number.
+
+     ^bnArea^b is a pointer to an unsigned short value that determines the
+     number of the work area.
+
+ ^bDescription^b
+
+     relArea() obtains the CA-Clipper SELECT() area of the child relation
+     referenced by relNum.  relNum is a one-based number.
+
+ ^bDefault Behavior^b
+
+     relArea() implements the behavior of the CA-Clipper function
+     DBRSELECT().  It scans relations for the work area at wa and returns the
+     area number of the child work area.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If this method is reimplemented, be careful to return the area
+        number for the relation at relNum-1 since relNum is a one-based
+        number.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "relText()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: relEval()          Evaluate block against relation in specified work area
+'------------------------------------------------------------------------------
+ ^brelEval()^b
+ Evaluate a block against the relation in specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE relEval(
+     ^b                     AREAP wa,
+     ^b                     LPDBRELINFO lpdbRelInfo
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbRelInfo^b is a pointer to a structure containing information on a
+     relation.
+
+ ^bDescription^b
+
+     relEval() performs a relational seek from the parent work area
+     referenced by wa to the child work area specified by lpdbRelInfo.
+
+ ^bDefault Behavior^b
+
+     Evaluates the block held in the structure pointed to by
+     lpdbRelInfo->itmCobExpr.  The expression resulting from the evaluation
+     is placed in wa->valResult and the return code indicates success or
+     failure.
+
+     ^bNote: ^b The selected work area is saved and restored.
+
+     ^bWarning!^b  If the item held in ^blpdbRelInfo->itmCobExpr^b is not a
+     code block, a BASE/1004 "No exported method" error is generated.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If any global state necessary for the operation of your driver
+        could be modified by the code block in lpdbRelInfo->itmCobExpr (i.e.,
+        any CA-Clipper code), you should save that state, call
+        SUPER_RELEVAL() and then restore the state.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "forceRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: relText()          Obtain the character expression of the specified relation
+'------------------------------------------------------------------------------
+ ^brelText()^b
+ Obtain the character expression of the specified relation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE relText(
+     ^b                     AREAP wa,
+     ^b                     USHORT relNum,
+     ^b                     BYTEP cExpr
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^brelNum^b is a numeric value that specifies for which relation the
+     character expression is to be obtained.
+
+     ^bcExpr^b is a pointer to a buffer that contains the character
+     expression of relation relNum.
+
+ ^bDescription^b
+
+     relText() obtains a string that describes the relationship of the relNum relation
+     to the work area referenced by wa.  relNum is a one-based number.
+
+ ^bDefault Behavior^b
+
+     relText() implements the behavior of the CA-Clipper function
+     DBRELATION().  It scans relations for the work area referenced by wa
+     and returns the key text for the child work area.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If this method is reimplemented, be careful to return the key
+        text for the relation at relNum-1 since relNum is a one-based number.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "relArea()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: setRel()           Set a relation in the parent file
+'------------------------------------------------------------------------------
+ ^bsetRel()^b
+ Set a relation in the parent file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE setRel(
+     ^b                  AREAP wa,
+     ^b                  LPDBRELINFO lpdbRelInfo
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbRelInfo^b is a pointer to a structure containing information on a
+     relation.
+
+ ^bDescription^b
+
+     setRel() adds lpdbRelInfo to the wa->lpdbRelations list.
+
+ ^bDefault Behavior^b
+
+     Sets a relation--as defined by lpdbRelInfo--in the parent file wa.  A
+     copy of the lpdbRelInfo structure is placed in the wa->lpdbRelations
+     list.
+
+     setRel() notifies the child of its additional parent by calling
+     childStart().
+
+     ^bWarning!^b  The ^blpdbRelInfo->lpaParent^b pointer must be the same as
+     the work area pointer that is passed as the first argument.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If you replace this method in your RDD, locate the end of the
+        wa->lpdbRelations chain and mark the lpdbriNext element to point to
+        your new relation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBRELINFO" "childStart()" "clearRel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: syncChildren()     Force relational movement in child work areas
+'------------------------------------------------------------------------------
+ ^bsyncChildren()^b
+ Force relational movement in child work areas
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE syncChildren(
+     ^b                           AREAP wa
+     ^b                       )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     syncChildren() synchronizes all child work areas in wa->lpdbRelations.
+
+ ^bDefault Behavior^b
+
+     syncChildren() traverses the relation list wa->lpdbRelations and calls
+     childSync(), passing the child's work area structure and the current
+     DBRELINFO structure from the parent.
+
+     ^bNote:^b  childSync() must be implemented by a subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  You should only replace this method with extreme care because
+        recursive use of childSync() may call the code in syncChildren().
+        Also, error codes (return value from childSync()) may cause the
+        premature end of processing in this method.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "childSync()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bOrder Management Methods^b
+!short:
+!short: orderCondition()   Set or delete a condition for subsequent order creation
+'------------------------------------------------------------------------------
+ ^borderCondition()^b
+ Set or delete a condition for subsequent order creation in the specified
+ work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderCondition(
+     ^b                        AREAP wa,
+     ^b                        LPDBORDERCONDINFO lpdbOrdCondInfo
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbOrdCondInfo^b is a pointer to a structure containing information
+     for the order condition.
+
+ ^bDescription^b
+
+     orderCondition() sets or deletes an order condition
+     lpdbOrdCondInfo in wa.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  For DBF-like RDDs, setting and resetting of the order
+        condition is managed by the super driver, DBF.RDD.  You can use this
+        method by calling SUPER_ORDSETCOND().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBORDERCONDINFO" "orderCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: orderCreate()      Create new order
+'------------------------------------------------------------------------------
+ ^borderCreate()^b
+ Create new order
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderCreate(
+     ^b                     AREAP wa,
+     ^b                     LPDBORDERCREATEINFO lpdbCreateOrderInfo
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbCreateOrderInfo^b is a pointer to a structure containing
+     information for order creation.
+
+ ^bDescription^b
+
+     The orderCreate method creates a new order in wa.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Before you create and attach a new order to the work area,
+        call goCold().
+
+     ^b^CFE^b  orderCreate() provides the functionality of the CA-Clipper
+        INDEX ON command.  In most implementations, orderCreate() should
+        close any currently open orders before creating the new order.  After
+        order creation, the closed orders may then be reopened or left
+        closed, as dictated by the RDD implementation.
+
+     ^b^CFE^b  The base ordering procedure requires key evaluation on an
+        empty phantom row.  To reposition to a phantom row, perform a
+        SELF_GOTO().  See go() for more information.
+
+     ^bWarning!^b  If you choose to allow orders to remain open during order
+     creation, and your implementation provides for scoped or conditional
+     orders, keep in mind that future order creations may be affected by such
+     orders.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBORDERCREATEINFO" "go()" "orderListRebuild()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: orderInfo()        Provides information about order management
+'------------------------------------------------------------------------------
+ ^borderInfo()^b
+ Provides information about order management
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderInfo(
+     ^b                     AREAP wa,
+     ^b                     USHORT message,
+     ^b                     FARP value
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bmessage^b is a value that determines the type of information to be
+     provided.
+
+     ^bvalue^b is a pointer to some data type structure indicating the status
+     of message.  The data type pointed to by value depends on the value of
+     message.
+
+ ^bDescription^b
+
+     orderInfo() returns information about the current order.  The
+     information requested is defined by the value passed in message.  Some
+     suggested values for message and their associated meanings are provided
+     in the header file Rdd.api.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  If your implementation of orderInfo() cannot determine the
+        return value based on the value of message, you should allow the
+        work area default implementation to attempt it by calling
+        SUPER_ORDINFO().
+
+     ^b^CFE^b  The first 1000 possible values for message are reserved by
+        CA-Clipper.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBORDERINFO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: orderListAdd()     Opens an order bag in the indicated work area
+'------------------------------------------------------------------------------
+ ^borderListAdd()^b
+ Opens an order bag in the indicated work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderListAdd(
+     ^b                           AREAP wa,
+     ^b                           LPDBORDERINFO lpdbOrderInfo
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbOrderInfo^b is a pointer to a structure containing information
+     about the order bag to be opened.
+
+ ^bDescription^b
+
+     orderListAdd() opens an order bag with all its associated orders in the
+     work area.  This functionality is analogous to the CA-Clipper SET INDEX
+     TO...ADDITIVE command.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Before an order can be attached to the work area, the
+        work area's buffer should be written to disk in a SELF_GOCOLD() call.
+
+     ^b^CFE^b  It is recommended that you place a limit on the number of open
+        orders per work area since memory is a finite resource, even if you
+        tap the power of the Virtual Memory API to supply you with memory.
+
+     ^b^CFE^b  By convention, once the order is set, a SELF_GOTOP() should be
+        issued to remain consistent with the CA-Clipper DML.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBORDERINFO" "goCold()" "goTop()" "orderListClear()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: orderListClear()   Clear the current order list
+'------------------------------------------------------------------------------
+ ^borderListClear()^b
+ Clear the current order list
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderListClear(
+     ^b                              AREAP wa
+     ^b                           )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     orderListClear() clears the order list currently in use by the work
+     area referenced by wa.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Before you clear orders, bring the database to a cold state
+        with the SELF_GOCOLD() method.  Also, flush to disk and deallocate
+        any memory buffers maintained by the order lists.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goCold()" "orderListAdd()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: orderListFocus()   Select the controlling order
+'------------------------------------------------------------------------------
+ ^borderListFocus()^b
+ Select the controlling order
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderListFocus(
+     ^b                              AREAP wa,
+     ^b                              USHORT order
+     ^b                           )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^border^b is a numeric value that indicates the order number to select.
+
+ ^bDescription^b
+
+     orderListFocus() selects the logical order of the table based on order.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Before you can attach an order to the work area, write the
+        work area's buffer to disk through a SELF_GOCOLD() call.
+
+     ^b^CFE^b  The number in order is the position of the order in the
+        controlling key list.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goCold()" "orderListAdd()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: orderListRebuild() Rebuild all orders in the specified work area
+'------------------------------------------------------------------------------
+ ^borderListRebuild()^b
+ Rebuild all orders in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE orderListRebuild(
+     ^b                                 AREAP wa
+     ^b                            )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     orderListRebuild() causes all orders in use by wa to be rebuilt.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Prior to a orderListRebuild() call, the work area buffer
+        should be written to disk with a call to SELF_GOCOLD().
+
+     ^b^CFE^b  In a shared or read-only work area, care should be taken to
+        observe network etiquette.
+
+     ^b^CFE^b  orderListRebuild() should build the orders from scratch
+        without depending on any calculated information already available in
+        order to ensure maximum integrity of data.
+
+     ^b^CFE^b  Once orderListRebuild() is complete, the rebuilt order
+        should be in control and a SELF_GOTOP() should be issued to remain
+        consistent with the CA-Clipper DML.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "goCold()" "goTop()" "orderCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bFilter and Scoping Methods^b
+!short:
+!short: clearFilter()      Clear the active filter expression
+'------------------------------------------------------------------------------
+ ^bclearFilter()^b
+ Clear the active filter expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE clearFilter(
+     ^b                        AREAP wa
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     clearFilter() clears the filter expression currently in use for a
+     specified work area.
+
+ ^bDefault Behavior^b
+
+     clearFilter() removes the filter expression in wa->dbfi.  The items held
+     in wa->dbfi.itmCobExpr and wa->dbfi.abFilterText are both released and
+     set to NULL.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Verify that all items are properly released upon any
+        reimplementation of clearFilter().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "setFilter()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: clearLocate()      Clear the active locate expression
+'------------------------------------------------------------------------------
+ ^bclearLocate()^b
+ Clear the active locate expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE clearLocate(
+     ^b                        AREAP wa
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     clearLocate() clears the locate expression currently in use for a
+     specified work area.
+
+ ^bDefault Behavior^b
+
+     clearLocate() removes the locate expressions in wa->dbsi.  The items
+     held by wa->dbsi.itmCobFor, wa->dbsi.lpstrFor, wa->dbsi.itmCobWhile,
+     wa->dbsi.lpstrWhile, wa->dbsi.lNext, wa->dbsi.itmRecID, and
+     wa->dbsi.fRest are all released and set to NULL.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Verify that all items are properly released upon any
+        reimplementation of clearLocate().
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "setLocate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: clearScope()       Clear the scope setting for the specified work area
+'------------------------------------------------------------------------------
+ ^bclearScope()^b
+ Clear the scope setting for the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE clearScope(
+     ^b                        AREAP wa
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     clearScope clears the scope information currently in use for a
+     specified work area.
+
+     ^bNote:^b  This method is reserved for future implementation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBSCOPEINFO" "clearScope()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: filterText()       Return filter condition of the specified work area
+'------------------------------------------------------------------------------
+ ^bfilterText()^b
+ Return filter condition of the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE filterText(
+     ^b                        AREAP wa,
+     ^b                        BYTEP cExpr
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bcExpr^b is a pointer to a buffer containing the text expression.
+
+ ^bDescription^b
+
+     filterText() returns a text string indicating the current filtering
+     condition set for the data store referenced by wa.
+
+ ^bDefault Behavior^b
+
+     The work area implementation returns the value at wa->dbfi.abFilterText.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  This method emulates CA-Clipper DBFILTER() function.  Refer to
+        this function for more information regarding the rules of
+        implementation.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "setFilter()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: setFilter()        Set the filter condition for the specified work area
+'------------------------------------------------------------------------------
+ ^bsetFilter()^b
+ Set the filter condition for the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE setFilter(
+     ^b                        AREAP wa,
+     ^b                        LPDBFILTERINFO lpdbFilterInfo
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbFilterInfo^b is a pointer to a structure containing information
+     about the filter condition set for the work area.
+
+ ^bDescription^b
+
+     setFilter() sets a table filtering condition for the work area
+     referenced by wa.
+
+ ^bDefault Behavior^b
+
+     setFilter() sets the wa->dbfi to the filter expressions held in
+     lpdbFilterInfo.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Prior to setting the new filter, setFilter() must perform a
+        clearFilter(), which is defined as releasing the items held by the
+        wa->dbfi structure.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBFILTERINFO" "clearFilter()" "filterText()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: setLocate()        Set the locate scope for the specified work area
+'------------------------------------------------------------------------------
+ ^bsetLocate()^b
+ Set the locate scope for the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE setLocate(
+     ^b                        AREAP wa,
+     ^b                        LPDBSCOPEINFO lpdbScopeInfo
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdbScopeInfo^b is a pointer to a structure containing information
+     about the locate scope for the work area.
+
+ ^bDescription^b
+
+     setLocate() sets the locate scope for the work area referenced by wa.
+
+ ^bDefault Behavior^b
+
+     setLocate() sets the locate scope for wa from lpdbScopeInfo.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Prior to setting the new locate scope, setLocate() must
+        perform a clearLocate() which releases the items held by the wa->dbsi
+        structure.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBSCOPEINFO" "clearLocate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bNetwork Operation Methods^b
+!short:
+!short: lock()             Perform a network lock in the specified work area
+'------------------------------------------------------------------------------
+ ^block()^b
+ Perform a network lock in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE lock(
+     ^b                  AREAP wa,
+     ^b                  LPDBLOCKINFO lpLockInfo
+     ^b              )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpLockInfo^b is a pointer to a structure containing information about
+     the lock to be obtained.
+
+ ^bDescription^b
+
+     lock() performs a network lock in the work area.  The type of lock to be
+     obtained is defined in lpLockInfo.  See DBLOCKINFO for more information
+     on the lock types available.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Your implementation of lock() should determine the type of
+        lock to be obtained by checking lpLockInfo->uiMethod and return a
+        success code in lpLockInfo->fResult as TRUE if successful or FALSE if
+        not.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBLOCKINFO" "unlock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: rawLock()          Perform various locks and unlocks
+'------------------------------------------------------------------------------
+ ^brawLock()^b
+ Perform various locks and unlocks
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE rawLock(
+     ^b                  AREAP wa,
+     ^b                  USHORT action,
+     ^b                  LONG lrecord
+     ^b              )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^baction^b is a numeric value that represents the type of locking or
+     unlocking to perform.  (See the definitions below.)
+
+     ^blRecord^b is a numeric value that represents the record number on
+     which to perform the lock or unlock.
+
+ ^bDescription^b
+
+     rawLock() performs one of the following actions:  file lock, file
+     unlock, record lock, record unlock, header lock, header unlock, append
+     lock, or append unlock.
+
+     The lock or unlock performed is determined by the action performed.  The
+     action parameter can be one of the following values:
+
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bAction Value   Action Performed^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     FILE_LOCK      File lock
+     FILE_UNLOCK    File unlock
+     REC_LOCK       Record lock of record number lrecord
+     REC_UNLOCK     Unlock record number lrecord
+     HEADER_LOCK    Header lock
+     HEADER_UNLOCK  Header unlock
+     APPEND_LOCK    Locks a newly appended record
+     APPEND_UNLOCK  Unlocks a newly appended record
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bFiles^b   Header file is Rdd.api.
+
+!seealso: "AREA" "DBLOCKINFO" "lock()" "unlock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: unlock()           Release network locks in the specified work area
+'------------------------------------------------------------------------------
+ ^bunlock()^b
+ Release network locks in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE unlock(
+     ^b                  AREAP wa,
+     ^b                  ULONG record
+     ^b                )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^brecord^b is a numeric value that indicates the row to unlock.  record
+     is only meaningful if a lock on a record exists.
+
+ ^bDescription^b
+
+     The unlock() method unlocks any network locks held on wa.
+
+ ^bDefault Behavior^b
+
+     You must implement the default behavior of this method through a
+     subclass.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Your implementation should flush the data buffer by calling
+        SELF_GOCOLD() prior to releasing any network locks.  record is
+        provided should your RDD support multiple row locks.  By convention a
+        record value of zero (0) indicates that all rows should be unlocked.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBLOCKINFO" "lock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bMemo File Management Methods^b
+!short:
+!short: blobInfo()         Retrieve information about a memo column
+'------------------------------------------------------------------------------
+ ^bblobInfo()^b
+ Retrieve information about a memo column
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE blobInfo(
+     ^b                     AREAP wa,
+     ^b                     USHORT uiPos,
+     ^b                     USHORT uiInfoType,
+     ^b                     ITEM itmInfo
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^buiPos^b is the ordinal position of the column (memo field) from which
+     information will be retrieved.
+
+     ^buiInfoType^b is a value that determines the type of information to be
+     provided.
+
+     ^bitmInfo^b is an item that contains the information that corresponds to
+     uiInfoType.
+
+     ^bWarning!^b  The ^bitmInfo^b must be a valid item.
+
+ ^bDescription^b
+
+     blobInfo() retrieves information into itmInfo from the work area
+     referenced by wa.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "fieldInfo()" "info()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: closeMemFile()     Close a memo file in the specified work area
+'------------------------------------------------------------------------------
+ ^bcloseMemFile()^b
+ Close a memo file in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE closeMemFile(
+     ^b                           AREAP wa
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+ ^bDescription^b
+
+     The closeMemFile() method closes the memo file in the work area
+     referenced by wa.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  closeMemFile() isolates the code necessary to close the memo
+        file.  It is normally called by close() when the database has an
+        associated memo file.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "close()" "createMemFile()" "openMemFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: createMemFile()    Create a memo file in the work area
+'------------------------------------------------------------------------------
+ ^bcreateMemFile()^b
+ Create a memo file in the work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE createMemFile(
+     ^b                           AREAP wa,
+     ^b                           LPDBOPENINFO lpdboi
+     ^b                         )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdboi^b is a pointer to a structure containing information about the
+     work area and the table to be created.
+
+ ^bDescription^b
+
+     The createMemFile() method creates a memo file in the work area
+     referenced by wa.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  createMemFile() isolates the code necessary to create the memo
+        file.  It is normally called by create() when the database has an
+        associated memo file.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBOPENINFO" "closeMemFile()" "openMemFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: getValueFile()     Retrieve current value of column and put it into a file
+'------------------------------------------------------------------------------
+ ^bgetValueFile()^b
+ Retrieve the current value of a column and put it into a file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE getValueFile(
+     ^b                           AREAP wa,
+     ^b                           USHORT uiIndex,
+     ^b                           BYTEP lpbFile
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^buiIndex^b is the ordinal position of the column (memo field) whose
+     value is to be obtained.
+
+     ^blpbFile^b is a pointer to a string representing the file name.
+
+ ^bDescription^b
+
+     getValueFile() retrieves the current value of the column
+     referenced by uiIndex in the work area referenced by wa.  The current
+     value is put into a file referenced by lpbFile.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "putValueFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: openMemFile()      Open a memo file in the specified work area
+'------------------------------------------------------------------------------
+ ^bopenMemFile()^b
+ Open a memo file in the specified work area
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE openMemFile(
+     ^b                           AREAP wa,
+     ^b                           LPDBOPENINFO lpdboi
+     ^b                         )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^blpdboi^b is a pointer to a structure containing information about the
+     work area and the table to be opened.
+
+ ^bDescription^b
+
+     The openMemFile() method opens a memo file in the work area referenced
+     by wa.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  openMemFile() isolates the code necessary to open the memo
+        file.  It is normally called by open() when the database has an
+        associated memo file.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "DBOPENINFO" "closeMemFile()" "createMemFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: putValueFile()     Assign value to specified column at cursor position
+'------------------------------------------------------------------------------
+ ^bputValueFile()^b
+ Assign a value to specified column at current cursor position based
+ on contents of file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE putValueFile(
+     ^b                           AREAP wa,
+     ^b                           USHORT uiIndex,
+     ^b                           BYTEP lpbFile
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^buiIndex^b is the ordinal position of the column (memo field) whose
+     value is to be assigned.
+
+     ^blpbFile^b is a pointer to a string representing the file name.
+
+ ^bDescription^b
+
+     putValueFile() places the contents of a file referenced by
+     lpbFile into column uiIndex in the work area referenced by wa.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "getValueFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bMiscellaneous Methods^b
+!short:
+!short: compile()          Compile a character expression
+'------------------------------------------------------------------------------
+ ^bcompile()^b
+ Compile a character expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE compile(
+     ^b                     AREAP wa,
+     ^b                     BYTEP cExpr
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bcExpr^b is the character expression to be compiled.
+
+ ^bDescription^b
+
+     The compile() method compiles a CA-Clipper expression, passed as a
+     character string, into a code block.
+
+ ^bDefault Behavior^b
+
+     The compile() macro compiles the character expression cExpr, a null-
+     terminated string.
+
+     The returned ERRCODE indicates success or failure.  An item to the
+     resulting code block is placed in wa->valResult.
+
+     ^bWarning!^b  If the expression in ^bcExpr^b is NULL or larger than the
+     legal limit for macro-compiled expressions (in the RDD system, this
+     limit is 256 characters), a runtime error is generated.
+
+     ^bWarning!^b  The item in ^bwa->valResult^b must be deallocated later.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  One common reason to subclass the compile() method is to save
+        the item held in wa->valResult in case it is needed for some other
+        process.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" 
+'------------------------------------------------------------------------------
+
+
+
+!short: error()            Raise a runtime error
+'------------------------------------------------------------------------------
+ ^berror()^b
+ Raise a runtime error
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE error(
+     ^b                  AREAP wa,
+     ^b                  ERRORP error
+     ^b               )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^berror^b is a pointer to an Error object containing information about
+      the runtime error to be generated.  (See the "Error System API
+      Reference" chapter for more information.)
+
+ ^bDescription^b
+
+     error() raises a CA-Clipper runtime error.
+
+ ^bDefault Behavior^b
+
+     You can use this method to generate a CA-Clipper runtime error.  This
+     method creates a CA-Clipper-level error object and passes it to the
+     currently posted ERRORBLOCK().  The structure referred to by error
+     contains members that are copied into the CA-Clipper error object.
+
+     The return value of the CA-Clipper error system is mirrored in the
+     return value of the error() method.  error() returns E_BREAK, E_RETRY,
+     or E_DEFAULT, depending on the user's response to the available choices
+     as defined in the Error object.  Note that substitution return values
+     are not supported in this method.  (See the "Error System API Reference"
+     chapter for more information.)
+
+     If a subsystem name is not specified (by a call to _errPutSubSystem()),
+     a value is retrieved from sysName().  If sysName() remains unimplemented
+     or yields an empty value, "???DRIVER" is used for the subsystem name.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  Subclassing or replacing this method is not recommended.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" "sysName()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: evalBlock()        Evaluate a code block
+'------------------------------------------------------------------------------
+ ^bevalBlock()^b
+ Evaluate a code block
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE evalBlock(
+     ^b                     AREAP wa,
+     ^b                     ITEM block
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^bblock^b is the code block to be evaluated.
+
+ ^bDescription^b
+
+     The evalBlock method evaluates a specified code block.
+
+ ^bDefault Behavior^b
+
+     Evaluates the block specified by the item block, placing the resultant
+     item in wa->valResult.  The returned error code indicates success or
+     failure.
+
+     ^bWarning!^b  If ^bblock^b is not a code block, a BASE/1004 "No exported
+     method" error is generated.
+
+     ^bWarning!^b  The item in ^bwa->valResult^b must be deallocated later.
+
+ ^bImplementation Notes^b
+
+     ^b^CFE^b  You should save any global state necessary to your driver that
+        might be modified by the evaluated code block (i.e., any CA-Clipper
+        code), by calling SUPER_EVALBLOCK().  Restore the state after
+        implementing the evalBlock() method.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" 
+'------------------------------------------------------------------------------
+
+
+
+!short: whoCares()         A user-defined slot within function table reserved
+'------------------------------------------------------------------------------
+ ^bwhoCares()^b
+ A user-defined slot within function table reserved for special purposes
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bPrototype^b
+
+     ^bERRCODE whoCares(
+     ^b                     AREAP wa,
+     ^b                     USHORT uiWhatAbout,
+     ^b                     FARP lpvCargo
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bwa^b is a pointer to self.
+
+     ^buiWhatAbout^b is a user-defined constant.
+
+     ^blpvCargo^b is a pointer to a user-defined structure.
+
+ ^bFiles^b  Header file is Rdd.api.
+
+!seealso: "AREA" 
+'------------------------------------------------------------------------------
+
+
+

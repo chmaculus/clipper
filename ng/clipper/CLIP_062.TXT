@@ -1,0 +1,40 @@
+'------------------------------------------------------------------------------
+^BSET FUNCTION^B
+
+    SET FUNCTION assigns to a function key a string of characters that are
+    stuffed into the keyboard buffer when the key is pressed.
+
+^USyntax^U
+
+    SET FUNCTION <expN> to <expC>
+
+^UArgument^U
+
+    <expN> is the function key number.
+
+    <expC> is the character string of up to 2000 characters submitted to
+    the keyboard when the function key is pressed in a wait state.
+
+^UUsage^U
+
+    SET FUNCTION can assign to a function key a string to stuff the
+    keyboard.  This string may contain control characters, such as a Ctrl-C
+    (which is the equivalent of a PgDn), to complete a READ.
+
+    ^BNote^B: A SET KEY definition takes precedence over a SET FUNCTION
+    assignment for the same key.
+
+    Function keys between 2 and 40 inclusive can be assigned using this
+    command.  Function key 1, however, is reserved for use with Help.prg
+    and cannot be assigned a string.
+
+    Function Key                  Actual Key
+    1  - 10                       F1 - F10
+    11 - 20                       Shift-F1 - Shift-F10
+    21 - 30                       Ctrl-F1 - Ctrl-F10
+    31 - 40                       Alt-F1 - Alt-F10
+!seealso: clip_065.ngo:"SET KEY" 
+'------------------------------------------------------------------------------
+
+
+

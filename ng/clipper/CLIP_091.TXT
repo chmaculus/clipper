@@ -1,0 +1,152 @@
+'------------------------------------------------------------------------------
+^BACHOICE()^B
+
+    ACHOICE() executes a pop-up menu using an array of character strings as
+    choices.
+
+^USyntax^U
+
+    ACHOICE(<expN1>,<expN2>,<expN3>,<expN4>,<array1>[,<array2>,[,<expC>
+    [,<expN5>[,<expN6>]]]])
+
+^UArgument^U
+
+    <expN1..expN4> are the top, left, bottom and right window coordinates
+    respectively.
+
+    <array1> is an array of character strings to display as menu choices.
+
+    <array2> is a parallel array of logical values, one for each menu
+    choice.  If an element is false (.F.), the parallel menu choice is not
+    available.  You can, however, specify this argument as a single logical
+    value and the menu is treated as if you specified an array filled with
+    that value.  This is valuable when you want all choices to be either
+    available or unavailable.
+
+    <expC> is a user-defined function that executes generally when a key
+    exception is pressed.  Be sure to specify the function name without the
+    parenthetical suffix or any arguments.  Note that the behavior of
+    ACHOICE() is affected by the presence of this argument.  Refer to the
+    discussion below for further information.
+
+    <expN5> is the initial choice element.  If not specified, the default
+    initial choice is element one in <array1>.
+
+    <expN6> is the initial relative window row.  If not specified, the
+    initial relative window row is first choice in the window, which is
+    position zero.
+
+^UReturns^U
+
+    A numeric value.
+
+    ACHOICE() returns the position of the menu choice in the array of
+    choices.  Making a selection terminates the menu and returns the
+    current element position in <array1>.  Aborting the selection
+    terminates the menu and returns zero.
+
+^UUsage^U
+
+    ACHOICE() has two modes depending on whether or not you specify the
+    user-defined function argument (<expC>).  If you do not specify a user
+    function, ACHOICE() displays the list of choices within the given
+    screen coordinates.  It then executes the following actions when you
+    press the corresponding keys.
+
+                   ^BACHOICE() Active Keys - No User Function^B
+    ^UKey^U            ^UAction^U
+
+    Uparrow        Up one element
+    Dnarrow        Down one element
+    Home           First element
+    End            Last element
+    Leftarrow      Abort selection, returning zero
+    Rightarrow     Abort selection, returning zero
+    PgUp           Up the number of elements defined for the menu window
+                   to the same relative row position
+    PgDn           Down the number of elements defined for the menu window
+                   to the same relative row position
+    Ctrl-PgUp      First element
+    Ctrl-PgDn      Last element
+    Return         Select element, returning position
+    Esc            Abort selection, returning zero
+    First letter   Next element with same first letter (does not select)
+
+    If the number of choices in <array1> exceeds the number of rows in the
+    menu window, the choices scroll when you attempt to cursor beyond the
+    top or bottom of the menu window.  Note that the highlight does not
+    wrap when you reach the top or bottom of the list of choices.  Pressing
+    the first letter does, however, wrap the highlight within the set of
+    choices whose first letter matches the key you are pressing.
+
+    ^BThe User Function^B: If you specify a user function, the behavior of
+    ACHOICE() changes to some degree.  Primarily, fewer keys are not
+    automatically executed by ACHOICE() and control passes to the user
+    function where you can process the key pressed and execute an
+    appropriate action.  The following are keys that ACHOICE() executes
+    when you specify a user function.  These keys generate an idle (mode 0)
+    while all other keys generate a keyboard exception (mode 3).
+
+                    ^BACHOICE() Active Keys - User Function^B
+    ^UKey^U            ^UAction^U
+
+    Uparrow        Up one element
+    Dnarrow        Down one element
+    PgUp           Up the number of elements defined for the menu window
+                   to the same relative row position
+    PgDn           Down the number of elements defined for the menu window
+                   to the same relative row position
+    Ctrl-PgUp      First element
+    Ctrl-PgDn      Last element
+
+    Note that Home, End, Return, and Esc now generate a keyboard exception
+    (mode 3).
+
+    When ACHOICE() executes the user function, it automatically passes the
+    following three parameters: mode, current element in the array of
+    choices, and the relative position within the menu window.  The mode
+    indicates the current state of ACHOICE() depending on the key pressed
+    and action taken by ACHOICE() prior to executing the user function.
+    The mode parameter has the following possible values:
+
+                               ^BACHOICE() Modes^B
+    ^UMode^U      ^UDescription^U
+      0       Idle
+      1       Cursor past top of list
+      2       Cursor past end of list
+      3       Keystroke exception
+      4       No item selectable
+
+    After your user function has performed whatever operations are
+    appropriate to the ACHOICE() mode or the last key pressed, you RETURN a
+    value instructing ACHOICE() what operation to perform next.  The
+    following table summarizes the possible return values:
+
+                ^BReturn Values to ACHOICE() from User Function^B
+    ^UValue^U     ^UAction^U
+      0       Abort selection, return zero
+      1       Make selection, return cursor element
+      2       Continue selection process
+      3       Go to next element whose first character matches last key
+              pressed
+
+    ^BColor^B: Choices are displayed in standard color, the highlight is in
+    enhanced color, and the unavailable choices are displayed in the
+    unselected color.  For example, the following color statement:
+
+    ^RSET COLOR TO W+/N,BG+/B,,,W/N^R
+
+    displays a menu that is bright white on black, the highlight is bright
+    cyan on blue, and the unavailable menu choices are dim white on black.
+
+    If you are executing ACHOICE() with all choices unavailable in order to
+    have a display-only list, assign the unselected setting to the same
+    setting as the standard.
+
+    ^BNesting^B: You can call multiple copies of ACHOICE() within each copy
+    of ACHOICE(), allowing you to create nested or hierarchical menus.
+!seealso: clip_020.ngo:"MENU" clip_067.ngo:"SET MESSAGE" clip_092.ngo:"DBEDIT()" 
+'------------------------------------------------------------------------------
+
+
+

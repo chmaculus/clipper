@@ -1,0 +1,49 @@
+'------------------------------------------------------------------------------
+^BJOIN^B
+
+    To create a new database file by merging selected records and fields
+    from two work areas.
+
+^USyntax^U
+
+    JOIN WITH <alias>/(<expC1>) TO <file>/(<expC2>) FOR <condition>
+    [FIELDS <field list>]
+
+^UArgument^U
+
+    <alias> is the work area to merge with records from the current work
+    area.
+
+    <file> is the name of the target database file.
+
+^UOptions^U
+
+    ^BFor^B: The FOR <condition> selected only records meeting the
+    specified condition.
+
+    ^BFields^B: The <field list> is the projection of fields from both work
+    areas into the new database file.  To specify any fields in the
+    secondary work area, reference them with the alias.  if the FIELDS
+    clause is not specified, all fields from the primary work area will be
+    included in the target database file.
+
+^UUsage^U
+
+    JOIN is a project of fields and a selection of records from two work
+    areas that forms a new database file based on a general condition.
+    JOIN works by making a complete pass through the secondary work area
+    for each record in the primary work area evaluating the condition for
+    each record processed in the secondary work area.  When the condition
+    is true (.T.), a new record is created in the target database file.
+
+    Note that the number of records processed will be the RECCOUNT() of the
+    primary work area times the RECCOUNT() of the secondary work area.  For
+    example, if you have two database files with 100 records each, the
+    number of records JOIN processes is the equivalent of sequentially
+    processing a single database file of 10,000 records.  All of which
+    necessitates the maxim, "use this command with prudence."
+!seealso: ???.ngo:"APPEND FROM" clip_033.ngo:"REPLACE" clip_073.ngo:"SET RELATION" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,43 @@
+'------------------------------------------------------------------------------
+^BSET KEY^B
+
+    SET KEY allows a procedure to be executed from any wait state when a
+    designated key is pressed.
+
+^USyntax^U
+
+    SET KEY <expN> TO [<proc>]
+
+^UArgument^U
+
+    <expN> is the INKEY() value of the designated key.
+
+    <procedure> is the procedure that executes when the assigned key is
+    pressed.  If the procedure is not specified the current key
+    redefinition is released.
+
+^UUsage^U
+
+    A wait state is defined as any command that pauses program execution,
+    such as: WAIT, ACCEPT, READ, INPUT, MENU TO.  Note that INKEY() is not
+    a wait state.
+
+    A maximum of 32 keys may be SET at one time.  At start-up, the system
+    assumes that KEY 28 is SET to HELP.
+
+    Like Help.prg, three automatic parameters are passed to the SET KEY
+    procedure.  The parameters are "calling program", "line number", and
+    "input variable".  "Calling program" and "input variable" are both
+    character type and "line number" is numeric type.
+
+    As a rule, CLEAR or READ should not be used in SET KEY procedures if
+    the wait state is READ since both commands clear the pending GETs in
+    the calling program.  To clear the screen, use @ 0,0 CLEAR instead.
+
+    ^BNote^B: SET KEY takes precedence over SET FUNCTION for the definition
+    of a function key.
+!seealso: clip_016.ngo:"KEYBOARD" clip_062.ngo:"SET FUNCTION" clip_102.ngo:"LASTKEY()" 
+'------------------------------------------------------------------------------
+
+
+

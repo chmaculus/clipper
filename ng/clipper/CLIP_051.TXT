@@ -1,0 +1,22 @@
+'------------------------------------------------------------------------------
+^BSET DECIMALS^B
+
+    SET DECIMALS determines the minimum number of decimal places that the
+    system displays for the results of numeric functions and calculations.
+
+^USyntax^U
+
+    SET DECIMALS TO <expN>
+
+^UUsage^U
+
+    The functions and arithmetic operations affected by SET DECIMALS are
+    SQRT(), EXP(), LOG(), and division if SET FIXED is OFF.  All other
+    calculations display the number of decimal places that would normally
+    result from the calculation.  If SET FIXED is ON, all numerics obey the
+    DECIMALS SETting.
+!seealso: clip_060.ngo:"SET FIXED" 
+'------------------------------------------------------------------------------
+
+
+

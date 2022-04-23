@@ -1,0 +1,298 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsby_create()         Creates a vertical scroll bar engine
+'------------------------------------------------------------------------------
+ ADsby_create( <nRow>, <nCol>, <nLength>, <nTotal>, [bConfig] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a vertical scroll bar engine.
+
+ <nRow>, <nCol> are the coordinates of the starting position of the bar.
+
+ <nLength> is the height (number of rows) of the bar.
+
+ <nTotal> is the number of actual items to be represented in the scroll bar.
+
+ [bConfig] is an optional configuration block.  You use it to call the
+ engine's Config APIs that reconfigures the engine.
+
+ <nEngine> is the numeric return value.  You use it to send messages to the
+ engine.
+
+ Example
+ -------
+ func main()
+ local nTotal := 500
+ local nVengine := ADsby_create( 0, 79, 24, nTotal )
+ local xx
+
+ cls
+ ADsby_display( nVengine )
+
+ for xx := 1 to nTotal
+    setpos( 12,40 )
+    dispout( xx )
+    ADsby_put( nVEngine, ADsby_tocell( nVEngine, xx ) )
+ next
+
+ ADsby_kill( nVengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsby_colors()         Configures the colors of the scroll bar.
+'------------------------------------------------------------------------------
+ ADsby_colors( <aColors> ) Ä> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the colors of the scroll bar.
+
+ <aColors> is an array of two elements:
+
+    1 - the color of the scroll bar.  Defaults to "W+/B" in color monitors
+        and "W/N" in monochrome.
+
+    2 - the color of the scroll character.  Defaults to "R/B" in color
+        monitors and "W+/N" in monochrome.
+
+ Example
+ -------
+ func main()
+ local nTotal := 500
+ local nVengine := ADsby_create( 0, 79, 24, nTotal,;
+                                 {||ADsby_colors( { "W+/G", "R+"} )};
+                               )
+ local xx
+
+ cls
+ ADsby_display( nVengine )
+
+ for xx := 1 to nTotal
+    setpos( 12,40 )
+    dispout( xx )
+    ADsby_put( nVEngine, ADsby_tocell( nVEngine, xx ) )
+ next
+
+ ADsby_kill( nVengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_chars()          Configures the characters to be used
+'------------------------------------------------------------------------------
+ ADsby_chars( <aChars> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the characters to be used by the scroll bar.
+
+ <aChars> is an array of two elements:
+
+    1 - the scroll bar character.  Defaults to "Û" (chr(219)).
+
+    2 - the scroll character.  Defaults to "°" (chr(176)).
+
+ Example
+ -------
+ func main()
+ local nTotal := 500
+ local nVengine := ADsby_create( 0, 79, 24, nTotal,;
+                                 {||ADsby_chars( { "Û", ""} )};
+                               )
+ local xx
+
+ cls
+ ADsby_display( nVengine )
+
+ for xx := 1 to nTotal
+    setpos( 12,40 )
+    dispout( xx )
+    ADsby_put( nVEngine, ADsby_tocell( nVEngine, xx ) )
+ next
+
+ ADsby_kill( nVengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsby_display()        Displays a vertical scroll bar
+'------------------------------------------------------------------------------
+ ADsby_display( <nEngine>, [nPosition] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a vertical scroll bar
+
+ <nEngine> is the engine identifier of the bar to display.
+
+ [nPosition] is the initial position of the scroll character.  Defaults to 1,
+ meaning the first position.
+
+ Example:  See ADsby_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_put()            Moves the scroll char on the bar
+'------------------------------------------------------------------------------
+ ADsby_put( <nEngine>, <nPosition>, [lForce] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves the scroll char on the bar.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nPosition> is the relative row position the scroll character is to be
+ moved to.
+
+ [lForce] is an optional logical value.  By default, ADsby_put() is ignored
+ if <nPosition> is the same as the current position, unless [lForce] is TRUE.
+
+ Example:  ADsby_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_kill()           Kills a vertical scroll bar engine.
+'------------------------------------------------------------------------------
+ ADsby_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills a vertical scroll bar engine, <nEngine>
+
+ Example:  ADsby_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsby_get()            Returns the current position of the scroll char
+'------------------------------------------------------------------------------
+ ADsby_get( <nEngine> ) --> <nPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the current row position of the scroll char relative to the top of
+ the scroll bar.  In other words, it answers the question: what is the
+ currently highlighted cell?
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nPosition> is the return value which is the position of the highlighted
+ cell
+
+ Example
+ -------
+ func main()
+ local nTotal := 500        // 500 items to be represented in a scroll bar
+ local nVengine := ADsby_create( 2, 1, 10, nTotal ) // The scroll bar is
+                                                    // 10 rows long.  Its
+                                                    // top is at row #2.
+
+ cls
+ ADsby_display( nVengine, 8 )    // display the bar and hilite the 8th cell
+ ? ADsby_get( nVEngine )         // what is the currently hilited cell? = 8
+ ? ADsby_relpos( nVEngine, 5 )   // what is the relative position of the
+                                 // absolute row position 5? = 4
+ ? ADsby_tocell( nVEngine, 250 ) // what is the equivalent cell position of
+                                 // item #250? = 5 (halfway)
+ ? ADsby_fromcell( nVEngine, 2 ) // what is the item corresponding to cell
+                                 // position 2? = 51
+ ADsby_kill( nVengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_relpos()         Returns the equivalent bar position of a row position
+'------------------------------------------------------------------------------
+ ADsby_relpos( <nEngine>, <nRow> ) --> <nPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the equivalent bar position of a row position.  Suppose you have a
+ vertical scroll bar.  Now you click the mouse somewhere within it.  The
+ mouse function ADm_row() will return the absolute row position of the mouse
+ cursor.  But which cell is that?  ADsby_relpos() will return the cell
+ position of the mouse cursor position (returned by ADm_row()).
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nRow> is an absolute screen position whose equivalent bar position is to be
+ returned.
+
+ <nPosition> is the return value.
+
+ Example:  See ADsby_get().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_tocell()         Returns the equivalent bar position of an item positin
+'------------------------------------------------------------------------------
+ ADsby_tocell( <nEngine>, <nItem> ) --> <nPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the equivalent bar position of an item position.  Suppose you have
+ a scroll bar representing 500 items.  ADsby_tocell() will answer the
+ question:  What is the cell corresponding to the 250th item?
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nItem> is the position of an item whose equivalent bar position is to be
+ determined.  If the scroll bar is that of a database browser, <nItem> might
+ be a record number or a key number.  If the browser is an array browser,
+ <nItem> is an element number.
+
+ <nPosition> is the return value.
+
+ Example:  See ADsby_get().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_fromcell()       Returns the equivalent item position of a bar position
+'------------------------------------------------------------------------------
+ ADsby_fromcell( <nEngine>, <nPosition> ) --> <nItem>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the equivalent item position of a bar position.  Suppose you have
+ a scroll bar representing 500 items, and cell #2 is currently highlighted.
+ ADsby_fromcell() will answer the question:  What is the item corresponding
+ to the 2nd cell?
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nPosition> is the position of the scroll char whose equivalent item
+ position is to be determined.
+
+ <nItem> is the return value.  If the scroll bar is that of a database
+ browser, then <nItem> would be the equivalent record or key number.
+
+ Example: See ADsby_get()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsby_coords()         Returns the coordinates of the scroll bar.
+'------------------------------------------------------------------------------
+ ADsby_coords( <nEngine> ) --> <aCoords>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the coordinates of the scroll bar.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <aCoords> is the return value.
+
+ Example
+ -------
+ nVengine := ADsby_create( 2, 1, 10, 500 )
+ ADaview( ADsby_coords( nVEngine ))    // {2,1,11,1}
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

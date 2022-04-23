@@ -1,0 +1,657 @@
+!short: ExoFreeSelector()  Cancels a protected mode segment descriptor
+'------------------------------------------------------------------------------
+ ^bExoFreeSelector()^b
+ Cancels a protected mode segment descriptor created by ExoProtectedPtr(),
+ ExoSegCSAlias(), or ExoSegDSAlias()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoFreeSelector(unsigned int selector)
+
+ ^bReturns^b
+
+     This function always returns 0.
+
+ ^bDescription^b
+
+     This function is a primitive function--it corresponds to the DPMI
+     function that cancels a descriptor.
+
+     ExoFreeSelector() must be passed only the selector part of a pointer
+     created with ExoProtectedPtr(), ExoSegCSAlias(), or ExoSegDSAlias().
+
+     Because selectors are a limited resource in protected mode (there are
+     "usually" around 8000 available for code and data segments), you should
+     free selectors you have created with ExoProtectedPtr(), ExoSegCSAlias(),
+     or ExoSegDSAlias() as soon as you are done with them.
+
+ ^bExamples^b
+
+     This code creates a protected mode pointer to video color memory, does
+     some unknown operation with it and then frees the protected mode
+     selector.
+
+     void *rmvideo;
+     void *pmvideo;
+
+     /* set up pointer to point to real mode address 0xB800:0 which
+        is the address of the color video card */
+     FP_SEG(rmvideo) = 0xB800;
+     FP_OFF(rmvideo) = 0;
+
+     /* create protected mode pointer for use in protected mode */
+     pmvideo = ExoProtectedPtr(rmvideo, 0x8000);
+
+     ... more code using pmvideo pointer would normally be here ...
+
+     /* free up selector used by pmpointer now that we are done
+        with it */
+
+     ExoFreeSelector(FP_SEG(pmvideo));
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoProtectedPtr()" "ExoSegCSAlias()" "ExoSegDSAlias()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoIsDPMI()        Determines if running in a DPMI host environment
+'------------------------------------------------------------------------------
+ ^bExoIsDPMI()^b
+ Determines if running in a DPMI host environment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoIsDPMI(void)
+
+ ^bReturns^b
+
+     This function returns nonzero (true (.T.)) if the program is running in
+     a DPMI host.  If the program is not running under DPMI, ExoIsDPMI
+     returns zero.
+
+ ^bDescription^b
+
+     Use this function to determine whether your program is running under a
+     DPMI host, such as Windows 3.x in enhanced mode.
+
+ ^bExamples^b
+
+     This program fragment prints a message telling whether or not the
+     program executing is running under DPMI.
+
+     If (ExoIsDPMI())
+        printf("Program is running under DPMI");
+     else
+        printf("Program is not running under DPMI");
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoIsExoSpace()" "ExoIsPM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoIsExoSpace()    Determines if running under CA-Clipper/Exospace
+'------------------------------------------------------------------------------
+ ^bExoIsExoSpace()^b
+ Determines if running under CA-Clipper/Exospace
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoIsExoSpace(void)
+
+ ^bReturns^b
+
+     This function returns nonzero (true (.T.)) if an CA-Clipper/Exospace
+     program is running.
+
+ ^bDescription^b
+
+     Use this function to determine whether your program is running under CA-
+     Clipper/Exospace.  If the program has been linked with the real mode
+     "stub" library, this function will return zero.
+
+ ^bExamples^b
+
+     This program fragment prints a message telling whether or not the
+     program executing is an CA-Clipper/Exospace application.
+
+     if (ExoIsExoSpace())
+        printf("ExoSpace program is running");
+     else
+        printf("ExoSpace program is not running");
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoIsDPMI()" "ExoIsPM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoIsPM()          Determines if the CPU is running in protected mode
+'------------------------------------------------------------------------------
+ ^bExoIsPM()^b
+ Determines if the CPU is running in protected mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoIsPM(void)
+
+ ^bReturns^b
+
+     This function returns nonzero (true (.T.)) if the CPU is executing in
+     protected mode, otherwise it returns 0.
+
+ ^bDescription^b
+
+     Use this function to determine whether the processor is running in
+     protected mode.
+
+ ^bExamples^b
+
+     This program fragment prints a message telling whether or not the CPU is
+     in protected mode.
+
+     If (ExoIsPM())
+       printf("cpu is in protected mode");
+     else
+       printf("cpu not in protected mode");
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoIsDPMI()" "ExoIsExoSpace()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoIsVMM()         Determines if CA-Clipper/Exospace VMM system is in use
+'------------------------------------------------------------------------------
+ ^bExoIsVMM()^b
+ Determines if the CA-Clipper/Exospace program is using the
+ CA-Clipper/Exospace VMM system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoIsVMM(void)
+
+ ^bReturns^b
+
+     This function returns nonzero (true (.T.)) if the program is using the
+     CA-Clipper/Exospace VMM system, otherwise it returns 0.
+
+ ^bDescription^b
+
+     Use this function to determine whether the CA-Clipper/Exospace VMM
+     system is active.  It will not be active if the option "EXOSPACE PACKAGE
+     NOVM" was specified during the link or if you are running under a DPMI
+     server such as a Windows or OS/2 DOS box.
+
+ ^bExamples^b
+
+     This program fragment prints a message telling whether or not the
+     program is using the CA-Clipper/Exospace VMM system.
+
+     if (ExoIsVMM())
+        printf("program is using the ExoSpace VMM system");
+     else
+        printf("program is not using the ExoSpace VMM system");
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoIsDPMI()" "ExoIsExoSpace()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoProtectedPtr()  Creates a protected mode pointer from a real mode pointer
+'------------------------------------------------------------------------------
+ ^bExoProtectedPtr()^b
+ Creates a protected mode pointer from a real mode pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bvoid *ExoProtectedPtr(void *rm_ptr, unsigned int size)
+
+ ^bReturns^b
+
+     This function returns the protected mode pointer (pm_ptr), or NULL if
+     the pointer cannot be allocated.  A new descriptor is allocated.
+
+ ^bDescription^b
+
+     The protected mode data pointer created by this function points to a
+     segment of size bytes.  Since a value of 64KB is too large for an
+     unsigned variable, use 0 to specify 64KB for size.  The offset of pm_ptr
+     is always 0.  The base physical address of pm_ptr's segment is the
+     absolute address of rm_ptr, which is segment(rm_ptr) * 16 +
+     offset(rm_ptr).  Because ExoProtectedPtr() is run with interrupts
+     enabled, realtime applications should not call it from an external
+     interrupt handler.
+
+     The offset of the pointer returned by ExoProtectedPtr() will ALWAYS be
+     0.
+
+     ExoFreeSelector() must be called to free the selector allocated with
+     ExoProtectedPtr().  Selectors are a limited resource and repeated calls
+     to ExoProtectedPtr() as well as ExoSegCSAlias() and ExoSegDSAlias()
+     could use up all the available selectors causing the program to crash.
+     Once you are done with a pointer created with ExoProtectedPtr(), free
+     the selector unless you will be using the pointer throughout the
+     program..
+
+ ^bExamples^b
+
+     See example for ExoFreeSelector().
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoRealPtr()" "ExoFreeSelector()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoRealPtr()       Creates a real mode pointer from a protected mode pointer
+'------------------------------------------------------------------------------
+ ^bExoRealPtr()^b
+ Creates a real mode pointer from a protected mode pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bvoid *ExoRealPtr(void *pm_ptr)
+
+ ^bReturns^b
+
+     This function returns the real mode pointer, or NULL if pm_ptr is in
+     extended memory (not accessible in real mode).
+
+ ^bDescription^b
+
+     The pm_ptr argument is the protected mode pointer to be converted.  Note
+     that if the real mode pointer is 0:0, the returned value is the same as
+     an error value.
+
+ ^bExamples^b
+
+     See example for _xalloclow().
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoProtectedPtr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoReside()        Flags a VMM segment to remain resident in memory
+'------------------------------------------------------------------------------
+ ^bExoReside()^b
+ Flags a VMM segment to remain resident in memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoReside(void *pmptr)
+
+ ^bReturns^b
+
+     This function returns -1 on error, 0 or 1 otherwise.
+
+ ^bDescription^b
+
+     When the VMM system is active a code or data segment may be swapped out
+     at any time.  When data segments are swapped out they are always written
+     to the swap file, but code segments are never written to the swap file
+     when they are swapped out unless a data segment alias created by
+     ExoSegDSAlias() exists at the time the code segment is swapped out.  If
+     you write to a data segment alias of a code segment when CA-
+     Clipper/Exospace's VMM is active, you will need to mark the segment as
+     resident before freeing the data segment alias with ExoFreeSelector().
+
+ ^bExamples^b
+
+     See example for ExoSegDSAlias().
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoSegDSAlias()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoRMInterrupt()   Sets the registers, then signals a real mode interrupt
+'------------------------------------------------------------------------------
+ ^bExoRMInterrupt()^b
+ Sets the registers, then signals a real mode interrupt
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bint ExoRMInterrupt(int intno, EXOREGS *inregs,
+     ^b                        EXOREGS   *outregs)
+
+ ^bReturns^b
+
+     This function returns the flag's register.
+
+ ^bDescription^b
+
+     Use ExoRMInterrupt() to signal a real mode interrupt that requires you
+     to set registers. This function allows you to set real mode segment
+     register values from protected mode. When you use regular passdown
+     interrupts, you cannot set real mode register values.
+
+     A call to ExoRMInterrupt() sets the registers to the values you provide
+     in the structure to which inregs points; then it invokes interrupt
+     intno.  After the interrupt is processed, ExoRMInterrupt() stores the
+     register values in the structure pointed to by outregs.  The structures
+     pointed to by inregs and outregs are both type EXOREGS.  Note that you
+     cannot set the SS and SP registers from an EXOREGS structure.
+
+     Before CA-Clipper/Exospace signals the specified interrupt, it sets the
+     CPU flags to the value they had when you called ExoRMInterrupt() in
+     protected mode.  Notice that the value of the flags register after the
+     real mode interrupt call is made is returned by this function.
+
+     When you use ExoRMInterrupt(), there must be a return from the real mode
+     interrupt to match every call (unless your program is terminating).
+     Also, if re-entrance on ExoRMInterrupt() is possible, the interrupt
+     should use less than 256 bytes of stack.  You can get around this limit
+     by switching to a different stack in the real mode handler/function.
+
+ ^bExamples^b
+
+     This example signals DOS function 2Ch to get the time of day.  As
+     required for that call, the high order byte of the AX register is set to
+     2Ch.  Note that the structure EXOREGS does not contain a field AH, so
+     you must set the high order byte using the shift operator (<<).  After
+     the call to ExoRMInterrupt(), this example displays the contents of the
+     outreg registers.  The display shows the time in hours, minutes and
+     seconds. Since the hours and seconds are stored in the high order byte,
+     the shift operator is used again.
+
+     int main()
+     {
+        EXOREGS inreg;
+        EXOREGS outreg;
+
+         inreg.ax = 0x2C << 8;
+
+         /* DOS function "get time" - signal int 21h */
+         ExoRMInterrupt(0x21, &inreg, &outreg);
+
+         printf("The time is %d:%02d:%02d\n",
+           outreg.cx >> 8, outreg.cx&0xFF, outreg.dx >> 8);
+     }
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoSegCSAlias()    Creates a code descriptor for the given data segment
+'------------------------------------------------------------------------------
+ ^bExoSegCSAlias()^b
+ Creates a code descriptor for the given data segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bvoid *ExoSegCSAlias(void *pm_ptr)
+
+ ^bReturns^b
+
+     This function returns a function pointer to the same linear address as
+     pm_ptr, or NULL if an error occurred.
+
+ ^bDescription^b
+
+     The new descriptor created by ExoSegCSAlias points to the segment base
+     of pm_ptr.  This function enables you to execute code in a data segment.
+     To store data in a code segment, use ExoSegDSAlias().  Because
+     ExoSegCSAlias() is run with interrupts enabled, realtime applications
+     should not call it from an external interrupt handler.
+
+     The offset of the alias will ALWAYS equal the offset of the original
+     pointer.
+
+     ExoFreeSelector() MUST be called to free the selector allocated with
+     ExoSegCSAlias().  Selectors are a limited resource and repeated calls to
+     ExoSegCSAlias() as well as ExoSegDSAlias() and ExoProtectedPtr() could
+     use up all the available selectors causing the program to crash.  Once
+     you are done with a pointer created with ExoSegCSAlias(), free the
+     selector unless you will be using the pointer throughout the program.
+
+ ^bExamples^b
+
+     This code fragment calls executable machine code written by the program
+     to a data buffer.
+
+     char writablecode[100];
+     void (*funcptr(void));
+
+     /* during execution the program would write executable machine
+        code to the 100 byte writablecode buffer */
+
+     /* create a selector that is a code segment alias to the data
+        segment containing the variable writablecode */
+
+     funcptr = ExoSegCSAlias(writablecode);
+
+     /* set the offset of the function pointer to the offset of the
+        writablecode buffer */
+     FP_OFF(funcptr) = FP_OFF(writablecode);
+
+     /* call the code written to the writablecode buffer */
+     *funcptr();
+
+     /* cancel the code segment selector */
+     ExoFreeSelector(FP_SEG(funcptr));
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoSegDSAlias()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ExoSegDSAlias()    Creates a data descriptor for the given code segment
+'------------------------------------------------------------------------------
+ ^bExoSegDSAlias()^b
+ Creates a data descriptor for the given code segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bvoid *ExoSegDSAlias(void *pm_ptr)
+
+ ^bReturns^b
+
+     This function returns a data pointer to the same linear address as
+     pm_ptr, or NULL if an error occurred.
+
+ ^bDescription^b
+
+     This function creates a new data descriptor with the same base as the
+     segment specified by pm_ptr.  After the call to ExoSegDSAlias(), the
+     descriptor indicated in pm_ptr still exists and retains its original
+     segment type.  The offset of the alias will ALWAYS equal the offset of
+     the original pointer.
+
+     ExoFreeSelector() MUST be called to free the selector allocated with
+     ExoSegDSAlias().  Selectors are a limited resource and repeated calls to
+     ExoSegDSAlias() as well as ExoSegCSAlias() and ExoProtectedPtr() could
+     use up all the available selectors causing the program to crash.  Once
+     you are done with a pointer created with ExoSegDSAlias(), free the
+     selector unless you will be using the pointer throughout the program.
+
+ ^bExamples^b
+
+     The example below consists of two modules: one in assembly language and
+     one in C. The int_instruction label in the assembly code marks the
+     location of an instruction signaling Interrupt 0h.  The C code
+     overwrites this instruction so that a different interrupt is signaled.
+
+     The C code calls ExoSegDSAlias() to get an alias data pointer to
+     int_instruction. The example then increments the pointer by one byte to
+     point to the location of "0h" in the instruction. The example overwrites
+     this location with "0x88" and frees the data descriptor with
+     ExoFreeSelector() since it is no longer needed.
+
+     public _do_int, int_instruction
+     _do_int:
+     ...
+     int_instruction:
+     int 0h
+     ...
+
+     char *data;
+     extern int_instruction();
+
+     /* create data segment alias and write interrupt number 0x88 */
+     data = ExoSegDSAlias(int_instruction);
+     *(data + 1) = 0x88;
+
+     /* mark code segment as resident so the VMM system won't swap
+        it out and lose the changes made to it */
+     ExoReside(int_instruction);
+
+     /* free the selector created by ExoSegDSAlias() since we don't
+        need it anymore */
+     ExoFreeSelector(FP_SEG(data));
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoSegCSAlias()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xalloclow()       Allocates low DOS memory for use with real mode interrupts
+'------------------------------------------------------------------------------
+ ^b_xalloclow()^b
+ Allocates low DOS memory for use with real mode interrupts that must be
+ passed buffers within the first 1 MB
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bvoid *_xalloclow(unsigned int sizebytes)
+
+ ^bReturns^b
+
+     This function returns a protected mode pointer to the allocated memory.
+
+ ^bDescription^b
+
+     This function returns a protected mode pointer to the allocated memory.
+     Use this pointer to write to or read from the allocated buffer.  When
+     calling a real mode interrupt you must get a real mode pointer to the
+     allocated buffer with the ExoRealPtr() function and pass that address in
+     the EXOREGS structure of a ExoRMInterrupt() call.
+
+     You can allocate a 64K buffer by passing a size of 0.
+
+     You must use _xfreelow() to free memory allocated with this function.
+     Do not use xfree()!
+
+     It is suggested that you free the allocated low DOS memory as soon as
+     possible to keep down the amount of low DOS memory that may be allocated
+     at the same time not only by your functions but also by other C/ASM code
+     or by other third party libraries.
+
+     CA-Clipper/Exospace has added the LOWMEM parameter to the CLIPPER
+     environment variable to allow a developer to set aside low DOS memory
+     for allocation with _xalloclow().  The LOWMEM parameter does not have to
+     be specified in order for _xalloclow() to work; if there is no available
+     low DOS memory when _xalloclow() is called, CA-Clipper/Exospace will
+     free up low DOS memory it uses in order to meet the request.  At this
+     time because of the current design of CA-Clipper/Exospace's memory
+     allocation scheme we recommend that you ignore the LOWMEM parameter.
+     Future revisions or individual end-user needs may make the LOWMEM
+     parameter more necessary.
+
+ ^bExamples^b
+
+     This example maps a fake root directory of a specified drive under
+     Novell NetWare.  The function below accepts a drive number (0=default,
+     1=A:, ...) and path for fake root; it returns zero on success and an
+     error code if the function failed.
+
+     int maproot(int drive, char *path)
+     {
+        int returnvalue = 0xFFFF;
+        int flags;
+        char *buffer;
+        char *realptr;
+        EXOREGS inoutregs;
+
+        /* allocate low memory buffer to store path */
+        if ((buffer = _xalloclow(strlen(path) + 1)) != NULL)
+        {
+
+
+            /* store path in low memory buffer */
+           strcpy(buffer, path);
+
+           /* get real mode pointer to low memory buffer */
+           if ((realptr = ExoRealPtr(buffer)) != NULL)
+           {
+
+              /* fill in EXOREGS structure */
+
+              inoutregs.ax = 0xE905;
+              inoutregs.bx = drive;
+              inoutregs.ds = FP_SEG(realptr);
+              inoutregs.dx = FP_OFF(realptr);
+
+              /* call the real mode interrupt */
+              flags = ExoRMInterrupt(0x21, &inoutregs, &inoutregs);
+
+              /* see if carry flag is set to indicate error */
+              if (flags & 0x0001)
+                 /* return error code in al */
+                 returnvalue = (inoutregs.ax & 0x00FF);
+              else
+                 /* return no error code */
+                 returnvalue = 0;
+     }
+
+           /* free low memory buffer */
+           _xfreelow(buffer);
+        }
+     }
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "ExoRealPtr()" "ExoRMInterrupt()" "_xfreelow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xfreelow()        Frees memory allocated by _xalloclow()
+'------------------------------------------------------------------------------
+ ^b_xfreelow^b
+ Frees memory allocated by _xalloclow()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^bvoid _xfreelow(void *lowmemory)
+
+ ^bReturns^b
+
+     This function does not return a value.
+
+ ^bDescription^b
+
+     You must use this function to free memory allocated by _xalloclow().  Do
+     not use xfree() to free memory allocated by _xalloclow()!
+
+ ^bExamples^b
+
+     See _xalloclow() example.
+
+ ^bFiles^b   Library is EXOSPACE.LIB, header file is Exospace.api.
+
+!seealso: "_xalloclow()" 
+'------------------------------------------------------------------------------
+
+
+

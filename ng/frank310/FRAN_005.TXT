@@ -1,0 +1,276 @@
+!short:^b FRANKIE TUTORIAL - Preface
+'------------------------------------------------------------------------------
+
+ This tutorial consists of several chapters.  The first few chapters
+ provide general information about Frankie and the Frankie engines.
+
+ There are chapters that provide detailed and exhaustive tutorial
+ information about specific engines.  These chapters consist of several
+ sections which are designed to be read chronologically.  Each section
+ builds on, and at times, refers to previous sections.
+
+ Most of the sections contain sample source code.  Care was taken to make
+ sure the code can stand by itself so you can extract it (if your NG reader
+ is so equipped to do that) and compile it without changes.
+
+ The sample code may build over the sample code from a previous section.
+ The _new_ parts are highlighted so you can quickly spot them.
+
+ Please note this tutorial was not designed to describe the syntax of the
+ Frankie functions, as this is already done in the References section.
+ However, it includes 'See Also' cross references of all the functions used
+ in the sample code.
+
+ Some of the sample code refer to specific files.  If you installed Frankie
+ according to instructions, these files will be in the TOUR subdirectory.
+ This is where you should test the sample code included in this tutorial.
+
+ I am not a writer nor a teacher, but I have tried my best to make this
+ tutorial as easy to use and to follow as possible.  I will appreciate any
+ suggestion to make it even better.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:^b ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: Chapter 1 - What is the Frankie Library?
+'------------------------------------------------------------------------------
+
+ What is the Frankie Library?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ The Frankie library is a collection of Protected Mode compatible CA-Clipper
+ 5.2 mouseable and configurable user interfaces.  Every UI is built upon an
+ engine that has default looks and functionality, but can be reconfigured.
+ The reconfiguration takes place by sending messages to the engine via APIs.
+
+ The Engines
+ ÄÄÄÄÄÄÄÄÄÄÄ
+ The following UI engines are available in version 3.x:
+
+ 1. Database Browser
+ 2. Database Browse Lister
+ 3. Get/Read Subsystem
+ 4. Boxed Gets
+ 5. Vertical Menu
+ 6. Horizontal Menu
+ 7. Dialog Box
+ 8. Push Buttons
+ 9. Radio Buttons
+ 10. Scroll Bar
+ 11. File Viewer (based on memoedit())
+ 11. File Shower (based on Frankie engine technology)
+ 12. Hot Bar (also known as Menu Bar)
+ 13. Multi-level Help Facility
+
+ The APIs
+ ÄÄÄÄÄÄÄÄ
+ Each engine has its own set of API functions that serve to configure the
+ engine (a Config API), interrogate its state (an Info API), or instruct it
+ to do something (an Action API). These APIs work with single engines.
+ There are also Global APIs that work globally.
+
+ Specialized UI Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ In addition to the generic engines, Frankie contains a number
+ of specialized UI functions:
+
+  1. Drives picklist
+  2. Directory picklist
+  3. Files picklist
+  4. Fields picklist
+  5. Columns (Database Browse) picklist
+  6. "Drive Not Ready" dialog box
+  7. "Printer Not Ready" dialog box
+  8. "Which Drive?" dialog box
+  9. "Which Floppy?" dialog box
+ 10. Switch toggler dialog box
+ 11. Database browser scroll bars
+ 12. Horizontal and vertical push buttons
+ 13. A Read of one Get (two variants)
+
+ Miscellaneous Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Aside from the engine functions and their APIs, Frankie contains a wide
+ variety of miscellaneous and useful functions.  These, however, are
+ primarily for the purpose of supporting the Frankie engines.  They are not
+ intended to serve as a full repertoire of Clipper functions.  Frankie is
+ primarily a UI engines library.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Chapter 2 - What is a Frankie Engine?
+'------------------------------------------------------------------------------
+
+ What is a Frankie Engine?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A Frankie engine is a self-contained entity that does a specific function.
+ Like an object, it contains the procedures and data that it needs to
+ accomplish its purpose.  Every engine has its own default behavior, looks,
+ and functionality, which can be reconfigured via a set of APIs.
+
+ In version 1.x of Frankie (released in 1992), the engines were almost
+ transparent to the programmer.  A user-interface created an engine,
+ manipulated and otherwise processed it, then killed it, without much
+ intervention by the programmer.  The farthest extent that the programmer
+ knew about the engine was in the APIs where he, at times, had to make sure
+ that the API he used passed an engine identifier.
+
+ In Frankie v2.x, the engines were more formally defined.  The programmer
+ now had a greater responsibility, if he so desired, in their manipulation.
+ This made for greater flexibility and openness of the library.  This
+ architectural tradition continued with version 3.x.
+
+ You may conceptualize an engine as something akin to a file handle.  When
+ you open a file with F_OPEN(), you get a file handle.  To process the file
+ you opened, you pass the file handle to the processing functions like
+ F_READ(), F_WRITE(), F_CLOSE(), etc.  In the same manner, you process the
+ engine by passing its identifier to an API.  Some users made the observation
+ that the APIs are similar to the methods in OOP.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Chapter 3 - Common Engine Behavior
+'------------------------------------------------------------------------------
+
+ There are certain behaviors common to all engines:
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û F1 - Displays a Help screen if one has been defined.
+
+ û ALT-0 - EVALuates the Developer's Block.  The default block is
+   merely a {|e|nil}.  It can however be globally set by
+   ADdevblock().  For example,
+
+   ADdevblock( {|e| tone(100,1)} ) // will beep the speaker for
+                                   // whatever purpose.
+
+   ADdevblock( {|e| ADaview( ADtrace() )} ) // will display a
+                                            // procedure trace
+
+   ADdevblock( {|e| ADmessage( { ADn2s( memory(0) ),;
+                                 ADn2s( memory(1) ),;
+                                 ADn2s( memory(2) ) } )
+                                 // will display the  memory values
+
+   ADdevblock( {|e| swpruncmd( "", 0, "", "" )} )
+                         // will shell to Dos, swapping as much
+                         // memory as possible, if app is
+                         // linked with  Blinker.
+
+
+ û Left Click on top/left corner of screen - makes a selection (only
+   for selection engines like ADvermenu(), ADhormenu(), etc.)
+
+ û Left Click on bottom/right corner of screen - displays a Help
+   screen if one has been defined for the current context.
+
+ û Right Click on top/left corner of screen - EVALuates the
+   Developer's Block (same as ALT-0)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Chapter 4 - The Engine APIs
+'------------------------------------------------------------------------------
+
+ The Engine APIs
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ The power and the flexibility of an engine are derived from a set of APIs
+ specially developed for that particular engine.  These APIs are classified
+ into three: the Config APIs, the Action APIs, and the Info APIs.  Some of
+ the engine types have Global APIs.
+
+ A Config API is a function that configures the engine to behave differently
+ from the default behavior.
+
+ An Action API is a function that instructs the engine to do some specified
+ action.  Usually, this API is tied to a Config API to configure the engine
+ to do something when a particular event (e.g., the F10 key is pressed, or
+ the right button is clicked on a particular location) occurs.
+
+ An Info API is a function that extracts information about the engine's
+ status.  In the vertical menu engine, ADvermenu(), for example, the Info
+ API ADvm_current() returns the currently highlighted menu option.  As with
+ an Action API, an Info API may be tied to a Config API to configure the
+ engine to return engine information when a particular event occurs.
+
+ A Global API affects all the engines of the same type.  For example,
+ ADvmg_color() is a global API that sets the default colors for all Vertical
+ Menus.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Chapter 5 - Configuring an Engine - General
+'------------------------------------------------------------------------------
+
+ Configuring an Engine - General
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Every engine function accepts a number of parameters, one of which is
+ uniformly referred to in the Frankie documentation as the Config Parameter,
+ and written as bConfig or [bConfig].  The brackets serve to emphasize that
+ it is an optional parameter.  It is a codeblock, and it is by means of it
+ that you configure an engine's behavior.
+
+ As an illustration, let us say you want to implement a vertical menu with
+ three options, "First", "Second" and "Third".  You will call the vertical
+ menu engine function like this:
+
+   aMenu := { "First", "Second", "Third" }
+   ADvermenu( ,, aMenu )
+
+ NOTE: For a complete description of ADvermenu() please refer to the
+       documentation.
+
+ The above call will implement a menu with default behavior. One such
+ behavior is that the first menu option is the initially highlighted option.
+ You may reconfigure this behavior by:
+
+   bConfig := {|| ADvm_initsel(2)}
+   aMenu := { "First", "Second", "Third" }
+   ADvermenu( ,, aMenu,,, bConfig )
+
+ When the engine is so configured, the 2nd option will be initially
+ highlighted, instead of the first.
+
+ Another reconfigurable attribute of a vertical menu is the type of the
+ selected option.  By the default, ADvermenu() returns the index position of
+ the selected option, which is a numeric.  For example, if "Third" is
+ selected from the above menu, the engine will return the numeric 3.  You may
+ configure the engine to return the option itself, which is a character
+ string. If you do so, it will return "Third" instead of 3.  You reconfigure
+ by:
+
+   bConfig := {|| ADvm_returntype( "C" )}
+   aMenu := { "First", "Second", "Third" }
+   ADvermenu( ,, aMenu,,, bConfig )
+
+ You may reconfigure several attributes within the same bConfig.  For
+ example:
+
+   bConfig := {|| ADvm_returntype( "C" ), ADvm_initsel( 3 )}
+   aMenu := { "First", "Second", "Third" }
+   ADvermenu( ,, aMenu,,, bConfig )
+
+ In general then, you reconfigure an engine by defining the Config Parameter,
+ bConfig, and passing it to the engine.  bConfig may contain one or a series
+ of Config APIs.  If you call more than one Config API, separate them with a
+ comma.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Chapter 6 - Programming The Database Browser Engine
+!file: fran_052.ngo
+!short: Chapter 7 - Programming The Vertical Menu Engine
+!file: fran_053.ngo
+!short: Chapter 8 - Programming The Get/Read Engine
+!file: fran_054.ngo

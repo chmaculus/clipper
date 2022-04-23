@@ -1,0 +1,338 @@
+
+
+{ NGZ.GLO  ---  Global definitions for NGZ.PAS }
+
+
+{ Contents: CONST, TYPE, and VAR for NGZ
+            Note on NG v1.0 database file format (structures)
+            Note on NG disassembly
+}
+
+
+{ MIN & MAX --------------------------------------------------------------- }
+
+{ Most of these CONSTs have their origin in the NG documentation }
+
+CONST
+   name_len             =   40;   { max. length of database name }
+   credits_str_len      =   65;   { max. length of credits strings }
+   credits_num          =    5;   { max. no. of credits strings }
+   max_menus            =   10;   { max. no. of (horizontal) menus }
+   max_items            =    8;   { max. no. of items per menu (less title) }
+   short_str_len        =   78;   { max. displayed length of 'short entry'
+                                    string, does not include attrib signs }
+   long_str_len         =   78;   { max. displayed length of 'long entry'
+                                    string, does not include attrib signs }
+
+   long_struc_size_max  = 17 * 1024;  { 17 KB is max. size for a long entry
+                                        in source format }
+   header_size          =  378;   { file offset 0..377 }
+   NG_file_signature    = 'NG';   { yeah }
+
+
+   { The caret (^) denotes that the following char has special meaning,
+     i.e. attribute byte or character drawing byte. The caret itself
+     therefore appears as two (^^).
+     Attributes are in effect until changed by another, or until end of
+     screen line.
+   }
+   caret                =  '^';
+   bold                 = '^b';
+   underline            = '^u';
+   reverse              = '^r';
+   normal               = '^n';
+   attrib               = '^A';   { format: ^Axx where xx is hex number }
+   charac               = '^C';   { format: ^Cxx where xx is hex number }
+
+   null                 =   #0;   { ASCIIZ strings are null-terminated }
+   reserved_char        = #255;   { byte following #255 denotes number of
+                                    blanks (#32) to expand }
+
+
+   crypto               =  $1A;   { except for file header, ALL file bytes
+                                    are encrypted }
+   fixed_struc_size     =  $1A;   
+
+
+CONST
+   short_ID     = 0;
+   long_ID      = 1;
+   menu_ID      = 2;
+
+
+{ FILE HANDLING ----------------------------------------------------------- }
+
+TYPE
+   DWORD  = Longint;
+
+TYPE
+   bigbuf = ARRAY[0..long_struc_size_max - 1 + $1A] OF BYTE;  { 17 KB }
+   str79  = STRING[79];
+
+VAR
+   in_name         : str79;                 { input filename }
+   dir_info        : Dos.SearchRec;         { used with FindFirst }
+   NGf             : FILE;                  { input NG database file }
+   linkf           : TEXT;                  { output link control file }
+   makef           : TEXT;                  { output MAKE file }
+   reptf           : TEXT;                  { report file }
+   screen          : TEXT;                  { CON }
+   datf            : TEXT;                  { output data file }
+   buf             : bigbuf;                { buffer to hold one struc }
+   sbuf            : bigbuf;                { buffer to hold short struc while
+                                              writing longs }
+   textbuffer      : ARRAY[0..8191] OF BYTE;{ for faster writes }
+   varia_struc_size: WORD;                  { size of struc's var. portion }
+   fprefix         : STRING[4];    { used for naming output files }
+   out_files_num   : WORD;         { count output data files (one-based) }
+   last_read_pos   : DWORD;        { file offs. of last struc read }
+
+
+CONST
+   dot_NGO  = '.NGO';  { reserved .ext for NG object files }
+   dot_NG   = '.NG' ;  { do. , NG database files }
+   dot_ASC  = '.ASC';  { output data files (ascii) }
+   dot_LCF  = '.LCF';  { link control file }
+   dot_MAK  = '.MAK';  { make file }
+   dot_RPT  = '.RPT';  { report file }
+   _112     =    112;  { partial disassembly file no. }
+   { output file names:
+     data   : NAMEnnn.ASC     nnn = count (VAR out_files_num)
+     linkf  : NAME.LCF        NAME = first four letters of input file name
+     makef  : NAME.MAK
+     reptf  : NAME.RPT
+   }
+
+
+{ PROGRAM FLOW & STRINGS -------------------------------------------------- }
+
+CONST
+   crlf   = #13#10;
+   one_hundred = 78+22+40;   { expanded NG strings: add space for
+                               attribute signs }
+TYPE
+   str40  = STRING[name_len];
+   str65  = STRING[credits_str_len];
+   str78  = STRING[long_str_len];
+   str100 = STRING[one_hundred];
+   str12  = STRING[12];
+   str8   = STRING[8];
+   str4   = STRING[4];
+   str3   = STRING[3];
+   str2   = STRING[2];
+   str127 = STRING[127];
+
+TYPE
+   drop_menu    = RECORD  { vertical menu }
+                     txt  : str40;   { menu item text }
+                     fptr : DWORD;   { file ptr to struc }
+                     datn : WORD;    { corresponding data file number }
+                  END;
+   top_menu     = RECORD  { horizontal menu }
+                     toptxt : str40;
+                     items  : WORD;  { no. of items in drop menu }
+                     drop   : ARRAY[0..max_items -1] OF drop_menu;
+                  END;
+TYPE
+   struc_rec_ptr = ^struc_rec;
+   struc_rec    = RECORD      { list of strucs that go in separate files }
+                     ID        : WORD;
+                     file_offs : DWORD;
+                     par_ptr   : DWORD;
+                     first_ptr : DWORD;
+                     last_ptr  : DWORD;
+                     tgt_file  : WORD;
+                     txt       : STRING[55];  { subject text }
+                     next      : struc_rec_ptr;
+                  END;
+                  { At 80 bytes/rec, NGZ will run out of memory only if the
+                    NGuide has a humongous size }
+
+VAR
+   rc           : BYTE;    { return code }
+   cmd          : str127;  { command line }
+   is_info_req  : BOOLEAN; { cmd. line switches }
+   is_quiet     : BOOLEAN;
+   is_rept_only : BOOLEAN;
+   is_partial   : BOOLEAN;
+   partial_offs : DWORD;
+
+   NG_name      : str40;
+   credits      : ARRAY[0..credits_num - 1] OF str65;
+   last_ID      : WORD;  { ID of last read struc }
+   menu         : ARRAY[0..max_menus - 1] OF top_menu;
+   no_of_menus  : WORD;  { one-based }
+   no_of_shorts : WORD;  { for statistics }
+   no_of_longs  : DWORD; { for statistics }
+   file_size    : DWORD; { size of NGf }
+   curr_menu    : WORD;
+   curr_item    : WORD;
+
+   srm,sra,                        { Mark, aux, }
+   sr1,srp,src  : struc_rec_ptr;   { 1st, previous, current }
+
+
+(*
+------------------------------------------------------------------------------
+NG v1.0 DATABASE FILE FORMAT (STRUCTURES)
+
+          An NG database file consists of a header plus a sequence of
+          data structures. Each data structure has a portion of fixed
+          size, and a portion of variable size.
+
+          There are three data structures:
+             1) Menu struc   - all are located after file header
+                               expands into 2) or 3)
+             2) Short struc  - expands into 2) and/or 3) or is void
+             3) Long struc   - includes seealso data struc, if appr.
+
+          There is no limit to how deep short structures can be nested
+          (using the !File keyword).
+
+
+Note: All offsets are zero-based
+------------------------------------------------------------------------------
+Header structure        (Size = 378 = $17A bytes)
+ARRAY[0..1] OF BYTE     NG signature ('NG')
+WORD                    [?? Always zero]
+WORD                    [?? Always 1, probably NG version (1.0)]
+WORD                    Number of menu structures in database file
+ARRAY[8..47] OF BYTE    Guide name (asciiz)
+ARRAY[48..377] OF BYTE  Credits strings (asciiz), 5 * (65+1)
+------------------------------------------------------------------------------
+Menu structure (fixed part)  (Size = 26 = $1A bytes)
+WORD    ID              Menu_ID = 2
+WORD    Var_sz          Byte size of this menu's variable part (incl. trailing
+                        zero)
+WORD    Items           Number of menu items incl. menu title
+WORD    Ptr_sz          [= 4 * (Items - 1) ; indirect ptr to menu title str?]
+ARRAY[8..25] OF BYTE    [?? Always zero, probably unused]
+------------------------
+Menu structure (variable part)
+ARRAY[Items-1] OF DWORD File ptr; a menu expands into a long or short struc
+ARRAY[Items] OF RECORD
+   WORD                 Offset of menu item string into variable part;
+                        1st -> 1st item str., last -> 0, menu title string
+                        is not pointed to (located before 1st item string)
+   ARRAY[6] OF BYTE     [?? Always zero, probably unused]
+   END;
+ARRAY[Items][X] OF BYTE Items * asciiz strings
+BYTE                    Trailing zero byte
+------------------------------------------------------------------------------
+Short structure (fixed part) (Size = 26 = $1A bytes)              (Hex offset)
+WORD    ID              Short_ID = 0                                   ( $00 )
+WORD    Var_sz          Byte size of this short struc's variable part  ( $02 )
+WORD    Items           Number of items in short list                  ( $04 )
+WORD                    [?? Always zero, probably unused]              ( $06 )
+WORD                    Denotes that this struc is item # in parent's list
+                        (pressing Esc...), -1 if no parent             ( $08 )
+DWORD                   File pointer to parent struc, -1 if no parent  ( $0A )
+WORD                    Struc belongs to menu #                        ( $0E )
+WORD                    Struc belongs to menu item #                   ( $10 )
+ARRAY[18..25] OF BYTE   [?? Always zero, probably unused]              ( $12 )
+------------------------
+Short structure (variable part)
+ARRAY[Items] OF RECORD
+   WORD                 Offset of short entry string into variable part
+   DWORD                File ptr; points to a long struc, to another short
+                        struc, or to nothing, -1 if nothing
+   END;
+ARRAY[Items][X] OF BYTE Items * asciiz strings
+------------------------------------------------------------------------------
+Long structure (fixed part)  (Size = 26 = $1A bytes)              (Hex offset)
+WORD    ID              Long_ID = 1                                    ( $00 )
+WORD    Var_sz          Byte size of this long struc's variable part, incl.
+                        seealso data, if any                           ( $02 )
+WORD    Lines           Number of lines in long entry                  ( $04 )
+WORD    SA_offs         Offset of seealso struc into variable part ;   ( $06 )
+                        zero if no seealso data
+WORD                    Denotes that this struc is item # in parent's list,
+                        -1 if no parent                                ( $08 )
+DWORD                   File ptr to parent struc, if any; -1 if no par.( $0A )
+WORD                    Struc belongs to menu #                        ( $0E )
+WORD                    Struc belongs to menu item #                   ( $10 )
+DWORD                   File ptr to previous long, -1 if N/A           ( $12 )
+DWORD                   File ptr to next long, -1 if N/A               ( $16 )
+------------------------
+Long structure (variable part)
+ARRAY[Lines][X] OF BYTE Lines * asciiz strings
+   ---------------------------------------------------------------------------
+   Note: The seealso structure always appears as a part of a long structure.
+         It is void if long's SA_offs = zero.
+
+   Seealso structure (fixed part) (Size = 2 bytes)
+   WORD    SA_no           Number of seealso entries
+   ------------------------
+   Seealso structure (variable part)
+   ARRAY[SA_no] OF DWORD   File ptr to cross ref. entry (a long struc)
+   ARRAY[SA_no][X] OF BYTE SA_no * asciiz strings
+   BYTE                    Trailing zero byte
+------------------------------------------------------------------------------
+
+Notes:  ASCIIZ = ordinary (ascii) text string terminated by zero (chr(0)).
+
+        NG has a simple string compression method: If $FF (=chr(255)) appears
+        in a text string, the following byte denotes how many blanks (chr(32))
+        to insert. A $FF will compile as a $FF, though. One example of a text
+        string ending in a double $FF (?).
+
+        DIS_NG and NGDUMP operate with an End_ID = 5; I haven't seen one...
+        however, I have come across NGs filled (at eof) with zeros (i.e.
+        after decryption) to a 128-byte boundary.
+
+        Fields not accounted for (marked '??'): I think it's safe to assume
+        that these are place holders, at least those appearing in the fixed
+        part of the structures since only the long struc uses all 26 bytes.
+
+        Recompiled NG size differs from original: Right...Not too sure, but
+        it probably has to do with the space (de-)compression.
+*)
+
+(* ---------------------------------------------------------------------------
+
+   NG DISASSEMBLY:
+
+   1) Process header
+   2) ..and menus
+   3) In order to:
+         a) build !File refs (point to another short)
+         b) resolve S/A refs (point to a long) and link these to a
+            filename, if appropriate
+
+      the program must:
+         A) register all strucs that go in separate files, i.e. all short
+            strucs, and long strucs with no parent (off the menu), and in
+            the process make a note of the interval (1st and last long)
+            referenced by an end-of-chain short struc
+            (this is done by reading all struc headers in NG file sequenti-
+             ally and chaining these to a parent, if any)
+
+         B) for strucs found under A) build the following information:
+            a) W   ID           ID of this struc (gotta be 0 or 1)
+            b) DW  FileOffs     starting file offset of this struc
+            c) DW  FirstPtr     ptr to 1st long (if end-of-chain short struc)
+            d) DW  LastPtr      ptr to last long (if end-of-chain short struc)
+                                for an off-the-menu long struc: b = c) = d)
+                                for a has-parent short struc: c) & d) = N/A
+            e) W   TgtFile      filename this struc will go in (stored as
+                                number)
+            f) DW  next         pointer to next struc record (single-linked
+                                list)
+            g) DW  ParPtr       pointer to parent, -1 if no parent
+
+   4)  Write data files by processing all strucs in pointer list, i.e.
+       current struc and its child, if any; !File and !Seealso references
+       are resolved by a pointer table lookup
+
+   5)  Write link and make file to use with NGML.EXE and MAKE.EXE
+       Write report file (file index, unresolved seealsos et al.)
+
+
+   May, 1993
+   Morten Elling
+   DK-8000 Aarhus C.
+
+*)
+
+{ eof }
+

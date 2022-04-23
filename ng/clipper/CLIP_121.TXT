@@ -1,0 +1,30 @@
+'------------------------------------------------------------------------------
+^BPCOL()^B
+
+    PCOL() determines the current column position on the printer, and helps
+    keep track of printer column positions within programs.
+
+^USyntax^U
+
+    PCOL()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    PCOL() returns a numeric value representing the last column position
+    plus one.  For example, if you print a string five characters long
+    beginning at column one, a subsequent PCOL() returns six.
+
+    An EJECT resets PCOL() to zero.  If you need to reset the internal
+    printer column value without performing an EJECT, use SETPRC().
+
+^UUsage^U
+
+    PCOL() helps keep track of printer column position when you want to
+    place text on a line relative to other text on the line.
+!seealso: clip_125.ngo:"PROW" ???.ngo:"COL" clip_137.ngo:"SETPRC" clip_132.ngo:"ROW" 
+'------------------------------------------------------------------------------
+
+
+

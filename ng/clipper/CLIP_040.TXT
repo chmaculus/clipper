@@ -1,0 +1,31 @@
+'------------------------------------------------------------------------------
+^BSAVE SCREEN^B
+
+    SAVE SCREEN saves the current SCREEN to a buffer or optional memory
+    variable.
+
+^USyntax^U
+
+    SAVE SCREEN [TO <memvar>]
+
+^UOption^U
+
+    ^BTo^B: The TO clause specifies a memory variable to SAVE the current
+    SCREEN.  The variable created is character type and the length of the
+    screen is 4000 bytes.
+
+^UUsage^U
+
+    SAVE SCREEN is used in conjunction with RESTORE SCREEN to
+    eliminate the need to repaint an original screen that has been
+    temporarily replaced.
+
+    In addition to ordinary memory variables, you can also SAVE SCREENs to
+    array elements making screen management easier.  Note, however, you
+    cannot SAVE arrays to .mem files in order to SAVE multiple screens to
+    disk.
+!seealso: clip_036.ngo:"RESTORE SCREEN" clip_039.ngo:"SAVE" 
+'------------------------------------------------------------------------------
+
+
+

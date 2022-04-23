@@ -1,0 +1,3282 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdbview()            The engine function
+'------------------------------------------------------------------------------
+ ADdbview( [nTop], [nLeft], [nBottom], [nRight], [bConfig], [lKill],;
+           [cHelpId], [cHelpHeader] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ [nTop], [nLeft], [nBottom], [nRight] are the 4 corners of the browse box.
+ They are optional and default to 0, 0, maxrow() and maxcol().
+
+ [bConfig] - is the optional Configuration Specifier.  It is a codeblock that
+ the engine EVALuates to configure itself.  It is typically a call to one or
+ a series of configuration functions.  See the examples below.
+
+ [lKill] is a logical.  If it is TRUE, the engine that is created is automa-
+ tically killed at exit, and the return value is NIL.  If it is FALSE,
+ ADdbview() merely creates an engine and returns its value.  It will not
+ display the browse.  To subsequently  run the engine you need to explicitly
+ make some API calls:
+
+ nEngine := ADdbview(,,,,, .F. )    // create but not activate
+ ADdb_activate( nEngine )           // activate the engine
+ ADdb_kill( nEngine )               // kill the engine
+ //See Example 5 below.
+
+ [cHelpID] is a Help Identifier string used by the Frankie Help Facility
+
+ [cHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.
+
+ <nEngine> is the numeric return value, which serves as a handle to the
+ browse engine created by ADdbview().  It returns a 0 if no database is in
+ use in the current workarea.
+
+ v2.30 -> v3.00
+ --------------
+ Added an 8th parameter, [cHelpHeader].
+
+ v2.1 -> v2.2
+ ------------
+ Added support for global hot keys that are defined with ADg_keys().
+
+
+ Example 1:
+ ----------
+
+ ADdbview()   // browses the current database
+
+
+ Example 2:
+ ----------
+
+ ADdbview( 10, 10, 20, 69 )   // browses the current database and limits the
+                              // browse box to 10,10,20,69
+
+ Example 3:
+ ----------
+
+ // browses the current database, and does a Get/Read when the Enter key is
+ // pressed or when the left mouse button is clicked on the current field.
+
+ ADdbview(,,,, {|| ADdb_fldread()} )
+
+
+ Example 4:
+ ----------
+
+ // Initiates a dragging operation when F10 is pressed.  To drag the browse
+ // box, use the arrow keys.
+
+ ADdbview( 10,10,20,69, {|| ADdb_keys( { K_F10 }, {ADdb_drag()} )} )
+
+ See DB_TOUR.PRG and the various DB_DEM??.PRGs for more examples.
+
+
+ Example 5:
+ ----------
+
+ func MYBROWSE()
+ local nEngine := ADdbview( 4,4,20,76,, .f. )  // create the engine
+
+ ADwait()                       // wait for a keypress or mouse click
+ ADdb_activate( nEngine )       // activate the browse
+ ADdb_kill( nEngine )           // kill the engine
+ return nil
+!seealso: "ADbrowse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdb_box()            Redefines the box attributes
+'------------------------------------------------------------------------------
+ ADdb_box( [cFrame], [cHeadSep], [cColSep], [xShadow], [lExplode],;
+           [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the attributes of the db box.
+
+ [cFrame] is the box frame string.  It defaults to "ÕÍ¸³¾ÍÔ³ ".
+
+ [cHeadSep] is the header separator string.  It consists of three characters.
+ The first character connects to the left side of the box; the third to the
+ right side; the middle is the main separator character.  It defaults to
+ "ÆÍµ".
+
+ [cColSep] is the column separator.  It defaults to space(3).
+
+ [xShadow] is a value specifying the box shadow characterstics.  Its
+ meaning is similar to that of ADbox()'s own [xShadow].
+
+ [lExplode] is a logical value.  When TRUE, the db box explodes. It defaults
+ to FALSE.
+!seealso: fran_028.ngo:"ADbox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_color()          Redefines the colors
+'------------------------------------------------------------------------------
+ ADdb_color( [aColor] ) --> <aOldColor>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the colors of the browser to [aColor] and returns the current colors
+ as <aOldColor>.
+
+ Both [aColor] and <aOldColor> are arrays containing 7 elements:
+
+   1 - the standard color.  Defaults to "W+/B" in color and "W/N" in mono
+   2 - the enhanced color.  Defaults to "GR+/R" in color and "N/W" in mono
+   3 - not used
+   4 - the header color.  Used to color the column headers.  Defaults to
+       "W+/B" in color and "W/N" in mono
+   5 - the Get color if the browse is configured ADdb_adget() or
+       ADdb_fldread()
+   6 - standard color used on a defined set of records.  Defaults to "R+/B"
+       in color and "W+/N" in mono.  See ADdb_colset().
+   7 - enhanced color used on a defined set of records.  Defaults to "N+/W"
+       in color and "U" in mono.  See ADdb_colset().
+
+ v2.1 --> v2.2
+ -------------
+ The 4th element was unused in previous versions.  The 6th and 7th elements
+ are new.
+
+ Example:
+ --------
+ bConfig := {||ADdb_color( {;
+                              "W+/G",;    // standard color
+                              "GR+/R",;   // enhanced color
+                              NIL,;
+                              "R+/RB",;   // column headings
+                              "W/N",;     // get color
+                              "G+/W",;    // for record set (std)
+                              "N+/G";     // for record set (enh)
+                           };
+                         );
+            }
+ ADdbview( ,,,, bConfig )
+!seealso: "ADdbg_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colread()        Redefines the Enter key to initiate cell editing.
+'------------------------------------------------------------------------------
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADdb_colread( [bConfig] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines the Enter key to initiate a Get/Read-ing of the currently
+ highlighted column value (cell).  The same action is taken if the mouse left
+ button is clicked on the currently highlighted cell.  If the current column
+ has been defined with a codeblock, make sure the codeblock is of the
+ Get/Set type, otherwise the edited value will not be saved.  ADdb_colread()
+ is identical to ADdb_enter( {||ADdb_colget()} ).  See ADdb_colget() for
+ more information.
+
+ [bConfig] is a Configuration Block used by ADdb_colread() to configure
+ ADdb_colget().  See ADdb_colget() for a full discussion.
+
+ Example (See also DB_DEM23.PRG):
+ -------
+ ADdbview(,,,, {|| ADdb_colread()} )
+!seealso: "ADdb_colget()" "ADdb_columns()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_columns()        Specifies what column objects to create
+'------------------------------------------------------------------------------
+ ADdb_columns( [aColumns] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ [aColumns] is an optional array of column definitions.  If it is not passed
+ columns will be defined for all the fields in the current database.  This
+ is like not calling ADdb_columns() at all.  If it is passed then every
+ element must have 2 required and one optional sub-elements:
+
+     1 - column header (character)
+     2 - retrieval factor.  It may be a codeblock, a field name or a
+         numeric field position.
+     3 - the alias of the database on which the retrieval factor will be
+         applied.  If it is not passed, it defaults to the current
+         database.
+
+ NOTE:  You can not use ADdb_adget() with ADdb_columns().  Use
+        ADdb_colget(), instead.
+
+ v2.1 -> v2.2
+ ------------
+ The meaning of ADdb_columns() is completely changed in v2.2.  Its old
+ meaning is now 'occupied' by ADdb_fields()
+
+ Example
+ -------
+ func main()
+ local aColumns := {;
+                     { "Function;Name",        1 },;
+                     { "Is It;Mouseable?",     "MOUSEABLE" },;
+                     { "Number of;Parameters", fieldblock( "PARAM_NUM" ) };
+                   }
+ local bConfig := {||ADdb_columns( aColumns )}
+ use demo
+ ADdbview(,,,, bConfig )
+ return NIL
+!seealso: "ADdb_colget()" "ADdb_colread()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colheadings()    Changes the default column headings
+'------------------------------------------------------------------------------
+ ADdb_colheadings( [aHeadings], [nEngine] ) --> <aOldHeadings>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Changes the default column headings to those specified in the array
+ [aHeadings].  The default are of course the field names.  If [aHeadings] is
+ not passed, no reconfiguration occurs.  If the number of elements of
+ [aHeadings] is less than the number of columns in the browse, the extra
+ columns will not be reconfigured.  If there are more elements in [aHeadings]
+ than there are columns, the extra elements will be disregarded.
+
+ <aOldHeadings> is an array of the old headings.
+!seealso: "ADdb_columns()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_concolumn()    ^rn^r Configures a column
+'------------------------------------------------------------------------------
+ ADdb_concolumn( <nthColumn>, [aAttr] ) --> <aOldAttr>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures a column.  This API makes ADdb_defcolumn() obsolete.
+
+ <nthColumn> the index position of the column to be reconfigured.
+
+ [aAttr] is an array of column attributes.  If this array is passed, the
+ column will be reconfigured according to the contents of this array.
+
+  1 - the column heading
+  2 - the retrieval block.  This is used for displaying the column in the
+      browse.  If cell-editing is enabled with ADdb_colget() or
+      ADdb_colread(), This block must be of the 'get/set' type, that is, it
+      must have this format:
+
+         {|x|if( x == NIL, xValue, xValue := x )}
+
+      where xValue is the value displayed in the browse column.  If the
+      codeblock is simply of the 'get' type, the edit value in cell editing
+      will not be saved.
+  3 - picture clause
+  4 - data type.  This needs to be specified as "M" if the source field is
+      a memo field.
+
+ Not all the elements of the array need to be passed.
+
+ <aOldAttr>, the return value is an array of the old configuration of the
+ column.
+
+ Example 1
+ ---------
+ func main()
+ field func_name, latest_upd
+ local bConf
+
+ use demo
+ bConf := {||ADdb_colread(),;
+             ADdb_concolumn( 1,;
+                             {;
+                                NIL,;
+                                {||substr( func_name, 3 )},;
+                                "@!";
+                             };
+                           ),;
+             ADdb_concolumn( 5,;
+                             {;
+                                "Date",;
+                                {||left( dtoc( latest_upd ), 2 )};
+                             };
+                           ),;
+             ADdb_concolumn( 4,;
+                             {;
+                                "Description",;
+                                {||"<Description>"},;
+                                NIL,;
+                                "M";
+                             };
+                           );
+          }
+ ADdbview(,,,, bConf )
+ return NIL
+
+ Example 2
+ ---------
+ func main()
+ local aCol := {;
+                  { "Function Name", "Func_name" },;
+                  { "Mouseable?",     2 },;
+                  { "# of Param",   fieldblock( "param_num" )},;
+                  { "Comment", fieldblock( "descriptn" )},;
+                  { "Date",  5, "demo" };
+               }
+ local bConf := {||ADdb_columns( aCol ),;
+                   ADdb_concolum( 4, { , {||"<memo>"}, fieldblock( "descriptn" ), "M" } ),;
+                   ADdb_colread();
+                }
+ use demo
+
+ ADdbview( ,,,, bCOnf )
+ ADdbview()
+ return NIL
+!seealso: "ADdb_columns()" "ADdb_colget()" "ADdb_colread()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_defcolumn()    ^ro^r Redefines a column object
+'------------------------------------------------------------------------------
+ ADdb_defcolumn( <nthColumn>, [cHeading], [bRetrieve], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Redefines the column object of the <nthColumn> column.  This is typically
+ used for calculated columns, but may be used for any column.  This is now
+ an obsolete API.  Use ADdb_concolumn(), instead.
+
+ The preferred method of defining columns is with ADdb_columns().
+
+ [cHeading] is a string to be used as the new heading.
+
+ [bRetrieve] is a retrieval codeblock that returns any data type.
+
+ Example:
+ --------
+ select 0
+ use child index child
+ select 0
+ use master index master
+ set relation to id_num into child
+
+ /*
+ Define 3 columns.  The first is a calculated column that displays the record
+ number.  The next 2 are for fields 1 and 5 of the master database.  The 4th
+ column is another calculated column that retrieves data from the related
+ child.
+ */
+ bConfig := {|| ADdb_fields( {0,1,5,0} )},;
+                ADdb_defcolumn( 1,;
+                                "Rec #",;
+                                {||recno()};
+                              ),;
+                ADdb_defcolumn( 4,;
+                                "Child Data",;
+                                {||child->detail};
+                              );
+            }
+
+ ADdbview( ,,,, bConfig )
+!seealso: "ADdb_columns()" "ADdb_concolumn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_enter()          Defines an "Enter" behavior
+'------------------------------------------------------------------------------
+ ADdb_enter( [bEnter], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Assigns a codeblock [bEnter] that ADdbview() EVALuates when the Enter key is
+ pressed, or when the currently highlighted field value is clicked with the
+ mouse left button.  There is no default action associated with the Enter
+ key.  This API allows for its redefinition.
+
+ If a codeblock is defined with ADdb_mouse(), this codeblock overrides that
+ defined by ADdb_enter() as far as mouse response is concerned.
+
+ Example:
+ --------
+ /*
+ The speaker will beep whenever the Enter key is pressed, or the mouse is
+ clicked on the highlighted field value.
+ */
+ ADdbview( ,,,, {|| ADdb_enter( {||tone(100,1)} )} )
+!seealso: "ADdb_escape()" "ADdb_exit()" "ADdb_mouse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_escape()         Defines an "Escape" behavior
+'------------------------------------------------------------------------------
+ ADdb_escape( [bEscape], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Assigns a codeblock [bEscape] that ADdbview() EVALuates when the Escape key
+ is pressed, or when the right button is pressed.  The default action when
+ the Escape key is pressed is to exit the browse.  This API allows for a
+ redefinition of such action. The codeblock must EVALuate to a logical value.
+ If it returns TRUE, the browse exits.
+
+ Example:
+ --------
+ /*
+ The user is asked to confirm his intention to exit when the Escape key is
+ pressed, or the right button is pressed.
+ */
+ bConfirm := {|| ADboxmenu( "Exit?", { "Yes", "No" } ) == 1}
+ ADdbview( ,,,, {|| ADdb_escape( bConfirm )} )
+!seealso: "ADdb_enter()" "ADdb_exit()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_expattr()        Reconfigures the expanded cell attributes
+'------------------------------------------------------------------------------
+ ADdb_expattr( [aCoords], [cColor], [cFrame], [cPrompt], [nEngine] )  --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the looks of the expanded memoedit.  The default attributes of
+ the memoedit are:
+
+ Coordinates - {10,10,20,69}
+ Main Color - "GR+/R" if colored, "N/W" if mono
+ Frame - "ÕÍ¸³¾ÍÔ³ "
+ Prompt - "Esc:CloseWindow    :ScrollUP    :ScrollDown   F1:Help"
+
+ Example:
+ -------
+ ADdbview( ,,,, {|| ADdb_expattr( {0,0,24,79},;  // full screen
+                                  "GR+/B",;   // main color
+                                  "ÚÄ¿³ÙÄÀ³ ";   // box frame
+                                );
+                };
+         )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_extra()        ^rm^r Defines entry and exit behaviors
+'------------------------------------------------------------------------------
+ ADdb_extra( [bDispBegin], [bDispEnd], [xUndisplay], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines extra actions to be done before and after displaying the browse.
+
+ [bDispBegin] is a codeblock that is EVALuated just before the browse is
+ displayed.
+
+ [bDispEnd] is a codeblock that is EVALuated right after the initial browse
+ screen is displayed.
+
+ [xUndisplay] is a codeblock or an array of two codeblocks.  If it is
+ a single codeblock, it is EVALuated right after a Browse is undisplayed.
+ If it is an array, the first codeblock is EVALed just before the Browse
+ is undisplayed, and the second, after it is undisplayed.
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ behaviors defined in the call replace whatever is already defined.  If it
+ is TRUE, these definitions are added to the currently defined ones.
+
+ Example:
+ -------
+ /*
+ Display the alias at the center of the bottom line of the browse window.
+ */
+ bDispBegin := NIL
+ bDispEnd := {|| ADcsay( ADdb_bottom(),;
+                         ADdb_left(),;
+                         ADdb_right(),;
+                         alias() );
+             }
+ ADdbview( ,,,, {|| ADdb_extra( bDispBegin, bDispEnd )} )
+
+ v3.00 -> v3.10
+ --------------
+ The 3rd parameter used to be a single codeblock only, which was EVALed
+ after the Browse is undisplayed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fields()         Specifies which fields to include.
+'------------------------------------------------------------------------------
+ ADdb_fields( [aFldPos], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies which fields are to be included in the engine. [aFldPos] is an
+ array of the field positions of the fields to be included.  If [aFldPos] is
+ not passed, it defaults to an array of all fields.  This is the same as not
+ configuring with ADdb_fields() at all.  If an element is zero, a headingless
+ column object will be created for it, with retrieved values always equal to
+ the literal string "<calc>".  Such a column may be redefined with
+ ADdb_defcolumn() with a heading and to retrieve a non-field value, or any
+ calculated value.
+
+ The preferred method of defining columns is with ADdb_columns().
+
+ NOTE:  ADdb_fields( { 1,2 } ) will arrange the columns in a different
+        order than ADdb_fields( { 2,1 } ).
+
+ Example:
+ --------
+ select 0
+ use child index child
+ select 0
+ use master index master
+ set relation to id_num into child
+
+ /*
+ Define 3 columns.  The first is a calculated column that displays the record
+ number.  The next 2 are for fields 1 and 5 of the master database.  The 4th
+ column is another calculated column that retrieves data from the related
+ child.
+ */
+ bConfig := {|| ADdb_fields( {0,1,5,0} )},;
+                ADdb_defcolumn( 1,;
+                                "Rec #",;
+                                {||recno()};
+                              ),;
+                ADdb_defcolumn( 4,;
+                                "Child Data",;
+                                {||child->detail};
+                              );
+            }
+
+ ADdbview( ,,,, bConfig )
+!seealso: "ADdb_columns()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fldread()        Assigns a Get/Read behavior to the Enter key
+'------------------------------------------------------------------------------
+ ADdb_fldread( [bConfig] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines the Enter key to initiate a Get/Read-ing of the currently
+ highlighted field value.  The same action is taken if the mouse left button
+ is clicked on the currently highlighted field value.  If the current column
+ is a calculated column, ADdbview() does not go to edit mode.  ADdb_fldread()
+ is identical to ADdb_enter( {||ADdb_adget()} ).
+
+ The preferred methods of editing a cell is with ADdb_colget() and
+ ADdb_colread().
+
+ [bConfig] is a Configuration Block used by ADdb_fldread() to configure
+ ADdb_adget().  See ADdb_adget() for a full discussion.
+
+ Example (See also DB_DEM23.PRG):
+ -------
+ ADdbview(,,,, {|| ADdb_fldread()} )
+!seealso: "ADdb_colget()" "ADdb_colread()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_hotedges()       Specifies whether window edges are hot spots
+'------------------------------------------------------------------------------
+ ADdb_hotedges( <lHot> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies whether the browse window box edges are hot spots for scrolling
+ or not.  By default they are.
+
+ <lHot> is a logical value.  If it is TRUE, clicking on the edges will cause
+ the browse pointer to move.  You may want to inactivate this default
+ when you create special scroll push buttons, or when you add scroll bars to
+ the browse.
+
+ NOTE: If the edges are "hot", it is not possible to define hot spots on
+ them.  So if you define such hot spots you therefore have to configure
+ ADdbview() with ADdb_hotedges( .f. ).
+
+ v2.1 --> v2.2
+ --------------
+ The API behaves just like in v2.1.  The above clarifying NOTE is added in
+ this documentation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_incsearch()    ^rn^r Adds an incremental search feature
+'------------------------------------------------------------------------------
+ ADdb_incsearch( [aParam], [cPrompt], [nMode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds an incremental search feature to ADdbview().  When a browse has
+ this feature, all keys from chr(32) through chr(126) cause an incremental
+ seek on the key of the underlying database.  If the seek is successful, the
+ pressed key is displayed at the bottom of the browse window, and the
+ browse itself is positioned accordingly.  Otherwise, the speaker is beeped.
+
+ Other hot keys are:
+
+    K_BS - moves the browse pointer to the previous position.
+    K_CTRL_BS - moves the pointer to where it was originally.
+
+ If the underlying database file is not indexed, no incremental search is
+ done.
+
+ [aParam] is an optional array of arguments.  All elements are optional.
+
+    1 - logical flag.  If TRUE, the pressed keys are converted to upper
+        case.
+
+    2 - the color in which the pressed keys are displayed.  Defaults to
+        "BG+/B".
+
+    3 - the row position where the pressed keys are displayed.  Defaults to
+        the bottom of the browse window.
+
+    4 - the column position where the pressed keys are displayed.  Defaults
+        to the left + 2 of the browse window.
+
+    5 - a logical value.  If this is TRUE, the search string is reset to
+        null when the browse is moved with any regular vertical navigation
+        key like K_DOWN, K_UP, etc.
+
+ [cPrompt] is an optional search string prompt.  Defaults to "".
+
+ [nMode] is an optional numeric flag.  It should be set to a non-zero
+ value if ADdb_incsearch() is to not to be automatically activated at the
+ time ADdbview() is activated, but wait for a keypress defined by an
+ ADdb_keys() call.  The same keypress will terminate incremental searching
+ once it is activated.  The default value is 0, that is, incremental search
+ is in  effect as soon as ADdbview() is activated.  (See example 4 below).
+
+ Example 1
+ ---------
+ func main()
+ use hotel index h_name                  // indexed on name
+ ADdbview( ,,,, {||ADdb_incsearch()} )
+ return NIL
+
+ Example 2
+ ---------
+ func main()
+ local aParam := { .t.,;      // uppercase
+                   "R+/B",;   // color of search value display
+                   10,;       // display row
+                   12,;       // display column
+                   .f.;       // do not reset search string when browse
+                 }            //  browse is moved vertically
+
+ use hotel index h_name
+ ADdbview( 10, 10, 20, 70, {||ADdb_incsearch( aParam )} )
+ return NIL
+
+
+ Example 3
+ ---------
+ // In this demo, ADr_tbpopup(), a specialized ADdbview() used as a
+ // validation popup for a Get, is configured with ADdb_incsearch().
+ #include "frankie.ch"
+ #define UPPERCASE   .t.
+
+ func main()
+ field num, name, city
+ local bConf := {||ADdb_incsearch( {UPPERCASE} ),;
+                   ADdb_columns( { { "Property",;
+                                     {||num + " " + name + " " + city };
+                                   };
+                                 };
+                               );  // one-column browse
+                }
+ local nHotelNum := "   "
+ local getlist[0]
+
+ use hotel index h_name
+
+ cls
+ @10,10 say "Hotel Number";
+        adget nHotelNum;
+        valid ADr_tbpopup( ,,{ 1,, {||num} }, {.f., .t.}, bConf )
+
+ ADread( getlist )
+ return NIl
+
+ Example 4
+ ---------
+ // In this demo, incremetal search is toggled on/off with the Enter key.
+ // Also, F10 toggles the controlling order between city and name, and
+ // clears the search string and changes the prompt.
+ #include "inkey.ch"
+ #define UPPERCASE  .T.
+ func main()
+ use hotel index h_city, h_name   // indexed o city and name
+ ADdbview( ,,,,;
+           {||ADdb_columns( { { "City", "City" },;
+                              { "Name", "Name" };
+                            };
+                          ),;
+              ADdb_enter( {||ADdb_incsearch( {UPPERCASE}, "City: ", 1 )} ),;
+              ADdb_keys( {K_F10}, {||ChangeSort()}, .t. );
+           };
+         )
+ return NIL
+
+ static func ChangeSort()
+ if indexord() == 1
+     set order to 2
+     ADdbis_reset( "Name: " )
+ else
+     set order to 1
+     ADdbis_reset( "City: " )
+ endif
+ ADdb_stabilize( .f., .t. )
+ return NIL
+
+ NOTE:  If you are to configure ADdbview() further with ADdb_keys(),
+        ADdb_extra(), ADdb_move(), etc, make sure that their [lAdditive]
+        parameter is set to TRUE.
+!seealso: "ADdbis_reset()" fran_011.ngo:"ADr_tbpopup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_keys()           Defines hot keys
+'------------------------------------------------------------------------------
+ ADdb_keys( [aKeys], [bHandler], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys that are local to the Browse.
+
+ [aKeys] is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+  1 - the index position of the pressed key
+  2 - the inkey code of the pressed key
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ hot keys defined in the call replaces whatever is already defined.  If it is
+ TRUE, these definitions are added to the currently defined ones.
+
+ Example:
+ --------
+ aKeys := { asc( "E" ), asc( "e" ), K_F10 }
+ ADdbview( ,,,, {|| ADdb_keys( aKeys,;
+                               {|n,k| Xhandler(n,k)};
+                             );
+                };
+         )
+
+ func Xhandler( nIndexPos, nKeyCode )
+ if nIndexPos == 1 .or. nIndexPos == 2
+    ADdb_adget()        // does a Get/Read when either "E" or
+                        // "e" is pressed
+ elseif nIndexPos = 3
+    ADdb_exit()         // exits the browse when F10 is pressed
+ endif
+ return nil
+!seealso: "ADdb_lbuttons()" fran_027.ngo:"ADg_keys()" "ADdb_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_lbuttons()       Defines left-button hot spots
+'------------------------------------------------------------------------------
+ ADdb_lbuttons( [aSpots], [bHandler], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse left button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+  1 - the index position of the clicked spot
+  2 - the mouse cursor row position when the hot spot was clicked
+  3 - the corresponding mouse column position
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ hot spots defined in the call replaces whatever is already defined.  If it
+ is TRUE, these definitions are added to the currently defined ones.
+
+ Example:
+ -------
+ func main()
+ local nT := 10, nL := 10, nB := 20, nR := 70
+ use demo
+ ADdbview( nT, nL, nB, nR,;
+           {|| ADdb_extra( {|| NIL},;
+                           {|| ADsay( nB, nL+1, "Edit" ),;
+                               ADsay( nB, nL+11, "Exit" );
+                           };
+                         ),;
+               ADdb_lbuttons( {;
+                                { nB, nL+1, nB, nL+4 },;
+                                { nB, nL+11, nB, nL+14 };
+                              },;
+                              {|n,r,c| Xhandler(n,r,c)};
+                            );
+           };
+         )
+ return nil
+
+ func Xhandler( nIndexPos, nRow, nCol )
+ if nIndexPos == 1
+    ADdb_adget()
+ elseif nIndexPos = 2
+    ADdb_exit()
+ endif
+ return nil
+!seealso: "ADdb_keys()" "ADdb_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_mouse()          Defines a 'click-highlighted-cell' behavior
+'------------------------------------------------------------------------------
+ ADdb_mouse( <bLeftButton> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a behavior that is followed when the highlighted cell is clicked.
+
+ <bLeftButton> is the codeblock that is EVALed when the left button is
+ clicked on the highlighted cell.  It is passed the engine numeric ID.  It
+ overrides any codeblock that might  have been defined with ADdb_enter().
+
+ Example:
+ --------
+ func main()
+ local bConfig := {||ADdb_mouse( {||ADmessage( {"Clicked"} )} )}
+ use hotel
+ ADdbview(,,,, bConfig )
+ use
+ return NIL
+!seealso: "ADdb_enter()" "ADdb_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_move()           Defines "move" behaviors
+'------------------------------------------------------------------------------
+ ADdb_move( [bVertical], [bHorizontal], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines two codeblocks that are EVALuated when the browser highlight bar
+ moves.  These blocks will typically update some kind of status information.
+
+ [bVertical] is an optional code block that is EVALuated whenever the browse
+ cursor moves vertically.  It is passed the browse engine ID.
+
+ [bHorizontal] is an optional code block that is EVALuated whenever the
+ browse cursor moves horizontally.  It is passed the browse engine ID.
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ behaviors defined in the call replaces whatever is already defined.  If it
+ is TRUE, these definitions are added to the currently defined ones.
+
+ Example:
+ -------
+ /*
+ Display the record number at the top left corner of the browse box.
+ */
+ ADdbview( ,,,,;
+           {|| ADdb_move( {||ADsay( ADdb_top(),;
+                                    ADdb_left() + 1,;
+                                    padr(trim(str(recno())), 10);
+                                  );
+                          };
+                        );
+           };
+         )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_poll()           Polls for another event
+'------------------------------------------------------------------------------
+ ADdb_poll( <bEvent>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Polls for another event (in addition to regular keyboard and mouse events
+ normally polled by ADdbview()).
+
+ <bEvent> is the polling codeblock.  It must return a numeric.  A return
+ value of 0 means that no event occurred.  A non-zero value means that
+ an event occurred.
+
+ <bHandler> is a codeblock that processes the returned value of <bEvent>.
+ Note that it is EVALed only if <bEvent> returns a non-zero value.  It is
+ passed two parameters:
+
+     1 - the returned value of <bEvent>
+     2 - the numeric engine id
+
+ Example
+ -------
+ #include "inkey.ch"
+ #include "frankie.ch"
+
+ func main()
+ local bConfig := {||ADdb_poll( {||Xpoller()},;
+                                {|x,e|Xhandler(x,e)};
+                              );
+                  }
+ use employee
+ ADdbview( ,,,, bConfig )
+ return NIL
+
+
+ func Xpoller()
+ return ascan( { K_RT_SHIFT, K_LF_SHIFT, K_CTRL, K_ALT }, {|x|ADkbflag(x)} )
+
+
+ func Xhandler( nEvent, nEngine )
+ local cKey
+
+ if nEvent == 1
+     cKey := "Right Shift"
+ elseif nEvent == 2
+     cKey := "Left Shift"
+ elseif nEvent == 3
+     cKey := "Ctrl"
+ elseif nEvent == 4
+     cKey := "Alt"
+ endif
+
+ ADmessage( { cKey + " key is pressed " } )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_rbuttons()       Defines right mouse button hot spots
+'------------------------------------------------------------------------------
+ ADdb_rbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse right button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ Example
+ -------
+ // deactivate the right mouse button
+ func main()
+ use hotel
+
+ ADdbview( ,,,, {||ADdb_rbuttons( { {0,0,maxrow(),maxcol()} }, {||NIL} )} )
+ use
+ return NIL
+!seealso: "ADdb_keys()" "ADdb_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_sleep()          Deactivates the engine's default event handler
+'------------------------------------------------------------------------------
+ ADdb_sleep( <lSleep>, [bSleep] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADdbview's event handler to go to sleep, that is, not poll for
+ events.  Optionally, events may be diverted to another handler.
+
+ <lSleep> - a logical value that tells ADdbview() whether to sleep or not.
+ Defaults to TRUE.
+
+ [bSleep] is an optional codeblock that acts as the event handler for
+ ADvermenu() if <lSleep> is TRUE.  This codeblock is passed two parameters:
+
+     1 - the browse engine id
+     2 - events in the form of an array similar to the return value of
+         ADwait().
+
+ Note that if <lSleep> is TRUE and [bSleep] is NIL, the engine will go on an
+ indefinite sleep, making it appear that the system hung.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local bConfig := {||ADdb_sleep( .t., {|e,a|Xhandler(e,a)} )}
+ use employee
+ ADdbview( ,,,, bConfig )
+ return NIL
+
+
+ func Xhandler( e, aEvents )
+ if aEvents[1] != 0
+     if aEvents[1] == K_ALT_Q
+         ADdb_exit()
+     else
+         ADmessage( { "Key (" + ADn2s( aEvents[1] ) + ") was pressed" } )
+     endif
+ elseif aEvents[2] == 1
+     ADmessage( { "Mouse Left Button was clicked at " + ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] ) } )
+ elseif aEvents[2] == 2
+     ADmessage( { "Mouse Right Button was clicked at " + ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] ) } )
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_timeout()        Designates a timeout routine
+'------------------------------------------------------------------------------
+ ADdb_timeout( <nTimeOut>, <bTimeout> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Designates a time-out routine.
+
+ <nTimeOut> is the number of idle seconds to pass before the timeout routine
+ is invoked.
+
+ <bTimeOut> is a codeblock that ADdbview() EVALuates after <nTimeOut>
+ seconds of inactivity.
+
+ Example: Blank the screen after 5 minutes of idle time.
+ ------------------------------------------------------
+ ADdbview( ,,,, {||ADdb_timeout(5*60, {||ADblankscn()})})
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_tmdrag()         Adds re-sizing feature to ADdbview()
+'------------------------------------------------------------------------------
+ ADdb_tmdrag() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds re-sizing feature to ADdbview() with a mouse.
+
+ NOTE: The smallest size that the browse box can be minimized to is 3 data
+ rows by 3 screen (not browse) columns.
+
+ NOTE: This API MUST be called via the [bDispEnd] parameter of the
+ ADdb_extra() API.
+
+ Example
+ -------
+ func main( cDbf )
+ local bConfig := {||ADdb_extra( , {||ADdb_tmdrag()} )}
+ local aScn
+
+ use ( cDbf )
+ aScn = ADmessage( { "Click any corner of the browse box, drag, then release" }, 22,, .f., .f. )
+ ADdbview( 4,4,20,76, bConfig )
+ ADrestscn( aScn )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbcg_color()        Configures the Get color in ADdb_colget()
+'------------------------------------------------------------------------------
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADdbcg_color( <cColor> ) --> NIL
+
+ Specifies the Get color for use by ADdb_colget().  Defaults to the current
+ Clipper enhanced color setting.
+
+ Example
+ -------
+ func main()
+ field state
+ local bGetConfig := {||ADdbcg_color( "G/W" )}
+ local aColumns := {;
+                        { "ID#", 1 },;
+                        { "Property Name", "NAME" };
+                   }
+ local bConfig := {||ADdb_columns( aColumns ),;
+                     ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                  }
+
+ use hotel
+ ADdbview( ,,,, bConfig )
+ return NIL
+!seealso: "ADdbcg_dict()" "ADdbcg_extra()" "ADdbcg_lock()" "ADdbcg_stay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbcg_dict()         Defines dictionary values for ADdb_colget()
+'------------------------------------------------------------------------------
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADdbcg_dict( <aDict> ) --> NIL
+
+ Defines dictionary values for use by ADdb_colget()
+
+ <aDict> is an array of dictionary specifications for the browse columns.
+ Its elements correspond to the browse columns.  If an element is FALSE,
+ the corresponding cell will not be editable.  If it is NIL, no dictionary
+ values will be set for the corresponding column.  If it is otherwise
+ defined, it can have 3 sub-elements:
+
+   1 - the PICTURE clause
+   2 - the WHEN clause, as a codeblock
+   3 - the VALID clause, as a codeblock
+
+ Example
+ -------
+ func main()
+ local aDict := {;
+                   .F.,;   // first column is not editable
+                   { "@!" ,, {||!"THE" $ ADr_varget()} };
+                }
+ local bGetConfig := {||ADdbcg_dict( aDict )}
+ local aColumns := {;
+                        { "ID#", 1 },;
+                        { "Property Name", "NAME" };
+                   }
+ local bConfig := {||ADdb_columns( aColumns ),;
+                     ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                  }
+
+ use hotel
+ ADdbview( ,,,, bConfig )
+ return NIL
+!seealso: "ADdbcg_color()" "ADdbcg_extra()" "ADdbcg_lock()" "ADdbcg_stay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbcg_extra()        Defines Before/After behavior for ADdb_colget()
+'------------------------------------------------------------------------------
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADdbcg_extra( [bBegin], [bEnd] ) --> NIL
+
+ Defines Before/After behavior for ADdb_colget().
+
+ [bBegin] is a codeblock that is EVALed just before the cell is edited.
+
+ [bEnd] is a codeblock that is EVALed right after the cell is edited.
+
+ Example
+ -------
+ This example displays an 'Edit Mode' message while editing is in progress.
+
+ func main()
+ local aScn
+ local bBegin := {||aScn := ADmsg_bare( 0, 2, "Edit Mode",, .f. )}
+ local bEnd := {||ADrestscn( aScn )}
+ local bGetConfig := {||ADdbcg_extra( bBegin, bEnd )}
+ local aColumns := {;
+                        { "ID#", 1 },;
+                        { "Property Name", "NAME" };
+                   }
+ local bConfig := {||ADdb_columns( aColumns ),;
+                     ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                  }
+
+ use hotel
+ ADdbview( ,,,, bConfig )
+ return NIL
+!seealso: "ADdbcg_dict()" "ADdbcg_color()" "ADdbcg_lock()" "ADdbcg_stay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbcg_lock()         Defines Lock/Unlock behavior for ADdb_colget()
+'------------------------------------------------------------------------------
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADdbcg_lock( [bRecLock], [nRecUnlock] ) --> NIL
+
+ Defines Lock/Unlock behavior for ADdb_colget()
+
+ [bRecLock] is a codeblock that is EVALed to lock the current record before
+ going into edit mode.  It must return a TRUE if it succeeds and a FALSE if
+ it fails.  If it fails, editing will not proceed.  Defaults to {||rlock()}.
+
+ [bRecUnlock] is a codeblock that is EVALed to unlock the record after
+ editing.  Defaults to {||dbcommit(), dbskip(0), dbunlock()}.
+
+ Example
+ -------
+ func main()
+ local bRecLock := {||my_reclock()}
+ local bRecUnlock := {||my_recunlock()}
+ local bGetConfig := {||ADdbcg_lock( bRecLock, bRecUnlock )}
+ local aColumns := {;
+                        { "ID#", 1 },;
+                        { "Property Name", "NAME" };
+                   }
+ local bConfig := {||ADdb_columns( aColumns ),;
+                     ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                  }
+
+ use hotel
+ ADdbview( ,,,, bConfig )
+ return NIL
+!seealso: "ADdbcg_dict()" "ADdbcg_extra()" "ADdbcg_color()" "ADdbcg_stay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbcg_stay()         Instructs highlight to stay on current cell
+'------------------------------------------------------------------------------
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ADdbcg_stay() --> NIL
+
+ Instructs ADdbview() not to move the highlight from the edited record
+ after doing an ADdb_colget().  By default, the highlight moves to the next
+ cell.  'Next' will depend on the key used to save the edit.  If the key
+ used was Enter or Right, the highlight will move to the right.
+
+ Example
+ -------
+ func main()
+ local bGetConfig := {||ADdbcg_stay()}
+ local aColumns := {;
+                        { "ID#", 1 },;
+                        { "Property Name", "NAME" };
+                   }
+ local bConfig := {||ADdb_columns( aColumns ),;
+                     ADdb_enter( {||ADdb_colget( bGetConfig )} );
+                  }
+
+ use hotel
+ ADdbview( ,,,, bConfig )
+ return NIL
+!seealso: "ADdbcg_dict()" "ADdbcg_extra()" "ADdbcg_lock()" "ADdbcg_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbget_color()       Configures the ADdb_adget() and ADdb_fldread() color
+'------------------------------------------------------------------------------
+ ADdbget_color( <cColor> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the ADdb_adget() and ADdb_fldread() color.
+
+ <cColor> is the Get color.  It defaults to "R/BG" in color monitors, and
+ "W+/N" in monochromes.
+
+ ^bExample^b
+ ^b-------^b
+ func main()
+ use ..\tour\demo
+ ADdbview(,,,, {|| ADdb_fldread( {||ADdbget_color( "R/W" )} )} )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbget_dict()        Defines ADdb_adget() and ADdb_fldread dictionary
+'------------------------------------------------------------------------------
+ ADdbget_dict( <aDict> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines ADdb_adget() and ADdb_fldread() dictionary values.
+
+ <aDict> is an array of dictionary entries.  Its size is equal to fcount(),
+ that is, one element for each field.  Each element is a subarray of 3
+ sub-elements:
+
+  1 - the PICTURE clause, or NIL
+  2 - the WHEN clause, or NIL
+  3 - the VALID clause, or NIL
+
+ NOTE:  An element in <aDict> may be specified as NIL.  Frankie will
+ interpret this as { NIL, NIL, NIL }.  Similarly, the size of <aDict> may
+ be less than fcount().  In such a case, the "missing" elements will become
+ NILs.
+
+ ^bExample^b
+ ^b-------^b
+ func main()
+ local aDict := {;
+                    { "!!xxxxxxxxxxxxxxxxxx", NIL, {||Xv_funcname()} },;
+                    { "Y", {||!empty(fieldget(1))}, {||Xv_mouseable()} },;
+                    { NIL, {||!empty(fieldget(1))}, {||Xv_param()} },;
+                    { NIL, {||!empty(fieldget(1))}, NIL },;
+                    { NIL, {||!empty(fieldget(1))}, NIL };
+                }
+ use demo
+ ADdbview(,,,, {|| ADdb_fldread( {||ADdbget_dict( aDict )} )} )
+ return NIL
+
+
+ func Xv_funcname()
+ local lValid := .t.
+ local cValue := ADr_varget()
+
+ if empty( cValue )
+    ADzaprec()
+ else
+    if left( cValue, 2 ) != "AD"
+        lValid := .f.
+    endif
+ endif
+ return lValid
+
+
+ func Xv_mouseable()
+ return ADr_varget()
+
+
+ func Xv_param()
+ return ( ADr_varget() >= 0 )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                       values.
+!short: ADdbget_extra()       Defines ADdb_adget() and ADdb_fldread()
+'------------------------------------------------------------------------------
+ ADdbget_extra( <bBefore>, <bAfter> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines ADdb_adget() and ADdb_fldread() before/after behaviors.  There are
+ no default values.
+
+ <bBefore> is a codeblock that is EVALuated before editing starts.
+
+ <bEnd> is a codeblock that is EVALuated after editing ends.
+
+ Example
+ -------
+ bBegin := {||aScn := ADsavescn( 0,2,0,5 ),;
+              ADsay( 0,2, "EDIT", "R+/B" );
+           }
+ bEnd := {||ADrestscn( aScn )}
+ bConfig := {||ADdb_keys( { K_ENTER },;
+                          {||ADdb_adget( {||ADdbget_extra( bBegin,;
+                                                           bEnd;
+                                                         );
+                                         };
+                                       );
+                          };
+                        );
+            }
+  ADdbview(,,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                       before/after behaviors.
+!short: ADdbget_lock()        Defines record locking/unlocking behaviors
+'------------------------------------------------------------------------------
+ ADdbget_lock( <bRecLock>, <bRecUnlock> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines record locking/unlocking behaviors.
+
+ <bLock> is a codeblock that is EVALuated just before ADdb_adget() fetches
+ the field value to be edited.  This block must return a TRUE if it succeeds
+ to lock the record, otherwise it returns a FALSE.  If it returns a FALSE,
+ editing does not proceed.  Defaults to {||rlock()}.
+
+ <bUnlock> is a codeblock that is EVALuated after the edited record is saved.
+ Defaults to {||dbcommit(), dbunlock()}.
+
+ Example:
+ --------
+ bConfig := {||ADdb_keys( { K_ENTER },;
+                          {||ADdb_adget( {||ADdbget_lock( {||mylock()},;
+                                                          {||myunlock()};
+                                                        );
+                                         };
+                                       );
+                          };
+                        );
+            }
+
+ ADdbview(,,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbget_stay()        Instructs ADdb_adget() and ADdb_fldread() not
+'------------------------------------------------------------------------------
+ ADdbget_stay() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Instructs ADdb_adget() and ADdb_colget() not to move the highlight bar after
+ editing.  By default the light bar moves after editing.
+
+ Example
+ -------
+ local bConfig := {||ADdb_keys( { K_ENTER },;
+                                {||ADdb_adget( {||ADdbget_stay()};
+                                             );
+                                };
+                              );
+                  }
+
+ ADdbview(,,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                       the highlight bar
+!short: ADdbs_locate()        Posts a LOCATE codeblock for ADdb_seek()
+'------------------------------------------------------------------------------
+ ADdbs_locate( bLocate ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Posts a LOCATE codeblock that ADdb_seek() automatically EVALs when the
+ browse that called it is not indexed.  If no such codeblock is posted,
+ ADdb_seek() does nothing (if there is no active index).
+
+ Example:
+ --------
+ use mydbf
+ ADdbs_locate( {||ADdb_locate()} )
+ ADdbview( ,,,, {||ADdb_keys( {K_F10},;
+                              {||ADdbseek()};
+                            );
+                };
+         )
+ //  The above is functionally similar to
+
+ ADdbview( ,,,, {||ADdb_keys( {K_F10},;
+                              {||xFind()};
+                            );
+                };
+         )
+
+
+ func xFind()
+ if empty( indexkey() )
+   ADdb_locate()
+ else
+   ADdb_seek()
+ endif
+ return NIL
+!seealso: "ADdb_seek()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbs_massage()       Posts a codeblock that ADdb_seek() EVALs before seeking
+'------------------------------------------------------------------------------
+ ADdbs_massage( <bMassage> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Posts a codeblock that ADdb_seek() EVALs before doing the seek.
+
+ <bMassage> is a codeblock that ADdb_seek() EVALs to _massage_ the SEEK value
+ entered by the user and change it into something else, which then becomes
+ the value to be SEEKed.  It is automatically passed the SEEK value entered
+ by the user.
+
+ Example
+ -------
+ local bMassage := {|x| "ABC" + x}
+ local bConfig := {||ADdb_keys( {K_F10}, {||ADdb_seek()} ),;
+                     ADdbs_massage( bMassage );
+                  }
+
+ ADdbview(,,,, bConfig )
+!seealso: "ADdb_seek()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbss_massage()      Posts a block that ADdb_softseek() EVALs before seeking
+'------------------------------------------------------------------------------
+ ADdbss_massage( <bMassage> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Posts a codeblock that ADdb_softseek() EVALs before doing the seek.
+
+ <bMassage> is a codeblock that ADdb_softseek() EVALs to _massage_ the SEEK
+ value entered by the user and change it into something else, which then
+ becomes the value to be SOFTSEEKed.  It is automatically passed the SEEK
+ value entered by the user.
+
+ Example
+ -------
+ local bMassage := {|x| "ABC" + x}
+ local bConfig := {||ADdb_keys( {K_F10}, {||ADdb_softseek()} ),;
+                     ADdbss_massage( bMassage );
+                  }
+
+ ADdbview(,,,, bConfig )
+!seealso: "ADdb_softseek()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbss_upper()        Instructs ADdb_softseek() to UPPER() pressed keys
+'------------------------------------------------------------------------------
+ ADdbss_upper() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Instructs ADdb_softseek() to convert pressed keys to upper case.  This is
+ handy because many of our indexes are based on UPPER( field ).
+!seealso: "ADdb_softseek()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbvsb_refresh()     Refreshes the vertical scroll bar
+'------------------------------------------------------------------------------
+ ADdbvsb_refresh( [bRecCount] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Refreshes the vertical scroll bar.
+
+ [bRecCount] is an optional codeblock that returns the number of records.
+ If this is passed, the scroll bar engine's _idea_ of the number of records
+ will be updated before the scroll bar is refreshed.  You may want to do a
+ refresh if you toggle the _SET_DELETED setting, or if you physically add
+ or remove records, or if you change the scope of the browse.
+!seealso: "ADdb_versbar()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdb_activate()       Activates a dormant engine
+'------------------------------------------------------------------------------
+ ADdb_activate( <nEngine>, [lUndisplay], [lRepaint] )--> <aOverwrittenScreen>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Activates a dormant dbview engine.  An engine is dormant if it was created by
+ ADdbview() with [lKill] set to FALSE.  Unlike an engine that was created
+ with [lKill] := TRUE, a dormant engine is displayed only after an
+ ADdb_activate() call.
+
+ [lUndisplay] is a logical value.  When TRUE, the overwritten screen is
+ restored when the browse is exited.  Defaults to TRUE.
+
+ [lRepaint] is an optional logical value.  When TRUE, the browse screen is
+ drawn from scratch; when FALSE it is drawn from a saved screen.  Typically,
+ you would pass a TRUE if it is the first time you are activating the
+ browse.  Otherwise, you would pass a FALSE, which restores the screen much
+ quicker.  Defaults to TRUE.
+
+ <aOverwrittenScreen> is a screen variable that defines the overwritten
+ screen.  This value may be passed to ADrestscn() to restore it.
+
+ Example:
+ --------
+ func MyBrowse( cAlias )
+ static nEngine
+
+ dbselectarea( cAlias )
+
+ if nEngine == NIL
+    nEngine := ADdbview(,,,,, .F. )    // create but not activate
+    ADdb_activate( nEngine )           // activate engine, paint screen
+ else
+    ADdb_activate( nEngine, .f. )      // activate engine, restore screen
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_adget()          Does a Get/Read on the current cell
+'------------------------------------------------------------------------------
+ ADdb_adget( [bConfig], [cHelpID] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Does a Get/ADread() on the currently highlighted field value.  The
+ preferred method of editing a cell is with ADdb_colget().
+
+ [bConfig] is a codeblock that ADdb_adget() EVALuates to configure itself.
+ It is a series of calls to ADdb_adget() APIs.
+
+ [cHelpID] is an optional Help Identifier ID used by the Frankie Help
+ Facility
+
+ NOTES:
+ -----
+ 1.  ADdb_adget() does not work with ADdb_columns().  If you configured
+     your columns with ADdb_columns(), use ADdb_colget().
+
+ 2.  ADdb_adget() APIs start with "ADdbget_".  Example: ADdbget_color(),
+     ADdbget_lock(), ADdbget_unlock().
+
+ Example:
+ --------
+ ADdbview( ,,,, {|| ADdb_enter( {|| ADdb_adget()} )} )
+!seealso: "ADdb_colget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colchange()    ^rm^r Changes the value of the current cell.
+'------------------------------------------------------------------------------
+ ADdb_colchange( <xValue>, [bRecLock], [bUnLock], [bLockFailMsg] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Changes the value of the current cell.  The data-retrieval block for
+ the column must be of the get/set type.
+
+ <xValue> is the new value to change to.  Make sure that the data type is
+ correct.
+
+ [bRecLock] is an optional codeblock that locks the record.  It must
+ return a TRUE if locking succeeds.  Defaults to {||rlock(}.
+
+ [bUnLock] is an optional codeblock that unlocks the record.  Defaults to
+ {||dbcommit(), dbskip(0), {||dbunlock()}.
+
+ [bLockFailMsg] is a codeblock that displays a message if the lock fails.
+ Defaults to {||ADmessage( "Lock Failure" )}.
+
+ Example 1:
+ ----------
+ func main()
+ select 0
+ use dollar index country
+
+ ADdbview(,,,, ;
+          {||ADdb_columns( {;
+                               { "Country",       1 },;
+                               { "Currency",      2 },;
+                               { "Exch Rate",     3 };
+                           };
+                         ),;
+             ADdb_keys( { asc( "+" ), asc( "-" ) }, {|n| xChange(n)} );
+          };
+         )
+ return NIL
+
+ func xChange(n)
+ local xValue := ADdb_colvalue()
+ local cType := valtype( xValue )
+
+ if n == 1      // "+"
+    if cType == "C"
+        ADdb_colchange( right( xValue, 1 ) + left( xValue, len( xValue ) - 1 ) )
+    elseif cType == "N"
+        ADdb_colchange( xValue + 1 )
+    endif
+
+ elseif n == 2  // "-"
+    if cType == "C"
+        ADdb_colchange( left( xValue, 1 ) + right( xValue, len( xValue ) - 1 ) )
+    elseif cType == "N"
+        ADdb_colchange( xValue - 1 )
+    endif
+ endif
+ return NIL
+
+ Example 2
+ ---------
+ ADdb_columns( {;
+                 {"My Heading",   fieldblock("MyField") },;
+                 {"Your Heading", {|x|if(x==NIL, MyField, MyField:=x} },;
+                 {"His Heading",  {||MyField} },;
+                 {"Her Heading",  1 },;
+                 {"Its Heading",  MyField};
+               } )
+
+ ADdb_colchange() will not be able to change the third column, since the
+ retrieval block is not of a get/set type.  Columns 4 and 5 will work
+ because ADdb_column() will automatically create get/set blocks for them.
+
+ v3.00 -> v3.10
+ --------------
+ Added the 2nd, 3rd, and 4th parameters.
+!seealso: "ADdb_colalias()" "ADdb_coltype()" "ADdb_colvalue()" "ADdb_colget()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colget()         Does a Get/Read on the current cell
+'------------------------------------------------------------------------------
+ ADdb_colget( [bConfig], [cHelpID], [cHelpHeader] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Does a Get/ADread() on the currently highlighted cell.
+
+ [bConfig] is a codeblock that ADdb_colget() EVALuates to configure itself.
+ It is a series of calls to ADdb_colget() APIs.
+
+ [cHelpID] is an optional Help Identifier ID used by the Frankie Help
+ Facility.
+
+ [cHelpHeader] is an optional Help Header string
+
+ NOTES:
+ -----
+ 1.  If you use codeblocks in ADdb_columns(), instead of field names or
+     field positions, make sure the codeblock is of the get/set type
+     in order for it to properly reset the value of the column after
+     a Get/Read.
+
+     This codeblock is a get/set type codeblock:
+
+          {|x| if( x == NIL, myVar, myVar := x )}
+
+     while this one is not:
+
+          {|| myVar }
+
+ 2.  ADdb_colget() APIs start with "ADdbcg_".  Example: ADdbcg_color(),
+     ADdbcg_lock(), ADdbcg_unlock().
+
+ Example 1
+ ---------
+ func main()
+ local bConfig := {||ADdb_enter( {||ADdb_colget()} )}
+ use demo
+ ADdbview(,,,, bConfig )
+ return NIL
+
+ Example 2
+ ---------
+ func main()
+ local aColumns := {;
+                     { "Function;Name",        fieldblock( "FUNC_NAME" ) },;
+                     { "Is It;Mouseable?",     fieldblock( "MOUSEABLE" ) },;
+                     { "Number of;Parameters", fieldblock( "PARAM_NUM" ) };
+                   }
+ local bConfig := {||ADdb_enter( {||ADdb_colget()} ),;
+                     ADdb_columns( aColumns );
+                  }
+ use demo
+ ADdbview(,,,, bConfig )
+ return NIL
+!seealso: "ADdb_colread()" "ADdbcg_color()" "ADdbcg_dict()" "ADdbcg_extra()" "ADdbcg_lock()" "ADdbcg_stay()" "ADdb_colchange()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colset()         Colors a set of records
+'------------------------------------------------------------------------------
+ ADdb_colset( <bSet>, [aColor] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Colors a set of records.
+
+ <bSet> is a codeblock that defines the set of records to be colored.  If
+ this block is not passed, the current set definition (if one is defined)
+ does not get changed.
+
+ [aColor] is an optional array of color specifiers used to color the record
+ set.  The array has 2 optional elements:
+
+   1 - the standard color.  Defaults to "R+/B" in color monitors and "W+/N"
+       in monochrome.
+   2 - the enhanced color.  Defaults to "N+/W" in color monitors and "U"
+       in monochrome.
+
+
+ Example
+ -------
+ // This example displays deleted records differently.
+ func main()
+ local bConfig := {||ADdb_extra(;
+                                 NIL,;
+                                 {||ADdb_colset( {||deleted()},;
+                                                 { "G+/RB", "W+/RB" };
+                                               );
+                                 };
+                               );
+                  }
+ use demo
+
+ ADdbview( ,,,, bConfig )
+ return NIL
+
+ NOTE:  This API must NOT be called directly in [bConfig].  It must be
+ called indirectly via:
+
+ 1.  The bDispEnd parameter of ADdb_extra().  ADdb_colset() takes effect
+     immediately.
+ 2.  The bHandler parameter of ADdb_keys() or ADdb_lbuttons().
+ 3.  The bEnter parameter of ADdb_enter()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_display()        Displays the current screen of a dormant engine
+'------------------------------------------------------------------------------
+ ADdb_display( <nEngine>, [lRepaint] ) --> <aOverwrittenScreen>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a screen of a dormant dbview engine.  To remove it from the screen,
+ use ADrestscn().
+
+ [lRepaint] is an optional logical value.  When TRUE, the browse screen is
+ drawn from scratch; when FALSE it is drawn from a saved screen.  Typically,
+ you would pass a TRUE if it is the first time you are displaying the
+ browse.  Otherwise, you would pass a FALSE, which restores the screen much
+ quicker.  Defaults to TRUE.
+
+ Example:
+ -------
+ nEngine := ADdbview(,,,,, .F. )    // create but not activate
+ aScn := ADdb_display( nEngine )    // display it
+ ADwait()                           // wait for an event
+ ADrestscn( aScn )                  // restore the overwritten screen
+!seealso: "ADdb_undisplay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_drag()           Drags the window with the arrow keys
+'------------------------------------------------------------------------------
+ ADdb_drag( [aColor] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Drags the browse window with the arrow keys.  As soon as ADdb_drag() is
+ called a box outline is overlaid on the browse window.  To move the outline,
+ press the arrow keys.  To transfer the browse window to the location of
+ the outline, press Enter.  To abort the transfer, press Esc.  By default,
+ the box outline is drawn in "N/W", but may be changed by passing [aColor].
+
+ Example:
+ -------
+ /*
+ Initiate dragging with the Enter key.
+ */
+ ADdbview(,,,, {|| ADdb_enter( {|| ADdb_drag()} )}
+!seealso: "ADdb_tmdrag()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_exit()           Exits the browse
+'------------------------------------------------------------------------------
+ ADdb_exit( [nEngine], [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Exits ADdbview().
+
+ [nEngine] is the numeric engine ID.  Defaults to the currently active
+ engine.
+
+ [nExitCode] is an optional value used to set ADdview()'s exitcode.  If this
+ is not passed, the exitcode is set to DBX_ABORT (#defined in Frankie.ch).
+
+ Example:
+ -------
+ /*
+ Assign F10 key to exit the browse and sets the exitcode to -999
+ */
+ ADdbview(,,,, {|| ADdb_keys( {K_F10}, {||ADdb_exit(, -999)} )} )
+ ? ADdb_exitcode()
+
+ NOTE: ADdb_exit() merely exits a browse. It does not kill it.
+!seealso: "ADdb_enter()" "ADdb_escape()" "ADdb_exitcode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fldput()         Stores a value to the current field
+'------------------------------------------------------------------------------
+ ADdb_fldput( <xValue>, [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Stores a new value in the current field of the current record.
+
+ Example:
+ -------
+ /*
+ Stores the system date into the current field.  A runtime error may occur
+ if there is a data type incompatibility.
+ */
+ ADdbview(,,,, {|| ADdb_keys( {K_F10},;
+                              {||ADdb_fldput( date() )};
+                            );
+               };
+         )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_hasmoved()       Explicitly advises ADdbview() the highlight has moved
+'------------------------------------------------------------------------------
+ ADdb_hasmoved( <cDirection> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Explicitly advises ADdbview() that the highlight has moved to another
+ logical record.  This new logical record may be the same physical record.
+
+ <cDirection> is either "V" or "H", which indicate vertical or horizontal
+ movement, respectively.
+
+ Typical application
+ --------------------
+ You have a dbf with several active indexes.  You configure your ADdbview()
+ with the following:
+
+ bConfig := {||ADdb_keys( {K_F10}, {||xMaster()} ),;
+               ADdb_move( {||xDispKeyNo()} );
+            }
+
+ where
+
+ xMaster() changes the master index which is called when F10 is pressed.
+ xDispKeyNo() displays the key number.
+
+ When xMaster() changes the master index, the recno() stays the same but
+ the key (or logical number) may change.  The highlight does not move away
+ from the current record, so ADdbview() will not EVAL xDispKeyNo().  If
+ you want to refresh the displayed Key number (which you normally will),
+ then you should do an ADdb_hasmoved() within xMaster() to force ADdbview()
+ to EVAL xDispKeyNo().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_horsbar()        Adds a horizontal scroll bar to ADdbview()
+'------------------------------------------------------------------------------
+ ADdb_horsbar( [bConfig] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a horizontal scroll bar to ADdbview().
+
+ [bConfig] is an optional Configuration Block for the scroll bar.  This is
+ where you define the scroll bar characters and colors.  See also the
+ Horizontal Scroll Bar Engine.
+
+ NOTE: This API MUST be called via the [bDispEnd] parameter of the
+ ADdb_extra() API.
+
+ Example:
+ -------
+ func main( cDbf )
+ local bConfig := {||ADdb_extra( , {||ADdb_horsbar()} )}
+
+ use ( cDbf )
+ ADdbview( 10,10,20,69, bConfig )
+ return NIL
+!seealso: "ADdb_versbar()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_locate()         Locates for an expression in the database
+'------------------------------------------------------------------------------
+ ADdb_locate() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Locates for an expression in the browse.  It asks the user to enter an
+ expression, validates the expression, then attempts to LOCATE the
+ expression in the database.  Repositions the browse if LOCATE is
+ successful.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local bConfig := {||ADdb_keys( { K_F10 }, {||xFind()} )}
+
+ use employee index emp_num
+ ADdbview( ,,,, bConfig )
+ return NIL
+
+
+ func xFind()
+ if empty( indexkey() )
+    ADdb_locate()
+ else
+    ADdb_seek()
+ endif
+ return NIL
+
+ See Also: ADdbs_locate()
+!seealso: "ADdb_seek()" "ADdb_softseek()" "ADdbs_locate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_kill()           Kills an engine
+'------------------------------------------------------------------------------
+ ADdb_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills the engine identified by <nEngine>.  Note that it is good housekeeping
+ practice to kill engines no longer in use.  When an engine is killed, the
+ memory it occupies is released.
+
+ You will only need to keep track of your engines if you call ADdbview()
+ with the [lKill] parameter set to FALSE.  When [lKill] is not passed, or
+ when it is explicitly set to TRUE, the engine is automatically killed at
+ exit.
+
+ Example:
+ -------
+ nEngine := ADdbview( ,,,,, .f. )
+ ADdb_activate( nEngine )
+ ADdb_kill( nEngine )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_mdrag()          Drags the window with the mouse
+'------------------------------------------------------------------------------
+ ADdb_mdrag( [nMinimumRows], [nMinimumColumns], [aColor], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Initiates dragging and resizing of the browse with the mouse.  The resizing
+ is initiated by clicking any browse box corner, then dragging while keeping
+ the button pressed, and finally releasing the button on the location where
+ you want the corner to be placed.
+
+ NOTE: The smallest size that the browse box can be minimized to is 3 data
+ rows by 3 screen (not browse) columns.
+!seealso: "ADdb_mdrag()" "ADdb_tmdrag()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_navigate()       Moves the browse cursor
+'------------------------------------------------------------------------------
+ ADdb_navigate( <nDirection> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves the browse cursor in the direction indicated by <nDirection>.  The
+ valid values of <nDirection> are #DEFINEd in Frankie.ch as:
+
+ #define DBNAVIGATE_UP           1
+ #define DBNAVIGATE_LEFT         2
+ #define DBNAVIGATE_DOWN         3
+ #define DBNAVIGATE_RIGHT        4
+
+ Example
+ -------
+ #include "frankie.ch"
+ #include "inkey.ch"
+
+ func main(cDbf)
+ use (cDbf)
+ ADdbview(10,10,20,69, {||ADdb_keys({K_F10,K_F9,K_F8,K_F7},;
+                                    {|n,k| Xnavigate(k)};
+                                   );
+                       };
+         )
+ return NIL
+
+ //---------------
+ func Xnavigate(k)
+
+ if k == K_F10
+    ADdb_navigate( DBNAVIGATE_UP )
+ elseif k == K_F9
+    ADdb_navigate( DBNAVIGATE_LEFT )
+ elseif k == K_F8
+    ADdb_navigate( DBNAVIGATE_DOWN )
+ elseif k == K_F7
+    ADdb_navigate( DBNAVIGATE_RIGHT )
+ endif
+ return NIL
+!seealso: "ADdb_hotedges()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_scope()          Restricts the browse scope
+'------------------------------------------------------------------------------
+ ADdb_scope( [cKey], [lImmediate] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Restricts the scope to records whose index values "contain" [cKey].  If
+ [cKey] is NIL, no scope is set; if a scope is currently set, it will be
+ removed; the whole database will become "visible".
+
+ [lImmediate] is a logical that defaults to TRUE.  When TRUE, the browse
+ is immediately stabilized when ADdb_scope() is called.  Otherwise, it waits
+ until the next stabilization call.
+
+ NOTE 1:  The database must be indexed when using this function.  The index
+          key may be single- or multi-field, but must always be a character.
+
+ NOTE 2:  An index value is said to "contain" [cKey] if dbseek( cKey, .t. )
+          is TRUE.
+
+ Example:
+ --------
+ func main()
+ local aScn := ADmessage( { "Press Enter to initiate Subset Browsing" },;
+                          18,, .F., .F. )
+ use ..\software index ..\software
+ ADdbview( 4,10,16,69, {|e| ADdb_enter( {|| Xfilter19()} )} )
+ ADrestscn( aScn )
+ return nil
+
+ static func Xfilter19()
+ static cKey
+
+ if cKey == NIL
+    cKey := &( indexkey(0) )
+ endif
+
+ if ADg_oneb( ,,, "Enter Key Value of Data Subset", @cKey )
+     ADdb_scope( cKey )
+ else
+     if ADboxmenu( "Change Scope To", { "Whole Database", "No Change" } ) == 1
+         ADdb_scope()
+     endif
+ endif
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_seek()           Does a seek
+'------------------------------------------------------------------------------
+ ADdb_seek( <cPrompt>, [bNoMatch], [cPicture], [lSoftSeek], [cHelpID],;
+    [cHelpHeader] ) --> <lFound>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An ACTION API that gets from the user a key value to seek, then seeks it. If
+ it is found, it repositions the browse to the matching record.  Otherwise,
+ it either stays or goes to the next logical record depending on [lSoftSeek].
+
+ <cPrompt> is the prompt string used to prompt the user to enter the key
+ value to seek.
+
+ [bNoMatch] is a codeblock that is EVALuated when no matching record is
+ found.  Defaults to {||NIL}
+
+ [cPicture] is an optional Picture clause.
+
+ [lSoftSeek] is a logical setting for Clipper's SOFTSEEK.
+
+ [cHelpID] is an optional Help Identifier ID used by the Frankie Help
+ Facility.
+
+ [cHelpHeader] is an optional Help Header string.
+
+ <lFound> - the return value
+
+ v2.1 -> v2.2
+ ------------
+ Added the 4th and 5th parameters, [cPicture] and [lSoftSeek], and inserted
+ them before [cHelpID].
+
+ Example:
+ -------
+ func main()
+ use software index software
+ ADdbview( ,,,, {|e| ADdb_enter( {|| ADdb_seek( "Key to seek",;
+                                                {||tone(100,1)};
+                                              );
+                                 };
+                               );
+                };
+         )
+ return nil
+
+
+ NOTE:  If the database is not indexed, the ADdb_seek() is disregarded,
+ unless a LOCATE codeblock has been posted with ADdbs_locate(), in which
+ case, that codeblock is EVALed.
+!seealso: "ADdb_softseek()" "ADdb_locate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_size()           Resizes the window
+'------------------------------------------------------------------------------
+ ADdb_size( [nT], [nL], [nB], [nR], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Changes the browse size on the fly. Does not automatically refresh the
+ browse window.
+
+ Example
+ -------
+ func main()
+ local nArea := select()
+ local nEngine, aScn
+
+ select 0
+ use ..\b\tour\customer
+ nEngine := ADdbview( 6,10,18,69,, .f. )
+
+ do while .t.
+     ADdb_activate( nEngine )
+
+     if !Xresize( nEngine )
+        exit
+     endif
+ enddo
+
+ ADdb_kill( nEngine )
+ customer->( dbclosearea() )
+ select (nArea)
+ return NIL
+
+ static func Xresize( nEngine )
+ local aCoords := { ADdb_top(), ADdb_left(), ADdb_bottom(), ADdb_right() }
+ local bConfig := {||ADgm_header( "New Coordinates" ),;
+                     ADgm_labels( { "Top", "Left", "Bottom", "Right" } );
+                  }
+ local lResize := ADg_many( aCoords, bConfig )
+
+ if lResize
+    ADdb_size( aCoords[1], aCoords[2], aCoords[3], aCoords[4], nEngine )
+ endif
+
+ return lResize
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_softseek()       Does an incremental softseek
+'------------------------------------------------------------------------------
+ ADdb_softseek( [nRow], [nCol], [cPrompt], [cColor], [bExtra], [cHelpID],;
+    [cHelpHeader] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Opens up a Get field where the user may enter a key value.  Each time a
+ key is pressed, the browse does a softseek.  It repositions the browse if a
+ match is found, or beeps if otherwise.
+
+ [nRow], [nCol] are the coordinates where the Get is opened up.  Default to
+ the bottom/left corner of the browse box.
+
+ [cPrompt] is the 'say' part of the Get.  Defaults to "SOFTSEEK:"
+
+ [cColor] is the 'color' part of the Get.  Defaults to the browse enhanced
+ color.
+
+ [bExtra] is an optional codeblock that is EVALuated before the Get is read.
+ No argument is passed to it.
+
+ [cHelpID] is an optional Help Identifier string used by the Frankie Help
+ Facility.
+
+ [cHelpHeader] is an optional Help Header string.
+
+
+ Example:
+ -------
+ func main()
+ local aScn := ADmessage( { "Press Enter to initiate SoftSeek" },;
+                          18,, .F., .F. )
+ local cPrompt := "Enter 'SOFTWARE' to seek:"
+
+ use ..\software index ..\sw_name
+ ADdbview( 4,10,14,69, {|e| ADdb_enter( {|| ADdb_softseek( NIL,;
+                                                           NIL,;
+                                                           cPrompt,;
+                                                           "N+/W";
+                                                         );
+                                        };
+                                      );
+                       };
+         )
+ use
+ ADrestscn( aScn )
+ return nil
+!seealso: "ADdb_seek()" "ADdb_locate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_stabilize()      Stabilizes the window
+'------------------------------------------------------------------------------
+ ADdb_stabilize( <lFullDisplay>, [lRefreshAll], [nEngine] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Stabilizes the browse.
+
+ <lFullDisplay> is a logical value.  If it is TRUE, the whole browse
+ windowm will be stabilized, including the headers, and optionally the
+ window frame.
+
+ [lRefreshAll] is a logical value.  If <lFullDisplay> is TRUE, [lRefreshAll]
+ determines whether all rows or only the current row will be refreshed:
+
+     TRUE  - all rows
+     FALSE - only the current row (default)
+
+ If <lFullDisplay> is FALSE, [lRefreshAll] determines if the browse frame is
+ redrawn:
+
+     TRUE  - the box frame is redrawn
+     FALSE - the box frame is not redrawn (default)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_undisplay()      Removes the browse from the screen
+'------------------------------------------------------------------------------
+ ADdb_undisplay( <Engine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Removes the browse display from the screen and restores the overwritten
+ screen.
+
+ Example
+ -------
+ func main()
+ local nEngine, aScn
+
+ use ..\b\tour\customer
+ nEngine := ADdbview( 6,10,18,69,, .f. )
+ ADmessage( {"Press any key to display the browse"}, 20,,, .f. )
+ ADdb_display( nEngine )
+ ADmessage( {"Press any key to undisplay the browse"}, 20,,, .f. )
+ ADdb_undisplay( nEngine )
+ return NIL
+!seealso: "ADdb_display()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_versbar()        Adds a vertical scroll bar to ADdbview()
+'------------------------------------------------------------------------------
+ ADdb_versbar( [bGetPos], [bChangePos], [bRecCount], [bConfig] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a vertical scroll bar to ADdbview()
+
+ [bGetPos] is a codeblock used by ADdbview() to calculate the record position
+ of the current record.  If not passed, it defaults to {||recno()}.
+
+ [bChangePos] is a codeblock used to move the record pointer in the
+ database.  Defaults to {|nPos| dbgoto(nPos)}.  Note that it receives one
+ parameter, nPos, which is the numeric position to go to.
+
+ [bRecCount] is a codeblock used to calculate the total number of records in
+ the browse.  It defaults to {||lastrec()}.
+
+ [bConfig] is an optional Configuration Block for the scroll bar.  This is
+ where you define the scroll bar characters and colors.  See also the
+ Vertical Scroll Bar Engine.
+
+ NOTE: This API MUST be called via the [bDispEnd] parameter of the
+ ADdb_extra() API.
+
+ Example:
+ -------
+ func main( cDbf )
+ local bConfig := {||ADdb_extra( , {||ADdb_versbar()} )}
+
+ use ( cDbf )
+ ADdbview( 10,10,20,69, bConfig )
+ return NIL
+!seealso: "ADdb_horsbar()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_color()         Configures the color of a column
+'------------------------------------------------------------------------------
+ ADdbc_color( <nCol>, <cStdColor>, <cEnhColor>, [lRefresh] ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the color of a column.  May also be used as an Action API to
+ change color on the fly.
+
+ [nCol] is the position of the column whose color is to be changed.  It
+ defaults to the current column position.
+
+ <cStdColor> and <cEnhColor> are the new standard and enhanced colors,
+ respectively.
+
+ [lRefresh] is an optional logical value.  If it is TRUE, the change takes
+ effect immediately.  Otherwise, the change takes effect at the next full
+ stabilization.  The default is FALSE.  Typically, you would set this to TRUE
+ when using the function as an Action API, and leave it as FALSE as a Config
+ API.
+
+ <aOld> is the return array containing two elements: the current standard
+ color and the current enhanced color.  Both elements are padded up to 7
+ spaces.
+
+ NOTE: When using this function as a Config API, it MUST be called via the
+ [bDispBegin] parameter of the ADdb_extra() API, and [nCol] MUST be speci-
+ fied.
+
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main( cDbf )
+ local bConfig
+
+ bConfig := {||ADdb_extra( {||ADdbc_color( 2, "R+/G", "W+/W" )} ),;
+               ADdb_keys( {K_F10}, {||ADdbc_color( 2, "W+/W", "R+/G" )} );
+            }
+
+ use (cDbf)
+ ADdbview(,,,, bConfig)
+ return NIL
+!seealso: "ADdbc_freeze()" "ADdbc_hide()" "ADdbc_move()" "ADdbc_reset()" "ADdbc_unhide()" "ADdbc_width()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_freeze()        Freezes one or more columns
+'------------------------------------------------------------------------------
+ ADdbc_freeze( <nCols> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Freezes one or more columns.  May also be used as an Action API to freeze or
+ unfreeze columns on the fly.
+
+ <nCols> is the number of left-most columns to freeze.
+
+ NOTE: When using this function as a Config API, it MUST be called via the
+ [bDispBegin] parameter of the ADdb_extra() API.
+
+ Example:
+ -------
+ #include "inkey.ch"
+
+ func main( cDbf )
+ local bConfig
+
+ bConfig := {||ADdb_extra( {||ADdbc_freeze( 2 )} ),;
+               ADdb_keys( {K_F10}, {||ADdbc_freeze( 0 )} );
+            }
+
+ use (cDbf)
+ ADdbview(,,,, bConfig)
+ return NIL
+!seealso: "ADdbc_color()" "ADdbc_hide()" "ADdbc_move()" "ADdbc_reset()" "ADdbc_unhide()" "ADdbc_width()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_hide()          Hides a column
+'------------------------------------------------------------------------------
+ ADdbc_hide( [nCol] ) --> <oColumn>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Hides a column from the browse.  When this API is called, the browse is
+ immediately refreshed.
+
+ [nCol] is the position of the column to be hidden.  If it is not passed, it
+ defaults to the current column position.
+
+ <oColumn>, the return value, is the column object that was hidden.
+
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main( cDbf )
+ local bConfig
+
+ bConfig := {||ADdb_keys( {K_F9, K_F10}, {|n,k|Xhide(k)} ) }
+
+ use (cDbf)
+ ADdbview(,,,, bConfig)
+ return NIL
+
+
+ func Xhide( nKey )
+ static aHiddenColumns := {}, aHeadings := {}
+ local oCol, nhidden, nSel
+
+ if nKey == K_F9
+    oCol := ADdbc_hide()
+
+    if oCol != NIL
+        aadd( aHiddenColumns, ADdbc_hide() )
+        aadd( aHeadings, atail( aHiddenColumns ):heading )
+    endif
+ else
+    nhidden := len( aHeadings )
+
+    if nhidden > 0
+        nSel := ADvermenu( ,, aHeadings )
+
+        if nSel > 0
+            ADdbc_unhide( , aHiddenColumns[nSel] )
+            adel( aHiddenColumns, nSel )
+            adel( aHeadings, nSel )
+            asize( aHiddenColumns, nhidden - 1 )
+            asize( aHeadings, nhidden - 1 )
+        endif
+    endif
+ endif
+
+ return NIL
+!seealso: "ADdbc_color()" "ADdbc_freeze()" "ADdbc_move()" "ADdbc_reset()" "ADdbc_unhide()" "ADdbc_width()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_move()          Moves a column
+'------------------------------------------------------------------------------
+ ADdbc_move( [nCol], <nColPosition> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves a column to a new position, <nColPosition>.  When this API is called,
+ the browse is immediately refreshed.
+
+ [nCol] is the position of the column is to be moved.  If it is not passed,
+ it defaults to the current column position.
+
+ <nColPosition> is the new column position.
+
+ Example:
+ -------
+ #include "inkey.ch"
+
+ func main( cDbf )
+ local bConfig
+
+ bConfig := {||ADdb_keys( {K_F9, K_F10}, {|n,k|Xmove(k)} ) }
+
+ use (cDbf)
+ ADdbview(,,,, bConfig)
+ return NIL
+
+ func Xmove( nKey )
+ if nKey == K_F9
+    ADdbc_move(, 1)                          // to first column
+ else
+    ADdbc_move(, ADdb_object():colcount )    // to last column
+ endif
+ return NIL
+!seealso: "ADdbc_color()" "ADdbc_freeze()" "ADdbc_hide()" "ADdbc_reset()" "ADdbc_unhide()" "ADdbc_width()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_reset()         Resets the browse column order
+'------------------------------------------------------------------------------
+ ADdbc_reset( [aHidden] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves a column to the end of the browse.  When this API is called, the
+ browse is immediately refreshed.  Typically, this function is used to unhide
+ a column previously hidden by ADdbc_hide().
+
+ [aHidden] is an optional array of columns that have been previously hidden
+ with ADdbc_hide()
+
+ Example:
+ -------
+ #include "inkey.ch"
+
+ func main( cDbf )
+ local bConfig
+
+ bConfig := {||ADdb_keys( {K_F2, K_F7, K_F8, K_F9, K_F10}, {|n,k|Xhide(k)} ) }
+
+ use (cDbf)
+ ADdbview(,,,, bConfig)
+ return NIL
+
+
+ func Xhide( nKey )
+ static aHiddenColumns := {}, aHeadings := {}
+ local oCol, nhidden, nSel
+
+ if nKey == K_F2
+    ADdbc_reset( aHiddenColumns )
+    aHiddenColumns := {}
+    aHeadings := {}
+ elseif nKey == K_F7
+    oCol := ADdbc_hide()
+
+    if oCol != NIL
+        aadd( aHiddenColumns, ADdbc_hide() )
+        aadd( aHeadings, atail( aHiddenColumns ):heading )
+    endif
+ elseif nKey == K_F8
+    nhidden := len( aHeadings )
+
+    if nhidden > 0
+        nSel := ADvermenu( ,, aHeadings )
+
+        if nSel > 0
+            ADdbc_unhide( , aHiddenColumns[nSel] )
+            adel( aHiddenColumns, nSel )
+            adel( aHeadings, nSel )
+            asize( aHiddenColumns, nhidden - 1 )
+            asize( aHeadings, nhidden - 1 )
+        endif
+    endif
+ elseif nKey == K_F9
+    ADdbc_move(, -1)
+ else
+    ADdbc_move()
+ endif
+
+ return NIL
+!seealso: "ADdbc_color()" "ADdbc_freeze()" "ADdbc_hide()" "ADdbc_move()" "ADdbc_unhide()" "ADdbc_width()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_unhide()        Unhides a column
+'------------------------------------------------------------------------------
+ ADdbc_unhide( [nCol], <oColumn> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a column to the browse.  When this API is called, the browse is
+ immediately refreshed.  Typically, this function is used to unhide a column
+ previously hidden by ADdbc_hide().
+
+ [nCol] is the position where the column is to be un-hidden.  If it is not
+ passed, it defaults to the current column position.
+
+ <oColumn> is the column object to be added.
+
+ Example:
+ -------
+ See ADdbc_hide()
+!seealso: "ADdbc_color()" "ADdbc_freeze()" "ADdbc_hide()" "ADdbc_move()" "ADdbc_reset()" "ADdbc_width()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbc_width()         Changes the column width
+'------------------------------------------------------------------------------
+ ADdbc_width( [nCol], <nWidth>, [lRefresh] ) --> <nOldWidth>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Changes the column width.  It may be used as a Config API or Action API.
+
+ [nCol] is the position of the column whose width is to be changed.  It
+ defaults to the current column position.
+
+ <nWidth> is the new width dimension.
+
+ [lRefresh] is an optional logical value.  If it is TRUE, the change takes
+ effect immediately.  Otherwise, the change takes effect at the next full
+ stabilization.  The default is FALSE.  Typically, you would set this to TRUE
+ when using the function as an Action API, and leave it as FALSE as a Config
+ API.
+
+ NOTE: When using this function as a Config API, it MUST be called via the
+ [bDispBegin] parameter of the ADdb_extra() API, and [nCol] MUST be speci-
+ fied.
+
+ Example:
+ -------
+ #include "inkey.ch"
+
+ func main( cDbf )
+ local bConfig
+
+ bConfig := {||ADdb_extra( {|| ADdbc_width( 1, 40 )} ),;
+               ADdb_keys( {asc( "-" ), asc( "+" )}, {|n,k|Xwidth(n)} );
+            }
+
+ use (cDbf)
+ ADdbview(,,,, bConfig)
+ return NIL
+
+
+ func Xwidth( nthKey )
+ if nthKey == 1
+    ADdbc_width( , ADdbc_width() - 1, .t. )
+ else
+    ADdbc_width( , ADdbc_width() + 1, .t. )
+ endif
+ return NIL
+!seealso: "ADdbc_color()" "ADdbc_freeze()" "ADdbc_hide()" "ADdbc_move()" "ADdbc_reset()" "ADdbc_unhide()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbis_reset()      ^rn^r Resets the ADdb_incsearc() search string.
+'------------------------------------------------------------------------------
+ ADdbis_reset( [cPrompt] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Clears the search string.
+
+ [cPrompt] is an optional prompt string to replace the displayed search
+ string prompt.
+
+ Example:  See ADdb_incsearch().
+
+ NOTE:  This API is specifically used with ADdb_incsearch().
+!seealso: "ADdb_incsearch()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdb_bottom()         Returns the bottom coordinate of the window
+'------------------------------------------------------------------------------
+ ADdb_bottom( [nEngine] ) --> <nBottom>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the row position of the bottom of the browse window.
+
+ Example:
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADn2s( ADdb_bottom() )} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: "ADdb_top()" "ADdb_left()" "ADdb_right()" "ADdb_coords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colalias()       Returns the source alias of the current column
+'------------------------------------------------------------------------------
+ ADdb_colalias() --> <cAlias>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the source alias of the current column.
+
+ <cAlias> the return value, is the alias of the source database.  If the
+ column was specified as a codeblock, the return value is a null string.
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ select 0
+ use dollar index country
+ select 0
+ use country
+ set relation to field->country into dollar
+
+ ADdbview(,,,, ;
+          {||ADdb_columns( {;
+                               { "Country",       1 },;
+                               { "Currency",      "CURRENCY", "DOLLAR"  },;
+                               { "Exch Rate",     {||dollar->exch_rate} };
+                           };
+                         ),;
+             ADdb_keys( { K_F10 },;
+                        {|| ADmessage( { ADdb_colalias(),;
+                                         ADdb_coltype();
+                                       };
+                                     );
+                        };
+                      );
+          };
+         )
+ return NIL
+!seealso: "ADdb_coltype()" "ADdb_colchange()" "ADdb_colvalue()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colobject()      Returns a column object.
+'------------------------------------------------------------------------------
+ ADdb_colobject( [nColumn], [nEngine] ) --> <oColumn>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the column object from a browse engine.
+
+ [nColumn] is the numeric position of the desired column.  Defaults to the
+ current column.
+
+ [nEngine] is the numeric identifier of the browse engine being interrogated.
+ Defaults to the current engine.
+
+ <oColumn> is a reference to the returned tbcolumn object.
+
+ Example
+ -------
+ ADdbview(10,10,20,69,;
+          {||ADdb_keys({-9},;
+                       {||ADmessage({"Cur col: " + ADdb_colobject():heading,;
+                                     "1st col: " + ADdb_colobject(1):heading;
+                                    });
+                       };
+                      );
+          };
+         )
+ return NIL
+
+ // When K_F10 is pressed, the headings of the current and the 1st columns
+ // are displayed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_coltype()        Returns the current column type
+'------------------------------------------------------------------------------
+ ADdb_coltype() --> <cType>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the current column type.
+
+ <cType> the return value, is not the valtype() of the column, but the type
+ of the column specifier used in ADdb_columns().  The following are the
+ possible values:
+
+   "N" - if the column was specified with a field position
+   "C" - if the column was specified with a field name
+   "B" - if the column was specified with a codeblock
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ select 0
+ use dollar index country
+ select 0
+ use country
+ set relation to field->country into dollar
+
+ ADdbview(,,,, ;
+          {||ADdb_columns( {;
+                               { "Country",       1 },;
+                               { "Currency",      "CURRENCY", "DOLLAR"  },;
+                               { "Exch Rate",     {||dollar->exch_rate} };
+                           };
+                         ),;
+             ADdb_keys( { K_F10 },;
+                        {|| ADmessage( { ADdb_colalias(),;
+                                         ADdb_coltype();
+                                       };
+                                     );
+                        };
+                      );
+          };
+         )
+ return NIL
+!seealso: "ADdb_colalias()" "ADdb_colchange()" "ADdb_colvalue()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_colvalue()       Retrieves the value of the current cell.
+'------------------------------------------------------------------------------
+ ADdb_colvalue() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Retrieves the value of the current cell.
+
+ Example:
+ -------
+ func main()
+ select 0
+ use dollar index country
+
+ ADdbview(,,,, ;
+          {||ADdb_columns( {;
+                               { "Country",       1 },;
+                               { "Currency",      2 },;
+                               { "Exch Rate",     3 };
+                           };
+                         ),;
+             ADdb_keys( { asc( "+" ), asc( "-" ) }, {|n| xChange(n)} );
+          };
+         )
+ return NIL
+
+ func xChange(n)
+ local xValue := ADdb_colvalue()
+ local cType := valtype( xValue )
+
+ if n == 1      // "+"
+    if cType == "C"
+        ADdb_colchange( right( xValue, 1 ) + left( xValue, len( xValue ) - 1 ) )
+    elseif cType == "N"
+        ADdb_colchange( xValue + 1 )
+    endif
+
+ elseif n == 2  // "-"
+    if cType == "C"
+        ADdb_colchange( left( xValue, 1 ) + right( xValue, len( xValue ) - 1 ) )
+    elseif cType == "N"
+        ADdb_colchange( xValue - 1 )
+    endif
+ endif
+ return NIL
+!seealso: "ADdb_colalias()" "ADdb_coltype()" "ADdb_colchange()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_coords()         Returns the window coordinates.
+'------------------------------------------------------------------------------
+ ADdb_coords( [nEngine] ) --> <aCoords>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the coordinates of the browse engine identified by [nEngine].  If
+ [nEngine] is not passed, it defaults to the current engine.  <aCoords> is
+ an array in the form {top, left, bottom, right}.
+
+ Example
+ -------
+ ADdbview(10,10,20,69, {||ADdb_keys({K_F10}, {||ADaview( ADdb_coords() )})})
+
+ // When K_F10 is pressed, the coordinates 10,10,20,69 are displayed.
+!seealso: "ADdb_top()" "ADdb_left()" "ADdb_bottom()" "ADdb_right()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_engine()         Returns the focused ADdbview engine ID
+'------------------------------------------------------------------------------
+ ADdb_engine( [nFocus] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the active ADdbview engine ID.  If [nFocus] is passed, and it is a
+ valid engine ID, focus is set to that engine.  If [nFocus] is not a valid
+ ID, nothing happens.  In any case, the engine ID currently focused at the
+ time of the call is returned.
+
+ v2.1 -> 2.2
+ -----------
+ The [nFocus] parameter is new in v2.2.
+
+ Example
+ -------
+ func main()
+ local nArea := select()
+ local nEngine, aScn
+ local bConfig := {||ADmessage( {ADn2s(ADdb_engine())} ),;      // 1
+                     ADdb_keys( {K_F10}, {||Xtest()} );
+                  }
+
+ select 0
+ use customer
+ ADdbview( 6,10,18,69, bConfig )
+ customer->( dbclosearea() )
+ select (nArea)
+ return NIL
+
+ static func Xtest()
+ ADmessage( {ADn2s(ADdb_engine())} )       // 1
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_exitcode()       Returns ADdbview()'s exitcode
+'------------------------------------------------------------------------------
+ ADdb_exitcode() --> <nExitCode>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the exitcode of the ADdbview() last exited.  This value is updated
+ every time an ADdbview() is exited.
+
+ <nExitCode> is the return value.  Its possible values are:
+
+    1. K_ESC, if the Esc key was used to exit the browse
+    2. DBX_ABORT (#defined in Frankie.ch) if the right button was used
+    3. The value set by ADdb_exit(), if the browse was programatically
+       exited with it.
+
+ Example
+ -------
+ func main()
+ use hotel
+ ADdbview()
+ ? ADdb_exitcode()
+ use
+ return NIL
+!seealso: "ADdb_exit()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fldget()         Returns the value of the current field
+'------------------------------------------------------------------------------
+ ADdb_fldget( [nEngine] ) --> <xFieldValue>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the value of the current field.  Returns NIL if it is a calculated
+ column.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADccast( ADdb_fldget() )} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fldtype()        Returns the type of the current field
+'------------------------------------------------------------------------------
+ ADdb_fldtype( [nEngine] ) --> <cFieldType>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the type of the current field.  Returns "U" if it is a calculated
+ column.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADdb_fldtype()} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fldname()        Returns the name of the current field
+'------------------------------------------------------------------------------
+ ADdb_fldname( [nEngine] ) --> <cFieldName>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the name of the current field.  Returns "" if it is a calculated
+ column.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADdb_fldname()} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_fldpos()         Returns the position of the current field
+'------------------------------------------------------------------------------
+ ADdb_fldpos( [nEngine] ) --> <nFieldPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the database position of the current field.  Returns 0 if it is a
+ calculated field.
+
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADn2s( ADdb_fldpos() )} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_frame()          Returns the window frame string
+'------------------------------------------------------------------------------
+ ADdb_frame( [nEngine] ) --> <cWindowFrame>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the window frame string.
+!seealso: "ADdb_shadow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_headlines()      Returns the number of lines in the header
+'------------------------------------------------------------------------------
+ ADdb_headlines( [nEngine] ) --> <nHeadLines>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the number of rows that the headings occupy.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADn2s(ADdb_headlines())} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_left()           Returns the left coordinate of the window
+'------------------------------------------------------------------------------
+ ADdb_left( [nEngine] ) --> <nLeft>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the column position of the left side of the browse window.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADn2s(ADdb_left())} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: "ADdb_top()" "ADdb_bottom()" "ADdb_right()" "ADdb_coords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_object()         Returns the tbrowse object
+'------------------------------------------------------------------------------
+ ADdb_object( [nEngine] ) --> <oTBrowse>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns a reference to the tbrowse object.  CAUTION:  It is not recommended
+ to send action messages to the tbrowse object directly.  It is however very
+ safe to send info or status messages.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_right()          Returns the right coordinate of the window
+'------------------------------------------------------------------------------
+ ADdb_right( [nEngine] ) --> <nRight>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the column position of the right side of the browse window.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADn2s(ADdb_right())} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: "ADdb_top()" "ADdb_left()" "ADdb_bottom()" "ADdb_coords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_shadow()         Checks if the window has a shadow
+'------------------------------------------------------------------------------
+ ADdb_shadow( [nEngine] ) --> <lShadow>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns a logical value, TRUE if the browse window casts a shadow.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADccast(ADdb_shadow())} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: "ADdb_frame()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_top()            Returns the top coordinate of the window
+'------------------------------------------------------------------------------
+ ADdb_top( [nEngine] ) --> <nTop>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the row position of the top of the browse window.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADn2s(ADdb_top())} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: "ADdb_left()" "ADdb_bottom()" "ADdb_right()" "ADdb_coords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_version()        Returns ADdbview's version number
+'------------------------------------------------------------------------------
+ ADdb_version() --> <cVersionNumber>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the version number of the ADdbview() collection as a string.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADdb_keys( {K_F10},;
+                                {||ADmessage( {ADdb_version()} )};
+                              );
+                  }
+ use ..\b\tour\customer
+ ADdbview( 6,10,18,69, bConfig )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Browses ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADbrowse()       ^rn^r Browses the current database.
+'------------------------------------------------------------------------------
+ ADbrowse() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A specialized browse with a hotbar menu.
+
+ Example 1:
+ select mydbf
+ ADbrowse()
+
+ Example 2:
+ mydbf->( ADbrowse() )
+
+ NOTES:
+ 1.  The browse occupies the whole screen.
+
+ 2.  The browse restores the state of the current workarea when it exits.
+
+ 3.  The source code is included in the Frankie package and installed in
+     the source\browse directory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdb_one2many()  ^rn^r One-to-many browse.
+'------------------------------------------------------------------------------
+ ADdb_one2many( <cOneAlias>, <cManyAlias>, <cKey>, [aConf] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a one-to-many browse.  Actually, two browses are displayed, one
+ for the parent database file, and another for the child database file.  The
+ parent and child must both be open and linked together in a one-t-many
+ fashion.  When ADdb_one2many() is called, the parent browse gets the
+ initial focus.  The child browse will display only the records that are
+ linked to the highlighted parent record.  As the highlight in the parent
+ record moves, the child browse is refreshed accordingly.  The focus may
+ be moved from parent to child and vice-versa with the Tab key.  The focused
+ browse is identified with a shaded heading.
+
+ <cOneAlias> is the alias of the parent database file.
+
+ <cManyAlias> is the alias of the child database file.
+
+ <cKey> is the child's key expression that links it to the parent.  The
+ child must be indexed on this key, and this key must be the controlling
+ index key when ADdb_one2many() is called.
+
+ [aConf] is an optional configuratio array consisting of the following
+ elements:
+
+  1 - the coordinates of the parent browse.
+  2 - the coordinates of the child browse.
+  3 - an optional Config block of the parent browse.
+  4 - an optional Config block of the child browse.
+  5 - the color of the header that indicates that the browse is in focus.
+
+ Example
+ -------
+ func main()
+ field name, city, state
+ local aConf := { {0,0,maxrow(),8},;
+                  {0,9,maxrow(),maxcol()},;
+                  {||ADdb_column( { { "State", "State" } } )},;
+                  {||ADdb_column( { { "Property", {||name + " " + city + " " + state} } } )},;
+                }
+
+ use hotel index h_state new
+ use states new
+ ADdb_one2many( "states", "hotel", "state", aConf )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Global APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdbg_color()         Globally sets the browse colors
+'------------------------------------------------------------------------------
+ ADdbg_color( <aColors> ) --> <aOldColors>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Globally sets the browse colors.  When this is called, all succeeding browse
+ engine creations will use these colors, unless they are explicitly specified
+ in that [bConfig] of the ADdbview() call.
+
+ <aColors> is an array of two colors:
+
+    1 - the standard color
+    2 - the enhanced color
+    3 - not used
+    4 - header color
+    5 - the Get color
+    6 - standard color for a defined set of records
+    7 - enhanced color for a defined set of records
+
+ <aOldColors> is an array of the old colors before the API was called.
+
+ NOTE: ADdbg_color(), and all Global APIs, must be called OUTSIDE bConfig.
+
+ v2.1 --> v2.2
+ -------------
+ The 4th element was unused in previous versions.  The 6th and 7th elements
+ are new.
+
+ Example
+ -------
+ use MyDbf
+ ADdbg_color( { "W+/G", "GR+/BG",, "R+/RB", "B/R", "GR+/G", "G+/RG" } )
+ ADdbview()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

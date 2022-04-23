@@ -1,0 +1,428 @@
+!short: ^bOverview -- Build and Debugger Error Messages
+'------------------------------------------------------------------------------
+     This chapter describes error messages that you may receive while
+     building or debugging an application from within the CA-Clipper
+     Workbench.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bBuild Error Messages
+!short:
+!short: File Errors
+'------------------------------------------------------------------------------
+     The WORKING and BACKUP directories specified in the [AutoMake] section
+     of CACI.INI (written to the Windows directory during installation) have
+     not been properly defined.  They must exist and be distinct.  A file may
+     have been deleted, renamed, moved or write-protected.  Less probable--
+     but still possible--hard disk, directory structure, or file integrity
+     may be compromised.
+
+     ^b"Backup directory not defined or not useable"^b
+     ^b"Backup source & target filespecs are identical"^b
+     ^b"Backup source not found"^b
+     ^b"Error creating backup file"^b
+     ^b"Error creating compile script" <name>^b
+     ^b"Error opening application file" <name>^b
+     ^b"Restore source & target filespecs are identical"^b
+     ^b"Restore target is invalid"^b
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Other File Errors
+'------------------------------------------------------------------------------
+     Below are listed file errors caused by reasons other than poorly defined
+     WORKING and BACKUP directories.  These errors can be received due to the
+     following reasons:  the file is in use by another process or user; the
+     specified directory does not exist; an illegal DOS file name has been
+     specified; or a hardware problem with the network or hard drive has
+     occurred.
+
+     ^b"A directory may have been deleted, renamed or moved"^b
+     ^b"An erroneous file specification has been entered under compile or link
+     ^b link options"^b
+     ^b"A file is currently being used by another process"^b
+     ^b"Bad filename" <name>^b
+     ^b"Error opening backup source"^b
+     ^b"Error opening backup target"^b
+     ^b"File specification invalid" <name>^b
+     ^b"Invalid application filename" <name>^b
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLIPPERCMD Error Message
+'------------------------------------------------------------------------------
+     Some information is passed to the CA-Clipper compiler through a
+     temporary CLIPPERCMD environment variable.  If the length of CLIPPERCMD
+     exceeds 127 characters, a fatal error is generated:
+
+     ^b"Exception parameter" "CLIPPERCMD Variable would be too long" ^b
+
+     Information passed through CLIPPERCMD includes error status switch,
+     default libraries, temporary file specification, command definition
+     file, and include file override.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Link Template Processing Messages
+'------------------------------------------------------------------------------
+     During link template processing, an attempt to operate on a permanent
+     symbol will evoke one of the following:
+
+     ^b"Protected variable may not be deleted" <name>^b
+     ^b"Protected variable may not be modified"  <name>^b
+     ^b"Protected variable may not be replaced" <name>^b
+
+     The following message indicates that link template processing could not
+     be completed.  The "Use link template" box had been checked but no
+     template had been provided.
+
+     ^b"Exception parameter" "Fatal error processing link template"^b
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Miscellaneous Error Messages
+'------------------------------------------------------------------------------
+     Other messages are listed for completeness but should be evoked only
+     during debugging.  Call Computer Associates Technical support should one
+     occur.
+
+     ^b"Error opening restore source"^b
+     ^b"Error opening restore target"^b
+     ^b"Exception parameter" "Application not open"^b
+     ^b"Exception parameter" "Database not opened"^b
+     ^b"Exception parameter" "Error deleting" <name>^b
+     ^b"Exception parameter" "Fatal error processing compile log"^b
+     ^b"Exception parameter" "Internal AutoMake Error"^b
+     ^b"Exception parameter" "Multiple instances not permitted"^b
+     ^b"Invalid signature" <name>^b
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Miscellaneous Linker Error Messages
+'------------------------------------------------------------------------------
+     The following messages are echoed from the normal compile and link batch
+     files when there is no requirement to compile or link.  They are found
+     in the compile and link output (log) files, respectively.
+
+     ^b"All object files are up to date" <name>" is up to date."^b
+
+     The following messages are inserted into a build log file or created, if
+     necessary, to indicate why no output file create/update was done.  Any
+     one will cause the linker (or other object file processor) diagnostics
+     to be displayed in an edit window.
+
+     ^b"MESSAGE - Build canceled"^b
+     ^b"MESSAGE - Build log missing"^b
+     ^b"MESSAGE Syntax-only specified"^b
+     ^b"MESSAGE Compile-only specified"^b
+
+     The following messages are echoed from a template-directed build batch
+     file for appearance in the build log file.  Any one will cause the
+     linker (or other object file processor) diagnostics to be displayed in
+     an edit window.  Warnings, errors and severe errors are issued upon
+     detection of syntax errors in the link template.
+
+     ^bMESSAGE "<template supplied string>"^b
+
+     ^bExplantion: ^b This message is created by a template #message command.
+
+     ^bWARNING Line <n> "Command out of context"^b
+     ^bWARNING Line <n> "Unexpected statement"^b
+     ^bERROR Line <n> "Invalid <more> string"^b
+     ^bERROR Line <n> "Invalid <sep> string"^b
+     ^bERROR Line <n> "Invalid <write> string"^b
+     ^bERROR Line <n> "Invalid assign operator"^b
+     ^bERROR Line <n> "Invalid assign operand"^b
+     ^bERROR Line <n> "Invalid assign target"^b
+     ^bERROR Line <n> "Invalid comment string"^b
+     ^bERROR Line <n> "Invalid escape specification"^b
+     ^bERROR Line <n> "Invalid generator symbol"^b
+     ^bFATAL ERROR Line <n> "Unclosed conditional block"^b
+     ^bFATAL ERROR Line <n> "Unterminated batch"^b
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDebugger Error Messages
+!short:
+!short: DBG0001      Unable to communicate with CA-Clipper application
+'------------------------------------------------------------------------------
+ ^bDBG0001 Unable to communicate with CA-Clipper application^b
+
+     ^bExplanation:^b  The debugger cannot send or receive an internal
+     message to the CA-Clipper application.
+
+     ^bAction:^b Close the CA-Clipper application window, close the debugger
+     window, and restart the debug session.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0002      The Windows/DOS communications server can operate only in...
+'------------------------------------------------------------------------------
+ ^bDBG0002 The Windows/DOS communications server can operate only in Windows
+ ^b        Enhanced mode.
+
+     ^bExplanation:^b An attempt was made to run a debug session under
+     Windows Standard or Real mode.
+
+     ^bAction:^b  Restart Windows in Enhanced mode.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0003      Unable to execute Windows/DOS communications client program...
+'------------------------------------------------------------------------------
+ ^bDBG0003 Unable to execute Windows/DOS communications client program.
+ ^b        Program not found.
+
+     ^bExplanation:^b  CACI.BAT could not be found.
+
+     ^bAction:^b  Be sure that the directory which contains CACI.BAT
+     (normally C:\CLIP53\BIN) is included in the current PATH.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0004      Unable to execute Windows/DOS communications client program...
+'------------------------------------------------------------------------------
+ ^bDBG0004 Unable to execute Windows/DOS communications client program.  Path
+ ^b        not found.
+
+     ^bExplanation:^b  CACI.BAT could not be found.
+
+     ^bAction:^b  Be sure that the directory which contains CACI.BAT
+     (normally C:\CLIP53\BIN) is included in the current PATH.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0005      Unable to execute Windows/DOS communications client program...
+'------------------------------------------------------------------------------
+ ^bDBG0005 Unable to execute Windows/DOS communications client program.
+ ^b        Insufficient Memory.^b
+
+     ^bExplanation:^b  There is not enough available memory to start a DOS
+     session.
+
+     ^bAction:^b  Shut down all other Windows applications that are currently
+     running and retry the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0006      Unable to execute Windows/DOS communications client program...
+'------------------------------------------------------------------------------
+ ^bDBG0006 Unable to execute Windows/DOS communications client program.
+ ^b        Execution error number n.^b
+
+     ^bExplanation:^b  An error has occurred while attempting to create a DOS
+     session.
+
+     ^bAction:^b  Contact Computer Associates Technical Support.  Please make
+     a note of the execution error number.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0100      Unable to connect to Windows/DOS communications Pipe.
+'------------------------------------------------------------------------------
+ ^bDBG0100 Unable to connect to Windows/DOS communications Pipe.^b
+
+     ^bExplanation:^b  CA-Clipper Workbench could not establish contact with
+     the CA-Clipper program.
+
+     ^bAction:^b  Place the following line in the [386Enh] section of the
+     SYSTEM.INI file: Device = CAWDCI.386
+
+     The file CAWDCI.386 has been installed to the Windows system directory
+     upon installation of the CA-Clipper Workbench.  Be sure that this file
+     exists in this directory.  Be sure that an environment variable named
+     PIPEHANDLE exists. If it does not, add the following line to the
+     AUTOEXEC.BAT file:
+
+     SET PIPEHANDLE=0
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0101      Unable to disconnect from Windows/DOS communications Pipe.
+'------------------------------------------------------------------------------
+ ^bDBG0101 Unable to disconnect from Windows/DOS communications Pipe.^b
+
+     ^bExplanation:^b CA-Clipper Workbench could not close the CA-Clipper
+     application DOS window.
+
+     ^bAction:^b  The DOS window must be closed by using the window's control
+     box and selecting the CLOSE menu item.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0102      Send message over pipe failed.
+'------------------------------------------------------------------------------
+ ^bDBG0102 Send message over pipe failed.^b
+
+     ^bExplanation:^b  The debugger cannot send or receive an internal
+     message to the CA-Clipper application.
+
+     ^bAction:^b  Close the CA-Clipper application window, close the debugger
+     window, and restart the debug session.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0103      Unable to communicate with CA-Clipper application.
+'------------------------------------------------------------------------------
+ ^bDBG0103 Unable to communicate with CA-Clipper application.^b
+
+     ^bExplanation:^b  The debugger cannot send or receive an internal
+     message to the CA-Clipper application.
+
+     ^bAction:^b  Close the CA-Clipper application window, close the debugger
+     window, and restart the debug session.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0104      Unable to create Windows/DOS Communications Server window.
+'------------------------------------------------------------------------------
+ ^bDBG0104 Unable to create Windows/DOS Communications Server window.^b
+
+     ^bExplanation:^b  The creation of an internal CA-Clipper Workbench
+     window has failed.
+
+     ^bAction:^b  Close the CA-Clipper Workbench and restart Windows.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0105      Error requesting DOS client failure notification.
+'------------------------------------------------------------------------------
+ ^bDBG0105 Error requesting DOS client failure notification.^b
+
+     ^bExplanation:^b  The debugger cannot send or receive an internal
+     message to the CA-Clipper application.
+
+     ^bAction:^b  Close the CA-Clipper application window, close the debugger
+     window, and restart the debug session.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0106      The Clipper program has abnormally terminated.
+'------------------------------------------------------------------------------
+ ^bDBG0106 The Clipper program has abnormally terminated.^b
+
+     ^bExplanation:^b  The CA-Clipper program has ended unexpectedly.
+
+     ^bAction:^b  Correct the code in the CA-Clipper program.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0200      Unable to obtain local memory for DosBoxData.
+'------------------------------------------------------------------------------
+ ^bDBG0200 Unable to obtain local memory for DosBoxData.^b
+
+     ^bExplanation:^b  There is not enough available memory to start a DOS
+     session.
+
+     ^bAction:^b  Shut down all other Windows applications that are currently
+     running and retry the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0201      Unable to create DosBoxData index entry.
+'------------------------------------------------------------------------------
+ ^bDBG0201 Unable to create DosBoxData index entry.^b
+
+     ^bExplanation:^b  There is not enough available memory to start a DOS
+     session.
+
+     ^bAction:^b  Shut down all other Windows applications that are currently
+     running and retry the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0202      Unable to obtain address of DosBoxData.
+'------------------------------------------------------------------------------
+ ^bDBG0202 Unable to obtain address of DosBoxData.^b
+
+     ^bExplanation:^b  There is not enough available memory to start a DOS
+     session.
+
+     ^bAction:^b  Shut down all other Windows applications that are currently
+     running and retry the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0203      Unable to remove DosBoxData.
+'------------------------------------------------------------------------------
+ ^bDBG0203 Unable to remove DosBoxData.^b
+
+     ^bExplanation:^b  There is not enough available memory to start a DOS
+     session.
+
+     ^bAction:^b  Shut down all other Windows applications that are currently
+     running and retry the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBG0204      Unable to obtain memory for WinOldApIndex.
+'------------------------------------------------------------------------------
+ ^bDBG0204 Unable to obtain memory for WinOldApIndex.^b
+
+     ^bExplanation:^b  There is not enough available memory to start a DOS
+     session.
+
+     ^bAction:^b  Shut down all other Windows applications that are currently
+     running and retry the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

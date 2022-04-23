@@ -1,0 +1,196 @@
+!short: Overview of Casual Kit 2.01
+'------------------------------------------------------------------------------
+
+                  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                  ³    Overview of Casual Kit 2.01    ³Û
+                  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
+                    ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+    ^BCasual-Kit is written for common programming. 100% functions are
+    ^Bwritten in clipper 5.X. So, it can work steadily with clipper
+    ^b5.01-5.2e and other third-party tools
+
+    ^BPratical and effectiveness are the focus !
+
+    ^BThere is no low-level function provided in Casual-Kit!^B!  So, don't
+    expect Casual-Kit can perform the function of booting a computer or
+    formatting disks. Casual-Kit can't do what clipper cannot do.
+    But Casual-Kit can help you develop effectual and beautiful programs
+    within a short time.
+
+    ^BCasual-Kit provides about 160 functions to support clipper programming,
+    ^BIt also provides an innovative way to view or use clipper.
+
+    ^BNot only provides functions in programming but also provides the new
+    ^Bmethod of programming in clipper, such as, Additional Commands,
+    ^BMacro programming, Standard programming, Condition Compile...
+
+
+    Using Casual-Kit, you can
+
+       þ get a flexible structure of program
+       þ design screen layout more easily and faster
+       þ design chinese screen as easy as English screen
+       þ Design 3D box/menu in both English and Chinese screen
+       þ design form/report easier and faster
+       þ using string,array,block more simply
+       þ using tBrose Object
+       þ get the advantage of interpret-language (macro programming)
+       þ built-in dot command platform
+       þ demonstration
+       þ secure database automatically
+       þ upgrade to lan-version automatically
+       þ ...........
+!seealso: "Distribution" "About" "How to use" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Distribution of Functions
+'------------------------------------------------------------------------------
+
+
+                       ^UDistribution of Functions
+
+    ^BThere are about 170 functions provided in 18 units :
+
+      (1) Basic   Functions            (17)
+      (2) Array   Functions            ( 5)
+      (3) String  Functions            (12)
+      (4) Block   Functions            ( 4)
+      (5) Screen  Functions            (61)
+      (6) Printer Functions            ( 8)
+      (7) Report  Functions            ( 9)
+      (8) Network Functions            ( 5)
+      (9) Record  Functions            ( 3)
+     (10) DataBase Security Function   ( 4)
+     (11) Password Functions           ( 2)
+     (12) Demonstrate Function         ( 1)
+     (13) Dot Command Function         ( 1)
+     (14) Macro Programming            ( 9)
+     (15) Object Functions             (10)
+     (16) Music Function               ( 1)
+     (17) tBrowse Functions            ( 6)
+     (18) Stack Functions              ( 9)
+
+    ^BThe following functions are recommended first:
+
+      (1) Basic       => Done(), Default(), MakeSound()
+      (2) Array       => aPickup()
+      (3) String      => Str_Xor(), Str_Bar()
+      (5) Screen      => m_Msg(), Scr_Save(), Scr_Load()
+                      => ScrtoFile(), Scr_Say(), Scr_Menu(), Scr_Make()
+                      => e_*(), ch_*(), MenuMaker()
+      (6) Printer     => all functions
+      (7) Report      => all functions
+      (9) Record      => Rec_Get(), Rec_Put()
+     (11) Password    => Psw_Read()
+     (17) tBrowse     => cBrose(), NewBrowse(), DoBrowse()
+!seealso: "Overview" "About" "How to use" 
+'------------------------------------------------------------------------------
+
+
+
+!short: About Functions
+'------------------------------------------------------------------------------
+
+    Some people may feel that it is not enough to support common programming
+    using 170 functions only.
+
+    In fact, many functions in Casual-Kit can deal with a set of program
+    object. A rule is hidden in the function, and this function can deal
+    with all objects within the rule.
+
+    For example:
+
+        m_msg()    can deal with most message output of a program.
+
+        str_bar()  can be used to make various bar-string.
+
+        e_box() and e_wind() can make various box/window.
+
+        prn_form() can print various form depending on form description.
+
+        menumaker() can deal with each kind of menu system based on
+                    different method.
+        .....
+
+    ^B Default Value 
+
+    The functions in Casual-Kit usually have several parameters to describe
+    the program object.  Most of parameters have their default value for
+    frequent usage. The default is usually set in this order :
+
+        ^B<Parameter>  [ <=  <Public Variable> ]  <=  <Frequent Value>
+
+        ^BImprotant!!
+        ^BÍÍÍÍÍÍÍÍÍÍÍ
+
+        Because the public variables are declared in the function, If
+        you want to set the public variable of Casual-Kit, you must
+        declare these variables first, such as :
+
+        Publ _ckInkey := .t.
+        Publ _ckSound := { {||tone(300)},  {||tone(500)} }
+
+    ^B Style of Units 
+
+    It should be noticed that there are 17 units in Casual-Kit, each unit
+    can deal with a set of program object for common programming. The
+    relation of functions in unit is usually in one of the following styles.
+
+      þ Separation --- few relation with anther functions in unit.
+
+        for example: <Basic> <String> <Array> <Block>
+
+      þ Extension --- functions are usually based on the last function.
+
+        for example:
+
+            e_dispbox()  <=  e_box()  <=  e_wind()  <=  e_menu()
+           ch_dispbox()  <= ch_box()  <= ch_wind()  <= ch_menu()
+               macrop()  <= macroa()  <= macrof()
+
+      þ Work together --- all functions are used to describe a concept, they
+        must work together to deal with a program object.
+
+        <Printer> <Report> are the examples.
+!seealso: "Overview" "Distribution" "How to use" 
+'------------------------------------------------------------------------------
+
+
+
+!short: How to use Casual-Kit
+'------------------------------------------------------------------------------
+
+    ^BOne important point about Casual-Kit is that there is no conflict with
+    ^Bthe style of clipper and no conflict with your habit as well.
+
+    ^BSince 100% functions in Casual-Kit are written in clipper 5.X,
+    Casual-Kit can run steadily with clipper and there is no conflict with
+    the habit of prgramming in clipper.
+
+    It is easy to learn and use. There are several way to learn/test/use it.
+    such as, Notron Guide, Printed Document, the source code, and the uitlity
+    of DOT COMMAND.
+
+    You can use Casual-Kit in the following level :
+
+      þ Using Casual-Kit as an extension library, programming with the
+        functions provided by Casual-Kit,
+
+      þ Using the auto-funciton to improve program
+        (pl. multi-user, atuo-security... you are advised to read the
+             relation document before using these functions. )
+
+      þ Using the ideas in programming
+        for example: macro programming, standard programming.
+
+      þ Exceed Casual-Kit !
+        extend the functions of Casual-Kit, re-write standard function
+        in your style, build your programming platform and the like.
+!seealso: "Overview" "Distribution" "About" 
+'------------------------------------------------------------------------------
+
+
+

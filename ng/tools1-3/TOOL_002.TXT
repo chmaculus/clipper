@@ -1,0 +1,1344 @@
+!short: Introduction Window Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     It is hard to imagine using CA-Clipper without using windows.  Windows
+     are the best way to show multiple tasks so you can get a genuine
+     overview of the system operation.  The functions in this chapter offer a
+     particularly valuable extension to CA-Clipper in this area.
+
+ ^bThe Window System^b
+
+     If you are only working with one screen, the CA-Clipper Tools functions
+     permit up to 255 windows, depending on available memory.  In conjunction
+     with the MONISWITCH() function from the Video Function chapter,
+     CA-Clipper Tools can even support two screens linked to a single CPU,
+     with one monochrome screen and one color screen.  In this way two
+     entirely independent window systems, each with 255 windows, are
+     available.
+
+     The window functions take into account the fact that CA-Clipper Tools
+     supports larger screens than the common 25 rows x 80 columns.  A screen,
+     and therefore also a window, can be up to 255 rows or 255 columns in
+     size.  However, the complete contents of a screen can never require more
+     than 32 KB of memory.  So with 255 rows, no more than 128 columns are
+     possible.
+
+ ^bMoving Interactively^b
+
+     As soon as SCROLL LOCK is activated, the active window can be moved with
+     different cursor keys.  Depending on how you open them, windows can even
+     overlap.  The gray Plus key in the numeric key pad works like the
+     function WCENTER().  You use the Plus key to move a partially visible
+     window  back into a completely visible area.  All window movements done
+     after you activate SCROLL LOCK can be undone using the ESC key.
+
+ ^bProgramming with Window Functions^b
+
+     ^b^CFE^b  Each window is assigned a number between 1 and 255 when it is
+        opened.  This number is known as the window handle.  Handle 0 is the
+        original screen, with no open windows.  The window handle returned
+        will be used to refer to that window during programming.  (For
+        example, you need the window handle when you select a background
+        window.)
+
+        WMODE(.T., .T., .T., .T.)         // Overlap permitted
+
+        nWindow1 := WOPEN(....)
+        nWindow2 := WOPEN(....)           // This is the active window
+
+        WSELECT(nWindow1)                 // Activate first window
+
+     ^b^CFE^b  The coordinates used for screen output are relative only to
+        the selected window, and not the entire screen.
+
+        nWindow1 := WOPEN(....)           // Selected window
+
+        @ 02, 02 SAY  "CA-Clipper Tools"
+
+     ^b^CFE^b  Since a window behaves exactly as the normal screen would,
+        QOUT() style output (?, ??, etc.) will be scrolled up as soon as it
+        reaches the bottom row.
+
+     ^b^CFE^b  The window in the following example, which extends to row 24,
+        will not overwrite the help message on row 25:
+
+        @ 24, 00 SAY "........ HELP-ROW........"
+        nWindow1 := WOPEN(0, 0, 23, 79)   // Protects the last row
+        FOR nI = 1 TO 100
+           ? "CA-Clipper Tools ...."
+        NEXT nI
+
+     ^b^CFE^b  A window displays as a full value, but is a virtual screen,
+        which differs from the original physical screen only in size.
+        Extended drivers make the MAXROW() and MAXCOL() functions available
+        in a version enhanced over and above CA-Clipper  to accommodate the
+        changed size.  Now the coordinates of virtual screens can also be
+        determined; these functions return the last row or column concerned
+        with the currently selected window:
+
+        nWindow1 := WOPEN(10, 10, 20, 60)
+
+        ? MAXROW()                        // Row:     10
+        ? MAXCOL()                        // Column: 50
+
+     ^b^CFE^b  The underlying screen area is saved automatically when a new
+        window is opened.  This applies equally to any area of the screen
+        that becomes overlapped by the movement of a window.  At the same
+        time, all settings in the areas that have been overwritten are saved.
+        These settings include cursor shape and position, as well as color
+        attributes.  So you do not have to save anything out of the affected
+        screen area; CA-Clipper Tools takes over this task automatically.
+
+     ^b^CFE^b  The following example shows you how the window functions save
+        both the color and cursor setting:
+
+        SET COLOR TO R                      // Set color RED
+        ? "Test-Text 1 ..."                 // Output in RED
+        nWindow1 := WOPEN(10, 10, 20, 55)
+        WBOX()                              // RED window border
+           SET COLOR TO BG                  // Set color CYAN
+           ? "Test-Text 2 ..."              // Output in CYAN
+           INKEY(0)                         // Wait for keystroke
+        WFCLOSE()                           // Close window again
+
+        ? "Test-Text 3 ..."                 // Output again in RED
+                                            // and directly below "Text 1"
+
+ ^bActive Windows^b
+
+     After you close a window, the active window with the highest handle is
+     the one selected, not the window that was previously active.  If, for
+     example, the highest window handle is 9 and window 5 was just selected,
+     a newly opened window is assigned handle 10.  However, after you close
+     this window number 10, window 9 is selected.  It is therefore important
+     to save the window's handle to a variable when you open it, so that you
+     can select the required window later.
+
+     You can save the active window handle by calling WSELECT() with no
+     parameters.
+
+     ^b^CFE^b  The external output of programs called with RUN within a
+        CA-Clipper program can be tied to windows:
+
+        DSETWINDOW(.T.)
+        nWindow1 := WOPEN(10, 10, 22, 70)
+        RUN DIR                     // Display results in window
+
+     The only prerequisite is that such output is through DOS or BIOS.  The
+     DSETWINDOW() function controls whether or not this output is
+     subsequently redirected.  The Extended Driver chapter has more details.
+
+     In addition to the examples shown here there are many more window
+     functions available for use that contribute to a comprehensive windows
+     system.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: WACLOSE()    Closes all windows
+'------------------------------------------------------------------------------
+ ^bWACLOSE()^b
+ Closes all windows
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWACLOSE() --> nError
+
+ ^bReturns^b
+
+     WACLOSE() returns 0 when successful or -1 if an error occurs.
+
+ ^bDescription^b
+
+     This function closes all windows in a work session.  If no windows were
+     opened with WOPEN(), then WACLOSE() returns a value of -1.  If windows
+     were opened with WOPEN(), then WACLOSE() returns a value of 0.
+
+ ^bExample^b
+
+     WOPEN( ... )            // Many windows will be opened
+     WOPEN( ... )
+     WOPEN( ... )
+
+     WACLOSE()               // Close all windows!
+
+!seealso: "WCLOSE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WBOARD()     Allocates allowable screen area for windows
+'------------------------------------------------------------------------------
+ ^bWBOARD()^b
+ Allocates allowable screen area for windows
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWBOARD([<nTopRow>, <nLeftColumn>, <nBottomRow>,
+        ^b<nRight Column>]) --> nError
+
+ ^bArguments^b
+
+     ^b<nToprow>, <nLeftcolumn>, <nBottomrow>, <nRightcolumn>^b  Designate
+     the screen coordinates (upper left and lower right) within which windows
+     can be opened.
+
+     ()  If WBOARD() is called without parameters, then the window border is
+     reset to the boundaries of the physical screen, which as a rule
+     corresponds to a call of WBOARD(0, 0, 24, 79).
+
+ ^bReturns^b
+
+     WBOARD() returns a -1 if an error occurs.   If no errors occur, WBOARD()
+     returns a 0.
+
+ ^bDescription^b
+
+     This function defines the screen area where windows are permitted.
+     Windows are subsequently only visible in this defined area.  You can use
+     this function to protect an area of the screen from being overwritten
+     with windows, even when you allow the user to move the window
+     interactively.  The boundaries designated by WBOARD() become the screen
+     boundaries for window functions.
+
+ ^bNotes^b
+
+     ^b^CFE^b  WBOARD() is only effective when there are no open windows.
+
+     ^b^CFE^b  Always consider that closing individual windows or all the
+        windows never influences the setting of the window border.  So if you
+        neglect to specifically eliminate the window border, you can have
+        unanticipated problems later when you open windows.
+
+ ^bExample^b
+
+     Leave only the upper half of the screen free for window functions:
+
+     WBOARD(0, 0, 12, 79)
+
+!seealso: "WACLOSE()" "WCLOSE()" "WSETMOVE()" "WMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WBOX()       Places a frame around the active window
+'------------------------------------------------------------------------------
+ ^bWBOX()^b
+ Places a frame around the active window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWBOX([<cFramecharacter|nFrametype>]) --> nCurrentWindow
+
+ ^bArguments^b
+
+     ^b<cFramecharacter>^b  Designates a string of up to nine characters.
+
+     ^b<nFrametype>^b  Designates one of eight different border types.
+
+     ()  If the function is called without parameters, a double line border
+     is created automatically and the window is filled with the ^bCLEARB^b
+     character (see SETCLEARB()).
+
+ ^bReturns^b
+
+     WBOX() returns the number of the current window.
+
+ ^bDescription^b
+
+     This function works like the CA-Clipper @...BOX command, except that
+     WBOX() always encloses the currently selected window.  You can specify
+     an individual character with which to frame the entire window.  You can
+     specify up to nine different characters for the corners, and the
+     horizontal and vertical lines.  You can also specify a character with
+     which to fill the window.  The frame characters start to fill the frame
+     in the upper left corner and continue clockwise around the frame.  When
+     specified, the ninth character is used to fill the window.
+
+     There is a simplified way to specify eight basic border types.  If you
+     choose to pass a numeric entry, instead of the string of characters,
+     WBOX() interprets the numeric entry as shorthand for defining a box
+     type.  The following sample shows the border types assigned to each of
+     the 16 values.  Notice that numbers between 0 and 3, and 8 and 11,
+     delete the area in the window while the other numbers do not.
+
+ ^bFrame types:^b
+
+     Delete:                     0          1            2      3
+
+     Do Not Delete:              4          5            6      7
+
+
+
+     Delete:                      8         9              10   11
+
+     Do Not Delete:              12         13             14   15
+
+ ^bNotes^b
+
+     ^b^CFE^b  The available work area for the window is reduced by two rows
+        and two columns (corresponds to a WFORMAT(1, 1, 1, 1)).  This
+        prevents the border from being unintentionally overwritten.  When
+        WBOX() is called a second time, the window is reduced again.  If a
+        window is too small to frame, WBOX() returns a value of -1 and
+        changes nothing.
+
+     ^b^CFE^b  If you want to put a title in a frame, you can place the title
+        in the top row of the window border by specifying @ .. SAY for the
+        row.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This function frames a window with a double row and then fills
+        it.  The window output area is automatically reduced by 1 for each
+        page:
+
+        WSELECT(nWindow)
+        WBOX("  ")
+
+     ^b^CFE^b  This code shows a frame with simple lines, filled with
+        CHR(177):
+
+        SETCLEARB(177)        // The delete character
+        WBOX(1)               // Box type 1, delete interior
+
+!seealso: "WOPEN()" "WSELECT()" "WFORMAT()" tool_003.ngo:"SETBOXGROW()" tool_007.ngo:"SETCLEARB()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WCENTER()    Returns a window to the visible screen area, or centers it
+'------------------------------------------------------------------------------
+ ^bWCENTER()^b
+ Returns a window to the visible screen area, or centers it
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWCENTER([<lCenter>]) --> nCurrentWindow
+
+ ^bArgument^b
+
+     ^b<lCenter>^b  Designates the center of the display.  If the parameter
+     is .T., the function computes the center of the display and moves the
+     window to that position.  If the parameter is .F. or if no parameter is
+     passed, the function returns a window to the visible screen area.  The
+     default value is .F..
+
+ ^bReturns^b
+
+     WCENTER() returns the number of the currently selected window.
+
+ ^bDescription^b
+
+     WCENTER() can take a window that has been moved out of visible range and
+     make it fully visible.  The window can also be centered by passing .T.
+     for <lCenter>.
+
+ ^bNote^b
+
+     ^b^CFE^b  WCENTER() always relates to the currently selected window.
+
+ ^bExample^b
+
+     Make nWindow fully visible:
+
+     WSELECT(nWindow)
+
+     WCENTER()
+
+!seealso: "WBOARD()" "WOPEN()" "WSELECT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WCLOSE()     Closes the active window
+'------------------------------------------------------------------------------
+ ^bWCLOSE()^b
+ Closes the active window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWCLOSE() --> nWindow
+
+ ^bReturns^b
+
+     WCLOSE() returns the window handle that will subsequently become active.
+
+ ^bDescription^b
+
+     This function closes the currently selected window.  Control is returned
+     automatically to the window with the highest handle or number.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The window handle closed with WCLOSE() is subsequently
+        available again and can be reused with the next WOPEN()
+
+     ^b^CFE^b  If the physical screen (Window 0) was active prior to the
+        window closure with WCLOSE(), then Window 0 is skipped over and the
+        window that was active before the WCLOSE() is selected.
+
+ ^bExample^b
+
+     After this command sequence you are in window 3, not window 2:
+
+     WSELECT(3)
+     WSELECT(2)
+     WSELECT(5)
+     WCLOSE()
+
+!seealso: "WOPEN()" "WSELECT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WCOL()       Returns position of the leftmost column of the active window
+'------------------------------------------------------------------------------
+ ^bWCOL()^b
+ Returns the position of the leftmost column of the active window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWCOL([<lAfterWCENTER>]) --> nCol
+
+ ^bArgument^b
+
+     ^b<lAfterWCENTER>^b  Designates an optional parameter.  If this
+     parameter is .T., the function returns what the position of the leftmost
+     column of a window would be after a call of WCENTER().  (The function
+     does not call WCENTER())  The default value (.F.) returns the current
+     position.
+
+ ^bReturns^b
+
+     WCOL() returns the coordinate relative to the leftmost column of the
+     selected window.
+
+ ^bDescription^b
+
+     This function allows you to determine the current position of the
+     leftmost column of the selected window.  This allows you to save a
+     window's position if the window was moved previously with the cursor
+     keys.  This way the window can later be reopened at exactly the same
+     position.
+
+     Additionally, by passing the optional parameter with a .T., you can
+     determine what the window position would be after a WCENTER() without
+     actually calling WCENTER().
+
+ ^bNote^b
+
+     ^b^CFE^b  Values can be negative.  Negative values place the first
+        column outside of the visible range.
+
+ ^bExample^b
+
+     This program saves the position of a window, then reopens it in that
+     position:
+
+     nTop  :=  10
+     nLeft :=  15
+     WOPEN(nTop, nLeft, nTop + 10, nLeft + 40)
+
+     * Someone moves the window!
+
+     nTop := WROW()                     // Save the current
+     nBottom := WCOL()                  // position of upper left
+     WCLOSE()                           // corner and close the window
+
+     * Other program sections
+
+     WOPEN(nTop, nLeft, nTop + 10, nLeft + 40)   // Open w/old values
+
+!seealso: "WOPEN()" "WSELECT()" "WROW()" "WMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WFCOL()      Returns position of leftmost column of formatted area of window
+'------------------------------------------------------------------------------
+ ^bWFCOL()^b
+ Returns the position of the leftmost column of the formatted area of a window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWFCOL([<lRelative>]) --> nValue
+
+ ^bArgument^b
+
+     ^b<lRelative>^b  Designates an optional parameter.  If this parameter is
+     .T., then the function returns the absolute value of the difference
+     between WCOL() and WFCOL().
+
+ ^bReturns^b
+
+     WFCOL() returns the position of the leftmost column of the formatted
+     area within a window, or the difference between the outer border and the
+     formatted area of a window.
+
+ ^bDescription^b
+
+     This function is particularly useful if information in a window must be
+     saved to a file.  There are four functions (WFCOL(), WFLASTCOL(),
+     WFROW(), WFLASTROW()) which allow you to establish the coordinates of
+     the formatted area of a window.  This information can then be saved for
+     later use.
+
+     In order to avoid complex calculations, you can determine the difference
+     between the outer border and the formatted area when you use the
+     optional logical parameter.  You can then pass this value when you call
+     WFORMAT() to restore the old value.
+
+ ^bNote^b
+
+     ^b^CFE^b  When used in Window 0, the function returns the value for
+        WBOARD().
+
+ ^bExample^b
+
+     Every WFXXX() output corresponds to the currently selected window.
+     Please notice that WBOX() corresponds to WFORMAT(1, 1, 1, 1):
+
+     CLEAR
+     WOPEN(10, 10, 20, 70)
+     WBOX()
+
+     ? WFROW(), WFROW(.T.)              // 11, 1
+     ? WFCOL(), WFCOL(.T.)              // 11, 1
+     ? WFLASTROW(), WFLASTROW(.T.)      // 19, 1
+     ? WFLASTCOL(), WFLASTCOL(.T.)      // 69, 1
+
+     INKEY(0)
+     WCLOSE()
+     RETURN
+
+!seealso: "WCOL()" "WFROW()" "WFLASTCOL()" "WFLASTROW()" "WFORMAT()" "WBOX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WFLASTCOL()  Returns position of rightmost col of formatted area of a window
+'------------------------------------------------------------------------------
+ ^bWFLASTCOL()^b
+ Returns the position of the rightmost column of the formatted area of a
+ window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWFLASTCOL([<lRelative>]) --> nValue
+
+ ^bArgument^b
+
+     ^b<lRelative>^b  Designates an optional parameter.  If this parameter is
+     .T., then the function returns the absolute value of the difference
+     between WLASTCOL() and WFLASTCOL().
+
+ ^bReturns^b
+
+     The function either returns the position of the rightmost column of the
+     formatted area within a window, or the difference between the outer
+     border and the formatted area of a window.
+
+ ^bDescription^b
+
+     This function is particularly useful if information in a window must be
+     saved to a file.  There are four functions (WFCOL(), WFLASTCOL(),
+     WFROW(), WFLASTROW()) which allow you to establish the coordinates of
+     the formatted area of a window.  This information can then be saved for
+     later use.
+
+     When you use <lRelative>, you can determine the difference between the
+     outer border and formatted area of a window.  You can pass this value
+     later when you call WFORMAT() to restore the old value.
+
+ ^bNote^b
+
+     ^b^CFE^b  When used in Window 0, the function returns the value for
+        WBOARD().
+
+ ^bExample^b
+
+     Notice that WBOX() corresponds to a WFORMAT(1, 1, 1, 1):
+
+     CLEAR
+     WOPEN(10, 10, 20, 70)
+     WBOX()
+
+     ? WFROW(), WFROW(.T.)              // 11, 1
+     ? WFCOL(), WFCOL(.T.)              // 11, 1
+     ? WFLASTROW(), WFLASTROW(.T.)      // 19, 1
+     ? WFLASTCOL(), WFLASTCOL(.T.)      // 69, 1
+
+     INKEY(0)
+     WCLOSE()
+     RETURN
+
+!seealso: "WLASTCOL()" "WFCOL()" "WFROW()" "WFLASTROW()" "WFORMAT()" "WBOX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WFLASTROW()  Returns position of bottom row of formatted area of a window
+'------------------------------------------------------------------------------
+ ^bWFLASTROW()^b
+ Returns the position of the bottom row of the formatted area of a window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWFLASTROW([<lRelative>]) --> nValue
+
+ ^bArgument^b
+
+     ^b<lRelative>^b  Designates an optional parameter.  If this optional
+     parameter is .T., then the function returns the absolute value of the
+     difference between WLASTROW() and WFLASTROW().
+
+ ^bReturns^b
+
+     The function either returns the position of the bottom row of the
+     formatted area within a window, or the difference between the outer
+     border and the formatted area of a window.
+
+ ^bDescription^b
+
+     This function is particularly useful if information in a window must be
+     saved to a file.  There are four functions (WFCOL(), WFLASTCOL(),
+     WFROW(), WFLASTROW()) which allow you to establish the coordinates of
+     the formatted area of a window.  This information can then be saved for
+     later use.
+
+     In order to avoid complex calculations, you can determine the difference
+     between the outer border and the formatted area of a window when you use
+     the optional logical parameter.  You can pass this value later when you
+     call WFORMAT() to restore the old value.
+
+ ^bNote^b
+
+     ^b^CFE^b  When used in Window 0, the function returns the value for
+        WBOARD().
+
+ ^bExample^b
+
+     Notice that WBOX() corresponds to a WFORMAT(1, 1, 1, 1):
+
+     CLEAR
+     WOPEN(10, 10, 20, 70)
+     WBOX()
+
+     ? WFROW(), WFROW(.T.)              // 11, 1
+     ? WFCOL(), WFCOL(.T.)              // 11, 1
+     ? WFLASTROW(), WFLASTROW(.T.)      // 19, 1
+     ? WFLASTCOL(), WFLASTCOL(.T.)      // 69, 1
+
+     INKEY(0)
+     WCLOSE()
+     RETURN
+
+!seealso: "WLASTROW()" "WFCOL()" "WFROW()" "WFLASTCOL()" "WFORMAT()" "WBOX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WFORMAT()    Determines the usable area within a window
+'------------------------------------------------------------------------------
+ ^bWFORMAT()^b
+ Determines the usable area within a window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWFORMAT([<nTopRow>, <nLeftColumn>, <nBottomRow>,
+        ^b<nRightColumn>]) --> nWindow
+
+ ^bArguments^b
+
+     ^b<nTopRow>,<nLeftColumn>,<nBottomRow>,<nRightColumn>^b  Designate the
+     coordinate values for the text output area of a selected window.
+
+ ^bReturns^b
+
+     WFORMAT() returns the currently selected window's handle.
+
+ ^bDescription^b
+
+     The WFORMAT() function can be used to reduce the area in which text
+     output occurs compared to the actual area of the window.  This allows
+     you to define a margin between the text and the borders of a window
+     where you cannot write.  The four parameters define the margin between
+     the old border and the output area.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The sum of the <nTopRow> and <nBottomRow> values must not
+        exceed the internal height of the window and that the sum of the
+        <nLeftColumn> and <nRightColumn> values must not exceed the internal
+        width of the window.  In any size window, the output area can be
+        reduced down to one character.
+
+     ^b^CFE^b  Negative values increase the text output area while positive
+        values reduce it.  A WFORMAT() with very large negative values
+        removes all borders.
+
+     ^b^CFE^b  This function cannot be used with the physical screen (Window
+        0).
+
+     ^b^CFE^b  To write in the border area, you can also use a negative row
+        value in @ .. SAY: (@ -1, 5 SAY "Help with input").
+
+ ^bExamples^b
+
+     ^b^CFE^b  The function reduces the output area of the selected window at
+        the top and bottom by one row each, and by two columns each on the
+        right and left.  The area becomes two rows and four columns smaller:
+
+        WSELECT(nWindow)
+        WFORMAT(1, 2, 1, 2)
+
+     ^b^CFE^b  Here, all borders previously set with WFORMAT() are canceled,
+        making it possible to write within the entire window again:
+
+        WFORMAT()
+
+!seealso: "WSELECT()" "WBOX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WFROW()      Returns position of top row of the formatted area of a window
+'------------------------------------------------------------------------------
+ ^bWFROW()^b
+ Returns the position of the top row of the formatted area of a window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWFROW([<lRelative>]) --> nValue
+
+ ^bArgument^b
+
+     ^b<lRelative>^b  Designates an optional parameter.  If this parameter is
+     .T., then the function returns the absolute value of the difference
+     between WROW() and WFROW().
+
+ ^bReturns^b
+
+     The function either returns the position of the top row of the formatted
+     area within a window, or the difference between the outer border and the
+     formatted area of a window.
+
+ ^bDescription^b
+
+     This function is particularly useful if information in a window must be
+     saved to a file.  Four functions (WFCOL(), WFLASTCOL(), WFROW(),
+     WFLASTROW()) allow you to establish the coordinates of the formatted
+     area of a window.  This information can be saved for later use.
+
+     In order to avoid complex calculations, you can determine the difference
+     between the outer border and the formatted area of a window when you use
+     the optional logical parameter.  You can transmit this value later when
+     you use the WFORMAT() to restore the old value.
+
+ ^bNote^b
+
+     ^b^CFE^b  When used in Window 0, the function returns the value for
+        WBOARD().
+
+ ^bExample^b
+
+     Every WFXXX() output corresponds to the currently selected window.
+     Please notice that WBOX() corresponds to WFORMAT(1, 1, 1, 1):
+
+     CLEAR
+     WOPEN(10, 10, 20, 70)
+     WBOX()
+
+     ? WFROW(), WFROW(.T.)              // 11, 1
+     ? WFCOL(), WFCOL(.T.)              // 11, 1
+     ? WFLASTROW(), WFLASTROW(.T.)      // 19, 1
+     ? WFLASTCOL(), WFLASTCOL(.T.)      // 69, 1
+
+     INKEY(0)
+     WCLOSE()
+     RETURN
+
+!seealso: "WROW()" "WFCOL()" "WFLASTCOL()" "WFLASTROW()" "WFORMAT()" "WBOX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WLASTCOL()   Returns position of the rightmost column of the active window
+'------------------------------------------------------------------------------
+ ^bWLASTCOL()^b
+ Returns the position of the rightmost column of the active window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWLASTCOL([<lAfterWCENTER>]) --> nColumn
+
+ ^bArgument^b
+
+     ^b<lAfterWCENTER>^b  Designates an optional parameter.  If this
+     parameter is .T., the function returns what the position of the
+     rightmost column would be after a call of WCENTER().  (This function
+     does not call WCENTER().)  The default value (.F.) returns the current
+     position.
+
+ ^bReturns^b
+
+     WLASTCOL() returns the position of the rightmost window column, relative
+     to the physical screen.
+
+ ^bDescription^b
+
+     The WCOL() function allows you to determine the leftmost column (left
+     border) of a window.  To avoid complex calculations, you can use the
+     WLASTCOL() function to determine the rightmost column (right border) of
+     a window.
+
+     The returned value can be greater than that of the rightmost column of
+     the screen.  In such an instance, the window overlaps the right border.
+
+     Additionally, by setting the logical parameter to .T., the position a
+     window occupies after a call of WCENTER() is returned without actually
+     calling WCENTER().
+
+ ^bExample^b
+
+     A window is moved:
+
+     ? WLASTCOL() > MAXCOL()     // .T.  Window overlaps border
+
+!seealso: "WCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WLASTROW()   Returns the position of the bottom row of the active window
+'------------------------------------------------------------------------------
+ ^bWLASTROW()^b
+ Returns the position of the bottom row of the active window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWLASTROW([<lAfterWCENTER>]) --> nRow
+
+ ^bArgument^b
+
+     ^b<lAfterWCENTER>^b  Designates an optional parameter.  If this
+     parameter is .T., the function returns what the position of the bottom
+     row would be after a call of WCENTER().  (This function does not call
+     WCENTER().)  The default value (.F.) returns the current position.
+
+ ^bReturns^b
+
+     WLASTROW() returns the position of the bottom row, relative to the
+     physical screen.
+
+ ^bDescription^b
+
+     The WROW() function allows you to determine the top row (top border) of
+     a window.  To avoid complex calculations, you can use the WLASTROW()
+     function to determine the bottom row (bottom border) of a window.
+
+     The returned value can be greater than that of the bottom row of the
+     screen.  In such an instance, the window overlaps the bottom border.
+
+     By passing the logical parameter as .T., the position of a window after
+     a call of WCENTER() can be determined without actually calling
+     WCENTER().
+
+ ^bExample^b
+
+     A window is moved:
+
+     ? WLASTROW() > MAXROW()      // .T.  Window overlaps border
+
+!seealso: "WROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WMODE()      Turns the screen border overstep mode on or off
+'------------------------------------------------------------------------------
+ ^bWMODE()^b
+ Turns the screen border overstep mode on or off
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWMODE(<lTop>,<lLeft>,<lBottom>,<lRight>) --> nError
+
+ ^bArguments^b
+
+     ^b<lTop>^b  Designates the top border.
+
+     ^b<lLeft>^b  Designates the left border.
+
+     ^b<lBottom>^b  Designates the bottom border.
+
+     ^b<lRight>^b  Designates the right border.
+
+     ()  If you designate a parameter as .T., you can move the window over
+     that border.  If you designate a parameter as .F., you cannot move the
+     window over that border.
+
+ ^bReturns^b
+
+     If there is an error the function returns -1.  If no errors occur,
+     WMODE() returns 0.
+
+ ^bDescription^b
+
+     WMODE() can be used to define whether each screen page can be moved,
+     interactively or with WMOVE(), beyond the edge of each side of the
+     screen or beyond the area defined by WBOARD().  The WMODE() setting is
+     valid for all open windows.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function can be implemented when windows are already
+        open.
+
+ ^bExample^b
+
+     Here we specify that the window can only be moved over the top or bottom
+     of the screen:
+
+     WMODE(.T., .F., .T., .F.)
+
+!seealso: "WBOARD()" "WMOVE()" "WSETMOVE()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WMOVE()      Moves a window
+'------------------------------------------------------------------------------
+ ^bWMOVE()^b
+ Moves a window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWMOVE(<nRow>,<nColumn>) --> nWindow
+
+ ^bArguments^b
+
+     ^b<nRow>^b  Designates the row of the new top left corner of the
+     currently selected window.
+
+     ^b<nColumn>^b  Designates the column of the new top left corner of the
+     currently selected window.
+
+ ^bReturns^b
+
+     WMOVE() returns the handle of the window that is moved.
+
+ ^bDescription^b
+
+     WMOVE() allows you to move the currently selected window to a particular
+     position within the area defined by WBOARD().
+
+ ^bNotes^b
+
+     ^b^CFE^b  WSETMOVE() does not affect the operation of WMOVE().  By
+        comparison, WMODE() does have an effect on WMOVE().
+
+     ^b^CFE^b  <nRow> <nColumn> can have negative values.  In contrast to the
+        interactive mode, a window can be moved completely under a border
+        using WMOVE().
+
+ ^bExample^b
+
+     This function call moves the selected window up one row and over one
+     column to the left, if the related border has not already been reached:
+
+     WMOVE(WROW() - 1, WCOL() - 1)
+
+!seealso: "WOPEN()" "WSELECT()" "WBOARD()" "WMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WNUM()       Determines the highest window handle
+'------------------------------------------------------------------------------
+ ^bWNUM()^b
+ Determines the highest window handle
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWNUM() --> nHighestWindow
+
+ ^bReturns^b
+
+     WNUM() determines the highest open window number (handle) so that you
+     can iterate a loop over the range of open windows (see Winstore.prg in
+     the samples directory).  Remember that any number of handles, from 0 to
+     the highest handle number, can be inactive.
+
+ ^bExample^b
+
+     Open three windows, and then close the second window.  WNUM() returns
+     the highest window number, but there are two inactive handles:
+
+     nW1  :=  WOPEN(3, 3, 10, 12)
+     nW2  :=  WOPEN(10, 10, 20, 70)
+     nW3  :=  WOPEN(5, 5, 22, 60)
+     WSELECT(nW2)
+     WCLOSE()
+     ? WNUM()            // Result corresponds to nW3
+
+!seealso: "WSELECT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WOPEN()      Opens a new window
+'------------------------------------------------------------------------------
+ ^bWOPEN()^b
+ Opens a new window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWOPEN(<nTopRow>, <nLeftColumn>, <nBottomRow>,
+     ^b   <nRightColumn>, [<lDelete>]) --> nWindow
+
+ ^bArguments^b
+
+     ^b<nTopRow>^b  Designates the top row.  The value can be between 0 and
+     24.
+
+     ^b<nLeftColumn>^b  Designates the leftmost column.  The value can be
+     between 0 and 79.
+
+     ^b<nBottomRow>^b  Designates the bottom row.  The value can be between 0
+     and 24.
+
+     ^b<nRightColumn>^b  Designates the rightmost column.  The value can be
+     between 0 and 79.
+
+     ^b<lDelete>^b  Designates whether the area of the screen selected for
+     the newly opened window is erased (.T.) or not (.F.).  The default value
+     (.F.) does not erase the area.
+
+ ^bReturns^b
+
+     WOPEN() returns a handle to the new window.  If there is an error,
+     WOPEN() returns -1.
+
+ ^bDescription^b
+
+     WOPEN() opens a new window.  If a window can be opened, then the
+     function returns a number (handle) for this window.  If a window is
+     opened with invalid coordinates, WOPEN() returns -1 and the window that
+     was active at the time of the function call is still active.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Beginning with CA-Clipper 5.01, windows that lie completely
+        under the actual screen border, or under the borders defined by
+        WBOARD(), can also be opened.
+
+     ^b^CFE^b  After you open a window, all screen output is redirected to
+        the window if it is not written directly into screen memory.  This
+        applies to output from CA-Clipper, DOS, and other programs.  If the
+        output rows are longer than the window is wide, then there is a line
+        feed (i.e. for SCOREBOARD output).
+
+     ^b^CFE^b  If a shadow has been selected using WSETSHADOW(), the window
+        screen area is cleared when you open the window.
+
+ ^bExample^b
+
+     This function opens a window with the top left corner in row 5 at column
+     10, and the bottom right corner in row 20 at column 70.  If the window
+     opens successfully, the returned value is 1:
+
+     nWindow := WOPEN(5, 10, 20, 70)
+
+!seealso: "WBOARD()" "WSELECT()" "WCLOSE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WROW()       Returns the position of the top row of the active window
+'------------------------------------------------------------------------------
+ ^bWROW()^b
+ Returns the position of the top row of the active window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWROW([<lAfterWCENTER>]) --> nRow
+
+ ^bArgument^b
+
+     ^b<lAfterWCENTER>^b  Designates an optional parameter.  If this
+     parameter is .T., the function returns what the postion of the top row
+     of a window would be after a call of WCENTER().  (This function does not
+     call WCENTER().)  The default value (.F.) returns the current position.
+
+ ^bReturns^b
+
+     WROW() returns the row of the currently selected window, relative to the
+     physical screen.
+
+ ^bDescription^b
+
+     WROW() determines the current position of the top row of the currently
+     selected window.  This allows you to save a window position for a window
+     that was moved previously using the cursor keys or WMOVE().  You can
+     later reopen the window at exactly this position.
+
+     If you used invalid parameters with WMOVE() to move a window, WROW()
+     lets you determine the current window position.  WROW() is particularly
+     helpful since WMOVE() automatically adapts to the invalid parameters.
+     WROW() can also be helpful after you use the WCENTER() function.  The
+     new coordinates can be determined using WROW() and WCOL().
+
+     Additionally, with the specification of the optional parameter, you can
+     determine the position of a window after a call of WCENTER() without
+     actually calling WCENTER().
+
+ ^bNote^b
+
+     ^b^CFE^b  The value returned can be negative.  If so, the first row is
+        outside of the visible area.
+
+ ^bExample^b
+
+     This program can determine the position of the window at all times:
+
+     nTop   :=  10
+     nLeft   :=  15
+     WOPEN(nTop, nLeft, nTop + 10, nLeft +40)
+
+        * Someone moved the window!
+
+     nTop    :=  WROW()                 // Save the current position
+     nLeft   := WCOL()                  // of the upper left corner
+     WCLOSE()                           // Close the window
+
+        * Other program sections
+
+     WOPEN(nTop, nLeft, nTop + 10, nLeft + 40)   // Open with old
+                                                 // values
+
+!seealso: "WOPEN()" "WSELECT()" "WCOL()" "WMODE()" "WLASTCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WSELECT()    Activates one of the open windows
+'------------------------------------------------------------------------------
+ ^bWSELECT()^b
+ Activates one of the open windows
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWSELECT([<nActivateWindow>]) --> nSelectedWindow
+
+ ^bArgument^b
+
+     ^b<nActivateWindow>^b  Designates the handle of the window that is
+     selected.  Without this parameter, the function returns the handle of
+     the currently selected window.
+
+ ^bReturns^b
+
+     WSELECT() returns the handle of the current window.
+
+ ^bDescription^b
+
+     WSELECT() allows you to take an already open but inactive window and
+     reactivate it.  You can specify numbers from 1 to 255.  Window 0
+     corresponds to the physical screen.  By omitting the parameter you can
+     determine the handle of the window currently selected.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Many window functions, like WBOX(), WCENTER(), and WFORMAT(),
+        always relate to the active window.
+
+     ^b^CFE^b  With an invalid (i.e. negative) window number, WSELECT()
+        returns an error code of -1, and the currently selected window
+        remains active (no change).
+
+ ^bExample^b
+
+     Select nWindow, as long as it was previously opened by WOPEN():
+
+     WSELECT(nWindow)
+
+!seealso: "WOPEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WSETMOVE()   Turns the interactive movement mode on or off
+'------------------------------------------------------------------------------
+ ^bWSETMOVE()^b
+ Turns the interactive movement mode on or off
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWSETMOVE([<lNewMoveMode>]) --> lOldMoveMode
+
+ ^bArgument^b
+
+     ^b<lNewMoveMode>^b  Designates whether a window can be moved
+     interactively (.T.) or not (.F.) with the SCROLL LOCK key or the
+     KSETSCROLL() function.  The default value (.T.) allows the window to be
+     moved.
+
+ ^bReturns^b
+
+     When called without parameters the function returns the current setting
+     for WSETMOVE().  If a parameter is passed, it returns the previous
+     setting.
+
+ ^bDescription^b
+
+     This function allows you to prevent (or permit) a user to interactively
+     move a window with the cursor keys.  If no parameter is specified, the
+     function returns the current status of the switch without changing the
+     current status.
+
+ ^bNote^b
+
+     ^b^CFE^b  The WSETMOVE() setting does not affect the WMOVE() function;
+        it only affects the interactive setting.  The WMODE() setting
+        determines if a window can be moved under a border of an area set by
+        WBOARD().
+
+ ^bExample^b
+
+     This example specifies that the current window cannot be moved
+     interactively:
+
+     WSETMOVE(.F.)
+     WOPEN(5, 5, 15, 15)
+
+!seealso: "WMOVE()" "WBOARD()" "WMODE()" tool_012.ngo:"KSETSCROLL()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WSETSHADOW() Sets the window shadow colors
+'------------------------------------------------------------------------------
+ ^bWSETSHADOW()^b
+ Sets the window shadow colors
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWSETSHADOW([<cAttribute>]) --> nOldAttribute
+
+ ^bArgument^b
+
+     ^b<cAttribute>^b  Designates the color attribute for window shadows.  It
+     can be represented  as a numeric string ("nn/nn") or as a color string
+     ("cc/cc").  A value of -1 turns off the shadow display.
+
+     ()  When you call the function without parameters, it returns the
+     current shadow color setting.
+
+ ^bReturns^b
+
+     WSETSHADOW() returns the previously set shadow color, or it returns -1
+     if no shadow color has been set.
+
+ ^bDescription^b
+
+     WSETSHADOW() sets individual color attributes for shadows of every
+     window, which are displayed below and to the right of each window.  The
+     WSETSHADOW() setting then applies to all subsequently opened windows.
+
+ ^bNotes^b
+
+     ^b^CFE^b  When you use shadows, the window screen area is erased during
+        opening.
+
+     ^b^CFE^b  The proportions of the right and lower shadows are adapted to
+        the height of the characters.  For example, the proportion is  2:1
+        with 25 rows; and the proportion is  1:1 with 50 rows.
+
+ ^bExample^b
+
+     In order to experiment with shadows, you should first fill the screen
+     with a character like CHR(176):
+
+     SETCLEARB(176)
+     CLEAR                    // Fill screen with CHR(176)
+
+     WSETSHADOW("N+")         // Gray shadows
+     WOPEN(1, 1, 10, 50)
+     WBOX()
+
+     WSETSHADOW(-1)           // Switch shadow display off
+     WOPEN(15, 1, 20, 50)
+     WBOX()
+
+     INKEY(0)                 // Switch on move mode using
+                              // SCROLL-LOCK
+
+     WACLOSE()
+
+!seealso: tool_007.ngo:"NTOCOLOR()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WSTEP()      Determines the step width of interactive window movement
+'------------------------------------------------------------------------------
+ ^bWSTEP()^b
+ Determines the step width of interactive window movement
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWSTEP(<nVertical>,<nHorizontal>) --> nResult
+
+ ^bArguments^b
+
+     ^b<nVertical>^b  Designates the number of rows the window steps when
+     moved interactively.
+
+     ^b<nHorizontal>^b  Designates the number of columns the window steps
+     when moved interactively.
+
+ ^bReturns^b
+
+     If an error occurs, WSTEP() returns -1.   If no errors occur, it returns
+     0.
+
+ ^bDescription^b
+
+     WSTEP() allows you to set the number of steps a window moves with each
+     key stroke.
+
+     ^bExact Positioning^b
+
+     Normally, in the case of a step size greater than (1,1), you would not
+     be able to select every screen position.  However, unique interactive
+     mode behavior lets you select every screen position anyway!  Pressing
+     two opposing arrow keys, one immediately after the other, causes a step
+     size of 1 to become effective for that axis.  This step size allows
+     precise positioning of the window!
+
+ ^bNote^b
+
+     ^b^CFE^b  This function only operates when all windows are closed.  The
+        preset values are 2 rows for the vertical steps and 5 columns for the
+        horizontal steps.  The maximum values are 6 rows for the vertical
+        steps and 20 rows for the horizontal steps.  If a step value exceeds
+        the maximum value, then the step value is set to the maximum correct
+        value.
+
+ ^bExample^b
+
+     When you use the cursor keys, the selected window is moved 1 row
+     vertically and 3 rows horizontally:
+
+     WSTEP(1, 3)
+
+!seealso: "WACLOSE()" "WSETMOVE()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,2790 @@
+!short: Introduction Print Server Access
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     Under Netware 3.x, control of network printers is no longer handled by a
+     file server but by a print server.  (However, as an NLM, the print
+     server can also run on a file server.)  Under Netware 2.2, a print
+     server VAP is available.  The functions of this chapter provide the
+     ability to access the most important information and functions of a
+     print server.  For example, you can determine the status of a print
+     server printer.  In conjunction with the functions for Point To Point
+     communication, a CA-Clipper application is able to emulate a remote
+     printer (see sample program RPRINTER.PRG).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETPSACC()  Determines the access rights to a print server
+'------------------------------------------------------------------------------
+ ^bNNETPSACC()^b
+ Determines the access rights to a print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSACC(<cPServer>,[<cServer>|<nConId>]) --> nAccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSACC() returns the access rights to <cPServer>.
+
+     ^bTable 27.1:  Access Rights^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     -1      Error
+     0       Restricted access
+     1       Print server user
+     2       Print server operator
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER ACCESS
+     NNETPSACC() allows you to determine the operations that the current user
+     can execute on <cPServer>.  While simple operations (like status query)
+     can be done by any user, critical operations (like print server
+     controlling and configuration) require operator rights.
+
+ ^bExample^b
+
+     Determine the access rights to print server PSERVER1:
+
+     ? NNETPSACC('PSERVER1')
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSADDQ() Adds a queue to a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSADDQ()^b
+ Adds a queue to a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSADDQ(<cPServer>,<nPrinter>,<cQueue>,[<nPrior>],
+     ^b   [<cServer>|<nConId>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cQueue>^b  Designates the name of the print queue that is added.
+
+     ^b<nPrior>^b  Designates the priority for <cQueue>.  The highest
+     priority is 1, which is also the default value.
+
+     ^b<cServer>^b Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSADDQ() returns .T. if <cQueue> has been added successfully to
+     <nPrinter>.  If an error occurs (for example, insufficient rights), the
+     function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER ADD QUEUE (TO PRINTER)
+     NNETPSADDQ() allows you to add a print queue to a print server printer
+     (<nPrinter>).  This function requires operator rights and access rights
+     for <cPServer> and <cQueue>.
+
+ ^bExample^b
+
+     Add the print queue TOOLSQ_1 to print server printer 0 on print server
+     PSERVER:
+
+     IF NNETPSADDQ('PSERVER',0,'TOOLSQ_1')
+        ? 'Queue TOOLSQ_1 has been added!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: tool_009.ngo:"NNETADDQSV()" "NNETPSACC()" "NNETPSDELQ()" tool_009.ngo:"NNETQSRVS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSAJOB() Aborts the print job that is currently being printed
+'------------------------------------------------------------------------------
+ ^bNNETPSAJOB()^b
+ Aborts the print job that is currently being printed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSAJOB(<cPServer>,<nPrinter>,[<nJobMode>],[<cServer>|
+     ^b   <nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<nJobMode>^b  Designates the mode of the job that is aborted according
+     to the following table:
+
+     ^bTable 27.2:  Job Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PSJ_RET2Q      Return job to queue
+     2       PSJ_THROWAWAY  Discard job
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value for <nJobMode> is 1.  To return the job to the queue,
+     you must set the service restart flag (see NNETJFLAGS()).
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSAJOB() returns .T. if the current job of <nPrinter> on <cPServer>
+     has been aborted.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER ABORT JOB
+     NNETPSAJOB() allows you to abort a print job currently being printed.
+     You can determine if the job is returned to the queue (<nJobMode>=1) or
+     discarded (<nJobMode>=2).
+
+ ^bExample^b
+
+     Abort and discard the job of printer 0 on print server PSERVER:
+
+     #include "ctps.ch"
+
+     NNETPSAJOB('PSERVER',0,PS_THROWAWAY)
+!seealso: "NNETPSTOP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSANO()  Defines an object that is notified for the print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSANO()^b
+ Defines an object that is notified for the print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSANO(<cPServer>,<nPrinter>,<cObjName>,[<nObjType>],
+     ^b   [<nFirst>],[<nNext>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cObjName>^b  Designates the name of the bindery object (for example,
+     a user) that is defined as the object that is notified for <nPrinter> on
+     <cPServer>.
+
+     ^b<nObjType>^b  Designates a numeric value that indicates the type of
+     <cObjName>.  The header file CTNNET.CH contains symbolic constants for
+     the object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value designates the object type
+     OBJ_USER.
+
+     ^b<nFirst>^b  Designates a time value in seconds that specifies the
+     waiting period between when a problem occurs and the first message.  The
+     default value is 30 seconds.
+
+     ^b<nNext>^b  Designates a time value in seconds that specifies the
+     length of the time interval between two messages.  The default value is
+     60 seconds.
+
+     ^b<cServer>^b Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSANO() returns .T. if <cObjName> has been added as the object that
+     is notified for <nPrinter> on <cPServer>.  If an error occurs (for
+     example, no operator rights), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER ADD NOTIFY OBJECT
+     NNETPSANO() allows you to define objects (normally users) that are
+     notified if printer problems occur (printer offline, no paper) for a
+     print server printer.  This function requires operator rights for
+     <cPServer>.  For efficiency reasons, numeric values for <nObjType> must
+     be passed in the high-low format.
+
+ ^bExample^b
+
+     Add user MICK as the object that is notified for printer 0 on PSERVER:
+
+     IF NNETPSANO('PSERVER',0,'MICK')
+        ? 'User MICK added successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSCNO()" "NNETPSDNO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSARP()  Determines the available remote printers of a print server
+'------------------------------------------------------------------------------
+ ^bNNETPSARP()^b
+ Determines the available remote printers of a print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSARP(<cPServer>,[<cServer>|<nConId>]) --> aRemote
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b Designates the name of the print server that is accessed.
+
+     ^b<cServer>^b Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSARP() returns an array with subarrays (two-dimensional array).
+     Each subarray contains information about an available remote printer.
+     For the structure of the subarrays, see the following table:
+
+     ^bTable 27.3:  NNETPSARP() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTPS.CH   Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            cName          ARP_NAME  Printer name
+     2            nNumber        ARP_NUM   Printer number (0..15)
+     3            nTyp           ARP_TYPE  printer type
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs, the function returns an empty array.
+
+     For the printer type, the following values are possible:
+
+     ^bTable 27.4:  Printer Types^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     7       PSP_REMLPT1    Remote printer on LPT1:
+     8       PSP_REMLPT2    Remote printer on LPT2:
+     9       PSP_REMLPT3    Remote printer on LPT3:
+     10      PSP_REMCOM1    Remote printer on COM1:
+     11      PSP_REMCOM2    Remote printer on COM2:
+     12      PSP_REMCOM3    Remote printer on COM3:
+     13      PSP_REMCOM4    Remote printer on COM4:
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET AVAILABLE REMOTE PRINTERS
+     Netware print servers can serve printers connected to a workstation
+     (remote printers).  NNETPSARP() allows you to determine which remote
+     printers of a print server are available.  The sample program
+     RPRINTER.PRG demonstrates how to use NNETPSARP() for the emulation of a
+     remote printer.
+
+ ^bExample^b
+
+     Display the list of available remote printers for print server PSERVER:
+
+     #include "ctnet.ch"
+
+     aRemote=NNETPSARP('PSERVER')
+     FOR i=1 TO LEN(aRemote)
+        ? aRemote[i,ARP_NAME],aRemote[i,ARP_TYPE]
+     NEXT i
+!seealso: "NNETPSRRP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSCAND() Cancels the down request of a print server
+'------------------------------------------------------------------------------
+ ^bNNETPSCAND()^b
+ Cancels the down request of a print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSCAND(<cPServer>,[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSCAND() returns .T. if a running down request of <cPServer> has
+     been canceled successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER CANCEL DOWN (REQUEST)
+     If a print server receives a down request, it can continue to process
+     active jobs.  Within this time period, the down request can be canceled
+     with NNETPSCAND().  This function requires operator rights for
+     <cPServer>.
+
+ ^bExample^b
+
+     Cancel the down request for the print server PSERVER:
+
+     // Start down request
+     NNETPSDOWN('PSERVER')
+
+     IF .NOT. NNETPSCAND('PSERVER')
+        ? 'Down request cannot be canceled!'
+     ENDIF
+!seealso: "NNETPSDOWN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSCHGQ() Changes the queue priority
+'------------------------------------------------------------------------------
+ ^bNNETPSCHGQ()^b
+ Changes the queue priority
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSCHGQ(<cPServer>,<nPrinter>,<cQueue>,[<nPrior>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cQueue>^b  Designates the queue for which the priority is changed.
+
+     ^b<nPrior>^b  Designates the new priority for <cQueue>.  The highest
+     priority is 1, which is also the default value.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSCHGQ() returns .T. if the priority has been changed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER CHANGE QUEUE (PRIORITY)
+     Jobs within a queue are serviced by a print server according to the
+     queue priorities.  NNETPSCHGQ() allows you to change the priority of a
+     queue (<cQueue>) for a print server (<nPrinter>).  This function
+     requires operator rights for <cPServer>.
+
+ ^bExample^b
+
+     Set the priority of QUEUE1 for printer 0 on PSERVER to 3 (low priority):
+
+     IF NNETPSCHGQ('PSERVER',0,'QUEUE1',3)
+        ? 'Priority changed successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSADDQ()" "NNETPSDELQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSCNO()  Changes the settings for the object that is notified
+'------------------------------------------------------------------------------
+ ^bNNETPSCNO()^b
+ Changes the settings for the object that is notified
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSCNO(<cPServer>,<nPrinter>,<cObjName>,[<nObjType>],
+     ^b   [<nFirst>],[<nNext>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cObjName>^b  Designates the name of the bindery object (for example,
+     a user) that is defined as the object to notify for <nPrinter> on
+     <cPServer>.
+
+     ^b<nObjType>^b  Designates a numeric value that indicates the type of
+     <cObjName>.    The header file CTNNET.CH contains symbolic constants for
+     the object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value designates the object type
+     OBJ_USER.
+
+     ^b<nFirst>^b  Designates a time value in seconds that specifies the
+     waiting period between when a problem occurs and the first message.  The
+     default value designates no modification.
+
+     ^b<nNext>^b  Designates a time value in seconds that specifies the
+     length of the interval between two messages.  The default value
+     designates no modification.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSCNO() returns .T. if the values for <nFirst> and <nNext> have been
+     changed as requested.  If an error occurs (for example, no operator
+     rights), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER CHANGE NOTIFY (OBJECT)
+     NNETPSCNO() allows you to change the waiting period for the first
+     message after a problem has occurred (<nFirst>) and the time period
+     between the following messages (<nNext>).  This function requires
+     operator rights for <cPServer>.  For efficiency reasons, numeric values
+     for <nObjType> must be passed in the high-low format.
+
+ ^bExample^b
+
+     Set the waiting period for the first message to 10 seconds, and set the
+     time interval between the following messages to 30 seconds:
+
+     IF NNETPSCNO('PSERVER',0,'MICK',,10,30)
+        ? 'Values changed successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSANO()" "NNETPSDNO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSDELQ() Deletes queue access for a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSDELQ()^b
+ Deletes queue access for a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSDELQ(<cPServer>,<cQueue>,[<lImmediate>],
+     ^b   [<nJobMode>],[<cServer>|<nConId>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cQueue>^b  Designates the name of the print queue that is deleted
+     from <nPrinter>.
+
+     ^b<lImmediate>^b  Designates if the operation is executed immediately
+     (.T.) or if active jobs are completed (.F.).  The default value is .F..
+
+     ^b<nJobMode>^b  Designates the mode of the job that will be active,
+     according to the following table.  This parameter is only taken into
+     account if <lImmediate> is designated .T..
+
+     ^bTable 27.5:  Job Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PSJ_RET2Q      Return job to queue
+     2       PSJ_THROWAWAY  Discard job
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value for <nJobMode> is 1.  To return the job to the queue,
+     you must set its service restart flag (see NNETJFLAGS()).
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSDELQ() returns .T. if the queue has been deleted successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER DELETE QUEUE (FROM PRINTER)
+     NNETPSDELQ() allows you to delete a queue from a print server printer
+     (<nPrinter>).  This function requires operator rights for <cPServer>.
+
+ ^bExample^b
+
+     Delete the print queue TOOLSQ_1 from print server printer 0 on print
+     server PSERVER:
+
+     IF NNETPSDELQ('PSERVER',0,'TOOLSQ_1')
+        ? 'Queue TOOLSQ_1 deleted!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSADDQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSDNO()  Deletes an object that is notified for a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSDNO()^b
+ Deletes an object that is notified for a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSDNO(<cPServer>,<NPrinter>,<cOBjName>,[<nObjType>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cObjName>^b  Designates the name of the bindery object (for example,
+     a user) that is deleted from the list of notified objects.
+
+     ^b<nObjType>^b  Designates a numeric value that indicates the type of
+     <cObjName>.  The header file CTNNET.CH contains symbolic constants for
+     the object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value designates the object type
+     OBJ_USER.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSDNO() returns .T. if <cObjName> has been deleted from the list of
+     notified objects for <nPrinter> on <cPServer>.  If an error occurs (for
+     example, no operator rights), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER NOTIFY OBJECT
+     NNETPSDNO() allows you to delete a notified object from the list of
+     notified objects for <nPrinter> on <cPServer>.  This function requires
+     operator rights for <cPServer>.  For efficiency reasons, numeric values
+     for <nObjType> must be passed in the high-low format.
+
+ ^bExample^b
+
+     Delete user MICK from the list of notified objects for printer 0 on
+     PSERVER:
+
+     IF NNETPSDNO('PSERVER',0,'MICK')
+        ? 'User MICK deleted successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSANO()" "NNETPSCNO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSDOWN() Deinitializes a print server
+'------------------------------------------------------------------------------
+ ^bNNETPSDOWN()^b
+ Deinitializes a print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSDOWN(<cPServer>,[<lImmediate>],[<nJobMode>],
+     ^b   [<cServer>|<nConId>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<lImmediate>^b  Designates if the operation is executed immediately
+     (.T.) or if active jobs are completed (.F.).  The default value is .F..
+
+     ^b<nJobMode>^b  Designates the mode of the job that will be active,
+     according to the following table.  This parameter is only taken into
+     account if <lImmediate> is designated .T..
+
+     ^bTable 27.6:  Job Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PSJ_RET2Q      Return job to queue
+     2       PSJ_THROWAWAY  Discard job
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value for <nJobMode> is 1.  To return the job to the queue,
+     you must set its service restart flag (see NNETJFLAGS()).
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDOWN() returns .T. if the operation has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER DOWN
+     NNETDOWN() allows you to initialize a down request for <cPServer>.  With
+     <lImmediate> you can specify if the down request is executed immediately
+     (.T.) or if active jobs are completed first (.F.).  During this time
+     period the down request can be canceled with NNETPSCAND().  This
+     function requires operator rights for <cPServer>.
+
+ ^bNote^b
+
+     ^b^CFE^b  A print server shut down with NNETDOWN() cannot be rebooted
+        from an application!
+
+ ^bExample^b
+
+     Start the controlled shut down of PSERVER:
+
+     ? NNETPSDOWN('PSERVER')
+!seealso: "NNETPSCAND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSERR()  Determines the error code of the most recent print server call
+'------------------------------------------------------------------------------
+ ^bNNETPSERR()^b
+ Determines the error code of the most recent print server call
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSERR() --> nErrorCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETPSERR() returns the error code of the most recent print server
+     function call by a CA-Clipper Tools function (NNETPSXXX() functions).
+     There is an error code table in Appendix F.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER ERROR
+     CA-Clipper Tools functions for print server control (NNETPSXXX()) do not
+     use Netware API calls, but communicate directly with the print server.
+     Therefore, the error code of the print server functions cannot be
+     queried with the NETERROR() function.  NNETPSERR() allows you to
+     determine the error code of the most recent print server call.  If a
+     print server call has been executed successfully, the function returns
+     0.
+
+ ^bExample^b
+
+     Delete QUEUE1 from printer 0 on PSERVER.  If the call is unsuccessful,
+     determine the reason:
+
+     IF .NOT. NNETPSDELQ('PSERVER',0,'QUEUE1')
+        IF NNETPSERR()=782
+           ? 'Insufficient rights...'
+        ENDIF
+     ENDIF
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSFF()   Initializes a form feed on the print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSFF()^b
+ Initializes a form feed on the print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSFF(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSFF() returns .T. if the function has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER FORM FEED
+     NNETPSFF() allows you to initialize a form feed even if no job is
+     currently being serviced by <nPrinter>.  This function requires operator
+     rights <cPServer>.
+
+ ^bExample^b
+
+     Initialize the form feed on printer 0 on PSERVER:
+
+     NNETPSFF('PSERVER',0)
+!seealso: "NNETPSMTOF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJBYT() Determines number of bytes already printed for an active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJBYT()^b
+ Determines the number of bytes already printed for an active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJBYT(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJBYT() returns the number of bytes already printed within the
+     current copy.  If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB BYTES
+     NNETPSJBYT() allows you to determine the processing state of the current
+     job for <nPrinter> on <cPServer>.
+
+ ^bExample^b
+
+     Determine the number of bytes printed for the current job of printer 0
+     on PSERVER:
+
+     IF (nBytes:=NNETPSJBYT('PSERVER',0))>=0
+        ? nBytes,' bytes printed.'
+     ELSE
+        ? 'No job active or other error!'
+     ENDIF
+!seealso: "NNETPSJPCO()" "NNETPSJSIZ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJDSC() Determines the description of the active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJDSC()^b
+ Determines the description of the active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJDSC(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> cDescription
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJDSC() returns the job description of the active job of
+     <nPrinter>.  If an error occurs (for example, no job active), the
+     function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB DESCRIPTION
+     NNETPSJDSC() allows you to determine the description of the active job
+     of <nPrinter> on <cPServer>.  The job is already active, so the
+     description cannot be modified.
+
+ ^bExample^b
+
+     Determine the description of the active job of printer 0 on PSERVER:
+
+     ? NNETPSJDSC('PSERVER',0))
+!seealso: tool_009.ngo:"NNETJDESC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJFRM() Determines the form number for the active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJFRM()^b
+ Determines the form number for the active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJFRM(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nForm
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJFRM() returns the number of the form used for the active job of
+     <nPrinter>.  If an error occurs (for example, no job active), the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB FORM
+     The job is already active, so the form number cannot be modified.
+
+ ^bExample^b
+
+     Determine the form number of the active job of printer 0 on PSERVER:
+
+     IF (nForm:=NNETPSJFRM('PSERVER',0))>=0
+        ? 'Form:',nForm
+     ELSE
+        ? 'No job active or other error!'
+     ENDIF
+!seealso: tool_016.ngo:"NNETPFORMS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJFS()  Determines the file server of the active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJFS()^b
+ Determines the file server of the active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJDSC(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> cFileServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can therefore depend on the specified file
+     server.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJFS() returns the file server of the active job of  <nPrinter>.
+     If an error occurs (for example, no active job), the function returns an
+     empty string.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB FILE SERVER
+     NNETPSJFS() allows you to determine the file server for the active job
+     of <nPrinter> on <cPServer>.
+
+ ^bExample^b
+
+     Determine the file server for the active job of printer 0 on PSERVER:
+
+     ? NNETPSJFS('PSERVER',0))
+!seealso: "NNETPSJQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJNO()  Determines the number of an active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJNO()^b
+ Determines the number of an active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJNO(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nJob
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJNO() returns the job number of the active job of <nPrinter>.  If
+     an error occurs (for example, no active job), the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB NUMBER
+     Internally, Netware uses job numbers to manage jobs within a queue.  The
+     job number of an active job of <nPrinter> can be determined with
+     NNETPSJNO().  The job number and queue name can be used to determine
+     additional job information using the NNETJXXX() functions.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the job number of the active job of printer 0 on
+        PSERVER:
+
+        IF (nJob:=NNETPSJNO('PSERVER',0))>=0
+           ? 'Job number:',nJob
+        ELSE
+           ? 'No job active or other error!'
+        ENDIF
+
+     ^b^CFE^b  Determine the owner of the active job:
+
+        nJob=NNETPSJNO('PSERVER',0)
+        cQueue=NNETPSJQ('PSERVER',0)
+        ? 'Owner: ',NNETJOWNER(cQueue,nJob)
+!seealso: tool_009.ngo:"NNETJLIST()" "NNETPSJQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJPCO() Determines the number of copies printed for the active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJPCO()^b
+ Determines the number of copies printed for the active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJPCO(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nCopies
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJPCO() returns the number of copies of the active job that have
+     already printed on <nPrinter>.  If an error occurs (for example, no
+     active job), the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB PRINTED COPIES
+     NNETPSJPCO() allows you to determine the processing state of the active
+     job of <nPrinter> on <cPServer>.
+
+ ^bExample^b
+
+     Determine the number of printed copies for the active job of printer 0
+     on PSERVER:
+
+     IF (nCopies:=NNETPSJPCO('PSERVER',0))>=0
+        ? nCopies,' copies printed.'
+     ELSE
+        ? 'No job active or other error!'
+     ENDIF
+!seealso: "NNETPSJBYT()" "NNETPSJTCO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJQ()   Determines the queue of the active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJQ()^b
+ Determines the queue of the active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJQ(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> cQueue
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJQ() returns the queue of the active job of <nPrinter>. If an
+     error occurs (for example, no active job), the function returns an empty
+     string.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB QUEUE
+     NNETPSJQ() allows you to determine the print queue of the active job of
+     <nPrinter> on <cPServer>.
+
+ ^bExample^b
+
+     Determine the queue of the active job of printer 0 on PSERVER:
+
+     ? NNETPSJQ('PSERVER',0))
+!seealso: "NNETPSJFS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJSIZ() Determines the size of an active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJSIZ()^b
+ Determines the size of an active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJSIZ(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJSIZ() returns the size of the active job of <nPrinter> on
+     <cPServer> in bytes.  If an error occurs (for example, no active job),
+     the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB SIZE
+     NNETPSJSIZ() allows you to determine the size of an active job.  In
+     conjunction with NNETPSJBYT(), a relative value of characters already
+     printed or characters to be printed can be calculated.
+
+ ^bExample^b
+
+     Determine the size of the active job of printer 0 on PSERVER:
+
+     IF (nBytes:=NNETPSJSIZ('PSERVER',0))>=0
+        ? nBytes,' bytes.'
+     ELSE
+        ? 'No job active or other error!'
+     ENDIF
+!seealso: "NNETPSJBYT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJTCO() Determines the total number of copies for an active job
+'------------------------------------------------------------------------------
+ ^bNNETPSJTCO()^b
+ Determines the total number of copies for an active job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJTCO(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nCopies
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can therefore depend on the specified file
+     server.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJTCO() returns the total number of copies of the active job that
+     are printed on <nPrinter>.  If an error occurs (for example, no active
+     job), the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB TOTAL COPIES
+     NNETPSJTCO() allows you to determine the total number of copies for an
+     active job.  In conjunction with NNETPSJPCO(), a relative value of
+     copies already printed or copies to be printed can be calculated.
+
+ ^bExample^b
+
+     Determine the total number of copies of the active job of printer 0 on
+     PSERVER:
+
+     IF (nCopies:=NNETPSJTCO('PSERVER',0))>=0
+        ? nCopies,' copies.'
+     ELSE
+        ? 'No job active or other error!'
+     ENDIF
+!seealso: "NNETPSJPCO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSJTXT() Checks to see if an active job is a text job
+'------------------------------------------------------------------------------
+ ^bNNETPSJTXT()^b
+ Checks to see if an active job is a text job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSJTXT(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> lText
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSJTXT() returns .T. if the active job of <nPrinter> on <cPServer>
+     is a text job.  A return of .F. indicates a binary job.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER JOB TEXT
+     NNETPSJTXT() allows you to determine whether the active job of
+     <nPrinter> on <cPServer> is a text or binary job.
+
+ ^bExample^b
+
+     Determine the job type of the active job of printer 0 on PSERVER:
+
+     IF NNETPSJTXT('PSERVER',0)
+        ? 'Text job!'
+     ELSEIF NNETPSERR()=0
+        ? 'Binary job!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSLIN()  Logs in a print server to a file server
+'------------------------------------------------------------------------------
+ ^bNNETPSLIN()^b
+ Logs in a print server to a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSLIN(<cPServer>,<cPassword>,<cServer1>,[<cServer2>|
+     ^b   <nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is logged
+     in on <cServer1>.
+
+     ^b<cPassword>^b  Designates the password defined for <cPServer> on
+     <cServer1>.
+
+     ^b<cServer1>^b  Designates the file server on which <cPServer> is logged
+     in.
+
+     ^b<cServer2>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer2>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer2>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer2>.
+
+ ^bReturns^b
+
+     NNETPSLIN() returns .T. if the function has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER LOGIN
+     To service a queue on a file server, a print server must be logged in on
+     the file server.  NNETPSLIN() allows you to log in a print server on a
+     file server (<cServer1>) after it has been started.  For a print server
+     login, a password can be queried and then passed for <cPassword>.  An
+     empty string ("") for <cPassword> must be passed if no password has been
+     specified for <cPServer> on <cServer1>.
+
+ ^bExample^b
+
+     Log in the print server PSERVER on file server TOOLS1 (with password
+     SECRET):
+
+     IF NNETPSLIN('PSERVER','SECRET','TOOLS1')
+        ? 'Log in successful!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSLOUT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSLOUT() Logs out a print server from a file server
+'------------------------------------------------------------------------------
+ ^bNNETPSLOUT()^b
+ Logs out a print server from a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSLOUT(<cPServer>,<cServer1>,[<lImmediate>]
+     ^b   [<lJobMode>],[<cServer2>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is logged
+     out from <cServer1>.
+
+     ^b<cServer1>^b  Designates the file server from which <cPServer> is
+     logged out.
+
+     ^b<lImmediate>^b  Designates if the operation is executed immediately
+     (.T.) or if active jobs are completed (.F.).  The default value is .F..
+
+     ^b<nJobMode>^b  Designates the mode of the job that will be active,
+     according to the following table.  This parameter is only taken into
+     account if <lImmediate> is designated .T..
+
+     ^bTable 27.7:  Job Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PSJ_RET2Q      Return job to queue
+     2       PSJ_THROWAWAY  Discard job
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value for <nJobMode> is 1.  To return the job to the queue,
+     you must set its service restart flag (see NNETJFLAGS()).
+
+     ^b<cServer2>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer2>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer2>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer2>.
+
+ ^bReturns^b
+
+     NNETPSLOUT() returns .T. if the function has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER LOGOUT
+     NNETPSLOUT() performs a logout of <cPServer> from <cServer1>.  After a
+     successful logout, print queues on <cServer1> are no longer serviced by
+     <cPServer>.  NNETPSLOUT() requires operator rights on <cPServer>.
+
+ ^bExample^b
+
+     Log out the print server PSERVER from file server TOOLS1 (make sure that
+     the active jobs are completed):
+
+     IF NNETPSLIN('PSERVER','TOOLS1')
+        ? 'Logout successful!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSLIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSMTOF() Marks the top of the page on the print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSMTOF()^b
+ Marks the top of the page on the print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSMTOF(<cPServer>,<nPrinter>,<cChar>|<nChar>
+     ^b   [<cServer>|<nConId>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cChar>^b  Designates the character used to mark the top of page.
+
+     ^b<nChar>^b  Designates the ASCII code of <cChar>.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSMTOF() returns .T. if the function has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER MARK TOP OF FORM
+     NNETPSMTOF() allows you to mark the top of the page if no job is
+     currently being processed by <nPrinter>.  The character to mark the top
+     of the page can be passed as a character string (<cChar>) or a character
+     code (<nChar>). On the print server, one line that contains the passed
+     character is printed.  NNETPSMTOF() requires operator rights on
+     <cPServer>.
+
+ ^bExample^b
+
+     Mark the top of page on printer 0 of PSERVER with one line containing
+     "=" characters:
+
+     NNETPSMTOF('PSERVER',0,"=")
+!seealso: "NNETPSFF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSNMOD() Determines the number of queue service modes
+'------------------------------------------------------------------------------
+ ^bNNETPSNMOD()^b
+ Determines the number of queue service modes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSNMOD(<cPServer>,[<cServer>|<nConId>]) --> nModes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSNMOD() returns the number of queue service modes supported by
+     <cPServer>.  If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER NUMBER OF MODES
+     NNETPSNMOD() allows you to determine the number of queue service modes
+     supported by <cPServer>.  The four standard modes are:  change forms as
+     requested,  minimize form changes within a queue, avoid form changes,
+     and minimize form change between queues.
+
+ ^bExample^b
+
+     Determine the number of queue service modes for print server PSERVER:
+
+     ? NNETPSNMOD('PSERVER')
+!seealso: "NNETPSPMOD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSNOTL() Determines list of notified objects for print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSNOTL()^b
+ Determines the list of notified objects for the print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSNOTL(<cPServer>,<nPrinter>,[<cServer>|<nConId>)
+     ^b   --> aNoti
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSNOTL() returns an array with subarrays (two-dimensional array).
+     Each subarray contains information about a file entry found.  For the
+     structure of the subarrays, see the following table:
+
+     ^bTable 27.8:  NNETPSNOTL() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTPS.CH      Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            cServer        NL_SERVER    File server
+     2            nObjName       NL_NAME      Object name
+     3            nType          NL_TYPE      Object type
+     4            nFirst         NL_FIRST     Time to the first message
+     5            nNext          NL_NEXT      Time between messages
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs, the function returns an empty array.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER NOTIFY LIST
+     For each print server printer, objects (normally users) that are
+     notified if printer problems occur (printer offline, no paper) can be
+     defined.  NNETPSNOTL() allows you to determine a list of the objects
+     defined for <nPrinter>.
+
+ ^bExample^b
+
+     Determine the notified objects for printer 0 on print server PSERVER,
+     and display the file server and the names of the objects found:
+
+     #include "ctnet.ch"
+
+     aObjs=NNETPSNOTL('PSERVER',0)
+     FOR i=1 TO LEN(aObjs)
+        ? aObjs[i,NL_SERVER],aObjs[i,NL_NAME]
+     NEXT i
+!seealso: "NNETPSANO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSNPRN() Determines the number of print server printers
+'------------------------------------------------------------------------------
+ ^bNNETPSNPRN()^b
+ Determines the number of print server printers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSNPRN(<cPServer>,[<cServer>|<nConId>]) --> nPrinter
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSNPRN() returns the number of printers defined for <cPServer>.  If
+     an error occurs, the function returns  -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER NUMBER OF PRINTERS
+     NNETPSNPRN() returns the number of printers defined for <cPServer>.  The
+     value returned includes printers that are directly connected and remote.
+
+ ^bExample^b
+
+     Determine the number of printers on print server PSERVER:
+
+     ? NNETPSNMOD('PSERVER')
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPFRM() Sets or determines the form for the print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSPFRM()^b
+ Sets or determines the form for the print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPFRM(<cPServer>,<nPrinter>,[<nNewForm>],[<cServer>|
+     ^b   <nConId>]) --> nForm
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<nNewForm>^b  Designates an optional parameter that must be passed to
+     set a new form.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSPFRM() returns the form number of <nPrinter> on <cPServer>.  If an
+     error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTER FORM
+     NNETPSPFRM() allows you to set or determine the current form of
+     <nPrinter> on <cPServer>.  The form number can be queried by users and
+     operators; however, operator rights are required to set a new form
+     number on <cPServer>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the current form number of printer 0 on print server
+        PSERVER:
+
+        IF (nForm:=NNETPSPFRM('PSERVER',0))>=0
+           ? 'Form:',nForm
+        ELSE
+           ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Set the form number for printer 0 on print server  PSERVER to
+        1:
+
+        IF NNETPSPFRM('PSERVER',0,1)>=0
+           ? 'Form number set successfully!'
+        ELSE
+           ? 'Error!'
+        ENDIF
+!seealso: "NNETPSJFRM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPJOB() Checks to see if the print server printer is processing a job
+'------------------------------------------------------------------------------
+ ^bNNETPSPJOB()^b
+ Checks to see if the print server printer is processing a job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPJOB(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> lJob
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSPJOB() returns .T. if <nPrinter> on <cPServer> is currently
+     processing a job.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTER (HAS) JOB ?
+     NNETPSPJOB() checks to see if a print server printer is currently
+     processing a job.  This allows you to determine whether or not the
+     printer is directly available.
+
+ ^bExample^b
+
+     Determine if printer 0 on print server printer PSERVER is currently
+     processing a job:
+
+     IF NNETPSPJOB('PSERVER',0)
+        ? 'Printer is busy!'
+     ELSEIF NNETPSERR()=0
+        ? 'Printer available!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSERR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPMOD() Sets or determines the queue service mode
+'------------------------------------------------------------------------------
+ ^bNNETPSPMOD()^b
+ Sets or determines the queue service mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPMOD(<cPServer>,<nPrinter>,<nMode>,[<cServer>|
+     ^b   <nConId>]) --> nMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<nMode>^b  Designates an optional parameter that must be passed to set
+     a new queue service mode for <nPrinter>.  For possible queue service
+     modes see the description.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSPMOD() returns the queue service mode of <nPrinter> on <cPServer>.
+     For possible service modes see the description.  If an error occurs, the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTER MODE
+     For print server printers, various service modes regarding the form
+     change are possible.  The following table shows the four standard queue
+     service modes:
+
+     ^bTable 27.9:  Queue Service Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       QSM_NEED       Change forms as requested
+     2       QSM_MINQ       Minimize form change within a queue
+     4       QSM_NEVER      Avoid form change
+     8       QSM_MINACROSS  Minimize form change between queues
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExample^b
+
+     ^b^CFE^b  Determine the current queue service mode of printer 0 on print
+        server PSERVER:
+
+        IF (nMode:=NNETPSPMOD('PSERVER',0))>=0
+           ? 'Queue service mode:',nMode
+        ELSE
+           ? 'Error!'
+        ENDIF
+
+     ^b^CFE^b  Set the queue service mode for printer 0 on print server
+        PSERVER to QSM_MINQ:
+
+        #include "ctnet.ch"
+
+        IF NNETPSPMOD('PSERVER',0,QSM_MINQ)>=0
+           ? 'Queue service mode set successfully!'
+        ELSE
+           ? 'Error!'
+        ENDIF
+!seealso: "NNETPSNMOD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPNAM() Determines the name of a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSPNAM()^b
+ Determines the name of a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPNAM(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can therefore depend on the specified file
+     server.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSPNAM() returns the name of <nPrinter> on <cPServer>.  If an error
+     occurs, the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTER NAME
+     In a print server, configuration names can be assigned to print server
+     printers.  NNETPSPNAM() allows you to determine the name for a print
+     server printer (<nPrinter>).
+
+ ^bExample^b
+
+     Determine the name of printer 0 on print server PSERVER:
+
+     ? NNETPSPNAM('PSERVER',0)
+!seealso: "NNETPSNPRN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPROB() Determines the cause of an error for print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSPROB()^b
+ Determines the cause of an error for print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPROB(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nProblem
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSPROB() returns a numeric value that specifies the cause of an
+     error on <nPrinter> on <cPServer>.
+
+     ^bTable 27.10:  Return Values of NNETPSPROB()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     -1                     Call error
+     0       PPROB_NONE     No problem
+     1       PPROB_OFFLINE  Printer is offline
+     2       PPROB_NOPAPER  Paper out
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTER PROBLEM
+     With the aid of NNETPSPROB() applications can check to see if <nPrinter>
+     on <cPServer> is ready.  For example, this allows you to display an
+     error message before a print job is started.
+
+ ^bExample^b
+
+     Determine the cause of an error for printer 0 on print server PSERVER:
+
+     #include "ctps.ch"
+
+     nProb=NNETPSPROB('PSERVER',0)
+
+     DO CASE
+        CASE nProb=PPROB_NONE
+           ? 'Ready!'
+        CASE nProb=PPORB_OFFLINE
+           ? 'Printer offline!'
+        CASE nProb=PPROB_NOPAPER
+           ? 'No paper!'
+        OTHERWISE
+           ? 'Error!'
+     ENDCASE
+!seealso: "NNETPSPSTA()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPSQ()  Determines the list of printers that service a queue
+'------------------------------------------------------------------------------
+ ^bNNETPSPSQ()^b
+ Determines the list of printers that service a queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPSQ(<cPServer>,<cQueue>,[<cServer1>],[<cServer2>|
+     ^b   <nConId>]) --> cPrinter
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cQueue>^b  Designates a print queue.
+
+     ^b<cServer1>^b  Designates the file server of <cQueue>.  The default
+     value designates the default server.
+
+     ^b<cServer2>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer2>.
+     Therefore, the access rights can therefore depend on the specified file
+     server.  Your workstation must be attached to <cServer2>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer2>.
+
+ ^bReturn^bs
+
+     NNETPSPSQ() returns a character string.  Each character (byte) indicates
+     the number of a print server printer.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTERS SERVICING QUEUE
+     NNETPSPSQ() determines the numbers of all the printers on <cPServer>
+     that service <cQueue> on <cServer1>.  The list of printers is returned
+     as a character string in which each character specifies a printer
+     number.
+
+ ^bExample^b
+
+     Display a list that contains the printer number and printer name of all
+     the printers on PSERVER that service QUEUE1 on the default server:
+
+     cPrinters=NNETPSPSQ('PSERVER','QUEUE1')
+
+     FOR i=1 TO LEN(cPrinters)
+        nNum:=ASC(SUBSTR(cPrinters,i,1)
+        ? nNum,NNETPSPNAM('PSERVER',nNum)
+     NEXT i
+!seealso: "NNETPSPNAM()" "NNETPSQL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSPSTA() Queries the status of a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSPSTA()^b
+ Queries the status of a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSPSTA(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> nStatus
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can therefore depend on the specified file
+     server.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSPSTA() returns a numeric value that specifies the current status
+     of <nPrinter> on <cPServer>.
+
+     ^bTable 27.11:  Return Values of NNETPSPPSTA()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     -1                     Call error
+     0       PST_WAIT_JOB   Printer waiting for job
+     1       PST_WAIT_FORM  Printer waiting for form
+     2       PST_PRINT      Printer is processing job
+     3       PST_PAUSED     Printer on hold
+     4       PST_STOPPED    Printer stopped
+     5       PST_MARK       Printer marking top of form
+     6       PST_GO_DOWN    Printer ready for deinitialization
+     7       PST_NOT_CON    Remote printer not connected
+     8       PST_PRIVATE    Remote printer in private mode
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER PRINTER STATUS
+     With the aid of NNETPSPSTA(), applications can determine the status of
+     <nPrinter> on <cPServer>.
+
+ ^bExample^b
+
+     Determine the status of printer 0 on print server PSERVER:
+
+     #include "ctps.ch"
+
+     nStat=NNETPSPSTA('PSERVER',0)
+
+     DO CASE
+        CASE nStat=PST_WAIT_JOB
+           ? 'Printer waiting for job!'
+        CASE nStat=PST_WAIT_FORM
+           ? 'Printer waiting for form!'
+        CASE nStat=PST_PRINT
+           ? 'Printer is processing job!'
+        CASE nStat=PST_PAUSED
+           ? 'Printer on hold!'
+        CASE nStat=PST_STOPPED
+           ? 'Printer stopped!'
+        CASE nStat=PST_MARK
+           ? 'Printer is marking top of form!'
+        CASE nStat=PST_GO_DOWN
+           ? 'Printer ready for deinitialization!'
+        CASE nStat=PST_NOT_CON
+           ? 'Remote printer not connected!'
+        CASE nStat=PST_PRIVATE
+           ? 'Remote printer in private mode!'
+        OTHERWISE
+           ? 'Error!'
+     ENDCASE
+!seealso: "NNETPSPROB()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSQL()   Determines the queues serviced by a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSQL()^b
+ Determines the queues that are serviced by a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSQL(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> aQueues
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can therefore depend on the specified file
+     server.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSQL() returns an array with subarrays (two-dimensional array).
+     Each subarray contains information about a serviced queue.  For the
+     structure of the subarrays, see the following table:
+
+     ^bTable 27.12:  NNETPSQL() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTPS.CH      Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            cServer        QL_SERVER    File server
+     2            cQName         QL_NAME      Queue name
+     3            nPrior         QL_PRIOR     Queue priority
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs, the function returns an empty array.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER QUEUE LIST
+     NNETPSQL() returns a list of all print queues that are serviced by
+     <nPrinter> on <cPServer>.  The array also contains the name of queue's
+     file server because a print server can access several file servers.
+
+ ^bExample^b
+
+     Determine the print queues for printer 0 on print server PSERVER, and
+     display the queue's file server and name:
+
+     #include "ctnet.ch"
+
+     aQs=NNETPSQL('PSERVER',0)
+     FOR i=1 TO LEN(aQs)
+        ? aQs[i,QL_SERVER],aQs[i,QL_NAME]
+     NEXT i
+!seealso: "NNETPSPSQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSRRP()  Requests a remote printer뭩 configuration information
+'------------------------------------------------------------------------------
+ ^bNNETPSRRP()^b
+ Requests a remote printer뭩 configuration information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSRRP(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> aInfo
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSQL() returns a one-dimensional array that contains configuration
+     information about the passed printer.  The elements of the array are
+     defined in the table that follows.
+
+     ^bTable 27.13:  NNETPSRRP() Array Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol   CTPS.CH      Definition ^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            nType        RRP_TYPE     Printer type
+     2            lInt         RRP_INT      Use interrupts
+     3            nIRQ         RRP_IRQ      IRQ number
+     4            nBuf         RRP_BUF      Rec. number of 512 byte buffers
+     5            lXon         RRP_XON      Use Xon/XOff protocol
+     6            nBaud        RRP_BAUD     Baud rate
+     7            nData        RRP_DATA     Data bits
+     8            nStop        RRP_STOP     Stop bits
+     9            nParity      RRP_PARITY   Parity
+     10           nSocket      RRP_SOCKET   Socket number for communication
+                                            with print server
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     For a list of possible remote printers, see the function NNETPSARP().
+     The elements RRP_XON, RRP_BAUD, RRP_DATA, RRP_STOP, and RRP_PARITY are
+     useful only if the remote printer is configured as serial printer.  The
+     baud rate, stop bits, and parity are coded as numeric values:  0=300
+     baud, 1=600 baud, 2=1200 baud, 3=2400 baud, 4=4800 baud, 5=9600 baud;
+     0=0 stop bits, 1=1,5 stop bits, 2=1 stop bit; parity: 0=no, 1=even,
+     2=odd.
+
+     If an error occurs, the function returns an empty array.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER REQUEST REMOTE PRINTER
+     Netware print servers are able to service printers that are connected to
+     a workstation (remote printers).  NNETPSRRP() allows you to request a
+     remote printer from a print server to emulate a remote printer from
+     within a CA-Clipper application (see the sample program RPRINTER.PRG).
+
+     For the emulation of a remote printer, the most important information
+     within the return value is the socket number (RRP_SOCKET).  For the
+     following setup of an SPX session, this socket number must be passed as
+     target socket.
+
+ ^bExample^b
+
+     You can find a detailed example for the description of NNETPSRRP() on
+     the CA-Clipper Tools disks under RPRINTER.PRG.
+!seealso: "NNETPSARP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSSRM()  Sets the remote printer mode
+'------------------------------------------------------------------------------
+ ^bNNETPSSRM()^b
+ Sets the remote printer mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSSRM(<cPServer>,<nPrinter>,<lMode>,[<cServer>|
+     ^b   <nConId>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<lMode>^b  Designates the remote mode for <nPrinter> on <cPServer>.
+     If <lMode> is designated .F., the function selects the shared mode.  If
+     <lMode> is designated .T., the function selects the private mode.
+
+     ^b<cServer>^b Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSSRM() returns .T. if the function has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER REMOTE MODE
+     Netware print servers are able to service printers that are connected to
+     a workstation (remote printers).  A remote printer can operate in the
+     shared or the private mode.  The default mode is the shared mode.  In
+     the shared mode, the remote printer operates like a network printer that
+     is directly connected to the print server.  In the private mode, the
+     remote printer is used locally and cannot be used by the print server.
+     NNETPSRM() allows you to select the mode of a remote printer.
+
+ ^bExample^b
+
+     Set printer 8 on print server PSERVER to the private mode:
+
+     IF NNETPSRM('PSERVER',8,.T.)
+        ? 'Printer 8 set to private mode!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSRRP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSSRVL() Determines the file server for the print server
+'------------------------------------------------------------------------------
+ ^bNNETPSSRVL()^b
+ Determines the file server for the print server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSSRVL(<cPServer>,[<cServer>|<nConId>]) --> cServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSSRVL() returns a one-dimensional array.  The elements contain the
+     names of the file servers on which <cPServer> is currently logged in.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER SERVER LIST
+     NNETPSSRVL() allows you to determine all file servers on which
+     <cPServer> is currently logged in.  <cPServer> must be logged in on a
+     file server to access print queues on the file server.
+
+ ^bExample^b
+
+     Display a list of all the file servers on which PSERVER is logged in:
+
+     aSrv=NNETPSSRVL('PSERVER')
+     FOR i=1 TO LEN(aSrv)
+        ? aSrv[i]
+     NEXT i
+!seealso: "NNETPSLIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSSTAT() Determines a print server뭩 status
+'------------------------------------------------------------------------------
+ ^bNNETPSSTAT()^b
+ Determines a print server뭩 status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSSTAT(<cPServer>,[<cServer>|<nConId>]) --> nStatus
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSSTAT() returns the status of <cPServer>:
+
+     ^bTable 27.14:  Return Values of NNETPSSTAT()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition ^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     -1                     Call error
+     0       PSTAT_RUNNING  Normal operation mode
+     1       PSTAT_GO_DOWN  Deinitialization phase
+     2       PSTAT_DOWN     Deinitialized
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER STATUS
+     NNETPSSTAT() allows you to determine if <cPServer> is running in the
+     normal operation mode or if its availability is going to end.
+
+ ^bExample^b
+
+     Determine and display the status of print server PSERVER:
+
+     #include "ctps.ch"
+
+     nStatus=NNETPSSTAT('PSERVER')
+     DO CASE
+        CASE nStatus=PSTAT_RUNNING
+           ? 'Normal operation mode!'
+        CASE nStatus=PSTAT_GO_DOWN
+           ? 'Deinitialization phase!'
+        CASE nStatus=PSTAT_DOWN
+           ? 'Deinitialized!'
+        OTHERWISE
+           ? 'Error!'
+     ENDCASE
+!seealso: "NNETPSDOWN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSTART() Starts a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSTART()^b
+ Starts a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSTART(<cPServer>,<nPrinter>,[<cServer>|<nConId>])
+     ^b   --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSTART() returns .T. if the function has been executed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER (PRINTER) START
+     NNETPSTART() can reactivate <nPrinter> on <cPServer> if <nPrinter> has
+     been stopped by the Novell utility PCONSOLE or by NNETPSTOP().  This
+     function requires operator rights for <cPServer>.
+
+ ^bExample^b
+
+     Stop and reactivate printer 0 on print server PSERVER:
+
+     lSuccess=.T.
+     lSuccess=lSuccess .AND. NNETPSTOP('PSERVER',0)
+     lSuccess=lSuccess .AND. NNETPSTART('PSERVER',0)
+     IF lSuccess
+        ? 'Printer stopped and reactivated!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETPSTOP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSTOP()  Stops a print server printer
+'------------------------------------------------------------------------------
+ ^bNNETPSTOP()^b
+ Stops a print server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSTART(<cPServer>,<nPrinter>,[<nMode>],[<cServer>|
+     ^b   <nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<nPrinter>^b  Designates the number of the printer on <cPServer>.
+     Values between 0 and 15 are possible.
+
+     ^b<nMode>^b  Designates the currently active job mode.
+
+     ^bTable 27.15:  Job Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       PSJ_HOLD       Stop job
+     1       PSJ_RET2Q      Return job to queue
+     2       PSJ_THROWAWAY  Discard job
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value for <nMode> is 0, the stop job mode.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSTOP returns .T. if the function has been completed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER (PRINTER) STOP
+     NNETPSTOP() allows you to stop <nPrinter> on <cPServer>.  In this state
+     no additional print server outputs are processed on <nPrinter>.  By
+     passing a value for <nMode>, you can specify what happens to a job that
+     is currently being processed.  NNETPSTOP() requires operator rights for
+     <cPServer>.
+
+ ^bExample^b
+
+     Stop printer 0 on print server PSERVER:
+
+     IF NNETPSTOP('PSERVER',0)
+        ? 'Printer 0 stopped!'
+     ELSE
+        ? 'Error'
+     ENDIF
+!seealso: "NNETPSTART()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSTYPE() Determines a print server뭩 type
+'------------------------------------------------------------------------------
+ ^bNNETPSTYPE()^b
+ Determines a print server뭩 type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSTYPE(<cPServer>,[<cServer>|<nConId>]) --> nType
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSTYPE() returns the type of <cPServer>:
+
+     ^bTable 27.16:  Return Values of NNETPSTYPE()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CTPS.CH        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     -1                     Call error
+     1       PSTYP_DOS      Dedicated DOS print server
+     2       PSTYP_NLM      Netware loadable module
+     3       PSTYP_FSVAP    VAP on file server
+     4       PSTYP_BRGVAP   VAP on bridge
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER TYPE
+     Netware print servers are available for various platforms.  A print
+     server can operate on a dedicated DOS station as an NLM on a Netware 3.x
+     file server, as a VAP on a Netware 2.x file server, or as a VAP on a
+     bridge.  NNETPSTYPE() allows you to determine the type of <cPServer>.
+
+ ^bExample^b
+
+     Determine and display the type of print server PSERVER:
+
+     #include "ctps.ch"
+
+     nType=NNETPSTYPE('PSERVER')
+     DO CASE
+        CASE nType=PSTYP_DOS
+           ? 'Dedicated DOS'
+        CASE nType=PSTYP_NLM
+           ? 'Netware loadable module'
+        CASE nType=PSTYP_FSVAP
+           ? 'File server VAP'
+        CASE nType=PSTYP_BRGVAP
+           ? 'Bridge VAP'
+        OTHERWISE
+           ? 'Error!'
+     ENDCASE
+!seealso: "NNETPSVER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPSVER()  Determines a print server뭩 version
+'------------------------------------------------------------------------------
+ ^bNNETPSVER()^b
+ Determines a print server뭩 version
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPSVER(<cPServer>,[<cServer>|<nConId>]) --> cVersion
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPServer>^b  Designates the name of the print server that is
+     accessed.
+
+     ^b<cServer>^b  Designates the name of the file server used to access
+     <cPServer>.  The print server checks login information on <cServer>.
+     Therefore, the access rights can depend on the specified file server.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPSVER() returns a character strings that contains the version of the
+     print server in the form "Main_version.Sub_version.Revision_number".  If
+     an error occurs, the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT SERVER VERSION
+     NNETPSVER() allows you to determine the version of a print server.
+
+ ^bExample^b
+
+     Determine the version of print server PSERVER:
+
+     ? NNETPSVER('PSERVER')            // For example "1.2.1"
+!seealso: "NNETPSTYPE()" 
+'------------------------------------------------------------------------------
+
+
+

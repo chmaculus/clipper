@@ -1,0 +1,29 @@
+'------------------------------------------------------------------------------
+^BWAIT^B
+
+    WAIT causes all program processing to pause until any key is pressed.
+
+^USyntax^U
+
+    WAIT [<prompt>] [TO <memvarC>]
+
+^UOptions^U
+
+    ^BPrompt^B: The <prompt> is a character string WAIT displays if
+    specified.  If no <prompt> is specified, the default prompt is
+    "Press any key to continue..."
+
+    ^BMemory variable^B: The TO <memvarC> clause creates the specified
+    memory variable that contains the character entered.
+
+^UUsage^U
+
+    WAIT returns the character entered into the specified character memory
+    variable.  If a non-printable character is entered, WAIT returns zero
+    to the character variable.  Function keys are ignored unless assigned
+    with SET FUNCTION or SET KEY.
+!seealso: ???.ngo:"ACCEPT" clip_014.ngo:"INPUT" 
+'------------------------------------------------------------------------------
+
+
+

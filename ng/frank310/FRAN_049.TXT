@@ -1,0 +1,283 @@
+'------------------------------------------------------------------------------
+ ^rVersion 3.10
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Array Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADaequal() - new.  Checks if two arrays are equal.
+
+ û ADapack() - new.  packs an array.
+
+ û ADaview() - modified.  May now return the currently highlighted array
+   element when it exits.
+
+ Database Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADstruct2file() - new.  Writes the structure of the current database
+   into a text file.
+
+ û ADfile2struct() - new.  Creates an dbf structure array from information
+   written in a text file.
+
+ û ADgetflds() - new.  Gather a set of fields from the current record.
+
+ û ADputflds() - new.  Scatter a set of fields to the current record.
+
+ û ADafldpos() - new.  Converts an array of field names into an array of
+   field positions.
+
+ File Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADfpath() - new.  Returns the path portion of a file spec.
+
+ Miscellaneous Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADg_autommove() - new.  Get/set the global AutoMoveMouse flag.
+
+ û ADg_hidproc() - new.  Get/set the global Help Identifier processor
+   block.
+
+ û ADdevtools() - modified.  In the picklist of aliases, the selected alias
+   is now ADbrowse()'d.  Added options.
+
+ Screen Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADblankscn() - modified.  Added a third parameter.  When the screen
+   blanks, and the user subsequently requests to unblank the screen, an
+   codeblock is EVALed.
+
+ û ADmsg_prompt() - new.  Redefines the 'Press any key' prompt in
+   ADmessage().
+
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Database Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADchgfldname() - new.  Changes the name of a field in a closed dbf file.
+
+ File Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADfdrive() - new.  Returns the drive letter in a file spec.
+ û ADfextension() - new.  Returns the file extension in a file spec.
+ û ADfname() - new.  Returns the file name in a file spec.
+
+ Miscellaneous Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADg_progress() - new.  Global function to configure the progress bar.
+
+ û ADg_reqcancel() - new.  Global function to post a routine to trap a
+   request to cancel a looping process.
+
+ û ADg_trigmarker() - new.  Global function to specify the trigger marker
+   for Frankie menu items and buttons.
+
+ û ADruler() - modified.  Now returns the coordinates of the crosshairs
+   intersection.
+
+ Screen Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADcsay() - modified.  Added a new parameter [lPad].
+
+ û ADmessage() - modified.  May now accept a single value of any type.
+
+ û ADstat_init() - modified.  Added [cFrame], [xShadow] and [lExplode]
+   parameters.
+
+ System Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADispath() - new.  Checks if a path exists.
+
+ û ADiswriteable() - new.  Checks if a disk is writeable.
+
+ ^rVersion 2.3
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Array Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADaview() - modified.  ALT-0 is now active within ADaview().
+
+ Database Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADsavearea() - modified.  Its return value now has a 4th element, the
+   current _SET_DELETED setting.
+
+ File Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADfdate() - new.  Returns a file's date stamp.
+
+ û ADfprint() - modified.  Can now print to LPT1, 2, and 3.
+
+ û ADfsize() - new.  Returns a file's size in bytes.
+
+ û ADftime() - new.  Returns a file's time stamp.
+
+ Keyboard and Mouse Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADaltkey() - new.  Returns the inkey code of the ALT-key equivalent
+   of a printable character.
+
+ û ADkbflag() - new.  Checks the status of the ALT, CTRL, SHIFT, NUMLOC,
+   CAPSLOCK, SCROLLLOCK and INS keys.
+
+ Screen Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADbox() - modified.  The box shadow can now be set to any color.  It was
+   always N+/N in previous versions.
+
+ û ADmsg_boxattr() - new.  Globally configures the box attributes of
+   ADmessage().
+
+ û ADmsg_colors() - new.  Globally configures the ADmessage() colors.
+
+ û The new ADstat_..() functions make up a set of functions that display
+   information about the status of a process loop.  The functions are:
+
+   ADstat_init() - initializes the set.
+   ADstat_update() - updates the information in the status box.
+   ADstat_clear() - clears the set.
+
+ ^rVersion 2.2
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Keyboard and Mouse Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADg_keys() - new.  Defines global hot keys.
+
+ û ADwait() - modified.  May now be configured to poll for events other than
+   keyboard and mouse events.
+
+ û ADm_dblclicked() - new.  Checks for double clicks.
+
+ Miscellaneous Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADruler() - new.  Displays a ruler (cross hairs) on the screen.
+
+ û ADdevtools() - new.  Brings out the Frankie developer's tools.
+
+ Screen Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADblankscn() - modified.  Now monitors mouse movement too, and waits
+   for mouse button to be released before exiting.  Also, more than
+   one line may be displayed in the message box.
+
+ û ADcsay() - modified.  Now returns the starting column.
+
+ û ADverline() - new.  Draws a vertical line on the screen.
+
+
+ System Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADprogname() - returns the name of the running application.
+
+ û ADnhandle() - returns the number of DOS handles still available.
+
+
+ ^rVersion 2.1
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Array Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û  (modified) ADamodify() - It now passes two parameters to its codeblock.
+
+ File Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û  (new) ADftouch() - Attempts to date/time stamp files.
+
+
+ ^rVersion 2.0
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Array Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ û  (new) ADacombine() - combines two arrays together
+
+ û  (new) ADarotate() - moves an array element to a different location
+
+ û  (new) ADarr2str() - converts an array of strings into a delimited string
+
+ û  (modified) ADasize() - creates or resizes an array and optionally fills
+    NIL elements with a default value.
+
+ û  (new) ADashrink() - shrinks an array
+
+ û  (new) ADaswap() - swaps the values of two elements in an array
+
+ û  (new) ADaxmaxlen() - returns the length of the longest TRANSFORMed element
+
+
+ Database Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ û  (new) ADgetrec() - retrieves the current record of the current database
+    and stores it in an array.
+
+ û  (new) ADputrec() - stores an array of field values into the current
+    record of the current database.
+
+ û  (new) ADzaprec() - Blanks the current record.
+
+
+
+ File Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ û  (new) ADtemp_create() - Attempts to create a temporary file and opens it
+   in compatibility mode.  Use ADtemp_handle() to retrieve the file handle.
+
+ û  (new) ADtemp_handle() - Returns the file handle of the last temp file
+    creation attempt by ADtemp_create().
+
+
+ Keyboard and Mouse Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ û  (new) ADaltkey() - Returns the inkey code of the ALT-key combination of
+    a regular key.
+
+ û  (new) ADm_awithin() - Checks if the mouse cursor is within a screen
+    region.  See also ADm_within().
+
+ û  (modified) ADm_hide() - Hides the mouse cursor.  It is disregarded if
+    the mouse cursor is not visible.
+
+ û  (modified) ADm_show() - Shows the mouse cursor.  It is disregarded if
+    the mouse cursor is visible.
+
+
+ Screen Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ û  (new) ADmsg_bare() - Displays a message without any box.
+
+ û  (new) ADdisparray() - Displays an array of strings in different colors.
+
+ û  (new) ADdisplist() - Displays a list of strings in different colors.
+
+ û  (new) ADenhcolor() - Returns the current Clipper enhanced color setting.
+
+ û  (new) ADhorline() - Draws a horizontal line.
+
+ û  (new) ADlegend() - Displays a 2-line formatted menu similar to:
+
+    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄ
+       AppendBlank ³ Delete ³ Recall ³ Index ³ reFresh ³ Order
+
+ û  (new) ADscn_hcenter() - Returns the starting column for horizontal centering
+
+ û  (new) ADscn_vcenter() - Returns the starting row for vertical centering
+
+ û  (new) ADstdcolor() - Returns the current Clipper standard color setting.
+
+ û  (new) ADunscolor() - Returns the current Clipper unselected color setting.
+
+
+ System Functions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ û  (new) ADpposition() - Returns the index position of a command line
+    parameter.
+!seealso: fran_024.ngo:"ADaequal()" fran_024.ngo:"ADapack()" fran_024.ngo:"ADaview()" fran_026.ngo:"ADfpath()" fran_025.ngo:"ADstruct2file()" fran_025.ngo:"ADfile2struct()" fran_025.ngo:"ADgetflds()" fran_025.ngo:"ADputflds()" fran_025.ngo:"ADafldpos()" fran_031.ngo:"ADg_autommove()" fran_031.ngo:"ADg_hidproc()" fran_028.ngo:"ADblankscn()" fran_028.ngo:"ADmsg_prompt()" fran_031.ngo:"ADdevtools()" 
+'------------------------------------------------------------------------------
+
+
+

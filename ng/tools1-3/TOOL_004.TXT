@@ -1,0 +1,2700 @@
+!short: Introduction Serial Communications
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     There are a number of ways that the serial port can be used.  Modems,
+     bar code readers, and many other devices deliver data over this port or
+     are regulated by it.  Although standards do exist, in the final
+     analysis, the type of communication is different every time.
+
+     The functions in this chapter offer possibilities for data transmission
+     and allow you to influence control signals.  These functions do not
+     support any particular protocol or any specific instrument.  For a few
+     expanded applications, like the XMODEM protocol, you should find
+     sufficient information in the example programs for CA-Clipper Tools.
+
+ ^bPort Parameters^b
+
+     All the parameters for the port, like baud rate, parity, file length,
+     and stop bits, are fully adjustable.  It is possible to change the
+     settings for a port without closing it.  In this way the transmission
+     speed can be changed without losing the contents of the buffer or
+     terminating an existing connection (DTR-signal).
+
+ ^bData Transmission^b
+
+     Using CA-Clipper Tools, you can use up to four serial ports
+     simultaneously.  You can create a sending and a receiving buffer of up
+     to 64kB in size.  The characters for the background transmission mode
+     are placed in the sending buffer, while characters received through the
+     port are stored using an interrupt handler.  You can determine the
+     number of characters in the receive buffer from your CA-Clipper program,
+     and as many of the available characters as you like can be read.
+     Additional special control functions exist for the sending buffer that
+     give the governing program full control.  It is also possible to engage
+     a software or hardware handshake that is performed completely in the
+     background.
+
+ ^bHandshake^b
+
+     As previously mentioned, CA-Clipper Tools functions support both a
+     hardware and software handshake.  As soon as the receiving buffer
+     threatens to overflow by at least one page, a special handshake
+     character is transmitted that tells the other side that no further data
+     should be transmitted.  Whether you implement the hardware or software
+     handshake depends upon the type of data transmission.  Hardware
+     handshakes use physical port controls.  These port controls are usually
+     RTS and CTS, so within the scope of CA-Clipper Tools functions, these
+     control ports cannot be used for modem transmission.  Modems are
+     generally not able to reproduce port controls directly over the
+     transmission route (i.e.  telephone connection).  A software handshake
+     must be implemented in such cases.
+
+     A software handshake uses characters from the ASCII character set to
+     control the data flow.  The ASCII character set is a standard which
+     defines the XOFF (stop data, transmission off) as CHR(19) and the XON
+     (continue transmission, transmission on) as CHR(17).  (You will
+     recognize the similarity to your keyboard since CHR(19) corresponds to
+     Ctrl-S, and CHR(17) corresponds to Ctrl-Q).
+
+     If one of the handshake processes is implemented, the software must test
+     both sides to see if the receiving buffer has been filled.  The software
+     then either deactivates the CTS controls or sends an XOFF character.  By
+     contrast, when sending data you must constantly test to see if the RTS
+     input from the remote station has been deactivated or if an XOFF
+     character has been received.  In both cases transmission must stop
+     immediately.
+
+     Since you can never be sure if the remote stations stop immediately
+     after receiving an XOFF character, the internal handshake becomes active
+     when the buffer is 75% full.  If the remote stations ignore the
+     handshake, the 75% limit is probably insufficient at a set buffer size
+     of 100 byte (which equals a 25 byte reserve).
+
+     The techniques described here for the handshake are managed completely
+     by the CA-Clipper Tools routines.  They do not concern themselves with
+     the interface cards or the Universal Asynchronous Receiver Transmitters
+     (UARTS).  It is sufficient to activate the selected method, which allows
+     your program to regulate the status of the sending and receiving buffers
+     on an ongoing basis.
+
+ ^bProtocols^b
+
+     As previously mentioned, remote data transmission is, as a rule,
+     implemented only through a software handshake.  A significant
+     disadvantage to this method is that the characters used for flow
+     control, CHR (19) and CHR(17) can no longer appear in the original data.
+     Because these characters appear in binary files, remote data
+     transmission is not possible -- transmission protocols must be used.
+     You find XMODEM routines written in CA-Clipper in the example programs.
+     Using the CA-Clipper Tools port functions and this example as a basis,
+     other protocols can be developed fairly simply.
+
+     Firm protocols are not provided within CA-Clipper Tools because their
+     realization in CA-Clipper code presents no real advantage.  It is more
+     important that you have the ability to create your own protocols so that
+     you are not locked into whatever protocol is within CA-Clipper Tools.
+
+ ^bControl Signals^b
+
+     You can set or query all important port connector control signals, like
+     CD (carrier detect), DTR (data terminal ready), etc..  To simplify your
+     programming, there is a separate function for each signal.  For all
+     other status and control information, which is seldom required in serial
+     communications, you can read or describe the corresponding UARTS
+     register of the port directly.
+
+ ^bDirect Hardware Access^b
+
+     All CA-Clipper Tools port functions directly address the hardware.
+     Working over BIOS or even DOS calls would be impractical or even
+     impossible.  We therefore presuppose 100% hardware compatibility with
+     the established IBM personal computer industry standard.
+
+     In order to guarantee that everything is functioning properly, both
+     ports must be equipped with either UART 8250 or the compatible 16450.
+     When you use the 8250, interrupt controlled transmission is only
+     possible up to 2400 baud.  Technical details regarding the ports and the
+     UART registers can be found in the corresponding technical instructions,
+     like the IBM Technical Reference Manuals.
+
+ ^bI/O Addresses and Interrupt Requests^b
+
+     CA-Clipper Tools assumes the following basic settings for the four
+     ports:
+
+     ^bTable 1: Standard Port Settings^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPort    I/O Address    IRQ^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     COM1:   3F8H           4
+     COM2:   2F8H           3
+     COM3:   3E8H           4 - Not specifically defined
+     COM4:   2E8H           3 - Not specifically defined
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In contrast to COM1 and COM2, the I/O addresses and IRQs for other ports
+     are often different.  If you want to use hardware that is not entirely
+     compatible, CA-Clipper Tools has additional functions that you can use:
+     COM_SETIO() and COM_SETIRQ().  When you use these functions, the I/O and
+     IRQ settings for the port routines can be changed to the selected
+     values.  However, please notice that incorrect settings can have a wide
+     range of consequences when they come in conflict with other hardware.
+     These consequences include data loss or damage to hardware.
+
+     The correct settings for your hardware can be found at any given time in
+     its accompanying documentation.
+
+ ^bPossible Hardware Conflicts^b
+
+     CA-Clipper Tools recognizes the four addresses mentioned above for the
+     ports COM1 to COM4.  The COM_NUM() function uses these addresses to
+     determine the number of available ports.  For example, if the PC has a
+     built-in ArcNet adapter, you can have a conflict between the I/O
+     addresses.  The CA-Clipper Tools routine addresses 02EAh, which is
+     defined totally differently for the ArcNet adapter than for a serial
+     interface.  In this case an existing network connection would probably
+     be disconnected.  The COM_SETIO() function can provide assistance by
+     designating the second parameter as 0:
+
+     COM_SETIO(<port>,0)
+
+     The corresponding standard address within the internal address table is
+     deleted and access to other hardware is avoided.  However, this is only
+     possible if the COM_NUM() function has not previously been called within
+     the program.  (In this case the interface would have already been marked
+     "in use.")
+
+ ^bImportant Notes^b
+
+     As the table of default settings indicates, it is possible for multiple
+     ports to use the same IRQ -- a procedure known as interrupt sharing.
+
+     While CA-Clipper Tools functions support these procedures, standard port
+     hardware usually does not.  Specialized multiple port cards are
+     available from different manufacturers for this purpose.
+
+     ^bGenerally we cannot guarantee that interrupt sharing can be^b
+     ^bimplemented.^b
+
+     CA-Clipper Tools supports up to four ports, each with sending and
+     receiving buffers of up to 64kB and speed of up to 19200 baud.  This is
+     not to say that all this could be used at the same time to its highest
+     limit.  Eight buffers at 64kB are not possible.  The buffers must be in
+     conventional memory because the buffers are handled by interrupt
+     routines.  The number of ports and the speed with which they can
+     function correctly is dependent upon the computer being used.
+
+ ^bDifferences from BASIC^b
+
+     In contrast to other programming languages (like BASIC),
+     COM_OPEN()/COM_INIT() do not influence control signals.  If you want to
+     address a modem over the serial port using CA-Clipper, you must set DTR
+     and any other signals yourself, using the corresponding CA-Clipper Tools
+     functions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: COM_BREAK()  Creates a break on a transmission line
+'------------------------------------------------------------------------------
+ ^bCOM_BREAK()^b
+ Creates a break on a transmission line
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_BREAK(<nComPort>,<nDuration>) --> lSuccess
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the serial interface (1 to 4) where a break
+     is set.
+
+     ^b<nDuration>^b  Designates the time in milliseconds that the break
+     remains active.  The default value is 100 milliseconds.
+
+ ^bReturns^b
+
+     COM_BREAK() returns .T. when the break has been successfully set.
+
+ ^bDescription^b
+
+     The output of a break means that the transmission line of an interface
+     is held at a specific level for a fixed period of time.  This time can
+     be selected as a numeric parameter between 1 and 65535 milliseconds.
+
+     As a rule, a break is usually between 100 and 350 milliseconds long.
+
+ ^bExample^b
+
+     Output a 200 millisecond on interface COM1:
+
+     COM_BREAK(1, 200)
+
+!seealso: "COM_KEY()" "COM_EVENT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_CLOSE()  Clears the receiving buffer and closes the com port
+'------------------------------------------------------------------------------
+ ^bCOM_CLOSE()^b
+ Clears the receiving buffer and closes the com port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_CLOSE(<nComPort>) --> lClosed
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates which port is closed, COM1(1) to COM4(4).
+
+ ^bReturns^b
+
+     A return of .T. indicates that the port is open and can be closed
+     successfully.
+
+ ^bDescription^b
+
+     This function closes one of the ports (1 to 4).  This means that the
+     buffer is cleared, and all signals in the modem control register (MCR)
+     are deactivated.  Characters remaining in the buffer are lost.  The DTR
+     and RTS signals become inactive, and any existing modem connection is
+     broken.
+
+ ^bNote^b
+
+     ^bWarning!^b  All characters in the buffer are cleared, and the status
+     register is set to 0.  Existing connections are always broken!
+
+ ^bExample^b
+
+     nCharacter  :=  COM_COUNT(1)      // How many characters in
+                                       // the buffer ?
+
+     IF nCharacter > 0
+        * Read everything from buffer!
+        cContent  :=  COM_READ(1, nCharacter)
+     ENDIF
+
+     COM_CLOSE(1)
+
+!seealso: "COM_OPEN()" "COM_INIT()" "COM_DTR()" "COM_RTS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_COUNT()  Counts the number of characters in the input buffer
+'------------------------------------------------------------------------------
+ ^bCOM_COUNT()^b
+ Counts the number of characters in the input buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_COUNT(<nComPort>) --> nTotalCharacters
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the number of
+     characters in the input buffer is determined.
+
+ ^bReturns^b
+
+     COM_COUNT() returns the number of characters in the selected buffer.
+
+ ^bDescription^b
+
+     This function allows you to determine the number of characters in one of
+     the four possible buffers.  This lets you determine how many characters
+     can be read with the COM_READ() function.
+
+ ^bNote^b
+
+     ^b^CFE^b  If an attempt is made to read the number of characters
+        available in a closed port, the function returns a value of -1.
+
+ ^bExample^b
+
+     nCharacter  :=  COM_COUNT(1)   // Number of characters-port 1
+
+     IF nCharacter > 0
+        COM_READ(1, 1)              // Read 1 character
+     ENDIF
+
+!seealso: "COM_OPEN()" "COM_READ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_CRC()    Computes a Cyclic Redundancy Check (CRC) for the string
+'------------------------------------------------------------------------------
+ ^bCOM_CRC()^b
+ Computes a Cyclic Redundancy Check (CRC) for the string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_CRC(<cString>,[<nStart>],[<nPolynomial>])
+     ^b   --> nCRCValue
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string for which a CRC is
+     computed.
+
+     ^b<nStart>^b  Designates a starting value that is added to the CRC.
+     This value is computed in order to form a CRC for multiple character
+     strings.  The default value is 0.
+
+     ^b<nPolynomial>^b  Designates another polynomial.  The maximum is a 17-
+     bit polynomial.  The default polynomial is CRC-16 X.25 (see below).
+
+ ^bReturns^b
+
+     COM_CRC() returns the 16-bit CRC for <cString> as a numeric value
+     between 0 and 65535.
+
+ ^bDescription^b
+
+     CYCLIC  REDUNDANCY  CHECK
+     Many file transfer protocols use CRC for accurate error recognition.
+     This CRC function offers you decisive help when programming your own
+     protocols, like XMODEM or KERMIT.
+
+     The specific CRC value always depends on the polynomial that you use.
+     This information can be passed as an optional parameter in the form of
+     an integer so that the function has almost universal utility.  The CRC
+     16 X.25 polynomial used in X.25 systems,.  XMODEM is the default value
+     used in the examples below.
+
+     A few examples of polynomials:
+
+     ^bTable 3-1: The Different Polynomials^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bType           Arguments Polynomial
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Parity         3         2^^1+1
+     LCR-8          257       2^^8+1
+     CRC-12         5011      2^^12+2^^11+2^^3+2^^2 +2^^1+1
+     CRC-16 X.25    69665     2^^16+2^^12+2^^5+1
+     CRC-16         98309     2^^16+2^^15+2^^2+1
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  If <nStart> is not passed, then the loss of the previous
+        CHR(0) out of <cString> is not detected by a later CRC review.  This
+        can be avoided if <nStart> is given a starting value that is not
+        equal to 0.
+
+     ^b^CFE^b  A function called XMOBLOCK() is available for building XMODEM
+        blocks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These are simple CRC calculations:
+
+        COM_CRC("abc")                 // 40406
+        COM_CRC("cba")                 // 54260
+
+     ^b^CFE^b  These are calculations for multiple strings:
+
+        nCRC1 := COM_CRC("123")
+        nCRC2 := COM_CRC("456", nCRC1)
+
+        ? nCRC2 == COM_CRC("123456")   // .T., values are equal
+
+     ^b^CFE^b  Form a block for data transmission.  The string is appended to
+        the data:
+
+        cData   := "ABCDEFGHIJKLMNOP"
+        nCRC    :=  COM_CRC(cData)
+
+        cCRCSTR := I2BIN(CRC)          // CRC as a string
+        cCRCSTR := CHARSWAP(cCRCSTR)   // Exchange both bytes
+        cBlock  := cData + cCRCSTR     // Transmission block
+
+     ^b^CFE^b  The CRC must be 0 for the entire transmitted block!
+
+        ? COM_CRC(cBlock)  = 0         // .T., when correctly
+                                       // transmitted
+
+!seealso: "XMOBLOCK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_CTS()    Queries the Clear To Send (CTS) status
+'------------------------------------------------------------------------------
+ ^bCOM_CTS()^b
+ Queries the Clear To Send (CTS) status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_CTS(<nComPort>) --> lCTSActive
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which CTS is tested.
+
+ ^bReturns^b
+
+     A return of .T. indicates that CTS is active (MSR Bit 5 = 1).  A return
+     of .F. indicates that CTS is inactive (MSR Bit 5 = 0).
+
+ ^bDescription^b
+
+     COM_CTS() lets you check the Clear To Send (CTS) signal within a
+     program.  Whether CTS is used for a hardware handshake or for other
+     purposes, depends on the external hardware that you use.
+
+ ^bNote^b
+
+     ^b^CFE^b  If Delta-CTS is required, you must use COM_MSR().
+
+ ^bExample^b
+
+     DO WHILE .NOT. COM_CTS(1)           // Wait for CTS
+        * ...
+     ENDDO
+
+     COM_SEND(1, "Good Morning")         // Transmit text
+
+!seealso: "COM_MSR()" "COM_HARD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_DCD()    Queries the Data Carrier Detect (DCD) status
+'------------------------------------------------------------------------------
+ ^bCOM_DCD()^b
+ Queries the Data Carrier Detect (DCD) status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_DCD(<nComPort>) --> lDCDActive
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) on which DCD is tested.
+
+ ^bReturns^b
+
+     A return of .T. indicates that DCD is active (MSR Bit 8 = 1).  A return
+     of .F. indicates that DCD is inactive (MSR Bit 8 = 0).
+
+ ^bDescription^b
+
+     COM_DCD() lets you check the Data Carrier Detect signal within a
+     program.  When you use a modem, DCD indicates that you have a remote
+     connection.
+
+ ^bNote^b
+
+     ^b^CFE^b  If Delta-DCD is required, you must use COM_MSR().
+
+ ^bExample^b
+
+     A connection is only established when a valid DCD signal has been
+     recognized:
+
+     ? "Call recognized..."
+
+     DO WHILE .NOT. COM_DCD(1)         // Wait for carrier (DCD)
+        * ...
+     ENDDO
+
+     ? "Carrier recognized - connection established ..."
+
+!seealso: "COM_MSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_DOSCON() Provides screen output through DOS--ANSI.SYS terminal emulation
+'------------------------------------------------------------------------------
+ ^bCOM_DOSCON()^b
+ Provides screen output through DOS (ANSI.SYS terminal emulation)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_DOSCON(<cString>,[<nLine>],[<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates a string that is output through DOS.
+
+     ^b<nLine>^b  Designates  the line number where the string is output.
+     The default position is the cursor position.
+
+     ^b<nColumn>^b  Designates  the column number where the string is output.
+     The default position is the cursor position.
+
+ ^bReturns^b
+
+     This function always returns a null string.
+
+ ^bDescription^b
+
+     COM_DOSCON() allows you to output a string through DOS.  This function
+     can be used to provide an interpretation of ANSI control sequences
+     through ANSI.SYS.  The installed status of the ANSI driver can be
+     determined using the ISANSI() function.
+
+     In this way you can easily create a communications program with ANSI
+     terminal emulation.
+
+ ^bNote^b
+
+     ^b^CFE^b  Notice that DSETWINDOW() should be switched off when using
+        this function.  Otherwise the output is routed through the CA-Clipper
+        driver module, and operates like a print (?) with a position
+        instruction.
+
+ ^bExamples^b
+
+     When ANSI.SYS is linked in, output is through DOS.  This makes a simple
+     terminal emulation possible!
+
+     DSETWINDOW(.F.)               // Important for ISANSI()
+     cData  := COM_READ(1)         // Data read in
+
+     IF ISANSI()                   // ANSI driver present?
+        COM_DOSCON(cData)
+     ELSE
+        * Own ANSI handling
+     ENDIF
+
+!seealso: tool_013.ngo:"ISANSI()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_DSR()    Queries the Data Set Ready (DSR) status
+'------------------------------------------------------------------------------
+ ^bCOM_DSR()^b
+ Queries the Data Set Ready (DSR) status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_DSR(<nComPort>) --> lDSRActive
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) on which DSR is tested.
+
+ ^bReturns^b
+
+     A return of .T. indicates that DSR is active (MSR Bit 6 = 1).  A return
+     of .F. indicates that DSR is inactive (MSR Bit 6 = 0).
+
+ ^bDescription^b
+
+     COM_DSR() lets you check the Data Set Ready signal within a program.
+
+ ^bNote^b
+
+     ^b^CFE^b  If Delta-DSR is required, you must use COM_MSR().
+
+ ^bExample^b
+
+     Many modems give an active DSR as soon as a connection is established:
+
+     DO WHILE .NOT. COM_DSR(1)            // Wait for DSR (Call)
+        * ...
+     ENDDO
+
+     ? "Call recognized."
+
+!seealso: "COM_MSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_DTR()    Queries/sets the Data Terminal Ready (DTR) status
+'------------------------------------------------------------------------------
+ ^bCOM_DTR()^b
+ Queries/sets the Data Terminal Ready (DTR) status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_DTR(<nComPort>,[<lNewDTRStatus>]) --> lOldDTRStatus
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) on which DSR is tested.
+
+     ^b<lNewDTRStatus>^b  Designates the status of DTR.  .T. designates that
+     the DTR signal is active, and .F. designates that the signal is
+     inactive.  If the parameter is not specified, CA-Clipper Tools does not
+     affect the DTR exit signal.
+
+ ^bReturns^b
+
+     The returned value corresponds to the DTR signal status prior to the new
+     setting, or in the absence of <lNewDTRStatus>, the returned value
+     corresponds to the current DTR.  A return of .T. indicates that the DTR
+     is active (MCR bit 1 = 1).  A return of .F. indicates that the DTR is
+     inactive (MCR bit 1 = 0).
+
+ ^bDescription^b
+
+     COM_DTR() queries the DTR signal status.  If the second parameter is not
+     supplied, the DTR signal status does not change.
+
+ ^bNote^b
+
+     ^b^CFE^b  The COM_CLOSE() function resets DTR (to inactive).  By
+        contrast, COM_OPEN does not automatically make DTR active!
+
+ ^bExample^b
+
+     A COM_OPEN() does not set the DTR signal.  You must specifically set the
+     DTR signal.
+
+     nBuff_size  :=  4000                      // 4000 byte buffer
+     lComOk      :=  COM_OPEN(1, nBuff_size)   // Open COM1
+
+     IF lComOk
+        COM_DTR(1, .T.)                        // Activate DTR Port 1
+        * ...
+     ENDIF
+
+!seealso: "COM_OPEN()" "COM_CLOSE()" "COM_MCR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_ERRCHR() Defines replacement for a character not received correctly
+'------------------------------------------------------------------------------
+ ^bCOM_ERRCHR()^b
+ Defines the replacement character for a character that is not received
+ correctly
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_ERRCHR(<nComPort>,[<nErrorCharacter|cErrorCharacter>])
+     ^b   --> lChanged
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) where an external line
+     termination character is established.
+
+     ^b<nErrorCharacter|cErrorCharacter>^b  Designates the individual error
+     character, which can be given as a number or a character.  When it is
+     not specified, the port functions do not set any error character in the
+     buffer.
+
+ ^bReturns^b
+
+     COM_ERRCHR() returns .T. when the opened port is addressed.
+
+ ^bDescription^b
+
+     It is always possible that characters received during a file
+     transmission from the port, UART, are recognized inaccurately.  In such
+     cases either an error procedure must be called (i.e.  COM_KEY()) or the
+     inaccurate character must be flagged.  During remote transmission, a
+     "trash" character is output.  CHR(177) is the default "trash" character;
+     however, you can use whatever error character you choose or you can
+     suppress the output of a "trash" character entirely.
+
+ ^bNote^b
+
+     ^b^CFE^b  The Line Status Register (LSR) setting is used to determine
+        whether or not characters were inaccurately received.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Use CHR(250) as an error character for port 2:
+
+        ? COM_ERRCHR(2, 250)       // .T., when accepted
+
+     ^b^CFE^b  Switch off the use of an error character for port 4:
+
+        ? COM_ERRCHR(4)            // .T., when accepted
+
+!seealso: "COM_READ()" "COM_LSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_EVENT()  Designates which event at the port triggered a key trap
+'------------------------------------------------------------------------------
+ ^bCOM_EVENT()^b
+ Designates which event at the port triggered a key trap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_EVENT(<nComPort>,<nMode>) --> nCode
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) that is tested for the
+     event.
+
+     ^b<nMode>^b  Designates a numeric value between 1 and 5 (see table 3-2).
+
+ ^bReturns^b
+
+     This function returns the code of an incoming character, MSR status, LSR
+     status, or the number of errors that have occurred to date as a function
+     of the <nMode> parameter value.
+
+ ^bDescription^b
+
+     As a rule, it is necessary to determine the cause of a trap if a
+     character is placed in the keyboard buffer and the procedure specified
+     with SET KEY TO is called.  The numeric parameter determines what
+     information is accessed.  The information returned for modes 1 to 5 are
+     defined as follows:
+
+     ^bTable 3-2: Query Codes for Event Information^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Event Information^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       The function will return the ASCII code of the incoming
+             character.  If no character is available, a -1 is returned.
+     2       The function returns the status of the MS register at the time
+             of the interrupt.
+     3       The function returns the status of the LS register at the time
+             of the interrupt.
+     4       The value of the internal error counter will be returned. The
+             error events in the LSR since the last COM_INIT() will be
+             counted.
+     5       Returns the number of characters which had to be rejected
+             because the buffer was 100% full.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  With the exception of the error counter, all status
+        information is reset when you open the port or when you call
+        COM_KEY() again.
+
+     ^b^CFE^b  The conditions of MSR and LSR are considered at each interrupt
+        and are linked to the respective status byte in the internal
+        environment through a logical OR operation.  It is therefore possible
+        to place multiple bits in one of the registers.
+
+     ^b^CFE^b  Overrun errors, parity errors, and frame errors (bits 1 to 3)
+        are counted as errors exclusively.
+
+     ^bImportant!^b  The input lines on conventional PC interface cards are
+     normally not terminated.  This can lead to inexplicable results when you
+     query the MSR.
+
+ ^bExample^b
+
+     Determine the number of errors that have occurred:
+
+     nErrorCnt  :=  COM_EVENT(1, 4)
+
+     IF nErrorCnt > 25
+        * more than 25 errors?
+        ? "Too many errors -  terminate program!"
+        lRelease  :=  .T.
+     ENDIF
+
+!seealso: "COM_KEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_FLUSH()  Clears the receiving buffer
+'------------------------------------------------------------------------------
+ ^bCOM_FLUSH()^b
+ Clears the receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_FLUSH(<nComPort>) --> lClear
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the receiving
+     buffer is cleared.
+
+ ^bReturns^b
+
+     If the receiving buffer can be cleared successfully, the function
+     returns .T..
+
+ ^bDescription^b
+
+     This function allows you to flush all the characters in a receiving
+     buffer.  This makes it unnecessary to tediously determine how many
+     characters are currently in the buffer in order to remove them with a
+     read procedure.
+
+     COM_FLUSH() guarantees a truly empty buffer.  However, a new character
+     can be received between the time that you call a COM_COUNT() and a
+     COM_READ().
+
+ ^bNote^b
+
+     ^b^CFE^b  A COM_FLUSH() on an unopened port is ineffective.
+
+ ^bExample^b
+
+     cHayes  :=  "ATZ"           // Hayes modem reset command
+     COM_SEND(1, cHayes)         // Issue Hayes command
+     INKEY(1)                    // Wait one second
+     COM_FLUSH(1)                // Reject modem reply messages
+
+!seealso: "COM_COUNT()" "COM_READ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_GETIO()  Determines the base address of a port
+'------------------------------------------------------------------------------
+ ^bCOM_GETIO()^b
+ Determines the base address of a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_GETIO(<nComPort>) --> nIOPort
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) to which the current I/O
+     address is delivered.
+
+ ^bReturns^b
+
+     COM_GETIO() returns the I/O address of the designated port.  With an
+     invalid parameter or an unavailable port, the function returns a value
+     of -1.
+
+ ^bDescription^b
+
+     COM_GETIO() determines with which port I/O address CA-Clipper Tools
+     functions communicate.  This function only returns a value known to
+     CA-Clipper Tools software.  It cannot determine the I/O address of an
+     interface card!
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the COM1 I/O address:
+
+        ? COM_GETIO(1)               // 1016
+
+     ^b^CFE^b  Specify that you need the address in hexadecimal form:
+
+        ? NTOC(COM_GETIO(1), 16)     // "3F8"
+
+     ^b^CFE^b  Specify an invalid port number:
+
+        ? COM_GETIO(5)               // -1
+
+!seealso: "COM_SETIO()" "COM_SETIRQ()" "COM_GETIRQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_GETIRQ() Determines the interrupt request for a port
+'------------------------------------------------------------------------------
+ ^bCOM_GETIRQ()^b
+ Determines the interrupt request for a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_GETIRQ(<nComPort>) --> nIRQ
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) to which the IRQ currently
+     in use is delivered.
+
+ ^bReturns^b
+
+     COM_GETIRQ() returns the IRQ currently in use for the designated port.
+     When there are incorrect parameters, the function returns a value of -1.
+
+ ^bDescription^b
+
+     COM_GETIRQ() determines which IRQ is served by the CA-Clipper Tools
+     functions for a particular port.  This value corresponds to an internal
+     CA-Clipper Tools software setting.  You cannot determine which IRQ is
+     using a particular port.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the interrupt request for IRQ to COM2:
+
+        ? COM_GETIRQ(2)      // 3
+
+     ^b^CFE^b  Specify an inaccurate port number:
+
+        ? COM_GETIRQ(5)      // -1
+
+!seealso: "COM_SETIRQ()" "COM_SETIO()" "COM_GETIO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_HARD()   Turns the hardware handshake (automatic CTS) on/off
+'------------------------------------------------------------------------------
+ ^bCOM_HARD()^b
+ Turns the hardware handshake (automatic CTS) on/off
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_HARD(<nComPort>,<lNewHandshake>,[<lDTR/DSR>])
+     ^b   --> lOldHandshake
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the hardware
+     handshake is switched on or off.
+
+     ^b<lNewHandshake>^b  Designates whether the handshake is on (.T.) or off
+     (.F.).
+
+     ^b<lDTR/DSR>^b  Designates whether the function uses the DTR/DSR
+     handshake or the RTS/CTS handshake.  When passed as .T., the function
+     uses the DTR/DSR handshake instead of the RTS/CTS handshake.
+
+ ^bReturns^b
+
+     When called only with <nComPort>, the COM_HARD() returns .T. if the
+     hardware handshake is on and .F.  if the hardware handshake is off.
+     When <lNewHandshake> is passed, the function returns the status prior to
+     the new setting.
+
+ ^bDescription^b
+
+     The size of a receiving buffer is always limited.  To avoid overflow,
+     and thereby a loss of characters, software or hardware handshakes are
+     usually implemented.  During a hardware handshake, the port monitors the
+     RTS signal.  If you use this function to switch this handshake on, the
+     signal is activated as soon as the buffer is 75% full.  As soon as the
+     buffer content is once again reduced to 50% or less, the port (the RTS
+     signal) is once again released.  Some printers use the port signals, DTR
+     (output like RTS) and DSR (entry like CTS) instead of RTS/CTS, to avoid
+     buffer overflow.  In this case, <lDTR/DSR> can be passed with .T..
+
+ ^bNotes^b
+
+     ^b^CFE^b  The hardware handshake only supports background transmission
+        (when COM_OPEN() is implemented with the third parameter
+        <nBufferOut>).
+
+     ^b^CFE^b  This function works for data input as well as output.
+
+     ^b^CFE^b  If you use a hardware handshake, then the RTS signal should no
+        longer be affected by COM_RTS() or COM_MCR().
+
+ ^bExample^b
+
+     Turn on the hardware handshake at a port:
+
+     COM_OPEN(2, 1000, 1000)          // Open COM2, background send
+                                      // buffer
+     COM_HARD(2, .T.)                 // RTS/CTS Hardware handshake
+                                      // for port 2
+
+!seealso: "COM_READ()" "COM_SEND()" "COM_SOFT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_INIT()   Initializes the port parameters
+'------------------------------------------------------------------------------
+ ^bCOM_INIT()^b
+ Initializes the port parameters
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_INIT(<nComPort>,[<nBaudRate>],[<cParity>],
+     ^b   [<nDataLength>],[<nStopBits>]) --> lInitialized
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) that is initialized.
+
+     ^b<nBaudRate>^b  Designates the selected baud rate for the port.
+     Settings of 300, 600, 1200, 2400, 4800, 9600 and 19200 baud are
+     possible.  The default value is 300 baud.
+
+     ^b<cParity>^b  Designates parity in the following form: (E)ven, (O)dd,
+     (M)ark, (S)pace, or (N)one.  The default value is (N)one.
+
+     ^b<nDataLength>^b  Designates the data length; seven or eight bits are
+     possible.  The default value is eight bits.
+
+     ^b<nStopBits>^b  Designates the number of stop bits, one or two.  The
+     default value is one stop bit.
+
+ ^bReturns^b
+
+     If the com port is initialized successfully, the function returns .T..
+
+ ^bDescription^b
+
+     In order to use the serial port after you open it, four operating
+     parameters must have been passed to this function.  These operating
+     parameters are the transmission speed (baud rate), the data length, the
+     parity, and the number of stop bits.  Today most bulletin boards use the
+     configuration "300 - 9600 baud, 8N1".  This configuration means eight
+     data bits, no parity, and one stop bit.  What is important is that all
+     these parameters can be changed while the port is closed.  Neither the
+     data buffer or the modem status register (DTR, etc.) are affected.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The port must have been opened previously.  It is impossible
+        to initialize a port prior to opening it.
+
+     ^b^CFE^b  If any or all of the four operating parameters are not
+        designated, or are designated incorrectly, the standard arguments of
+        300 baud, no parity, eight data bits, and one stop bit is used.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open and initialize a port:
+
+        nBuff_size := 4000                     // 4000 character buffer
+        lComOk  :=  COM_OPEN(1, nBuff_size)    // Open port
+
+        IF lComOk
+              * The port is open, now it is to be initialized with 1200
+              * baud, no parity, eight data bits, and one stop bit.
+
+              lInitOk  :=  COM_INIT(1, 1200, "N", 8, 1)
+
+              IF .NOT. lInitOk
+                 ? "Port cannot be initialized !"
+              ENDIF
+        ENDIF
+
+     ^b^CFE^b  You can also omit the last three parameters in the above
+        example because they correspond to the default settings:
+
+        lInitOk  :=  COM_INIT(1, 1200)      // Init. with 1200, N, 8, 1
+
+!seealso: "COM_OPEN()" "COM_CLOSE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_KEY()    Monitors the port using key traps
+'------------------------------------------------------------------------------
+ ^bCOM_KEY()^b
+ Monitors the port using key traps
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_KEY(<nComPort>,[<nKeyValue1>],[<nKeyValue2>])
+     ^b   --> lActive
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) where particular activities
+     are monitored.
+
+     ^b<nKeyValue1>^b  Designates the key code placed in the keyboard buffer
+     in case an interrupt occurs.  Values permitted with CA-Clipper's SET KEY
+     TO command are allowed, as a numeric value or a character.  If this
+     parameter is not specified, then the port interrupts are not monitored.
+
+     ^b<nKeyValue2>^b  Designates another key code that is placed in the
+     keyboard buffer when the receiving buffer is 75% or more full.  Values
+     permitted with CA-Clipper's SET KEY TO command are allowed, as a numeric
+     value or a character.  If this parameter is not specified, the buffer
+     overflow is not monitored.
+
+ ^bReturns^b
+
+     COM_KEY() returns .T. when at least one trap is switched on and returns
+     .F. when all monitoring is switched off.
+
+ ^bDescription^b
+
+     COM_KEY() allows you to monitor a port while the program is in a READ.
+     In this way, various events at the port can cause a particular key code,
+     selected by the programmer, to be placed in the keyboard buffer.  This
+     happens when:
+
+     ^b^CFE^b  Data arrives at the port.
+
+     ^b^CFE^b  A transmission error or a BREAK is recognized in the LSR.
+
+     ^b^CFE^b  One of the signals in the MSR changes.
+
+     ^b^CFE^b  The receiving buffer becomes 75% or more full.
+
+     The MSR and LSR status, the number of errors that have already occurred,
+     and the receipt of individual characters can be monitored through the
+     <nKeyValue1> key code.  All information is saved in an internal memory
+     area and can be queried from there using the COM_EVENT() function.  This
+     procedure is important because the register or the flags that release
+     the interrupt, are automatically reset during read access.  Otherwise,
+     the information is lost.
+
+     If the <nKeyValue2> parameter is specified, then one more procedure can
+     be specified using the SET KEY TO command when the receiving buffer is
+     75% or more full.  If the <nKeyValue2> parameter is specified, the
+     <nKeyValue1> key code is no longer placed in the keyboard buffer when
+     characters are received.  However, you can still monitor the MSR and
+     LSR.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The status of the various interface registers are connected to
+        the internal memory for as long as the event is "serviced" by a new
+        COM_KEY() function call.  This means that the modifications made
+        during this period cannot be lost.
+
+     ^b^CFE^b  COM_KEY must be newly activated after every executed trap.
+        This deletes information concerning the internal environment.
+
+     ^b^CFE^b  When COM_KEY() places a character into the buffer because the
+        buffer is close to full, it does so independently of the COM_SOFT()
+        or COM_HARD() functions.
+
+ ^bExample^b
+
+     CHR(227) is placed in the keyboard buffer and calls the COMERRORS
+     procedure if an error is recognized at port 2 or if the modem status
+     signal changes.  As soon as the buffer is 75% full or more, CHR(228) is
+     placed in the keyboard buffer.  When CHR(228) is placed in the keyboard
+     buffer, the BUFFERFULL procedure is called:
+
+     #include CTCOM.CH                   // Symbolic constants
+                                         // for interface
+     COM_OPEN(2, 1000)                   // Open COM2
+     CON_INIT(2, 1200, "N", 8, 1)        // Initialize COM2
+
+     SET KEY 227 TO ComErrors
+     SET KEY 228 TO BufferFull
+
+     COM_KEY(2, 227, 228)                // Monitor COM2
+
+     cName  :=  SPACE(20)                // The port can arrange
+     PROCEDURE COMMERRORS(A, B, C)
+
+        nMSR_Status  :=  COM_EVENT(2, 2) // Read accumulated
+                                         // MSR data
+
+        nLSR_Status  :=  COM_EVENT(2, 2) // Read accumulated
+                                         // LSR data
+        COM_KEY(2, 227, 228)             // Reactivate traps, reset
+                                         // internal values of COM_EVENT
+
+        IF ISBIT(nMSR_Status, MSR_RI)          // Ring bit set?
+           ? "Call (ring) acknowledged!"
+        ELSE
+           IF ISBIR(nLSR_Status, nLSR_Break)   // Break bit set?
+              ? "Break acknowledged!"
+           ENDIF
+        ENDIF
+        RETURN
+     PROCEDURE BUFFERFULL(A, B, C)
+
+        * The input buffer must be read!
+        COM_KEY(2, 227, 228)                 // Traps activated here
+        cData  := COM.READ(2)                // Read all data
+        SELECT MESSDAT
+        REPLACE ComDat WITH cData            // Save data
+        SKIP
+        SELECT INPUT
+        RETURN
+
+!seealso: "COM_EVENT()" "COM_COUNT()" "COM_MSR()" "COM_LSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_LSR()    Reads the Line Status Register (LSR)
+'------------------------------------------------------------------------------
+ ^bCOM_LSR()^b
+ Reads the Line Status Register (LSR)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_LSR(<nComPort>) --> nLSR
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) that reads the Line Status
+     Register (LSR).
+
+ ^bReturns^b
+
+     COM_LSR() returns the contents of the Line Status Register.
+
+ ^bDescription^b
+
+     The Line Status Register makes the following information available:
+
+     ^bTable 3-3: LS Register Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Symb. Const              Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      LSR_ERROR                Parameter error
+      1      LSR_DATA_READY           Data ready
+      2      LSR_OVERRUN_ERR          Overflow error
+      4      LSR_PARITY_ERR           Parity error
+      8      LSR_FRAMING_ERR          Framing error
+     16      LSR_BREAK                BREAK recognized
+     32      LSR_TRANS_HOLD_EMPTY     Transmission holder register empty
+     64      LSR_TRANS_EMPTY          TX shift register empty
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  The Line Status Register can only be examined using this
+        function.
+
+     ^b^CFE^b  Some bits in this register are reset by a read.
+
+ ^bExample^b
+
+     nStatus  :=  COM_LSR(2)            // Read LSR port 2
+
+     IF ISBIT(nStatus, 5)               // Set bit 5
+        ? "BREAK recognized - Abort!"
+     ENDIF
+
+!seealso: "COM_MCR()" "COM_MSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_MCR()    Reads or sets the Modem Control Register (MCR)
+'------------------------------------------------------------------------------
+ ^bCOM_MCR()^b
+ Reads or sets the Modem Control Register (MCR)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_MCR(<nComPort>,[<nMCR>]) --> nMCR
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the Modem Control
+     Register (MCR) is read or set.
+
+     ^b<nMCR>^b  Designates a specified parameter between 0 and 255.  If this
+     parameter is not specified, then MCR is read only.
+
+ ^bReturns^b
+
+     COM_MCR() returns the contents of the Modem Control Register.
+
+ ^bDescription^b
+
+     The Modem Control Register can be read only and/or read and set.  The
+     second optional parameter determines if a new value is set.  The bits
+     have the following meaning:
+
+     ^bTable 3-4: MC Register Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Symb.Const.    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       MCR_ERROR      Parameter error
+     1       MCR_DTR        Data terminal ready (DTR)
+     2       MCR_RTS        Request to send (RTS)
+     4       MCR_OUT_1      OUT 1
+     8       MCR_OUT_2      OUT 2
+     16      MCR_LOOP       LOOP
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  The OUT1, OUT2, and LOOP control bits can only be changed
+        using this function.  Additional functions are available for DTR and
+        RTS.
+
+ ^bExample^b
+
+     nStatus  :=  COM_MCR(1)         // Port 1 MCR is read only
+
+     IF NUMAND(nStatus, 3) = 3
+        ? "DTR and RTS are active!"
+     ENDIF
+
+!seealso: "COM_DTR()" "COM_RTS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_MSR()    Reads the Modem Status Register (MSR)
+'------------------------------------------------------------------------------
+ ^bCOM_MSR()^b
+ Reads the Modem Status Register (MSR)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_MSR(<nComPort>) --> nMSR
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the Modem Status
+     Register is read.  COM1(1) to COM4(4) are possible.
+
+ ^bReturns^b
+
+     COM_MSR() returns a value between 0 and 255 that corresponds to the
+     contents of the MSR.
+
+ ^bDescription^b
+
+     Not all the values for this status register can be determined from
+     separate functions.  For example, if you need Delta status information,
+     you can use this function and test the corresponding bit.  The
+     individual bits are defined as follows:
+
+     ^bTable 3-5: MC-Register Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Symb. Const.   Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       MSR_ERROR      Parameter error
+     1       MSR_DELTA_CTS  DELTA ready to send (DCTS)
+     2       MSR_DELTA_DSR  DELTA data terminal ready (DDSR)
+     4       MSR_TERI       Trailing edge RING (TERI)
+     8       MSR_DELTA_DCD  DELTA data carrier detected (DDCD)
+     16      MSR_CTS        Clear to send (CTS)
+     32      MSR_DSR        Data terminal ready (DSR)
+     64      MSR_RI         RING indicator (RI)
+     128     MSR_DCD        Data carrier detected (DCD)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  The simultaneous testing of multiple bits in the MSR is fairly
+        simple when using a logical AND operation.
+
+     ^b^CFE^b  All delta bits in this register are reset using a read
+        procedure.
+
+ ^bExample^b
+
+     nStatus  :=  COM_MSR(1)
+
+     IF ISBIT(nStatus, 5)            // CTS (Bit-5) active?
+        . . .
+     ENDIF
+
+!seealso: "COM_CTS()" "COM_DSR()" "COM_RING()" "COM_DCD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_NUM()    Gives the number of the highest available serial interface port
+'------------------------------------------------------------------------------
+ ^bCOM_NUM()^b
+ Gives the number of the highest available serial interface port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_NUM() --> nMaxCom
+
+ ^bReturns^b
+
+     COM_NUM() returns the number of the highest available serial interface
+     port.
+
+ ^bDescription^b
+
+     This function returns the number of the serial interface port available.
+     This is not to say that a return value of 3 necessarily means that ports
+     1 through 3 are available; for example, COM2 could be missing.  Whether
+     or not a serial port can actually be used can be tested using the
+     COM_OPEN() or COM_INIT() functions.
+
+     Normally the addresses described in the Introduction to this chapter are
+     scanned for available ports.  Scanning can happen over alternate
+     addresses selected through COM_SETIO().
+
+     ^bImportant!^b  Four I/O addresses are assigned to ports COM1 - COM4,
+     internal to the port functions.  The COM_NUM() function goes through
+     these four addresses and tests to see if a port is available there.
+     This can lead to problems if some other hardware is installed in one of
+     the address areas.  For example, problems like this have been noted in
+     conjunction with ArcNet network cards, which conflict in the address
+     area with COM4.  The critical address areas are listed in the table
+     below.
+
+     ^bTable 3-6: I/O Addresses for COM1-COM4^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPort    I/O Addresses^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     COM1    03F8h - 03FFh
+     COM2    02F8h - 02FFh
+     COM3    03E8h - 03EFh
+     COM4    02E8h - 02EFh
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If any kind of hardware is found within this I/O address area, then the
+     conflicting COM port can be masked.  Additionally, using COM_SETIO()
+     (<nComPort>, 0) the accompanying base address within the internal table
+     is deleted.  You can only mask the conflicting port when COM_NUM() has
+     not previously been called in the program.  If COM_NUM() has been called
+     in the program, the interface is marked "in use".
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of ports at the standard addresses:
+
+        ? COM_NUM()                 // e.g. 4
+
+     ^b^CFE^b  Determine the number of ports at unusual addresses:
+
+        COM_SETIO(3, "110")         // COM3, 110h
+        COM_SETIO(4, "120")         // COM4, 120h
+        ? COM_NUM()
+
+!seealso: "COM_SETIO()" "COM_OPEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_OPEN()   Opens the port and initializes the buffer
+'------------------------------------------------------------------------------
+ ^bCOM_OPEN()^b
+ Opens the port and initializes the buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_OPEN(<nComPort>,<nBufferIn>,<nBufferOut>,
+     ^b   [<lTrapMode>]) --> lStatus
+
+     ^bTip:^b  The new optional parameter is an enhancement over previous
+     versions!
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the number of the port (1 to 4).
+
+     ^b<nBufferIn>^b  Designates the size of the receiving buffer up to 64
+     kByte.  The default value is 100 bytes.
+
+     ^b<nBufferOut>^b  Designates the size of the sending buffer for
+     background transmission up to 64 kByte.  The default specification is a
+     no send buffer.
+
+     ^b<lTrapMode>^b  Designates when the port triggers an interrupt.  When
+     this parameter is .T., the port only triggers an interrupt while
+     receiving data, and not as a result of transmission failure.  The
+     default value causes the port to trap all occurrences.
+
+ ^bReturns^b
+
+     COM_OPEN() returns .T. when the port has been successfully opened and
+     you can select the buffer.
+
+ ^bDescription^b
+
+     This function allows you to open a serial interface port from COM1 to
+     COM4.  These ports have particular I/O addresses.  For example,
+     CA-Clipper Tools uses 3F8H as a base address for COM1.  DOS or BIOS
+     routines are not even involved; I/O addresses are not read from the BIOS
+     data area.  The default values described in the Introduction to this
+     chapter are applied, or the values are set using COM_SETIO().  The
+     availability of a port is tested for these addresses before the port is
+     opened.
+
+     ^bReceiving Data^b
+     A buffer of up to 64 kByte can be reserved for each com port.  All
+     arriving characters are saved here, even when the CA-Clipper program is
+     active elsewhere with another process.  The number of characters in the
+     buffer can be checked and partially read.
+
+     ^bSending Data^b
+     You can also reserve a sending buffer.  If you reserve a sending buffer,
+     COM_SEND() controls the interrupt function for data transmission, which
+     means that the interrupt occurs in the background.  Several functions
+     are available to control the send buffer.
+
+     ^bInterrupts during Transmission Errors^b
+     If <lTrapMode> is specified as .T., the UART port only triggers an
+     interrupt when there is data incoming or interrupt driven data being
+     sent.  Events connected with the MSR or the LSR are no longer taken into
+     account.  This affects the status signal and particularly affects
+     transmission errors.
+
+     This capability was added as the result of research that indicated that
+     some adapter ports seemed to trigger interrupts for no reason.  These
+     interrupts are caused by "trash" on the lines; as a rule, serial port
+     incoming lines were not terminated (electronically closed).  Overflowing
+     interrupts can disturb program execution and lead to significant loss of
+     performance.
+
+ ^bNotes^b
+
+     ^bImportant!^b  In contrast to other programming languages, like Basic,
+     COM_OPEN() and COM_INIT() do not affect any control signals.  If you
+     want to address a modem at the serial interface through CA-Clipper, you
+     must set the DTR and every other signal using the correct CA-Clipper
+     Tools functions.
+
+     ^b^CFE^b  Buffer size can be between 100 bytes and 64 kByte.  Settings
+        too large or too small are corrected, increased or decreased,
+        accordingly.
+
+     ^b^CFE^b  To ensure compatibility with earlier versions of CA-Clipper
+        Tools, the <nComPort>, <nBufferIn>, and <lTrapMode> parameters can be
+        used without <nBufferOut> (see the example).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open a port with monitoring:
+
+        IF COM_NUM() > 0
+           nBuffSize := 4000                     // 4000 byte buffer
+
+           ComOk  :=  COM_OPEN(1, nBuffSize)     // Open COM1
+
+           IF .NOT. ComOk
+              ? "Port cannot be opened  !"
+           ENDIF
+        ENDIF
+
+     ^b^CFE^b  Open COM3 with the corresponding send and receive buffer:
+
+        ? COM_OPEN(3, 1000, 1000)           // .T. when successful
+
+     ^b^CFE^b  Trigger interrupts for incoming data only, not for
+        transmission failure (receiving buffer 1000 characters, normal
+        transmission):
+
+        ? COM_OPEN(3, 1000, .T.)            // .T. when successful
+
+!seealso: "Introduction" "COM_INIT()" "COM_SEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_READ()   Reads characters from the receiving buffer
+'------------------------------------------------------------------------------
+ ^bCOM_READ()^b
+ Reads characters from the receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_READ(<nComPort>,[<nLength>],[<lNoDelete>])
+     ^b   --> cCharacterstring
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) that is read.
+
+     ^b<nLength>^b  Designates the number of the characters in the buffer
+     that are read.  The default value reads all characters.
+
+     ^b<lNoDelete> ^b Designates whether or not characters are removed from
+     the buffer as they are read.  The default setting removes all characters
+     from the buffer as they are read.  However, if the parameter is .T., the
+     characters remain in the buffer as long as it is not full.
+
+ ^bReturns^b
+
+     The returned string contains the corresponding characters from the
+     receiving buffer.
+
+ ^bDescription^b
+
+     All characters arriving at the serial port are stored in the appropriate
+     buffer under interrupt control.  It is possible to determine the number
+     of characters in the buffer and to read one, several, or all of the
+     characters.  If the <nLength> parameter is not specified, then all the
+     characters in the buffer are read.
+
+ ^bNote^b
+
+     ^b^CFE^b  Remember that you can receive additional characters between
+        calling COM_COUNT() and COM_READ().
+
+ ^bExample^b
+
+     Wait until at least 10 characters have been received:
+
+     DO WHILE COM_COUNT(1) < 10             // Wait until 10
+                                            // characters in buffer
+        *...
+     ENDDO
+
+     cInput := COM_READ(1, 10)              // Read in 10 characters
+     ? cInput                               // Display characters
+                                            // that are read
+
+!seealso: "COM_COUNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_REMOTE() Determines the clear character for the receiving buffer
+'------------------------------------------------------------------------------
+ ^bCOM_REMOTE()^b
+ Determines the clear character for the receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_REMOTE(<nComPort>,[<nCharacter|cCharacter>])
+     ^b   --> lActive
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) where an external line
+     termination character is established.
+
+     ^b<nCharacter|cCharacter> ^b Designates a line termination character,
+     which could be a numeric value or a character.  When it is not
+     specified, the existing line termination character (if any) is canceled.
+     The default character is the no line termination character.
+
+ ^bReturns^b
+
+     COM_REMOTE() returns .F. if the specified port is invalid.
+
+ ^bDescription^b
+
+     When longer text is sent, the receiver should be able to break off the
+     transmission session or to delete the sending buffer.  To do this, a
+     character can be defined as an external line termination character.  If
+     this character is received, it deletes the background buffer of the
+     sending station, as if you had called COM_SFLUSH().  The sending
+     CA-Clipper program no longer concerns itself with this session.
+
+     COM_SMODE() can help you determine if the buffer of the remote station
+     has been deleted.
+
+ ^bNote^b
+
+     ^b^CFE^b  Before a binary file transfer, an existing line termination
+        character should be canceled because the transmission could be
+        terminated accidentally.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The remote station can terminate using Ctrl-X (Port 2):
+
+        COM_REMOTE(2, 24)
+        COM_SEND(2, cLongText)
+
+        IF ISBIT(COM_SMODE(2), 4)
+           ? "Sending buffer is deleted automatically by remote station!"
+        ENDIF
+
+     ^b^CFE^b  Eliminate the external line termination character:
+
+        COM_REMOTE(2)
+
+!seealso: "COM_SKEY()" "COM_SMODE()" "COM_SFLUSH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_RING()   Queries the ring line
+'------------------------------------------------------------------------------
+ ^bCOM_RING()^b
+ Queries the ring line
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_RING(<nComPort>) --> lActiveRing
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) on which the ring line is
+     tested.
+
+ ^bReturns^b
+
+     A return of .T. indicates that the ring line is active (MSR bit-7 = 1).
+     A return of .F. indicates that the ring line is inactive (MSR bit-7 =
+     0).
+
+ ^bDescription^b
+
+     COM_RING() lets you check the ring line of a port from within a program.
+
+ ^bNote^b
+
+     ^b^CFE^b  When TERI (Trailing edge ring) is required, use the COM_MSR()
+        function.
+
+ ^bExample^b
+
+     Modems generally show the ring signal of an incoming call.  This does
+     not mean that a trouble free connection has been established.
+
+     DO WHILE .NOT. COM_RING(1)            // Wait for call (RING)
+        * ...
+     ENDDO
+
+     ?  "Call detected..."
+
+!seealso: "COM_MSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_RTS()    Queries or sets the Request To Send (RTS)
+'------------------------------------------------------------------------------
+ ^bCOM_RTS()^b
+ Queries or sets the Request To Send (RTS)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_RTS(<nComPort>,[<lNewRTSStatus>]) --> lOldRTSStatus
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) where the RTS signal is
+     queried or changed.
+
+     ^b<lNewRTSStatus>^b  Designates the RTS signal status.  When the
+     parameter is .T., the function activates the RTS signal.  When the
+     parameter is .F., the function deactivates the RTS signal.  If no
+     parameter is specified, CA-Clipper Tools does not affect the current DTR
+     output signal setting.
+
+ ^bReturns^b
+
+     The returned status corresponds to the RTS signal status prior to the
+     new setting.
+
+     A return of .T. indicates that the RTS signal is active (MCR Bit-2 = 1).
+     A return of .F. indicates that the RTS signal is inactive (MCR Bit-2 =
+     0).
+
+ ^bDescription^b
+
+     COM_RTS() queries or changes the status of the Request To Send signal
+     (RTS).  If <lNewRTSStatus> is not specified, the RTS status remains
+     unchanged.
+
+ ^bNote^b
+
+     ^b^CFE^b  The COM_CLOSE() function resets (deactivates) the RTS signal.
+        The COM_OPEN() function does not automatically activate it!
+
+ ^bExample^b
+
+     Set an individually programmable hardware handshake:
+
+     COM_RTS(2, .T.)      // Request to send a port 2
+
+     DO WHILE .NOT. COM_CTS(2)
+        *...
+     ENDDO
+
+     COM_SEND(2, "The quick brown fox jumps over the lazy dog")
+
+!seealso: "COM_OPEN()" "COM_CLOSE()" "COM_MCR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SCOUNT() Counts number of characters in the background sending buffer
+'------------------------------------------------------------------------------
+ ^bCOM_SCOUNT()^b
+ Counts the number of characters in the background sending buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SCOUNT(<nComPort>) --> nLength
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the send buffer
+     length is returned.
+
+ ^bReturns^b
+
+     COM_SCOUNT() returns the number of characters in the sending buffer of
+     the selected port.
+
+ ^bDescription^b
+
+     COM_SCOUNT() determines the number of characters in one of the four
+     possible sending buffers.  This is only possible when the com interface
+     is interrupt controlled, meaning that data is sent in the background.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you attempt to determine the character count in a port that
+        is not open, the function returns a value of -1.
+
+ ^bExample^b
+
+     nCharacter := COM_SCOUNT(1)            // Number of characters
+                                            // in Port 1
+
+!seealso: "COM_OPEN()" "COM_SEND()" "COM_SFLUSH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SEND()   Transmits data directly or in the background
+'------------------------------------------------------------------------------
+ ^bCOM_SEND()^b
+ Transmits data directly or in the background
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SEND(<nComPort>,<cString>) --> nLength
+
+     ^bTip: ^b An enhancement over previous versions is that there are no new
+     parameters!
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) from which transmission
+     occurs.
+
+     ^b<cString>^b  Designates the string that is transmitted by the selected
+     port.  If you only need to transmit a single character, then the second
+     parameter can also be numeric and thereby pass the ASCII character code
+     directly.
+
+ ^bReturns^b
+
+     When transmission is successful, a 0 is returned.  If transmission is
+     not successful, the number of characters that have not been transmitted
+     or could not be placed in the sending buffer is returned.
+
+ ^bDescription^b
+
+     COM_SEND() transmits one or more characters from one of four ports.
+     This transmission can be interrupt driven (i.e. occurs in the
+     background).  The third parameter of COM_OPEN() determines whether or
+     not the transmission is direct or occurs in the background.
+
+     ^b"Normal" Transmission^b
+     During "normal" transmission, program execution can continue only when
+     all of the characters have been sent to the port.  A unique situation
+     presents itself when the hardware handshake is activated.  As soon as
+     the receiving station deactivates the CTS signal from the sending
+     station, any transmission is immediately stopped.  To prevent the
+     CA-Clipper program from hanging, COM_SEND() is terminated and a numeric
+     value representing the number of characters not yet sent is returned.
+     COM_CTS() can determine if CTS input has been deactivated by the remote
+     station.  The software handshake is not supported in this mode!
+
+     ^bBackground Transmission^b
+     The background mode supports software and hardware handshakes.  The
+     handshake automatically occurs in the background.  Several new functions
+     are available to help you maintain control of the transmission buffer in
+     this situation.  For example, COM_SMODE() allows you to determine if the
+     buffer is waiting for an XON character to release the software
+     handshake.  Since this kind of wait can prove futile, you can use
+     COM_FLUSH() from within the program to empty the transmission buffer.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The handshake is only supported when the transmission buffer
+        is sending in the background.  Use small packets during direct
+        transmissions, and regularly query COM_SOFT_R().
+
+     ^b^CFE^b  Software and hardware handshakes are switched on using the
+        COM_SOFT() and COM_HARD() functions.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This is an example of "normal" transmission at port 1, with no
+        transmission buffer open:
+
+        COM_OPEN(1, 1000)                    // Receiving buffer only
+        COM_HARD(.T.)                        // Hardware handshake
+        ACCEPT "Please input name " TO cInput
+        nRest := COM_SEND(1, cInput)         // 1st attempt to transmit
+
+        DO WHILE nRest > 0
+           cInput := RIGHT(cInput, nRest)    // Characters not yet sent
+           nRest := COM_SEND(1, cInput)
+        ENDDO
+
+     ^b^CFE^b  Here is an example for background or interrupt controlled
+        transmission at port 1.  Everything else can proceed through "normal"
+        transmission:
+
+        COM_OPEN(1, 1000, 1000)           // 1000 byte transmission buffer
+        nRest := COM_SEND(1, "Attempt")   // Place characters in buffer
+
+!seealso: "COM_OPEN()" "COM_INIT()" "COM_HARD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SETIO()  Changes the base address for a port
+'------------------------------------------------------------------------------
+ ^bCOM_SETIO()^b
+ Changes the base address for a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SETIO(<nComPort>,<nIOPort|cIOPort>) --> lChanged
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which a new I/O address
+     is selected.
+
+     ^b<nIOPort|cIOPort>^b  Designates a valid I/O address for the selected
+     port.  The parameter can be a decimal or hexadecimal string.  For
+     information about the default value, see the Introduction this chapter.
+
+ ^bReturns^b
+
+     COM_SETIO() returns .T. if the new I/O address is successfully set.
+
+ ^bDescription^b
+
+     As is the case for other interface card settings, no true standard
+     exists for I/O addresses.  This is particularly true for the COM3 and
+     COM4 ports.  By using COM_SETIO(), CA-Clipper Tools software can be
+     adapted to the I/O addresses of the most eccentric interface card.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function tests to see if there is a port available at the
+        selected I/O address.  COM_SETIO() returns .T. or .F. accordingly.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This is an example of a setting for port 2, with the I/O
+        address as a decimal:
+
+        COM_SETIO(2, 504)               // Address 1F8h
+
+     ^b^CFE^b  This is an example of a setting for port 4, with the I/O
+        address as a hexadecimal:
+
+        COM_SETIO(4, "1F8")             // .T.
+
+     ^b^CFE^b  This is an example of an invalid I/O address; the value
+        exceeds 1023:
+
+        COM_SETIO(4, "10F8")            // .F.
+
+!seealso: "COM_SETIRQ()" "COM_GETIO()" "COM_GETIRQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SETIRQ() Changes the interrupt request for a port
+'------------------------------------------------------------------------------
+ ^bCOM_SETIRQ()^b
+ Changes the interrupt request for a port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SETIRQ(<nComPort>,<nIRQ|cIRQ>) --> lChanged
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) where the interrupt request
+     (IRQ) is set.
+
+     ^b<nIRQ|cIRQ>^b  Designates the new IRQ number for the selected port.
+     This parameter can be a decimal or a hexadecimal string and can be from
+     2 to 15.
+
+ ^bReturns^b
+
+     The function returns .T. when the new IRQ has been successfully set.
+
+ ^bDescription^b
+
+     Unfortunately, there is not a binding standard for serial ports,
+     particularly for COM3 and COM4.
+
+     Each interface card uses an interrupt request line to advise the
+     interrupt controller that a character has been received.  The controller
+     then passes this information on to the CPU, which calls a service
+     routine through the corresponding interrupt vector.  XT systems have
+     eight such interrupt lines available.  AT systems have more than 16
+     available interrupt lines, some of which are usually occupied with other
+     peripherals.  The allocation of a new IRQ is no small matter and
+     requires considerable technical expertise.  Determining which IRQ is
+     available and is not currently in use can usually be done by studying
+     the configuration of all external devices and the technical
+     documentation that accompanies your computer system.  Typically IRQ's 0
+     and 1 are used for internal purposes (timer), 2 and 9 for network
+     adapters, 5 and 7 for the printer, and 6 and 14 for floppies or hard
+     disks.
+
+     ^bTip: ^b As you will notice from the default setting in the
+     Introduction to this chapter, it is possible for multiple ports to use
+     the same IRQ (interrupt sharing).  While CA-Clipper Tools functions do
+     support this process, standard port hardware usually does not.  However,
+     special multiple port cards for this purpose are offered by a variety of
+     manufacturers.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Please notice that the base settings that CA-Clipper Tools
+        uses for COM1 to COM4 are described in the Introduction to this
+        chapter.
+
+     ^b^CFE^b  COM_SETIRQ() does not test to see if a port is actually
+        serving the selected IRQ.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set COM3 and COM4 to IRQ 5.  This example requires two calls:
+
+        ? COM_SETIRQ(3, 5)            // .T.
+        ? COM_SETIRQ(4, 5)            // .T.
+
+     ^b^CFE^b  Set port 4 to IRQ 10. IRQ in hex:
+
+        ? COM_SETIRQ(4, "A")          // .T.
+
+     ^b^CFE^b  This is an example of an incorrect value for IRQ:
+
+        ? COM_SETIRQ(2, 0)            // Timer tick not allowed  .F.
+        ? COM_SETIRQ(3, "10")         // This would be decimal 16  .F.
+
+!seealso: "COM_SETIO()" "COM_GETIRQ()" "COM_GETIO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SFLUSH() Deletes the sending background buffer
+'------------------------------------------------------------------------------
+ ^bCOM_SFLUSH()^b
+ Deletes the sending background buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SFLUSH(<nComPort>) --> lDeleted
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the sending
+     buffer is deleted.
+
+ ^bReturns^b
+
+     If the selected sending buffer is successfully deleted, the function
+     returns a .T.
+
+ ^bDescription^b
+
+     COM_SFLUSH() eliminates all the characters in a sending buffer.  This
+     can be useful when the send routine has been futilely waiting for an XON
+     character (bad software handshake).
+
+ ^bNotes^b
+
+     ^b^CFE^b  A COM_SFLUSH() to a closed port does not work.
+
+     ^b^CFE^b  It is not necessary to test for characters in the sending
+        buffer to carry out a COM_SFLUSH().
+
+ ^bExample^b
+
+     When the sending buffer is waiting for an XON character and the
+     transmission has been delayed 30 seconds, the sending buffer is deleted:
+
+     nStart  := SECONDS()                    // When sent
+
+     COM_SEND(2, cSendText)
+
+     IF ISBIT(COM_SMODE(2), 2)               // Waiting for XON?
+        IF SECONDS() - nStart > 30           // 30 second delay ...
+           COM_SFLUSH(2)                     // Delete sending buffer
+        ENDIF
+     ENDIF
+
+!seealso: "COM_SCOUNT()" "COM_SMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SKEY()   Monitors port using key traps during background transmission
+'------------------------------------------------------------------------------
+ ^bCOM_SKEY()^b
+ Monitors the port using key traps during background transmission
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SKEY([<nComPort>],[<nKeyValue1|cKeyValue1>],
+     ^b   [<nKeyValue2|cKeyValue2>]) --> lActive
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) that is monitored in the
+     background during transmission.
+
+     ^b<nKeyValue1|cKeyValue1>^b  Designates the key code placed in the
+     keyboard buffer as soon as the port send buffer has been cleared.  Like
+     the values available in CA-Clipper's SET KEY TO command, the key value
+     can be a numeric value or an individual character.  When this parameter
+     is not passed, the supervision of buffer overflow can be switched off.
+
+     ^b<nKeyValue2|cKeyValue2>^b  Designates the key code that the function
+     places in the keyboard buffer at the start of a software or hardware
+     handshake.  Like the values in CA-Clipper's SET KEY TO command, the key
+     value can be a numeric value or an individual character.  When this
+     parameter is not passed, the supervision of buffer overflow can be
+     switched off.
+
+ ^bReturns^b
+
+     COM_SKEY() returns .T. when the selected character is placed in the
+     keyboard buffer by the corresponding event.
+
+ ^bDescription^b
+
+     This function allows you to monitor a transmission in the background
+     with regard to the hardware or software handshake and the contents of
+     the buffers.  If you have designated <nKeyValue1>, it is deposited in
+     the keyboard buffer as soon as the sending buffer is empty.
+
+     If the software or hardware handshake has been implemented by COM_SOFT()
+     or COM_HARD(), then the COM interface program places <nKeyValue2> in the
+     keyboard buffer when an XOFF is encountered or the CTS input is
+     deactivated.  If you have passed <nKeyValue1>, it is deposited in the
+     keyboard buffer as soon as the sending buffer is empty.
+
+     Both events can prove very effective when combined with a CA-Clipper key
+     trap.  In this way the program does not constantly have to review the
+     status of the sending buffer; it simply "takes note" when something
+     happens.  The specific event is then determined with COM_SMODE() within
+     the called procedure.
+
+ ^bNote^b
+
+     ^bImportant!^b  After each execution of a trap, COM_SKEY() must be
+     reactivated.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine if the port 2 buffer is empty:
+
+        COM_SKEY(2, , 225)            // Place code 225
+
+     ^b^CFE^b  Monitor the software and hardware handshakes for port 2:
+
+     SET KEY 225 TO HANDSHAKE
+        ? COM_SKEY(2, , 225)          // OK when returns .T.
+
+        COM_SOFT(2, .T.)              // Software handshake on
+        COM_HARD(2, .T.)              // Hardware handshake on
+
+        COM_SEND(2, LongText)         // Transmit something...
+
+     ^b^CFE^b  It is important that you always send the parameter:
+
+        PROCEDURE HANDSHAKE(A, B, C)
+
+           * Your Program
+
+           COM_SKEY(2, 225)           // Must be reactivated
+           RETURN
+
+!seealso: "COM_SOFT()" tool_012.ngo:"LASTKLINE()" tool_012.ngo:"LASTKPROC()" tool_012.ngo:"LASTKFUNC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SMODE()  Determines the current status of a background transmission
+'------------------------------------------------------------------------------
+ ^bCOM_SMODE()^b
+ Determines the current status of a background transmission
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SMODE(<nComPort>) --> nSendMode
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the background
+     transmission status is returned.
+
+ ^bReturns^b
+
+     COM_SMODE() returns a number for which the bits represent various
+     meanings shown in the table below.
+
+ ^bDescription^b
+
+     The ability to transmit in the background demands the ability to control
+     the sending buffer.  For example, COM_SMODE() allows you to check to see
+     if the sending buffer is waiting for an XON character when the software
+     handshake is enabled.  The bits in the returned value represent the
+     different modes:
+
+     ^bTable 3-7: Coding the Sending Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit  Symb. Const.   Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1    SMODE_EMPTY    Sending buffer empty
+     2    SMODE_SOFT     Wait for software handshake release(XON)
+     4    SMODE_HARD     Wait for hardware handshake release(CTS)
+     8    SMODE_RFLUSH   Deleted from remote station
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  If no sending buffer has been set up for the designated port
+        using COM_OPEN(), the function returns a value of 0.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine whether the port 2 sending buffer is empty:
+
+        IF ISBIT(COM_SMODE(2), 1)
+           ? "Port 2 sending buffer empty!"
+        ENDIF
+
+     ^b^CFE^b  Wait 20 seconds while the send buffer for port 2 is waiting
+        for an XON, then release:
+
+        WAITPERIOD(2000)
+
+        DO WHILE ISBIT(COM_SMODE(2), 2) .AND. WAITPERIOD()
+           *...
+        ENDDO
+
+     ^b^CFE^b  Clear the send buffer when XON is not received:
+
+        IF ISBIT(COM_SMODE(2), 2)
+           COM_SFLUSH(2)            // Clear send buffer port 2
+        ENDIF
+
+!seealso: "COM_HARD()" "COM_SOFT()" "COM_REMOTE()" "COM_SFLUSH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SOFT()   Queries or sets the software handshake (automatic XON/XOFF)
+'------------------------------------------------------------------------------
+ ^bCOM_SOFT()^b
+ Queries or sets the software handshake (automatic XON/XOFF)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SOFT(<nComPort>,[<lNewHandshake>],[<cXONchar>],
+     ^b   [<cXOFFchar>]) --> lOldHandshake
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the software
+     handshake is set.
+
+     ^b<lNewHandshake>^b  Designates whether the handshake is on (.T.) or off
+     (.F.).  If this parameter is omitted, the function returns the current
+     setting.
+
+     ^b<cXONchar>^b  Designates any character you choose as an XON character.
+     The default character is ASCII 19 - Ctrl-S.
+
+     ^b<cXOFFchar>^b  Designates any character you choose as an XOFF
+     character.  The default value is ASCII 17 - Ctrl-Q.
+
+ ^bReturns^b
+
+     The function returns the previously set value.
+
+ ^bDescription^b
+
+     With modem connections, a hardware handshake is impossible, which is why
+     we are making a software handshake available with this function.  When a
+     buffer is 75% full, an XOFF character (Ctrl-Q) is transmitted to the
+     remote station.  As soon as the buffer has again been emptied to 50% or
+     less, the XON character (Ctrl-S) is transmitted.  You can use characters
+     other than Ctrl-S or Ctrl-Q for individual protocols, which would then
+     be taken into account in the situations described above.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The software handshake only supports background transmission
+        (when COM_OPEN() has been implemented with the third parameter
+        <nBufferOut>).
+
+     ^b^CFE^b  When you want to transmit binary data, the software handshake
+        must always be turned off.
+
+ ^bExample^b
+
+     COM_OPEN(1, 1000, 1000)   // Open port, background transmission
+     COM_SOFT(1, .T.)          // Software handshake COM1
+
+!seealso: "COM_HARD()" "COM_SOFT_R()" "COM_SOFT_S()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SOFT_R() Tests to see if an XOFF character has been received
+'------------------------------------------------------------------------------
+ ^bCOM_SOFT_R()^b
+ Tests to see if an XOFF character has been received
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SOFT_R(<nComPort>,[<lXOFFFlag>]) --> lXOFFFlag
+
+ ^bArguments^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the XOFF flag is
+     tested.
+
+     ^b<lXOFFFlag>^b  Designates whether the flag is set (.T.) or reset
+     (.F.).  The default value (.F.) resets the flag.
+
+ ^bReturns^b
+
+     This function returns .T. after the last inquiry or after you open the
+     port when the port has received an XOFF character (Ctrl-S).
+     Subsequently the port does not receive an XON character (Ctrl-Q).
+
+ ^bDescription^b
+
+     If the software handshake is turned on, the receipt of an XOFF character
+     is noted with an internal flag.  This flag can be queried using
+     COM_SOFT_R().  The receipt of an XON character resets that flag again.
+     Since in some situations an XON character is never transmitted by the
+     remote station, the flag can be reset using the second parameter.
+
+ ^bNote^b
+
+     ^b^CFE^b  If incoming XOFF characters are monitored, then it is best to
+        transmit relatively small strings through COM_SEND().  You can use
+        COM_SOFT_R() to monitor between incoming XOFF characters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  First open the port:
+
+        COM_OPEN(1, 1000)
+
+     ^b^CFE^b  Transmit until an XOFF character is recognized:
+
+        nPos := 1
+
+        DO WHILE .NOT. COM_SOFT_R() .AND. nPos <= LEN(cString)
+           COM_SEND(1, SUBSTR(cString, nPos, 1))
+           nPos := nPos + 1
+        ENDDO
+
+!seealso: "COM_SEND()" "COM_SOFT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COM_SOFT_S() Tests to see if buffer has automatically sent an XOFF character
+'------------------------------------------------------------------------------
+ ^bCOM_SOFT_S()^b
+ Tests to see if the buffer has automatically sent an XOFF character
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOM_SOFT_S(<nComPort>) --> lXOFFFlag
+
+ ^bArgument^b
+
+     ^b<nComPort>^b  Designates the port (1 to 4) for which the XOFF flag is
+     tested.
+
+ ^bReturns^b
+
+     This function returns .T. when the remote station indicates that the
+     buffer is 75% or more full.
+
+ ^bDescription^b
+
+     If the software handshake has been selected and the buffer is more than
+     75% full, an XOFF character is automatically transmitted to the remote
+     station.  This is noted with an internal flag, which can be queried
+     using COM_SOFT_S().  When the buffer empties to 50% or less, it
+     generates the transmission of an XON character, and this flag is reset.
+
+ ^bNote^b
+
+     ^b^CFE^b  When selecting the size of the buffer, decide whether the
+        remaining 25% will be sufficient at high baud rates.
+
+ ^bExample^b
+
+     Test to see if a 75% full buffer automatically transmits an XOFF
+     character:
+
+     IF = COM_SOFT_S(1)
+        ? "It's time to empty the buffer! "
+        ...
+     ENDIF
+
+!seealso: "COM_READ()" "COM_SOFT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: XMOBLOCK()   Generates a block for XMODEM transmission
+'------------------------------------------------------------------------------
+ ^bXMOBLOCK()^b
+ Generates a block for XMODEM transmission
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bXMOBLOCK(<cString>,<nBlockNumber>,[<lCRC>],
+     ^b   [<nMode>]) --> cXModemBlock
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates a character string of 128 or 1024 (depending
+     on <nMode>) characters.  Excess characters are cut off; missing
+     characters are filled with CHR(0).
+
+     ^b<nBlockNumber>^b  Designates the related block number.
+
+     ^b<lCRC>^b  Designates whether an XMODEM block is to be formed with a
+     checksum (.F.) or with a 16-bit CRC (.T.).  The default value (.F.) is a
+     checksum.
+
+     ^b<nMode>^b  Designates different block types.  Mode 1 designates a 128
+     byte block with start character CHR(1).  Mode 2 designates a 1kByte
+     block with start character CHR(2).  The default value is a mode 1, 128
+     byte block.
+
+ ^bReturns^b
+
+     This function returns an XMODEM block that is "ready to go".
+
+ ^bDescription^b
+
+     This function generates a data block according to XMODEM conventions,
+     which can then be output directly using COM_SEND().  The block number
+     and the packet verification procedure that you choose can be designated.
+     The function automatically takes into account the fact that after block
+     number 255, XMODEM waits for 0 again (block number %256).  So you can go
+     as high as you like with your variables.
+
+     An X-MODEM block has the following construction:
+
+     SOH+<BN>+<Complement of BN>+128 data bytes+1 byte CS
+     or:
+     SOH+<BN>+<Complement of BN>+128 data bytes+2 byte CRC
+
+
+     This is the construction for a 1k byte block:
+
+     STX+<BN>+<Complement of BN>+1024 data bytes+1 byte CS
+     or:
+     STX+<BN>+<Complement of BN>+1024 data bytes+2 byte CRC
+
+     BN = Block number, CS = checksum, and CRC = Cyclic Redundancy Check.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Verification of the 8-bit checksum corresponds to the
+        NUMLOW(ASCII-SUM(Data)) function call.
+
+     ^b^CFE^b  A programming sample using XMODEM protocols under CA-Clipper
+        can be found in the following example program.
+
+ ^bExample^b
+
+     This is an example of a simplified XMODEM transfer.  Initialization of
+     the port is assumed:
+
+     nBlockNum := 0                       // 1st block
+     lChkMode  := .T.                     // Use CRC
+     nBlkSize  := 128                     // XMODEM block size
+     nPointer  := 0                       // Start point in file
+
+     cData  := FILESTR("TEST.TXT", nBlkSize, nPointer)// Read data
+
+     DO WHILE LEN(cData) > 0
+        COM_SEND;
+        (1, XMOBLOCK(cData, nBlockNum, lChkMode))   // Send block
+        nBlockNum := nBlockNum +1                   // Next block
+        nPointer  := nPointer  +nBlkSize            // File pointer
+        cData     := FILESTR;
+        ("TEST.TXT", nBlkSize, nPointer)            // Read data
+     ENDDO
+
+!seealso: "COM_CRC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: XMOCHECK()   Tests a received XMODEM block
+'------------------------------------------------------------------------------
+ ^bXMOCHECK()^b
+ Tests a received XMODEM block
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bXMOCHECK(<cString>,[<lCRC>]) --> nBlockNumber
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates a character string that is reviewed to
+     determine if it represents a valid XMODEM block.
+
+     ^b<lCRC>^b  Designates whether to check for a checksum (.F.) or a CRC
+     (.T.).  The default value (.F.) tests for a checksum.
+
+ ^bReturns^b
+
+     XMOCHECK() returns the block number for the <cString> transferred by an
+     XMODEM block.  The function returns a value between 0 and 255, or
+     returns -1 if the block had errors.
+
+ ^bDescription^b
+
+     XMOCHECK() checks a received XMODEM block for errors.  The block header
+     is checked, and depending on the way the <lCRC> parameter has been set,
+     XMOCHECK() tests the checksum or the CRC.  The function then returns the
+     block number as a value between 0 and 255.  If there were inaccuracies
+     in the block, -1 is returned.  The standard XMODEM blocks (128 byte
+     blocks) and the 1k blocks are recognized on the first character
+     automatically.  The header of a 128 byte block starts with CHR(1).   The
+     header of a 1k block starts with CHR(2).
+
+ ^bNotes^b
+
+     ^b^CFE^b  "Unpacking" the data after checking the block for accuracy is
+        very simple using SUBSTR(cBlock, 4, 128) for 128 byte blocks or
+        SUBSTR(cBlock, 4, 1024) for 1k blocks.
+
+     ^b^CFE^b  There is an example for the programming of an XMODEM protocol
+        in Xmodem.prg in the samples directory.
+
+ ^bExample^b
+
+     In this example, the block is received and unpacked.  Test to see if the
+     following block has been received:
+
+     cBlock  := COM_READ(1)               // If 132 characters
+     nBlkNr  := XMOCHECK(cBlock)          // Test with checksum
+
+     IF nBlkNr >= 0
+     cData  := SUBSTR(cBlock, 4, 128)     // Extract data
+        * ...
+     ENDIF
+
+!seealso: "XMOBLOCK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ZEROINSERT() Inserts a 0-bit after every fifth 1-bit
+'------------------------------------------------------------------------------
+ ^bZEROINSERT()^b
+ Inserts a 0-bit after every fifth 1-bit
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bZEROINSERT(<cString>) --> cDataBlock
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates any character string in which you choose to
+     insert a 0-bit.
+
+ ^bReturns^b
+
+     The function returns a character string with the 0-bit inserted.
+
+ ^bDescription^b
+
+     This function has been incorporated to allow simplified programming of
+     data transmission protocols to the CCITT specification.  CCITT
+     determines that each data block has a start and a stop flag, like
+     "01111110".  To ensure that the flag bit pattern doesn't appear within
+     the data, a 0-bit is inserted after every fifth 1-bit.  These explicit
+     flags allow a transfer protocol to resynchronize itself more quickly if
+     a transmission error occurs.  For example, this process is implemented
+     by ISDN or X.25 networks.
+
+ ^bNote^b
+
+     ^b^CFE^b  Due to the inserted bit, the character string that is returned
+        is longer than the character string that is transmitted.  Length
+        increases a maximum of 20%, which can be calculated as follows:
+
+           nMaxLen = LEN(cString) + CEILING(LEN(cString)/5)
+
+ ^bExamples^b
+
+     ^b^CFE^b  For any five bytes of the original string, a maximum of one
+        additional byte can arrive as a result.  This example tests, if there
+        is enough available free memory, for the resulting string:
+
+        cCharacter := CHR(CTON("11111111", 2)
+        cString    := REPLICATE(cCharacter, 6)
+        nMaxLen    := LEN(cString) + CEILING(LEN(cString) /5)
+                                                        //Here: 8
+
+        IF nMaxLen  < MEMORY(1) * 1024 - 100
+           cString  := ZEROINSERT(cString)
+        ENDIF
+
+     ^b^CFE^b  This example shows the construction of a typical data block:
+
+        cFlag   :=  CHR(CTON("01111110", 2))            // According to
+                                                        // CCITT
+        cData   :=  "Also transmit ????!"
+        CRC    :=  COM_CRC(cData)
+
+        cBlock  := cData + SUBSTR(L2BIN(CRC), 1, 2)     // Add CRC to
+                                                        // string
+        cBlock  := ZEROINSERT(cBlock)
+        cBlock  := cFlag + cBlock + cFlag
+
+!seealso: "ZEROREMOVE()" "COM_CRC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ZEROREMOVE() Removes 0-bits in a file block
+'------------------------------------------------------------------------------
+ ^bZEROREMOVE()^b
+ Removes 0-bits in a file block
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bZEROREMOVE(<idDataBlock>) --> cString
+
+ ^bArgument^b
+
+     ^b<idDataBlock>^b  Designates a character string in which a 0-bit has
+     been inserted using ZEROINSERT().
+
+ ^bReturns^b
+
+     ZEROREMOVE() returns the character string to the same condition it was
+     in prior to ZEROINSERT().
+
+ ^bDescription^b
+
+     This function is the opposite of ZEROINSERT().  This means that the 0-
+     bit that was inserted, according to the special CCITT rule, is now
+     removed.  Removing the bit decreases the length of the block up to 20%.
+
+ ^bExample^b
+
+     This example shows the construction of a typical data block:
+
+     cFlag   :=  CHR(CTON("01111110", 2))          // According to
+                                                   // CCITT
+     cData   :=  "Also transmit ????!"
+     CRC    :=  COM_CRC(cData)
+
+     cBlock  := cData + SUBSTR(L2BIN(CRC), 1, 2)   // Add CRC to
+                                                   // string
+     cBlock  := ZEROINSERT(cBlock)
+     cBlock  := cFlag + cBlock + cFlag
+
+     * ... transmission of the data block:
+
+     cData   := REMALL(cFlag, cBlock)              // Remove flag
+     cData   := ZEROREMOVE(cData)
+     *... and subsequently the important CRC checks, etc.
+
+!seealso: "ZEROINSERT()" 
+'------------------------------------------------------------------------------
+
+
+

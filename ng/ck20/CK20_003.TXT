@@ -1,0 +1,536 @@
+!short:^u Overview String Functions^u
+'------------------------------------------------------------------------------
+
+  ^BString Functions^B
+
+   Char     ( <cStr> , [<n>] )                         -> cChar
+   Str_Num  ( <nNum> , [<nLen1>], [<nLen2>] )          -> cStr
+   StdTran  ( <Val>  , [<nLen>], [<Arg>] )             -> cStr
+
+   Str_Bar  ( <Barlen> , [<BClen>] , [<BCStr>] )       -> cBarString
+   Str_Xor  ( <Str1> , [<Str2>] )                      -> cXorString
+
+   Str_Sepa ( <cStr> , <cDelim> )                      -> cLeftStr
+   Str_Cut  ( <cStr> , [<cDelim>] )                    -> aStrList
+   Str_Word ( <cStr> , [<cDelim>] )                    -> aWordList
+   Str_Line ( <cStr> , [<cJoin>] , [<cRemark>] )       -> aLineList
+
+   Str_Count( <str1> , <str2> )                        -> nTimes
+   Str_At   ( <str1> , <str2> , [<count>] )            -> nPos
+   Str_Pos  ( <str1> , <str2> )                        -> aPosList
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Char()       Return the Nth character
+'------------------------------------------------------------------------------
+
+    ^BChar ( <cStr> , [<n>] )   ->   cChar
+
+    ^BUsage^B
+
+        Return the Nth character of <cStr>.  <n> default is 1.
+
+    ^BSource^B
+
+        Func Char( s , n )
+        retu if( n=nil, left(s,1), subs(s,n,1) )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Num()    Improvement of Str()
+'------------------------------------------------------------------------------
+
+    ^BStr_Num  ( <nNum> , [<nLen1>], [<nLen2>] )   -> cStr
+
+    ^BUsage^B
+
+        Similar to Str(), Str_Num() return string of number but replace
+        space with '0'.
+
+    ^BExample^B
+
+        str_num( 3.45, 6, 2 )    ->  '003.45'
+        str_num( 3.45, 6, 3 )    ->  '03.450'
+
+        str_num( 10, 6 )         ->  '000010'
+
+        str_num( 5 )             ->  '0000000005'
+!seealso: "StdTran()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdTran()    Translate data into string in standard mode
+'------------------------------------------------------------------------------
+
+    ^BStdTran( <Val>, [<nLen>], [<arg>] )   ->  cString
+
+    ^BUsage^B
+
+        Translate data into string in standard mode.
+
+        StdTran() can deal with each type of data, six public variables
+        are using to describe the method of translating data.
+
+          þ _StdCtoC   =>  the code block to translate C type data
+          þ _StdDtoC   =>  the code block to translate D type data
+          þ _StdLtoC   =>  the code block to translate L type data
+          þ _StdMtoC   =>  the code block to translate M type data
+          þ _StdNtoC   =>  the code block to translate N type data
+          þ _StdOtoC   =>  the code block to translate other type
+
+        If they are not defined in program, StdTran() translate data in
+        default format.  (refer to source code)
+
+        ^B<nLen>^B is use to restrict the length of string.
+        ^B<Arg> ^B is the parameter passed to code block.
+
+    ^BExample^B
+
+         StdTran('String ',15)       =>  padr( 'String ', 15 )
+         StdTran(date(),15)          =>  padr( dtoc(date()), 15 )
+         StdTran(.t., 15)            =>  padr( if(.t.,'Yes','No '),  15 )
+         StdTran(3.14, 15, 5)        =>  str( 3.14, 15, 5)
+         StdTran({ nil }, 15)        =>  padr( "Others", 15 )
+
+    ^BSource^B
+
+        Func StdTran( Val, nLen, Arg )
+        loca zt := valtype( val ), zb
+         do case
+            case zt = 'C'
+              publ _StdCtoC
+              zb := if( valtype(_StdCtoC)='B', _StdCtoC, { |s| s } )
+            case zt = 'D'
+              publ _StdDtoC
+              zb := if( valtype(_StdDtoC)='B', _StdDtoC, { |d| dtoc(d) } )
+            case zt = 'L'
+              publ _StdLtoC
+              zb := if( valtype(_StdLtoC)='B', _StdLtoC, ;
+                        { |l| if(l,'Yes','No ') } )
+            case zt = 'M'
+              publ _StdMtoC
+              zb := if( valtype(_StdMtoC)='B', _StdMtoC, { |s| s } )
+            case zt = 'N'
+              publ _StdNtoC
+              zb := if( valtype(_StdNtoC)='B', _StdNtoC, ;
+                        { |n,l,a| str(n,if(l=nil,10,l),if(a=nil,0,a)) } )
+            othe
+              publ _StdOtoC
+              zb := if( valtype(_StdOtoC)='B', _StdOtoC, { || 'Others' } )
+         endc
+         zt := eval( zb, Val, nLen, Arg )
+        retu if( valtype(nLen)='N', padr( zt, nLen ), zt )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Bar()    Make a bar string
+'------------------------------------------------------------------------------
+
+    ^BStr_Bar ( <Barlen> , [<BClen>] , [<BCStr>] )  -> cBarString
+
+    ^BUsage^B
+
+        <Barlen> means the length of bar string
+        <BClen> defines the length of a bar unit. default is 1
+        <BCstr> describe how to make the bar string.
+
+        Str_bar() has very rich usages supporting English,Chinese
+        and various bar string, please refer to the source code and
+        the examples.
+
+    ^BSource^B
+
+        func str_bar( Barlen, BClen, BCStr )
+        loca zi, zj
+          default( @bclen, 1 )
+          default( @bcstr, if(bclen=1,'ÝÛ','¢j¢k¢l¢m¢n¢o¢p¢i') )
+          zi := BarLen/BClen
+          zj := ( int((zi-int(zi))*len(bcstr)/bclen)-1 ) * bclen + 1
+        retu repl( right(bcstr,bclen) , int(zi) ) + ;
+             if(zj>0, subs(bcstr,zj,bclen), '' )
+
+    ^BExample^B
+
+      assume <x> is a variable generated from 1 to 60 step 0.2
+
+       str_bar(x)                         //  English-Char Bar
+       str_bar(x,2)                       //  Chinese-Char Bar
+       str_bar(x,1,'-\|/*')               //  Rotate-Char  Bar
+       str_bar(x,1,'1234567890')          //  Number-Char  Bar
+       str_bar(x,5,'Read.Write..OK ')     //  String-Bar
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Xor()    String XOR operation
+'------------------------------------------------------------------------------
+
+    ^BStr_Xor ( <Str1> , [<Str2>] )  ->  cXorString
+
+    ^BUsage^B
+
+        XOR operation has an interest feature : (X XOR Y) XOR Y == X
+        String XOR operation retains this feature, so
+
+           str_xor(str_xor(s1,s2),s2) == s1
+
+        If <Str2> is default, Str_Xor() is equal to Str_Not()
+
+        This function is useful to encrypt and decrypt something.
+
+    ^BExample^B
+
+        str_xor('password','key')
+
+        str_xor('text.....')
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Sepa()   Separate string
+'------------------------------------------------------------------------------
+
+    ^BStr_Sepa( <cStr>, <cDelim> )   ->  cLeftStr
+
+    ^BUsage^B
+
+        Separate string.
+
+    ^BSource^B
+
+        Func Str_Sepa( cStr, cDelim )
+        loca zi:=at(cDelim,Cstr), zs
+          zs   := if( zi=0, cStr, left(cStr,zi-1) )
+          cStr := if( zi=0, ''  , subs(cStr,zi+len(cDelim)) )
+        retu zs
+
+    ^BExample^B
+
+        s1 := '123,456,789'
+        s2 := 'ABD->EFG->HIJ'
+
+        w1 := str_sepa(s1,',')             // w1 = '123'
+        w2 := str_sepa(s1,',')             // w2 = '123'
+        w3 := str_sepa(@s2,'->')           // w3 = 'ABC'  s2='EFG->HIJ'
+        w4 := str_sepa(@s2,'->')           // w4 = 'EFG'  s2='HIJ'
+        w5 := str_sepa(@s2,'->')           // w5 = 'HIJ'  s2=''
+!seealso: "Str_Cut()" "Str_Line()" "Str_Word()" "Str_At()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Cut()    Cut string into string-array
+'------------------------------------------------------------------------------
+
+    ^BStr_Cut ( <cStr> , [<cDelim>] )   ->   aStrList
+
+    ^BUsage^B
+
+        Cut <cStr> into string-array at <cDelim>
+
+        <cDelim> default is chr(13)+chr(10)
+
+    ^BExample^B
+
+        str_cut('a, b ,c,d ',',')    =>   { 'a',' b ','c','d ' }
+
+        str_cut('1//2/3//4','//')    =>   { '1','2/3','4'   }
+!seealso: "Str_Word()" "Str_line()" "Str_Sepa()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Word()   Cut words from string
+'------------------------------------------------------------------------------
+
+    ^BStr_Word ( <cStr> , [<cDelims>] )  ->   aWordList
+
+    ^BUsage^B
+
+      Cut words from string. Space is the default value of <cDelims>.
+
+      Space in the leftmost and rightmost of a word will be cleared.
+
+    ^BExample^B
+
+      str_word(' This is  an  example')     => { 'This','is','an','example' }
+
+      str_word(' 5 + 6-3*4/5  =  x',' +-*/=') => { '5','6','3','4','5','x' }
+!seealso: "Str_Cut()" "Str_line()" "Str_Sepa()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Line()   Cut lines into string-array
+'------------------------------------------------------------------------------
+
+    Str_Line ( <cStr> , [<cJoin>] , [<cRemark>] )    ->   aLineList
+
+    ^BUsage^B
+
+        Cut <cStr> into string-array in lines. Str_Line() is used to
+        translate macro program into array format.
+
+        <cJoin>   define the last string to join two lines, default is ';'
+                  <cJoin> == "" will disable this function
+
+        <cRemark> define the remark delimiter, default is NIL
+
+    ^BExample^B
+
+        str_line(memoread('example.mac'))
+
+        str_line(memoread('example.mac'),'')       // disable ';'
+
+        str_line(memoread('example.mac'),';','//')
+
+        str_line(memoread('example.mac'),'+=','&&')
+                // use '+=' to join two line, '&&' as remarks
+!seealso: "Str_Word()" "Str_Cut()" "Str_Sepa()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Count()  Count string
+'------------------------------------------------------------------------------
+
+    ^BStr_Count( <str1> , <str2> )  ->   nTimes
+
+    ^BUsage^B
+
+       Count <str2> in <str1>
+
+    ^BExample^B
+
+       str_count('0123012301230123','3')  =>  4
+!seealso: "Str_At()" "Str_Pos()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_At()     Position of Nth <str2>
+'------------------------------------------------------------------------------
+
+    ^BStr_At ( <str1> , <str2> , [<count>] )   ->   nPos
+
+    ^BUsage^B
+
+        Return the position of Nth <str2>
+
+    ^BExample^B
+
+        str_at('0123012301230123','2',2)   =>  7
+!seealso: "Str_Count()" "Str_Pos()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Str_Pos()    Return a list of position
+'------------------------------------------------------------------------------
+
+    ^BStr_Pos ( <str1> , <str2> )   ->   aPosList
+
+    ^BUsage^B
+
+        Return a list (array) of the positions of <str2> in <str1>
+
+    ^BExample^B
+
+        str_pos('0123012301230123','2')    => { 3,7,11,15 }
+!seealso: "Str_at()" "Str_Count()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^u Overview Block Structure Function^u
+'------------------------------------------------------------------------------
+
+   ^BBlock Structure Function^B
+
+   Because Block in clipper haven't control-structure, Casual-Kit provides
+   some functions to support structure programming in block code.
+
+   These function are very useful in clipper/macro programming
+
+   Blk_Case/For/While() is more faster than macro structure sentence.
+
+   CtoBlk ( <cExp> , <cArg> )     =>  translate string into block
+
+   Blk_Case ( <bCase>, [<var1>], [<Var2>], [<Var3>] )
+   Blk_For  ( <nBegin>, [<nEnd>], [<nStep>], <bFor>, [<v1>], [<V2>], [<V3>] )
+   Blk_Whil ( <bCond>, [<bAct>], [<var1>], [<Var2>], [<Var3>] )
+   Blk_While( <bCond>, [<bAct>], [<var1>], [<Var2>], [<Var3>] )
+
+   ^BExample^B
+
+     bv:= {  { {|x| x=1 } , {|x| qout(x) }       } ,;
+               { { || .t. } , {|| qout('others!')} }  ;
+            }
+       blk_case(bv,1)   => qout(1)
+       blk_case(bv,2)   => qout('others!')
+
+     blk_for(1,10,1, { |i| qout(i) } )  =>  qout(1--10)
+       blk_for(1,10, , " qout(i) " )      =>  qout(1--10)
+
+       þ string will translate into block automatically.
+
+     x:=0;   y:=0
+       blk_whil( { || x<=10 }, { || qout(x:=x+1) } )   => qout(1--10)
+       blk_whil( "x<=10", "qout(x:=x+1)" )             => qout(1--10)
+
+       þ string will be translated into block automatically.
+       ^Bblk_while() is same as blk_whil()^B
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CtoBlk()     Translate string into block
+'------------------------------------------------------------------------------
+
+    ^BCtoBlK ( <cExp>, [<cArg>] )   ->  bBlock
+
+    ^BUsage^B
+
+        Translate string into block.
+        If <cExp> is not a String, CtoBlk() will return <cExp>.
+
+    ^BSource^B
+
+        Func CtoBlK( cExp , cArg )
+        retu if( valtype(cExp)#'C', cExp, ;
+                &( '{|'+if(empty(cArg),'',cArg)+'|'+cExp+'}' ) )
+
+    ^BExample^B
+
+        b1:=ctoblk( 'tone(200),tone(300)')     -> {||tone(200),tone(300)}
+        b2:=ctoblk( {||tone(200),tone(300)} )  -> {||tone(200),tone(300)}
+
+        b3:=ctoblk( 'dispbox(x1,y1,x2,y2)','x1,y1,x2,y2' )
+                            -> { |x1,y1,x2,y2| dispbox(x1,y1,x2,y2) }
+!seealso: "Blk_Case()" "Blk_For()" "Blk_While()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Blk_Case()   DO CASE ... ENDC  structure in block
+'------------------------------------------------------------------------------
+
+   ^BBlk_Case ( <aabCase>, [<var1>], [<Var2>], [<Var3>] )^B
+
+   ^BUsage^B
+
+       Blk_Case() provides a special structure of block-array to simulate
+       DO CASE ... ENDC structure.
+
+       <aabCase>    ::=  { <abCaseItem...> }
+       <abCaseItem> ::=  { <bCond/cCond> , <bAction/cAction> }
+
+       Blk_Case will evaluate each <bCond> and evaluate <bAction> when
+       <bCond> is true
+
+       String will be translated into block automatically.
+
+   ^BSource^B
+
+       func blk_case( bv, v1, v2, v3 )
+       priv blktmp, BlkVar
+       for blktmp := 1 to len(bv)
+           if eval( CtoBlK(bv[blktmp,1],'v1,v2,v3'), v1, v2, v3 )
+              retu eval( CtoBlK(bv[blktmp,2],'v1,v2,v3'), v1, v2, v3 )
+           endi
+       next
+       retu nil
+
+   ^BExample^B
+
+       bv:= {  { {|x| x=1 } , {|x| qout(x) }  } ,;
+               { ".t." , "qout('others!')"    }  ;
+            }
+       blk_case(bv,1)   => qout(1)
+       blk_case(bv,2)   => qout('others!')
+!seealso: "CtoBlk()" "Blk_For()" "Blk_While()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Blk_For()    FOR...NEXT structure in block
+'------------------------------------------------------------------------------
+
+   ^BBlk_For ( <nBegin>, [<nEnd>], [<nStep>], <bcFor>, ;
+   ^B          [<var1>], [<Var2>], [<Var3>] )
+
+   ^BUsage^B
+
+       Blk_For() is used to simulate FOR...NEXT structure.
+       <bcFor> will be evaluated in a for...next sentence.
+
+   ^BSource^B
+
+       func blk_for( B1, B2, B3, Bloop, v1, v2, v3 )
+       priv blktmp, BlkVar, Blkretu:=nil
+         bloop := CtoBlK(bloop,'i,v1,v2,v3')
+            b3 := if( b3=nil, 1, b3 )
+         for blktmp:=b1 to b2 step b3
+             Blkretu := eval( Bloop, blktmp, v1, v2, v3 )
+         next
+       retu Blkretu
+
+   ^BExample^B
+
+       blk_for(1,10,1, { |i| qout(i) } )  =>  qout(1--10)
+
+       blk_for(1,10, , " qout(i) " )      =>  qout(1--10)
+
+       þ String will be translated into block automatically.
+!seealso: "CtoBlk()" "Blk_Case()" "Blk_While()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Blk_While()  WHILE...ENDD structure in block
+'------------------------------------------------------------------------------
+
+   ^BBlk_Whil ( <bcCond>, [<bcAct>], [<var1>], [<Var2>], [<Var3>] )
+   ^BBlk_While( <bcCond>, [<bcAct>], [<var1>], [<Var2>], [<Var3>] )
+
+   ^BUsage^B
+
+       Blk_While() is used to simulate WHILE...ENDD structure.
+
+   ^BSource^B
+
+       func blk_whil ( Bcond, Bloop, v1, v2, v3 )
+       retu blk_while( Bcond, Bloop, v1, v2, v3 )
+
+       func blk_while( Bcond, Bloop, v1, v2, v3 )
+       priv BlkVar, Blkretu:=nil
+         bcond := CtoBlK( bcond, 'v1,v2,v3' )
+         bloop := CtoBlK( bloop, 'v1,v2,v3' )
+         while eval( Bcond, v1, v2, v3 )
+            Blkretu := eval( Bloop, v1, v2, v3 )
+         endd
+       retu Blkretu
+
+   ^BExample^B
+
+       x:=0;   y:=0
+
+       blk_whil( { || x<=10 }, { || qout(x:=x+1) } )   => qout(1--10)
+
+       blk_whil( " y<=10 ", " qout(y:=y+1) " )         => qout(1--10)
+!seealso: "CtoBlk()" "Blk_Case()" "Blk_For()" 
+'------------------------------------------------------------------------------
+
+
+

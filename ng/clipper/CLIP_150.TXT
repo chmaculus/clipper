@@ -1,0 +1,29 @@
+'------------------------------------------------------------------------------
+^BVAL()^B
+
+    VAL() converts numbers that are defined as characters into a numeric
+    expression.
+
+^USyntax^U
+
+    VAL(<exp C>)
+
+^UUsage^U
+
+    If the expression consists of leading non-numeric characters other than
+    blanks, VAL() returns a value of zero.
+
+    VAL() displays the decimal portion of a number as designated by SET
+    DECIMALS.
+
+    The VAL() function operates from left to right, converting characters
+    to numeric values until a text character is encountered.  Leading
+    blanks are ignored if the argument contains both numeric and non-
+    numeric characters.  The leading numeric characters will be converted
+    to a numeric value.  Trailing blanks are treated as text characters
+    and, when encountered, terminate the conversion process.
+!seealso: clip_051.ngo:"SET DECIMALS" clip_060.ngo:"SET FIXED" clip_140.ngo:"STR()" 
+'------------------------------------------------------------------------------
+
+
+

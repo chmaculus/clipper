@@ -1,0 +1,29 @@
+'------------------------------------------------------------------------------
+^BRLOCK()^B
+
+    RLOCK() locks the current record in the current work area.
+
+^USyntax^U
+
+    RLOCK()/LOCK()
+
+^UReturns^U
+
+    A logical value.
+
+    RLOCK() returns true (.T.) if you successfully lock a record.
+    Otherwise it returns false (.F.).
+
+^UUsage^U
+
+    RLOCK() locks the current record in the selected work area.  It remains
+    locked until you lock another record, UNLOCK, CLOSE the DATABASE, or
+    FLOCK().
+
+    Note that unlike dBASE III PLUS, RLOCK() does not lock other work areas
+    in a relation chain.
+!seealso: ???.ngo:"FLOCK" clip_086.ngo:"UNLOCK" clip_058.ngo:"SET EXCLUSIVE" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

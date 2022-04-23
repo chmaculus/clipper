@@ -1,0 +1,1895 @@
+!short: _mClipErase()      Erase the currently defined mouse clipping region
+'------------------------------------------------------------------------------
+ ^b_mClipErase()^b
+ Erase the currently defined mouse clipping region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _mClipErase(void)
+
+ ^bDescription^b
+
+     _mClipSet() and _mClipErase() control mouse pointer movements.  You use
+     _mClipSet() to restrict movement to a rectangular area of the screen,
+     called a clipping region.  When a clipping region is defined and the
+     user tries to move the mouse pointer out of the rectangle, the mouse
+     pointer remains stuck at the edge of the region but is still visible.
+     Then, when the clipping region is no longer needed, you use
+     _mClipErase() to remove it and resume using the entire screen.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mClipSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mClipGet()        Retrieve the mouse clipping region
+'------------------------------------------------------------------------------
+ ^b_mClipGet()^b
+ Retrieve the mouse clipping region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _mClipGet(
+     ^b                  LLG_LPRECT lpClipRectGet
+     ^b                 )
+
+ ^bArguments^b
+
+     ^blpClipRectGet^b is a pointer to an LLG_RECT structure that you must
+     allocate prior to calling this function.  _mClipGet() writes information
+     regarding the current mouse clipping region--as set by the most recent
+     call to _mClipSet()--to this structure.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mClipSet()" "_gClipGet()" "LLG_RECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mClipSet()        Set the mouse clipping region
+'------------------------------------------------------------------------------
+ ^b_mClipSet()^b
+ Set the mouse clipping region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _mClipSet(
+     ^b                   LLG_LPRECT lpClipRectSet
+     ^b                 )
+
+ ^bArguments^b
+
+     ^blpClipRectSet^b is a pointer to an LLG_RECT structure that you must
+     allocate and initialize prior to calling this function.  _mClipSet()
+     uses the members of this structure to set the current mouse clipping
+     region.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bDescription^b
+
+     _mClipSet() and _mClipErase() control mouse pointer movements.  You use
+     _mClipSet() to restrict movement to a rectangular area of the screen,
+     called a clipping region.  When a clipping region is defined and the
+     user tries to move the mouse pointer out of the rectangle, the mouse
+     pointer remains stuck at the edge of the region but is still visible.
+     Then, when the clipping region is no longer needed, you use
+     _mClipErase() to remove it and resume using the entire screen.
+
+     ^bNote: ^b To retrieve the current mouse clipping region without
+     changing it, call _mClipGet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mClipErase()" "_mClipGet()" "_gClipSet()" "LLG_RECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mCol()            Retrieve the column position of the mouse pointer
+'------------------------------------------------------------------------------
+ ^b_mCol()^b
+ Retrieve the column position of the mouse pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _mCol(void)
+
+ ^bReturns^b
+
+     The mouse's column position as a text-based coordinate.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mRow()" "_mPixX()" "_mPixY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mHide()           Hide the mouse pointer
+'------------------------------------------------------------------------------
+ ^b_mHide()^b
+ Hide the mouse pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _mHide(void)
+
+ ^bDescription^b
+
+     _mHide() can be used with _mShow() when updating the screen.  For
+     example, you may want to hide the mouse pointer before changing the
+     screen display, then show it again after the change.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mShow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mPixPos()         Set X and Y pixel-based coordinates of the mouse pointer
+'------------------------------------------------------------------------------
+ ^b_mPixPos()^b
+ Set the X and Y pixel-based coordinates of the mouse pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _mPixPos(
+     ^b               int iX,
+     ^b               int iY
+     ^b             )
+
+ ^bArguments^b
+
+     ^biX^b is the new pixel-based X coordinate.
+
+     ^biY^b is the new pixel-based Y coordinate.
+
+ ^bDescription^b
+
+     _mPixPos() moves the mouse pointer to a new screen location that you
+     specify in pixel-based coordinates.  After the mouse pointer is
+     positioned, _mPixX(),  _mPixY(), _mRow() and _mCol() are updated
+     accordingly.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mPixX()" "_mPixY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mPixX()           Retrieve the pixel-based X coordinate of the mouse pointer
+'------------------------------------------------------------------------------
+ ^b_mPixX()^b
+ Retrieve the pixel-based X coordinate of the mouse pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _mPixX(void)
+
+ ^bReturns^b
+
+     The mouse's pixel-based X coordinate position.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mCol()" "_mPixPos()" "_mPixY()" "_mRow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mPixY()           Retrieve the pixel-based Y coordinate of the mouse pointer
+'------------------------------------------------------------------------------
+ ^b_mPixY()^b
+ Retrieve the pixel-based Y coordinate of the mouse pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _mPixY(void)
+
+ ^bReturns^b
+
+     The mouse's pixel-based Y coordinate position.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mCol()" "_mPixPos()" "_mPixX()" "_mRow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mRow()            Retrieve the row position of the mouse pointer
+'------------------------------------------------------------------------------
+ ^b_mRow()^b
+ Retrieve the row position of the mouse pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _mRow(void)
+
+ ^bReturns^b
+
+     The mouse's row position as a text-based coordinate.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mCol()" "_mPixX()" "_mPixY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mShow()           Display a new mouse pointer at a particular location
+'------------------------------------------------------------------------------
+ ^b_mShow()^b
+ Display a new mouse pointer at a particular location
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _mShow(
+     ^b            int iCursorShape,
+     ^b            int iRow,
+     ^b            int iCol
+     ^b          )
+
+ ^bArguments^b
+
+     ^biCursorShape^b is the mouse pointer shape, which you specify using one
+     of the following values:
+
+     ^bMouse Pointer Shape Constants^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant                 Mouse Pointer Shape^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     LLM_CURSOR_ARROW         Standard pointer
+     LLM_CURSOR_CROSS         Cross
+     LLM_CURSOR_FINGER        Hand with pointing index finger
+     LLM_CURSOR_HAND          Hand
+     LLM_CURSOR_SIZE_NE_SW    North-East South-West arrow
+     LLM_CURSOR_SIZE_NS       North South arrow
+     LLM_CURSOR_SIZE_NW_SE    North-West South-East arrow
+     LLM_CURSOR_SIZE_WE       West East arrow
+     LLM_CURSOR_WAIT          Hourglass
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^biRow^b is the text-based row at which to display the mouse pointer.
+
+     ^biCol^b is the text-based column at which to display the mouse pointer.
+
+ ^bReturns^b
+
+     The cursor shape of the previous mouse pointer (see iCursorShape above
+     for a table of possible values).
+
+ ^bDescription^b
+
+     _mShow() serves two purposes.  You can use it after calling _mHide() to
+     redisplay a mouse pointer that was previously hidden, or you can use it
+     to change the current mouse pointer shape without first hiding it.
+     _mCol(), _mRow(), _mPixX(), and _mPixY() are updated accordingly after
+     calling _mShow().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mHide()" "_mState()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _mState()          Retrieve the current mouse state
+'------------------------------------------------------------------------------
+ ^b_mState()^b
+ Retrieve the current mouse state
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _mState(
+     ^b                 BOOL bReset,
+     ^b                 LLG_LPMOUSESTATE lpMState
+     ^b               )
+
+ ^bArguments^b
+
+     ^bbReset^b is a flag that resets the number of left and right mouse
+     clicks if you specify true (.T.).  If you specify false (.F.), these
+     values are not reset.
+
+     ^blpMState^b is a pointer to an LLG_MOUSESTATE structure that you must
+     allocate prior to calling this function.  _mState() writes information
+     regarding the current mouse state to this structure.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "LLG_MOUSESTATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gBmpDisp()        Display bitmap or icon previously loaded with _gBmpLoad()
+'------------------------------------------------------------------------------
+ ^b_gBmpDisp()^b
+ Display a bitmap or icon previously loaded with _gBmpLoad()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gBmpDisp(
+     ^b                ITEM itmArrayBmp,
+     ^b                int iXStart,
+     ^b                int iYStart,
+     ^b                DWORD dwTransColor
+     ^b              )
+
+ ^bArguments^b
+
+     ^bitmArrayBmp^b is an array item returned by _gBmpLoad().
+
+     ^biXStart^b is the pixel-based X coordinate at which to begin the
+     display.
+
+     ^biYStart^b is the pixel-based Y coordinate at which to begin the
+     display.
+
+     ^bdwTransColor^b is the outline color.  The range of valid values is
+     limited to the number of colors available in the selected video mode.
+     For example, in 16-color modes, valid values are between zero and 15,
+     and in 256-color modes, valid values are between zero and 255.  Note
+     that you can specify LLG_NO_COLOR for no color.
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gBmpLoad()" "_gClipSet()" "_gModeSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gBmpLoad()        Load a bitmap (.bmp) or icon (.ico) file into memory
+'------------------------------------------------------------------------------
+ ^b_gBmpLoad()^b
+ Load a bitmap (.bmp) or icon (.ico) file into memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bITEM _gBmpLoad(
+     ^b                char far * fpFileName
+     ^b              )
+
+ ^bArguments^b
+
+     ^bfpFileName^b is a pointer to the .BMP or .ICO file name that you want
+     to load.
+
+ ^bReturns^b
+
+     An array item which is the pointer to the VMM region containing the .BMP
+     or .ICO (not a black and white icon).  The first two elements of the
+     returned array contain the width and height of the .BMP or .ICO in
+     pixels.
+
+     ^bImportant! ^b Do not modify this array before passing it to
+     _gBmpDisp().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gBmpDisp()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gClipGet()        Retrieve the screen clipping region
+'------------------------------------------------------------------------------
+ ^b_gClipGet()^b
+ Retrieve the screen clipping region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gClipGet(
+     ^b                   LLG_LPRECT lpClipRectGet
+     ^b                 )
+
+ ^bArguments^b
+
+     ^blpClipRectGet^b is a pointer to an LLG_RECT structure that you must
+     allocate prior to calling this function.  _gClipGet() writes information
+     regarding the current screen clipping region--as set by the most recent
+     call to _gClipSet()--to this structure.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mClipGet()" "_gClipSet()" "LLG_RECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gClipSet()        Set the screen clipping region
+'------------------------------------------------------------------------------
+ ^b_gClipSet()^b
+ Set the screen clipping region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gClipSet(
+     ^b                   LLG_LPRECT lpClipRectSet
+     ^b                 )
+
+ ^bArguments^b
+
+     ^blpClipRectSet^b is a pointer to an LLG_RECT structure that you must
+     allocate and initialize prior to calling this function.  _gClipSet()
+     uses the members of this structure to set the current screen clipping
+     region.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bDescription^b
+
+     _gClipSet() limits the active display for Light Lib Graphic API
+     functions to a portion of the screen, called a clipping region.
+
+     ^bNote: ^b To retrieve information regarding the current clipping region
+     without changing it, call _gClipGet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_mClipSet()" "_gClipGet()" "LLG_RECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gEllipse()        Draw an ellipse
+'------------------------------------------------------------------------------
+ ^b_gEllipse()^b
+ Draw an ellipse
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gEllipse(
+     ^b                int iXCenter,
+     ^b                int iYCenter,
+     ^b                int iRadiusX,
+     ^b                int iRadiusY,
+     ^b                int iStartAngle,
+     ^b                int iEndAngle,
+     ^b                int iMode,
+     ^b                BOOL bFilled,
+     ^b                DWORD dwFillColor,
+     ^b                BOOL bOutlined,
+     ^b                DWORD dwOutlineColor,
+     ^b                int iHeight3D
+     ^b              )
+
+ ^bArguments^b
+
+     ^biXCenter^b is the pixel-based X coordinate of the center point.
+
+     ^biYCenter^b is the pixel-based Y coordinate of the center point.
+
+     ^biRadiusX^b is the length of the radius, in pixels, along the X axis.
+
+     ^biRadiusY^b is the length of the radius, in pixels, along the Y axis.
+
+     ^biStartAngle^b is the starting angle in degrees.
+
+     ^biEndAngle^b is the final angle in degrees.
+
+     ^biMode^b is the display mode, which you specify using one of the
+     following values:
+
+     ^bDisplay Mode Constants^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Display Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     LLG_MODE_SET   Overwrite existing pixels that are beneath where this
+                    object will be displayed.  This is the most common display
+                    mode.
+     LLG_MODE_AND   Perform a logical AND on existing pixels--and on the
+                    display color--that are beneath where this object will be
+                    displayed.
+     LLG_MODE_OR    Perform a logical OR on existing pixels--and on the
+                    display color--that are beneath where this object will be
+                    displayed.
+     LLG_MODE_XOR   Perform a logical XOR on existing pixels--and on the
+                    display color--that are beneath where this object will be
+                    displayed (see Note below).
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bNote:^b  LLG_MODE_XOR allows you to move objects around on the screen
+     without damaging the background.  To retrieve the initial background,
+     simply repeat the function call using the XOR display mode.
+
+     ^bbFilled^b is a flag that you specify as true (.T.) to draw a filled
+     ellipse.
+
+     ^bdwFillColor^b is the fill color.
+
+     ^bbOutlined^b is a flag that you specify as true (.T.) to draw an
+     outline around the ellipse.
+
+     ^bdwOutlineColor^b is the outline color.
+
+     The range of valid values for all color parameters is limited to the
+     number of colors available in the selected video mode.  For example, in
+     16-color modes, valid values are between zero and 15, and in 256-color
+     modes, valid values are between zero and 255.
+
+     ^biHeight3D^b is a value representing the height of the 3-D effect in
+     pixels.
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+     ^b^CFE  Drawing a circle:^b  To draw a circle (which is just a special
+        case of an ellipse), set the iRadiusX and iRadiusY parameters to the
+        same value.
+
+     ^b^CFE  Drawing arcs:^b  Changing the values of iStartAngle and
+        iEndAngle allows you to draw arcs of a circle or ellipse and sections
+        of a pie chart.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gClipSet()" "_gFrame()" "_gLine()" "_gModeSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gExclCountGet()   Retrieve the number of exclusion areas currently in effect
+'------------------------------------------------------------------------------
+ ^b_gExclCountGet()^b
+ Retrieve the number of exclusion areas currently in effect
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _gExclCountGet(void)
+
+ ^bReturns^b
+
+     The number of exclusion areas that have been set so far using
+     _gExclSet().  Zero indicates no exclusion areas are set.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gExclSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gExclErase()      Delete all exclusion areas previously defined
+'------------------------------------------------------------------------------
+ ^b_gExclErase()^b
+ Delete all exclusion areas previously defined with _gExclSet()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gExclErase(void)
+
+ ^bDescription^b
+
+     After calling _gExclErase(), the return value of _gExclCountGet() is
+     reset and no portion of the screen is excluded from use.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gExclCountGet()" "_gExclSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gExclGet()        Retrieve an exclusion area
+'------------------------------------------------------------------------------
+ ^b_gExclGet()^b
+ Retrieve an exclusion area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gExclGet(
+     ^b                   LLG_LPRECT lpExclGet,
+     ^b                   int iZoneNum
+     ^b                 )
+
+ ^bArguments^b
+
+     ^blpExclGet^b is a pointer to a LLG_RECT structure that you must
+     allocate prior to calling this function.  _gExclGet() writes information
+     regarding the specified exclusion area to this structure.
+
+     ^bNote: ^b The members of lpExclGet are always pixel-based, regardless
+     of the status of the bIsGraphic parameter when you created the exclusion
+     area with _gExclSet().
+
+     ^biZoneNum^b is the number of the exclusion area, beginning with one
+     (1), that you want to query.  The numbers are assigned based on the
+     order in which they are added with _gSetExcl().
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gExclCountGet()" "_gExclSet()" "LLG_RECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gExclSet()        Set a specified screen region as an exclusion area
+'------------------------------------------------------------------------------
+ ^b_gExclSet()^b
+ Set a specified screen region as an exclusion area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gExclSet(
+     ^b                   LLG_LPRECT lpExclSet,
+     ^b                   BOOL bIsGraphic
+     ^b                 )
+
+ ^bArguments^b
+
+     ^blpExclSet^b is a pointer to an LLG_RECT structure that you must
+     allocate and initialize prior to calling this function.  _gExclSet()
+     uses the members of this structure to set an exclusion area.
+
+     ^bbIsGraphic^b is a flag that you specify as true (.T.) if the
+     coordinates specified in lpExclSet are pixel-based and false (.F.) if
+     they are text-based.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bDescription^b
+
+     This function is used to prevent output from being displayed in a
+     defined region of the screen, such as when you have multiple, cascading
+     windows and do not want to write to an area that is currently covered by
+     another window.
+
+     ^bNote: ^b To retrieve information about an existing exclusion area
+     without changing it, call _gExclGet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gExclCountGet()" "_gExclErase()" "_gExclGet()" "LLG_RECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFntClipGet()     Get the clipping region for the active font
+'------------------------------------------------------------------------------
+ ^b_gFntClipGet()^b
+ Get the clipping region for the active font
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gFntClipGet(
+     ^b                      LLG_LPFNTCLIP lpFntClipGet
+     ^b                    )
+
+ ^bArguments^b
+
+     ^blpFntClipGet^b is a pointer to an LLG_FNTCLIP structure that you must
+     allocate prior to calling this function.  _gFntClipGet() writes
+     information regarding the clipping region for the active font--as set by
+     most recent calls to _gFntClipSet() and _gFntSet()--to this structure.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gFntClipSet()" "_gFntSet()" "LLG_FNTCLIP" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFntClipSet()     Set the clipping region for the active font
+'------------------------------------------------------------------------------
+ ^b_gFntClipSet()^b
+ Set the clipping region for the active font
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gFntClipSet(
+     ^b                      LLG_LPFNTCLIP lpFntClipSet
+     ^b                    )
+
+ ^bArguments^b
+
+     ^blpFntClipSet^b is a pointer to an LLG_FNTCLIP structure that you must
+     allocate and initialize prior to calling this function.  _gFntClipSet()
+     uses the members of this structure to set the clipping region for the
+     active font--as set by the most recent call to _gFntSet().
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gFntClipGet()" "_gFntSet()" "LLG_FNTCLIP" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFntErase()       Erase font previously loaded with _gFntLoad() from memory
+'------------------------------------------------------------------------------
+ ^b_gFntErase()^b
+ Erase a font previously loaded with _gFntLoad() from memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gFntErase(
+     ^b                 int iFontID
+     ^b               )
+
+ ^bArguments^b
+
+     ^biFontID^b is the font handle as returned by _gFntLoad().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gFntLoad()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFntGet()         Retrieve the active font handle
+'------------------------------------------------------------------------------
+ ^b_gFntGet()^b
+ Retrieve the active font handle
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _gFntGet(void)
+
+ ^bReturns^b
+
+     The active font handle as set by the most recent call to _gFntSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gFntSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFntLoad()        Load a font file into memory
+'------------------------------------------------------------------------------
+ ^b_gFntLoad()^b
+ Load a font file into memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _gFntLoad(
+     ^b               char far * fpFontFile
+     ^b             )
+
+ ^bArguments^b
+
+     ^bfpFontFile^b is a pointer to the .FND or .FNT file name that you want
+     to load.
+
+ ^bReturns^b
+
+     The handle for the loaded font.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gFntErase()" "_gFntSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFntSet()         Set a font previously loaded with _gFntLoad() as active
+'------------------------------------------------------------------------------
+ ^b_gFntSet()^b
+ Set a font previously loaded with _gFntLoad() as active
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gFntSet(
+     ^b                  int iFontID
+     ^b                )
+
+ ^bArguments^b
+
+     ^biFontID^b is the font handle as returned by _gFntLoad().
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gFntClipSet()" "_gFntGet()" "_gFntLoad()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gFrame()          Draw a frame with a 3-D look
+'------------------------------------------------------------------------------
+ ^b_gFrame()^b
+ Draw a frame with a 3-D look
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gFrame(
+     ^b              int iLeft,
+     ^b              int iTop,
+     ^b              int iRight,
+     ^b              int iBottom,
+     ^b              DWORD dwBackgroundColor,
+     ^b              DWORD dwBrightColor,
+     ^b              DWORD dwDarkColor,
+     ^b              int iTopWidth,
+     ^b              int iLeftWidth,
+     ^b              int iBottomWidth,
+     ^b              int iRightWidth,
+     ^b              int iMode,
+     ^b              BOOL bFilled
+     ^b             )
+
+ ^bArguments^b
+
+     ^biLeft^b is the pixel-based X coordinate of the top left corner of the
+     frame.
+
+     ^biTop^b is the pixel-based Y coordinate of the top left corner of the
+     frame.
+
+     ^biRight^b is the pixel-based X coordinate of the bottom right corner of
+     the frame.
+
+     ^biBottom^b is the pixel-based Y coordinate of the bottom right corner
+     of the frame.
+
+     ^bdwBackgroundColor^b is the frame border's background color.
+
+     ^bdwBrightColor^b is the frame border's bright color.
+
+     ^bdwDarkColor^b is the frame border's dark color.
+
+     The range of valid values for all color parameters is limited to the
+     number of colors available in the selected video mode.  For example, in
+     16-color modes, valid values are between zero and 15, and in 256-color
+     modes, valid values are between zero and 255.
+
+     ^biTopWidth^b is the thickness of the top frame border.
+
+     ^biLeftWidth^b is the thickness of the left frame border.
+
+     ^biBottomWidth^b is the thickness of the bottom frame border.
+
+     ^biRightWidth^b is the thickness of the right frame border.
+
+     ^biMode^b is the display mode (see _gEllipse() for a table of possible
+     values).
+
+     ^bbFilled^b is a flag that you specify as true (.T.) to draw a filled
+     frame.
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gClipSet()" "_gEllipse()" "_gLine()" "_gModeSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gLine()           Draw a line
+'------------------------------------------------------------------------------
+ ^b_gLine()^b
+ Draw a line
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gLine(
+     ^b             int iXStart,
+     ^b             int iYStart,
+     ^b             int iXEnd,
+     ^b             int iYEnd,
+     ^b             DWORD dwColor,
+     ^b             int iMode
+     ^b           )
+
+ ^bArguments^b
+
+     ^biXStart^b is the pixel-based X coordinate of the starting point.
+
+     ^biYStart^b is the pixel-based Y coordinate of the starting point.
+
+     ^biXEnd^b is the pixel-based X coordinate of the ending point.
+
+     ^biYEnd^b is the pixel-based Y coordinate of the ending point.
+
+     ^bdwColor^b is the line color.  The range of valid values is limited to
+     the number of colors available in the selected video mode.  For example,
+     in 16-color modes, valid values are between zero and 15, and in 256-
+     color modes, valid values are between zero and 255.
+
+     ^biMode^b is the display mode (see _gEllipse() for a table of possible
+     values).
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gClipSet()" "_gEllipse()" "_gFrame()" "_gModeSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gModeGet()        Retrieve parameters for the current video mode
+'------------------------------------------------------------------------------
+ ^b_gModeGet()^b
+ Retrieve parameters for the current video mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gModeGet(
+     ^b                   int iMode,
+     ^b                   LLG_LPVIDEOMODE lpVideoModeGet
+     ^b                 )
+
+ ^bArguments^b
+
+     ^biMode^b is the video mode, which you specify using one of the
+     following values:
+
+     ^bVideo Mode Constants^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant                      Video Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     LLG_VIDEO_TXT                 Text
+     LLG_VIDEO_VESA_80_60          VESA text 80 x 60
+     LLG_VIDEO_VESA_132_25         VESA text 132 x 25
+     LLG_VIDEO_VESA_132_43         VESA text 132 x 43
+     LLG_VIDEO_VESA_132_50         VESA text 132 x 50
+     LLG_VIDEO_VESA_132_60         VESA text 132 x 60
+     LLG_VIDEO_VESA_800_592_16     VESA 800 x 592 x 16 colors
+     LLG_VIDEO_VESA_1024_768_16    VESA 1024 x 768 x 16 colors
+     LLG_VIDEO_VESA_1280_1024_16   VESA 1280 x 1024 x 16 colors
+     LLG_VIDEO_VESA_640_480_256    VESA 640 x 480 x 256 colors
+     LLG_VIDEO_VESA_800_592_256    VESA 800 x 592 x 256 colors
+     LLG_VIDEO_VESA_1024_768_256   VESA 1024 x 768 x 256 colors
+     LLG_VIDEO_VESA_1280_1024_256  VESA 1280 x 1024 x 256 colors
+     LLG_VIDEO_VESA_640_480_32K    VESA 640 x 480 x 32 K colors
+     LLG_VIDEO_VESA_800_592_32K    VESA 800 x 592 x 32 K colors
+     LLG_VIDEO_VESA_1024_768_32K   VESA 1024 x 768 x 32 K colors
+     LLG_VIDEO_VESA_1280_1024_32K  VESA 1280 x 1024 x 32 K colors
+     LLG_VIDEO_VESA_640_480_64K    VESA 640 x 480 x 64 K colors
+     LLG_VIDEO_VESA_800_592_64K    VESA 800 x 592 x 64 K colors
+     LLG_VIDEO_VESA_1024_768_64K   VESA 1024 x 768 x 64 K colors
+     LLG_VIDEO_VESA_1280_1024_64K  VESA 1280 x 1024 x 64 K colors
+     LLG_VIDEO_VESA_640_480_16M    VESA 640 x 480 x 16 M colors
+     LLG_VIDEO_VESA_800_592_16M    VESA 800 x 592 x 16 M colors
+     LLG_VIDEO_VESA_1024_768_16M   VESA 1024 x 768 x 16 M colors
+     LLG_VIDEO_VESA_1280_1024_16M  VESA 1280 x 1024 x 16 M colors
+     LLG_VIDEO_VGA_640_480_16      VGA 640 x 480 x 16 colors
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^blpVideoModeGet^b is a pointer to an LLG_VIDEOMODE structure that you
+     must allocate prior to calling this function.  _gModeGet() writes
+     information regarding the specified video mode to this structure.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gModeSet()" "LLG_VIDEOMODE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gModeSet()        Switch the video mode
+'------------------------------------------------------------------------------
+ ^b_gModeSet()^b
+ Switch the video mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gModeSet(
+     ^b                   int iMode
+     ^b                 )
+
+ ^bArguments^b
+
+     ^biMode^b is the video mode (see _gModeGet() for a table of possible
+     values).
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gModeGet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gPalGet()         Retrieve the current color palette
+'------------------------------------------------------------------------------
+ ^b_gPalGet()^b
+ Retrieve the current color palette
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gPalGet(
+     ^b                  LLG_LPPALETTE lpPaletteGet
+     ^b                )
+
+ ^bArguments^b
+
+     ^blpPaletteGet^b is a pointer to an LLG_PALETTE structure that you must
+     allocate prior to calling this function.  _gPalGet() writes information
+     regarding the current color palette--as set by the most recent call to
+     _gPalSet()--to this structure.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gPalSet()" "LLG_PALETTE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gPalSet()         Set the current color palette
+'------------------------------------------------------------------------------
+ ^b_gPalSet()^b
+ Set the current color palette
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gPalSet(
+     ^b                  LLG_LPPALETTE lpPaletteSet
+     ^b                )
+
+ ^bArguments^b
+
+     ^blpPaletteSet^b is a pointer to an LLG_PALETTE structure that you must
+     allocate and initialize prior to calling this function.  _gPalSet() uses
+     the members of this structure to define the current color palette.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bDescription^b
+
+     This function is used to set an entire palette.  To use it, you must
+     first set up an array of LLG_RGB structures--one for each color in the
+     palette.  The palette can consist of 16, 256, 32 K, 64 K, or 16 M
+     colors, depending on the video mode specified using _gModeSet().
+
+     Then, you define an LLG_PALETTE structure that points to the LLG_RGB
+     structure array and defines a few additional palette parameters, and
+     pass a pointer to this structure to _gPalSet().
+
+     ^bNote: ^b To retrieve information about an existing palette, call
+     _gPalGet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gPalGet()" "LLG_PALETTE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gPixelGet()       Retrieve the color of a specified pixel
+'------------------------------------------------------------------------------
+ ^b_gPixelGet()^b
+ Retrieve the color of a specified pixel
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bDWORD _gPixelGet(
+     ^b                  int iX,
+     ^b                  int iY
+     ^b                )
+
+ ^bArguments^b
+
+     ^biX^b is the pixel-based X coordinate.
+
+     ^biY^b is the pixel-based Y coordinate.
+
+ ^bReturns^b
+
+     The color of the specified pixel.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gPixelSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gPixelSet()       Draw a pixel
+'------------------------------------------------------------------------------
+ ^b_gPixelSet()^b
+ Draw a pixel
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gPixelSet(
+     ^b                 int iX,
+     ^b                 int iY,
+     ^b                 DWORD dwColor,
+     ^b                 init iMode
+     ^b               )
+
+ ^bArguments^b
+
+     ^biX^b is the pixel-based X coordinate.
+
+     ^biY^b is the pixel-based Y coordinate.
+
+     ^bdwColor^b is the pixel color.  The range of valid values is limited to
+     the number of colors available in the selected video mode.  For example,
+     in 16-color modes, valid values are between zero and 15, and in 256-
+     color modes, valid values are between zero and 255.
+
+     ^biMode^b is the display mode (see _gEllipse() for a table of possible
+     values).
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gEllipse()" "_gPixelGet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gPolygon()        Draw a polygon
+'------------------------------------------------------------------------------
+ ^b_gPolygon()^b
+ Draw a polygon
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gPolygon(
+     ^b                int iVertCount,
+     ^b                LLG_LPPOINT lpVertexArray,
+     ^b                BOOL bFilled,
+     ^b                DWORD dwOutlineColor,
+     ^b                DWORD dwFillColor,
+     ^b                int iMode
+     ^b              )
+
+ ^bArguments^b
+
+     ^biVertCount^b is the number of vertices, beginning with one (1).
+
+     ^blpVertexArray^b is a pointer to an array of LLG_POINT structures in
+     which you define the coordinates of each of the vertices.  This array
+     must have iVertCount elements defined.
+
+     ^bbFilled^b is a flag that you specify as true (.T.) to draw a filled
+     polygon.
+
+     ^bdwOutlineColor^b is the outline color.
+
+     ^bdwFillColor^b is the fill color.
+
+     The range of valid values for all color parameters is limited to the
+     number of colors available in the selected video mode.  For example, in
+     16-color modes, valid values are between zero and 15, and in 256-color
+     modes, valid values are between zero and 255.
+
+     ^biMode^b is the display mode (see _gEllipse() for a table of possible
+     values).
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gClipSet()" "_gFrame()" "_gEllipse()" "_gLine()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gRect()           Draw a rectangle
+'------------------------------------------------------------------------------
+ ^b_gRect()^b
+ Draw a rectangle
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gRect(
+     ^b             int iLeft,
+     ^b             int iTop,
+     ^b             int iRight,
+     ^b             int iBottom,
+     ^b             BOOL bFilled,
+     ^b             DWORD dwColor,
+     ^b             int iMode
+     ^b           )
+
+ ^bArguments^b
+
+     ^biLeft^b is the pixel-based X coordinate of the top left corner of the
+     rectangle.
+
+     ^biTop^b is the pixel-based Y coordinate of the top left corner of the
+     rectangle.
+
+     ^biRight^b is the pixel-based X coordinate of the bottom right corner of
+     the rectangle.
+
+     ^biBottom^b is the pixel-based Y coordinate of the bottom right corner
+     of the rectangle.
+
+     ^bbFilled^b is a flag that you specify as true (.T.) to draw a filled
+     rectangle.
+
+     ^bdwColor^b is the rectangle color.  The range of valid values is
+     limited to the number of colors available in the selected video mode.
+     For example, in 16-color modes, valid values are between zero and 15,
+     and in 256-color modes, valid values are between zero and 255.
+
+     ^biMode^b is the display mode (see _gEllipse() for a table of possible
+     values).
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gClipSet()" "_gEllipse()" "_gFrame()" "_gLine()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gRGBColorGet()    Retrieve the color for a particular palette index
+'------------------------------------------------------------------------------
+ ^b_gRGBColorGet()^b
+ Retrieve the color for a particular palette index
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bDWORD _gRGBColorGet(
+     ^b                     int iPalNum
+     ^b                   )
+
+ ^bArguments^b
+
+     ^biPalNum^b is the palette index of the color, beginning with one (1),
+     that you want to retrieve.
+
+ ^bReturns^b
+
+     The color of the specified palette index.
+
+ ^bDescription^b
+
+     _gRGBColorGet() retrieves a single color for the specified palette.
+     This function is similar to _gPalGet() but instead of retrieving the
+     entire palette, it retrieves only one color.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gPalGet()" "_gRGBColorSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gRGBColorSet()    Set the color for a particular palette index
+'------------------------------------------------------------------------------
+ ^b_gRGBColorSet()^b
+ Set the color for a particular palette index
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bERRCODE _gRGBColorSet(
+     ^b                       int iPalNum,
+     ^b                       DWORD dwColorSet
+     ^b                     )
+
+ ^bArguments^b
+
+     ^biPalNum^b is the palette index for color, beginning with one (1), that
+     you want to define.
+
+     ^bdwColorSet^b is the color.  The range of valid values is limited to
+     the number of colors available in the selected video mode.  For example,
+     in 16-color modes, valid values are between zero and 15, and in 256-
+     color modes, valid values are between zero and 255.
+
+ ^bReturns^b
+
+     SUCCESS if successful; otherwise, an error code.
+
+ ^bDescription^b
+
+     _gRGBColorSet() sets a single color for the specified palette.  This
+     function is similar to _gPalSet() but instead of setting the entire
+     palette, it sets only one color.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gPalSet()" "_gRGBColorGet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gScreenRest()     Restore screen region previously saved with _gScreenSave()
+'------------------------------------------------------------------------------
+ ^b_gScreenRest()^b
+ Restore a screen region previously saved with _gScreenSave()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bvoid _gScreenRest(
+     ^b                   int iTop,
+     ^b                   int iLeft,
+     ^b                   int iBottom,
+     ^b                   int iRight,
+     ^b                   ITEM itmSavedScreen
+     ^b                 )
+
+ ^bArguments^b
+
+     ^biTop^b is the row coordinate of the top left corner of the screen
+     region.
+
+     ^biLeft^b is the column coordinate of the top left corner of the screen
+     region.
+
+     ^biBottom^b is the row coordinate of the bottom right corner of the
+     screen region.
+
+     ^biRight^b is the column coordinate of the bottom right corner of the
+     screen region.
+
+     ^bitmSavedScreen^b is an item containing a screen region previously
+     saved with _gScreenSave().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gScreenSave()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gScreenSave()     Save a screen region
+'------------------------------------------------------------------------------
+ ^b_gScreenSave()^b
+ Save a screen region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bITEM _gScreenSave(
+     ^b                   int iTop,
+     ^b                   int iLeft,
+     ^b                   int iBottom,
+     ^b                   int iRight
+     ^b                 )
+
+ ^bArguments^b
+
+     ^biTop^b is the row coordinate of the top left corner of the screen
+     region.
+
+     ^biLeft^b is the column coordinate of the top left corner of the screen
+     region.
+
+     ^biBottom^b is the row coordinate of the bottom right corner of the
+     screen region.
+
+     ^biRight^b is the column coordinate of the bottom right corner of the
+     screen region.
+
+ ^bReturns^b
+
+     In text mode, this function returns a string item identical to the
+     CA-Clipper SAVESCREEN() function.  In graphic mode, it returns an array
+     item in which each element is a string.
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gScreenRest()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gWriteAt()        Draw graphic text without background
+'------------------------------------------------------------------------------
+ ^b_gWriteAt()^b
+ Draw graphic text without background
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "llibg.api"
+     ^bint _gWriteAt(
+     ^b               int iX,
+     ^b               int iY,
+     ^b               DWORD dwFontColor,
+     ^b               int iFontID,
+     ^b               char far * fpString,
+     ^b               int iMode,
+     ^b               int iAttribute
+     ^b             )
+
+ ^bArguments^b
+
+     ^biX^b is the pixel-based X coordinate of the starting point.
+
+     ^biY^b is the pixel-based Y coordinate of the starting point.
+
+     ^bdwFontColor^b is the font color.  The range of valid values is limited
+     to the number of colors available in the selected video mode.  For
+     example, in 16-color modes, valid values are between zero and 15, and in
+     256-color modes, valid values are between zero and 255.
+
+     ^biFontID^b is the font handle.
+
+     ^bfpString^b is a pointer to the display text.
+
+     ^biMode^b is the display mode, which you specify using one of the
+     following values:
+
+     ^bDisplay Mode Constants^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant            Display Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     LLG_MODE_SET        Overwrite existing pixels that are beneath where the
+                         string will be displayed.  This is the most common
+                         display mode.
+     LLG_MODE_AND        Perform a logical AND on existing pixels--and on the
+                         display color--that are beneath where the string
+                         will be displayed.
+     LLG_MODE_OR         Perform a logical OR on existing pixels--and on the
+                         display color--that are beneath where the string
+                         will be displayed.
+     LLG_MODE_XOR        Perform a logical XOR on existing pixels--and on the
+                         display color--that are beneath where the string
+                         will be displayed (see Note below).
+     LLG_MODE_NO_DISPLAY Compute the width of the string without displaying
+                         anything on the screen.  Be aware that .FNT fonts
+                         are proportional (e.g., an "m" and an "i" do not use
+                         the same number of pixels).
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bNote:^b  LLG_MODE_XOR allows you to move objects around on the screen
+     without damaging the background.  To retrieve the initial background,
+     simply repeat the function call using the XOR display mode.
+
+     ^biAttribute^b is the font attribute, which you specify using one or
+     more of the following values:
+
+     ^bFont Attribute Constants^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant            Font Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     LLG_FONT_BOLD       Bold
+     LLG_FONT_ITALIC     Italic
+     LLG_FONT_UNDERLINE  Underline
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To specify more than one attribute, simply add the values together.
+     Note also that you can specify a value of zero for this parameter if you
+     do not want to specify any font attributes.
+
+ ^bReturns^b
+
+     The length of *fpString in pixels.
+
+ ^bNotes^b
+
+     ^b^CFE  Restrictions:^b  You cannot use this function unless you have
+        set the screen to one of the graphic modes using _gModeSet().  This
+        function respects the screen clipping region as set by _gClipSet().
+
+ ^bFiles^b   Library is LLIBG.LIB, header file is Llibg.api.
+
+!seealso: "_gClipSet()" "_gFntLoad()" "_gFntSet()" "_gModeSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_FNTCLIP        Structure for font clipping information
+'------------------------------------------------------------------------------
+ ^bLLG_FNTCLIP structure^b
+ Structure for font clipping information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   int   iPixTop;
+     ^b   int   iPixBot;
+     ^b} LLG_FNTCLIP;
+     ^b
+     ^btypedef LLG_FNTCLIP far * LLG_LPFNTCLIP;
+
+ ^bElements^b
+
+     ^biPixTop^b is the starting row number, in pixels, of the font matrix.
+     Values can range from one to the height of the font.
+
+     ^biPixBot^b is the ending row number, in pixels, of the font matrix.
+     Values can range from one to the height of the font.
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   _gFntClipGet(), _gFntClipSet()
+
+!seealso: "_gFntClipGet()" "_gFntClipSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_MOUSESTATE     Structure for mouse state information
+'------------------------------------------------------------------------------
+ ^bLLG_MOUSESTATE structure^b
+ Structure for mouse state information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   int   iX;
+     ^b   int   iY;
+     ^b   int   iRow;
+     ^b   int   iCol;
+     ^b   int   iLeft;
+     ^b   int   iRight;
+     ^b   int   iVisible;
+     ^b   int   iDriverVersion;
+     ^b   int   iCursorShape;
+     ^b   int   iClicksLeft;
+     ^b   int   iClicksRight;
+     ^b} LLG_MOUSESTATE;
+     ^b
+     ^btypedef LLG_MOUSESTATE far * LLG_LPMOUSESTATE;
+
+ ^bElements^b
+
+     ^biX^b is the pixel-based X coordinate.
+
+     ^biY^b is the pixel-based Y coordinate.
+
+     ^biRow^b is the text-based row position.
+
+     ^biCol^b is the text-based column position.
+
+     ^biLeft^b is the state of the left mouse button, which is either
+     LLM_BUTTON_DOWN if the button is down and LLM_BUTTON_UP if it is up.
+
+     ^biRight^b is the state of the right mouse button, which is either
+     LLM_BUTTON_DOWN if the button is down and LLM_BUTTON_UP if it is up.
+
+     ^biVisible^b is the current state of the mouse pointer.  1 means that it
+     is visible, and 0 means that it is hidden.
+
+     ^biDriverVersion^b is the version number of the mouse driver.
+
+     ^biCursorShape^b is the shape of the mouse pointer (see _mShow() for a
+     table of possible values).
+
+     ^biClicksLeft^b is the number of left clicks since the value was last
+     reset with _mState().
+
+     ^biClicksRight^b is the number of right clicks since the value was last
+     reset with _mState().
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   _mState()
+
+!seealso: "_mState()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_PALETTE        Structure for palette information
+'------------------------------------------------------------------------------
+ ^bLLG_PALETTE structure^b
+ Structure for palette information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   WORD      wVersion;
+     ^b   WORD      wNumEntries;
+     ^b   LLG_RGB   dwPalEntry[1];
+     ^b} LLG_PALETTE;
+     ^b
+     ^btypedef LLG_PALETTE far * LLG_LPPALETTE;
+
+ ^bElements^b
+
+     ^bwVersion^b is the version reserved for future use.
+
+     ^bwNumEntries^b is the number of entries in the palette.
+
+     ^bdwPalEntry^b is a pointer to an array of LLG_RGB structures--one
+     element for each color in the palette.  The palette can consist of 16,
+     256, 32 KB, 64 KB, or 16 MB colors, depending on the video mode
+     specified using _gModeSet().
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   _gPalGet(), _gPalSet()
+
+!seealso: "_gPalGet()" "_gPalSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_POINT          Structure for specifying coordinates of a point
+'------------------------------------------------------------------------------
+ ^bLLG_POINT structure^b
+ Structure for specifying coordinates of a point
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   int   iX;
+     ^b   int   iY;
+     ^b} LLG_POINT;
+     ^b
+     ^btypedef LLG_POINT far * LLG_LPPOINT;
+
+ ^bElements^b
+
+     ^biX^b is the pixel-based X coordinate.
+
+     ^biY^b is the pixel-based Y coordinate.
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   _gPolygon()
+
+!seealso: "_gPolygon()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_RECT           Structure for screen region information
+'------------------------------------------------------------------------------
+ ^bLLG_RECT structure^b
+ Structure for screen region information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   int   iLeft;
+     ^b   int   iTop;
+     ^b   int   iRight;
+     ^b   int   iBottom;
+     ^b} LLG_RECT;
+     ^b
+     ^btypedef LLG_RECT far * LLG_LPRECT;
+
+ ^bElements^b
+
+     ^biLeft^b is the X coordinate of the top left corner of the screen
+     region.
+
+     ^biTop^b is the Y coordinate of the top left corner of the screen
+     region.
+
+     ^biRight^b is the X coordinate of the bottom right corner of the screen
+     region.
+
+     ^biBottom^b is the Y coordinate of the bottom right corner of the screen
+     region.
+
+     ^bNote: ^b These coordinates are pixel-based unless you specify the
+     bIsGraphic parameter as false (.F.) when you call _gExclSet().
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   _mClipGet(), _mClipSet(), _gClipGet(), _gClipSet(), _gExclGet(),
+           _gExclSet()
+
+!seealso: "_mClipGet()" "_mClipSet()" "_gClipGet()" "_gClipSet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_RGB            Structure for color information
+'------------------------------------------------------------------------------
+ ^bLLG_RGB structure^b
+ Structure for color information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef union
+     ^b{
+     ^b   struct
+     ^b   {
+     ^b      BYTE   bRed;
+     ^b      BYTE   bGreen;
+     ^b      BYTE   bBlue;
+     ^b      BYTE   bFlags;
+     ^b   } b;
+     ^b   DWORD   dwColor;
+     ^b} LLG_RGB;
+     ^b
+     ^btypedef LLG_RGB far * LLG_LPRGB;
+
+ ^bElements^b
+
+     ^bbRed^b is a value from zero to 255 defining the red component of
+     dwColor.
+
+     ^bbGreen^b is a value from zero to 255 defining the green component of
+     dwColor.
+
+     ^bbBlue^b is a value from zero to 255 defining the blue component of
+     dwColor.
+
+     ^bbFlags^b can be set to true (.T.), in which case the LLG_RGB structure
+     will be set to 32 bits.  Otherwise, it will be set to 16 bits.
+
+     ^bdwColor^b is the color whose RGB components you are specifying.  The
+     range of valid values is limited to the number of colors available in
+     the selected video mode.  For example, in 16-color modes, valid values
+     are between zero and 15, and in 256-color modes, valid values are
+     between zero and 255.
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   LLG_PALETTE
+
+!seealso: "LLG_PALETTE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LLG_VIDEOMODE      Structure for video mode information
+'------------------------------------------------------------------------------
+ ^bLLG_VIDEOMODE structure^b
+ Structure for video mode information
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bStructure^b
+
+     ^btypedef struct
+     ^b{
+     ^b   int      iTextRow;
+     ^b   int      iTextCol;
+     ^b   int      iGraphRow;
+     ^b   int      iGraphCol;
+     ^b   int      iFontRow;
+     ^b   int      iFontCol;
+     ^b   DWORD    dwColorNb;
+     ^b   int      iVideoMode;
+     ^b   int      iLibVer;
+     ^b   int      iLastMode;
+     ^b   DWORD   dwLastColor;
+     ^b} LLG_VIDEOMODE;
+     ^b
+     ^btypedef LLG_VIDEOMODE far * LLG_LPVIDEOMODE;
+
+ ^bElements^b
+
+     ^biTextRow^b is the number of text rows on the screen.
+
+     ^biTextCol^b is the number of text columns on the screen.
+
+     ^biGraphRow^b is the number of graphic rows on the screen.
+
+     ^biGraphCol^b is the number of graphic columns on the screen.
+
+     ^biFontRow^b is the number of graphic rows per character.
+
+     ^biFontCol^b is the number of graphic columns per character.
+
+     ^bdwColorNb^b is the number of available colors.
+
+     ^biVideoMode^b is the video mode (see _gModeGet() for a table of
+     possible values).
+
+     ^biLibVer^b is the version number of LLIBG.LIB.
+
+     ^biLastMode^b is the last display mode setting (see _gEllipse() for a
+     table of possible values).
+
+     ^bdwLastColor^b is the last color used in a Light Lib Graphics API
+     function call.
+
+ ^bFiles^b   Header file is Llibg.api.
+
+ ^bUsed By^b   _gModeGet()
+
+!seealso: "_gModeGet()" 
+'------------------------------------------------------------------------------
+
+
+

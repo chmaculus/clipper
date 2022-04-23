@@ -1,0 +1,30 @@
+'------------------------------------------------------------------------------
+^BSET PROCEDURE^B
+
+    SET PROCEDURE compiles all procedures and user-defined functions within
+    the specified file into the current object file.
+
+^USyntax^U
+
+    SET PROCEDURE TO [<file>]
+
+^UArgument^U
+
+    <filename> is the name of the procedure file.  If the file has no
+    extension, then .prg is assumed.
+
+^UUsage^U
+
+    A procedure file may contain any number of procedures or user-defined
+    functions.  When a SET PROCEDURE TO command is encountered, Clipper
+    compiles the procedures and user-defined functions in the file.
+    Essentially, a procedure file in Clipper operates much as an include
+    directive does in other compiled environments.
+
+    CLOSE PROCEDURE and SET PROCEDURE TO with no argument are both ignored
+    when encountered.
+!seealso: ???.ngo:"DO" clip_010.ngo:"FUNCTION" clip_025.ngo:"PROCEDURE" clip_037.ngo:"RETURN" 
+'------------------------------------------------------------------------------
+
+
+

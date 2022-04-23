@@ -1,0 +1,72 @@
+'------------------------------------------------------------------------------
+ What's New in the Help Facility?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.10
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADh_fileext() - new.  Specifies the default file extentions of the
+   Help files.
+
+ û ADh_messages() - new. Specifies what messages are displayed by the Help
+ Facility.
+
+ û ADh_header() - new.  Specifies the default Help header.
+
+ û ADh_shadow() - new.  Specifies whether the Help screen box casts a
+   shadow or not.
+
+ û ADh_reset() - new.  Resets the Frankie Help Facility.
+
+ û ADh_handle() - new.  Returns the Dos file handle of the Help file.
+
+ û ADh_helpid() - new.  Returns the last Help ID string used.
+
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADset_help() - modified.  Added a 7th parameter that serves as a flag for
+   the function to index the help file it it is set to TRUE.
+
+ û ADhi_sbxconfig() - new.  Provides a means of configuring the progress
+   bar during indexing of the help file.
+
+ û ADh_rbnoexit() - new.  Prevents exiting of the help screen when the
+   right mouse button is clicked.
+
+ ^rVersion 2.3
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADhelp_index() - modified.  The screen output of ADhelp_index() may now
+   be toggled off.
+
+
+ ^rVersion 2.2
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADset_help() - modified.  Changes include the following:
+
+   1.  Now returns the file handle of the help file.
+
+   2.  A timeout feature was added.
+
+   3.  If the help screen does not occupy the whole screen, it may be moved.
+
+   4.  The footer prompts are now user-definable.
+
+   5.  A path to the help file may now be specified.
+
+
+
+ ^rVersion 2.1
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û (modified) ADset_help() - In the previous versions, if the Help key
+ is pressed and the Help File is missing, or no Help ID has been defined, or
+ the Help ID is not found in the Help File, the following Help screens will
+ be displayed:
+
+        "No Help File"
+        "Undefined Help ID"
+        "Undefined Help Text For: ..."
+
+ In v2.1, these Help screens may be prevented from displaying.
+!seealso: fran_023.ngo:"ADh_fileext()" fran_023.ngo:"ADh_messages()" fran_023.ngo:"ADh_header()" fran_023.ngo:"ADh_shadow()" fran_023.ngo:"ADh_reset()" fran_023.ngo:"ADh_handle()" fran_023.ngo:"ADh_helpid()" 
+'------------------------------------------------------------------------------
+
+
+

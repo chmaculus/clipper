@@ -1,0 +1,67 @@
+'------------------------------------------------------------------------------
+ What's New in the Scroll Bar Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADSBarBoxAttr() - new.  Provides a way of configuring the box attributes
+   of the progress bar engine.
+
+ ^rVersion 2.3
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADSBar..()          Displays status bar information of a loop process.
+   The ADSBar_..() set consists of functions that display information about
+   the status of a process loop with a progress bar.  The functions are:
+
+   ADSBarCreate() - creates and initializes a new set.
+   ADSBarUpdate() - updates the information in the status box.
+   ADSBarKill() - kills and clears the set.
+   ADSBarHeader() - defines a header string for the status display.
+   ADSBarCorner() - specifies the location of the display.
+   ADSBarLength() - species the full length of the status bar.
+   ADSBarColor() - specifies colors.
+
+   Here's a trivial example that illustrates the use of this set of
+   functions.
+
+   func main()
+   local eSB, xx
+
+   cls
+   eSB := ADSBarCreate( ,,, 100 )                  // initialize
+
+   // Loop processing
+   for xx := 1 to 100
+     ADSBarUpdate( eSB, xx )                     // update once every cycle
+
+     // do some processing here
+     inkey(.05)   // fake processing
+   next
+
+   ADSBarKill( eSB )                              // clear
+   return NIL
+
+ û Copying a Database with a Progress Bar.  ADCopyDbf() is a new function
+   that copies the current database.  It monitors its progress with a status
+   bar.  It may be configured with its own set of APIs (ADCDBF..()) and the
+   APIs of the Status Bar (ADSBar..()).
+
+ û Copying a File with a Progress Bar. ADCopyFile() is a new function that
+   copies a file.  It monitors its progress with a status bar.  It may be
+   configured with its own set of APIs (ADCF..()) and the APIs of the Status
+   Bar (ADSBar..()).
+
+
+ ^rVersion 2.1
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û New API: ADsbx_lrchar() - configures, or even prevent from displaying,
+   the left and right characters in the horizontal scroll bar, which
+   default to the left and right arrows.
+
+ û New API: ADsbx_grow() - advises the scroll character to _grow_ when
+   changing position, instead of merely (the default) moving.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

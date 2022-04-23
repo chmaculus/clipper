@@ -1,0 +1,31 @@
+'------------------------------------------------------------------------------
+^BSET PRINT^B
+
+    SET PRINT ON directs all output not formatted with the @...SAY command
+    to the printer as well as to the screen.
+
+^USyntax^U
+
+    SET PRINT ON/OFF
+
+^UDefaults^U
+
+    SET PRINT is normally OFF.
+
+^UUsage^U
+
+    When SET PRINT is ON, all screen output, including LIST and ?, is
+    routed to the printer.
+
+    Use SET DEVICE TO PRINT to direct @...SAY commands to the printer.  SET
+    PRINT ON does not affect @...SAY commands.
+
+    Note that a number of commands such as REPORT and LABEL FORM can direct
+    output to the printer from their respective command lines.  To suppress
+    output to the screen in these instances, however, you must still SET
+    CONSOLE OFF.
+!seealso: ???.ngo:"EJECT" clip_048.ngo:"SET CONSOLE" clip_055.ngo:"SET DEVICE" clip_071.ngo:"SET PRINTER" 
+'------------------------------------------------------------------------------
+
+
+

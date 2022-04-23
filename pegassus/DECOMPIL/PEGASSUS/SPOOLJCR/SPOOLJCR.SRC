@@ -1,0 +1,1198 @@
+#include "common.ch"
+#include "inkey.ch"
+
+static Static1:= ""
+static Static2:= {}
+static Static3, Static4:= .F., Static5, Static6, Static7, Static8, ;
+   Static9, Static10, Static11, Static12
+
+********************************
+procedure SPOOLJCR
+
+   set date british
+   com:= "1"
+   cantcaj:= 2
+   flog1:= "spoolog1"
+   flog2:= "spoolog2"
+   spopath1:= "d:\estac\spool\caja1.txt"
+   spopath2:= "d:\estac\spool\caja2.txt"
+   y:= 1
+   for y:= 1 to cantcaj
+      do while (.T.)
+         do case
+         case y = 1
+            use (flog1) exclusive
+         case y = 2
+            use (flog2) exclusive
+         case y = 3
+            use (flog3) exclusive
+         case y = 4
+            use (flog4) exclusive
+         case y = 5
+            use (flog5) exclusive
+         endcase
+         if (!neterr())
+            replace estado with 0
+            replace numerocomp with Space(60)
+            replace novedad with Space(50)
+            replace respuesta with 0
+            close
+            exit
+         endif
+         InKey(1)
+      enddo
+   next
+   salir:= 0
+   clear screen
+   clear gets
+   mensaje7("Inicializando impresor fiscal...", "N/W")
+   public handler, port, n, se
+   se:= ""
+   n:= Val(com)
+   mensaje7("Abro port de comunicaciones......", "N/W")
+   handler:= openport(com)
+   mensaje7("Establezco velocidad de comunic.", "N/W")
+   setbaud(handler, 9600)
+   mensaje7("Inicializo el impresor..........", "N/W")
+   initfiscal(handler)
+   canceltick()
+   closefisca()
+   closenofis()
+   clear screen
+   clear gets
+   save screen to pspool
+   quecaj:= 1
+   do while (salir != 1)
+      qerr:= 0
+      restore screen from pspool
+      mensaje7("buscando comprobantes...", "N/W")
+      do case
+      case quecaj = 1
+         flog:= flog1
+         spopath:= spopath1
+      case quecaj = 2
+         flog:= flog2
+         spopath:= spopath2
+      case quecaj = 3
+         flog:= flog3
+         spopath:= spopath3
+      case quecaj = 4
+         flog:= flog4
+         spopath:= spopath4
+      case quecaj = 5
+         flog:= flog5
+         spopath:= spopath5
+      endcase
+      if (file(spopath))
+         restore screen from pspool
+         mensaje7("Comprobante encontrado... Abriendo...", "N/W")
+         do while (.T.)
+            nhandle:= fopen(spopath, 16)
+            if (ferror() == 0)
+               restore screen from pspool
+               mensaje7("Imprimiendo comprobante...", "N/W")
+               ccadena:= freadstr(nhandle, 999)
+               nlineas:= mlcount(ccadena, 150)
+               y:= 1
+               for y:= 1 to nlineas
+                  clinea:= memoline(ccadena, 150, y)
+                  if (Len(alltrim(clinea)) > 0)
+                     wws:= alltrim(clinea)
+                     if (SubStr(wws, Len(wws), 1) == se)
+                        wws:= wws + " "
+                     endif
+                     qerr:= enviar(wws)
+                     if (qerr < 0)
+                        canceltick()
+                        closefisca()
+                        closenofis()
+                        exit
+                     endif
+                     if (y = nlineas)
+                        mandapaq(handler, "*")
+                        result:= respuesta(handler)
+                        do while (.T.)
+                           use (flog) exclusive
+                           if (!neterr())
+                              replace numerocomp with result
+                              replace estado with 1
+                              close
+                              exit
+                           endif
+                           InKey(1)
+                        enddo
+                     endif
+                  endif
+               next
+               do while (.T.)
+                  if (fclose(nhandle))
+                     erase (spopath)
+                     exit
+                  else
+                     alert("error al cerrar el archivo de comprobante")
+                  endif
+               enddo
+               InKey()
+               exit
+            else
+               restore screen from pspool
+               mensaje7("archivo de comprobante ocupado...", "N/W")
+               InKey(1)
+            endif
+         enddo
+      endif
+      if (quecaj = cantcaj)
+         quecaj:= 0
+      endif
+      quecaj:= quecaj + 1
+      if (LastKey() == K_ESC)
+         exit
+      endif
+      InKey(1)
+   enddo
+   closeport(handler)
+   clear screen
+   clear gets
+   return
+
+********************************
+function CANCELTICK
+
+   s:= "D" + se + " " + se + "0.00" + se + "C" + se + "0"
+   mandapaq(handler, s)
+   return 0
+
+********************************
+init procedure CLIPINIT
+
+   public getlist:= {}
+   errorsys()
+   return
+
+********************************
+procedure SYSINIT
+
+   return
+
+********************************
+procedure _NTXERR
+
+   return
+
+********************************
+function CLOSEFISCA
+
+   s:= "E"
+   mandapaq(handler, s)
+   return 0
+
+********************************
+function CLOSENOFIS
+
+   s:= "J"
+   mandapaq(handler, s)
+   return 0
+
+********************************
+procedure MENSAJE7
+
+   parameters texmens, mcol
+   mencol:= SetColor()
+   ml:= Len(alltrim(texmens))
+   my:= Int((79 - ml) / 2)
+   set color to (mcol)
+   @ 10, my - 2 clear to 12, my + ml + 2
+   @ 10, my - 2 to 12, my + ml + 2
+   @ 11, my say texmens
+   set color to (mencol)
+   return
+
+********************************
+function HEXATOINT
+
+   parameters hexvalue
+   private i, value, status
+   status:= 0
+   for i:= 4 to 1 step -1
+      s:= SubStr(hexvalue, i, 1)
+      value:= Asc(s)
+      if (value >= 65 .AND. value <= 70)
+         value:= value - 65 + 10
+      elseif (value >= 97 .AND. value <= 102)
+         value:= value - 97 + 10
+      elseif (value >= 48 .AND. value <= 57)
+         value:= value - 48
+      else
+         return -1
+      endif
+      status:= status + value * 16 ^ (4 - i)
+   next
+   return status
+
+********************************
+function READMODAL(Arg1, Arg2)
+
+   local Local1, Local2
+   if (ISBLOCK(Static3))
+      eval(Static3)
+   endif
+   if (Empty(Arg1))
+      SetPos(MaxRow() - 1, 0)
+      return .F.
+   endif
+   Local2:= cleargetsy()
+   Static11:= procname(1)
+   Static12:= procline(1)
+   if (!(ISNUMBER(Arg2) .AND. Arg2 > 0))
+      Arg2:= settle(Arg1, 0)
+   endif
+   do while (!(Arg2 == 0))
+      postactive(Local1:= Arg1[Arg2])
+      if (ISBLOCK(Local1:reader()))
+         eval(Local1:reader(), Local1)
+      else
+         getreader(Local1)
+      endif
+      Arg2:= settle(Arg1, Arg2)
+   enddo
+   restoreget(Local2)
+   SetPos(MaxRow() - 1, 0)
+   return Static4
+
+********************************
+function GETPREVALI(Arg1)
+
+   local Local1, Local2
+   Local2:= .T.
+   if (!(ISNIL(Arg1:preblock())))
+      Local1:= Static4
+      Local2:= eval(Arg1:preblock(), Arg1)
+      Arg1:display()
+      showscoreb()
+      Static4:= Local1
+   endif
+   if (Static5)
+      Local2:= .F.
+      Arg1:exitstate(7)
+   elseif (!Local2)
+      Arg1:exitstate(8)
+   else
+      Arg1:exitstate(0)
+   endif
+   return Local2
+
+********************************
+procedure GETDOSETKE(Arg1, Arg2)
+
+   local Local1
+   if (Arg2:changed())
+      Arg2:assign()
+      Static4:= .T.
+   endif
+   Local1:= Static4
+   eval(Arg1, Static11, Static12, readvar())
+   showscoreb()
+   Arg2:updatebuff()
+   Static4:= Local1
+   if (Static5)
+      Arg2:exitstate(7)
+   endif
+   return
+
+********************************
+procedure __KILLREAD
+
+   Static5:= .T.
+   return
+
+********************************
+function ENVIAR
+
+   parameters string
+   private result, statprn
+   do while (.T.)
+      save screen to penvia
+      statprn:= mandapaq(handler, string)
+      if (statprn < 0)
+         do while (statprn = -9)
+            mensaje7("Impresora ocupada...     (Esc=aborta)", "W*/R")
+            caden:= "¡"
+            statprn:= mandapaq(handler, caden)
+            do while (.T.)
+               use (flog) exclusive
+               if (!neterr())
+                  if (statprn == -9)
+                     replace estado with -50
+                  else
+                     replace estado with 0
+                  endif
+                  close
+                  exit
+               endif
+               InKey(1)
+            enddo
+            InKey(1)
+         enddo
+         restore screen from penvia
+         if (statprn >= 0)
+            loop
+         endif
+         do while (.T.)
+            use (flog) exclusive
+            if (!neterr())
+               replace estado with -99
+               replace novedad with ;
+                  "Error en comunicaci¢n con impresor fiscal"
+               close
+               return -1
+            endif
+            InKey(1)
+         enddo
+      endif
+      result:= respuesta(handler)
+      fiserr:= ""
+      qfst:= geterrors(result)
+      if (qfst < 0)
+         do while (.T.)
+            use (flog) exclusive
+            if (!neterr())
+               replace estado with -99
+               replace novedad with ;
+                  "Error en comunicaci¢n con impresor fiscal"
+               close
+               return -1
+            endif
+            InKey(1)
+         enddo
+      endif
+      if (Len(alltrim(fiserr)) > 0)
+         do while (.T.)
+            use (flog) exclusive
+            if (!neterr())
+               replace estado with -33
+               replace novedad with fiserr
+               replace respuesta with 0
+               close
+               exit
+            endif
+            InKey(1)
+         enddo
+         InKey(2)
+         qqq:= " "
+         do while (.T.)
+            use (flog) exclusive
+            if (!neterr())
+               if (respuesta > 0)
+                  if (respuesta == 1)
+                     qqq:= "S"
+                  else
+                     qqq:= "N"
+                  endif
+                  close
+                  exit
+               endif
+            endif
+            InKey(2)
+         enddo
+         if (qqq = "N")
+            return -1
+         else
+            loop
+         endif
+      endif
+      restore screen from penvia
+      exit
+   enddo
+   return 0
+
+********************************
+procedure ERRORSYS
+
+   errorblock({|_1| deferror(_1)})
+   return
+
+********************************
+function READVAR(Arg1)
+
+   local Local1
+   Local1:= Static1
+   if (ISCHARACTER(Arg1))
+      Static1:= Arg1
+   endif
+   return Local1
+
+********************************
+function UPDATED
+
+   return Static4
+
+********************************
+procedure DBFONLY
+
+   return
+
+********************************
+function GETERRORS
+
+   parameters resp
+   private origen, offsetsep, i, c
+   private fiscalerro[16]
+   private printererr[16]
+   fiscalerro[1]:= "Error en chequeo de memoria fiscal"
+   fiscalerro[2]:= "Error en chequeo de la memoria de trabajo"
+   fiscalerro[3]:= "Carga de bateria baja"
+   fiscalerro[4]:= "Comando desconocido"
+   fiscalerro[5]:= "Datos no validos en un campo"
+   fiscalerro[6]:= "Comando no valido para el estado fiscal actual"
+   fiscalerro[7]:= "Desborde del total"
+   fiscalerro[8]:= "Memoria fiscal llena"
+   fiscalerro[9]:= "Memoria fiscal a punto de llenarse"
+   fiscalerro[10]:= ""
+   fiscalerro[11]:= ""
+   fiscalerro[12]:= "Error en ingreso de fecha"
+   fiscalerro[13]:= ""
+   fiscalerro[14]:= ""
+   fiscalerro[15]:= ""
+   fiscalerro[16]:= ""
+   printererr[1]:= ""
+   printererr[2]:= ""
+   printererr[3]:= "Error de Impresora"
+   printererr[4]:= "Impresora Fuera de l¡nea"
+   printererr[5]:= "Falta papel del diario"
+   printererr[6]:= "Falta papel de tickets"
+   printererr[7]:= "Buffer de Impresora lleno"
+   printererr[8]:= ""
+   printererr[9]:= ""
+   printererr[10]:= ""
+   printererr[11]:= ""
+   printererr[12]:= ""
+   printererr[13]:= ""
+   printererr[14]:= ""
+   printererr[15]:= ""
+   printererr[16]:= ""
+   origen:= 0
+   offsetsep:= At("", resp)
+   printersta:= hexatoint(SubStr(resp, origen, offsetsep - 1))
+   if (printersta < 0)
+      return -1
+   endif
+   origen:= offsetsep
+   for i:= 1 to 16
+      if (Int(printersta % 2) == 1)
+         if (Len(printererr[i]) > 0)
+            fiserr:= "PrinterStatus: " + printererr[i]
+         endif
+      endif
+      printersta:= printersta / 2
+   next
+   offsetsep:= At("", SubStr(resp, origen + 1))
+   if (offsetsep == 0)
+      offsetsep:= Len(resp)
+   endif
+   fiscalstat:= hexatoint(SubStr(resp, origen + 1, offsetsep - 1))
+   if (fiscalstat < 0)
+      return -1
+   endif
+   for i:= 1 to 16
+      if (Int(fiscalstat % 2) == 1)
+         if (Len(fiscalerro[i]) > 0)
+            fiserr:= "FiscalStatus: " + fiscalerro[i]
+         endif
+      endif
+      fiscalstat:= fiscalstat / 2
+   next
+   return 0
+
+********************************
+function OKCANCEL
+
+   save screen to pokc
+   olcol:= SetColor()
+   set color to W+/R,W+/B
+   parameters qtexto
+   okcan:= "S"
+   oktext:= Len(alltrim(qtexto))
+   if (oktext < 17)
+      okcan:= 17
+   endif
+   okx:= Int((80 - oktext - 3) / 2)
+   oks:= Int((oktext - 17) / 2)
+   confir:= 1
+   do while (confir != 0)
+      @ 10, okx clear to 14, okx + oktext + 3
+      @ 10, okx to 14, okx + oktext + 3
+      @ 11, okx + 2 say alltrim(qtexto)
+      @ 13, okx + 3 + oks prompt " OK "
+      @ 13, okx + 3 + 5 + oks prompt " Aborta "
+      set wrap on
+      menu to confir
+      if (confir = 1)
+         okcan:= "S"
+         exit
+      elseif (confir = 2)
+         okcan:= "N"
+         exit
+      endif
+   enddo
+   set color to (olcol)
+   restore screen from pokc
+   return okcan
+
+********************************
+static function ERRORMESSA(Arg1)
+
+   local Local1
+   Local1:= iif(Arg1:severity() > 1, "Error ", "Warning ")
+   if (ISCHARACTER(Arg1:subsystem()))
+      Local1:= Local1 + Arg1:subsystem()
+   else
+      Local1:= Local1 + "???"
+   endif
+   if (ISNUMBER(Arg1:subcode()))
+      Local1:= Local1 + ("/" + LTrim(Str(Arg1:subcode())))
+   else
+      Local1:= Local1 + "/???"
+   endif
+   if (ISCHARACTER(Arg1:descriptio()))
+      Local1:= Local1 + ("  " + Arg1:descriptio())
+   endif
+   if (!Empty(Arg1:filename()))
+      Local1:= Local1 + (": " + Arg1:filename())
+   elseif (!Empty(Arg1:operation()))
+      Local1:= Local1 + (": " + Arg1:operation())
+   endif
+   return Local1
+
+********************************
+function __SETHELPK
+
+   set key K_F1 to __xhelp
+   return Nil
+
+********************************
+procedure RDDSYS
+
+   return
+
+********************************
+static function DEFERROR(Arg1)
+
+   local Local1, Local2, Local3, Local4
+   if (Arg1:gencode() == 5)
+      return 0
+   endif
+   if (Arg1:gencode() == 21 .AND. Arg1:oscode() == 32 .AND. ;
+         Arg1:candefault())
+      neterr(.T.)
+      return .F.
+   endif
+   if (Arg1:gencode() == 40 .AND. Arg1:candefault())
+      neterr(.T.)
+      return .F.
+   endif
+   Local2:= errormessa(Arg1)
+   Local3:= {"Quit"}
+   if (Arg1:canretry())
+      AAdd(Local3, "Retry")
+   endif
+   if (Arg1:candefault())
+      AAdd(Local3, "Default")
+   endif
+   Local4:= 0
+   do while (Local4 == 0)
+      if (Empty(Arg1:oscode()))
+         Local4:= alert(Local2, Local3)
+      else
+         Local4:= alert(Local2 + ";(DOS Error " + ;
+            LTrim(Str(Arg1:oscode())) + ")", Local3)
+      endif
+      if (ISNIL(Local4))
+         exit
+      endif
+   enddo
+   if (!Empty(Local4))
+      if (Local3[Local4] == "Break")
+         break(Arg1)
+      elseif (Local3[Local4] == "Retry")
+         return .T.
+      elseif (Local3[Local4] == "Default")
+         return .F.
+      endif
+   endif
+   if (!Empty(Arg1:oscode()))
+      Local2:= Local2 + (" (DOS Error " + LTrim(Str(Arg1:oscode())) ;
+         + ") ")
+   endif
+   outerr(Chr(13) + Chr(10))
+   outerr(Local2)
+   Local1:= 2
+   do while (!Empty(procname(Local1)))
+      outerr(Chr(13) + Chr(10))
+      outerr("Called from", Trim(procname(Local1)) + "(" + ;
+         LTrim(Str(procline(Local1))) + ")  ")
+      Local1++
+   enddo
+   errorlevel(1)
+   quit
+   return .F.
+
+********************************
+function __SETCENTU(Arg1)
+
+   local Local1, Local2, Local3, Local4, Local5
+   Local2:= Upper(Set(_SET_DATEFORMAT))
+   Local1:= "YYYY" $ Local2
+   if (ISCHARACTER(Arg1))
+      Arg1:= Upper(Arg1) = "ON"
+   endif
+   if (ISLOGICAL(Arg1) .AND. Arg1 != Local1)
+      Local5:= At("Y", Local2)
+      Local3:= SubStr(Local2, 1, Local5 - 1)
+      do while (SubStr(Local2, Local5, 1) == "Y")
+         Local5++
+      enddo
+      Local4:= SubStr(Local2, Local5)
+      set date format to Local3 + iif(Arg1, "YYYY", "YY") + Local4
+   endif
+   return Local1
+
+********************************
+function __ATPROMPT(Arg1, Arg2, Arg3, Arg4)
+
+   AAdd(Static2, {Arg1, Arg2, Arg3, Arg4})
+   SetPos(Arg1, Arg2)
+   dispout(Arg3)
+   return .F.
+
+********************************
+procedure GETREADER(Arg1)
+
+   if (getprevali(Arg1))
+      Arg1:setfocus()
+      do while (Arg1:exitstate() == 0)
+         if (Arg1:typeout())
+            Arg1:exitstate(5)
+         endif
+         do while (Arg1:exitstate() == 0)
+            getapplyke(Arg1, InKey(0))
+         enddo
+         if (!getpostval(Arg1))
+            Arg1:exitstate(0)
+         endif
+      enddo
+      Arg1:killfocus()
+   endif
+   return
+
+********************************
+procedure __SETFORMA(Arg1)
+
+   Static3:= iif(ISBLOCK(Arg1), Arg1, Nil)
+   return
+
+********************************
+function GETACTIVE(Arg1)
+
+   local Local1
+   Local1:= Static10
+   if (PCount() > 0)
+      Static10:= Arg1
+   endif
+   return Local1
+
+********************************
+function __MENUTO(Arg1, Arg2)
+
+   local Local1, Local2, Local3, Local4, Local5, Local6, Local7, ;
+      Local8, Local9, Local10, Local11, Local12, Local13, Local14, ;
+      Local15, Local16
+   Local13:= Static2
+   Local14:= Set(_SET_MESSAGE)
+   Local15:= Set(_SET_MCENTER)
+   Local16:= readvar(Upper(Arg2))
+   Static2:= {}
+   Local11:= errorblock({|_1| break(_1)})
+   begin sequence
+      Local2:= eval(Arg1)
+      Local12:= .F.
+   recover
+      Local12:= .T.
+   end sequence
+   errorblock(Local11)
+   if (Local12)
+      __qqpub(Arg2)
+   endif
+   if (ValType(Local2) != "N" .OR. Local2 < 1)
+      Local2:= 1
+   endif
+   if (Local2 > Len(Local13))
+      Local2:= Len(Local13)
+   endif
+   if (Set(_SET_INTENSITY))
+      Local8:= setcursor(0)
+   endif
+   Local7:= .F.
+   Local6:= ""
+   Local9:= 0
+   do while (Local2 != 0)
+      Local5:= 0
+      Local1:= Local13[Local2]
+      if (Set(_SET_INTENSITY))
+         colorselec(1)
+      endif
+      SetPos(Local1[1], Local1[2])
+      dispout(Local1[3])
+      if (Set(_SET_INTENSITY))
+         colorselec(0)
+      endif
+      if (Local14 != 0)
+         if (!Empty(Local6))
+            SetPos(Local14, Local9)
+            dispout(Space(Len(Local6)))
+         endif
+         Local6:= Local1[4]
+         if (ISBLOCK(Local6))
+            Local6:= eval(Local6)
+         elseif (ValType(Local6) == "U")
+            Local6:= ""
+         endif
+         if (Local15)
+            Local9:= Int((MaxCol() - Len(Local6)) / 2)
+         endif
+         SetPos(Local14, Local9)
+         dispout(Local6)
+         SetPos(Local1[1], Local1[2])
+      endif
+      if (Local7)
+         exit
+      endif
+      do while (Local5 == 0)
+         Local5:= InKey(0)
+         if ((Local10:= SetKey(Local5)) != Nil)
+            eval(Arg1, Local2)
+            eval(Local10, procname(1), procline(1), Upper(Arg2))
+            Local2:= eval(Arg1)
+            Local5:= 0
+         endif
+      enddo
+      if (Local2 > Len(Local13))
+         Local2:= Len(Local13)
+      endif
+      do case
+      case Local5 == 5 .OR. Local5 == 19
+         if (--Local2 < 1)
+            Local2:= iif(Set(_SET_WRAP), Len(Local13), 1)
+         endif
+      case Local5 == 24 .OR. Local5 == 4
+         if (++Local2 > Len(Local13))
+            Local2:= iif(Set(_SET_WRAP), 1, Len(Local13))
+         endif
+      case Local5 == 1
+         Local2:= 1
+      case Local5 == 6
+         Local2:= Len(Local13)
+      case Local5 == 18
+         Local7:= .T.
+      case Local5 == 3
+         Local7:= .T.
+      case Local5 == 13
+         Local7:= .T.
+      case Local5 == 27
+         Local2:= 0
+      otherwise
+         Local4:= Upper(Chr(Local5))
+         Local3:= ascan(Local13, {|_1| Local4 == ;
+            Left(Upper(LTrim(_1[3])), 1)})
+         if (Local3 != 0)
+            Local2:= Local3
+            Local7:= .T.
+         endif
+      endcase
+      if (Local2 != 0)
+         SetPos(Local1[1], Local1[2])
+         dispout(Local1[3])
+      endif
+   enddo
+   setcursor(Local8)
+   eval(Arg1, Local2)
+   if (Local12)
+      release (Arg2)
+   endif
+   if (!Empty(Local16))
+      readvar(Local16)
+   endif
+   SetPos(MaxRow() - 1, 0)
+   return Local2
+
+********************************
+function READEXIT(Arg1)
+
+   return Set(_SET_EXIT, Arg1)
+
+********************************
+function READINSERT(Arg1)
+
+   return Set(_SET_INSERT, Arg1)
+
+********************************
+function READKILL(Arg1)
+
+   local Local1
+   Local1:= Static5
+   if (PCount() > 0)
+      Static5:= Arg1
+   endif
+   return Local1
+
+********************************
+procedure GETAPPLYKE(Arg1, Arg2)
+
+   local Local1, Local2
+   if (!(ISNIL(Local2:= SetKey(Arg2))))
+      getdosetke(Local2, Arg1)
+   else
+      do case
+      case Arg2 == 5
+         Arg1:exitstate(1)
+      case Arg2 == 271
+         Arg1:exitstate(1)
+      case Arg2 == 24
+         Arg1:exitstate(2)
+      case Arg2 == 9
+         Arg1:exitstate(2)
+      case Arg2 == 13
+         Arg1:exitstate(5)
+      case Arg2 == 27
+         if (Set(_SET_ESCAPE))
+            Arg1:undo()
+            Arg1:exitstate(7)
+         endif
+      case Arg2 == 18
+         Arg1:exitstate(6)
+      case Arg2 == 3
+         Arg1:exitstate(6)
+      case Arg2 == 29
+         Arg1:exitstate(3)
+      case Arg2 == 23
+         Arg1:exitstate(6)
+      case Arg2 == 22
+         Set(_SET_INSERT, !Set(_SET_INSERT))
+         showscoreb()
+      case Arg2 == 21
+         Arg1:undo()
+      case Arg2 == 1
+         Arg1:home()
+      case Arg2 == 6
+         Arg1:end()
+      case Arg2 == 4
+         Arg1:right()
+      case Arg2 == 19
+         Arg1:left()
+      case Arg2 == 2
+         Arg1:wordright()
+      case Arg2 == 26
+         Arg1:wordleft()
+      case Arg2 == 8
+         Arg1:backspace()
+      case Arg2 == 7
+         Arg1:delete()
+      case Arg2 == 20
+         Arg1:delwordrig()
+      case Arg2 == 25
+         Arg1:delend()
+      case Arg2 == 127
+         Arg1:delwordlef()
+      otherwise
+         if (Arg2 >= 32 .AND. Arg2 <= 255)
+            Local1:= Chr(Arg2)
+            if (Arg1:type() == "N" .AND. (Local1 == "." .OR. Local1 ;
+                  == ","))
+               Arg1:todecpos()
+            else
+               if (Set(_SET_INSERT))
+                  Arg1:insert(Local1)
+               else
+                  Arg1:overstrike(Local1)
+               endif
+               if (Arg1:typeout())
+                  if (Set(_SET_BELL))
+                     ?? ""
+                  endif
+                  if (!Set(_SET_CONFIRM))
+                     Arg1:exitstate(5)
+                  endif
+               endif
+            endif
+         endif
+      endcase
+      return
+   endif
+
+********************************
+function GETPOSTVAL(Arg1)
+
+   local Local1, Local2
+   Local2:= .T.
+   if (Arg1:exitstate() == 7)
+      return .T.
+   endif
+   if (Arg1:baddate())
+      Arg1:home()
+      datemsg()
+      showscoreb()
+      return .F.
+   endif
+   if (Arg1:changed())
+      Arg1:assign()
+      Static4:= .T.
+   endif
+   Arg1:reset()
+   if (!(ISNIL(Arg1:postblock())))
+      Local1:= Static4
+      SetPos(Arg1:row(), Arg1:col() + Len(Arg1:buffer()))
+      Local2:= eval(Arg1:postblock(), Arg1)
+      SetPos(Arg1:row(), Arg1:col())
+      showscoreb()
+      Arg1:updatebuff()
+      Static4:= Local1
+      if (Static5)
+         Arg1:exitstate(7)
+         Local2:= .T.
+      endif
+   endif
+   return Local2
+
+********************************
+static procedure POSTACTIVE(Arg1)
+
+   getactive(Arg1)
+   readvar(getreadvar(Arg1))
+   showscoreb()
+   return
+
+********************************
+procedure DBFNTX
+
+   return
+
+********************************
+static function SETTLE(Arg1, Arg2)
+
+   local Local1
+   if (Arg2 == 0)
+      Local1:= 2
+   else
+      Local1:= Arg1[Arg2]:exitstate()
+   endif
+   if (Local1 == 7 .OR. Local1 == 6)
+      return 0
+   endif
+   if (!(Local1 == 8))
+      Static9:= Arg2
+      Static6:= .F.
+      Static7:= .F.
+   else
+      Local1:= Static8
+   endif
+   do case
+   case Local1 == 1
+      Arg2--
+   case Local1 == 2
+      Arg2++
+   case Local1 == 3
+      Arg2:= 1
+      Static6:= .T.
+      Local1:= 2
+   case Local1 == 4
+      Arg2:= Len(Arg1)
+      Static7:= .T.
+      Local1:= 1
+   case Local1 == 5
+      Arg2++
+   endcase
+   if (Arg2 == 0)
+      if (!readexit() .AND. !Static7)
+         Static6:= .T.
+         Arg2:= Static9
+         Local1:= 2
+      endif
+   elseif (Arg2 == Len(Arg1) + 1)
+      if (!readexit() .AND. !(Local1 == 5) .AND. !Static6)
+         Static7:= .T.
+         Arg2:= Static9
+         Local1:= 1
+      else
+         Arg2:= 0
+      endif
+   endif
+   Static8:= Local1
+   if (!(Arg2 == 0))
+      Arg1[Arg2]:exitstate(Local1)
+   endif
+   return Arg2
+
+********************************
+static function CLEARGETSY
+
+   local Local1[9]
+   Local1[1]:= Static5
+   Local1[2]:= Static6
+   Local1[3]:= Static7
+   Local1[4]:= Static8
+   Local1[5]:= Static9
+   Local1[6]:= getactive(Nil)
+   Local1[7]:= readvar("")
+   Local1[8]:= Static11
+   Local1[9]:= Static12
+   Static5:= .F.
+   Static6:= .F.
+   Static7:= .F.
+   Static8:= 0
+   Static9:= 0
+   Static11:= ""
+   Static12:= 0
+   Static4:= .F.
+   return Local1
+
+********************************
+static procedure RESTOREGET(Arg1)
+
+   Static5:= Arg1[1]
+   Static6:= Arg1[2]
+   Static7:= Arg1[3]
+   Static8:= Arg1[4]
+   Static9:= Arg1[5]
+   getactive(Arg1[6])
+   readvar(Arg1[7])
+   Static11:= Arg1[8]
+   Static12:= Arg1[9]
+   return
+
+********************************
+static function GETREADVAR(Arg1)
+
+   local Local1, Local2
+   Local1:= Upper(Arg1:name())
+   if (!(ISNIL(Arg1:subscript())))
+      for Local2:= 1 to Len(Arg1:subscript())
+         Local1:= Local1 + ("[" + ;
+            LTrim(Str(Arg1:subscript()[Local2])) + "]")
+      next
+   endif
+   return Local1
+
+********************************
+static procedure SHOWSCOREB
+
+   local Local1, Local2
+   if (Set(_SET_SCOREBOARD))
+      Local1:= Row()
+      Local2:= Col()
+      SetPos(0, 60)
+      dispout(iif(Set(_SET_INSERT), nationmsg(7), nationmsg(8)))
+      SetPos(Local1, Local2)
+   endif
+   return
+
+********************************
+static procedure DATEMSG
+
+   local Local1, Local2
+   if (Set(_SET_SCOREBOARD))
+      Local1:= Row()
+      Local2:= Col()
+      SetPos(0, 60)
+      dispout(nationmsg(9))
+      SetPos(Local1, Local2)
+      do while (nextkey() == 0)
+      enddo
+      SetPos(0, 60)
+      dispout(Space(Len(nationmsg(9))))
+      SetPos(Local1, Local2)
+   endif
+   return
+
+********************************
+function READUPDATE(Arg1)
+
+   local Local1
+   Local1:= Static4
+   if (PCount() > 0)
+      Static4:= Arg1
+   endif
+   return Local1
+
+********************************
+function READFORMAT(Arg1)
+
+   local Local1
+   Local1:= Static3
+   if (PCount() > 0)
+      Static3:= Arg1
+   endif
+   return Local1
+
+********************************
+init procedure RDDINIT
+
+   rddsetdefa("DBFNTX")
+   return
+
+********************************
+init procedure INITHANDL
+
+   local Local1
+   Local1:= errorblock({|_1| lockerrhan(_1, Local1)})
+   return
+
+********************************
+function RANGECHECK(Arg1, Arg2, Arg3, Arg4)
+
+   local Local1, Local2, Local3, Local4
+   if (!Arg1:changed())
+      return .T.
+   endif
+   Local4:= Arg1:varget()
+   if (Local4 >= Arg3 .AND. Local4 <= Arg4)
+      return .T.
+   endif
+   if (Set(_SET_SCOREBOARD))
+      Local1:= nationmsg(10) + LTrim(Transform(Arg3, "")) + ;
+         nationmsg(11) + LTrim(Transform(Arg4, ""))
+      if (Len(Local1) > MaxCol())
+         Local1:= SubStr(Local1, 1, MaxCol())
+      endif
+      Local2:= Row()
+      Local3:= Col()
+      SetPos(0, Min(60, MaxCol() - Len(Local1)))
+      dispout(Local1)
+      SetPos(Local2, Local3)
+      do while (nextkey() == 0)
+      enddo
+      SetPos(0, Min(60, MaxCol() - Len(Local1)))
+      dispout(Space(Len(Local1)))
+      SetPos(Local2, Local3)
+   endif
+   return .F.
+
+********************************
+static function LOCKERRHAN(Arg1, Arg2)
+
+   if (Arg1:gencode() == 41)
+      return .T.
+   endif
+   return eval(Arg2, Arg1)
+
+********************************
+init procedure DBFNTXINI
+
+   rddregiste("DBFNTX", 1)
+   return
+
+********************************
+init procedure DBFINIT
+
+   rddregiste("DBF", 1)
+   return
+
+* EOF

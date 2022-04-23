@@ -1,0 +1,71 @@
+'------------------------------------------------------------------------------
+^BUPDATE^B
+
+    UPDATE updates the current database file from another database file
+    based on a one-to-one or one-to-many relation.
+
+^USyntax^U
+
+    UPDATE ON <key exp> FROM <alias> REPLACE <field1> WITH <exp1>
+    [,<field2> WITH <exp2>...] [RANDOM]
+
+^UArguments^U
+
+    <key exp> is an expression used that defines matching records in the
+    source work area.
+
+    <alias> is the alias of the source work area used to update records in
+    the current work area.
+
+    <field1...fieldN> are the fields in the current work area to replace
+    with new values.
+
+    <exp1...expN> identifies the values to replace into the target fields.
+    Fields from the source work area must be referenced with the alias of
+    the respective work area.
+
+^UOption^U
+
+    ^BRandom^B: The RANDOM clause causes the entire source database file to
+    be read allowing the source database file to be in any order.  If this
+    option is specified, the target database file must be indexed on the
+    <key exp>.
+
+^UUsage^U
+
+    UPDATE matches records in the target work area using the key expression
+    as the argument of a lookup into the source work area.  To obtain an
+    accurate UPDATE, both database files must be sorted or indexed on the
+    key expression.  If the source database file is not sorted or indexed,
+    use the RANDOM clause.
+
+    ^BRelations between work areas^B: UPDATE supports both one-to-one and
+    one-to-many relations between the target and the source work areas.  It
+    does not, however, support many-to-many or many-to-one relations.  All
+    source records matching the <key exp> UPDATE only the first instance of
+    the matching target records.
+
+    ^BTypes of replacement^B: When you UPDATE, the REPLACE expression
+    determines the type of UPDATE made to a target field.  If the UPDATE to
+    the field adds to the target field, the formulation is:
+
+    ^RREPLACE <target field> WITH <target field> + <expN>^R
+
+    Likewise, if the UPDATE subtracts from the target field, the
+    formulation is:
+
+    ^RREPLACE <target field> WITH <target field> - <expN>^R
+
+    ^BDeleted records^B: When DELETED is ON, all target records are UPDATEd
+    including deleted ones.  Deleted source records, however, are ignored.
+
+^UNetwork^U
+
+    In order to UPDATE in a network environment, the target database file
+    must be locked with FLOCK() or USEd EXCLUSIVEly.  The source file may
+    either be USEd EXCLUSIVEly or shared.
+!seealso: ???.ngo:"APPEND" clip_033.ngo:"REPLACE" clip_077.ngo:"SET UNIQUE" 
+'------------------------------------------------------------------------------
+
+
+

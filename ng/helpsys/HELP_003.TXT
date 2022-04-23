@@ -1,0 +1,161 @@
+!short: Example of Network Functions
+'------------------------------------------------------------------------------
+^b Example code using some of the Network Functions^b
+
+* HelpSys2.03 test (Network Example and Test sample)
+*
+* For normal .DBF and .NTX testing, leave both comment sections below
+* commented
+*
+* COMPILE with   CLIPPER <file> /w/n
+* LINK with      RTLINK FI <file>,HELPSYS2 LI HELPSYS2
+
+MEMVAR GetList                // To eliminate GETLIST warnings
+
+PROCEDURE Main()
+* * * * FOR COMIX * * * * * * * *
+*  REQUEST DBFCMX             // Force a link to FlexFile
+*  RDDSETDEFAULT("DBFCMX")    // Set the Default RDD to Comix
+* * * * FOR FLEXFILE* * * * * * *
+*  REQUEST FLEXFILE           // Force a link to FlexFile
+*  RDDSETDEFAULT("FLEXFILE")  // Set the Default RDD to FlexFile
+* * * * * * * * * * * * * * * * *
+*  V_SUPERRDD("DBFCMX")       // Set COMIX on top of FlexFile
+* * * * * * * * * * * * * * * * *
+
+   CLEAR SCREEN
+   SetShowStatus(.T.)               // Turn on Network status messages
+   // Open database and related indexes under the alias of test
+   IF NetUse("TEST", .F., 60, {"TEST1","TEST2","TEST3"},"TEST")
+      GOTO TOP                      // GOTO the top of the database
+      IF NetRecLock()               // Lock this record before allowing changes
+         @ 1, 3 GET Test->Field1    // Place database/variable gets
+         @ 3, 3 GET Test->Field2
+         @ 4, 3 GET Test->Field3
+         READ                       // Read and replace fields
+      ELSE                          // ERROR locking record
+         PrintAlert("Could not lock the TEST record")
+      ENDIF
+   ELSE                             // ERROR Opening database
+      PrintAlert("Could not open the TEST database")
+   ENDIF
+   USE                              // Close database
+RETURN
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Small program to be used for testing ^bHelpSys2^b
+'------------------------------------------------------------------------------
+This is a small program that can be used for testing the HelpSys package.
+To create the Test data see the ^bMAKETEST^b program.
+
+* HelpSys2.03 test
+* For normal .DBF and .NTX testing, leave both comment sections below
+* commented
+*
+* COMPILE with   CLIPPER <file> /w/n
+* LINK with      RTLINK FI <file>,HELPSYS2 LI HELPSYS2
+
+MEMVAR GetList
+
+PROCEDURE Main()
+* * * * FOR COMIX * * * * * * * *
+*  REQUEST DBFCMX             // Force a link to FlexFile
+*  RDDSETDEFAULT("DBFCMX")    // Set the Default RDD to Comix
+* * * * FOR FLEXFILE* * * * * * *
+*  REQUEST FLEXFILE           // Force a link to FlexFile
+*  RDDSETDEFAULT("FLEXFILE")  // Set the Default RDD to FlexFile
+* * * * * * * * * * * * * * * * *
+*  V_SUPERRDD("DBFCMX")       // Set COMIX on top of FlexFile
+* * * * * * * * * * * * * * * * *
+
+   USE Test INDEX TEST1,TEST2,TEST3
+   CLEAR SCREEN
+
+   @ 1, 3 GET Test->Field1
+   @ 3, 3 GET Test->Field2
+   @ 4, 3 GET Test->Field3
+   READ
+RETURN
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAKETEST sample to make test data for some of these examples
+'------------------------------------------------------------------------------
+* For normal .DBF and .NTX testing, leave both comment sections below
+* commented
+*
+#define TOTAL_RECORDS 100
+
+FIELD Field1, Field2, Field3 IN Test
+LOCAL nCount
+* * * * FOR COMIX * * * * * * * *
+*  REQUEST DBFCMX             // Force a link to FlexFile
+*  RDDSETDEFAULT("DBFCMX")    // Set the Default RDD to Comix
+* * * * FOR FLEXFILE* * * * * * *
+*  REQUEST FLEXFILE           // Force a link to FlexFile
+*  RDDSETDEFAULT("FLEXFILE")  // Set the Default RDD to FlexFile
+* * * * * * * * * * * * * * * * *
+*  V_SUPERRDD("DBFCMX")       // Set COMIX on top of FlexFile
+* * * * * * * * * * * * * * * * *
+
+* Create a Test database
+DBCREATE("TEST", {{"Field1","C",10,0},{"Field2","C",10,0},;
+                  {"Field3","C",10,0},{"Field4","C",10,0}},)
+
+USE Test                             // Open Database in Single User Mode
+INDEX ON UPPER(Field1) TO Test1      // Create Index 1
+INDEX ON UPPER(Field2) TO Test2      // Create Index 2
+INDEX ON UPPER(Field3) TO Test3      // Create Index 3
+USE Test INDEX Test1,Test2,Test3     // Open Database and indexes
+FOR nCount := 1 TO TOTAL_RECORDS     // Loop for creating records
+    APPEND BLANK                     // Add a blank record
+    Field1 := STR(nCount)            // Make dummy field assignments
+    Field2 := "Field2"
+    Field3 := "Field3"
+NEXT nCount                          // End of Loop
+USE                                  // Close Database and End
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Sample program to demonstrate window functions
+'------------------------------------------------------------------------------
+* Window program sample code
+* [The PrintWindow() calls will only work with the registered version]
+*
+* COMPILE with   CLIPPER <file> /w/n
+* LINK with      RTLINK FI <file>,HELPSYS2 LI HELPSYS2
+
+FUNCTION Main
+  OpenWindow(10,10,20,70,"Top Title","Bottom Title",.T.)
+  SetColor("R/B")
+  PrintWindow(5,5,"Test Text")
+  SetColor("B/R")
+  PrintWindow(4,5,"This is")
+  SetColor("N/W")
+  PrintWindow(7,1,"This is a sample line that should wrap"+;
+                  " to the next line once the edge of the window is reached")
+  PrintAlert("Sample Alert")
+  PrintWindow(0,1,"Test Line 1")
+  PrintWindow(1,0,"Test Line 2")
+  PrintWindow(1,0,"Test Line 3")
+  * NOTE: If the row parameter is greater than the number of lines in the
+  *       window, the window is automatically scrolled up one and then
+  *       the line is printed
+  PrintWindow(100,1,"Test Line 4")
+  PrintWindow(100,1,"Press Anykey")
+  INKEY(0)
+  CloseWindow()
+RETURN NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,479 @@
+!short: ADaltkey()          Returns the inkey code of the ALT-equivalence of a
+'------------------------------------------------------------------------------
+ ^bADaltkey( <nAscii> ) ) --> <nAltInkey>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the inkey code of the ALT-equivalence of a printable key.
+
+ <nAscii> is the ascii code of the key whose ALT-equivalence is to be
+ determined.
+
+ <nAltInkey> is the inkey code of the ALT-equivalence of <nAscii>
+
+ Examples:
+ ---------
+ ? ADaltkey( asc( "f" ) )   // K_ALT_F
+ ? ADaltkey( asc( "F" ) )   // K_ALT_F
+ ? ADaltkey( asc( "1" ) )   // K_ALT_1
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                     printable key
+!short: ADg_keys()          Defines global hot keys
+'------------------------------------------------------------------------------
+ ^bADg_keys( [aKeys], [bHandler] ) --> <aOld>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Defines global hot keys that interact with the engines.
+
+ [aKeys] is an optional array of inkey codes of keys that are to be
+ globalized.  If this is passed, the currently defined global hot keys will
+ be replaced with [aKeys].  Global hot keys take precedence over local hot
+ keys.  Local hot keys are those defined in the engine's Config Block.
+
+ [bHandler] is an optional codeblock that handles the global keys.  If it is
+ passed, it replaces the current handler.  When EVALed, it is passed an
+ array consisting of 3 elements:
+
+    1 - a string that identifies the type of engine that intercepted the
+        hot key.  These strings are:
+
+            "BM" - for ADboxmenu()
+            "DB" - for ADdbview()
+            "HM" - for ADhormenu()
+            "R"  - for ADread()
+            "VM" - for ADvermenu()
+            "PB" - for ADpb_activate()
+            "RB" - for ADrb_activate()
+            "FS" - for ADfs_..()
+
+    2 - the numeric id of the engine
+
+    3 - the inkey code of the intercepted hot key
+
+ <aOld> is the returned value which is an array of two elements:
+
+   1 - the old array of global hot keys
+   2 - the old global hot key handler
+
+ Example
+ -------
+ #include "inkey.ch"
+
+ func main()
+ local aGlobals
+ local aMenu := { "The", "Quick", "Brown", "Clipper" }
+
+ // define a set of global keys
+ ADg_keys( { K_F9, K_F10 }, {|a|Xhandler(a)} )
+ ADvermenu( ,,aMenu )
+ ADboxmenu( "Which One?", aMenu,,,,, {||ADbm_isescape(.t.)} )
+
+ // define a new set, but remember the old set
+ aGlobals := ADg_keys( { K_ALT_F9, K_ALT_F10 }, {|a|Xhandler(a)} )
+ ADvermenu( ,,aMenu )
+ ADboxmenu( "Which One?", aMenu,,,,, {||ADbm_isescape(.t.)} )
+
+ // restore the old set
+ ADg_keys( aGlobals[1], {|a|Xhandler(a)} )
+ ADvermenu( ,,aMenu )
+ ADboxmenu( "Which One?", aMenu,,,,, {||ADbm_isescape(.t.)} )
+ return NIL
+
+ func Xhandler( a )
+ ADaview(a)
+ return NIL
+
+ 2.3
+ ---
+ Global hotkeys set by ADg_keys() are now recognized by ADpb_activate()
+ and ADrb_activate()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADkbflag()          Returns the status of a shift key
+'------------------------------------------------------------------------------
+ ^bADkbflag( <nKey> ) ) --> <lStatus>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the status of a shift key (Num Lock, Caps Lock, etc).
+
+ <nKey> is the shift key to check.  The possible values (#defined in
+ Frankie.ch) are:
+
+      K_RT_SHIFT    - the right Shift key
+      K_LF_SHIFT    - the left Shift key
+      K_CTRL        - both Ctrl keys
+      K_ALT         - both Alt keys
+      K_SCROLL      - the Scroll Lock key
+      K_NUMLOCK     - the Num Lock key
+      K_CAPSLOCK    - the Caps Lock key
+      K_INSERT      - the Insert key
+
+ <lStatus> is the status of the key.  For the first 4 keys in the above
+ list, <lStatus> is a TRUE if the key is currently depressed.  Otherwise,
+ it's FALSE.  The last 4 keys are toggles, that is, when they are pressed
+ and released, they reverse the status of the setting they represent.
+ For them, <lStatus> will return the current setting.
+
+ Example
+ -------
+ #include "frankie.ch"
+ #include "setcurs.ch"
+ #include "inkey.ch"
+ func main()
+ do while inkey() != K_ESC
+    if ADkbflag( K_INSERT )
+        setcursor( SC_NORMAL )
+    else
+        setcursor( SC_SPECIAL1 )
+    endif
+ enddo
+ return nil
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_activate()      Toggles active status of the mouse
+'------------------------------------------------------------------------------
+ ^bADm_activate( <lActive> ) --> <lStatus>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the status of the mouse, and optionally toggles it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_awithin()       Checks if the mouse cursor is within a screen region.
+'------------------------------------------------------------------------------
+ ^bADm_awithin( <aRegion>, [mRow], [mCol] ) --> <lWithin>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Checks if the mouse cursor lies within a screen area.
+
+ <aRegion> is an array that describes the area to check for the mouse
+ cursor's presence.  It contains 4 elements representing the coordinates of
+ the screen area, i.e., {nTop, nLeft, nBottom, nRight}.
+
+ [mRow], [mCol] are the row and column positions of the mouse cursor.
+ If you do not pass these parameters, the current cursor's position will be
+ substituted for them.  You can also first determine where the cursor is,
+ then pass its location to the function.
+
+ Examples:
+ ---------
+ ? ADm_awithin( {10,10,20,20} )
+
+ aMouse := ADm_status()
+ ? ADm_awithin( {10,10,20,20}, aMouse[2], aMouse[3] )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_button()        Returns the pressed button identifier
+'------------------------------------------------------------------------------
+ ^bADm_button() --> <nButton>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the pressed button identifier.  The possible return values are:
+
+ 0 - no pressed button
+ 1 - left button
+ 2 - right button
+ 3 - both buttons
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_col()           Returns the column position of the mouse cursor
+'------------------------------------------------------------------------------
+ ^bADm_col() --> <nColPosition>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the column position of the mouse cursor
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_dblclicked()    Checks for double clicks.
+'------------------------------------------------------------------------------
+ ^bADm_dblclicked( <nButton>, [nWait] ) --> <nClicks>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Checks for double clicks.  NOTE:  This function is not used by the
+ engines (They always respond to the first click).  It was added to the
+ library in response to a request for it as a primitive mouse function.
+ You can however build your own UIs with it.
+
+ <nButton> is the mouse button to check.  (1=left, 2=right)
+
+ [nWait] is the number of seconds to wait for a second click. Defaults
+ to 0.33 second.
+
+ <nClicks> is the number of clicks detected.
+
+ Notes:
+ ------
+ 1.  If <nButton> is not even pressed when ADm_dblclicked() is called,
+     the function exits immediately and returns a 0.
+
+ 2.  As soon as a second click is detected, the function exits immediately
+     and returns 2.  It does not have to wait for [nWait] seconds to
+     expire.
+
+ 3.  The function pauses the program until any of the above is true, or
+     [nWait] seconds has expired, at which time it returns 1.
+
+ Example
+ -------
+ func main()
+ ADwait()
+ ? ADm_dblclicked(1)
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_hide()          Hides the mouse cursor
+'------------------------------------------------------------------------------
+ ^bADm_hide() --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Hides the mouse cursor.  This call is disregarded if the cursor is not
+ visible.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_limits()        Limits the movement of the mouse
+'------------------------------------------------------------------------------
+ ^bADm_limits( <nT>, <nL>, <nB>, <nR> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Limits the movement of the mouse to <nT>, <nL>, <nB>, <nR>.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_move()          Moves the mouse cursor to another location
+'------------------------------------------------------------------------------
+ ^bADm_move( <nRow>, <nCol> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Moves the mouse cursor to <nRow>, <nCol>.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_pwait()         Waits for a mouse button to be pressed
+'------------------------------------------------------------------------------
+ ^bADm_pwait() --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Pauses the program until the mouse is clicked.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_row()           Returns the row position of the mouse cursor
+'------------------------------------------------------------------------------
+ ^bADm_row() --> <nRowPosition>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the row position of the mouse cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_rwait()         Waits for the mouse buttons to be released
+'------------------------------------------------------------------------------
+ ^bADm_rwait() --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Pauses the program until all the mouse buttons are released.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_show()          Shows the mouse cursor
+'------------------------------------------------------------------------------
+ ^bADm_show() --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Shows the mouse cursor.  This call is disregarded if the cursor is visible.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_status()        Returns the status of the mouse
+'------------------------------------------------------------------------------
+ ^bADm_status( <aStatus> ) --> <nButton>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the pressed button, just like ADm_button().  It also fills
+ <aStatus> with mouse info:
+
+ 1 - pressed button
+ 2 - mouse cursor row position
+ 3 - mouse cursor column position
+
+ NOTE: <aStatus> must be passed as an array of three elements.
+
+ Example:
+ --------
+ func main(p)
+ local a[3]
+
+ do while .t.
+   ? ADm_status(a)
+   ? a[1], a[2], a[3]
+ enddo
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADm_within()        Checks if the mouse cursor is within an area
+'------------------------------------------------------------------------------
+ ^bADm_within( <nT>, <nL>, <nB>, <nR>, [mRow], [mCol] ) --> <lWithin>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Checks if the screen location [mRow], [mCol] is within the screen area
+ bounded by <nT>, <nL>, <nB>, <nR>.  If [mRow] OR [mCol] is not specified,
+ the current mouse cursor positions are used.
+
+ Example:
+ --------
+ /* Pause the program until the mouse cursor is at the top/left corner */
+ func main()
+ ADm_show()
+ do while !ADm_within( 0,0,0,0 ); enddo
+ ADm_hide()
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADwait()            Waits for a keypress or a mouseclick
+'------------------------------------------------------------------------------
+ ^bADwait( [nSeconds], [bTimeOut], [bPoll], [bIdle] ) --> <aWait>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Pauses program execution and waits for either a key press or mouse click,
+ and optionally for the occurrence of another event.  Resumes execution if
+ an event occurs.
+
+ [nSeconds] is the number of seconds to wait before timing out.  If this is
+ not passed, ADwait() waits forever.  ^bNOTE that ADwait()'s behavior differs
+ ^bfrom INKEY().  If [nSeconds] is 0, ADwaits() times out immediately.  To
+ ^bcause it to wait _forever_ until an event occurs, pass a very large value,
+ ^bor place it inside a loop (See Example 1 below).
+
+ [bTimeOut] is a codeblock that gets EVALed when [nSeconds] expire without
+ an event occurring.
+
+ [bPoll] is an optional codeblock that ADwait() EVALs to poll for another
+ event.  It must return a numeric (a non-zero if an event occurs).  Since
+ ADwait() does not poll mouse movement, [bPoll] affords the opportunity
+ to add mouse movement polling.  Also, time polling.
+
+ [bIdle] is a codeblock that ADwait() EVALs every polling cycle when no
+ event is detected.  A polling cycle consists of polling the keyboard,
+ polling the mouse and EVALing [bPoll].
+
+ <aWait> is the return value - an array of 5 elements:
+
+    1 - the inkey code of the pressed key
+    2 - the button identifier of the clicked button
+    3 - the row position of the mouse cursor
+    4 - the column position of the mouse cursor
+    5 - the return value of [bExtended].  Defaults to 0 if [bExtended]
+        is not passed.
+
+ Example 1: Time out.
+ --------------------
+ aWait := ADwait()                      // waits indefinitely
+ aWait := ADwait( 3, {||tone(100,1)} )  // beeps after 3 seconds of inactivity
+
+ do while .t.                    // continues polling without pausing
+   aWait := ADwait(0)            // program execution
+   // other lines
+ enddo
+
+ Example 2: Polling for mouse movement.
+ --------------------------------------
+ func main()
+ local aWait, mRow, mCol
+
+ mRow := ADm_row()
+ mCol := ADm_col()
+ aWait := ADwait( ,, {||if( mRow != ADm_row() .or. mCol != ADm_col(), 1, 0 )} )
+ if aWait[5] != 0
+    ADmessage( { "The mouse moved" } )
+ endif
+ return NIL
+
+
+ Example 3. Time polling.
+ ------------------------
+ func main()
+ local cTime := time(), aWait
+
+ cls
+ cTime := left( cTime, 3 ) + str( val( substr( cTime, 4, 2 ) ) + 1, 2 ) + ":00"
+ Xdisptime(0)
+ aWait := ADwait( ,, {||if(time()>=cTime,1,0)}, {||Xdisptime(1)})
+ Xdisptime(2)
+
+ if aWait[5] == 1
+     Xwakeup()
+ endif
+ return NIL
+
+ func Xdisptime(nMode)
+ static aScn
+ local nT := 10, nL := 32, nB := 12, nR := 43, cColor := "R+/W"
+
+ if nMode == 0
+    aScn := ADbox( nT, nL, nB, nR, cColor )
+ elseif nMode == 1
+    ADsay( nT+1, nR - 9, time(), cColor )
+    return NIL
+ elseif nMode == 2
+    ADrestscn( aScn )
+    aScn := NIL
+ endif
+
+ return aScn
+
+ func Xwakeup()
+ local aScn := ADmessage( { "WAKE UP!" },,, .f., .f. )
+
+ ADwait( ,,, {||tone(100,1)})
+ ADrestscn( aScn )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

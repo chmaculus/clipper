@@ -1,0 +1,1272 @@
+!short:^u Overview Printer/Form/Report Function
+'------------------------------------------------------------------------------
+
+                   ^UPrinter/Form/Report Function^U
+
+   Printer is a very expensive device , because it exhausts much time
+   in programming.
+
+   Casual-Kit make a concept that all process in printer will include
+   three sections :  Initialize, processing, end
+   Based on this concept, Casual-Kit provides these function first :
+
+      ^BPrn_Ready()^B   Test printer status.
+
+      ^BPrn_Init()^B    Initialize a printing process
+      ^BPrn_End()^B     End a printing process
+      ^BPrn_Say()^B     Send string to printer (macro)
+      ^BPrn_Line()^B    Send a line of message to printer (macro)
+
+   Based on these functions, Casual-Kit print forms in a simple way:
+
+      ^BPrn_Aform()^B   Print form from a array
+      ^BPrn_Mform()^B   Print form from a memo
+      ^BPrn_Form()^B    Print form from a file or array
+
+   Then comes the support of report, Casual-Kit regards report as a
+   complex form with ^BTAB adjustment and Page Checking ^B.
+
+      ^BRpt_Init()^B    Initialize  a report process
+      ^BRpt_End()^B     End a report process
+      ^BRpt_Out()^B     Print data and line feed
+      ^BRpt_Tab()^B     Print data at current TAB position
+      ^BRpt_Say()^B     Send string to printer with page-checking (macro)
+      ^BRpt_Line()^B    Send a line of message  with page-checking (macro)
+      ^BRpt_Chgpage()^B Change page
+      ^BRpt_Check()^B   Determine whether to change page
+
+   But report is usually very complex, so macro programming is used to
+   design report.
+
+      ^BRpt_Macro()^B   Run a report macro program
+
+   That's the all of printer functions in Casual-Kit.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_Ready()   Test printer status
+'------------------------------------------------------------------------------
+
+    ^BPrn_Ready ( [<bPrompt>] )   ->  lReady
+
+    ^BUsage^B
+
+        Test printer status, loop till printer is ready or <Esc> pressed.
+
+        <bPrompt> is a block evaluated while printer is not ready.
+        <bPrompt > return true to retry testing, false to cancel.
+
+    ^BSource^B
+
+        func prn_ready( bPrompt )
+        if valtype(bPrompt) # 'B'
+           bPrompt:= { |i,j| i:=savescreen(maxrow()), setpos(maxrow(),0), ;
+                       dispout(padc('Printer Not Ready !  Esc...Cancel '+ ;
+                       '   Other Key Continue',maxcol()+1),'w+/r'),       ;
+                       makesound(), j:=m_inkey(0),                        ;
+                       restscreen(maxrow()+1,,,,i), j#27  }
+        endi
+        while !isprinter() .and. eval( bPrompt )
+        endd
+        retu isprinter()
+
+    ^BExample^B
+
+        if prn_ready()
+           // print something ...
+        endi
+
+        bprom:={||m_msg(' Printer Not Ready, Continue? Y/[N]','USR')#'N'}
+        if prn_ready(bProm)
+           // print something ...
+        endi
+!seealso: "Prn_Init()" "Rpt_Init()" ck20_004.ngo:"m_Msg()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_Init()    Initialize a printing process
+'------------------------------------------------------------------------------
+
+    ^BPrn_Init ( [<cDeviceFile/bPrompt>], [<cInitCom>] )  ->  lInitOK
+
+    ^BUsage^B
+
+        Initialize a printing process.
+
+        if <cDeviceFile/bPrompt> is a string, that means print to a file.
+        if <cDeviceFile/bPrompt> is a block or default, that means print
+        to printer, Prn_Ready() will be called to test printer.
+
+        <cInitCom> is the string sent to initialize printer.
+          '+' in its first means print to file in append mode.
+          '!' in its first means reset printer.
+
+    ^BSource^B
+
+        func prn_init( option, pcom )
+        loca Padd, Preset
+          if( pcom=nil, pcom:='', )
+          if(Padd  :=(left(pcom,1)='+'), pcom:=subs(pcom,2), )
+          if(Preset:=(left(pcom,1)='!'), pcom:=subs(pcom,2), )
+          set device to printer
+          if valtype(option)='C'           // print to file
+             set( 24 , option , padd )
+          elseif !prn_ready(option)        // print to printer
+                 retu .f.
+          endi
+          if( preset, devpos(0,0), )       // reset
+          if( empty(pcom), NIL, devout(pcom) )
+        retu .t.
+
+    ^BExample^B
+
+        if prn_init('PrnBuf','+! ---Begin---')
+           // print something ....
+           prn_end('---The End---')
+        endi
+!seealso: "Prn_End()" "Prn_Ready()" "Rpt_Init()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_End()     End a printing process
+'------------------------------------------------------------------------------
+
+    ^BPrn_End ( [<cEndCom>] )   ->  .t.
+
+    ^BUsage^B
+
+        End a printing process and set device to screen
+
+        <cEndCom> is the command sent to printer.
+        '!' in its first means reset printer.
+
+    ^BExample^B
+
+        if prn_init('PrnBuf','+! ---Begin---')
+           // print something ....
+           prn_end('---The End---')
+        endi
+!seealso: "Prn_Init()" "Rpt_End()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_Say()     Send string to printer (macro)
+'------------------------------------------------------------------------------
+
+    ^BPrn_Say ( <cString>, [<nRow>], [<nCol>], [<cDelim>] ) -> nProw
+
+    ^BUsage^B
+
+        Send a string to printer.  (macro)
+
+        <nRow>,<nCol> default is  < prow(),pcol() >
+
+        <cDelim> specifies the delimiter of macro and LineFeed.
+        <cDelim> ::= <cDelim1><cDelim2><cLineFeed>
+
+        Default   <cDelim>  <- _ckPrnDelim <-  "%%\\"
+
+        That means % <Macro Exp.> % in <cString> will be regraded as a
+        macro and replaced with its value. '\\' will be replaced with
+        chr(10)
+
+        <cDelim1> is a space means disable macro-replaced.
+        <cLineFeed> is space or nil means disable LineFeed-replaced.
+
+        ^B macro can be a clipper expression and the value returned must
+        ^B  be a string (character type), invalid macro will not be replaced.
+
+    ^BExample^B
+
+        if prn_init()
+
+           prn_say( ' time is % done(time(),m_msg('hello')) % '  )   //(1)
+
+           prn_say( ' This is a invalid macro % date() % ' )         //(2)
+           prn_say( ' This is a valid macro % dtoc(date()) % ' )     //(3)
+
+           prn_say( ' other delim. \\ { time() }', 10, 40, '{}\\' )  //(4)
+
+           prn_end()
+
+        endi
+
+        þ Notes
+
+          (1) will say 'hello' and return time() while run the command.
+          (2) is an invalid macro because its return value is a date.
+          (3) is a valid macro return a string.
+          (4) is an example of using user-delimiter.
+!seealso: "Prn_Init()" "Prn_End()" "Prn_Line()" "Rpt_Say()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_Line()    Send a line of message to printer (macro)
+'------------------------------------------------------------------------------
+
+    ^BPrn_Line ( <cString>, [<nRow>], [<nCol>], [<cDelim>] ) -> nProw
+
+    ^BUsage^B
+
+        Similar to Prn_Say() but add LineFeed character in <cString>.
+
+    ^BExample^B
+
+        if prn_init()
+           prn_line( ' time is % time() % '  )
+           prn_line( ' This is a error macro % date() % '  )
+           prn_line( ' sample \\ < time() >', , , '<>\\' )
+           prn_end()
+        endi
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_Aform()   Print form from a array
+'------------------------------------------------------------------------------
+
+    ^BPrn_aForm ( <aText>, [<nStart>], [<nCount>], [<nTimes>], ;
+    ^B            [<cDeviceFile/bPrompt>], [<cInitCom>],       ;
+    ^B            [<cEndCom>], [<bEndForm>] )   ->  <nTimes>
+
+    ^BUsage^B
+
+        Print form from a array.
+
+    ^BSource^B
+
+        func prn_aform(atext,start,count,n,opt,pinit,pend,bform)
+        loca i, j
+          if ! prn_init( opt, pinit )
+             retu 0
+          endi
+          n := if( n=nil, 1, n )
+          if( valtype(bform)='B', nil, bform:={||devpos(0,0)} )
+          for i:=1 to n
+              aeval( atext, { |l| prn_line(l) }, start, count )
+              eval( bform )
+          next
+          prn_end( pend )
+        retu n
+
+    ^BExample^B
+
+        atext :=  str_line( memoread('Forms.dat'), ';' )
+
+        prn_aform(atext,,,2)        // print 2 times
+!seealso: "Prn_Say()" "Prn_Line()" "Prn_Init()" "Prn_End()" "Prn_Form()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_mForm()   Print form from a memo
+'------------------------------------------------------------------------------
+
+    ^BPrn_mForm ( <cMemoText>, [<nTimes>], [<cDeviceFile/bPrompt>], ;
+    ^B            [<cInitCom>], [<cEndCom>], [<bEndForm>] )  ->  <nTimes>
+
+    ^BUsage^B
+
+        Print form from a memo.
+
+    ^BSource^B
+
+        func prn_mform( mtext, n, opt, pinit, pend, bform )
+        retu prn_aform( str_line(mtext,';'), , , n, opt, pinit, pend, bform )
+
+    ^BExample^B
+
+        mtext :=  memoread('Forms.dat')
+
+        prn_aform(mtext,2)           // print 2 times
+!seealso: "Prn_aForm()" "Prn_Say()" "Prn_Form()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prn_Form()    Print form from a file or array
+'------------------------------------------------------------------------------
+
+    ^BPrn_Form ( <cFile/aText>, [<cFormName>], [<nTimes>], ;
+    ^B           [<cDeviceFile/bPrompt>], [<cInitCom>],    ;
+    ^B           [<cEndCom>], [<bEndForm>] )   ->   <ntimes>
+
+    ^BUsage^B
+
+        Print form from a file or array.
+
+        ^BThe default extension name of <cFile> is ".FRM"
+
+        The Form-Text in file or array has the following format :
+
+        \ Form  <FormName1>
+          <Form-Text...>
+          <Form-Text...> %Macro EXP.% <Form-Text...>
+          .............
+        \ EndF
+
+        \ Form  <FormName2>
+        .... .... .....
+
+        Prn_Form() will pick up the form-text in the section of <cFormName>,
+        if <cFormName> is omitted, all file/array will be regarded as
+        Form-Text.
+
+        Other arguments is same as Prn_aForm()
+
+        You can also use aPickup() to define new format of Form-Section.
+
+    ^BExample^B
+
+        prn_aform('Forms','Form-001',2)           // print 2 times
+!seealso: "Prn_aForm()" "Prn_Init()" "Prn_End()" "Prn_Say()" ck20_002.ngo:"aPickup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Init()    Initialize a report process
+'------------------------------------------------------------------------------
+
+    ^BRpt_Init ( [<cDeviceFile/bPrompt>], [<cInitCom>], [<cbHeading>], ;
+    ^B           [<cbTitle>], [<cbFooting>], [<nPageLen/bPageCtl>] )
+    ^B      ->  lPrnReady
+
+    ^BUsage^B
+
+        Initialize a report process. Rpt_Init() do the following thing:
+
+         declare some public variables for a report process
+         Initialize a printer process, seealso Prn_Init()
+         Print the report heading and title
+         Calculate TAB position
+
+        ^B<cbHeading> <cbTitle> <cbFooting>^B can be a string or a block
+        described printing actions.  Other type will be ignored.
+
+        ^B% Macro % can be used in <cbHeading> <cbTitle> <cbFooting>.
+
+        ^Bif <cbTitle> is a string and the leftmost character is not a letter,
+        it is used to calculate TAB position. The leftmost character is the
+        delimiter of TAB position.
+        ^BSpace or Letter in the leftmost will disable this function.
+
+        ^B<nPageLen/bPageCtl>^B can be a number described Page-Length or a
+        block return Logical Type ( true to change page )
+
+        Public variables declared by Rpt_Init() are named beginning with
+        ^B_Rpt_^B, they can be used in your report definition.
+
+            _Rpt_Head    =>   Heading          ( C/B )
+            _Rpt_Title   =>   Title            ( C/B )
+            _Rpt_PgCtl   =>   Page-Checker     ( N/B )
+            _Rpt_TAB     =>   TAB positions    ( A->N)
+            _Rpt_TabLen  =>   Length of TAB    (  N  )
+            _Rpt_TABNo   =>   Current TAB No.  (  N  )
+            _Rpt_Page    =>   Current Page No. (  N  )
+            _Rpt_Line    =>   Current Line No. (  N  )
+            _Rpt_Tmp     =>   spare variable
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'+chr(10)+;
+                  '--------------------------------------------'
+       Title   := '!    !Date      !Time       !LineNo'    // ! -> TAB pos
+       Footing := ' to be continue...'
+
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       for i := 1 to 80
+          rpt_tab( date() )
+          rpt_tab( time() )
+          rpt_tab( tran(_rpt_line,'9999') )
+          rpt_tab()
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Prn_Init()" "Rpt_End()" "Rpt_Tab()" "Prn_Line()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_End()     End a report process
+'------------------------------------------------------------------------------
+
+    ^BRpt_End ( <cEndCom> )    ->  .t.
+
+    ^BUsage^B
+
+        End a report process, release public variables.
+
+    ^BSource^B
+
+        func rpt_end(pcom)
+         release _rpt_head, _rpt_title, _rpt_foot, _rpt_PgCtl
+         release _rpt_tabno, _rpt_tab, _rpt_tabLen
+         release _rpt_line, _rpt_page, _rpt_tmp
+        retu prn_end(pcom)
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'+chr(10)+;
+                  '--------------------------------------------'
+       Title   := '!    !Date      !Time       !LineNo'
+       Footing := ' to be continue...'
+
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       for i := 1 to 80
+          rpt_tab( date() )
+          rpt_tab( time() )
+          rpt_tab( tran(_rpt_line,'9999') )
+          rpt_tab()
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Prn_End()" "Rpt_Init()" "Rpt_Say()" "Rpt_Say()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Out()     Print data and line feed
+'------------------------------------------------------------------------------
+
+    ^BRpt_Tab ( [<Exp>] )  -> nProw
+
+    ^BUsage^B
+
+        Send data to printer with page-checking, and line feed.
+
+        You needn't care when to change page, it will be detected
+        automatically and call Rpt_ChgPage() change page if it is
+        needed.
+
+    ^BSource
+
+        func rpt_out(Exp)
+             devout(exp)
+             devpos( prow()+1, 0 )
+        retu rpt_Check()
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'
+       Title   := ' ==========================================='
+       Footing := ' to be continue...'
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       while !eof()
+          rpt_out(' printing something.....')
+          skip
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Prn_Say()" "Rpt_Init()" "Rpt_End()" "Rpt_Line()" "Rpt_Tab()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Tab()     Print data at current TAB position
+'------------------------------------------------------------------------------
+
+    ^BRpt_Tab ( [<exp>] )  ->  nNewTabNo
+
+    ^BUsage^B
+
+        Print data at current TAB position.
+
+        þ TAB positions are calculated from the special title of report.
+          <_Rpt_TabNo> is used to point out the current TAB No.
+
+        þ Rpt_Tab() will print <exp> at current position and increase
+          the pointer of TAB No.
+
+        þ If <exp> is omitted, Rpt_Tab() will make LineFeed action and
+          Page-Checking, then reset the current TAB No to 1.
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'+chr(10)+;
+                  '--------------------------------------------'
+       Title   := '!    !Date      !Time       !LineNo'
+       Footing := ' to be continue...'
+
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       for i := 1 to 80
+          rpt_tab( date() )
+          rpt_tab( time() )
+          rpt_tab( tran(_rpt_line,'9999') )
+          rpt_tab()
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Rpt_Init()" "Rpt_End()" "Rpt_Say()" "Rpt_Out()" "Rpt_Macro()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Say()     Send string to printer with page-checking (macro)
+'------------------------------------------------------------------------------
+
+    ^BRpt_Say ( <cMessage> , [<x>], [<y>], [<cSymbol>] )  -> nProw
+
+    ^BUsage^B
+
+        Send string to printer with page-checking.
+
+        Macro can be used in <cMassage> just like Prn_Say().
+        Rpt_Say() will call Prn_Say() to send message, its arguments
+        is same as Prn_Say().
+
+        If you want to use your <cSymbol> to define symbol, set the
+        public variable _ckPrnDelim := <your-symbol> is a good way.
+
+        You needn't care when to change page, it will be detected
+        automatically and call Rpt_ChgPage() change page if it is
+        needed.
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'
+       Title   := ' ==========================================='
+       Footing := ' to be continue...'
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       while !eof()
+          rpt_say(' printing something.....'+chr(10))
+          skip
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Prn_Say()" "Rpt_Init()" "Rpt_End()" "Rpt_Line()" "Rpt_Out()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Line()    Send a line of message  with page-checking (macro)
+'------------------------------------------------------------------------------
+
+    ^BRpt_Line ( <cMessage> , [<x>], [<y>], [<cSymbol>] )  -> nProw
+
+    ^BUsage^B
+
+        Send a line of message to printer with page-checking.
+
+        Macro can be used in <cMassage> just like Prn_Say().
+
+        If you want to use your <cSymbol> to define symbol, set the
+        public variable _ckPrnDelim := <your-symbol> is a good way.
+
+        You needn't care when to change page, it will be detected
+        automatically and call Rpt_ChgPage() change page if need.
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'
+       Title   := ' ==========================================='
+       Footing := ' to be continue...'
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       while !eof()
+          rpt_line(' printing something.....')
+          skip
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Rpt_Say()" "Prn_Say()" "Rpt_Init()" "Rpt_End()" "Rpt_Tab()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Check()   determine whether to change page
+'------------------------------------------------------------------------------
+
+    ^BRpt_Check()   -> nProw
+
+    ^BUsage^B
+
+        Determine whether to change page.
+
+    ^BSource
+
+        func rpt_check()
+        publ _rpt_pgctl, _rpt_line
+        if (valtype(m->_rpt_pgctl)='N' .and. prow()>m->_rpt_pgctl) .or. ;
+           (valtype(m->_rpt_pgctl)='B' .and. eval(m->_rpt_pgctl) )
+           rpt_chgpage()
+        endi
+        retu m->_rpt_line:=prow()
+!seealso: "Rpt_Init()" "Rpt_End()" "Rpt_Chgpage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Chgpage() Change page
+'------------------------------------------------------------------------------
+
+    ^BRpt_ChgPage()   -> nProw
+
+    ^BUsage^B
+
+        Change Page. It do the following things :
+
+         Print Footing
+         Reset Printer  ( Change Page )
+         _Rpt_Page++
+         Printing Heading and Title
+         Return the position of printer
+
+        Generally, you needn't care this function because it will be
+        called by other functions automatically.
+
+    ^BExample^B
+
+       Heading := '       Sample        Page=%str(_rpt_page,3)%'
+       Title   := ' ==========================================='
+       Footing := ' to be continue...'
+       rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+       while !eof()
+          rpt_line(' printing something.....')
+          skip
+       endd
+       rpt_end('!=======The End======')
+!seealso: "Rpt_Init()" "Rpt_End()" "Rpt_Say()" "Rpt_Macro()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rpt_Macro()   Run a report macro program
+'------------------------------------------------------------------------------
+
+    ^BRpt_Macro ( <cFile>, [<cFuncName>], [<aArguments>], [<ErrHandle>] )
+
+    ^BUsage^B
+
+        Run a macro program to print report.
+
+        It is a improvement of macrof(), Rpt_Macro() extends the
+        following commands for printing report.
+
+         \? <exp>           =>  rpt_out(<exp>)
+         \: <exp>           =>  rpt_tab(<exp>)
+         \:                 =>  rpt_tab(nil)     // reset TAB, line feed
+         \@ <message>       =>  rpt_say (<message>)
+         \\ <message>       =>  rpt_line(<message>)
+
+    ^BSource^B
+
+        func rpt_macro(Mf,MfPrc,MfArg,MfErr)
+        loca zblk:= { |x,w| w:=left(x,2), x:=subs(x,3),;
+                            if(w=='\:',rpt_tab(if(empty(x),nil,&(x))), ;
+                               if(w=='\?',rpt_out(if(empty(x),nil,&(x))), ;
+                                  if(w=='\\',rpt_line(x),;
+                                     if(w=='\@',rpt_say(x),)))) }
+        retu macrof(Mf,MfPrc,MfArg,zblk,MfErr)
+
+
+    ^BExample^B
+
+        Here is a sample macro program to print a report.
+        It can be run by this function : ^Brpt_macro(<file>,'Sample')
+
+        \Func Sample
+
+           \priv ( heading, title, footing, i )
+
+            Heading := '       Sample        Page=%str(_rpt_page,3)%' ;
+                       + chr(10) + repl('-',50)
+
+            Title   := '!    !Date      !Time       !LineNo'
+            Footing := ' to be continue...'
+
+            rpt_init( 'printer.buf', '', heading, title, footing, 50 )
+
+            \for ( i:=1; i<80; i:=i+1 )
+               \: date()
+               \: time()
+               \: tran(_rpt_line,'9999')
+               \:
+            \next
+            \\ Comment: .........
+            rpt_end('!=======The End======')
+
+        \retu
+!seealso: ck20_006.ngo:"Macrof()" ck20_006.ngo:"MacroA()" "Rpt_Init()" "Rpt_End()" "Rpt_Say()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: PlayMusic()   ^BPlay music based on score (string or array)
+'------------------------------------------------------------------------------
+
+    ^BPlayMusic( <cScore>, [<cTimes>], [<nBaseFrq>], [<nSpeed>] )
+
+    ^BUsage^B
+
+        Play music based on score (string/array)
+
+        <cScore> is a string or array consists of these elements:
+
+                         [TimeUnit] [MusicKey]
+
+                  pl.   " 3C, D; 3E, 4F |  5G , 8X "    or
+                        { '3C', 'D', '3E', '4F', '5G', '8X' }
+
+                  [TimeUnit]  is the play time, per unit = 1/18 second
+                  [Delimiter] can be one of ",;./|"
+
+                  [MusicKey] is one of the following: ^B(Case-Sensitive)
+
+                            C- c- D- d- E- F- f- G- g- A- a- B-
+                            C  c  D  d  E  F  f  G  g  A  a  B   (Mid)
+                            C+ c+ D+ d+ E+ F+ f+ G+ g+ A+ a+ B+  X  x
+                        =>  C  C# D  D# E  F  F# G  G# A  A# B   Stop
+
+        <nTimes> has the following usages.
+                 To be default  => play one time and any key to stop
+                 To be a number => play <nTimes> times, any key break
+                 nTime = .t.    => play until any key pressed (looping)
+                 To be a block  => it becomes a block to describe the
+                                   escape condition, return .t. to
+                                   break playing. 3 parameters will be
+                                   passed when it is evaluated while
+                                   playing every element. They are
+
+                                  <nTime>  -> (N) the times counter.
+                                  <aScore> -> (A) array of Score
+                                  <nPos>   -> (N) the palying pointer
+
+        <nBaseFeq> is the base frequence of C (min), default is 138.80Hz
+
+        <nSpeed> is the speed controler, default is 1. Bigger -> Slower
+
+    ^BExample^B
+
+       // Happy Birthday
+       SCORE := 'G,G | 2A,2G,2C+ | 4B,G,G | 2A,2G,2D+ | 4C+,G,G |'
+       SCORE += '2G+,2E+,2C+ | 2A,2B,F+,E+ | 2E+,2C+,2D+ |4C+,G,G | 6C+, 4X'
+
+       playmusic( score, .t., , 3 )   // play until key pressed
+       playmusic( score )             // play 1 time
+       playmusic( score, 3 )          // play 3 time
+       playmusic( score, , 164.80 )   // play in D key
+       playmusic( score, , 164.80, 6 )// play in D key in slow speed
+
+       bExit := { |n| n<10 .or. inkey()=27 }
+       playmusic( score, bExit )      // play 10 times, Esc to stop
+
+       þ Dot\Music.Mac is a sample macro program of PlayMusic()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Psw_Read()    Read password
+'------------------------------------------------------------------------------
+
+    ^BPsw_Read( [<x>], [<y>], [<cPict>], [<bVali>] )  ->  cString
+
+    ^BUsage^B
+
+        Read a password string.
+
+        <x> <y> is the position to read password,default is row() col()
+        <cPict> is the picture of reading password,default is '*'.
+        <bVali> is a block described the valid character.
+
+         First character of <cPict> is the fill-character.
+          The other characters are the <background picture>.
+
+         If <bVali> is omitted and <cPict> is a single character, <bVali>
+          check the characters only. (restricted in ASCII(32-122)).
+         If <bVali> is omitted and <background picture> had defined by
+          <cPict>, <bVali> will restrict the length of password-string
+          in the limit of <background picture>.
+
+         str_xor(),psw_read(),psw_level() are used to make password system.
+
+          str_xor()   is used to encrypt/decrypt password
+          psw_read()  is used to read a password
+          psw_level() is used to determine the level of password
+
+    ^BExample^B
+
+       psw_read(10,10)              => fill with '*', no limit of length
+
+       psw_read(10,10,'%')          => fill with '%', no limit of length
+
+       psw_read(10,10,'@......')    => fill with '@', length less than 6
+
+       psw_read(10,10,'>??????')    => fill with '>', length less than 6
+!seealso: "Psw_Level()" ck20_003.ngo:"Str_Xor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Psw_Level()   Determine the level of password
+'------------------------------------------------------------------------------
+
+    ^BPsw_Level( <cStr>, <cKeyword>, [<cDelim>] )  -> nKeyLevel
+
+    ^BUsage^B
+
+        Determine the level of password.
+
+        <cKeyword> is a string defined the multi-password in multi-level.
+
+        <cKeyword> ::= <key1>,<key2>,...=><key1>,<key2>,...=>...
+
+        ',' is the delimiter to separate keys in same level.
+        '=>' is the delimiter to separate keys in different level.
+
+        Delimiters are described by <cDelim>. The leftmost character is the
+        delimiter  of  same level, the rest characters are the delimiter of
+        different level.
+
+         str_xor(),psw_read(),psw_level() are used to make password system.
+
+          str_xor()   is used to encrypt/decrypt password
+          psw_read()  is used to read a password
+          psw_level() is used to determine the level of password
+
+    ^BExample^B
+
+       key1 := 'k11,k12,k13=>k21,k22,k23=>k31,k32,k33=>super'
+       key2 := 'k11.k12.k13//k21.k22.k23//k31.k32.k33//super'
+
+       psw_level('k1',key1)           =>    0
+       psw_level('k11',key1)          =>    1.01  (level 1, user 1)
+       psw_level('k12',key1)          =>    1.02  (level 1, user 2)
+       psw_level('k23',key1)          =>    2.03  (level 2, user 3)
+       psw_level('k32',key1)          =>    3.02  (level 3, user 2)
+       psw_level('super',key1)        =>    4.01  (level 4, user 1)
+       psw_level('others',key1)       =>    0
+
+       psw_level('super',key2)        =>    0
+       psw_level('super',key2,'.//')   =>    4.01
+       psw_level('k23',key2,'.//')     =>    2.03
+!seealso: "Psw_Read()" ck20_003.ngo:"Str_Xor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rec_Get()     Get record information to array
+'------------------------------------------------------------------------------
+
+    ^BRec_Get()  -> aRecInfo
+
+    ^BUsage^B
+
+        Rec_Get() save current record information to array.
+
+        This  function is useful to modify a record. you can save record to
+        array, then restore it using Rec_Put() after modified.
+
+    ^BSource^B
+
+        func rec_get()
+        loca ul := fcount(), ui
+        loca ub := array(ul)
+        loca ui
+          for ui = 1 to ul
+             ub[ui] := fieldget(ui)
+          next
+        retu ub
+
+    ^BExample^B
+
+        buf := rec_get()
+        @ 1,10 get buf[1]
+        @ 2,10 get buf[2]
+        @ 3,10 get buf[3]
+        ...
+        read
+        if lastkey()#27
+           rec_put(buf)
+        endi
+!seealso: "Rec_Put()" "Rec_Blank()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rec_Put()     Update record from array
+'------------------------------------------------------------------------------
+
+    ^BRec_Put( <aRecInfo> )  ->  NIL
+
+    ^BUsage^B
+
+        Update current record from array.
+
+        <aRecInfo> is the array made by Rec_Get() or Rec_Blank()
+
+    ^BSource^B
+
+        func rec_put( ub, mode )
+        loca ul := min(fcount(),len(ub))
+        loca ui
+          for ui = 1 to ul
+              fieldput( ui, ub[ui] )
+          next
+        retu nil
+
+    ^BExample^B
+
+        buf := rec_get()
+        @ 1,10 get buf[1]
+        @ 2,10 get buf[2]
+        @ 3,10 get buf[3]
+        ...
+        read
+        if lastkey()#27
+           rec_put(buf)
+        endi
+!seealso: "Rec_Get()" "Rec_Blank()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rec_Blank()   Get a blank record information
+'------------------------------------------------------------------------------
+
+    ^BRec_Blank()  ->  aRecInfo
+
+    ^BUsage^B
+
+        Get a blank record information.
+
+        This  function  is  useful  to  append  record. you can get a blank
+        record to array, then restore it using Rec_Put() after input.
+
+    ^BSource^B
+
+        func rec_blank()
+        loca b, r:=recno()
+          dbgobottom()
+          dbskip()
+          b := rec_get()
+          dbgoto( r )
+        retu b
+
+    ^BExample^B
+
+        buf := rec_blank()
+        @ 1,10 get buf[1]
+        @ 2,10 get buf[2]
+        @ 3,10 get buf[3]
+        ...
+        read
+        if lastkey()#27
+           append
+           rec_put(buf)
+        endi
+!seealso: "Rec_Get()" "Rec_Put()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: dbSecure()    Database security
+'------------------------------------------------------------------------------
+
+    ^BdbSecure( [<cMode>], [<cFiles>], [<cKey>], [<nByte>] )  ->  nFiles
+
+    ^BUsage^B
+
+        Encrypt/Decrypt the header of database/file.
+        dbSecure() return the number of files changed.
+
+        ^B<cMode>^B is used to specify security mode :
+
+          'X' or 'Xor'      =>  Xor Operation
+          'L' or 'Lock'     =>  Lock database
+          'U' or 'Unlock'   =>  Unlock database  (default)
+
+        ^B<cFiles>^B specifies the files, Wildcard are allowed.
+                 default is '*.dbf'
+
+        ^B<cKey>^B   is the key string to encrypt/decrypt files.
+                 default:   <cKey>   <-  _ckSecKey   <-  NIL
+
+        ^B<nByte>^B  specifies the number of bytes to br changed.
+                 default:   <nByte>  <-  _ckSecByte  <-  4
+
+         If mode is 'L', nothing is done if database had been locked.
+          If mode is 'U', nothing is done if database had been unlocked.
+
+         Operation will be ignored when an invalid key is used to unlock
+          a database.
+
+         If <nByte> is more than 5, there are no way to rescue database
+          if you loss the <cKey> or <nByte>.
+
+         If failure in open a file, dbSecure() will pass this file.
+
+         This function can be used in network.
+
+         SEC.EXE is a utility program to decrypt/encrypt files in DOS.
+
+        þ ^BAuto-Security:^B
+
+          Casual-Kit can make all program working under security mode
+          without any modification in source program.
+
+          You needn't do anything about database security but simply
+          include the header file <security.ch>.
+
+    ^BExample^B
+
+         dbSecure('l')                      //   lock all database
+          dbSecure()                         // unlock all database
+
+         dbSecure('x','*.dbf','key')        // lock by xor
+          dbSecure('x','*.dbf','key')        // unlock by xor
+
+         dbSecure('lock','abc.dbf','key')
+          dbSecure('unlo','abc.dbf','key')
+
+         dbSecure('x','abc.dbf',key1,100)  // change 100 bytes
+          dbSecure('x','abc.dbf',key2,100)  // double lock
+          .........                        // unlock in key2 -> key1
+          dbSecure('x','abc.dbf',key2,100)  // unlock (2)
+          dbSecure('x','abc.dbf',key1,100)  // unlock (1)
+!seealso: "Sec_Use()" "Sec_Close()" ck20_003.ngo:"Str_Xor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Sec_Use()     Use database in security mode
+'------------------------------------------------------------------------------
+
+    ^BSec_Use( [<lNew>], [<cDrive>], <cName>, [<cAlias>], [<lShare>], ;
+    ^B         [<lReadonly>] )   ->  NIL
+
+    ^BUsage^B
+
+        Sec_Use() is used to instead dbUseArea() to open database in
+        security mode.
+
+        þ Sec_Use() will unlock database first and then use it.
+          If <lNew> is false and there is database used in current area,
+          Sec_Use() will close and lock the database.
+
+        þ Two public variables are used to set password and secure-bytes.
+
+            _ckSecKey   ->  password to secure DBF. default is NIL.
+            _ckSecByte  ->  bytes to changed.       default is 4.
+
+        þ ^BAuto-Security:^B
+
+          Casual-Kit can make all program working under security mode
+          without any modification in source program.
+
+          You needn't do anything about database security but simply
+          include the header file <security.ch>.
+
+    ^BExample^B
+
+        sec_use ( , , 'sample' )
+        // .... do something ...
+        sec_close()
+!seealso: "dbSecure()" "Sec_Close()" "Sec_Closeal()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Sec_Close()   Close and secure database
+'------------------------------------------------------------------------------
+
+    ^BSec_Close()  ->  NIL
+
+    ^BUsage^B
+
+        Close and lock database.
+
+        þ Two public variables are used to set password and secure-bytes.
+
+            _ckSecKey   ->  password to secure DBF. default is NIL.
+            _ckSecByte  ->  bytes to changed.       default is 4.
+
+        þ ^BAuto-Security:^B
+
+          Casual-Kit can make all program working under security mode
+          without any modification in source program.
+
+          You needn't do anything about database security but simply
+          include the header file <security.ch>.
+
+    ^BExample^B
+
+        sec_use ( , , 'sample' )
+        // .... do something ...
+        sec_close()
+!seealso: "dbSecure()" "Sec_Use()" "Sec_Closeal()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Sec_Closeal() Close and secure all database
+'------------------------------------------------------------------------------
+
+    ^BSec_dbCloseall()  ->  NIL
+
+    ^BUsage^B
+
+        Close and secure all database.
+
+        þ Two public variables are used to set the password and secure-bytes.
+
+            _ckSecKey   ->  password to secure DBF. default is NIL.
+            _ckSecByte  ->  bytes to changed.       default is 4.
+
+        þ ^BAuto-Security:^B
+
+          Casual-Kit can make all program working under security mode
+          without any modification in source program.
+
+          You needn't do anything about database security but simply
+          include the header file <security.ch>.
+!seealso: "dbSecure()" "Sec_Use()" "Sec_Close()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Net_Macro()   Interpret a macro of network operation
+'------------------------------------------------------------------------------
+
+    ^BNet_Macro( <cbOperation> )  ->  lSuccess
+
+    ^BUsage^B
+
+        Interpret a macro or a block of network operation.
+
+         <cbOperation> is a string or a block described the operation.
+
+         If operation failure or error occur, Net_Macro() return .F.
+          If return value of <cbOperation> is not logical value,
+          Net_Macro() regards as success and return .T.
+
+    ^BExample^B
+
+        Net_Macro( ' flock() ' )
+        Net_Macro( ' rlock() ' )
+        Net_Macro( " dbusearea(,,'examples') " )
+!seealso: "Net_Action()" "Net_Use()" "Net_Rlock()" "Net_Flock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Net_Action()  Done a network operation (delay/retry)
+'------------------------------------------------------------------------------
+
+    ^BNet_Action( <cbAction>, [<nRetry>], [<nDelay>], [<bFail>] )
+    ^B        ->  lSuccess
+
+    ^BUsage^B
+
+        Done a network operation.
+
+         <cbAction> is a string or a block described the operation.
+
+         There are 3 public variable used in Net_Action to set
+          the default value of <nRetry> <nDelay> <bFail>
+
+               nRetry  <-  _ckNetRetry  <-  2
+               nDelay  <-  _ckNetDelay  <-  1
+               bFail   <-  _ckNetError  <-  {|x|Net_StdErr(x)}
+
+         <bFail> is the block of failure handle,default is Net_StdErr()
+          <cbAction> will be passed to <bFail> when operation failure.
+
+         Syntax:  Net_StdErr( <cbAction>, [<cMessage>] )
+
+          Net_StdErr() will display <cMessage> and wait a key.
+          Pressing <Esc> to Cancel and Other key to retry <cbAction>.
+
+    ^BExample^B
+
+         net_action( 'rlock()' )
+
+         myerr := { |x| net_stderr(x,' Esc...Cancel   Other key retry') }
+          net_action( 'Flock()', 5, 1, myerr )
+!seealso: "Net_Macro()" "Net_Use()" "Net_Rlock()" "Net_Flock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Net_Use()     Use database and index file
+'------------------------------------------------------------------------------
+
+    ^BNet_Use( <cDbf>, [<cIndex/acIndex>], [<cAlias>], [<cMode>], ;
+    ^B         [<nRetry>], [<nDelay>], [<bFail>] )  ->  lsuccess
+
+    ^BExample^B
+
+        Use database and index file.
+
+         <nRetry>,<nDelay>,<bFail> are same as Net_Action()
+
+         <cIndex/acIndex> is a string or a string-array described
+          the index files.  for example:
+
+            ' idx1, idx2, idx3 ' is same as { 'idx1', 'idx2', 'idx3' }
+
+         There are three options in <cMode>
+
+           'N' --- use database .... new
+           'E' --- use database .... exclusive
+           'R' --- use database .... read-only
+
+          For example:
+
+           'NER' means use database new + exclusive + read-only
+           'NR'  means use database new + share + read-only
+           'N'   means use database new + share
+
+         A public variable named <_ckUseMode> is used to set the
+          default value of <cMode>
+
+              cMode  <- _ckUseMode <- 'N'
+
+    ^BExample^B
+
+        Net_Use( 'example','idx1,idx2' )
+        Net_Use( 'example','idx1,idx2','test','NER')
+!seealso: "Net_Macro()" "Net_Action()" "Net_Rlock()" "Net_Flock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Net_Rlock()   Lock record
+'------------------------------------------------------------------------------
+
+    ^BNet_Rlock( [<nRetry>], [<nDelay>], [<bFail>] )  -> lSuccess
+
+    ^BUsage^B
+
+        Lock Record.
+
+    ^BSource^B
+
+        Func Net_Rlock( nRetry, nDelay, bFail)
+        default( @bFail, {|x|Net_StdErr(x,' Record Lock Failure ! ')} )
+        retu net_action( 'rlock()', nRetry, nDelay, bFail )
+!seealso: "Net_Macro()" "Net_Action()" "Net_Use()" "Net_Flock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Net_Flock()   Lock database
+'------------------------------------------------------------------------------
+
+    ^BNet_Flock( [<nRetry>], [<nDelay>], [<bFail>] )  -> lSuccess
+
+    ^BUsage^B
+
+        Lock database.
+
+    ^BSource^B
+
+        Func Net_Flock( nRetry, nDelay, bFail)
+        default( @bFail, {|x|Net_StdErr(x,' File Lock Failure ! ')} )
+        retu net_action( 'flock()', nRetry, nDelay, bFail )
+!seealso: "Net_Macro()" "Net_Action()" "Net_Use()" "Net_Rlock()" 
+'------------------------------------------------------------------------------
+
+
+

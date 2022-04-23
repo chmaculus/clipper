@@ -1,0 +1,48 @@
+'------------------------------------------------------------------------------
+^BSTORE^B
+
+    STORE initializes and/or assigns a value to one or more memory
+    variables.
+
+^USyntax^U
+
+    STORE <exp> TO <memvar list>   -or-   <memvar> = <exp>
+
+^UArguments^U
+
+    <exp> is a value of any data type assigned to the target memory
+    variable(s).
+
+    <memvar list> are the memory variables to initialize and/or assign
+    values.  Memory variable names can be up to 10 characters in length and
+    contain letters, numbers, and underscores (_).  The first character,
+    however, must be a letter.
+
+^UUsage^U
+
+    STORE both creates and assigns values to memory variables. Unlike other
+    languages, there is no type declaration necessary.  Clipper
+    automatically assigns the data type based on the resulting value of the
+    expression before the value is stored.  The scope of a memory variable
+    is private unless it is explicitly declared PUBLIC prior to
+    initialization.  A private memory variable is released when the
+    procedure where it is initialized terminates with a RETURN.  RELEASE,
+    CLEAR MEMORY, and CLEAR ALL also release memory variables.
+
+    Fields and memory variables can have the same name.  When there is a
+    name conflict, field names take precedence unless the memory variable
+    is identified with the memory variable alias M-><memvar> or you have
+    compiled with the (-v) switch.  The (-v) switch changes this so that
+    memory variables have precedence over field names.
+
+    In Clipper, the maximum number of memory variables that can exist at one
+    time is 2048.  Arrays, however, count only as one memory variable, each
+    containing up to 2048 elements (memory permitting).
+
+    Assigning a memo field to a non-existent memory variable creates a
+    memory variable of character type.
+!seealso: ???.ngo:"CLEAR MEMORY" clip_024.ngo:"PRIVATE" clip_026.ngo:"PUBLIC" clip_031.ngo:"RELEASE" clip_035.ngo:"RESTORE" clip_039.ngo:"SAVE" 
+'------------------------------------------------------------------------------
+
+
+

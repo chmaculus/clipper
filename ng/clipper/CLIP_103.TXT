@@ -1,0 +1,25 @@
+'------------------------------------------------------------------------------
+^BLASTREC()/RECCOUNT()^B
+
+    LASTREC() determines the number of physical records in the currently
+    active database file.
+
+^USyntax^U
+
+    LASTREC() / RECCOUNT()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    LASTREC() returns the number of physical records in the current
+    database file.  This means that filtering commands such as SET FILTER
+    or SET DELETED have no effect on the return value.
+
+    LASTREC() returns zero if there is no database file in USE in the
+    current work area.
+!seealso: ???.ngo:"FIELD" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,65 @@
+'------------------------------------------------------------------------------
+ ^bPicture Codes^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bSay Picture Functions^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ B  Display numbers left-justified    ³ X  Display DB after negative numbers
+ C  Display CR after positive numbers ³ Z  Display zeros as blanks
+ D  Display date in SET DATE format   ³ (  Enclose negative numbers in parens
+ E  Display date in British format    ³ !  Convert alpha characters to upper
+ R  Insert non-template characters    ³
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^BSay Picture Template Symbols^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A  Display digits for any data type  ³ !  Convert alpha character to upper
+ N   "                                ³ $  Display dollar sign instead of
+ X   "                                ³    leading space in a numeric
+ 9   "                                ³ *  Display asterisk instead of
+ #   "                                ³    leading space in a numeric
+ L  Display logicals as "T" or "F"    ³ .  Specify a decimal point position
+ Y  Display logicals as "Y" or "N"    ³ ,  Specify a comma position
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+^b Get Picture Functions^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A     C     Allow only alpha characters
+ B     N     Display numbers left-justified
+ C     N     Display CR after positive numbers
+ D     D,N   Display dates in SET DATE format
+ E     D,N   Display dates with day and month inverted
+             independent of the current DATE SETting,
+             numerics with comma and period reverse
+ K     All   Delete default text if first key is not a cursor key
+ R     C     Insert non-template characters in the display but do not
+             save in the Get variable
+ S<n>  C     Allows horizontal scrolling within a Get.  <n> is an integer
+             that specifies the width of the region
+ X     N     Display DB after negative numbers
+ Z     N     Display zero as blanks
+ (     N     Display negative numbers in parentheses with leading spaces
+ )     N     Display negative numbers in parentheses without leading spaces
+ !     C     Convert alphabetic character to upper case
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+^b Get Picture Template Symbols ^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A    Allow only alphabetic characters
+ N    Allow only alphabetic and numeric characters
+ X    Allow any character
+ 9    Allow digits for any data type including sign for numerics
+ #    Allow digits, signs and spaces for any data type
+ L    Allow only T, F, Y or N
+ Y    Allow only Y or N
+ !    Convert alphabetic character to upper case
+ $    Display a dollar sign in place of a leading space in a numeric
+ *    Display an asterisk in place of a leading space in a numeric
+ .    Display a decimal point
+ ,    Display a comma
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

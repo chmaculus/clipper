@@ -1,0 +1,1000 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfs_create()         The engine function
+'------------------------------------------------------------------------------
+ ADfs_create() --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a File Shower engine.
+
+ <nEngine> is the numeric ID of the created engine.
+
+ Example1
+ --------
+ #include "frankie.ch"
+ func main()
+ local e := ADfs_create()
+ local nError := ADfs_load( e, "c:\autoexec.bat" )
+
+ if nError == FS_NOFILE
+    ADmessage( "File Does Not Exist" )
+    ADfs_kill( e )
+ else
+    if nError == FS_TOOBIG
+        ADmessage( "File Only Partially Loaded" )
+    endif
+
+    ADfs_activate( e )
+    ADfs_kill( e )
+ endif
+ return NIL
+
+ Example2
+ --------
+ // Configures the window coordinates
+ #include "frankie.ch"
+ func main()
+ local e := ADfs_create()
+ local nError := ADfs_load( e, "c:\autoexec.bat" )
+
+ if nError == FS_NOFILE
+    ADmessage( "File Does Not Exist" )
+    ADfs_kill( e )
+ else
+    if nError == FS_TOOBIG
+        ADmessage( "File Only Partially Loaded" )
+    endif
+
+    ADcls()
+    ADfs_coords( e, { 10, 10, 20, 70 } )
+    ADfs_activate( e )
+    ADfs_kill( e )
+ endif
+ return NIL
+!seealso: "ADfs_error()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfs_boxattr()        Sets the window attributes
+'------------------------------------------------------------------------------
+ ADfs_boxattr( <nEngine>, <aAttr> ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the window attributes.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aAttr> is an array of three elements:
+
+   1 - the frame
+   2 - shadow color ("" or .F. for no shadow)
+   3 - exploding box (.T. for exploding box, .F. for not)
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example
+ func main()
+ local e := ADfs_create()
+
+ ADcls()
+ ADfs_coords( e, { 10, 10, 20, 70 } )
+ ADfs_boxattr( e, { "ÚÄ¿³ÙÄÀ³ ", "R/W", .f. } )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: "ADfs_coords()" "ADfs_colors()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_colors()         Sets the window colors
+'------------------------------------------------------------------------------
+ ADfs_colors( <nEngine>, <aColors> ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the window colors.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aColors> is an array of two elements:
+
+   1 - the frame color. Defaults to "W+/G"
+   2 - the text color. Defaults to "W+/G"
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local e := ADfs_create()
+
+ ADfs_colors( e, { "R/W", "B/W" } )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: "ADfs_boxattr()" "ADfs_coords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_coords()         Sets the window coordinates.
+'------------------------------------------------------------------------------
+ ADfs_coords( <nEngine>, <aCoords> ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sets the window coordinates which default to the whole screen.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aCoords> is an array of the form { nT, nL, nB, nR }
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local e := ADfs_create()
+
+ ADcls()
+ ADfs_coords( e, { 10, 10, 20, 70 } )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: "ADfs_boxattr()" "ADfs_colors()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_extra()          Specifies extra behaviors
+'------------------------------------------------------------------------------
+ ADfs_extra( <nEngine>, [bBegin], [bEnd], [bUndisplay], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies extra behaviors.
+
+ <nEngine> is the numeric ID of the engine.
+
+ [bBegin] is a codebock that is EVALed just before the window is displayed.
+ It is automatically passed the numeric engine ID.
+
+ [bEnd] is a codebock that is EVALed just after the first screenful of
+ text is displayed. It is automatically passed the numeric engine ID.
+
+ [bUndisplay] is a codebock that is EVALed just before the window is cleared.
+ It is automatically passed the numeric engine ID.
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ extra behaviors defined in the call replace whatever are already defined.
+ If it is TRUE, these definitions are added to the currently defined ones.
+
+ NOTE: If either [bBegin] or [bEnd] displays text within the window, like
+       the name of the file at the bottom of the screen, you will need to
+       prevent the engine from overwriting the displayed text.  Use the
+       ADfs_pads() API to accomplish this.  See the example below.
+
+ Example
+ -------
+ // displays the file name at the bottom of the window.
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local cFile := "c:\autoexec.bat"
+ local aPads := { 0, 0, 1,0 }
+ local e := ADfs_create()
+
+ ADfs_pads( e, aPads )
+ ADfs_extra( e,;
+             NIL,;
+             {||ADcsay( ADfs_coords(e)[3]-1,;
+                        ADfs_coords(e)[2]+1,;
+                        ADfs_coords(e)[4]-1,;
+                        cFile,;
+                        "R+/W",;
+                        .t.;
+                      );
+             };
+           )
+ ADfs_load( e, cFile )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: "ADfs_pads()" "ADfs_coords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_helpid()         Specifies a Help ID
+'------------------------------------------------------------------------------
+ ADfs_helpid( <nEngine>, <aHelp> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies a Help ID.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aHelp> is an array of two elements:
+
+   1 - the help ID.
+   2 - Help Window tile.  Defaults to "HELP"
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local e := ADfs_create()
+
+ ADset_help( "myhelp" )
+ ADfs_helpid( e, { "VIEW_MYFILE", "MyFile Viwer Help" } )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_isprinter()      Posts a codeblock that checks for printer
+'------------------------------------------------------------------------------
+ ADfs_isprinter( <nEngine>, <bIsPrinter> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Posts a codeblock that checks for printer readiness.  This block is called
+ when an ADfs_print() is issued and the output is sent to the printer.  The
+ default printer checker is {||ADbm_isprinter()}, but this may be replaced.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <bIsPrinter> a codeblock that checks for printer readiness.  It must
+ return a TRUE if the printer is ready, or a FALSE if otherwise.
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ #include "inkey.ch"
+ func main()
+ local e := ADfs_create()
+
+ ADfs_isprinter( e, {||xIsPrinter()} )
+ ADfs_keys( e, { K_ALT_P, K_ALT_X }, {|n,k|xHots(e,n,k)} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, n, k )  // event handler
+ if n == 1        // or if k == K_ALT_P
+      ADfs_print(e)
+ elseif n == 2    // or if k == K_ALT_X
+      ADfs_exit(e)
+ endif
+ return NIL
+
+ func xIsPrinter()
+ return ADbm_isprinter()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_keys()           Defines hot keys.
+'------------------------------------------------------------------------------
+ ADfs_keys( <nEngine>, <aKeys>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aKeys> is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ <bHandler> is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+  1 - the index position of the pressed key
+  2 - the inkey code of the pressed key
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ hot keys defined in the call replaces whatever is already defined.  If it is
+ TRUE, these definitions are added to the currently defined ones.
+
+
+ Example1
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ #include "inkey.ch"
+ func main()
+ local e := ADfs_create()
+
+ ADfs_keys( e, { K_ALT_P, K_ALT_X }, {|n,k|xHots(e,n,k)} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, n, k )  // event handler
+ if n == 1        // or if k == K_ALT_P
+      ADfs_print(e)
+ elseif n == 2    // or if k == K_ALT_X
+      ADfs_exit(e)
+ endif
+ return NIL
+
+ Example2
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ #define  cBoxColor   ADfs_colors(e)[1]
+ #define  aCoord      ADfs_coords(e)
+ #define  nT          aCoord[1]
+ #define  nL          aCoord[2]
+ #define  nB          aCoord[3]
+ #define  nR          aCoord[4]
+ func main()
+ local cFile := "c:\autoexec.bat"
+ local e := ADfs_create()
+ local aPads := { 0, 0, 2,0 }
+ local aHotMenu := { "&Down", "&Up", "&Left", "&Right", "&Print", "e&Xit" }
+ local bEnd := {||ADhorline( nB-2, nL, nR,, cBoxColor ),;
+                  aHB := ADhotbar( nB-1, nL+1, nR-1, aHotMenu ),;
+                  ADfs_keys( e, aHB[2], {|n,k|xHots(e,n,k)} ),;
+                  ADfs_lbuttons( e, aHB[3], {|n,r,c|xHots(e,n,r,c)} );
+               }
+ local aHB  // ADhotbar() return value
+
+ altd(0)    // so K_ALT_D may be used by the hot bar
+ ADfs_pads( e, aPads )
+ ADfs_extra( e,, bEnd )
+ ADfs_load( e, cFile )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, nth )
+
+ if nth == 1
+    ADfs_down(e)
+ elseif nth == 2
+    ADfs_up(e)
+ elseif nth == 3
+    ADfs_left(e)
+ elseif nth == 4
+    ADfs_right(e)
+ elseif nth == 5
+    ADm_rwait()
+    ADfs_print( e )
+ elseif nth == 6
+    ADm_rwait()
+    ADfs_exit(e)
+ endif
+ return NIL
+!seealso: "ADfs_lbuttons()" "ADfs_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_lbuttons()       Defines hot spots for left mouse button
+'------------------------------------------------------------------------------
+ ADfs_lbuttons( <nEngine>, <aSpots>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for left mouse button.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aSpots> is an array of the screen coordinates to be defined as hot spots.
+ Each element in the array must be in the form {nT,nL,nB,nR}.
+
+ <bHandler> is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+  1 - the index position of the clicked spot
+  2 - the mouse row position
+  3 - the mouse column position
+
+ [lAdditive] is an optional logical value.  If it is FALSE (the default), the
+ hot spots defined in the call replaces whatever is already defined.  If it
+ is TRUE, these definitions are added to the currently defined ones.
+
+ Example1
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local aCoor := { 10, 10, 20, 70 }
+ local aSpots := {;   // array of hot spots
+                   { aCoor[1], aCoor[2], aCoor[1], aCoor[4] },; // top edge
+                   { aCoor[3], aCoor[2], aCoor[3], aCoor[4] },; // bottom
+                   { aCoor[1], aCoor[2], aCoor[3], aCoor[2] },; // left
+                   { aCoor[1], aCoor[4], aCoor[3], aCoor[4] };  // right
+                 }
+ local e := ADfs_create()
+
+ ADcls()
+ ADfs_coords( e, aCoor )
+ ADfs_lbuttons( e, aSpots, {|n,m,r|xHots( e,n,m,r )} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, nthSpot, mRow, mCol )
+ if nthSpot == 1      // top edge
+    ADfs_up(e)
+ elseif nthSpot == 2  // bottom edge
+    ADfs_down(e)
+ elseif nthSpot == 3  // left edge
+    ADfs_left(e)
+ elseif nthSpot == 4  // right edge
+    ADfs_right(e)
+ endif
+ return NIL
+
+ Example2
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ #define  cBoxColor   ADfs_colors(e)[1]
+ #define  aCoord      ADfs_coords(e)
+ #define  nT          aCoord[1]
+ #define  nL          aCoord[2]
+ #define  nB          aCoord[3]
+ #define  nR          aCoord[4]
+ func main()
+ local cFile := "c:\autoexec.bat"
+ local e := ADfs_create()
+ local aPads := { 0, 0, 2,0 }
+ local aHotMenu := { "&Down", "&Up", "&Left", "&Right", "&Print", "e&Xit" }
+ local bEnd := {||ADhorline( nB-2, nL, nR,, cBoxColor ),;
+                  aHB := ADhotbar( nB-1, nL+1, nR-1, aHotMenu ),;
+                  ADfs_keys( e, aHB[2], {|n,k|xHots(e,n,k)} ),;
+                  ADfs_lbuttons( e, aHB[3], {|n,r,c|xHots(e,n,r,c)} );
+               }
+ local aHB  // ADhotbar() return value
+
+ altd(0)    // so K_ALT_D may be used by the hot bar
+ ADfs_pads( e, aPads )
+ ADfs_extra( e,, bEnd )
+ ADfs_load( e, cFile )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, nth )
+
+ if nth == 1
+    ADfs_down(e)
+ elseif nth == 2
+    ADfs_up(e)
+ elseif nth == 3
+    ADfs_left(e)
+ elseif nth == 4
+    ADfs_right(e)
+ elseif nth == 5
+    ADm_rwait()
+    ADfs_print( e )
+ elseif nth == 6
+    ADm_rwait()
+    ADfs_exit(e)
+ endif
+ return NIL
+!seealso: "ADfs_keys()" "ADfs_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_rbuttons()       Defines hot spots for right mouse button
+'------------------------------------------------------------------------------
+ ADfs_rbuttons( <nEngine>, <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for right mouse button.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aSpots> is an array of the screen coordinates to be defined as hot spots.
+ Each element in the array must be in the form {nT,nL,nB,nR}.
+
+ <bHandler> is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+  1 - the index position of the clicked spot
+  2 - the mouse row position
+  3 - the mouse column position
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ // Deactivate the right button
+ func main()
+ local e := ADfs_create()
+
+ ADfs_rbuttons( e, { { 0,0,maxrow(),maxcol() } }, {||NIL} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: "ADfs_keys()" "ADfs_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_pads()           Specifies padding spaces around the text
+'------------------------------------------------------------------------------
+ ADfs_pads( <nEngine>, <aPads> ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies padding spaces around the text.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aPads> is an array of 4 numbers indicating the sizes of space padding
+ around the displayed text:
+
+   1 - number of blank lines between the top edge and the text
+   2 - number of spaces lines between the left edge and the text
+   3 - number of blank lines between the bottom edge and the text
+   4 - number of spaces lines between the right edge and the text
+
+ Example1
+ --------
+ // displays the file name at the bottom of the window.
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local cFile := "c:\autoexec.bat"
+ local aPads := { 0, 0, 1,0 }
+ local e := ADfs_create()
+
+ ADfs_pads( e, aPads )
+ ADfs_extra( e,;
+             NIL,;
+             {||ADcsay( ADfs_coords(e)[3]-1,;
+                        ADfs_coords(e)[2]+1,;
+                        ADfs_coords(e)[4]-1,;
+                        cFile,;
+                        "R+/W",;
+                        .t.;
+                      );
+             };
+           )
+ ADfs_load( e, cFile )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ Example2
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ #define  cBoxColor   ADfs_colors(e)[1]
+ #define  aCoord      ADfs_coords(e)
+ #define  nT          aCoord[1]
+ #define  nL          aCoord[2]
+ #define  nB          aCoord[3]
+ #define  nR          aCoord[4]
+ func main()
+ local cFile := "c:\autoexec.bat"
+ local e := ADfs_create()
+ local aPads := { 0, 0, 2,0 }
+ local aHotMenu := { "&Down", "&Up", "&Left", "&Right", "&Print", "e&Xit" }
+ local bEnd := {||ADhorline( nB-2, nL, nR,, cBoxColor ),;
+                  aHB := ADhotbar( nB-1, nL+1, nR-1, aHotMenu ),;
+                  ADfs_keys( e, aHB[2], {|n,k|xHots(e,n,k)} ),;
+                  ADfs_lbuttons( e, aHB[3], {|n,r,c|xHots(e,n,r,c)} );
+               }
+ local aHB  // ADhotbar() return value
+
+ altd(0)    // so K_ALT_D may be used by the hot bar
+ ADfs_pads( e, aPads )
+ ADfs_extra( e,, bEnd )
+ ADfs_load( e, cFile )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, nth )
+
+ if nth == 1
+    ADfs_down(e)
+ elseif nth == 2
+    ADfs_up(e)
+ elseif nth == 3
+    ADfs_left(e)
+ elseif nth == 4
+    ADfs_right(e)
+ elseif nth == 5
+    ADm_rwait()
+    ADfs_print( e )
+ elseif nth == 6
+    ADm_rwait()
+    ADfs_exit(e)
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_timeout()        Specifies a timeout procedure
+'------------------------------------------------------------------------------
+ ADfs_timeout( <nEngine>, <aTimeOut> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies a timeout procedure
+
+ <nEngine> is the numeric ID of the engine.
+
+ <aTimeOut> is an array of two elements:
+
+   1 - number of seconds before timing out
+   2 - a codeblock to EVALuate at timeout
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local e := ADfs_create()
+
+ ADfs_timeout( e, { 5, {||ADblankscn()} } )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfs_activate()       Activates the engine.
+'------------------------------------------------------------------------------
+ ADfs_activate( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Activates the engine.
+
+ <nEngine> is the numeric ID of the engine.
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local e := ADfs_create()
+
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_exit()           Exits the engine.
+'------------------------------------------------------------------------------
+ ADfs_exit( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Exits the engine.
+
+ <nEngine> is the numeric ID of the engine.
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ #include "inkey.ch"
+ func main()
+ local e := ADfs_create()
+
+ ADfs_keys( e, { K_ALT_X }, {||ADfs_exit(e)} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_kill()           Kills the engine.
+'------------------------------------------------------------------------------
+ ADfs_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills the engine.
+
+ <nEngine> is the numeric ID of the engine.
+
+ Example
+ -------
+ // For the sake of clarity, no error checking is included in this example.
+ func main()
+ local e := ADfs_create()
+
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_load()           Loads the viewer source into the engine
+'------------------------------------------------------------------------------
+ ADfs_load( <nEngine>, <xSource>, [nSourceType], [bShowLoadMsg],;
+    [bClearShowMsg] ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Loads the viewer souce into the engine.
+
+ <nEngine> is the numeric ID of the created engine.
+
+ <xSource> is the source of the information to show.  It can either be a
+ file name, an array, or a memo field.
+
+ [nSourceType] is a numeric code corresponding to the type of <xSource>.
+ The valid values are #defined in Frankie.ch as:
+
+  #define FS_SOURCE_FILE          1   // file
+  #define FS_SOURCE_ARRAY         2   // array
+  #define FS_SOURCE_MEMO          3   // memo
+
+ If [nSourceType] is not passed, it defaults to FS_SOURCE_FILE.
+
+ [bShowLoadmsg] is a codeblock that the engine EVALs, just before loading
+ <xSource>, to display a message while loading.  It must not pause the
+ program.  It must return a value that can be used to clear the message from
+ the screen.  If it is not passed, it defaults to a do-nothing block {||NIL}.
+
+ [bClearLoadMsg] is a codeblock that the engine EVALs, as soon as <xSource>
+ is loaded into the engine, to clear the message displayed by [bShowLoadMsg].
+ It is automatically passed bShowLoadMsg's return value.  If it is not
+ passed, it defaults to a do-nothing block {||NIL}.
+
+ <nError> is a numeric code identifying the type of error encountered
+ during loading.  See also ADfs_error().
+
+ Example1
+ --------
+ #include "frankie.ch"
+ func main()
+ local e := ADfs_create()
+ local bShowMsg := {||ADmessage( "Loading",,, .f.)}
+ local bClearMsg := {|aScn|ADrestscn( aScn )}
+ local nError := ADfs_load( e, "c:\autoexec.bat",, bShowMsg, bClearMsg )
+
+ if nError == FS_NOFILE
+    ADmessage( "File Does Not Exist" )
+    ADfs_kill( e )
+ else
+    if nError == FS_TOOBIG
+        ADmessage( "File Only Partially Loaded" )
+    endif
+
+    ADfs_activate( e )
+    ADfs_kill( e )
+ endif
+ return NIL
+
+ Example2
+ --------
+ // Configures the window coordinates
+ #include "frankie.ch"
+ func main()
+ local e := ADfs_create()
+ local nError := ADfs_load( e, "c:\autoexec.bat" )
+
+ if nError == FS_NOFILE
+    ADmessage( "File Does Not Exist" )
+    ADfs_kill( e )
+ else
+    if nError == FS_TOOBIG
+        ADmessage( "File Only Partially Loaded" )
+    endif
+
+    ADcls()
+    ADfs_coords( e, { 10, 10, 20, 70 } )
+    ADfs_activate( e )
+    ADfs_kill( e )
+ endif
+ return NIL
+!seealso: "ADfs_error()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_print()          Prints or copies the file.
+'------------------------------------------------------------------------------
+ ADfs_print( <nEngine>, [nHandle] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Prints the file or copies it to another file.
+
+ <nEngine> is the numeric ID of the engine.
+
+ [nHandle] is the DOS handle of the destination.  Defaults to the line
+ printer.  If [nHandle] is passed, it must be a valid handle of a text
+ file.  ADfs_print() does _not_ close this file.
+
+ NOTE: During printing, the progress of the operation is displayed
+       with a default scroll bar.  This scroll bar may be configured, or
+       the manner of displaying the progress may be changed altogether,
+       with the global function ADg_progress(). See example 2 below.
+
+ NOTE: The printing process may be cancelled by pressing the Esc key.  An
+       ADboxmenu() is invoked to get confirmation of the request to cancel
+       the operation.  This interruption procedure may be changed with
+       ADg_reqcancel().
+
+ Example1
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ #include "inkey.ch"
+ func main()
+ local e := ADfs_create()
+
+ ADfs_keys( e, { K_ALT_P }, {||ADfs_print(e)} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ Example2
+ --------
+ // For the sake of clarity, no error checking is included in this example.
+ #include "inkey.ch"
+ #include "frankie.ch"
+ func main()
+ local bSBarConfig := {||ADSBarLength( 70 ),;
+                         ADSBarHeader( " % Printed " );
+                      };
+
+ local e := ADfs_create()
+
+ ADg_progress( PROGRESS_BAR, bSBarConfig )
+ ADfs_keys( e, { K_ALT_P }, {||ADfs_print(e)} )
+ ADfs_load( e, "c:\autoexec.bat" )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+!seealso: fran_031.ngo:"ADg_progress()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Navigational APIs
+!file: fran_055.ngo
+!short:
+!short:^b ÍÍ Info Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfs_error()          Retrieves the last ADfs_..() error.
+'------------------------------------------------------------------------------
+ ADfs_error( <nEngine> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Retrieves the last ADfs_..() error.
+
+ <nEngine> is the numeric ID of the engine.
+
+ <nError> is an error generated by an ADfs_..() call.  The possible values
+ are #defined in Frankie.ch as:
+
+  #define FS_NOERROR              0   // no error
+  #define FS_NOFILE               1   // the source type is FS_SOURCE_FILE
+                                      // and the specified file can't be
+                                      // found
+  #define FS_TOOBIG               2   // the source type is FS_SOURCE_FILE
+                                      // or FS_SOURCE_MEMO and the source
+                                      // contains more than 4096 lines
+  #define FS_NOTARRAY             3   // the source type is FS_SOURCE_ARRAY
+                                      // and the passed source is not an
+                                      // array
+  #define FS_NOTSTRINGARRAY       4   // the source type is FS_SOURCE_ARRAY
+                                      // and the source array contains a
+                                      // non-string element
+!seealso: "ADfs_load()" "ADfs_errtext()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfs_errtext()        Returns the text description of an error.
+'------------------------------------------------------------------------------
+ ADfs_errtext( <nError> ) --> <cText>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the text description of an error.
+
+ <nError> is the numeric code returned by ADfs_error().
+
+ <cText> is the text description of ADfs_error().
+!seealso: "ADfs_error()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfshow()             Configurable file viewer
+'------------------------------------------------------------------------------
+ ADfshow( <cFile>, [aCoord], [aHelp], [aColor], [aOption] ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configurable file viewer with an extensible hotbar.  The filesize is not
+ significant as long as it has no more than 4096 lines.  Lines longer than
+ the width of the screen may be scrolled horizontally, either by one column
+ or by 20 columns.
+
+ The hotbar prompts include:
+
+    Arrows - for navigation.
+    Print  - prints the file.
+    Help   - displays context-sensitive help if a help file is open and a
+             Help identifer was passed (see the [aHelp] parameter.
+    Exit   - exits the viewer.
+
+    The hotbar prompts may be clicked with the left mouse button, or their
+    highlighted trigger keys pressed.  The arrow prompts may be clicked in
+    combination with pressing the Ctrl or Alt keys (See the Navigation
+    section below)
+
+ Additional prompts may be added (See the [aOption] parameter below.  The
+ source code is included as "fileshow.prg".
+
+ <cFile> is the name of file to view.
+
+ [aCoord] is an array of window coordinates in the form {nT,nL,nB,nR}.
+ Defaults to whole screen.
+
+ [aHelp] is an array of two elements:
+
+    1 - Help Identifier used by the Frankie Help Facility for displaying
+        context sensitive help.
+
+    2 - Help Header, is a string that is displayed at the top of the help
+        screen.  Defaults to "HELP"
+
+ [aColor] is an array of two elements:
+
+    1 - box frame color.  Defaults to "W+/G"
+    2 - text color.  Defaults to "W+/G"
+
+ [aOption] is an array of additional prompts.  Each element is a subarray
+ of 2 elements:
+
+    1 - the prompt string
+    2 - a codeblock that is EVALed when this option is selected, passing to
+        it the numeric id of the file viewer engine.
+
+ <nError> is a numeric code indicating an error generated by the ADfs_()
+ engine.  Use ADfs_error() to retrieve it.
+
+ These additional prompts are inserted between the navigational and 'Print'
+ prompts.
+
+ Navigation
+ ----------
+ Using the keyboard:
+
+    Up/Down             : vertical scrolling by one line
+    PgUp/PgDn           : vertical scrolling by one screenful
+    Ctrl-PgUp/Ctrl-PgDn : go to top or bottom of file
+    Left/Right          : horizontal scrolling by one column
+    Home/End            : horizontal scrolling by 20 columns
+    Ctrl-Home/Ctrl-End  : go to first or last column of longest line
+    Esc                 : exit
+
+ Clicking the arrow prompts with the left mouse button:
+
+    Up/Down Arrows  - correspond to Up/Down keys
+      with Ctrl key - correspond to PgUp and PgDn keys
+      with Ctrl key - correspond to Ctrl-PgUp and Ctrl-PgDn keys
+    Left/Right Arrow- correspond to Left/Right keys
+      with Ctrl key - correspond to Home and End keys
+      with Ctrl key - correspond to Ctrl-Home and Ctrl-End keys
+
+
+ Example1
+ --------
+ func main()
+ ADfshow( "c:\autoexec.bat", {10,10,20,70 } )
+ return NIL
+
+ Example2
+ --------
+ func main()
+ local aOptions := {;
+                      { "Option&1", {||ADmessage( "Option 1" )} },;
+                      { "Option&2", {||ADmessage( "Option 2" )} },;
+                      { "Option&3", {||ADmessage( "Option 3" )} };
+                   }
+ ADfshow( "c:\autoexec.bat", {10,10,20,70 },,, aOptions )
+ return NIL
+
+ Other examples
+ --------------
+ See f_tour.prg and misc.prg of the f_tour package.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

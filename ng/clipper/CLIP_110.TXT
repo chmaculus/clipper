@@ -1,0 +1,43 @@
+'------------------------------------------------------------------------------
+^BMEMOREAD()^B
+
+    Reads the contents of a text file read from disk.
+
+^USyntax^U
+
+    MEMOREAD(<expC>)
+
+^UArgument^U
+
+    <expC> is the name of the file you want to read from disk.  Note that
+    it must include an extension if there is one and can optionally include
+    the path.
+
+^UReturns^U
+
+    A character string.
+
+    MEMOREAD() returns the contents of a text file as a character string.
+    The maximum file size that can be read is 65,535 characters (64K), the
+    maximum size of a character memory variable.
+
+^UExample^U
+
+    The following uses MEMOREAD() to assign the contents of a text file to
+    both a memo field and a character variable.
+
+    ^RREPLACE Notes WITH MEMOREAD("Temp.txt")^R
+    ^Rchrvar = MEMOREAD("Temp.txt")          ^R
+
+    This program uses MEMOREAD() to read a file from disk, edit it, and
+    write it back:
+
+    ^R* Editor.prg                            ^R
+    ^RPARAMETERS file                         ^R
+    ^RMEMOWRIT(file, MEMOEDIT(MEMOREAD(file)))^R
+    ^RRETURN                                  ^R
+!seealso: clip_093.ngo:"HARDCR" clip_108.ngo:"MEMOEDIT" clip_109.ngo:"MEMOLINE" clip_115.ngo:"MLCOUNT" clip_112.ngo:"MEMOTRAN" clip_033.ngo:"REPLACE" 
+'------------------------------------------------------------------------------
+
+
+

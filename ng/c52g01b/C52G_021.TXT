@@ -1,0 +1,868 @@
+!short: Get -- Overview
+'------------------------------------------------------------------------------
+ ^bGet^b
+ Provides objects for interactive editing of database fields and variables
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bDescription^b
+
+     A Get object is a general purpose mechanism for editing data.  It is
+     used in CA-Clipper to implement the @...GET and READ commands.  Get
+     objects provide a sophisticated architecture for formatting and editing
+     data, including cursor navigation and data validation.  Data validation
+     is performed via user-supplied code blocks, and display formatting can
+     be controlled using standard picture strings.
+
+     Normally, a Get object is associated with a particular variable
+     (referred to as the Get variable).  The Get object does not directly
+     access this variable; instead, the variable is manipulated by evaluating
+     a supplied code block.  When a Get object is created using the standard
+     @...GET command, a code block is automatically created which provides
+     access to the variable named in the command.  For a Get object created
+     with the GetNew() function, you must specify an appropriate code block.
+
+     A Get object evaluates the supplied code block to retrieve the value of
+     the Get variable.  The value is converted to displayable form and copied
+     into a buffer referred to as the editing buffer.  You can display the
+     editing buffer on the screen for editing.  Programmable behaviors allow
+     the navigation of the editing buffer and subsequent copying of its
+     contents back to the Get variable.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a new Get object, assigns some new
+        attributes to its instance variables, then edits the Get with the
+        READMODAL() function:
+
+        LOCAL cVar := SPACE(10)
+        //
+
+        // Create a new Get object
+        objGet := GetNew()
+        //
+
+        // Assign some instance variables
+        objGet:row := 10
+        objGet:col := 10
+        //
+
+        // Assign the name of the associated
+        // variable and the block
+        objGet:name := "cVar"
+        objGet:block := { |cValue| IF(PCOUNT() > 0,;
+                           cVar := cValue, cVar) }
+        //
+        objGet:picture := "@!"
+        objGet:colorSpec := "BG+/B, W+/BG"
+        objGet:postBlock := { |oGet| !EMPTY(oGet:varGet()) }
+        //
+
+        // Edit the single Get object
+        READMODAL({objGet})
+
+ ^bFiles:^b  Source file is Getsys.prg.
+!seealso: c52g_002.ngo:"@...GET" c52g_002.ngo:"READ" c52g_001.ngo:"READMODAL()" c52g_001.ngo:"READVAR()" c52g_001.ngo:"SETCOLOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bClass Function^b
+!short:
+!short: GetNew()        Create a new Get object
+'------------------------------------------------------------------------------
+
+     ^bGetNew([<nRow>], [<nCol>], [<bBlock>], [<cVarName>],
+     ^b   [<cPicture>], [<cColorSpec>]) --> objGet
+
+        Returns a new Get object with the row, col, block, picture, and
+        colorSpec instance variables set from the supplied arguments.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExported Instance Variables^b
+!short:
+!short: badDate         Indicates if the editing buffer contains an invalid date
+'------------------------------------------------------------------------------
+
+     ^bbadDate
+
+        Contains a logical value indicating the editing buffer does not
+        represent a valid date.  Get:badDate contains true (.T.) when the Get
+        object is a date type and the date represented by the contents of the
+        editing buffer is invalid.  Get:badDate contains false (.F.) when the
+        date is valid or the Get is not editing a date value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: block           Code block to associate Get with a variable
+'------------------------------------------------------------------------------
+
+     ^bblock                                          (Assignable)
+
+        Contains a code block that associates the Get object with a variable.
+        The code block takes an optional argument that should assign the
+        value of the argument to the variable.  If the argument is omitted,
+        the code block should return the current value of the variable.
+
+        If the Get variable is an array element, Get:block always returns the
+        base of the array.  The subscript(s) in the expression are stored
+        internally.  Thus, in the case of GETs on array elements, you cannot
+        assign or retrieve the value of the array element by executing
+        Get:block.  Setting and getting may be done on array element GET
+        variables (and simple GET variables as well) by use of the varGet()
+        and varPut() methods, defined below.
+
+        ^bNote: ^b Use of the varGet and varPut messages--instead of directly
+        evaluating the variable block in the get--is the preferred method of
+        accessing the Get variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: buffer          Character value that defines the editing buffer
+'------------------------------------------------------------------------------
+
+     ^bbuffer                                       (Assignable)
+
+        Contains a character value which is the editing buffer used by the
+        Get object.  Get:buffer is meaningful only when the Get object has
+        input focus.  At other times, it contains NIL and any attempts to
+        assign a new value are ignored.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: cargo           User-definable variable
+'------------------------------------------------------------------------------
+
+     ^bcargo                                          (Assignable)
+
+        Contains a value of any data type unused by the Get system. Get:cargo
+        is provided as a user-definable slot, allowing arbitrary information
+        to be attached to a Get object and retrieved later.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: changed         Indicates whether the Get:buffer has changed
+'------------------------------------------------------------------------------
+
+     ^bchanged
+
+        Contains a logical value indicating whether the Get:buffer has
+        changed since the Get received input focus.  Get:changed contains
+        true (.T.) if the buffer has changed; otherwise it contains false
+        (.F.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: clear           Indicates whether the editing buffer should be cleared
+'------------------------------------------------------------------------------
+
+     ^bclear                                          (Assignable)
+
+        Contains a logical value indicating whether the editing buffer should
+        be cleared before any more values are entered.  Get:clear is set true
+        (.T.) by Get:setFocus() and Get:undo() when the Get variable is a
+        numeric type or when Get:picture contains the "@K" picture function.
+        At all other times, it contains false (.F.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: col             Get column number
+'------------------------------------------------------------------------------
+
+     ^bcol                                          (Assignable)
+
+        Contains a numeric value defining the screen column where the Get is
+        displayed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colorSpec       Display attributes string
+'------------------------------------------------------------------------------
+
+     ^bcolorSpec                                    (Assignable)
+
+        Contains a character string defining the display attributes for the
+        Get object.  The string must contain two color specifiers. The first,
+        called the unselected color, determines the color of the Get object
+        when it does not have input focus.  The second, called the selected
+        color, determines the color of the Get when it has input focus.
+
+        If no colors are specified, Get:colorSpec is initialized using the
+        current SETCOLOR() colors.  The SETCOLOR() unselected and enhanced
+        colors are used as the Get object's unselected and selected colors,
+        respectively.  See the SETCOLOR() entry in this chapter for more
+        information on color specifiers.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: decPos          Decimal point position within the editing buffer
+'------------------------------------------------------------------------------
+
+     ^bdecPos
+
+        Contains a numeric value indicating the decimal point position within
+        the editing buffer.  Get:decPos is meaningful only when the value
+        being edited is numeric and the Get object has input focus.
+        Otherwise, it contains NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: exitState       Means by which the user exited the Get
+'------------------------------------------------------------------------------
+
+     ^bexitState                                       (Assignable)
+
+        Contains a numeric value used in the CA-Clipper version of Getsys.prg
+        to record the means by which a Get object was exited.
+
+        ^bGet Exit States^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        ^bNumber  Getexit.ch     Meaning^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        0       GE_NOEXIT      No exit attempted, prepare Get for editing
+        1       GE_UP          Go to previous Get
+        2       GE_DOWN        Go to next Get
+        3       GE_TOP         Go to first Get
+        4       GE_BOTTOM      Go to last Get
+        5       GE_ENTER       Get edit normal end
+        6       GE_WRITE       Terminate READ state with Get save
+        7       GE_ESCAPE      Terminate READ state without Get save
+        8       GE_WHEN        WHEN clause unsatisfied
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+        Getexit.ch contains manifest constants for the Get:exitState values.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: hasFocus        Indicates whether or not the Get object has input focus
+'------------------------------------------------------------------------------
+
+     ^bhasFocus
+
+        Contains a logical value that indicates if the Get object has input
+        focus.  Get:hasFocus contains true (.T.) if the Get object has input
+        focus; otherwise it contains false (.F.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: minus           Indicates whether or not a minus sign has been entered
+'------------------------------------------------------------------------------
+
+     ^bminus                                          (Assignable)
+
+        Contains a logical value indicating that a minus sign (-) has been
+        added to the editing buffer.  Get:minus is set to true (.T.) only
+        when the Get object is numeric type, the current value of the editing
+        buffer is zero and the last change to the editing buffer was the
+        addition of the minus sign.  It is cleared when any change is made to
+        the buffer.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: name            Get variable name
+'------------------------------------------------------------------------------
+
+     ^bname                                          (Assignable)
+
+        Contains a character string representing the name of the Get
+        variable.  This value is optional and can be assigned at your
+        discretion.  With Get objects created using the standard @...GET
+        command, Get:name always contains the Get variable name.
+
+        The Get object itself ignores this variable.  It is used by the
+        standard READ command and READMODAL() function to implement the
+        READVAR() function (see the READVAR() entry in this chapter).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: original        Character string containing the original value of the Get
+'------------------------------------------------------------------------------
+
+     ^boriginal
+
+        Contains a value of any data type that is a copy of the value in the
+        Get variable at the time the Get object acquired input focus.  This
+        value implements the Get:undo message.  Get:original is meaningful
+        only while the Get has input focus.  At all other times, it contains
+        NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: picture         PICTURE string
+'------------------------------------------------------------------------------
+
+     ^bpicture                                       (Assignable)
+
+        Contains a character value defining the PICTURE string that controls
+        formatting and editing for the Get object.  See the @...GET entry in
+        this chapter for more information on PICTURE strings.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: pos             Current cursor position within the editing buffer
+'------------------------------------------------------------------------------
+
+     ^bpos
+
+        Contains a numeric value indicating the position of the cursor within
+        the editing buffer.  Get:pos is meaningful only when the Get object
+        has input focus.  At all other times, it contains NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: postBlock       Code block to validate a newly entered value
+'------------------------------------------------------------------------------
+
+     ^bpostBlock                                    (Assignable)
+
+        Contains an optional code block that validates a newly entered value.
+        If present, the Get:postBlock should contain an expression that
+        evaluates to true (.T.) for a legal value and false (.F.) for an
+        illegal value.  For Get objects created with the standard
+        @...GET...VALID command, Get:postBlock is assigned the expression
+        specified in the VALID clause.
+
+        The Get object itself ignores this variable.  It is used by the
+        standard READ command to implement the VALID clause.
+
+        During postvalidation the Get:postBlock is passed a reference to the
+        current Get object as an argument.
+
+        ^bNote: ^b This differs from the CA-Clipper 5.0 behavior where the
+        Get:postBlock was passed the updated value of the Get variable,
+        and a logical value representing whether the Get object had been
+        edited.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: preBlock        Code block to decide if editing is permitted
+'------------------------------------------------------------------------------
+
+     ^bpreBlock                                    (Assignable)
+
+        Contains an optional code block that decides whether editing should
+        be permitted.  If present, the Get:preBlock should evaluate to true
+        (.T.) if the cursor enters the editing buffer; otherwise, it should
+        evaluate to false (.F.).  For Get objects created with the standard
+        @...GET...WHEN command, Get:preBlock is initialized with the
+        expression specified in the WHEN clause.
+
+        The Get object itself ignores this variable.  It is used by the
+        standard READ command to implement the WHEN clause.
+
+        During prevalidation, the Get:preBlock is passed a reference to the
+        current Get object as an argument.
+
+        ^bNote: ^b This behavior differs from CA-Clipper 5.0 where no
+        arguments were passed to Get:preBlock when it was run during
+        prevalidation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: reader          Contains a block to affect READ behavior on a Get object
+'------------------------------------------------------------------------------
+
+     ^breader
+
+        Contains a code block to implement special READ behaviors for any
+        Get.  If Get:reader contains a code block, READMODAL() evaluates that
+        block to READ the Get (the Get object is passed as an argument to the
+        block).  The block may in turn call any desired function to provide
+        custom editing of the Get object.  If Get:reader does not contain a
+        code block, READMODAL() uses a default read procedure (GetReader())
+        for the Get object.
+
+        Note that Get:reader allows particular Get objects to have
+        specialized READ behaviors without changing the standard READMODAL()
+        function.  This preserves compatibility for Gets which are to be
+        handled in the customary way and also eliminates potential conflicts
+        between different extensions to the GET/READ system.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: rejected        Indicates if last insert/overStrike character was rejected
+'------------------------------------------------------------------------------
+
+     ^brejected
+
+        Contains a logical value indicating whether the last character
+        specified by a Get:insert or Get:overStrike message was placed in the
+        editing buffer.  Get:rejected contains true (.T.) if the last
+        character was rejected; otherwise it contains false (.F.).  Note that
+        any subsequent text entry message resets this variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: row             Get row number
+'------------------------------------------------------------------------------
+
+     ^brow                                          (Assignable)
+
+        Contains a numeric value defining the screen row where the Get
+        displays.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: subscript       Information about array Get objects                         ^r^CE4^r
+'------------------------------------------------------------------------------
+
+     ^bsubscript                                    (Assignable)
+
+        Contains an array of numeric values representing the subscripts  of a
+        GET array element.  Each element of Get:subscript represents a
+        dimension of the GET array.  For example:
+
+        @ 1,1 GET aTestA[4]        // Get:subscript contains {4}
+        @ 1,1 GET aTestB[3,6]      // Get:subscript contains {3,6}
+
+        If the GET does not involve an array, Get:subscript contains NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: type            Get variable data type
+'------------------------------------------------------------------------------
+
+     ^btype
+
+        Contains a single letter representing the data type of the Get
+        variable.  For more information on the values that represent data
+        types, refer to the VALTYPE() entry in this chapter.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: typeOut         Indicates attempt to move the cursor out of editing buffer
+'------------------------------------------------------------------------------
+
+     ^btypeOut
+
+        Contains a logical value indicating whether the most recent message
+        attempted to move the cursor out of the editing buffer, or if there
+        are no editable positions in the buffer.  Get:typeOut contains true
+        (.T.) if the last message satisfied this condition.  Note,
+        Get:typeOut is reset by any message that moves the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExported Methods^b
+!short:
+!short: ^bState Change Methods^b
+!short: assign()        Assigns the editing buffer contents to the Get variable
+'------------------------------------------------------------------------------
+
+     ^bassign() --> self
+
+        Assigns the value in the editing buffer to the Get variable by
+        evaluating Get:block with the buffer value supplied as its argument.
+        This message is meaningful only when the Get object has input focus.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colorDisp()     Changes a Get object's color and then redisplay it
+'------------------------------------------------------------------------------
+
+     ^bcolorDisp([<cColorString>]) --> self
+
+        Get:colorDisp() is a method that changes a Get object's colors and
+        redisplays it.  It is exactly equivalent to assigning Get:colorSpec
+        and issuing Get:display().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: display()       Displays the Get on the screen                              ^r^CE4^r
+'------------------------------------------------------------------------------
+
+     ^bdisplay() --> self
+
+        Displays the Get on the screen.  If the Get object has input focus,
+        the Get:buffer is displayed in its selected color and the cursor is
+        placed at the screen location corresponding to the current editing
+        position within the buffer.  If the Get does not have input focus,
+        the Get:block is evaluated and the result displays in the Get
+        unselected color with no cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: killFocus()     Takes input focus away from the Get object
+'------------------------------------------------------------------------------
+
+     ^bkillFocus() --> self
+
+        Takes input focus away from the Get object.  Upon receiving this
+        message, the Get object redisplays its editing buffer and discards
+        its internal state information.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: reset()         Resets the internal state information of the Get
+'------------------------------------------------------------------------------
+
+     ^breset() --> self
+
+        Resets the Get object's internal state information.  This includes
+        resetting the editing buffer to reflect the current value of the Get
+        variable and setting the cursor position to the first editable
+        position within the buffer.  This message has meaning only when the
+        Get object has input focus.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: setFocus()      Gives input focus to the Get object
+'------------------------------------------------------------------------------
+
+     ^bsetFocus() --> self
+
+        Gives input focus to the Get object.  Upon receiving this message,
+        the Get object creates and initializes its internal state
+        information, including the exported instance variables: Get:buffer,
+        Get:pos, Get:decPos, and Get:original.  The contents of the editing
+        buffer are then displayed in the Get's selected color.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: undo()          Sets the Get variable back to Get:original
+'------------------------------------------------------------------------------
+
+     ^bundo() --> self
+
+        Sets the Get variable back to the value it had when the Get acquired
+        input focus.  This message has meaning only while the Get has input
+        focus.
+
+        The effect of the Get:undo() message is equivalent to assigning the
+        Get variable from the saved value in Get:original then sending the
+        Get:reset() message.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: unTransform()   Converts character value to its original data type
+'------------------------------------------------------------------------------
+
+     ^bunTransform() --> xValue
+
+        Converts the character value in the editing buffer back to the data
+        type of the original variable.  Get:assign() is equivalent to
+        Get:varPut (Get:unTransform()).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: updateBuffer()  Updates the editing buffer and redisplays the Get
+'------------------------------------------------------------------------------
+
+     ^bupdateBuffer() --> self
+
+        Sets the editing buffer to reflect the current value of the Get
+        variable, and redisplays the Get.  This message has meaning only
+        while the Get has input focus.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: varGet()        Returns the current value of the Get variable
+'------------------------------------------------------------------------------
+
+     ^bvarGet() --> GetVarValue
+
+        Returns the current value of the Get variable.  For simple Get
+        variables this is equivalent to executing Get:block:
+
+        aGet:varGet() == EVAL(aGet:block)
+
+        However, if the Get variable is an array element, EVAL(aGet:block)
+        will not return the value of the Get variable; in this case, you must
+        use varGet().  An example of varGet() may be found in the READMODAL()
+        function, defined in Getsys.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: varPut()        Sets the Get variable to the passed value
+'------------------------------------------------------------------------------
+
+     ^bvarPut() --> Value
+
+        Sets the Get variable to the passed value.  For simple Get variables
+        this is equivalent to executing Get:block with an argument:
+
+        aGet:varPut(aValue) == EVAL(aGet:block, aValue)
+
+        However, if the Get variable is an array element, EVAL(aGet:block,
+        aValue) will not set the value of the Get variable; in this case use
+        of varPut() is required.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bCursor Movement Methods^b
+!short: end()           Moves the cursor to the rightmost position
+'------------------------------------------------------------------------------
+
+     ^bend() --> self
+
+        Moves the cursor to the rightmost editable position within the
+        editing buffer.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: home()          Moves the cursor to the leftmost position
+'------------------------------------------------------------------------------
+
+     ^bhome() --> self
+
+        Moves the cursor to the leftmost editable position within the editing
+        buffer.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: left()          Moves the cursor left one character
+'------------------------------------------------------------------------------
+
+     ^bleft() --> self
+
+        Moves the cursor left to the nearest editable position within the
+        editing buffer.  If there is no editable position to the left, the
+        cursor position is left unchanged.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: right()         Moves the cursor right one character
+'------------------------------------------------------------------------------
+
+     ^bright() --> self
+
+        Moves the cursor right to the nearest editable position within the
+        editing buffer.  If there is no editable position to the right, the
+        cursor position is left unchanged.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: toDecPos()      Moves the cursor to the immediate right of Get:decPos
+'------------------------------------------------------------------------------
+
+     ^btoDecPos() --> self
+
+        Moves the cursor to the immediate right of the decimal point position
+        in the editing buffer.  This message is only meaningful when editing
+        numeric values.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wordLeft()      Moves the cursor left one word
+'------------------------------------------------------------------------------
+
+     ^bwordLeft() --> self
+
+        Moves the cursor one word to the left within the editing buffer.  If
+        the cursor is already at the leftmost editable position, it is left
+        unchanged.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wordRight()     Moves the cursor right one word
+'------------------------------------------------------------------------------
+
+     ^bwordRight() --> self
+
+        Moves the cursor one word to the right within the editing buffer.  If
+        the cursor is already at the rightmost editable position, it is left
+        unchanged.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bEditing Methods^b
+!short: backspace()     Moves the cursor to the left and deletes one character
+'------------------------------------------------------------------------------
+
+     ^bbackspace() --> self
+
+        Deletes the character to the left of the cursor moving the cursor one
+        position to the left.  If the cursor is already at the leftmost
+        editable position in the editing buffer, this message has no effect.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delete()        Deletes the character under the cursor
+'------------------------------------------------------------------------------
+
+     ^bdelete() --> self
+
+        Deletes the character under the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delEnd()        Deletes from current cursor position to the end of the Get
+'------------------------------------------------------------------------------
+
+     ^bdelEnd() --> self
+
+        Deletes from the current character position to the end of the Get,
+        inclusive.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delLeft()       Deletes the character to the left of the cursor
+'------------------------------------------------------------------------------
+
+     ^bdelLeft() --> self
+
+        Deletes the character to the left of the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delRight()      Deletes the character to the right of the cursor
+'------------------------------------------------------------------------------
+
+     ^bdelRight() --> self
+
+        Deletes the character to the right of the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delWordLeft()   Deletes the word to the left of the cursor
+'------------------------------------------------------------------------------
+
+     ^bdelWordLeft() --> self
+
+        Deletes the word to the left of the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delWordRight()  Deletes the word to the right of the cursor
+'------------------------------------------------------------------------------
+
+     ^bdelWordRight() --> self
+
+        Deletes the word to the right of the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bText Entry Methods^b
+!short: insert()        Inserts characters into the editing buffer
+'------------------------------------------------------------------------------
+
+     ^binsert(<cChar>) --> self
+
+        Inserts <cChar> into the editing buffer at the current cursor
+        position, shifting the existing contents of the buffer to the right.
+        The cursor is then placed one position to the right of the inserted
+        string.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: overStrike()    Overwrites characters in the editing buffer
+'------------------------------------------------------------------------------
+
+     ^boverStrike(<cChar>) --> self
+
+        Puts <cChar> into the editing buffer at the current cursor position,
+        overwriting the existing contents of the buffer.  The cursor is
+        placed one position to the right of the inserted string.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

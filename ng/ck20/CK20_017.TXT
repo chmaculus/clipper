@@ -1,0 +1,306 @@
+!short: Header Files
+'------------------------------------------------------------------------------
+
+                          ^B  Header Files
+                          ^B~~~~~~~~~~~~~~~~
+
+   There are some header files provided by Casual-Kit :
+
+    CKHEADER.CH   => Same as ck20.ch
+    CK20    .CH   => Control header file of Casual-Kit, it will include
+                     other header in the requirment of compile options.
+
+    REQUEST .CH   => Request functions of Casual-Kit
+    CKCOMMON.CH   => Additional Commands
+
+    MENU    .CH   => Used to make pull down menu
+    DEMO    .CH   => Required by demonstrate()
+
+    MULTIUSR.CH   => Translate single user program into multi-user's
+    SECURE  .CH   => Make program work under the security mode
+
+    CKMU    .CH   => The header instead of STD.CH to make multi-user program.
+    CKUSR   .CH   => The usr-defined header file instead of STD.CH.
+
+
+   The header files of Casual-Kit can improve your programs in various aspects.
+   For example, you needn't make any modification in the source program.
+   All you need to do is simply including < Secure.CH >, which incorporates
+   the function of database security in your programs or , including
+   < MultiUsr.CH > to compile your programs into a multi-user program.
+
+
+   ^BUsing CKHEADER.CH or CK20.CH
+   ^B~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       It is strong recommended to add the following statement before
+       every .PRG files.
+
+             #include 'CKHEADER.CH'
+             ........ // program sample.prg
+
+       Then, you can perform a condition compile it in this way :
+
+     þ clipper sample                    // common
+     þ clipper sample /d_MU              // multi-usr
+     þ clipper sample /d_SECU            // security
+     þ clipper sample /d_DEMO            // demonstration
+     þ clipper sample /d_MU /d_SECU      // multi-user + security
+     þ clipper sample /d_REQUEST /d_ALL     // request all function in CK
+     þ clipper sample /d_REQUEST /d_SCREEN  // request screen functions
+       .............
+
+     ^B<ckheader.ch> also extend several new commands for coding.
+     ^Bsee <New Command> section for more information.
+
+
+   ^BUsing CKMU.CH or CKUSR.CH
+   ^B~~~~~~~~~~~~~~~~~~~~~~~~~
+       Under some circumstances, a program may consist of several files,
+       and thist will cause an error if some files include <multiusr.ch>
+       while others do not.
+
+      "CKMU.CH" and "CKUSR.CH" are used to solve this problem.
+
+      "CKMU.CH" will always include "Mulitusr.ch", and "CKUSR.CH" is
+      used to include the header file user specified.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: New Commands (Statement)
+'------------------------------------------------------------------------------
+
+                ^BNew Command of Statement
+                ^B~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Casual-Kit extend some statements in the style of Pascal or C.
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+^B source of this section.
+^Bฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ
+
+// ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+// ณ Extend Some control statements in Pascal/C style  ณ
+// ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+
+#command IF <Cond> THEN <*Com*>         => IF <Cond>; <Com>; END
+#command IF <Cond> THEN <C1> [,<C2>]    => IF <Cond>; <C1>; [<C2>;] END
+
+// #command DO WHILE                    => WHILE .T.
+// #command WHILE                       => WHILE .T.
+
+#command REPEAT                         => WHILE .T.
+#command UNTIL <Cond>                   => IF <Cond>; EXIT; END; ENDD
+
+#command FOR [<Init>] WHILE <Cond> DO <Step> ;
+     =>  __forfirst(.t.)                     ;
+      ;  WHILE .T.                           ;
+      ;    IF __forfirst()                   ;
+      ;       __forfirst(.f.)  [;<Init>]     ;
+      ;    ELSE                              ;
+      ;       <Step>                         ;
+      ;    END                               ;
+      ;    IF !(<Cond>) THEN EXIT
+
+#command ENDF                           => ENDD
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+^bExample^B
+
+   if x>0  then exit                // IF .. THEN ...
+   if x>10 then x:=20, y:=20        // IF .. THEN ...
+   if x>30 then retu nil            // IF .. THEN ...
+
+   i := 1                           // Repeat...Until...
+   repeat
+     qout( i++ )
+   until i=30
+
+   for i:=1 while i<=30 do i++      // for ... while ... do ... endf
+       qout(i)
+   endf
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: New Commands (Set Default Value)
+'------------------------------------------------------------------------------
+
+              ^B New Commands -- Set Default Value
+
+   Casual-Kit extend the following commands for setting default value:
+
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+^B source of this section.
+^Bฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ
+
+   #xcommand TYPE Default <P1> To <V1> [, <Pn> to <Vn> ]              ;
+          => if valtype(<P1>) # valtype(<V1>); <P1> := <V1>; end      ;
+             [; if <Pn> # valtype(<Vn>); <Pn> := <Vn>; end ]
+
+   #xcommand NULL Default <P1> To <V1> [, <Pn> to <Vn> ]              ;
+          => if <P1> == nil; <P1> := <V1>; end                        ;
+             [; if <Pn> == nil; <Pn> := <Vn>; end ]
+
+   #xcommand EMPTY Default <P1> To <V1> [, <Pn> to <Vn> ]             ;
+          => if empty(<P1>); <P1> := <V1>; end                        ;
+             [; if empty(<Pn>); <Pn> := <Vn> ; end ]
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+
+ ^BNotes:
+ ^B~~~~~~
+     These commonds are similar to the DEFAULT command of clipper
+     header "COMMON.CH", but they provide several way for set default
+     value.  They are also similar to the three functions of Casual-Kit:
+     ^BDefault(), NDefault, EDefault()
+
+ ^BExample
+
+   #include 'ckheader.ch'
+
+   x1 := x2 := y1 := y2 := z1 := z2:= nil
+
+   TYPE DEFAULT   X1 to 10,  X2 to 20
+   NULL DEFAULT   Y1 to .T., Y2 to .F.
+   EMPTY DEFAULT  Z1 to "EMPTY", Z2 to MAXCOL()
+!seealso: ck20_002.ngo:"Default()" ck20_002.ngo:"NDefault()" ck20_002.ngo:"EDefault()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: New Commands (Database)
+'------------------------------------------------------------------------------
+
+
+                     ^bNew Commands (Database)
+
+   The following commands are procided by ck20.ch and multi-usr.ch :
+
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+^B source of this section.
+^Bฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ
+
+   #command Exclusive <(db)>                                          ;
+                [VIA <rdd>]                                           ;
+                [ALIAS <a>]                                           ;
+                [<new: NEW>]                                          ;
+                [INDEX <(index1)> [, <(indexn)>]]                     ;
+                                                                      ;
+         => dbUseArea( <.new.>, <rdd>, <(db)>, <(a)>, .f. )           ;
+         [; dbSetIndex( <(index1)> )]                                 ;
+         [; dbSetIndex( <(indexn)> )]
+
+   #command REINDEX <(db)> [VIA <rdd>] INDEX <idxlist,...>            ;
+         => m_Reindex( <(db)>, {<(idxlist)>} , <rdd> ); close
+
+   #command Pack <(db)> [VIA <rdd>] INDEX <idxlist,...>               ;
+         => m_dbPack( <(db)>, {<(idxlist)>} , <rdd> ); close
+
+   #command Zap <(db)> [VIA <rdd>] INDEX <idxlist,...>                ;
+         => m_dbZap( <(db)>, {<(idxlist)>} , <rdd> ); close
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+ ^BNotes:
+ ^B~~~~~~
+   These commands are provided for compatible purpose. They are
+   especial useful for auto-compile to multi-user program.
+
+   "Pack", "Zap" and "Reindex" are also used to make your program
+   more readable and effective.
+
+   ^BBefore use these commands, you must sure that the database haven't
+   ^Bbeen used in work area because it be will used while running and
+   ^Bclose after done.
+
+
+ ^BExample:
+
+    #include 'ckheader.ch'
+
+    close all
+    Reindex test index test1, test2
+    Pack    test index test1, test2
+    Zap     test index test1, test2
+    Exclusive test index test1,test2
+    dbappend()
+    browse()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: New Commands (Get-Read)
+'------------------------------------------------------------------------------
+
+
+                    ^BNew Commands (Get-Read)
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+^B source of this section.
+^Bฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ
+
+   #command @ <row>, <col> GET <var>                                     ;
+                           [PICTURE <pic>]                               ;
+                           CHECK  <valid>                                ;
+                           [WHEN <when>]                                 ;
+                           [SEND <msg>]                                  ;
+                                                                         ;
+         => SetPos( <row>, <col> )                                       ;
+          ; AAdd(                                                        ;
+              GetList,                                                   ;
+              _GET_( <var>, <"var">, <pic>, <valid>, <{when}> ):display();
+                )                                                        ;
+         [; ATail(GetList):<msg>]
+
+   #command Move GetList To <NewList>                                    ;
+         => <NewList> := GetList;  GetList := {}
+
+   #command Read From <NewList>       =>    readmodal(<NewList>)
+
+   #command Read From <NewList> Kill  ;
+         => readmodal(<NewList>); <NewList>:={}
+
+^Bออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+  ^BNotes:
+  ^B~~~~~~
+      "@..Get..Check" Command is provided to use block instead of a
+      expression to valid the get object.
+
+      "Move Getlist to" command is provided to make several GET CLASS.
+      "Read From..KILL" command is provided also for this purpose.
+
+  ^BExample
+
+     #include 'ck20.ch'
+
+     local x, y, z1, z2, NewGetList
+
+     x := y := z1 := z2 := 20
+     bCheck := {|| if( z<0, m_msg(' Error Value ','s'), nil), z<0 }
+
+     @ 10,10 say "X =" get x  valid x>0       // common
+     @ 11,10 say "Y =" get y  valid {||y>0}   // use block
+     @ 12,10 say "Z1=" get z1 CHECK {||y>0}   // same as Y
+     @ 13,10 say "Z2=" get z2 CHECK bCheck    // use Block-Variable
+
+     //  READ
+
+     Move Getlist to NewGetList               // fetch to NewGetList
+     Read from NewGetList                     // read from NewGetList
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

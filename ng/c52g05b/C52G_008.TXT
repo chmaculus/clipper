@@ -1,0 +1,83 @@
+!short: ^bRelease Note #5 -- Clipper 5.0 Linker Notes^b
+'------------------------------------------------------------------------------
+ Document:   ^bRelease Note #5^b
+             ^bClipper 5.0 Linker Notes^b
+
+             Copyright (c) 1991, Nantucket Corporation
+
+ Version:    5.01a (April 19, 1991)
+
+ Summary:    This document contains several notes about the usage of the
+             Clipper 5.0 linker, .RTLink.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: 1   Overlays on a Network
+'------------------------------------------------------------------------------
+ ^b1   Overlays on a Network
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     .RTLink produces overlays containing compiled program code.  By default,
+     all compiled Clipper code is placed in dynamic overlays.  Additionally,
+     static overlaying may be requested for C or Assembler code.
+
+     By default, overlays are appended to the end of the application's  .EXE
+     file (the code may be written to a separate overlay file by using the
+     INTO clause in the overlaying directive).  During execution, the runtime
+     system opens the .EXE file and reads overlays as required.
+
+     When the runtime system needs to read overlays, it opens the .EXE file
+     for shared, read-only access.  On a network, this allows multiple
+     processes to read the file at the same time.
+
+     On some networks, however, a problem can arise if an attempt is made to
+     run the .EXE when another process has opened it to read overlays.  The
+     error occurs because the DOS EXEC function (used by COMMAND.COM to
+     execute programs) opens .EXE files using a sharing mode called
+     "compatibility mode."  On some networks, this causes a sharing violation
+     if the file is already in use by another process, even if the other
+     process has specified that it wishes to share the file.
+
+     If this conflict occurs, it can usually be resolved by marking the
+     affected file read-only on the disk.  A small utility program, RO.COM,
+     is supplied for this purpose.  RO toggles the read-only status of a
+     specified file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2   .RTLink -- REFER Labels
+'------------------------------------------------------------------------------
+ ^b2   .RTLink -- REFER Labels^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     When creating pre-linked (.PLL) libraries, the following symbols
+     can be used to create a basic (.PLL) file:
+
+     ^bTable: REFER Symbols^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bSymbol         Meaning^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     _main          Main
+     _VOPS          All of the built-in operators
+     _VMACRO        Runtime macro compiler
+     _VDB           General database handler
+     _VDBF          (.dbf) specific handler
+     _VDBFNTX       Clipper (.ntx) database specific handler
+     _VTERM         Terminal I/O system (? and @...SAY)
+     _VPICT         Picture formatting and TRANSFORM()
+     _VGETSYS       Get system
+     _VDBG          Linkable version of The Clipper Debugger
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Note that these symbols are case sensitive.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

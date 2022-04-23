@@ -1,0 +1,5697 @@
+!short: Introduction String Manipulations
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     There are an abundance of powerful string functions described in this
+     chapter.  A high degree of speed is assured because these functions and
+     all of the CA-Clipper Tools are written exclusively in Assembler.
+
+     We have made an effort to find an appropriate example for as many
+     unusual variations as possible.  In view of this, we would like to take
+     this opportunity to clarify a few ground rules regarding the use of
+     these functions.
+
+ ^bPassing Parameters by Reference^b
+
+     This chapter includes functions that pass parameters by reference.  The
+     following paragraphs contain clarification about these functions.
+
+     It has been possible to pass parameters of the character string type by
+     reference to a UDF since the summer of 1987.  This means that a
+     reference to the original string is passed, thus avoiding the creation
+     of an internal copy.  When a function accepts this type of parameter and
+     changes it, the original string is actually changed.  This behavior does
+     not normally apply to CA-Clipper functions.  However, some CA-Clipper
+     Tools functions behave differently and take parameters passed by
+     reference.  These functions and their corresponding parameters are
+     described as reference sensitive in this section and are identified with
+     [@] in the argument section of each function's description.
+
+     Passing parameters by reference has advantages and disadvantages.  The
+     most important advantage is that memory requirements are reduced.  This
+     allows you to avoid runtime errors that could result when there is
+     insufficient memory available for string manipulation.
+
+     Whether or not the insufficient memory is a disadvantage depends on the
+     function being used.  Often you will want to change the original string.
+     In a call that does not pass parameters by reference, the copy changed
+     by the function must then be passed back to the "original" string again:
+
+     VAR := "Hello"
+     VAR := FUNCTION(VAR)
+
+     When you work with very long strings, this method takes memory and time!
+
+     Here is an example of the reference method:
+
+     VAR := "Hello"
+     FUNCTION(@VAR)
+
+     With most CA-Clipper Tools functions, it doesn't make any sense to pass
+     parameters by reference.  In some cases, a result is different when a
+     parameter is passed in this way.  However, when you do pass by
+     reference, the functions change the parameters passed by the string
+     directly.  Memory is saved, and the functions work more quickly because
+     you no longer need to make an internal copy.  Watch for the [@] marker,
+     indicating that a parameter is reference sensitive.
+
+     Functions which change the length of a string cannot, in principle pass
+     by reference.  Here is an overview of the functions that change length,
+     or depending upon usage, could change if you attempt to pass by
+     reference.
+
+     ATREPL()         POSDEL()
+
+     CHAREVEN()       POSINS()
+
+     CHARODD()        POSREPL()
+
+     CHARONE()        WORDONE()
+
+     CHARONLY()       WORDONLY()
+
+     CHARREM()        WORDTOCHAR()
+
+ ^bCSETREF()^b
+
+     This function additionally allows you to significantly optimize
+     reference sensitive functions with regard to execution speed and memory
+     use.  Full details can be found in the corresponding function
+     description later in this chapter.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ADDASCII()   Adds a value to each ASCII code in a string
+'------------------------------------------------------------------------------
+ ^bADDASCII()^b
+ Adds a value to each ASCII code in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bADDASCII(<cString>,<nValue>,[<nPosition>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the character string that is processed.
+
+     ^b<nValue>^b  Designates the value that is added to the ASCII value of
+     the character.
+
+     ^b<nPosition>^b  Designates the position of the character to which the
+     <nValue> is added.  The default value tells CA-Clipper Tools to add to
+     the ASCII value of the last character.
+
+ ^bReturns^b
+
+     ADDASCII() returns the modified character string.
+
+ ^bDescription^b
+
+     This function is very useful when you call procedures using macros.
+     When you use ADDASCII(), the string representing the macro can be
+     changed without needing to include functions like LEFT(), RIGHT(),
+     ASC(), or SUBSTR() (see example).
+
+     This function also allows you to subtract a value.  However, a
+     conversion is necessary.  If a lower case letter is converted into an
+     upper case letter, a value of 32 must be subtracted.  This occurs
+     according to the following formula:
+
+     CHR((ASC(<Character>) + 256 - Difference) % 256)
+
+ ^bNotes^b
+
+     ^b^CFE^b  If the <nPosition> is greater than the length of <cString> or
+        less than 0, the string remains unchanged.
+
+     ^b^CFE^b  Zero changes the value of the last character.
+
+     ^b^CFE^b  CSETREF() can be used to suppress the returned value for this
+        function in order to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  A value of 1 is added to the next to the last position in a
+        string and to the last position in a string (CHR(ASC("2")+1) yields
+        "3" etc.):
+
+        ? ADDASCII("macro21", 1, 6)        // "macro31"
+        ? ADDASCII("macro21", 1)           // "macro22"
+
+     ^b^CFE^b  You can also subtract; -- 32 is the difference between lower
+        case and upper case letters, therefore CHR((ASC("m")+256-32) %256):
+
+        ? ADDASCII("macro21", 224, 1)      // "Macro21"
+
+!seealso: "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: AFTERATNUM() Returns remainder of a string after nth appearance of sequence
+'------------------------------------------------------------------------------
+ ^bAFTERATNUM()^b
+ Returns the remainder of the string after the nth appearance of a sequence
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bAFTERATNUM(<cSearchFor>,<cString>,[<nCounter>],
+     ^b   [<nIgnore>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates the string for which the function searches.
+
+     ^b<cString>^b  Designates the string to search.
+
+     ^b<nCounter>^b  Designates which occurrence of <cSearchFor> within
+     <cString> is found.  The default value specifies the last occurrence in
+     the search expression.
+
+     ^b<nIgnore>^b  Designates the number of characters that are eliminated
+     from the search.  The default value ignores none (0).
+
+ ^bReturns^b
+
+     AFTERATNUM() returns the remainder of the <cString> string from the
+     first character after the nth (<nCounter>) occurrence of <cSearchFor>.
+     If the last character in the sequence located is also the last character
+     in the string being searched, then a null string is returned.
+
+ ^bDescription^b
+
+     This function finds the nth (<nCounter>) occurrence of <cSearchFor>
+     within <cString> and returns the remainder of the string from the first
+     position behind the located sequence.
+
+     In order to determine the nth (<nCounter>) occurrence of <cSearchFor>,
+     AFTERATNUM() searches from the left for each instance of this sequence.
+     If CSETATMUPA() is off, then the search is continued after the last
+     character of the sequence most recently found.  Otherwise the search is
+     continued after the first character of the sequence most recently found.
+
+ ^bNote^b
+
+     ^b^CFE^b  Implementing SETATLIKE() allows you to use wild card
+        characters within <cSearchFor>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Search a string for the last appearance of "aa" in two
+        different ways:
+
+        CSETATMUPA(.T.)
+        ? AFTERATNUM("aa", "aBaaBaaX")   // "X"
+
+        CSETATMUPA(.F.)
+        ? AFTERATNUM("aa", "aBaaBaaX")   // "aX"
+
+     ^b^CFE^b  Search a string for the third existing "xx" within the string,
+        where the first four characters are ignored!  Notice the differing
+        results, depending on the multi-pass mode!
+
+        String  := " AxxBBBBxxCCCCxxxDxxEExx"
+
+        CSETATMUPA(.T.)
+        ? AFTERATNUM("xx", String, 3, 4)   // "DxxEExx"
+
+        CSETATMUPA(.F.)
+        ? AFTERATNUM("xx", String, 3, 4)   // "EExx"
+
+     ^b^CFE^b  Examples for SETATLIKE() can be found under the corresponding
+        function description.
+
+!seealso: "CSETATMUPA()" "SETATLIKE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASCIISUM()   Finds sum of the ASCII values of all the characters of a string
+'------------------------------------------------------------------------------
+ ^bASCIISUM()^b
+ Finds the sum of the ASCII values of all the characters of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bASCIISUM(<cString>) --> nASCIISum
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the character string for which the sum of all
+     the ASCII values is computed.
+
+ ^bReturns^b
+
+     ASCIISUM() returns a number that corresponds to the sum of the ASCII
+     codes of all the characters in <cString>.
+
+ ^bDescription^b
+
+     ASCIISUM() allows you to form simple checksums for character strings.
+     For example, this can be implemented during remote data transmission to
+     identify transmission errors.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function does not take character position into account,
+        so it cannot determine a character transposition.  The CHECKSUM()
+        function should be used to determine character transposition.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Transposed characters yield identical results:
+
+        ? ASCIISUM("abc")          // Result: 294
+        ? ASCIISUM("cba")          // Result: 294
+
+     ^b^CFE^b  A null string returns 0:
+
+        ? ASCIISUM("")             // Result: 0
+
+!seealso: "CHECKSUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASCPOS()     Determines ASCII value of a character at a position in a string
+'------------------------------------------------------------------------------
+ ^bASCPOS()^b
+ Determines the ASCII value of a character at a particular position within a
+ string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bASCPOS(<cString>,[<nPosition>]) --> nAsciiValue
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string that is searched.
+
+     ^b<nPosition>^b  Designates the character of <cString> for which the
+     ASCII value is determined.  The default character is the last character.
+
+ ^bReturns^b
+
+     The function returns the ASCII value for the character at <nPosition>
+     within <cString>.
+
+ ^bDescription^b
+
+     ASCPOS() allows you to determine the ASCII value of a selected key
+     within a character string.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The returned value can be between 0 and 255.
+
+     ^b^CFE^b  If <cString> is a null string, or <nPosition> is larger than
+        the length of the string, ASCPOS() returns 0.
+
+     ^b^CFE^b  If <nPosition> is 0, the ASCII value for the last character is
+        returned.
+
+ ^bExamples^b
+
+     ^b^CFE^b  You can specify:
+
+        ? ASCPOS(String, 5)
+
+     ^b^CFE^b  Or you can specify:
+
+        ? ASC (SUBSTR(String, 5, 1))
+
+!seealso: "VALPOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ATADJUST()   Adjusts the beginning position of a sequence within a string
+'------------------------------------------------------------------------------
+ ^bATADJUST()^b
+ Adjusts the beginning position of a sequence within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bATADJUST(<cSearchFor>,<cString>,<nEndpoint>,
+     ^b   [<nCounter>],[<nIgnore>],[<nCharacter|
+     ^b   <cCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates the character string for which the function
+     searches, or the character string that provides the reference point for
+     adjustment.
+
+     ^b<cString>^b  Designates the character string within which the
+     adjustment occurs.
+
+     ^b<nTargetPosition>^b  Designates from which position within the
+     character string the search expression is adjusted.
+
+     ^b<nCounter>^b  Designates which occurrence of the <Searchexpression> is
+     taken into account.  The default value is for the last occurrence.
+
+     ^b<nIgnore>^b  Designates the number of characters at the beginning of
+     the search string that are removed.  The default value is none.
+
+     ^b<nCharacter|cCharacter>^b  Designates a character, as necessary, to
+     carry out the adjustment.  It can be an individual character or an ASCII
+     value between 0 and 255.  The default value is a space CHR(32).
+
+ ^bReturns^b
+
+     ATADJUST() returns the modified character string.
+
+ ^bDescription^b
+
+     The function first looks for the <cSearchFor> parameter within the
+     character string.  From this point, the rest of the <cString> is moved
+     (adjusted) by either inserting or removing blanks until the
+     <nTargetPosition> is reached.  In lieu of blanks, <nCharacter>|
+     <cCharacter> can be used as a fill character.
+
+     Additionally you can specify that the nth occurrence of <cSearchFor> be
+     used and whether or not a specific number of characters at the beginning
+     of the search string is eliminated.
+
+ ^bNote^b
+
+     ^b^CFE^b  Using CSETATMUPA() can influence how the search is performed.
+        Using SETATLIKE() permits the use of wild cards within the search
+        sequence.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Align comments at column 60.  The search is for the first
+        occurrence of "//".  Since there is usually at least one space before
+        each "//", search for " //":
+
+        ? ATADJUST(" //", Line, 60, 1)
+
+     ^b^CFE^b  Move the extensions for the following list of file names to
+        position 10 and eliminate the ".":
+
+        WINDOW.DBF
+        PLZ.DBF
+        BACK.DBF
+        HELP.DBF
+        LOG.DBF
+
+        CHARREM(".", ATADJUST(".", File, 10))
+
+        WINDOW      DBF
+
+        PLZ         DBF
+        BACK        DBF
+        HELP        DBF
+        LOG         DBF
+
+     ^b^CFE^b  Use ATADJUST() with CSETATMUPA().  There is always a problem
+        determining whether "AA" occurs twice or three times in "AAA".
+        Depending on CSETATMUPA(), the function searches behind the last
+        character, or starts from the last character of a located sequence:
+
+        CSETATMUPA(.F.)
+        ? ATADJUST("AA", "123AAABBB", 7, 2)       // Sequence not found
+
+        CSETATMUPA(.T.)
+        ? ATADJUST("AA", "123AAABBB", 7, 2)       // "123A  AABBB"
+
+!seealso: "SETATLIKE()" "CSETATMUPA()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ATNUM()      Determines the starting position of a sequence within a string
+'------------------------------------------------------------------------------
+ ^bATNUM()^b
+ Determines the starting position of a sequence within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bATNUM(<cSearchFor>,<cString>,[<nCounter>],
+     ^b   [<nIgnore>]) --> nPosition
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates the expression for which the function
+     searches.
+
+     ^b<cString>^b  Designates the character string to search.
+
+     ^b<nCounter>^b  Designates which occurrence of <cSearchFor> within
+     <cString> is determined.  The default value is for the last occurrence
+     of the search expression.
+
+     ^b<nIgnore>^b  Designates the number of characters that should be
+     excluded from the search.  The default value is none (0).
+
+ ^bReturns^b
+
+     The function returns the position where <cSearchFor> begins.  If no
+     corresponding position can be determined, the function returns 0.
+
+ ^bDescription^b
+
+     ATNUM() determines the initial position of the nth (<nCounter>)
+     occurrence of <cSearchFor> within the <cString>.  Additionally, the
+     function takes into account the CSETATMUPA() setting, which causes
+     differing results.
+
+     ATNUM() searches from the left in order to determine the nth
+     (<nCounter>) occurrence of the <cSearchFor>.  If CSETATMUPA() is off,
+     the search continues after the last character of the sequence most
+     recently located.  However, if the CSETATMUPA() is on, the search always
+     continues after the first character in the most recently located
+     sequence.
+
+     If the <nIgnore> parameter is not specified, the function initiates the
+     search with the first character of <cString>.  If the <nIgnore>
+     parameter is specified, <nIgnore> characters are ignored from the start
+     of the string and are excluded from the search.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If no value is specified for <nCounter>, the function
+        determines the last occurrence of the <cSearchFor> sequence.
+
+     ^b^CFE^b  When you implement SETATLIKE(), wildcard characters can be
+        used within the search expression.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Search for the last occurrence:
+
+        ? ATNUM("bc", "abcdeabc")               // Result: 7
+
+     ^b^CFE^b  Search for the first occurrence:
+
+        ? ATNUM("bc", "abcdeabc", 1)            // Result: 2
+
+     ^b^CFE^b  Search for the first occurrence, excluding the first three
+        characters:
+
+        ? ATNUM("bc", "abcdeabc", 1, 3)         // Result: 7
+
+     ^b^CFE^b  Determine the impact of CSETATMUPA() on a search for the last
+        occurrence of "aa" in "aaa":
+
+        CSETATMUPA(.F.)                         // Off
+        ? ATNUM("aa", "aaa")                    // Result: 1
+
+        CSETATMUPA(.T.)                         // On
+        ? ATNUM("aa", "aaa")                    // Result: 2
+
+!seealso: "CSETATMUPA()" "SETATLIKE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ATREPL()     Searches for a sequence within a string and replaces it
+'------------------------------------------------------------------------------
+ ^bATREPL()^b
+ Searches for a sequence within a string and replaces it
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bATREPL(<cSearchFor>,<cString>,<cReplace>,
+     ^b   [<nCounter>],[<lMode>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates the expression for which the function
+     searches.
+
+     ^b<cString>^b  [@]  Designates the character string that is searched.
+
+     ^b<cReplace>^b  Designates the character string that is exchanged for
+     the sequence in <cString>.
+
+     ^b<nCounter>^b  Designates which or how many occurrences of <cSearchFor>
+     within <cString> are replaced by <cReplace>.  The default value is for
+     the last occurrence of the search expression.
+
+     ^b<lMode>^b  Designates if only the nth (<nCounter>) sequence is
+     replaced (.T.), or if all sequences up to the nth (<nCounter>) are
+     replaced (.F.).  The default value (.F.) designates that all sequences
+     are replaced.
+
+ ^bReturns^b
+
+     The function returns a character string in which one or many of the
+     <cSearchFor> sequences have been replaced by <cReplace>.
+
+ ^bDescription^b
+
+     ATREPL() allows you to replace one or more sequences within <cString>.
+     <cReplace> can be shorter or longer than <cSearchFor>.
+
+     <nCounter> specifies that the function searches for the nth occurrence
+     of the sequence.  If no value is specified, then the last occurrence is
+     used.  All occurrences of <cSearchFor>, up to and including the one
+     sought, are replaced unless <nCounter> is assigned a value greater than
+     0 and <lMode> is designated .T..
+
+     The CSETATMUPA() setting is only checked when the length of <cReplace>
+     is shorter than or equal to that of <cSearchFor>, yielding different
+     results.  Beginning on the left, the character string is searched for
+     each occurrence of the <cSearchFor> sequence.  If CSETATMUPA() is off
+     (.F.), then the search continues after the last character of the
+     replaced sequence.  However, if CSETATMUPA() is on, the search always
+     continues from the first character of the replaced sequence.
+
+ ^bNotes^b
+
+     ^b^CFE^b  By implementing SETATLIKE() you can use wildcard characters
+        within the search sequence.
+
+     ^b^CFE^b  <cString> can be passed by reference.  If this is the case,
+        then both <cSearchFor> and <cReplace> must be the same length.
+
+     ^b^CFE^b  If <cSearchFor> and <cReplace> are identical, the function
+        terminates immediately.  Such an exchange makes no sense, and if
+        CSETATMUPA() is (.T.), the exchange results in an endless loop.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange all "123" with "ab":
+
+        ? ATREPL("123", "123_123_123", "ab")             // "ab_ab_ab"
+
+     ^b^CFE^b  Replace "789" with a longer string "abcd" (ignore multi-pass):
+
+        ? ATREPL("789", "789_789", "abcd")               // "abcd_abcd"
+
+     ^b^CFE^b  Exchange all "123" with "ab", up to and including the second
+        occurrence:
+
+        ? ATREPL("123", "123_123_123", "ab", 2)          // "ab_ab_123"
+
+     ^b^CFE^b  Exchange only the second occurrence of "123" with "ab":
+
+        ? ATREPL("123", "123_123_123", "ab", 2, .T.)     // "123_ab_123"
+
+     ^b^CFE^b  Exchange all "aa" for "a" and the change the influence of
+        CSETATMUPA():
+
+        CSETATMUPA(.F.)
+        ? ATREPL("aa", "aaaa", "a")                      // "aa"
+
+        CSETATMUPA(.T.)
+        ? ATREPL("aa", "aaaa", "a")                      // "a"
+
+     ^b^CFE^b  Exchange "abc" with "ab", with and without multi-pass:
+
+        CSETATMUPA(.F.)
+        ? ATREPL("abc", "123abcc456", "ab")              // "123abc456"
+
+        CSETATMUPA(.T.)
+        ? ATREPL("abc", "123abcc456", "ab")              // "123ab456"
+
+!seealso: "CSETATMUPA()" "SETATLIKE()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ATTOKEN()    Finds the position of a token within a string
+'------------------------------------------------------------------------------
+ ^bATTOKEN()^b
+ Finds the position of a token within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bATTOKEN(<cString>,[<cDelimiter>],[<nCounter>])
+     ^b   --> nPosition
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string that is passed.
+
+     ^b<cDelimiter>^b  Designates the delimiter list used to identify the
+     tokens.
+
+     ^b<nCounter>^b  Designates which token's position is determined.  The
+     default value is for the last token located.
+
+ ^bReturns^b
+
+     ATTOKEN() returns the beginning position of the nth (<nCounter>) token
+     within the <cString>.
+
+ ^bDescription^b
+
+     ATTOKEN() allows you to determine the beginning position of a token in
+     <cString>.  This value can be extremely helpful when you work with other
+     string functions.  The function uses the following list of delimiters as
+     a standard:
+
+     CHR 32, 0, 9, 10, 13, 26, 32, 138, 141
+
+     and the characters  ,.;:!?/\<<>>()^^#&%+-*
+
+     This list can also be replaced with your own list of separators,
+     <cDelimiter>.  Here are some examples of useful delimiters:
+
+     ^bTable 4-1: Recommended Delimiter Sequences^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bDescription         <cDelimiter>^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Pages               CHR(12)(Form Feed)
+     Sentences           ".!?"
+     File names          ":\."
+     Numerical strings   ",."
+     Date strings        "/."
+     Time strings        ":."
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     ^b^CFE^b  Find the beginning position of the last token:
+
+        ? ATTOKEN("Good Day")                      // 6
+
+     ^b^CFE^b  Find the beginning position of the fourth token:
+
+        ? ATTOKEN("What a beautiful day.", 4)      // 18
+
+     ^b^CFE^b  Attempt to determine the beginning position of an unavailable
+        token:
+
+        ? ATTOKEN("What a beautiful day.", 6)      // 0
+
+!seealso: "NUMTOKEN()" "TOKEN()" "TOKENLOWER()" "TOKENUPPER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BEFORATNUM() Returns string segment before the nth occurrence of a sequence
+'------------------------------------------------------------------------------
+ ^bBEFORATNUM()^b
+ Returns the string segment before the nth occurrence of a sequence
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bBEFORATNUM(<cSearchFor>,<cString>,[<nCounter>],
+     ^b   [<nIgnore>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates the string for which the function searches.
+
+     ^b<cString>^b  Designates the string that is searched.
+
+     ^b<nCounter>^b  Designates which occurrence of the <cSearchFor> within
+     the <cString> is determined.  The default value is for the last
+     occurrence in the search expression.
+
+     ^b<nIgnore>^b  Designates the nuber of characters that are eliminated
+     from the search.  The default value ignores none (0).
+
+ ^bReturns^b
+
+     The function returns all the characters in <cString> in front of the
+     sequence determined.  If no corresponding sequence is found, then a null
+     string is returned.
+
+ ^bDescription^b
+
+     This function determines the beginning position of the nth (<nCounter>)
+     occurrence of <cSearchFor> within <cString> and returns the string
+     segment before this sequence.  Additionally, the function takes into
+     account the CSETATMUPA() setting, which can cause differing results.
+
+     In order to determine the nth (<nCounter>) occurrence of the
+     <cSearchFor>, BEFORATNUM() searches from the left for each instance of
+     this sequence.  If CSETATMUPA() is off, then the search continues after
+     the last character of the sequence most recently found.  If CSETATMUPA()
+     is on, the search continues after the first character of the sequence
+     most recently found.
+
+ ^bNote^b
+
+     ^b^CFE^b  Implementing SETATLIKE() allows you to use wildcard characters
+        within the search sequence.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Search a string for the last appearance of a sequence:
+
+        ? BEFORATNUM("ab", "abcabdabe")                  // "abcabd"
+
+     ^b^CFE^b  Search a string for the first occurrence of a sequence:
+
+        ? BEFORATNUM("ab", "abcabdabe", 1)               // ""
+
+     ^b^CFE^b  Search a string for the first occurrence of a sequence, where
+        the first three characters are not considered in the search:
+
+        ? BEFORATNUM("ab", "abcabdabe", 1, 3)            // "abc"
+
+     ^b^CFE^b  Search a string for the third occurrence of "xx", where the
+        first four characters are not considered!  Notice the different
+        results when you use the multi-pass mode:
+
+        String := "AxxBBBBxxCCCCxxxDxxEExx"
+
+        CSETATMUPA(.T.)
+        ? BEFORATNUM("xx", String, 3, 4)            // "AxxBBBBxxCCCCx"
+
+        CSETATMUPA(.F.)
+        ? BEFORATNUM("xx", String, 3, 4)            // "AxxBBBBxxCCCCxxxD"
+
+!seealso: "CSETATMUPA()" "SETATLIKE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CENTER()     Centers a string using pad characters
+'------------------------------------------------------------------------------
+ ^bCENTER()^b
+ Centers a string using pad characters
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCENTER(<cString>,[<nLength>],[<cPadCharacter>],
+     ^b   [<lMode>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string that you choose to
+     center.
+
+     ^b<nLength>^b  Designates the length of the line within which the
+     <cString> sequence is centered.
+
+     ^b<cPadCharacter>^b  Designates the character with which the <cString>
+     sequence is centered.  The default character is a space.
+
+     ^b<lMode>^b  Designates whether only the beginning, or both sides of
+     <cString> are padded.  The default value (.F.) only fills the beginning.
+
+ ^bReturns^b
+
+     The processed string is returned.
+
+ ^bDescription^b
+
+     The CENTER() function provides a simple way to center text in any line.
+     CENTER() is able to pad only on the left or on the left and right using
+     any selected character.  Leading and trailing blanks (if any) are
+     replaced with the new character.
+
+     When <nLength> is not specified, CENTER() assumes the maximum available
+     line width to be MAXCOL() + 1, so that the correct output appears in the
+     windows.  Additionally, the current cursor position or the column
+     position selected through a SAY command is also noted.  So, if there is
+     an output on an 80-column line that begins at column 20, a section of 40
+     characters from column 20 is used to center the output.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the sum of the pad characters is odd, then one more
+        character is inserted at the beginning of the character string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Center the output with an available line length of 10, and
+        insert the leading characters:
+
+        ? CENTER("xx", 10)                     // "    xx"
+
+     ^b^CFE^b  Fill on the left and on the right:
+
+        ? CENTER("xx", 10, .T.)                // "    xx    "
+
+     ^b^CFE^b  When characters that match the <cPadCharacter> are present,
+        these characters are removed prior to centering:
+
+        ? CENTER("xx     ", 10, .T.)           // "    xx    "
+
+     ^b^CFE^b  Fill with other characters:
+
+        ? CENTER("xx", 10, ".")                // "....xx"
+        ? CENTER("xx", 10, ".", .T.)           // "....xx...."
+        ? CENTER("x", 10, ".", .T.)            // ".....x...."
+
+     ^b^CFE^b  In the following example, the "X" is intended to represent a
+        40-character wide screen.  The string "CLIPPER" is centered there
+        with the "." character, starting at position 10:
+
+        @@ 1, 10 SAY CENTER("CLIPPER", ".", .T.)
+
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        XXXXXXXXX.......CLIPPER......XXXXXXXXX
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+!seealso: "PADLEFT()" "PADRIGHT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARADD()    Adds the corresponding ASCII codes of two strings
+'------------------------------------------------------------------------------
+ ^bCHARADD()^b
+ Adds the corresponding ASCII codes of two strings
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARADD(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  [@]  Designates the character string to which values
+     from a second character string <cString2> are added.
+
+     ^b<cString2>^b  Designates the character string that is added, character
+     for character, to <cString1>.
+
+ ^bReturns^b
+
+     The processed character string is returned.
+
+ ^bDescription^b
+
+     You can use CHARADD() to produce simple character string coding.  The
+     function can prove very useful when processes are coded by individual
+     characters in a string.
+
+ ^bNotes^b
+
+     ^b^CFE^b  When both character strings are the same length, then the
+        first byte of <cString1> can be linked with the first byte of
+        <cString2>, and the second byte of <cString1> can be linked with the
+        second byte of <cString2>, and so on.  If <cString2> is shorter than
+        <cString1>, then as soon as the last byte of <cString2> is reached,
+        the process continues and starts again with the first byte of
+        <cString2>.  However, if <cString1> is shorter than <cString2>, the
+        process terminates with the end of <cString1>.
+
+     ^b^CFE^b  Values greater than 256 can result when adding values.  The
+        new value is then formed based on the following formula:
+
+           (ASC(Character1) + ASC(Character2))% 256.
+
+     ^b^CFE^b  Implementing CSETREF() can suppress the return value for this
+        function to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add a value of 1 to each character:
+
+        ? CHARADD("01234", CHR(1))        // "12345"
+
+     ^b^CFE^b  Adding a value of 255 to each character corresponds to
+        subtracting 1:
+
+        ? CHARADD("12345", CHR(255))      // "01234"
+
+!seealso: "ADDASCII()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARAND()    Links corresponding ASCII codes of paired strings with AND
+'------------------------------------------------------------------------------
+ ^bCHARAND()^b
+ Links corresponding ASCII codes of paired strings with an AND operation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARAND(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  [@]  Designates the character string to which characters
+     are added.
+
+     ^b<cString2>^b  Designates the character string that contains the
+     characters that are added to the characters in <cString1>.
+
+ ^bReturns^b
+
+     The processed string is returned.
+
+ ^bDescription^b
+
+     CHARAND() can be used as a simple way to reset the high bit for all the
+     characters in a string.  The function joins (links bit by bit using an
+     AND operation) each character in <cString1> with the corresponding
+     character in <cString2>.
+
+ ^bNotes^b
+
+     ^b^CFE^b  When both character strings are the same length, then the
+        first byte of <cString1> can be linked with the first byte of
+        <cString2>, and the second byte of <cString1> can be linked with the
+        second byte of <cString2>, and so on.  If <cString2> is shorter than
+        <cString1>, then as soon as the last byte of <cString2> is reached,
+        the process continues and starts again with the first byte of
+        <cString2>.  However, if <cString1> is shorter than <cString2>, the
+        process terminates with the end of <cString1>.
+
+     ^b^CFE^b  Implementing CSETREF() can suppress the return value for this
+        function to save room in working memory.
+
+ ^bExample^b
+
+     The second parameter is shorter than the first parameter in this
+     example.  As a result, the "1", the "a", and the first blank are joined
+     with AND to the "1" in "123"; the "2", the "b", and the second blank are
+     joined with AND to the "2" in "123"; and the "3", the "c", and the third
+     blank are joined with AND to the "3" in "123":
+
+     ? CHARAND("123abc   ", "123")      // "123!"#   "
+
+!seealso: "CHARXOR()" "CHAROR()" "CHARNOT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHAREVEN()   Returns characters in the even positions of a string
+'------------------------------------------------------------------------------
+ ^bCHAREVEN()^b
+ Returns characters in the even positions of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHAREVEN(<cString>) --> cString
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the character string from which all even
+     characters are returned.
+
+ ^bReturns^b
+
+     CHAREVEN() returns a string containing all the even characters of
+     <cString>.
+
+ ^bDescription^b
+
+     CHAREVEN() assembles all even characters within a string into a new
+     character string.  This allows you to process variables consisting of
+     the characters and attributes of a video screen's contents very simply.
+     This function can be implemented in conjunction with functions from the
+     video section.  You can return the attributes from a screen string, with
+     all the characters removed.
+
+ ^bNote^b
+
+     ^b^CFE^b  The first position in a string is 1, and therefore is not
+        even.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Assemble all even characters:
+
+        ? CHAREVEN("1234a")              // "24"
+
+     ^b^CFE^b  Return the expanded text to "normal":
+
+        ? CHAREVEN(" H e l l o")         // "Hello"
+
+!seealso: "CHARMIX()" "CHARODD()" tool_007.ngo:"SCREENMIX()" tool_007.ngo:"SCREENSTR()" tool_007.ngo:"STRSCREEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARLIST()   Lists each character in a string
+'------------------------------------------------------------------------------
+ ^bCHARLIST()^b
+ Lists each character in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARLIST(<cString>) --> cString
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+ ^bReturns^b
+
+     CHARLIST() returns a list in which each character in <cString> appears
+     only once.
+
+ ^bDescription^b
+
+     CHARLIST() determines the list of characters that appear in the
+     <cString>.  Each character only appears in the list once.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The CHARLIST() function's return value is never longer than
+        256 characters.
+
+     ^b^CFE^b  If you sort this result with CHARSORT(), you have an ascending
+        list of characters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  What letters are contained in the text?
+
+        ? CHARLIST("Hello goodbye")                // "Helo gdby"
+
+     ^b^CFE^b  Show a sorted list of all letters in a text:
+
+        ? CHARSORT(CHARLIST("Hello goodbye"))      // "Hbdegloy"
+
+!seealso: "CHARONE()" "CHARSORT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARMIRR()   Mirrors characters within a string
+'------------------------------------------------------------------------------
+ ^bCHARMIRR()^b
+ Mirrors characters within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARMIRR(<cString>,[<lBlank>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the character string that is mirrored.
+
+     ^b<lBlank>^b  Designates whether the function mirrors everything (.F.)
+     or does not mirror the blanks at the end of a character string (.T.).
+     The default value is .F..
+
+ ^bReturns^b
+
+     CHARMIRR() returns the processed <cString>.
+
+ ^bDescription^b
+
+     CHARMIRR() reverses a string.  The function returns a palindrome of
+     <cString>.
+
+     The optional logical parameter allows you to mirror a string and ignore
+     the blanks.  This permits you to build index entries that end with a
+     particular sequence.
+
+ ^bNote^b
+
+     ^b^CFE^b  The returned value of this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows a simple exchange:
+
+        ? CHARMIRR("abc321")         // Result: "123cba"
+
+     ^b^CFE^b  This example shows one of the best known palindromes:
+
+        ? CHARMIRR("ABLE WAS I ERE I SAW ELBA")
+
+     ^b^CFE^b  When you index, you must do it without spaces because this is
+        the only way a reverse string can be searched for:
+
+        INDEX ON CHARMIRR(Field, .T.) TO Index
+
+     ^b^CFE^b  Search for all expressions in the mirrored index, ending in
+        "per":
+
+        SEEK "rep"
+
+!seealso: "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARMIX()    Mixes two strings together
+'------------------------------------------------------------------------------
+ ^bCHARMIX()^b
+ Mixes two strings together
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARMIX(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  Designates a string that is mixed with <cString2>.
+
+     ^b<cString2>^b  Designates a string that is mixed with <cString1>.
+
+ ^bReturns^b
+
+     CHARMIX() returns a string that is double the length of <cString1>,
+     assuming that <cString2> contains at least one character.
+
+ ^bDescription^b
+
+     This function allows you to mix the characters from two character
+     strings together.  The characters from <cString1> and <cString2> appear
+     alternately in the result string.  The length of <cString1> forms the
+     basis for the maximum count of the resulting mix.  A longer <cString2>
+     string is cut down to the length of <cString1>.  A shorter <cString2> is
+     processed from beginning to end, wrapping to the beginning again until
+     there are no more characters in <cString1>.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function can be used to recombine strings extracted by
+        CHAREVEN() or CHARODD().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This is an example of a simple mix:
+
+        ? CHARMIX("ABC", "123")       // "A1B2C3"
+
+     ^b^CFE^b  This is a mix where the second string is shorter:
+
+        ? CHARMIX("ABCDE", "12")      // "A1B2C1D2E1"
+
+     ^b^CFE^b  This is a mix where the second string is longer:
+
+        ? CHARMIX("AB", "12345")      // "A1B2"
+
+     ^b^CFE^b  What you can do with this?
+
+        ? CHARMIX("HELLO". " ")       // "H E L L O"
+
+     ^b^CFE^b  If the second parameter is null, then the first parameter is
+        returned unchanged:
+
+        ? CHARMIX("HELLO", "")        // "HELLO"
+
+!seealso: "CHAREVEN()" "CHARODD()" "EXPAND()" tool_007.ngo:"SCREENMIX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARNOLIST() Lists the characters that do not appear in a string
+'------------------------------------------------------------------------------
+ ^bCHARNOLIST()^b
+ Lists the characters that do not appear in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARNOLIST([<cString>]) --> cNotContained
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the string that is processed.  The default
+     value is for an empty string.
+
+ ^bReturns^b
+
+     CHARNOLIST() returns a character string that contains all characters not
+     found in <cString>.
+
+ ^bDescription^b
+
+     This function determines all characters that are not contained in
+     <cString>.  The resulting characters might be used as replacement
+     characters or for complex deletion procedures.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete all characters except "XYZ":
+
+        String := "ABXCDYEF"
+        ? CHARREM(CHARNOLIST("XYZ"), String)               // "XY"
+
+     ^b^CFE^b  Generate a list of all 256 ASCII characters:
+
+        ? CHARNOLIST()
+
+     ^b^CFE^b  To save text to a memo field, all null characters (CHR(0))
+        must be exchanged for a character that is not being used:
+
+        cNoList   := CHARNOLIST(cMemoText)
+        cNoChar   := SUBSTR(cNoList, 1, 1)
+        CHARREPL(CHR(0), @cMemoText, cNoChar)
+
+!seealso: "CHARLIST()" "CHARONE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARNOT()    Complements each character in a string
+'------------------------------------------------------------------------------
+ ^bCHARNOT()^b
+ Complements each character in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARNOT(<cString>) --> cString
+
+ ^bArgument^b
+
+     ^b<cString>^b  [@]  Designates the string that is negated.
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     This function negates each bit in <cString>.  This makes it possible to
+     get a decreasing index sequence.
+
+ ^bNote^b
+
+     ^b^CFE^b  The returned value of this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExample^b
+
+     When a character string that has already been negated is negated again,
+     the result is identical to the original:
+
+     CHARNOT("123ABCabc")     // "     œ "
+     CHARNOT("      œ")      // "123ABCabc"
+
+!seealso: "CHARAND()" "CHARXOR()" "CHAROR()" tool_014.ngo:"COMPLEMENT()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARODD()    Returns characters in the odd positions of a string
+'------------------------------------------------------------------------------
+ ^bCHARODD()^b
+ Returns characters in the odd positions of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARODD(<cString>) --> cString
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the character string from which all the odd
+     characters are returned.
+
+ ^bReturns^b
+
+     CHARODD() returns a character string that contains all the odd
+     characters from <cString>.
+
+ ^bDescription^b
+
+     CHARODD() assembles all odd characters within a string into a new
+     character string.  This allows you to process variables where screen
+     content, consisting of characters and attributes, is saved.  This
+     function can then be used in conjunction with functions from the video
+     section.
+
+ ^bNote^b
+
+     ^b^CFE^b  The first position in a string is 1, and therefore is odd.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Assemble all odd characters:
+
+        ? CHARODD("1234a")            // "13a"
+
+     ^b^CFE^b  Return the expanded text to "normal":
+
+        ? CHARODD("H e l l o ")       // "Hello"
+
+!seealso: "CHARMIX()" "CHAREVEN()" tool_007.ngo:"SCREENMIX()" tool_007.ngo:"SCREENSTR()" tool_007.ngo:"STRSCREEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARONE()    Reduces adjoining duplicate characters in string to 1 character
+'------------------------------------------------------------------------------
+ ^bCHARONE()^b
+ Reduces adjoining duplicate characters in a string to one character
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARONE([<cDeleteCharacters>],<cString>) --> cString
+
+ ^bArguments^b
+
+     ^b<cDeleteCharacter>^b  Designates the characters that have their
+     adjoining duplicates removed from <cString>. The default value removes
+     all adjoining duplicate characters.
+
+     ^b<cString>^b  Designates the character string that is processed.
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     CHARONE() searches within the <cString> for repetitions of adjoining
+     characters.  When a character is removed, all of the characters but the
+     first are deleted.  This differs significantly from the CHARLIST()
+     function, where multiple occurrences of characters within the context of
+     the string are removed.
+
+ ^bNote^b
+
+     ^b^CFE^b  Without the <cDeleteCharacter> parameter, all the repeating
+        characters are removed.  If the parameter is specified, only those
+        characters in <cDeleteCharacter> are removed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check for double occurrences of each character in the
+        character string:
+
+        ? CHARONE("122333a123")             // "123a123"
+        ? CHARONE("A  B  CCCD")             // "A B CD"
+
+     ^b^CFE^b  Delete multiple side-by-side blanks:
+
+        ? CHARONE(" ", "A  B  A  B")        // "A B A B"
+
+     ^b^CFE^b  Make the letter "o" only appear once in the character string:
+
+        ? CHARONE("o", "122oooB12o")        // "122oB12"
+
+!seealso: "WORDONE()" "CHARLIST()" "CHARREM()" "CHARONLY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARONLY()   Determines the common denominator between two strings
+'------------------------------------------------------------------------------
+ ^bCHARONLY()^b
+ Determines the common denominator between two strings on the basis of
+ individual characters
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARONLY(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  Designates a sequence of characters that are not removed
+     from <cString2>.
+
+     ^b<cString2>^b  Designates the string that is processed.
+
+ ^bReturns^b
+
+     CHARONLY() returns the processed string <cString2>.
+
+ ^bDescription^b
+
+     CHARONLY() removes all characters from <cString2> that are not in
+     <cString1>.  The function is particularly useful when comparing data
+     that should have a standard format but has been input by different
+     people.  This category can consist of things like telephone numbers,
+     part numbers, customer numbers, etc. (see example).
+
+ ^bExample^b
+
+     Since numbers are the only characters that are relevant in a telephone
+     number, any characters that are not numbers are removed.  The result in
+     each case is "2133907923":
+
+     ? CHARONLY("0123456789", "213 - 39 07 923")
+     ? CHARONLY("0123456789", "213 / 390 7923")
+
+!seealso: "WORDONLY()" "CHARREM()" "CHARONE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHAROR()     Joins the corresponding ASCII code of paired strings with OR
+'------------------------------------------------------------------------------
+ ^bCHAROR()^b
+ Joins the corresponding ASCII code of paired strings with an OR operation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHAROR(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  [@]  Designates the string upon which the OR operation
+     is performed.
+
+     ^b<cString2>^b  Designates the characters that are used when performing
+     the OR operation on <cString1>.
+
+ ^bReturns^b
+
+     CHAROR() returns the processed <cString1>.
+
+ ^bDescription^b
+
+     The function joins (links bit by bit using an OR operation) each
+     character in <cString1> with the corresponding characters in <cString2>.
+     CHAROR() can therefore place particular bits within the characters.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If both character strings are the same length, then the first
+        byte of <cString1> is linked with the first byte of <cString2>, and
+        the second byte of <cString1> is linked with the second byte of
+        <cString2>, etc..  If <cString2> is shorter than <cString1>, then
+        when the last byte of <cString2> is reached, it continues with the
+        first byte of <cString2>.  However, if <cString1> is shorter than
+        <cString2>, the process terminates at the end of <cString1>.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Both bytes in the first parameters are joined with OR using
+        the "0" character.  This means that CHR(1) is converted into the
+        ASCII character ‘1", CHR(2) into the ASCII character "2", etc.:
+
+        ? CHAROR(CHR(1) + CHR(2), "0")            // "12"
+
+     ^b^CFE^b  All bytes in the first parameters are joined (OR) with CHR(32)
+        (set bit 5 only):
+
+        ? CHAROR("123ABCC[\]abc", CHR (32))       // "123abc(|)abc"
+
+!seealso: "CHARAND()" "CHARXOR()" "CHARNOT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARPACK()   Compresses (packs) a string
+'------------------------------------------------------------------------------
+ ^bCHARPACK()^b
+ Compresses (packs) a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARPACK(<cString>,[<nMethod>]) --> cPackString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string that is packed.
+
+     ^b<nMethod>^b  Designates which pack algorithm is used on the designated
+     character string.  The default value is method 0.
+
+ ^bReturns^b
+
+     CHARPACK() returns the compressed string.
+
+ ^bDescription^b
+
+     This function allows you to compress (pack) the contents of strings.
+     The function supports two different pack methods:
+
+     ^bTable 4-2: Pack Methods Supported^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b<nMethod>    Pack Algorithm^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     0            Modified run length encoding
+     1            Bit oriented algorithm
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bNote^b
+
+     ^bImportant!^b  A packed string can contain CHR(0) or other control
+     characters.
+
+ ^bExample^b
+
+     Using the bit pack method, compress a text from a DOS file:
+
+     Var := CHARPACK(FILESTR("C:\TEXT\TEST.TXT"), 1)
+     STRFILE(Var, "C:\TEXT\TEST.PAK")      // New save
+
+!seealso: "CHARUNPACK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARRELA()   Correlates the character positions in paired strings
+'------------------------------------------------------------------------------
+ ^bCHARRELA()^b
+ Correlates the character positions in paired strings
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARRELA(<cSearchFor1>,<cString1>,<cSearchFor2>,
+     ^b   <cString2>) --> nPosition
+
+ ^bArguments^b
+
+     ^b<cSearchFor1>^b  Designates the character that is searched for in
+     <cString1>.
+
+     ^b<cString1>^b  Designates the character string to search with
+     <cSearchFor1>.
+
+     ^b<cSearchFor2>^b  Designates the character that is searched for in
+     <cString2>.
+
+     ^b<cString2>^b  Designates the character string to search with
+     <cSearchFor2>.
+
+ ^bReturns^b
+
+     CHARRELA() returns the positions where <cSearchFor1> and <cSearchFor2>
+     occur in the corresponding character strings.
+
+ ^bDescription^b
+
+     This function builds a relationship (CHAR RELAtion) between two
+     character strings.  It determines the positions where the characters in
+     <cSearchFor1> appear in <cString1> and  where the characters in
+     <cSearchFor2> appear in <cString2>.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function returns a value of 0 if no relationship is found.
+
+ ^bExample^b
+
+     Search for the first position in which a "b" appears in the first string
+     and a "1" appears in the second:
+
+     ? CHARRELA("b", "b b b b", "1", "bbb11111")      // 5
+
+!seealso: "CHARRELREP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARRELREP() Replaces characters in a string depending on their correlation
+'------------------------------------------------------------------------------
+ ^bCHARRELREP()^b
+ Replaces characters in a string depending on their correlation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARRELREP(<cSearchFor1>,<cString1>,<cSearchFor2>,
+     ^b   <cString2>,<cReplaceExpression>) --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchFor1>^b  Designates one or more characters within <cString1>
+     for which to search.
+
+     ^b<cString1>^b  Designates the character string where <cSearchFor1> is
+     found.
+
+     ^b<cSearchFor2>^b  Designates one or more characters within <cString2>
+     for which to search.
+
+     ^b<cString2>^b  [@]  Designates the character string where <cSearchFor2>
+     is found.
+
+     ^b<cReplaceExpression>^b  Designates one or more characters to replace
+     those at the established corresponding position within <cString2>.
+
+ ^bReturns^b
+
+     The processed <cString2> is returned.
+
+ ^bDescription^b
+
+     This function is easier to use than it seems. If we proceed on the
+     assumption that both search expressions and the replacement expression
+     are only one character long, then the following steps occur:
+
+     ^b^CFE^b  All positions are determined where <cSearchFor1> is found
+        within <cString1>.
+
+     ^b^CFE^b  All positions are found where <cSearchFor2> is found within
+        <cString2>.
+
+     ^b^CFE^b  The character in the <cString2> string is replaced by the
+        character in the <cReplaceExpression>.
+
+     This function can be used to simplify work with variables that contain
+     screen memory.  If cPict1 contains the character "|"at position 34 and
+     cPict2 contains the character "-" at the same position, then this
+     position within cPict2 can be replaced with a new character, "+"', which
+     represents the combination of the two.
+
+
+     ^bMultiple Exchanges ^b
+     Both search expressions and the replacement expression can be longer
+     than one character.  The previously described exchange procedure occurs
+     repeatedly -- initially with the first character in the three character
+     strings, then with the second, and so on.  The number of iterations is
+     regulated by the length of <cSearchFor1>.  If <cSearchFor2> or the
+     <cReplaceExpression> are shorter, then the last byte is used again.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The length of <cString2> determines the number of search
+        procedures at any one time.  The length of <cSearchFor1> determines
+        the number of possible exchanges.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+     ^b^CFE^b  A use for multiple replacement using CHARRELREP() can be found
+        in the accompanying sample programs.
+
+ ^bExample^b
+
+     Determine every position where a "b" occurs in the first string and a
+     "1" occurs in the second string.  The respective character is then
+     exchanged for the one designated as the fifth parameter.
+
+     ? CHARRELREP("b", "b b b b", "1", "bbb11111", "x")
+                                                        //"bbb1x1x1"
+
+!seealso: "CHARRELA()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARREM()    Removes particular characters from a string
+'------------------------------------------------------------------------------
+ ^bCHARREM()^b
+ Removes particular characters from a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARREM(<cDelCharacterstring>,<cString>) --> cString
+
+ ^bArguments^b
+
+     ^b<cDelCharacterstring>^b  Designates the characters that are removed
+     from <cString>.
+
+     ^b<cString>^b  Designates the string that is processed.
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     With this function you can remove particular characters from any
+     position in <cString>.  It is possible to ensure that the character
+     string does not contain these characters later.
+
+ ^bNote^b
+
+     ^b^CFE^b  No changes occur if you pass invalid or incorrect parameters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove the blanks from a string:
+
+        ? CHARREM(" ", " 1  2   ")     // "12"
+
+     ^b^CFE^b  Remove the number "3" and the letter "y":
+
+        ? CHARREM("3y", "xyz123")      // "xz12"
+
+!seealso: "CHARONLY()" "CHARONE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARREPL()   Replaces certain characters with others
+'------------------------------------------------------------------------------
+ ^bCHARREPL()^b
+ Replaces certain characters with others
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARREPL(<cSearchFor>,<cString>,   <cReplaceExpression>,
+     ^b   [<lMode>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates a list of characters to search for in
+     <cString>.
+
+     ^b<cString>^b  [@]  Designates the character string within which to
+     search for and replace the characters in <cSearchFor>.
+
+     ^b<cReplaceExpression>^b  Designates the character list that replaces
+     characters in <cString>.
+
+     ^b<lMode>^b  Designates whether multiple replacements are made.
+
+     ^b<lMode>^b  Designates one pass of the <cString> (.T.) or multiple
+     replacements (.F.).  The default value is for .F..
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     This function allows you to carry out very complex replacement
+     procedures.  Every character in the <cSearchFor> is searched for within
+     the <cString>.  If found, the character is replaced by the corresponding
+     character in the <cReplaceExpression>.
+
+     If <lMode> is not passed, characters are exchanged repeatedly as
+     required.  This means that the function goes through each individual
+     character in the found characters in sequence, and then searches the
+     entire <cString>, exchanging <cSearchFor> for corresponding characters
+     in <cReplaceExpression>.  When you use this technique, characters that
+     have already been replaced are exchanged again if the replacement
+     character also appears in the search list.
+
+     However, if the optional <lMode> parameter is specified, the function
+     proceeds differently.  It goes through each character in <cString> in
+     sequence, determining whether or not it should be replaced.  Characters
+     that have been replaced are not replaced again.
+
+     As a rule, if the same characters appear within <cReplaceExpression> and
+     <cSearchFor>, you must check very closely to determine which <lMode>
+     parameter should be used (see example).
+
+ ^bNotes^b
+
+     ^b^CFE^b  If the <cReplaceExpression> sequence is shorter than
+        <cSearchFor>, the characters that do not have a corresponding
+        replacement in <cReplaceExpression> are replaced with the last
+        character of <cReplaceExpression> (see example).
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The number "1" is replaced with the letter "a", the number "2"
+        with the letter "b", etc..  If the number "4" appeared in the
+        character string, it would be replaced with a "d":
+
+        ? CHARREPL("1234", "1x2y3z", "abcd")              // "axbycz"
+
+     ^b^CFE^b  The letters a-j are replaced with the numbers 0-9; for
+        example, an "f" is replaced with a "6":
+
+        ? CHARREPL("abcdefghij", "jhfdb", "1234567890")   // "08642"
+
+     ^b^CFE^b  The third parameter makes fewer characters available for the
+        exchange.  Therefore the letters f-j are replaced with the last
+        characters from "12345":
+
+        ? CHARREPL("abcdefghij", "jhfdb", "12345")        // "55542"
+
+     ^b^CFE^b  Here is an example of the difference between a specified
+        <lMode> parameter (.T.) and the default parameter (.F.):
+
+        ? CHARREPL("1234", "1234", "234A")                // "AAAA"
+        ? CHARREPL("1234", "1234", "234A", .T.)           // "234A"
+
+!seealso: "WORDREPL()" "WORDTOCHAR()" "POSREPL()" "RANGEREPL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARSORT()   Sorts sequences within a string
+'------------------------------------------------------------------------------
+ ^bCHARSORT()^b
+ Sorts sequences within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARSORT(<cString>,[<nElementlength>],
+     ^b   [<nComparisonlength>],[<nIgnore>],
+     ^b   [<nElementPosition>],[<nSortlength>],
+     ^b   [<lDescending>]) --> cString
+
+
+     ^bNote: ^b This version of CA-Clipper Tools contains an optional
+     parameter that previous versions did not include.
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the character string that is sorted.
+
+     ^b<nElementlength>^b  Designates the length of the sorting element.  The
+     default value is for 1 character.
+
+     ^b<nComparisonlength>^b  Designates the number of characters that a
+     sorting element takes into account in a comparison.  The default value
+     is <nElementlength> characters.
+
+     ^b<nIgnore>^b  Designates the number of characters at the beginning of
+     the <cString> that should not be taken into account in the sorting.
+
+     ^b<nElementPosition>^b  Designates an offset.  This parameter designates
+     from what position within the sorting element the comparison is made.
+     The default value is the first character (0).
+
+     ^b<nSortlength>^b  Designates the length of the sort area relative to
+     the <nIgnore> offset.
+
+     ^b<lDescending>^b  Designates whether the function sorts in ascending or
+     descending order.  If this parameter is not specified, or is specified
+     as .F., then the function sorts in ascending order.  When specified as
+     .T., the function sorts in descending order.  The default value is .F..
+
+ ^bReturns^b
+
+     The sorted <cString> is returned.
+
+ ^bDescription^b
+
+     CHARSORT() allows you to sort the characters in a string in many
+     different ways.  Everything from the length of the sorting elements to
+     the sort sequences is taken into account.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Invalid parameters return a null string.
+
+     ^b^CFE^b  The function uses a fast sort algorithm.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Sort characters in a string according to their ASCII code:
+
+        ? CHARSORT("qwert")                           // "eqrtw"
+
+     ^b^CFE^b  Sort 2-byte length elements:
+
+        ? CHARSORT("qwert", 2)                        // "erqwt"
+
+     ^b^CFE^b  Sort 2-byte length elements, but only use the first character
+        for the comparison:
+
+        ? CHARSORT("bla4a3a2a1", 2, 1)                // "a2a1a3a4b1"
+
+     ^b^CFE^b  Sort individual characters, excluding the first three:
+
+        ? CHARSORT("XXXqwert", 1, 1, 3)               // "XXXeqrtw"
+
+     ^b^CFE^b  Sort paired sequences for the entire string, where only the
+        second character within each sequence is used:
+
+        ? CHARSORT("bla4a3a2a1", 2, 1, 0, 1)          // "a1b1a2a3a4"
+
+     ^b^CFE^b  Sort only the first four characters within a string:
+
+        ? CHARSORT("384172852", 1, 1, 0, 0, 4)        // "134872852"
+
+     ^b^CFE^b  Sort in descending order:
+
+        ? CHARSORT("qwert", .T.)                      // "wtrqe"
+
+!seealso: "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARSPREAD() Expands a string at the tokens
+'------------------------------------------------------------------------------
+ ^bCHARSPREAD()^b
+ Expands a string at the tokens
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARSPREAD(<cString>,<nLength>,
+     ^b   [<cCharacter|nCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates a character string that is expanded with
+     spaces or <cCharacter>|<nCharacter> characters to <nLength> length.
+
+     ^b<nLength>^b  Designates the length of the return string.
+
+     ^b<cCharacter|nCharacter>^b  Designates the fill character and token
+     delimiter.  It can be a numeric value or a character.  If it is a
+     numeric value, it must be between 0 and 255.  The default value is a
+     space CHR(32).
+
+ ^bReturns^b
+
+     CHARSPREAD() returns the expanded string.
+
+ ^bDescription^b
+
+     CHARSPREAD() expands a string to a preset length.  However, it behaves
+     differently than the EXPAND() function.
+
+     CHARSPREAD() uses <cCharacter|nCharacter> as the character to insert
+     during the expansion.  The string is expanded between tokens delimited
+     by this character up to the length specified by <nLength>.  This is
+     similar to full justification in a text editor.
+
+ ^bNote^b
+
+     ^b^CFE^b  Previously existing fill characters <cCharacter|nCharacter>
+        are not taken into account in the redistribution (see examples).  If
+        this procedure is not satisfactory to you, then you can call the
+        CHARONE() for the string before you call CHARSPREAD().
+
+ ^bExamples^b
+
+     For clarity, these examples do not contain blanks.
+
+     ^b^CFE^b  When the delimiter does not appear in the string, no expansion
+        takes place:
+
+        ? CHARSPREAD("123456", 20, ".")          // "123456"
+
+     ^b^CFE^b  This example shows a numeric code for the (".") character:
+
+        ? CHARSPREAD("1.2.3.4.5.6", 20, 46)      // "1...2...3..4...5...6"
+
+     ^b^CFE^b  In this example, the fill character is already there:
+
+        ? CHARSPREAD("11..22..33", ".")          // "11.......22.......33"
+        ? CHARSPREAD("11.22........33", 20, ".")
+                                                 // "11....22..........33"
+
+!seealso: "EXPAND()" "CHARONE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARSWAP()   Exchanges all adjoining characters in a string
+'------------------------------------------------------------------------------
+ ^bCHARSWAP()^b
+ Exchanges all adjoining characters in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARSWAP(<cString>) --> cString
+
+ ^bArgument^b
+
+     ^b<cString>^b  [@]  Designates the character string that is processed.
+
+ ^bReturns^b
+
+     The processed character string is returned.
+
+ ^bDescription^b
+
+     CHARSWAP() takes all neighboring characters in <cString> and exchanges
+     them.  As a result, bytes in even positions are exchanged for those in
+     odd positions.
+
+     CHARSWAP() is very important when you use string integers generated by
+     the CA-Clipper I2BIN() function that must be saved or sorted.  The
+     CHARSWAP() exchange must be carried out prior to calling CHARSORT()
+     (low/high ordering of 16-bit integers) to achieve an accurate result.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Since the length of the character string is not changed, a
+        call by reference is recommended.  This increases the speed of the
+        function.
+
+     ^b^CFE^b  The value this function returns can be suppressed by setting
+        CSETREF() to save working memory space.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange characters that can be displayed:
+
+        ? CHARSWAP("0123456789")               // "1032547698"
+
+     ^b^CFE^b  Work with I2BIN:
+
+        ? I2BN(256)                            // 00000000 00000001
+        ? I2BIN(1)                             // 00000001 00000000
+        ? I2BIN(256) > I2BIN(1)                          // .F.
+        ? CHARSWAP(I2BIN(256)) > CHARSWAP(I2BIN(1))      // .T.
+
+!seealso: "WORDSWAP()" "CHARSORT()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARUNPACK() Decompresses (unpacks) a string
+'------------------------------------------------------------------------------
+ ^bCHARUNPACK()^b
+ Decompresses (unpacks) a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARUNPACK(<idPackCharacterstring>) --> cString
+
+ ^bArgument^b
+
+     ^b<idPackCharacterstring>^b  Designates a string that was previously
+     compressed with the CHARPACK() function.
+
+ ^bReturns^b
+
+     CHARUNPACK() returns an uncompressed string.
+
+ ^bDescription^b
+
+     This function unpacks strings compressed by the CHARPACK() function.
+     Notice that the related pack method is automatically recognized.  Since
+     we presuppose that the CHARUNPACK() string parameter was compressed
+     previously with CHARPACK(), it is assured that the returned string is
+     not longer than the maximum permitted under CA-Clipper.
+
+ ^bExample^b
+
+     The CHARUNPACK() function recreates a string:
+
+     ? CHARUNPACK(CHARPACK("AAAAAAAAAAAA"))   // "AAAAAAAAAAAA"
+
+!seealso: "CHARPACK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARXOR()    Joins ASCII codes of paired strings with exclusive OR operation
+'------------------------------------------------------------------------------
+ ^bCHARXOR()^b
+ Joins corresponding ASCII codes of paired strings using an exclusive OR
+ operation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHARXOR(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  [@]  Designates the character string on which the
+     exclusive OR (XOR) operation is performed.
+
+     ^b<cString2>^b  Designates the characters that are joined using XOR with
+     <cString1>.
+
+ ^bReturns^b
+
+     The processed <cString1> is returned.
+
+ ^bDescription^b
+
+     The function performs an exclusive OR operation on each character in
+     <cString1> with the corresponding characters in <cString2>.
+
+     You can use CHARXOR() to code passwords and text.  The advantage of this
+     function is that it can be used for both encryption and decryption.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If both character strings are the same length, then the first
+        byte of <cString1> is linked with the first byte of <cString2>, and
+        the second byte of <cString1> is linked with the second byte of
+        <cString2>, etc..  If <cString2> is shorter than <cString1>, then
+        when the last byte of <cString2> is reached, it continues with the
+        first byte of <cString2>.  However, if <cString1> is shorter than
+        <cString2>, the process terminates at the end of <cString1>.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  CHARXOR() returns the coded value once.  The password should
+        be as long as possible:
+
+        ? CHARXOR("Secret", "Password")
+
+     ^b^CFE^b  Call CHARXOR() twice to return the initial value:
+
+        ? CHARXOR(CHARXOR("Secret", "Password"), "Password")
+
+     ^b^CFE^b  A double encryption is also possible:
+
+        ? CHARXOR(CHARXOR("Secret", "Password"), "A12B44")
+
+!seealso: "CRYPT()" "CHARAND()" "CHAROR()" "CHARNOT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHECKSUM()   Calculates the checksum for a character string (algorithm)
+'------------------------------------------------------------------------------
+ ^bCHECKSUM()^b
+ Calculates the checksum for a character string (algorithm)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCHECKSUM(<cString>) --> nCheckSum
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the character string for which the checksum is
+     computed.
+
+ ^bReturns^b
+
+     The number returned is the checksum for the <cString>.
+
+ ^bDescription^b
+
+     CHECKSUM() calculates the checksum for a character string.  This
+     checksum can determine if a character string has been changed, or
+     transmitted or typed incorrectly.  CHECKSUM() is position dependent, so
+     the likelihood of error recognition is greater than with ASCIISUM().
+
+ ^bNotes^b
+
+     ^b^CFE^b  The return value is a 32-bit whole number.
+
+     ^b^CFE^b  The checksum cannot be used for definitive coding of data
+        because the calculated sum for two different character strings could
+        be the same.  For example, the checksum for "PASTETEN" and "PERSONAL"
+        are identical.
+
+     ^b^CFE^b  If character strings have different lengths, the strings
+        cannot have identical values.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, ASCIISUM() would have returned identical
+        results:
+
+        ? CHECKSUM("abc")               // Result: 247334
+        ? CHECKSUM("cba")               // Result: 246822
+
+     ^b^CFE^b  Different character strings of identical length can produce
+        identical results:
+
+        ? CHECKSUM("PASTETEN")          // Result: 530020
+        ? CHECKSUM("PERSONAL")          // Result: 530020
+
+     ^b^CFE^b  A null string returns a result of 0:
+
+        ? CHECKSUM("")                  // Result: 0
+
+!seealso: "ASCIISUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COUNTLEFT()  Counts a particular character at the beginning of a string
+'------------------------------------------------------------------------------
+ ^bCOUNTLEFT()^b
+ Counts a particular character at the beginning of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCOUNTLEFT(<cString>,[<cCharacter|nCharacter>])
+     ^b   --> nNumber
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string in which the
+     <cCharacter|nCharacter> character is counted.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character at the beginning
+     of the <cString> that is counted.  The default value is a space,
+     CHR(32).
+
+ ^bReturns^b
+
+     COUNTLEFT() returns the number of <cCharacter|nCharacter> characters
+     that appear in an uninterrupted sequence at the beginning of <cString>.
+
+ ^bDescription^b
+
+     While REMLEFT() removes leading characters from the <cString>,
+     COUNTLEFT() only determines the number of leading <cCharacter|
+     nCharacter> characters appearing in an uninterrupted sequence at the
+     beginning of the <cString>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Count the blanks:
+
+        ? COUNTLEFT("   123")               // Result: 3
+
+     ^b^CFE^b  Count the "." characters:
+
+        ? COUNTLEFT("..4.123", ".")         // Result: 2
+
+     ^b^CFE^b  In this example, there is nothing to count:
+
+        ? COUNTLEFT("123456")               // Result: 0
+
+!seealso: "COUNTRIGHT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COUNTRIGHT() Counts a particular character at the end of a string
+'------------------------------------------------------------------------------
+ ^bCOUNTRIGHT()^b
+ Counts a particular character at the end of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCOUNTRIGHT(<cString>,[<cCharacter|nCharacter>]) --> nNumber
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string in which the
+     <cCharacter|nCharacter> character is counted.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character at the end of the
+     <cString> that is counted.  The default value is a space, CHR(32).
+
+ ^bReturns^b
+
+     COUNTRIGHT() returns the number of <cCharacter|nCharacter> characters
+     that appear in an uninterrupted sequence at the end of the <cString>.
+
+ ^bDescription^b
+
+     While REMRIGHT() removes trailing characters from the <cString>,
+     COUNTRIGHT() only determines the number of trailing <cCharacter|
+     nCharacter> characters appearing in an uninterrupted sequence at the end
+     of the <cString>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Count the blanks:
+
+        ? COUNTRIGHT("abc   ")            // Result: 3
+
+     ^b^CFE^b  Count the "." characters:
+
+        ? COUNTRIGHT("abc.d..", ".")      // Result: 2
+
+     ^b^CFE^b  In this example, there are no spaces to count:
+
+        ? COUNTRIGHT("123456")             // Result: 0
+
+!seealso: "COUNTLEFT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CRYPT()      Encrypts and decrypts a string
+'------------------------------------------------------------------------------
+ ^bCRYPT()^b
+ Encrypts and decrypts a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCRYPT(<cString>,<cKeystring>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is that is encrypted.
+
+     ^b<cKeystring>^b  Designates the password with which the string is
+     encrypted.
+
+ ^bReturns^b
+
+     CRYPT() returns the encrypted string.
+
+ ^bDescription^b
+
+     In contrast to a simple lock using CHARXOR(), this function has a random
+     number generator that uses a "random seed" algorithm.  This makes the
+     lock even more secure, at least as long as this additional algorithm is
+     not known.  Of course, this additional security costs some computer
+     time.
+
+     Encrypted character strings can be decrypted with the same password.
+     With multiple encryptions, the decryption must occur in reverse order.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Passwords should be as long as possible -- a minimum of six
+        characters, preferably more.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows a simple encryption:
+
+        cVar:= CRYPT("CLIPPER", "CA")
+
+     ^b^CFE^b  This example shows the decryption:
+
+        ? CRYPT(cVar, "CA")         // "CLIPPER"
+
+!seealso: "CHARXOR()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETATMUPA() Determines setting of the multi-pass mode for ATXXX() functions
+'------------------------------------------------------------------------------
+ ^bCSETATMUPA()^b
+ Determines the setting of the multi-pass mode for ATXXX() functions
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCSETATMUPA(<lNewMode>) --> lOldMode
+
+ ^bArgument^b
+
+     ^b<lNewMode>^b  Designates the setting for the multi-pass switch for all
+     AT functions.  The default value (.F.) sets the multi-pass switch to off
+
+ ^bReturns^b
+
+     If <lNewMode> is not specified, the current setting is returned.  If
+     <lNewMode> is specified, CSETATMUPA() returns the previous setting.
+
+ ^bDescription^b
+
+     CSETATMUPA() sets a switch, internal to CA-Clipper Tools, that affects
+     the operation of several other CA-Clipper Tools functions.  These
+     functions permit targeted, extremely flexible substring manipulation.
+     The affected functions are:
+
+           ATNUM()      AFTERATNUM()    BEFORATNUM()
+
+           ATREPL()     NUMAT()         ATADJUST()
+
+           WORDTOCHAR() WORDREPL()
+
+     The CSETATMUPA() function sets the multi-pass mode on or off for these
+     functions.
+
+ ^bNote^b
+
+     ^b^CFE^b  The default setting for CSETATMUPA() is .F., indicating that
+        the multi-pass mode is off.
+
+ ^bExample^b
+
+     Switch the multi-pass mode on and save the previous setting:
+
+     lOldMupa  :=  CSETATMUPA(.T.)
+
+!seealso: "ATNUM()" "AFTERATNUM()" "BEFORATNUM()" "ATREPL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETREF()    Determines whether reference sensitive functions return a value
+'------------------------------------------------------------------------------
+ ^bCSETREF()^b
+ Determines whether or not reference sensitive functions return a value
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bCSETREF([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates whether the return value is suppressed for
+     specified functions.  When this parameter is .T., it suppresses the
+     return value of the functions listed below.  When the parameter is .F.
+     (default value), these functions return a value.
+
+ ^bReturns^b
+
+     If no parameter is specified, the function returns the current setting.
+     If a parameter is specified, the function returns the previous setting.
+
+ ^bDescription^b
+
+     A series of CA-Clipper Tools functions enable you to pass parameters by
+     reference.  After executing the function, the passed parameter already
+     contains the result.  However, each of these functions also returns this
+     result as a value.  A copy of the passed string exists for a short time
+     in working memory, but it is invisible to you.  In the worst possible
+     case, two adjoining memory blocks would require up to 64 kB.
+
+     This behavior can be influenced by implementing CSETREF(.T.).  Then the
+     group of affected string functions no longer return a value, which can
+     save you up to 64k of memory with large strings.
+
+           ^bFunctions affected by CSETREF():^b
+
+           ADDASCII()   BLANK()         CHARADD()
+
+           CHARAND()    CHARMIRR()      CHARNOT()
+
+           CHAROR()     CHARRELREP()    CHARREPL()
+
+           CHARSORT()   CHARSWAP()      CHARXOR()
+
+           CRYPT()      JUSTLEFT()      JUSTRIGHT()
+
+           POSCHAR()    POSREPL()       RANGEREPL()
+
+           REPLALL()    REPLLEFT()      REPLRIGHT()
+
+           TOKENLOWER() TOKENUPPER()    WORDREPL()
+
+           WORDSWAP()
+
+ ^bNote^b
+
+     ^b^CFE^b  If, in spite of having CSETREF(.T.), you need one of the
+        previously listed functions to return a value, then the target
+        variable contains .F. instead of the anticipated string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Here is how CSETREF() is set to .F.:
+
+        CSETREF(.F.)
+        cStr1  :=  "HAGBDCFE"
+        cStr2  :=  CHARSORT(@cStr1)
+        ? cStr1, cStr2        // "ABCDEFGH" - cStr1,cStr2 are identical
+
+     ^b^CFE^b  Here is how CSETREF() is set to .T.:
+
+        CSETREF(.T.)
+
+        cStr1  :=  "HAGBDCFE"
+        cStr2  :=  CHARSORT(@cStr1)
+        ? cStr1               // "ABCDEFGH" - Sort cStr1
+        ? cStr2               // .F.
+
+     ^b^CFE^b  Determine when memory will be needed:
+
+        cStr1  :=  SPACE(32000)       // Create large string
+
+        CSETREF(.F.)
+        CHARSORT(@cStr1)              // Additional 32000 bytes
+
+        CSETREF(.T.)
+        CHARSORT(@cStr1)              // Needs no additional memory
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EXPAND()     Expands a string by inserting characters
+'------------------------------------------------------------------------------
+ ^bEXPAND()^b
+ Expands a string by inserting characters
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bEXPAND(<cString>,[<nNumber>],[<cCharacter|    nCharacter>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<nNumber>^b  Designates the number of the <cCharacter|nCharacter>
+     characters that are inserted between each character in the <cString>.
+     The default value is one character.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character that is inserted
+     between each character in <cString>.  The default value is a space,
+     CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     EXPAND() can be used to justify text output, although the text is stored
+     normally.  This saves memory capacity with text constants or in
+     databases.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Expansion only takes place when the <cString> contains at
+        least two characters.
+
+     ^b^CFE^b  To fill out a character string at the ends, use the PADLEFT()
+        and PADRIGHT() functions.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Use the default value and expand with one space:
+
+        ? EXPAND("123456")               // "1 2 3 4 5 6"
+
+     ^b^CFE^b  Expand with two spaces:
+
+        ? EXPAND("123456", 2)            // "1  2  3  4  5  6"
+
+     ^b^CFE^b  Expand with a ".":
+
+        ? EXPAND("123456", ".")          // "1.2.3.4.5.6"
+
+     ^b^CFE^b  Expand with two "."s:
+
+        ? EXPAND("123456", 2, ".")       // "1..2..3..4..5..6"
+
+!seealso: "CHARSPREAD()" "PADLEFT()" "PADRIGHT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: JUSTLEFT()   Moves characters from the beginning to the end of a string
+'------------------------------------------------------------------------------
+ ^bJUSTLEFT()^b
+ Moves characters from the beginning to the end of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bJUSTLEFT(<cString>,[<cCharacter|nCharacter>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the string that is processed.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character that is moved from
+     the beginning of the <cString> to the end.  The default value is a
+     space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     JUSTLEFT() moves the characters specified in <cCharacter|nCharacter>
+     from the beginning of a character string to the end.  Then the remaining
+     text in the character string is left justified, without affecting the
+     length.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If the <cCharacter|nCharacter> parameter is not specified,
+        spaces are automatically moved.
+
+     ^b^CFE^b  The return value for this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Move the blanks:
+
+        ? JUSTLEFT("   123")              // "123   "
+
+     ^b^CFE^b  Move the "." character:
+
+        ? JUSTLEFT("..123"," ".)          // "123.."
+
+!seealso: "JUSTRIGHT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: JUSTRIGHT()  Moves characters from the end of a string to the beginning
+'------------------------------------------------------------------------------
+ ^bJUSTRIGHT()^b
+ Moves characters from the end of a string to the beginning
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bJUSTRIGHT(<cString>,[<cCharacter|nCharacter>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@] Designates the string that is processed.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character that is moved from
+     the end of the <cString> to the beginning.  The default value is a
+     space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     JUSTRIGHT() moves the characters specified in <cCharacter| nCharacter>
+     from the end of a character string to the beginning.  Then the remaining
+     text in the character string is right justified, without affecting the
+     length.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If the <cCharacter|nCharacter> parameter is not specified,
+        spaces are automatically moved.
+
+     ^b^CFE^b  The return value for this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Move the blanks:
+
+        ? JUSTRIGHT("123   ")           // "   123"
+
+     ^b^CFE^b  Move the "." character:
+
+        ? JUSTRIGHT("123..", ".")       // "..123 "
+
+!seealso: "JUSTLEFT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LIKE()       Compares character strings using wildcard characters
+'------------------------------------------------------------------------------
+ ^bLIKE()^b
+ Compares character strings using wildcard characters
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bLIKE(<cString1>,<cString2>) --> lEqual
+
+ ^bArguments^b
+
+     ^b<cString1>^b  Designates the wildcard string for comparison.  All
+     wildcards must be in this character string.
+
+     ^b<cString2>^b  Designates the string to compare to <cString1>.
+
+ ^bReturns^b
+
+     LIKE() returns .T. when, after taking wildcards into account, both
+     character strings are equal.
+
+ ^bDescription^b
+
+     This function allows you to compare two character strings with one
+     another, where the first can contain wildcard characters.  This is
+     similar to the way wildcard characters are used in conjunction with DOS
+     commands but not identical.  Any single character matches a "?" in the
+     first string (see examples).  The "*" within <cString1> can be placed
+     anywhere and matches multiple characters.  You can also use multiple
+     "*".
+
+ ^bNote^b
+
+     ^b^CFE^b  You can also use wildcard characters in conjunction with an
+        array of other string functions by using the SETATLIKE() switch, but
+        only for the "?".
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows differences from DOS:
+
+        Dir XYZ?.DBF                     // shows XYZ.DBF and XYZ1.DBF
+
+        ? LIKE("XYZ?", "XYZ")            // .F.
+        ? LIKE("XYZ?", "XYZ1")           // .T.
+
+     ^b^CFE^b  This example shows other combinations:
+
+        ? LIKE("*OG.*", "PROG.PRG")      // .T.
+        ? LIKE("*OG.*", "LOG.PRG")       // .T.
+        ? LIKE("*R*T*", "PROTO")         // .T.
+        ? LIKE("*R*T*?", "PROTO")        // .F.
+        ? LIKE("*R*T*?", "PROTO2")       // .T.
+
+     ^b^CFE^b  Use wildcards in the first parameter only:
+
+        ? LIKE("*PER", "CLIPPER")        // .T.
+        ? LIKE("CLIPPER", "*PER")        // .F.
+
+!seealso: "SETATLIKE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LTOC()       Converts a logical value into a character
+'------------------------------------------------------------------------------
+ ^bLTOC()^b
+ Converts a logical value into a character
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bLTOC([<lValue>]) --> cCharacter
+
+ ^bArgument^b
+
+     ^b<lValue>^b  Designates the logical value that is converted. The
+     default value is .F..
+
+ ^bReturns^b
+
+     The character returned corresponds to the logical value specified in the
+     parameter.
+
+ ^bDescription^b
+
+     In contrast to the LTON() function, which converts a logical value into
+     a number, LTOC() returns a value for the type character string.  This
+     can be particularly helpful with combined index keys.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Without parameters, .F. is assumed:
+
+        ? LTOC()               // "F"
+
+     ^b^CFE^b  Return a letter that corresponds to the specified logical
+        value:
+
+        ? LTOC(.F.)            // "F"
+
+        ? LTOC(.T.)            // "T"
+
+     ^b^CFE^b  Other functions can return the logical value:
+
+        ? LTOC(DELETED())      // "T" or "F"
+
+!seealso: tool_006.ngo:"LTON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAXLINE()    Finds the longest line within a string
+'------------------------------------------------------------------------------
+ ^bMAXLINE()^b
+ Finds the longest line within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bMAXLINE(<cString>) --> nLength
+
+ ^bArgument^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+ ^bReturns^b
+
+     The function returns the maximum line length necessary to display the
+     <cString> text without automatic line breaks.
+
+ ^bDescription^b
+
+     MAXLINE() looks for the longest line within a character string.  This
+     allows you to determine the required width for a window to display text
+     (MEMO fields).  In this way the text can be displayed without additional
+     line breaks.
+
+ ^bNote^b
+
+     ^b^CFE^b  With the exception of the carriage return and the line feed,
+        this function treats all characters as printable with a width of 1.
+        If the <cString> text contains tabs, then you must first use the
+        TABEXPAND() function to expand the tabs to spaces.
+
+ ^bExample^b
+
+     A function, based on the maximum line length, automatically performs a
+     suitable call of MEMOEDIT():
+
+     FUNCTION SHOWMEMO(cMemo)
+
+     LOCAL cMessage, nHeight, nWidth
+
+        nHeight   :=  MIN(NUMLINE(cMemo), MAXROW() -1)
+        nWidth    :=  MIN(MAXLINE(cMemo), MAXCOL() -1)
+
+        IF nWidth = 0
+           cMessage  :=  "The memo field is empty"
+        ELSE
+           cMessage  :=  ""
+           @ 0, 0 TO nHeight +1, nWidth +1 DOUBLE
+           MEMOEDIT(cMemo, 1, 1, nHeight, nWidth, .F.)
+        ENDIF
+        RETURN(cMessage)
+
+!seealso: "TABEXPAND()" "NUMLINE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMAT()      Counts the number of occurrences of a sequence within a string
+'------------------------------------------------------------------------------
+ ^bNUMAT()^b
+ Counts the number of occurrences of a sequence within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bNUMAT(<cSearchFor>,<cString>,[<nIgnore>]) --> nNumber
+
+ ^bArguments^b
+
+     ^b<cSearchFor>^b  Designates the search string.
+
+     ^b<cString>^b  Designates the string to search.
+
+     ^b<nIgnore>^b  Designates the number of characters that are excluded
+     from the search.  The default value ignores none.
+
+ ^bReturns^b
+
+     The function returns a value that specifies how frequently the
+     <cSearchFor> sequence was found in the <cString>.
+
+ ^bDescription^b
+
+     NUMAT() determines how often a particular <cSearchFor> appears within
+     <cString>.  When you use <nIgnore> you can lock out a number of
+     characters at the beginning of the <cString> and keep them out of the
+     search.
+
+     The setting for CSETATMUPA() impacts your results.  The character string
+     is searched from the left for each occurrence of the <cSearchFor>
+     string.  If CSETATMUPA() is .F., then the search continues after the
+     last character of the found sequence. If CSETATMUPA() is .T., then the
+     search continues after the first character of the found sequence.
+
+ ^bNote^b
+
+     ^b^CFE^b  By implementing SETATLIKE(), wildcard characters can be used
+        within the search expression.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Count from the first position:
+
+        ? NUMAT("ab", "abcdeabc")            // Result: 2
+
+     ^b^CFE^b  Count from the second position.  <nIgnore> specifies that one
+        space is to be skipped:
+
+        ? NUMAT("ab", "abcdeabc", 1)         // Result: 1
+
+     ^b^CFE^b  This example shows the impact of CSETATMUPA() when counting
+        the string "aa" within the <cString> string:
+
+        CSETATMUPA(.F.)                      // Off
+        ? NUMAT("aa", "aaaab")               // Result: 2
+
+        CSETATMUPA(.T.)                      // On
+        ? NUMAT("aa", "aaaab")               // Result: 3
+
+     ^b^CFE^b  Examples for the use of SETATLIKE() can be found under the
+        corresponding function description.
+
+!seealso: "CSETATMUPA()" "SETATLIKE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMLINE()    Determines the number of lines required for string output
+'------------------------------------------------------------------------------
+ ^bNUMLINE()^b
+ Determines the number of lines required for string output
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bNUMLINE(<cString>,[<nLineLength>]) --> nNumber
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string that is processed.
+
+     ^b<nLineLength>^b  Designates the length of an output line.  The default
+     value is 80 characters.
+
+ ^bReturns^b
+
+     NUMLINE() returns the number of lines required for text output.
+
+ ^bDescription^b
+
+     NUMLINE() can determine the number of lines that are required to output
+     a MEMO field.  The return value relates to a line length that is
+     determined by <nLineLength>.
+
+ ^bNote^b
+
+     ^b^CFE^b  With the exception of the carriage return and the line feed,
+        this function treats all characters as printable with a width of 1.
+        If the <cString> text contains tabs, then you must first use the
+        TABEXPAND() function to expand the tabs to spaces.
+
+ ^bExamples^b
+
+     ^b^CFE^b  A null string occupies one line:
+
+        ? NUMLINE("")                                       // 1
+
+     ^b^CFE^b  A string one character longer also occupies one line:
+
+        ? NUMLINE("-")                                      // 1
+
+     ^b^CFE^b  80 characters, at a line width of 80 characters (default
+        value), occupy two lines:
+
+        ? NUMLINE(REPLICATE("-", 80))                       // 2
+
+     ^b^CFE^b  100 characters, at a line width of 30 characters, occupy 4
+        lines:
+
+        ? NUMLINE(REPLICATE("-", 100), 30)                  // 4
+
+     ^b^CFE^b  A line feed is also handled correctly -- an extra line is
+        required:
+
+        ? NUMLINE("-", +crlf)                               // 2
+        ? NUMLINE(REPLICATE("-", 100) +crlf, 30)            // 5
+
+!seealso: "TABEXPAND()" "MAXLINE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMTOKEN()   Determines the number of tokens in a string
+'------------------------------------------------------------------------------
+ ^bNUMTOKEN()^b
+ Determines the number of tokens in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bNUMTOKEN(<cString>,[<cDelimiter>],[<nSkipWidth>])
+     ^b   --> nNumber
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is passed.
+
+     ^b<cDelimiter>^b  Designates the delimiter list used by the passer.
+
+     ^b<nSkipWidth>^b  Designates after what number of delimiter characters
+     or sequences to count a token.  This is helpful for counting empty
+     tokens.  The default value indicates that empty tokens are not taken
+     into account.
+
+ ^bReturns^b
+
+     The number of tokens contained in the <cString> is returned.
+
+ ^bDescription^b
+
+     Use NUMTOKEN() to determine how many words (or tokens) are contained in
+     the character string.  The function uses the following list of
+     delimiters as a standard:
+
+     CHR 32, 0, 9, 10, 13, 26, 32, 138, 141
+
+     and the characters ,.;:!?/\<<>>()^^#&%+-*
+
+     The list can be replaced by your own list of delimiters, <cDelimiter>.
+     Here are some examples of useful delimiters:
+
+     ^bTable 4-3: Recommended Delimiter Sequences^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bDescription         <cDelimiter>^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Pages               CHR(12)(Form Feed)
+     Sentences           ".!?"
+     File Names          ":\."
+     Numerical strings   ",."
+     Date strings        "/."
+     Time strings        ":."
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The skip value designates the number of characters after which a token
+     is counted again.  This also allows empty tokens, like blanks within a
+     string, to be counted.
+
+ ^bExamples^b
+
+     ^b^CFE^b  A character string is searched using the standard delimiter
+        list:
+
+        ? NUMTOKEN("Good Morning!")      // Result: 2
+
+     ^b^CFE^b  Your own list of delimiters can be specified for particular
+        reasons.  Since the delimiter list for the following example only
+        contains the characters ".!?", the result is 3.
+
+        ? NUMTOKEN("Yes!  That's it. Maybe not?", ".!?")
+
+     ^b^CFE^b  This example shows how to count empty tokens.  Parameters
+        separated by commas are counted, but some of the parameters are
+        skipped.  A token is counted after at least one delimiter (comma):
+
+        String  :=  "one,two,,four"
+        ? NUMTOKEN(String, ", ", 1)      // Result: 4
+
+!seealso: "TOKEN()" "ATTOKEN()" "TOKENUPPER()" "TOKENLOWER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PADLEFT()    Pads a string on the left to a particular length
+'------------------------------------------------------------------------------
+ ^bPADLEFT()^b
+ Pads a string on the left to a particular length
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPADLEFT(<cString>,<nLength>,[<cCharacter|
+     ^b   <nCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<nLength>^b  Designates the new length for <cString>.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character with which the
+     beginning of the <cString> string is filled.  The default value is a
+     space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     PADLEFT() allows you to pad the beginning of character strings with
+     characters, in accordance with a length specification.  Spaces or any
+     other characters you choose can be used.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The function works like the CA-Clipper RIGHT() function when
+        <nLength> is shorter than the length of <cString>.  If <nLength> is
+        negative, PADLEFT() returns a null string.
+
+     ^b^CFE^b  When the <cCharacter|nCharacter> parameter is not specified,
+        spaces are automatically used for padding.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The function works like RIGHT():
+
+        ? PADLEFT("123456", 4)              // "3456"
+
+     ^b^CFE^b  Pad the left with spaces:
+
+        ? PADLEFT("123456", 8)              // "  123456"
+
+     ^b^CFE^b  Pad the left with the "." character:
+
+        ? PADLEFT("123456", 8, ".")         // "..123456"
+
+!seealso: "PADRIGHT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PADRIGHT()   Pads a string on the right to a particular length
+'------------------------------------------------------------------------------
+ ^bPADRIGHT()^b
+ Pads a string on the right to a particular length
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPADRIGHT(<cString>,<nLength>,[<cCharacter|
+     ^b   nCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<nLength>^b  Designates the selected new length for <cString>.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character with which the
+     beginning of the <cString> string is filled.  The default value is a
+     space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     PADRIGHT() allows you to pad the end of a character string with
+     characters, in accordance with a length specification.  Spaces or any
+     other characters that you choose can be used.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The function works like the CA-Clipper LEFT() function when
+        <nLength> is shorter than the length of <cString>.  If <nLength> is
+        negative, PADRIGHT() returns a null string.
+
+     ^b^CFE^b  When the <cCharacter|nCharacter> parameter is not specified,
+        spaces are automatically used for padding.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The function works like LEFT():
+
+        ? PADRIGHT("123456", 4)              // "1234"
+
+     ^b^CFE^b  Pad the right with spaces:
+
+        ? PADRIGHT("123456", 8)              // "123456  "
+
+     ^b^CFE^b  Pad the right with the "." character:
+
+        ? PADRIGHT("123456", 8, ".")         // "123456.."
+
+!seealso: "PADLEFT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSALPHA()   Determines position of first alphabetic character in a string
+'------------------------------------------------------------------------------
+ ^bPOSALPHA()^b
+ Determines the position of the first alphabetic character in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSALPHA(<cString>,[<lMode>],[<nIgnore>])
+     ^b   --> nPosition
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is searched.
+
+     ^b<lMode>^b  Designates how the function searches for the first
+     alphabetic character in a string.  The default value (.F.) searches for
+     the first alphabetic character.
+
+     ^b<nIgnore>^b  Designates the number of characters at the beginning of
+     the character string that are excluded from the search.  The default
+     value excludes none (0).
+
+ ^bReturns^b
+
+     The value returned is the position of the first alphabetic character in
+     <cString>.  If no alphabetic character is located, the function returns
+     0.
+
+ ^bDescription^b
+
+     Starting from the left, POSALPHA() searches for the first alphabetic
+     character in <cString> that corresponds to the first character that can
+     be changed by the CA-Clipper LOWER() or UPPER() functions.  If <lMode>
+     is .T., then the function searches for the first non-alphabetic
+     character.  The <nIgnore> parameter can exclude a specific number of
+     characters at the beginning of the <cString> from the search.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Notice that characters located when <lMode> is .T. are always
+        numbers or special characters, but are never alphabetic characters.
+
+     ^b^CFE^b  This function works in conjunction with the NATION module
+        because different languages use different characters to represent
+        their alphabets.
+
+ ^bExample^b
+
+     cString  :=  "UKLM123"
+     ? POSALPHA(cString)                 // Result: 1
+     ? POSALPHA(cString, .T.)            // Result: 5
+     ? POSALPHA(cString, .F., 2)         // Result: 3
+
+!seealso: "POSLOWER()" "POSUPPER()" "POSRANGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSCHAR()    Replaces individual character at particular position in string
+'------------------------------------------------------------------------------
+ ^bPOSCHAR()^b
+ Replaces an individual character at a particular position within a character
+ string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSCHAR(<cString>,<cCharacter|nCharacter>,
+     ^b   [<nPosition>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the character string within which the
+     individual character <cCharacter|nCharacter> is substituted.
+
+     ^b<cCharacter|nCharacter>^b  Designates an individual character or a
+     numeric ASCII value from 0 to 255.
+
+     ^b<nPosition>^b  Designates the position at which the character is
+     substituted.  The default value is the last position in <cString>.
+
+ ^bReturns^b
+
+     The string returned is the <cString> with a <cCharacter|nCharacter>
+     character in the selected position.
+
+ ^bDescription^b
+
+     POSCHAR() allows you to replace an individual character within a string
+     without having to split the string.  Since this character is only
+     substituted at the designated position within <cString>, the string that
+     is modified can be passed by reference.
+
+ ^bNote^b
+
+     ^b^CFE^b  The value returned by this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Substitute a character at position 3:
+
+        ? POSCHAR("ABCDEF", "X", 3)   // "ABXDEF"
+
+     ^b^CFE^b  Substitute a character in the last position:
+
+        ? POSCHAR("ABCDEF", "X")      // "ABCDEX"
+
+     ^b^CFE^b  Pass the string by reference:
+
+        CSETREF(.T.)                  // Suppress return value
+        cVar  := "ABCDEF"
+        POSCHAR(cVar, "X")
+        ? cVar                        // "ABCDEX"
+
+!seealso: "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSDEL()     Deletes characters at a particular position in a string
+'------------------------------------------------------------------------------
+ ^bPOSDEL()^b
+ Deletes characters at a particular position in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSDEL(<cString>,[<nStartPos>],[<nNumber>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string from which the characters
+     are deleted.
+
+     ^b<nStartPos>^b  Designates from which position the deletion begins.
+
+     ^b<nNumber>^b  Designates the number of characters to delete.
+
+ ^bReturns^b
+
+     The modified string is returned.
+
+ ^bDescription^b
+
+     This function permits the removal of <nNumber> of characters from
+     <cString>, beginning from <nStartPos>.
+
+ ^bNote^b
+
+     ^b^CFE^b  <nStartPos> is optional.  If this parameter is not specified,
+        then POSDEL() begins at the end of the <cString> and deletes the
+        specified number (<nNumber>) of characters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete two characters from a string:
+
+        ? POSDEL("Parameter", 3, 2)         // "Pameter"
+
+     ^b^CFE^b  Delete the last two characters:
+
+        ? POSDEL("Parameter", , 2)          // "Paramet"
+
+!seealso: "POSINS()" "POSRANGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSDIFF()    Finds the first position from which two strings differ
+'------------------------------------------------------------------------------
+ ^bPOSDIFF()^b
+ Finds the first position from which two strings differ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSDIFF(<cString1>,<cString2>,[<nIgnore>])
+     ^b   --> nPosition
+
+ ^bArguments^b
+
+     ^b<cString1>^b and ^b<cString2>^b  Designate the two character strings
+     that are compared.
+
+     ^b<nIgnore>^b  Designates how many characters at the beginning of the
+     character strings are excluded from the search.  The default value
+     excludes none (0).
+
+ ^bReturns^b
+
+     POSDIFF() returns the first position where <cString1> and <cString2>
+     differ.  If both character strings are equal, then the function returns
+     0.
+
+ ^bDescription^b
+
+     POSDIFF() compares two strings and determines from which position the
+     first difference occurs.  The <nIgnore> parameter allows you to exclude
+     a particular number of characters from the beginning of both character
+     strings from the search.
+
+ ^bNote^b
+
+     ^b^CFE^b  Character strings of different lengths can be compared with
+        each other (see examples).
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example compares two strings of the same length:
+
+        cString1  :=  "X23AB$/A"
+        cString2  :=  "X23A8$/A"
+        ? POSDIFF(cString1, cString2)           // Result: 5
+
+     ^b^CFE^b  Two strings of different lengths can also be compared:
+
+        ? POSDIFF("AB", "ABC")                  // Result: 3
+
+!seealso: "POSEQUAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSEQUAL()   Finds the first position at which two strings are the same
+'------------------------------------------------------------------------------
+ ^bPOSEQUAL()^b
+ Finds the first position at which two strings are the same
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSEQUAL(<cString1>,<cString2>,[<nCompare>],
+     ^b   [<nIgnore>]) --> nPosition
+
+ ^bArguments^b
+
+     ^b<cString1>^b and ^b<cString2>^b  Designate the two character strings
+     that are compared.
+
+     ^b<nCompare>^b  Designates the number of characters that must be the
+     same.  The default value is the length of the shorter string.
+
+     ^b<nIgnore>^b  Designates the number of characters that are disregarded
+     at the beginning of the search.  The default value is none.
+
+ ^bReturns^b
+
+     POSEQUAL() returns the position from which the two character strings are
+     the same for <nCompare> characters.  If no corresponding agreement is
+     found, the function returns 0.
+
+ ^bDescription^b
+
+     POSEQUAL() allows you to determine at which point two strings agree.
+     The length of this agreement is represented by <nCompare>.  If not
+     specified, <nCompare> defaults to the length of the shorter string.
+
+     Additionally, the <nIgnore> parameter lets you specify a particular
+     number of characters that are excluded from the start of the strings
+     during the comparison.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, there is no agreement to the end of the
+        string:
+
+        cString1   :=  "ABCDEFGHI"
+        cString2   :=  "XYZDEKLMN"
+        ? POSEQUAL(cString1, cString2)                  // Result: 0
+
+     ^b^CFE^b  This example shows the agreement of at least two characters:
+
+        ? POSEQUAL(cString1, cString2, 2)               // Result: 4
+
+     ^b^CFE^b  This example shows a single character agreement and excludes
+        the first four characters:
+
+        ? POSEQUAL(cString1, cString2, 1, 4)            // Result: 5
+
+!seealso: "POSDIFF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSINS()     Inserts characters at a particular position within a string
+'------------------------------------------------------------------------------
+ ^bPOSINS()^b
+ Inserts characters at a particular position within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSINS(<cString>,<cInsertstring>,[<nPosition>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the character string into which characters are
+     inserted.
+
+     ^b<cInsertstring>^b  Designates the new characters that are inserted
+     into <cString>.
+
+     ^b<nPosition>^b  Designates the position where the new characters are
+     inserted within <cString>.  The default value inserts the characters in
+     front of the last character.
+
+ ^bReturns^b
+
+     POSINS() returns the string with the inserted characters.
+
+ ^bDescription^b
+
+     You can use POSINS() to insert characters into an existing character
+     string.  The <cInsertstring> characters are inserted into the <cString>
+     at the location specified by <nPosition>.
+
+ ^bNote^b
+
+     ^b^CFE^b  The resulting character string is longer than the original, so
+        this function cannot be called by reference.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Insert "123" at position 2:
+
+        ? POSINS("abcdefgh", "123", 2)   // "a123bcdefgh"
+
+     ^b^CFE^b  Insert "123" at position 8:
+
+        ? POSINS("abcdefgh", "123", 8)   // "abcdefg123h"
+
+     ^b^CFE^b  Give an erroneous position:
+
+        ? POSINS("abcdefgh", "123", 10)  // "abcdefgh"
+
+!seealso: "POSDEL()" "POSREPL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSLOWER()   Finds the position of the first lower case alphabetic character
+'------------------------------------------------------------------------------
+ ^bPOSLOWER()^b
+ Finds the position of the first lower case alphabetic character
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSLOWER(<cString>,[<lMode>],[<nIgnore>])
+     ^b   --> nPosition
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is searched.
+
+     ^b<lMode>^b  Designates how the function searches for the first lower
+     case alphabetic character.  The default value (.F.) searches for the
+     first alphabetic character that can be changed by the CA-Clipper
+     function UPPER().
+
+     ^b<nIgnore>^b  Designates the number of characters at the beginning of
+     the character string that are excluded from the search.  The default
+     value excludes none (0).
+
+ ^bReturns^b
+
+     The value returned corresponds to the position of the character located.
+     When no matching character is found, the function returns 0.
+
+ ^bDescription^b
+
+     Starting from the beginning of the string, POSLOWER() searches for the
+     first lower case alphabetic character in <cString>.  If <lMode> is .T.,
+     the function searches for the first non-alphabetic character that would
+     not be changed by UPPER().  The <nIgnore> parameter excludes a specific
+     number of characters at the beginning of the <cString> from the search.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Characters located when the <lMode> parameter is designated as
+        .T. are not necessarily upper case, alphabetic characters.
+
+     ^b^CFE^b  The function works in conjunction with the NATION module
+        because different languages use different characters to represent
+        their alphabets.
+
+ ^bExample^b
+
+     cString  :=  "123ABCuabc"
+
+     ? POSLOWER(cString)                 // Result: 7
+     ? POSLOWER(cString, .T.)            // Result: 1
+     ? POSLOWER(cString, .F., 7)         // Result: 8
+
+!seealso: "POSALPHA()" "POSUPPER()" "POSRANGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSRANGE()   Determines position of first character in an ASCII code range
+'------------------------------------------------------------------------------
+ ^bPOSRANGE()^b
+ Determines the position of the first character within a given ASCII code
+ range
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSRANGE(<cCharacter1>,<cCharacter2>,<cString>,
+     ^b   [<lMode>],[<nIgnore>]) --> nPosition
+
+ ^bArguments^b
+
+     ^b<cCharacter1>^b and ^b<cCharacter2>^b  Designate the first and the
+     last character of the character range.
+
+     ^b<cString>^b  Designates the string within which to search for a
+     character in the <cCharacter1> to <cCharacter2> range.
+
+     ^b<lMode>^b  Designates if the return value is within the specified
+     range or outside of the range.  The default value (.F.) searches for the
+     first character within the range.
+
+     ^b<nIgnore>^b  Designates the number of characters at the beginning of
+     the character string that are excluded from the search.  The default
+     value excludes none (zero).
+
+ ^bReturns^b
+
+     The value returned corresponds to the position of the located character.
+     If no character is found, the function returns 0.
+
+ ^bDescription^b
+
+     Beginning from the left, POSRANGE() searches for the first character in
+     the range <cCharacter1> to <cCharacter2> within <cString>.  If <lMode>
+     is specified as .T., then the function searches for the first character
+     that is not in the specified range.  This way you could search for
+     control characters within a string by specifying <cCharacter1> = CHR(0)
+     and <cCharacter2> = CHR(31).
+
+     The <nIgnore> parameter gives you the ability to exclude a particular
+     number of characters at the beginning of the <cString> from the search.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Search for the first character in the character string cInput
+        that is not a control character:
+
+        cInput  :=  COM_READ(1)
+        ? POSRANGE(CHR(0), CHR(31), cInput, .T.)
+
+     ^b^CFE^b  Ignore the first 10 characters:
+
+        ? POSRANGE(CHR(0), CHR(31), cInput, .T., 10)
+
+!seealso: "POSALPHA()" "POSLOWER()" "POSUPPER()" "RANGEREPL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSREPL()    Replaces one or more characters from a certain position
+'------------------------------------------------------------------------------
+ ^bPOSREPL()^b
+ Replaces one or more characters from a certain position
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSREPL(<cString>,<cReplacementstring>,
+     ^b   [<nStartPos>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the character string within which the
+     particular characters are replaced.
+
+     ^b<cReplacementstring>^b  Designates a sequence of characters that,
+     starting at <nStartPos>, replace a portion of <cString>.
+
+     ^b<nStartPos>^b  Designates from which character within <cString> the
+     replacement starts.
+
+ ^bReturns^b
+
+     POSREPL() returns the modified string.
+
+ ^bDescription^b
+
+     When you use POSREPL(), you can replace a range of characters within
+     <cString> with another character string <cReplacementstring>.  The new
+     characters are exchanged beginning at <nStartPos>.
+
+ ^bNotes^b
+
+     ^b^CFE^b  When the <nStartPos> parameter is not specified, the
+        <cReplacementstring> overwrites the end of the string (see examples).
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Starting at position 3, replace three characters with "XXX":
+
+        ? POSREPL("ABCDEFG", "XXX", 3)         // "ABXXXFG"
+
+     ^b^CFE^b  Replace the last LEN(<cReplacementstring>) characters:
+
+        ? POSREPL("ABCDEFG", "XXX")            // "ABCDXXX"
+
+     ^b^CFE^b  The result can be longer than the character string passed.
+
+        ? POSREPL("ABCDEF", "123", 5)          // "ABCD123"
+        ? POSREPL("ABCDEF", "123", 6)          // "ABCDE123"
+
+!seealso: "POSINS()" "POSDEL()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: POSUPPER()   Finds the position of the first uppercase, alphabetic character
+'------------------------------------------------------------------------------
+ ^bPOSUPPER()^b
+ Finds the position of the first upper case, alphabetic character
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bPOSUPPER(<cString>,[<lMode>],[<nIgnore>])
+     ^b   --> nPosition
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is searched.
+
+     ^b<lMode>^b  Designates how the function searches for the first upper
+     case, alphabetic character.  The default value (.F.) searches for the
+     first alphabetic character that would be changed by the CA-Clipper
+     function LOWER().
+
+     ^b<nIgnore>^b  Designates the number of characters at the beginning of
+     the character string that are excluded from the search.  The default
+     value excludes none (0).
+
+ ^bReturns^b
+
+     The value returned corresponds to the position of the character located.
+     When no matching character is found, the function returns 0.
+
+ ^bDescription^b
+
+     Starting from the beginning of the string, POSUPPER() searches for the
+     first upper case, alphabetic character in the <cString> that corresponds
+     to the first character that would be changed by the CA-Clipper LOWER()
+     function.  If <lMode> is .T., the function searches for the first non-
+     alphabetic character that would not be changed by LOWER().  The
+     <nIgnore> parameter can exclude a specific number of characters at the
+     beginning of <cString>.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Characters located when the <lMode> parameter is .T. are not
+        necessarily lower case, alphabetic characters.
+
+     ^b^CFE^b  The function works in conjunction with the NATION module
+        because different languages use different characters to represent
+        their alphabets.
+
+ ^bExample^b
+
+     cString  :=  "123abcUABC"
+
+     ? POSUPPER(cString)                 // Result: 7
+     ? POSUPPER(cString, .T.)            // Result: 1
+     ? POSUPPER(cString, .F., 7)         // Result: 8
+
+!seealso: "POSALPHA()" "POSLOWER()" "POSRANGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RANGEREM()   Deletes characters that are within a specified ASCII code range
+'------------------------------------------------------------------------------
+ ^bRANGEREM()^b
+ Deletes characters that are within a specified ASCII code range
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bRANGEREM(<cCharacter1>,<cCharacter2>,<cString>)
+     ^b   --> cResultString
+
+ ^bArguments^b
+
+     ^b<cCharacter1>^b and ^b<cCharacter2>^b  Designate the first and the
+     last character of the character range.
+
+     ^b<cString>^b  Designates the character string that is edited.
+
+ ^bReturns^b
+
+     The function returns the modified character string.
+
+ ^bDescription^b
+
+     RANGEREM() allows you to delete all characters that are in a particular
+     ASCII range.  For example, you could delete all control characters in a
+     character string.
+
+     The designated range can run "back to front", meaning <cCharacter2> can
+     have a lower value than <cCharacter1>.  In such a case the range extends
+     from the larger value to 255 and also from 0 to the smaller value.
+
+ ^bNote^b
+
+     ^b^CFE^b  Since the length of the character string is changed, passing
+        by reference will not work here as it does with RANGEREPL().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete all control characters:
+
+        cString   :=  RANGEREM(0, 31, cString)
+
+     ^b^CFE^b  Delete all characters that are not upper case, alpha
+        characters:
+
+        cString   :=  RANGEREM(91, 64, cString)
+
+!seealso: "RANGEREPL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RANGEREPL()  Replaces characters within a specified ASCII code range
+'------------------------------------------------------------------------------
+ ^bRANGEREPL()^b
+ Replaces characters within a specified ASCII code range with a particular
+ character
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bRANGEREPL(<cCharacter1>,<cCharacter2>,<cString>,
+     ^b   <cReplaceCharacter>) --> cString
+
+ ^bArguments^b
+
+     ^b<cCharacter1>^b and ^b<cCharacter2>^b  Designate the first and the
+     last character of the character range.
+
+     ^b<cString>^b  [@]  Designates the string that is processed.
+
+     ^b<cReplaceCharacter>^b   Designates the single character that replaces
+     those characters in <cString> that are within the specified range.
+
+ ^bReturns^b
+
+     The processed character string is returned.
+
+ ^bDescription^b
+
+     All characters that are in a particular range can be replaced by a new
+     character.  For example, you could replace all control characters with
+     spaces.
+
+     The designated range can also run from "back to front", meaning that
+     <cCharacter2> can have a lower value than <cCharacter1>.  In such a case
+     the range extends from the larger value to 255 and from 0 to the smaller
+     value.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The length of <cString> remains unaffected by this function.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save room in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange all control characters in a character string for the
+        character ".":
+
+        cString  :=  "a" + CHR(5) + "b" + CHR(9)
+        ? RANGEREPL(CHR(0), CHR(31), cString, ".")   // "a.b."
+
+     ^b^CFE^b  A null string can be specified, instead of CHR(0).  The
+        following example exchanges all characters with a code < "A" for the
+        number "0".  Of course, the number "0" remains the number "0":
+
+        ? RANGEREPL("", CHR(65), "123400", "0")      // "000000"
+
+     ^b^CFE^b  All characters in the range "0" to "8" are exchanged for the
+        number "9":
+
+        ? RANGEREPL("0", "8", "0212 - 78 67 43", "9")
+                                                     // "9999 - 99 99 99"
+
+     ^b^CFE^b  With the exception of upper case letters, all characters are
+        exchanged for dashes.  The optimum call is in conjunction with
+        CSETREF():
+
+        CSETREF(.T.)
+        cString  :=  "A()&BC/?D"
+        RANGEREPL(91, 64, @cString, "-")             // "A--BC--D"
+
+!seealso: "POSREPL()" "CHARREPL()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REMALL()     Removes characters from the beginning and end of a string
+'------------------------------------------------------------------------------
+ ^bREMALL()^b
+ Removes particular characters from the beginning and end of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bREMALL(<cString>,[<cCharacter|nCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character that is removed
+     from the beginning and end of <cString>.  The default value is a space,
+     CHR(32).
+
+ ^bReturns^b
+
+     REMALL() returns the modified <cString>.
+
+ ^bDescription^b
+
+     REMALL() functions exactly like CA-Clipper's ALLTRIM(), with one
+     exception.  While the CA-Clipper function can only remove spaces,
+     REMALL() can remove any character you choose.  The character that is
+     removed can be specified with the <cCharacter|nCharacter> parameter.
+
+ ^bNote^b
+
+     ^b^CFE^b  When the <cCharacter|nCharacter> parameter is not specified,
+        saces are removed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove the spaces:
+
+        ? REMALL("  1  2  3  ")         // "1  2  3"
+
+     ^b^CFE^b  Remove the character "0":
+
+        ? REMALL("007007   ", "0")      // "7007   "
+
+!seealso: "REMLEFT()" "REMRIGHT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REMLEFT()    Removes particular characters from the beginning of a string
+'------------------------------------------------------------------------------
+ ^bREMLEFT()^b
+ Removes particular characters from the beginning of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bREMLEFT(<cString>,[<cCharacter|nCharacter>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character that is removed
+     from the beginning of the <cString>.  The default value is a space,
+     CHR(32).
+
+ ^bReturns^b
+
+     REMLEFT() returns the modified <cString>.
+
+ ^bDescription^b
+
+     REMLEFT() functions exactly like CA-Clipper's LTRIM(), with one
+     exception.  While the CA-Clipper function can only remove spaces,
+     REMLEFT() can remove any character you choose.  The character that is
+     removed can be specified with the <cCharacter|nCharacter> parameter.
+
+ ^bNote^b
+
+     ^b^CFE^b  When the <cCharacter|nCharacter> parameter is not specified,
+        spaces are removed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove the spaces:
+
+        ? REMLEFT("   123   ")            // "123   "
+
+     ^b^CFE^b  Remove the character ".":
+
+        ? REMLEFT("..123..", ".")         // "123.."
+
+!seealso: "REMALL()" "REMRIGHT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REMRIGHT()   Removes particular characters at the end of a string
+'------------------------------------------------------------------------------
+ ^bREMRIGHT()^b
+ Removes particular characters at the end of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bREMRIGHT(<cString>,[<cCharacter|nCharacter>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character that is removed
+     from the end of the <cString>.  The default value is a space, CHR(32).
+
+ ^bReturns^b
+
+     REMRIGHT() returns the modified <cString>.
+
+ ^bDescription^b
+
+     REMRIGHT() functions exactly like CA-Clipper's RTRIM(), with one
+     exception.  While the CA-Clipper function can only remove spaces,
+     REMRIGHT() can remove any character you choose.  The character that is
+     removed can be specified with the <cCharacter|nCharacter> parameter.
+
+ ^bNote^b
+
+     ^b^CFE^b  When the <cCharacter|nCharacter> parameter is not specified,
+        spaces are removed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove the spaces:
+
+        ? REMRIGHT("   abc   ")         // "   abc"
+
+     ^b^CFE^b  Remove the character ".":
+
+        ? REMRIGHT("..abc..", ".")      // "..abc"
+
+!seealso: "REMALL()" "REMLEFT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REPLALL()    Exchanges characters at the beginning and end of a string
+'------------------------------------------------------------------------------
+ ^bREPLALL()^b
+ Exchanges particular characters at the beginning and end of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bREPLALL(<cString>,<cReplacecharacter|
+     ^b   nReplacecharacter>,[<cSearchCharacter|
+     ^b   nSearchCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the string that is processed.
+
+     ^b<cReplacecharacter|nReplacecharacter>^b  Designates the character that
+     replaces the character in <cSearchCharacter|nSearchCharacter> at the
+     beginning and end of <cString>.
+
+     ^b<cSearchCharacter|nSearchCharacter>^b  Designates the character at the
+     beginning and end of <cString> that is replaced by <cReplacecharacter|
+     nReplacecharacter>.  The default value designates a space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     REPLALL() can be used to exchange all leading and trailing spaces in a
+     character string for any other character.  Notice that the first non-
+     replaceable character in either direction causes REPLALL() to stop
+     replacing characters on that side.
+
+ ^bNote^b
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Replace spaces with dashes.  Replace the spaces only on the
+        side where the character was found:
+
+        ? REPLALL("abcd  ", "-")           // "abcd--"
+
+     ^b^CFE^b  Replace zeros with spaces:
+
+        ? REPLALL("001234", " ", "0")      // "  1234"
+
+     ^b^CFE^b  Replace the blanks with dashes on both sides:
+
+        ? REPLALL("   d  ", "-")           // "---d--"
+
+     ^b^CFE^b  Replace only continuous sequences of characters at the
+        beginning and the end of the character string:
+
+        ? REPLALL(" d d  ", "-")           // "-d d--"
+
+!seealso: "REPLLEFT()" "REPLRIGHT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REPLLEFT()   Exchanges particular characters at the beginning of a string
+'------------------------------------------------------------------------------
+ ^bREPLLEFT()^b
+ Exchanges particular characters at the beginning of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bREPLLEFT(<cString>,<cReplacecharacter|
+     ^b   nReplacecharacter>,[<cSearchCharacter|
+     ^b   nSearchCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the string that is processed.
+
+     ^b<cReplacecharacter|nReplacecharacter>^b  Designates the character that
+     replaces the character in <cSearchCharacter|nSearchCharacter> at the
+     beginning of the <cString>.
+
+     ^b<cSearchCharacter|nSearchCharacter>^b  Designates the character at the
+     beginning of <cString> that is replaced by <cReplacecharacter|
+     nReplacecharacter>.  The default value is a space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     REPLLEFT() can be used to exchange all leading characters in a string
+     for any other selected character.
+
+ ^bNote^b
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Replace the leading spaces with zeros:
+
+        ? REPLLEFT("  1234", "0")              // "001234"
+
+     ^b^CFE^b  Replace the leading zeros with spaces:
+
+        ? REPLLEFT("001234", " ", "0")         // "  1234"
+
+     ^b^CFE^b  Replace only the leading spaces:
+
+        ? REPLLEFT("  1    ", "0")             // "001   "
+
+!seealso: "REPLALL()" "REPLRIGHT()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REPLRIGHT()  Exchanges particular characters at the end of a string
+'------------------------------------------------------------------------------
+ ^bREPLRIGHT()^b
+ Exchanges particular characters at the end of a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bREPLRIGHT(<cString>,<cReplacecharacter|
+     ^b   nReplacecharacter>[<cSearchCharacter|
+     ^b   nSearchCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the string that is processed.
+
+     ^b<cReplacecharacter|nReplacecharacter>^b  Designates the character that
+     replaces the character in <cSearchCharacter|nSearchCharacter> at the end
+     of the <cString>.
+
+     ^b<cSearchCharacter|nSearchCharacter>^b  Designates the character at the
+     end of <cString> that is replaced by <cReplacecharacter|
+     nReplacecharacter>.  The default value is a space, CHR(32).
+
+ ^bReturns^b
+
+     The processed <cString> is returned.
+
+ ^bDescription^b
+
+     REPLRIGHT() can be used to exchange all trailing characters in a string
+     for any character you choose.
+
+ ^bNote^b
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Replace the trailing spaces with dashes:
+
+        ? REPLRIGHT("abcd  ", "-")        // "abcd--"
+
+     ^b^CFE^b  Replace the trailing dashes with spaces:
+
+        ? REPLRIGHT("abcd--", " ", "-")   // "abcd  "
+
+     ^b^CFE^b  Replace only the trailing spaces:
+
+        ? REPLRIGHT("   1  ", "-")        // "   1--"
+
+!seealso: "REPLLEFT()" "REPLALL()" "CSETREF()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RESTTOKEN()  Recreates an incremental tokenizer environment
+'------------------------------------------------------------------------------
+ ^bRESTTOKEN()^b
+ Recreates an incremental tokenizer environment
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bRESTTOKEN(<cTokenEnvironment>) --> cEmptyString
+
+ ^bArgument^b
+
+     ^b<cTokenEnvironment>^b  Designates a character string returned by the
+     SAVETOKEN() function.
+
+ ^bReturns^b
+
+     RESTTOKEN() always returns an empty string.
+
+ ^bDescription^b
+
+     The internal environment for the incremental tokenizer can be restored
+     using RESTTOKEN().  RESTTOKEN() does the opposite of the SAVETOKEN()
+     function.
+
+ ^bNote^b
+
+     ^b^CFE^b  <nTokenEnvironment> must originate from the current program
+        run; for example, it cannot have been restored from a (.mem) file.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Here is an incremental tokenizer.  Text is broken into
+        individual lines, and each line is broken into words:
+
+        TOKENINIT(@cTextString, CHR(13) + CHR(10), 2)
+        cLine   :=  TOKENNEXT()
+
+        DO WHILE .NOT. TOKENEND()
+           cLine  :=  TOKENNEXT(cTextString)
+           WORD(cLine)
+        ENDDO
+
+     ^b^CFE^b  The function then breaks the lines into words:
+
+        FUNCTION WORD(cLine)
+
+           cOldEnv  := SAVETOKEN()
+           TOKENINIT(@cLine, " .,-:;")
+
+           DO WHILE .NOT. TOKENEND()
+              cWord  :=  TOKENNEXT(cLine)
+              ? cWord
+           ENDDO
+           RESTTOKEN(cOldEnv)
+           RETURN("")
+
+!seealso: "SAVETOKEN()" "TOKENINIT()" "TOKENNEXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVETOKEN()  Saves the incremental tokenizer environment to a variable
+'------------------------------------------------------------------------------
+ ^bSAVETOKEN()^b
+ Saves the incremental tokenizer environment to a variable
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bSAVETOKEN() --> cTokenEnvironment
+
+ ^bReturns^b
+
+     The character string returned contains the internal environment for the
+     incremental tokenizer.
+
+ ^bDescription^b
+
+     By saving and later restoring the internal tokenizer environment, an
+     interlocking implementation of the incremental tokenizer is made simple.
+     The complete, previously initialized string is saved, as are the
+     internal pointers and the corresponding file areas.  This string serves
+     as a return value for SAVETOKEN(), regardless of the later restoration
+     of the tokenizer environment using RESTTOKEN().
+
+ ^bNote^b
+
+     ^b^CFE^b  The returned value is only valid for the currently running
+        program because it is concerned with internal pointers.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Here is an incremental tokenizer.  Text is broken into
+        individual lines, and each line is broken into words:
+
+        TOKENINIT(@cTextString, CHR(13) + CHR(10), 2)
+
+        DO WHILE .NOT. TOKENEND()
+           cLine   :=  TOKENNEXT(cTextString)
+           WORD(cLine)
+        ENDDO
+
+     ^b^CFE^b  The function then breaks the lines into words:
+
+        FUNCTION WORD(cLine)
+              cOldEnv  := SAVETOKEN()
+              TOKENINIT(@cLine, " .,-:;")
+              cWord  := TOKENNEXT()
+
+              DO WHILE .NOT. TOKENEND()
+                 cWord := TOKENNEXT(cLine)
+                 ? cWord
+              ENDDO
+              RESTTOKEN(cOldEnv)
+
+              RETURN("")
+
+!seealso: "RESTTOKEN()" "TOKENINIT()" "TOKENNEXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETATLIKE()  Provides an additional search mode for all AT functions
+'------------------------------------------------------------------------------
+ ^bSETATLIKE()^b
+ Provides an additional search mode for all AT functions
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bSETATLIKE([<nNewMode>,[<cCharacter>]]) --> nOldMode
+
+ ^bArguments^b
+
+     ^b<nNewMode>^b  Designates which mode the AT functions and STRDIFF()
+     should use during searches.  At this time, the 0 and 1 modes are
+     permitted.  The default value is 0.
+
+     ^b<cCharacter>^b  Designates optional wildcard characters only.  The
+     default value is "?".
+
+     ()  When called without parameters, the function returns the current
+     mode.
+
+ ^bReturns^b
+
+     When a parameter is passed, the function returns the previous mode.  If
+     no parameter is passed, the function returns the current mode.
+
+ ^bDescription^b
+
+     Generally speaking, all AT functions like ATNUM(), AFTERATNUM(), and the
+     function STRDIFF(), operate to find an exact match during the execution
+     of the search sequence.  When you use SETATLIKE(1), an additional mode
+     can be selected which permits the use of wildcard characters.  For every
+     position containing a wildcard character within the search expression,
+     any character can occur in the character string that is searched.  The
+     first character of the search expression cannot be a wildcard, and the
+     entire expression cannot consist of wildcards.  These restrictions
+     simultaneously avoid unwanted recursions with ATREPL().
+
+     The customary "?" has been used as the default wildcard character.
+     However, it can be replaced by using the optional <cCharacter>
+     parameter.  Any character you choose can be set as a wildcard character,
+     increasing the flexibility of this group of functions.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The DOS supported "*" wildcard character is not available for
+        this function.
+
+     ^b^CFE^b  The <nNewMode> parameter was selected to be a numeric value to
+        allow future implementation of additional modes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the SETATLIKE(1) wildcard mode to on:
+
+        SETATLIKE(1)
+
+     ^b^CFE^b  Determine the beginning position at the start of the last
+        search expression:
+
+        cTextsequence  := "ABCDEABC123AXCK"
+        ? ATNUM("ABC", cTextsequence)                 // 6
+        ? ATNUM("A?C", cTextsequence)                 // 12
+
+     ^b^CFE^b  Determine if the search expression occurs with the text
+        sequence:
+
+        cTextsequence  := "ABCDEABC123AXCK"
+        ? NUMAT("ABC", cTextsequence)                 // 2
+        ? NUMAT("A?C", cTextsequence)                 // 3
+
+     ^b^CFE^b  Determine the portion of the text sequence behind the last
+        occurrence in the search expression:
+
+        cTextsequence  := "ABCDEABC123AXCK"
+        ? AFTERATNUM("ABC", cTextsequence)            // 123AXCK
+        ? AFTERATNUM("A?C", cTextsequence)            // K
+
+     ^b^CFE^b  Determine the portion of the text sequence before the last
+        occurrence in the search expression:
+
+        cTextsequence  := "ABCDEABC123AXCK"
+        ? BEFOREATNUM("ABC", cTextsequence)           // ABCDE
+        ? BEFOREATNUM("A?C", cTextsequence)           // ABCDEABC123
+
+     ^b^CFE^b  Determine the portion of the text sequence from the last
+        occurrence aligned at position 15:
+
+        cTextsequence  := "ABCDEABC123AXCK"
+        ? ATADJUST("ABC", cTextsequence, 15)          // ABCDE   ABC123AXCK
+        ? ATADJUST("A?C", cTextsequence, 15)          // ABCDEABC123   AXCK
+
+     ^b^CFE^b  ATREPL() poses an unusual situation.  If a search expression
+        containing wildcard characters (like the one in the following
+        example) is exchanged for a sequence where you only find other
+        characters at the wildcard positions, a recursion occurs internally
+        if CSETATMUPA() is on:
+
+        CSETATMUPA(.T.)
+        cTextsequence  := "ABCDEABC123AXCK"
+        ? ATREPL("D?", cTextsequence, "DX")           // ABCDXXXXXXXXXXXX
+
+     ^b^CFE^b  Wildcard characters reduce the valence with the STRDIFF()
+        function:
+
+        ? STRDIFF("ABC", "AXC")                       // Valence 3
+        ? STRDIFF("A?C", "AXC")                       // Valence 0
+
+!seealso: "ATADJUST()" "ATNUM()" "AFTERATNUM()" "BEFORATNUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STRDIFF()    Finds similarity between two strings (Levenshtein Distance)
+'------------------------------------------------------------------------------
+ ^bSTRDIFF()^b
+ Finds similarity between two strings (Levenshtein Distance)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bSTRDIFF(<cString1,<cString2>,[<nReplace>],
+     ^b   [<nRemove>],[<nInsert>]) --> nDifferenceValue
+
+ ^bArguments^b
+
+     ^b<cString1>^b  Designates the first character string for the
+     comparison.  The replace, insert, and delete operations are carried out
+     in this string.  The maximum length for this string is 254 characters.
+
+     ^b<cString2>^b  Designates the second character string for the
+     comparison.
+
+     ^b<nReplace>^b  Designates the number of valences (between 0 and 255)
+     that are allocated for the replacement of a character.  The default
+     value is 3.
+
+     ^b<nRemove>^b  Designates the number of valences (between 0 and 255)
+     that are allocated for the removal of a character.  The default value is
+     6.
+
+     ^b<nInsert>^b  Designates the number of valences (between 0 and 255)
+     that are allocated for the insertion of a character.  The default value
+     is 1.
+
+ ^bReturns^b
+
+     STRDIFF() returns a value corresponding to the difference between the
+     two character strings.  The value can between 0 and 65535.
+
+ ^bDescription^b
+
+     Two different character strings can be made equal by deleting,
+     inserting, or replacing characters within the first string.  STRDIFF()
+     attempts this in any combination until agreement has been reached.
+     Since specific valences are allocated for each of the three individual
+     operations, the end result is a total of valences from which the degree
+     of similarity can be determined.  With several paths to your end goal,
+     the one to use is always the one that results in the smallest valence.
+     In this way you can determine which stings of a group of character
+     strings are the most similar.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The maximum length of the combined string is determined as
+        follows:
+
+        2 * (LEN(par1) + 1) * (LEN(par2) + 1) <= 65530
+
+     ^b^CFE^b  If both strings are the same length, each can be a maximum of
+        180 bytes long.  The result:
+
+        2 * 181 * 181  65522
+
+     ^b^CFE^b  Implementing the SETATLIKE() function allows you to use
+        wildcard characters within the search sequence.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Here are some examples of STRDIFF():
+
+        ? STRDIFF("ABC", "ADC")          // 3 - Replace 1 character
+        ? STRDIFF("ABC", "AEC")          // 3 - Replace 1 character
+        ? STRDIFF("CBA", "ABC")          // 6 - Replace 2 characters
+        ? STRDIFF("ABC", "AXBC")         // 1 - Insert 1 character
+        ? STRDIFF("AXBC", "ABC")         // 6 - Delete 1 character
+
+     ^b^CFE^b  Examples for the use of SETATLIKE() can be found under the
+        corresponding function description.
+
+!seealso: "SETATLIKE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STRSWAP()    Interchanges two strings
+'------------------------------------------------------------------------------
+ ^bSTRSWAP()^b
+ Interchanges two strings
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bSTRSWAP(<cString1>,<cString2>) --> cString
+
+ ^bArguments^b
+
+     ^b<cString1>^b  [@] and ^b<cString2>^b  [@]  Designate the two strings
+     that are interchanged.  At least one of the character strings must be
+     passed by reference.
+
+ ^bReturns^b
+
+     STRSWAP() always returns a null string.  This function only affects
+     strings that have been passed by reference.
+
+ ^bDescription^b
+
+     STRSWAP() interchanges the strings <cString1> and <cString2>.  The
+     exchange continues until all the characters in the shorter character
+     string have been moved.  The function terminates when the last character
+     of the shortest string is exchanged.
+
+ ^bNote^b
+
+     ^b^CFE^b  The character strings are changed directly.  Therefore, at
+        least one of the strings must have been passed by reference to get a
+        result.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, two strings are passed by reference:
+
+        cStr1  :=  "1234567890"
+        cStr2  :=  "ABCDEFGHIJKLM"
+        ? STRSWAP(@cStr1, @cStr2)      // Return value: ""
+
+     ^b^CFE^b  The two strings subsequently contain these characters:
+
+        ? cStr1                        // "ABCDEFGHIJ"
+        ? cStr2                        // "1234567890KLM"
+
+     ^b^CFE^b  In this example, only one of the strings is passed by
+        reference:
+
+        cStr1  :=  "1234567890"
+        cStr2  :=  "ABCDEFGHIJKLM"
+        ? STRSWAP(cStr1, @cStr2)       // Return value: ""
+
+     ^b^CFE^b  Both strings subsequently contain the characters of the string
+        passed by reference:
+
+        ? cStr1                        // "1234567890"
+        ? cStr2                        // "1234567890KLM"
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TABEXPAND()  Converts tabs to spaces
+'------------------------------------------------------------------------------
+ ^bTABEXPAND()^b
+ Converts tabs to spaces
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTABEXPAND(<cString>,[<nTabWidth>],
+     ^b   [<cCharacter|nCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is processed.
+
+     ^b<nTabWidth>^b  Designates the tab width.  The default value is 8.
+
+     ^b<cCharacter|nCharacter>^b  Designates the characters that are used
+     when expanding the tabs.  The default value is a space, CHR(32).
+
+ ^bReturns^b
+
+     The modified <cString> is returned.
+
+ ^bDescription^b
+
+     The TABEXPAND() function replaces all tab characters (CHR(9)) in
+     <cString> with the corresponding number of spaces or <cCharacter|
+     nCharacter>.  The <nTabWidth> parameter can be used to set varying tab
+     widths.
+
+ ^bNotes^b
+
+     ^b^CFE^b  In the absence of the <nTabWidth> parameter, TABEXPAND() has a
+        default tab width of 8.
+
+     ^b^CFE^b  The carriage return and line feed, where the high bit is set,
+        are taken into consideration.
+
+     ^b^CFE^b  SETTABS() does not affect this function.
+
+ ^bExamples^b
+
+     ^b^CFE^b  TABEXPAND() only fills to the next tab position:
+
+        ? TABEXPAND("-" +CHR(9) +"!")                  // "-       !"
+        ? TABEXPAND("----" +CHR(9) +"!")               // "----    !"
+
+     ^b^CFE^b  You can fill with any character you like:
+
+        ? TABEXPAND("-" +CHR(9) +"!", "+")             // "-+++++++!"
+
+     ^b^CFE^b  The tab width can be selected:
+
+        ? TABEXPAND("-" +CHR(9) +"!", 4)               // "-   !"
+        ? TABEXPAND("----" +CHR(9) +"!", 8)            // "----    !"
+        ? TABEXPAND("----" +CHR(9) +"!", 8, "+")       // "----++++!"
+
+!seealso: "TABPACK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TABPACK()    Converts spaces in tabs
+'------------------------------------------------------------------------------
+ ^bTABPACK()^b
+ Converts spaces in tabs
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTABPACK(<cString>,[<nTabWidth>],
+     ^b   [<cCharacter|nCharacter>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates a character string that is packed with tab
+     characters.
+
+     ^b<nTabWidth>^b  Designates the tab width.  The default value is 8.
+
+     ^b<cCharacter|nCharacter>^b  Designates which characters are replaced by
+     a tab.  The default value is a space, CHR(32).
+
+ ^bReturns^b
+
+     TABPACK() returns the modified character string.
+
+ ^bDescription^b
+
+     This function does not simply exchange a simple sequence of the same
+     characters for a tab; instead, it takes into account the true tab
+     positions.  If a space (or the <cCharacter|nCharacter>) is found at a
+     tab position, and immediately preceding it there is at least one
+     identical character, the function replaces this sequence (maximum
+     <nTabWidth>) with a CHR(9).  With tab characters, text can be packed by
+     individual tab widths.  As with every good text editor, there is no
+     replacement with a tab within single or double leading characters.
+
+ ^bNotes^b
+
+     ^b^CFE^b  For the beginning of a line, the function takes into account
+        the "normal" carriage return (CHR(13)/CHR(10)) as well as the high
+        bit return (CHR(141)) used by MEMOEDIT().  Previously existing tab
+        characters are also taken into account.
+
+     ^b^CFE^b  If another tab already exists, this tab can be removed with
+        TABEXPAND().  The new tab can then be inserted using TABPACK().
+
+ ^bExample^b
+
+     We have avoided replacing spaces with tabs in the following examples to
+     keep the example legible.  Tab width is 8 (default).  "*" is exchanged
+     for tab characters.
+
+     ? TABPACK("AAAAAAA*", "*")           // "AAAAAAA*"
+     ? TABPACK("AAAAA***", "*")           // "AAAAA" + CHR(9)
+
+     ? TABPACK("AAAAA*****", "*")         // "AAAAA" + CHR(9) + "**"
+     crlf   :=  CHR(13) + CHR(10)
+     cText  :=  "ABCD+" + crlf + "++---+++++"
+     ? TABPACK(cText, 4, "+")             // "ABCD+" + crlf +
+                                          // "++---" + CHR(9) + "++"
+
+!seealso: "TABEXPAND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKEN()      Selects the nth token from a string
+'------------------------------------------------------------------------------
+ ^bTOKEN()^b
+ Selects the nth token from a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKEN(<cString>,[<cDelimiter>],[<nNumber>],
+     ^b   [<nSkipWidth>]) --> cToken
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates the string that is searched.
+
+     ^b<cDelimiter>^b  Designates the delimiter list used by the token.
+
+     ^b<nNumber>^b  Designates which token in the <cString> is copied.
+
+     ^b<nSkipWidth>^b  Designates the number of delimiter characters or
+     sequences that count as delimiters for a token, even an empty token.
+     The default value indicates that empty tokens are not taken into
+     account.
+
+ ^bReturns^b
+
+     TOKEN() returns the token for which the number has been specified or
+     returns the last token in the <cString>.
+
+ ^bDescription^b
+
+     The TOKEN() function allows you to break down date and time strings,
+     sentences, file names and paths, etc..  When you specify a value for
+     <nNumber>, the token with this number is returned.  If you do not
+     specify a value for <nNumber> the function returns the last token in the
+     <cString>.  The function uses the following list of delimiters as a
+     standard:
+
+     CHR 32, 0, 9, 10, 13, 26, 32, 138, 141
+
+     and the characters ,.;:!?/\<<>>()^^#&%+-*
+
+     The list can be replaced by your own list of delimiters, <cDelimiter>.
+     Here are some examples of useful delimiters:
+
+     ^bTable 4-4: Recommended Delimiter Sequences^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bDescription         <cDelimiter>^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Pages               CHR(12)(Form Feed)
+     Sentences           ".!?"
+     File Names          ":\."
+     Numerical strings   ",."
+     Date strings        "/."
+     Time strings        ":."
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The skip value designates the number of characters after which a token
+     is counted again.  This also allows empty tokens within a string, like
+     blanks, to be counted.
+
+ ^bNote^b
+
+     ^b^CFE^b  When you use the skip width with NUMTOKEN() or TOKEN(), or if
+        you use both functions, this value for the skip width must be equal
+        in both functions.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Select the last token in the character string:
+
+        ? TOKEN("Clipper")                     // "Clipper"
+        ? TOKEN(" ,   Clipper . ")             // "Clipper"
+        ? TOKEN("Clipper COMPILER!")           // "COMPILER"
+
+     ^b^CFE^b  Select the first token in a character string:
+
+        ? TOKEN("Clipper", 1)                  // "Clipper"
+        ? TOKEN("Clipper COMPILER!", 1)        // "Clipper"
+
+     ^b^CFE^b  Select the third token:
+
+        ? TOKEN("This is a test.", 3)          // "a"
+
+     ^b^CFE^b  In this example only four tokens are present:
+
+        ? TOKEN("This is a test.", 5)          // ""
+
+     ^b^CFE^b  This example shows how to count empty tokens.  Parameters
+        separated by commas are counted, but some of the parameters are
+        skipped.  Therefore, a token is counted after one delimiter (comma).
+        A parameter is skipped where two delimiters (commas) appear without a
+        parameter:
+
+        cString  :=  "one,two,,four"
+        nCount   :=  NUMTOKEN(cString, ",", 1)   // Result: 4
+        FOR nI = 1 TO nCount
+        ? TOKEN(cString, ",", nI, 1)
+        NEXT nI
+
+     ^b^CFE^b  If the string contains different delimiters in varying
+        combinations, then preparation with the aid of another function is
+        always important (to enhance readability, periods have been used
+        instead of spaces):
+
+        cString  :=  "one, two,,four,...,six,.,eight"
+        cString  := CHARREM(".", cString)
+        ? TOKEN(cString, ",", 6, 1)              // "six"
+
+!seealso: "TOKENSEP()" "NUMTOKEN()" "ATTOKEN()" "TOKENUPPER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENAT()    Determines the most recent TOKENNEXT() position within a string
+'------------------------------------------------------------------------------
+ ^bTOKENAT()^b
+ Determines the most recent TOKENNEXT() position within a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENAT(<lLastTokenPos>) --> nPosition
+
+ ^bArgument^b
+
+     ^b<lLastTokenPos>^b  When designated as .T., this parameter returns the
+     delimiter position after the last token found.
+
+ ^bReturns^b
+
+     TOKENAT() returns the beginning position of the token most recently
+     returned using TOKENNEXT().  If TOKENINIT() and TOKENNEXT() have not
+     been called prior to calling TOKENAT(), the function returns 0.
+
+ ^bDescription^b
+
+     TOKENAT() returns the starting position of the token most recently
+     extracted by TOKENNEXT().  If TOKENAT() is used in conjunction with
+     SUBSTR(), the delimiters before the token in an incremental tokenizer
+     are available.  To determine the delimiter position before the last
+     token, set TOKENAT() to -1.  To determine the delimiter position after
+     the last token, set TOKENAT to .T..
+
+     Please notice that the character string initialized by TOKENINIT() no
+     longer contains the original delimiters.  If you need the original
+     delimiters, you should make a copy before you call TOKENINIT().
+
+ ^bExample^b
+
+     This example shows five tokens and their starting positions:
+
+     cString  :=  "This is a search, 234"
+     cCopy    :=  String
+     TOKENINIT(@cString)
+     ? TOKENNEXT(), TOKENAT()                  // "This", 1
+     ? TOKENNEXT(), TOKENAT()                  // "is", 6
+     ? TOKENNEXT(), TOKENAT()                  // "a", 9
+     ? TOKENNEXT(), TOKENAT()                  // "search", 11
+     ? TOKENNEXT(), TOKENAT()                  // "234", 18
+     ? SUBSTR(cCOPY, TOKENAT() -1, 1           // Delimiter : ","
+
+!seealso: "TOKENINIT()" "TOKENNEXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENEND()   Determines if more tokens are available in TOKENNEXT()
+'------------------------------------------------------------------------------
+ ^bTOKENEND()^b
+ Determines if more tokens are available in TOKENNEXT()
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENEND() --> lEndToken
+
+ ^bReturns^b
+
+     TOKENEND() returns .T. after the last token has been queried with
+     TOKENNEXT().
+
+ ^bDescription^b
+
+     Reviewing the return value of TOKENNEXT(), as the final condition for
+     tokenizing, is not always definitive.  The end of one cycle is shown
+     here as a null string, which is returned just like an "empty" token
+     (empty line).
+
+     By contrast, TOKENEND() always returns definite information if there are
+     more tokens to be returned by TOKENNEXT().  This makes TOKENEND() ideal
+     for use as a loop condition.
+
+ ^bExample^b
+
+     Break up text into individual lines.  The text is initialized so that
+     two consecutive (3. Parameter) CR/LF sequences return a null string:
+
+     TOKENINIT(TextString, CHR(13) + CHR(10), 2)
+
+     DO WHILE .NOT. TOKENEND()
+        Line  :=  TOKENNEXT(TextString)
+
+        ? "Line - " + Line
+     ENDDO
+
+!seealso: "TOKENINIT()" "TOKENNEXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENINIT()  Initializes a string for TOKENNEXT()
+'------------------------------------------------------------------------------
+ ^bTOKENINIT()^b
+ Initializes a string for TOKENNEXT()
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENINIT([<cString>,[<cDelimiter>],
+     ^b   [<nSkipDistance>]]) --> lStatus
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates a character string for which tokenizing
+     is initialized.  This must be passed by reference!
+
+     ^b<cDelimiter>^b  Designates a list (character string) of individual
+     delimiters for tokenizing.
+
+     ^b<nSkipDistance>^b  Designates the number of delimiting
+     characters/sequences after which a value, or a null string (if
+     necessary), is returned.  The default value indicates that these
+     characters/sequences are not counted.
+
+     ()  When called with no parameters, TOKENNEXT() is set to begin at the
+     start of the string.
+
+ ^bReturns^b
+
+     The function returns .F. when the string variable cannot be initialized.
+     For example, the function returns .F. if the string variable was not
+     passed by reference.
+
+ ^bDescription^b
+
+     When used in conjunction with the TOKENNEXT() function, an extremely
+     versatile incremental tokenizer is available to you.  Specific
+     separation processes can be implemented much more quickly than with the
+     group of functions around TOKEN().  The speed increase is achieved in
+     two ways.
+
+     TOKENINIT() exchanges all delimiting characters for the first one in the
+     delimiter list.  This means the entire delimiter list does not have to
+     be searched every time.  The second advantage is that TOKENNEXT() does
+     not always begin its search for the token that is extracted at the
+     beginning of the string (see the function description for TOKENNEXT()).
+     However, in contrast to TOKEN(), TOKENNEXT() is unable to extract a
+     specific token.
+
+     You can also use the third parameter, a skip distance for the delimiter
+     characters.  This allows recognition of empty lines within a text.  In
+     this case, an empty line would be displayed by a CrLfCrLf sequence.
+     Since TOKENINIT() takes all designated delimiting characters and
+     exchanges them for something uniform, this sequence is changed to
+     CrCrCrCr.  A skip distance of 2 means that the two delimiters (in this
+     case, Cr)) return a token each time.  Since nothing precedes this
+     example, TOKENNEXT() returns a null string.
+
+     The function uses the following list of delimiters as standard:
+
+     CHR 32, 0, 9, 10, 12, 26, 32, 138, 141
+
+     and the characters ,.;:!?/\<<>>()^^#&%+-*
+
+     This list can be replaced by your own delimiter list, <cDelimiter>.
+     Here are some examples of meaningful delimiting characters:
+
+     ^bTable 4-5: Recommended Delimiting Sequences^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bDescription         <cDelimiter>^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Pages               CHR(12)(Form Feed)
+     Sentence            ".!?"
+     File Name           ":\."
+     Numeric strings     ",."
+     Date strings        "/."
+     Time strings        ":."
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bNotes^b
+
+     ^b^CFE^b  When using a skip value, you must use the TOKENEND() function
+        as a loop condition.
+
+     ^b^CFE^b  When TOKENINIT() exchanges all delimiting characters for a new
+        one, the first delimiter on the list is always used.  This ensures
+        that no character contained in the token becomes a delimiter.
+
+     ^b^CFE^b  When you use the TOKENINIT() or TOKENNEXT(), you cannot use
+        the TOKENSEP() function.  The required information can be determined
+        using TOKENAT() in conjunction with the original string (status
+        before TOKENINIT()).
+
+           To determine the delimiter position before the last token, set
+           TOKENAT() to -1.  To determine the delimiter position after the
+           last token, set TOKENAT to .T..
+
+ ^bExamples^b
+
+     ^b^CFE^b  Break a string into words.  First the string must be
+        initialized:
+
+        cDelim   :=  "!?.,-"
+        cString   :=  "A.B-C,D!E??"
+
+        TOKENINIT(@cString, cDelim)         // "A!B!C!D!E!!"
+
+
+        Do While .NOT. TOKENEND()
+           cWord  :=  TOKENNEXT(cString)
+           ? cWord
+        ENDDO
+
+     ^b^CFE^b  Break text into lines.  Take blank lines into account using a
+        skip distance of 2:
+
+        nCounter  :=  0
+
+        TOKENINIT(cTextString, CHR(13) + CHR(10), 2)
+
+        DO WHILE .NOT. TOKENEND()
+           nLine  :=  TOKENNEXT(cTextString)
+           ++ nCounter
+        ENDDO
+
+        ? nCounter
+
+!seealso: "SAVETOKEN()" "RESTTOKEN()" "TOKENNEXT()" "TOKENEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENLOWER() Converts initial alphabetic character of a token into lowercase
+'------------------------------------------------------------------------------
+ ^bTOKENLOWER()^b
+ Converts the initial alphabetic character of a token into lower case
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENLOWER(<cString>,[<cDelimiter>],[<nNumber>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the string that is searched for tokens
+     (words).
+
+     ^b<cDelimiter>^b  Designates the delimiter list used by the token.
+
+     ^b<nNumber>^b  Designates the token in which the initial alphabetic
+     character is converted into a lower case, alphabetic character.  The
+     default value designates that all tokens are converted.
+
+ ^bReturns^b
+
+     The processed character string is returned.
+
+ ^bDescription^b
+
+     TOKENLOWER() converts the initial alphbetic character of the tokens in
+     the <cString> into a lower case, alphabetic character.  If you specify a
+     value for <nNumber>, only this number of tokens is processed.  If you do
+     not specify a value for <nNumber>, all tokens in the <cString> are
+     processed.  The function uses the following list of delimiters by
+     default:
+
+     CHR 32, 0, 9, 10, 13, 26, 32, 138, 141
+
+     and the characters ,.;:!?/\<<>>()^^#&%+-*
+
+     The list can be replaced by your own list of delimiters, <cDelimiter>.
+     Here are some examples of useful delimiters:
+
+     ^bTable 4-6: Recommended Delimiter Sequences^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bDescription         <cDelimiter>^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Pages               CHR(12)(Form Feed)
+     Sentences           ".!?"
+     File Names          ":\."
+     Numerical strings   ",."
+     Date strings        "/."
+     Time strings        ":."
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bNote^b
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Convert the initial letter of all tokens into lower case
+        letters:
+
+        ? TOKENLOWER("good Morning")               // "good morning"
+
+     ^b^CFE^b  This example shows that there are no detrimental effects if
+        you specify a token number that does not exist:
+
+        ? TOKENLOWER("good Morning",, 5)           // "good morning"
+
+     ^b^CFE^b  Process the first two tokens using your own delimiter:
+
+        ? TOKENLOWER("/AB/AB/AB", "/", 2)          // "/aB/aB/AB"
+
+!seealso: "NUMTOKEN()" "TOKEN()" "ATTOKEN()" "TOKENUPPER()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENNEXT()  Provides an incremental tokenizer
+'------------------------------------------------------------------------------
+ ^bTOKENNEXT()^b
+ Provides an incremental tokenizer
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENNEXT(<idTokenInitVar>) --> cToken
+
+ ^bArgument^b
+
+     ^b<idTokenInitVar>^b  Designates the name of the character string
+     previously initialized using TOKENINIT().  This is the only way to
+     access this string once it has been stored by the Virtual Memory Manager
+     (VMM).
+
+ ^bReturns^b
+
+     TOKENNEXT() returns the next token from the string variable designated
+     by TOKENINIT().  If there are no more tokens, a null string is returned.
+
+ ^bDescription^b
+
+     In conjunction with TOKENINIT(), this function provides a speed
+     optimized variation of the normal TOKEN() function.  The increase in
+     speed is achieved in two ways.
+
+     TOKENINIT() exchanges all delimiting characters for the first delimiter
+     in the list.  This means the entire delimiter list does not have to be
+     searched every time.  The second advantage is that TOKENNEXT() does not
+     always begin its search for the token that is extracted at the beginning
+     of the string.
+
+     The TOKENAT() function allows you to determine the position of
+     TOKENNEXT().
+
+     Although the address of the string that is processed and the internal
+     counter have already been determined or initialized by TOKENINIT(),
+     CA-Clipper Tools still needs the variable name.  The function does work
+     without this parameter, but only as long as the initialized character
+     sequence has not been stored to VMM.  You should enter the variable name
+     in each case because there is no explicit control over this!  If there
+     is no access to the variable, a runtime error occurs.
+
+ ^bNotes^b
+
+     ^b^CFE^b  When you use TOKENINIT() or TOKENNEXT(), you cannot use the
+        TOKENSEP() function.  The required information can be determined
+        using TOKENAT() in conjunction with the original string (status
+        before TOKENINIT()).
+
+     ^b^CFE^b  To determine the delimiter position before the last token, set
+        TOKENAT() to -1.  To determine the delimiter position after the last
+        token, set TOKENAT to .T..
+
+ ^bExample^b
+
+     Break down a string:
+
+     cDelim   :=  "!?.,-"
+     cString   :=  "A.B-C,D!E??"
+
+     TOKENINIT(@cString, cDelim)      // "A!B!C!D!E!!"
+
+     DO WHILE .NOT. TOKENEND()
+        cWord  :=  TOKENNEXT(cString)
+        ? cWord
+     ENDDO
+
+!seealso: "RESTTOKEN()" "SAVETOKEN()" "TOKENINIT()" "TOKENAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENSEP()   Provides separator before/after most recently retrieved TOKEN()
+'------------------------------------------------------------------------------
+ ^bTOKENSEP()^b
+ Provides the separator before or after the token most recently retrieved by
+ TOKEN()
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENSEP([<lMode>]) --> cDelimiter
+
+ ^bArgument^b
+
+     ^b<lMode>^b  Designates which delimiter is returned.  When this
+     parameter is specified as .T., the function returns the delimiter after
+     the most recently retrieved token.  The default value (.F.) specifies
+     that the delimiter before the token most recently retrieved is returned.
+
+ ^bReturns^b
+
+     The return string is the delimiter found directly before the token most
+     recently retrieved.  If there is no delimiting character present at the
+     beginning or end of a character string, the function returns a null
+     string.
+
+ ^bDescription^b
+
+     When mathematical expressions are broken down, the delimiting characters
+     are of great interest.  TOKENSEP() is always concerned with the most
+     recently retrieved token determined by the TOKEN() function.  Using the
+     <lMode> parameter, you can specify whether the delimiter returned is the
+     one before or after the token most recently retrieved.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The TOKENSEP() function cannot be used in conjunction with
+        TOKENINIT() or TOKENNEXT().  Delimiters can be determined using
+        TOKENAT() in conjunction with the original string (status of
+        TOKENINIT()).
+
+     ^b^CFE^b  To find the delimiter position before the last token, set
+        TOKENAT() to -1.  To find the delimiter position after the last
+        token, set TOKENAT to .T..
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, there are delimiters before and after the
+        last token:
+
+        ? TOKEN("Hello, World!")            // Last token: "World"
+        ? TOKENSEP()                        // Leading separator: ","
+        ? TOKENSEP(.T.)                     // Trailing separator: "!"
+
+     ^b^CFE^b  This example shows how to force a token to include the
+        delimiter immediately before it (the wrong setting):
+
+        ? TOKENSEP() + TOKEN("32+45*70", "+-*/", 2)    // "45"
+
+     ^b^CFE^b  TOKEN() must be executed prior to TOKENSEP().  Notice the
+        additional parenthesis:
+
+        ? TOKENSEP() + (TOKEN("32+45*70", "+-*/",2)    // "+45"
+
+!seealso: "TOKEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOKENUPPER() Converts the initial letter of a token into upper case
+'------------------------------------------------------------------------------
+ ^bTOKENUPPER()^b
+ Converts the initial letter of a token into upper case
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bTOKENUPPER(<cString>,[<cDelimiter>],[<nNumber>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the string that is searched for tokens
+     (words).
+
+     ^b<cDelimiter>^b  Designates the delimiter list used by the token.
+
+     ^b<nNumber>^b  Designates the number of tokens in which the initial
+     letter is converted into upper case.  The default value converts all
+     tokens.
+
+ ^bReturns^b
+
+     The processed character string is returned.
+
+ ^bDescription^b
+
+     The TOKENUPPER() function converts the initial letter of the tokens in
+     the <cString> into an upper case letter.  If you specify a value for
+     <nNumber>, only this number of tokens is processed.  If you do not
+     specify a value for <nNumber>, all tokens in <cString> are processed.
+     The function uses the following list of delimiters by default:
+
+     CHR 32, 0, 9, 10, 13, 26, 32, 138, 141
+
+     and the characters ,.;:!?/\<<>>()^^#&%+-*
+
+     The list can be replaced by your own list of delimiters, <cDelimiter>.
+     Here are some examples of useful delimiters:
+
+     ^bTable 4-7:  String Manipulations^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bDescription         <cDelimiter>^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Pages               CHR(12)(Form Feed)
+     Sentences           ".!?"
+     File Names          ":\."
+     Numerical strings   ",."
+     Date strings        "/."
+     Time strings        ":."
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bNote^b
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Convert the initial letter of all tokens into upper case
+        letters:
+
+        ? TOKENUPPER("Good morning")            //"Good Morning"
+
+     ^b^CFE^b  There are no detrimental effects if a larger number of tokens
+        is specified than are available:
+
+        ?TOKENUPPER("Good morning",, 5)         //"Good Morning"
+
+     ^b^CFE^b  Process the first two tokens using your own delimiter:
+
+        ?TOKENUPPER("/ab/ab/ab", "/", 2)        //"Ab/Ab/ab"
+
+!seealso: "NUMTOKEN()" "TOKEN()" "ATTOKEN()" "TOKENLOWER()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VALPOS()     Determines numerical value of character at particular position
+'------------------------------------------------------------------------------
+ ^bVALPOS()^b
+ Determines the numerical value of the character at a particular position
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bVALPOS(<cString>,[<nPosition>]) --> nAsciiValue
+
+ ^bArguments^b
+
+     ^b<cString>^b  Designates any string.
+
+     ^b<nPosition>^b  Designates which character to convert into numeric data
+     format.  The default value processes the last character.
+
+ ^bReturns^b
+
+     VALPOS() returns the numeric value of the character at <nPosition>.
+
+ ^bDescription^b
+
+     VALPOS() converts a particular character in a string to its numerical
+     equivalent.  You do not have to nest functions if you use VALPOS().
+
+ ^bNotes^b
+
+     ^b^CFE^b  This function works a bit differently than the CA-Clipper
+        VAL() function.  VAL() terminates the conversion when a non-numeric
+        character appears.  VALPOS() only processes a single character.
+
+     ^b^CFE^b  If <nPosition> is past the end of <cString>, or the character
+        selected through <nPosition> is not a number, VALPOS() returns 0.
+
+ ^bExample^b
+
+     Determine the value of the character at position 3:
+
+     cString  :=  "AX4B"
+     ? VALPOS(cString, 3)      // Result: 4
+
+!seealso: "ASCPOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WORDONE()    Reduces multiple appearances of double characters to one
+'------------------------------------------------------------------------------
+ ^bWORDONE()^b
+ Reduces the multiple appearances of particular double characters to one
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bWORDONE([<cDoubleCharacter>],<cString>) --> cString
+
+ ^bArguments^b
+
+     ^b<cDoubleCharacter>^b  Designates which 2-byte sequences are only to
+     appear once together in <cString>.  The default value is for all 2-byte
+     sequences.
+
+     ^b<cString>^b  Designates a string that has only specific 2-byte
+     sequences that appear together after manipulation.
+
+ ^bReturns^b
+
+     WORDONE() returns the modified character string.
+
+ ^bDescription^b
+
+     A unique operation is carried out on a string that is constructed out of
+     2-byte sequences ("words").  The multiple sequence appearances must lie
+     immediately beside one another, which allows a CHARSORT() with an
+     element length of 2 to be executed.
+
+     These sequences can be integers that have been generated using the
+     CA-Clipper I2BIN() function and have been deposited in a string.  In
+     conjunction with other string functions like WORDONLY(), WORDONE() is an
+     extremely effective system for working with these kinds of files.
+
+ ^bNote^b
+
+     ^b^CFE^b  The term "word" is not used here in the textual sense, but
+        rather as it is used in assembler programming.  A "word" consists of
+        units of 16 bits, or more precisely, 2 bytes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This is a simple example with characters that can be
+        displayed.  The "AB" lie one after the other but not the "12":
+
+        ? WORDONE("12ABAB12")             // "12AB12"
+
+     ^b^CFE^b  The function always runs through the string in ordered pairs:
+
+        ? WORDONE("12", "1212ABAB")       // "12ABAB"
+
+!seealso: "CHARONE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WORDONLY()   Finds common denominator of 2 strings on double character basis
+'------------------------------------------------------------------------------
+ ^bWORDONLY()^b
+ Finds the common denominator between two strings on the basis of double
+ characters
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bWORDONLY(<cDoubleCharacter>,<cString>) --> cString
+
+ ^bArguments^b
+
+     ^b<cDoubleCharacter>^b  Designates the 2-byte sequences that are not
+     removed from <cString>.
+
+     ^b<cString>^b  Designates a character string from which 2-byte sequences
+     that do not appear in <cDoubleCharacter> are removed.
+
+ ^bReturns^b
+
+     WORDONLY() returns the modified string.
+
+ ^bDescription^b
+
+     This function deletes all 2-byte sequences in <cString> that do not
+     appear in <cDoubleCharacter>.  This function is very useful in
+     applications where 16-bit integer values have been saved to strings
+     using the CA-Clipper I2BIN() function.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function always processes strings in ordered pairs.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows a simple common denominator.  The second
+        string contains only the 2-byte sequences that are also contained in
+        the first string:
+
+        ? WORDONLY("AABBCCDD", "XXAAYYBBZZ")            // "AABB"
+
+     ^b^CFE^b  Both strings are always processed in ordered pairs:
+
+        ? WORDONLY("AABBCCDD", "XAAYYBBZZ")             // "BB"
+
+!seealso: "CHARONLY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WORDREPL()   Replaces particular double characters with others
+'------------------------------------------------------------------------------
+ ^bWORDREPL()^b
+ Replaces particular double characters with others
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bWORDREPL(<cSearchDoubleCharacterstring>,<cString>,
+     ^b   <cReplaceDoubleCharacterstring>,[<lMode>])
+     ^b   --> cString
+
+ ^bArguments^b
+
+     ^b<cSearchDoubleCharacterstring>^b  Designates multiple 2-byte character
+     strings which are replaced by corresponding character strings from
+     <cReplaceDoubleCharacterstring> within <cString>.
+
+     ^b<cString>^b  [@]  Designates the character string within which the 2-
+     byte length sequences are exchanged.
+
+     ^b<cReplaceDoubleCharacterstring>^b  Designates multiple 2-byte
+     character strings which replace corresponding character strings from
+     <cSearchDoubleCharacterstring> within <cString>.
+
+     ^b<lMode>^b  Designates whether the character string <cString> is run
+     through in single steps (.T.) or in ordered pairs (.F.).  The default
+     value (.F.) designates ordered pairs.
+
+ ^bReturns^b
+
+     The modified character string is returned.
+
+ ^bDescription^b
+
+     With this function, 2-byte sequences in a string can be exchanged for
+     another sequence of the same length.  By using WORDREPL() and its analog
+     function CHARREPL(), you can develop a very fast algorithm for SOUNDEX()
+     functions.  Strings read from screen memory or generated by the
+     CA-Clipper I2BIN() function can be easily processed.
+
+     The <cString> can be processed in a number of different ways.  It is
+     here that the <lMode> parameter plays an important role, similar to the
+     CSETATMUPA() functions.
+
+     There are different modes of execution for the function:
+
+     ^b^CFE^b  Depending on the <lMode> parameter, the string is processed in
+        single steps or ordered pairs.
+
+     ^b^CFE^b  CSETATMUPA() is successful ^bonl^by when <lMode> is designated
+        as .T..  If CSETATMUPA() is .T., then WORDREPL() continues with the
+        second character exchanged in a sequence.  If CSETATMUPA() is not
+        .T., WORDREPL() continues with the character behind the second
+        character.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The term "word" is not used here in the textual sense, but
+        rather as it is used in assembler programming.  A "word" consists of
+        units of 16 bits, or more precisely, 2 bytes.  The
+        <cReplaceDoubleCharacterstring> parameter can be shorter than
+        <cSearchDoubleCharacterstring>.
+
+     ^b^CFE^b  The function exchanges sequences in
+        <cSearchDoubleCharacterstring> that do not have corresponding
+        sequences in <cReplaceDoubleCharacterstring> with the last sequence
+        in <cReplaceDoubleCharacterstring>.
+
+     ^b^CFE^b  The return value of the function can be suppressed by
+        implementing CSETREF() to save space in working memory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange "XX" for "CC":
+
+        ? WORDREPL("CC", "AABBCCDDEE", "XX")         // "AABBXXDDEE"
+
+     ^b^CFE^b  Here is an example of use with CSETATMUPA() and <lMode>:
+
+        CSETATMUPA(.F.)                              // Default
+        ? WORDREPL("aa", "laaaa", "ba")              // "labaa"
+        ? WORDREPL("aa", "laaaa", "ba", .T.)         // "lbaba"
+
+     ^b^CFE^b  CSETATMUPA() only affects the function call when <lMode> is
+        .T.:
+
+        CSETATMUPA(.T.)                              // Multi-pass mode on
+        ? WORDREPL("aa", "laaaa", "ba")              // "labaa"
+        ? WORDREPL("aa", "laaaa", "ba", .T.)         // "lbbba"
+
+!seealso: "CSETATMUPA()" "CHARREPL()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WORDSWAP()   Exchanges double characters lying beside each other in a string
+'------------------------------------------------------------------------------
+ ^bWORDSWAP()^b
+ Exchanges double characters that lie beside each other in a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bWORDSWAP(<cString>,[<lMode>]) --> cString
+
+ ^bArguments^b
+
+     ^b<cString>^b  [@]  Designates the character string within which the 2-
+     byte sequences are exchanged.
+
+     ^b<lMode>^b  Designates whether the adjoining bytes are exchanged (.T.)
+     or not (.F.).  The default value (.F.) designates that the adjoining
+     bytes are not exchanged.
+
+ ^bReturns^b
+
+     WORDSWAP() returns the modified character string.
+
+ ^bDescription^b
+
+     With WORDSWAP(), 2-byte sequences within a character string are
+     exchanged for each other.  In this respect the function works exactly
+     like CHARSWAP(), except that 16-bit groups are being exchanged.
+
+     The function is used on strings that contain 32-bit integers created by
+     the CA-Clipper L2BIN().  The exchange serves as a preparation for a sort
+     of these integers using CHARSORT().  In order to achieve a correct sort,
+     you must exchange two adjacent bytes (low/high ordering of 16-bit
+     integers), in addition to exchanging the 16-bit groups.
+
+ ^bNotes^b
+
+     ^b^CFE^b  When <lMode> is .T., adjoining bytes are only exchanged after
+        being exchanged as two 2-byte groups.
+
+     ^b^CFE^b  The return value of this function can be suppressed by
+        implementing CSETREF() to save working memory space.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange characters:
+
+        ? WORDSWAP("1234567890")          // "3412785690"
+
+     ^b^CFE^b  Also exchange the bytes:
+
+        ? WORDSWAP("1234567890, .T.)      // "4321876590"
+
+     ^b^CFE^b  Working with L2BIN():
+
+        ? L2BIN(1)               // 00000001 00000000 00000000 00000000
+        ? L2BIN(65536)           // 00000010 00000000 00000001 00000000
+        ? L2BIN(65536) > L2BIN(1)                                 // .F.
+        ? WORDSWAP(L2BIN(65536), .T.) > WORDSWAP(L2BIN(1), .T.)   // .T.
+
+!seealso: "CHARSWAP()" "CHARSORT()" "CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: WORDTOCHAR() Exchanges double characters for individual ones
+'------------------------------------------------------------------------------
+ ^bWORDTOCHAR()^b
+ Exchanges double characters for individual ones
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bSyntax^b
+
+     ^bWORDTOCHAR(<cDoubleCharacterList>,<cString>,
+     ^b   <cCharacterlist>) --> cString
+
+ ^bArguments^b
+
+     ^b<cDoubleCharacterList>^b  Designates multiple 2-byte sequences which
+     are exchanged for corresponding individual characters from the
+     <cCharacterlist>.
+
+     ^b<cString>^b  Designates the character string within which 2-byte
+     sequences are exchanged for individual characters.
+
+     ^b<cCharacterlist>^b  Designates a sequence of individual characters
+     which correspond to 2-byte sequences in <cDoubleCharacterList> for
+     replacement within <cString>.
+
+ ^bReturns^b
+
+     WORDTOCHAR() returns the modified character string.
+
+ ^bDescription^b
+
+     When you use SOUNDEX algorithms, sequences of two characters must often
+     be exchanged for a single other character.  WORDTOCHAR() makes this
+     process extremely simple and quick.
+
+     The function processes the <cString> in 1-byte steps.  The behavior
+     after exchanging a sequence for a character is determined by
+     CSETATMUPA().  If CSETATMUPA is .F., the search for more sequences
+     continues after the exchanged characters.  If CSETATMUPA is .T., the
+     search for more sequences continues and includes the exchanged
+     characters.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The term "word" is not used here in the textual sense, but
+        rather as it is used in assembler programming.  A "word" consists of
+        units of 16 bits, or more precisely, 2 bytes.
+
+     ^b^CFE^b  <cCharacterlist> can be shorter than <cDoubleCharacterList>.
+        When this occurs, the function exchanges the sequences in
+        <cDoubleCharacterList> that do not have corresponding sequences in
+        <cCharacterlist> for the last sequence in <cDoubleCharacterList>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows a simple replacement:
+
+        ? WORDTOCHAR("aa", "Xaaaa", "a")      // "Xaa"
+
+     ^b^CFE^b  This example shows WORDTOCHAR() in conjunction with
+        CSETATMUPA():
+
+        CSETATMUPA(.F.)                       // Multi pass off
+        ? WORDTOCHAR("aa", "Xaaaa", "a")      // "Xaa"
+        CSETATMUPA(.T.)                       // Multi pass on
+        ? WORDTOCHAR("aa", "Xaaaa", "a")      // "Xa"
+
+!seealso: "CSETATMUPA()" "WORDREPL()" "CHARREPL()" 
+'------------------------------------------------------------------------------
+
+
+

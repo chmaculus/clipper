@@ -1,0 +1,1518 @@
+!short: ^bOverview -- Protected Mode Linker
+'------------------------------------------------------------------------------
+     This chapter is a summary of VMM error messages and DOS/16M error
+     messages for the protected mode linker.  The messages are divided into
+     categories on the basis of the point in the program at which they occur
+     and the circumstances in which they occur.
+
+ ^bVMM Error Messages^b
+
+     This section lists VMM error messages that can occur in the main program
+     or when starting and running a VMM-managed program.
+
+     ^bLoader Errors^b
+
+     VMM displays a loader error message only if the error occurs in your
+     main program, not in a spawned program.  When a loader error occurs
+     while you are spawning a program, an error code is returned to the main
+     program during the spawn.  Error messages returned during the spawn
+     process are displayed with only the last three digits of the error
+     number.  The loader error messages are listed below.  Each message is
+     preceded by the words "VM error^b ^b[number]:" and the error code. The
+     mnemonic appears in parentheses at the end of each error code
+     description.
+
+     ^bStartup and Runtime Messages^b
+
+     This section lists the messages you may receive when starting and
+     running a VMM-managed program.  For each message there is a brief
+     explanation.  Each error message is preceded by a "VM error [number]:"
+     and the error code.  Some of these messages indicate problems in VMM; in
+     which case, call Computer Associates Technical Support.
+
+ ^bDOS/16M Error Messages^b
+
+     This chapter lists DOS/16M error messages, with descriptions of the
+     circumstances in which the error is most likely to occur, and
+     suggestions for remedying the problem.  The chapter covers the
+     following:
+
+     ^bKernel error messages (single- or double-digit error numbers)
+
+     This section describes error messages from the DOS/16M kernel.  Kernel
+     error messages may occur as the result of a problem in either the
+     DOS/16M kernel or the application program.  If the message originates in
+     the kernel, it will be tagged as a DOS/16M error.  If the error occurred
+     in the application program, DOS/16M will use the name of the program
+     file in the header.  Messages that have a space immediately after the
+     open quote occur only at load time.  After your program is loaded, these
+     messages are discarded to save memory.  When a percent symbol (%)
+     appears in the error message text, the string it represents is in
+     parentheses after the error message text.
+
+     ^bCA-Clipper/Exospace messages (four-digit numbers)
+
+     This section lists and describes CA-Clipper/Exospace messages.  The
+     first section lists error messages in numeric order.  The error level is
+     enclosed in parentheses after the error text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bVMM Error Messages
+!short:
+!short: ^bLoader Errors
+!short: [5102]       could not allocate transparent seg
+'------------------------------------------------------------------------------
+ ^b[5102] could not allocate transparent seg^b
+
+     ^bExplanation:^b  Your program was created with transparent selectors,
+     and VMM could not allocate them.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5105]       no available VM memory
+'------------------------------------------------------------------------------
+ ^b[5105] no available VM memory^b
+
+     ^bExplanation:^b  The virtual space is too small.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5108]       too many spawned programs
+'------------------------------------------------------------------------------
+ ^b[5108] too many spawned programs^b
+
+     ^bExplanation:^b  Your program is attempting to spawn beyond 15 levels.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5110]       VM loader error
+'------------------------------------------------------------------------------
+ ^b[5110] VM loader error ^b
+
+     ^bExplanation:^b  A loader error has occurred that cannot be identified
+     as one of the errors above.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5111]       VM disk error
+'------------------------------------------------------------------------------
+ ^b[5111] VM disk error^b
+
+     ^bExplanation:^b  A DOS error occurred while you were trying to load the
+     program.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bStartup and Runtime Messages^b
+!short: [5004]       can't allocate special seg
+'------------------------------------------------------------------------------
+ ^b[5004] can't allocate special seg^b
+
+     ^bExplanation:^b There is probably not enough DOS memory available to
+     allocate this segment.
+
+     ^bAction:^b  Increase Set Clipper = // LOWMEM parameter.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5005]       can't allocate VM info
+'------------------------------------------------------------------------------
+ ^b[5005] can't allocate VM info^b
+
+     ^bExplanation:^b  There is not enough physical memory to start VMM.
+
+     ^bAction:^b  Remove TSRs and system software.  Install additional
+     physical memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5010]       memory free
+'------------------------------------------------------------------------------
+ ^b[5010] memory free^b
+
+     ^bExplanation:^b  A DOS error occurred when VMM was freeing memory at
+     exit.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5011]       execute prog failure
+'------------------------------------------------------------------------------
+ ^b[5011] execute prog failure^b
+
+     ^bExplanation:^b  The application program cannot start.  The startup
+     code may be damaged, or the .EXE file may be corrupted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5251]       insufficient memory
+'------------------------------------------------------------------------------
+ ^b[5251] insufficient memory^b
+
+     ^bExplanation:^b  VMM cannot find enough physical memory to load your
+     program.  You do not have 2Mb of free extended memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5253]       can't allocate VM tables
+'------------------------------------------------------------------------------
+ ^b[5253] can't allocate VM tables^b
+
+     ^bExplanation:^b  There is not enough physical memory to allocate the
+     swap file allocation table.
+
+     ^bAction:^b  Install more physical memory or remove TSRs and system
+     software.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5254]       insufficient DOS memory
+'------------------------------------------------------------------------------
+ ^b[5254] insufficient DOS memory^b
+
+     ^bExplanation:^b  There is not enough low memory for your program.
+
+     ^bAction:^b  You may need to remove TSRs and system software, or reduce
+     your program's dependency on transparent storage.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5255]       VM memory allocation error
+'------------------------------------------------------------------------------
+ ^b[5255] VM memory allocation error^b
+
+     ^bExplanation:^b  DOS or DOS/16M error.  The memory appears to be
+     present, but VMM cannot allocate it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5257]       can't create swap file: <filename>
+'------------------------------------------------------------------------------
+ ^b[5257] can't create swap file: <filename>^b
+
+     ^bExplanation:^b  DOS error.  The path specified may not exist.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5258]       not enough disk space for swapping required bytes: #bytes
+'------------------------------------------------------------------------------
+ ^b[5258] not enough disk space for swapping required bytes: #bytes^b
+
+     ^bExplanation:^b  There is not enough disk space to create the swap
+     file.  This error message displays the total number of bytes you need in
+     the swap file.
+
+     ^bAction: ^b Delete files.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5302]       swap out
+'------------------------------------------------------------------------------
+ ^b[5302] swap out^b
+
+     ^bExplanation:^b  VMM internal errors.  There may be a problem with the
+     disk, or the VMM internal tables may be corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5303]       incomplete swap out
+'------------------------------------------------------------------------------
+ ^b[5303] incomplete swap out^b
+
+     ^bExplanation:^b  VMM internal errors.  There may be a problem with the
+     disk, or the VMM internal tables may be corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5305]       swap in
+'------------------------------------------------------------------------------
+ ^b[5305] swap in^b
+
+     ^bExplanation:^b  VMM internal errors.  There may be a problem with the
+     disk, or the VMM internal tables may be corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5306]       incomplete swap in
+'------------------------------------------------------------------------------
+ ^b[5306] incomplete swap in^b
+
+     ^bExplanation:^b  VMM internal errors.  There may be a problem with the
+     disk, or the VMM internal tables may be corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5310]       codefile seek
+'------------------------------------------------------------------------------
+ ^b[5310] codefile seek^b
+
+     ^bExplanation:^b  DOS error occurred when VMM tried to retrieve a
+     segment from the .EXE file.  The file, or VMM internal tables, may be
+     corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5311]       codefile read
+'------------------------------------------------------------------------------
+ ^b[5311] codefile read^b
+
+     ^bExplanation:^b  DOS error occurred when VMM tried to retrieve a
+     segment from the .EXE file.  The file, or VMM internal tables, may be
+     corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5312]       moveseg
+'------------------------------------------------------------------------------
+ ^b[5312] moveseg ^b
+
+     ^bExplanation:^b  VMM could not move a segment.  There are discrepancies
+     in VMM's internal tables.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5313]       moveseg 2
+'------------------------------------------------------------------------------
+ ^b[5313] moveseg 2^b
+
+     ^bExplanation:^b  VMM could not move a segment.  There are discrepancies
+     in VMM's internal tables.
+
+     ^bAction:^b  Call Computer Associates Technical Support .
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5314]       vmFree
+'------------------------------------------------------------------------------
+ ^b[5314] vmFree^b
+
+     ^bExplanation:^b VMM cannot free a segment.  Memory may be corrupted.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5315]       user exit (swap out)
+'------------------------------------------------------------------------------
+ ^b[5315] user exit (swap out)^b
+
+     ^bExplanation:^b  A user-controlled interception of a segment swap out
+     has generated an error of some sort.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5316]       user exit (segment fault)
+'------------------------------------------------------------------------------
+ ^b[5316] user exit (segment fault)^b
+
+     ^bExplanation:^b  A user-controlled interception of a segment fault has
+     generated an error of some sort.
+
+     ^bAction:^b  Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5317]       insufficient virtual memory
+'------------------------------------------------------------------------------
+ ^b[5317] insufficient virtual memory^b
+
+     ^bExplanation:^b  You have run out of virtual space.
+
+     ^bAction: ^b Increase your virtual space.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5318]       DOS memory error
+'------------------------------------------------------------------------------
+ ^b[5318] DOS memory error^b
+
+     ^bExplanation:^b  VMM received an error while trying to release or
+     reallocate the DOS memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5319]       not enough disk space
+'------------------------------------------------------------------------------
+ ^b[5319] not enough disk space^b
+
+     ^bExplanation:^b There is not enough disk space for the swap file to
+     expand into.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: [5391]       out of memory
+'------------------------------------------------------------------------------
+ ^b[5391] out of memory^b
+
+     ^bExplanation:^b  VMM is not reserving enough virtual memory for your
+     program.
+
+     ^bAction:^b  Increase the Set Clipper = //VMSIZE parameter.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDOS/16M Messages
+!short:
+!short: ^bKernel Error Messages^b
+!short: 0:           "Involuntary switch to real mode"
+'------------------------------------------------------------------------------
+ ^b0:  "Involuntary switch to real mode"^b
+
+     ^bExplanation:^b  The computer was in protected mode but switched to
+     real mode without going through DOS/16M.  This error most often occurs
+     because of a stack segment exception (stack overflow), but can also
+     occur if the Global Descriptor Table or Interrupt Descriptor Table is
+     corrupted.
+
+     ^bAction:^b  Increase the stack size, recompile your program with stack
+     overflow checking, or look into ways that the descriptor tables may have
+     been overwritten.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 1:           "Insufficient memory (extended)"
+'------------------------------------------------------------------------------
+ ^b1:  "Insufficient memory (extended)"^b
+
+     ^bExplanation:^b  There is not enough extended memory to load your
+     program.
+
+     ^bAction:^b  check the memory to make sure that memory above 1MB is
+     configured as extended (not expanded) memory, or use a VCPI host (such
+     as QEMM or EMM386).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2:           "%s is not a DOS/16M executable" (filename)
+'------------------------------------------------------------------------------
+ ^b2:  "%s is not a DOS/16M executable" (filename)^b
+
+     ^bExplanation:^b  The executable file you are trying to load has been
+     corrupted in some way.
+
+     ^bAction:^b  Relink it or recopy it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 3:           "No DOS memory for transparent segment"
+'------------------------------------------------------------------------------
+ ^b3:  "No DOS memory for transparent segment"^b
+
+     ^bExplanation:^b  DOS has indicated that there is not enough memory
+     available for the segment.
+
+     ^bAction:^b  Free some DOS memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4:           "Unable to make transparent segment"
+'------------------------------------------------------------------------------
+ ^b4:  "Unable to make transparent segment"^b
+
+     ^bExplanation:^b  DOS/16M cannot allocate a transparent segment.  Most
+     likely, your program is running under DPMI, where transparency is not
+     available.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 5:           Obsolete
+'------------------------------------------------------------------------------
+ ^b5:  Obsolete^b
+
+     ^bExplanation:^b  This error should no longer occur.
+
+     ^bAction:^b  call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 6:           "Insufficient memory to load program"
+'------------------------------------------------------------------------------
+ ^b6:  "Insufficient memory to load program"^b
+
+     ^bExplanation:^b  The program that the DOS/16M loader is trying to load
+     or overload is larger than available memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 7:           "Relocation tables required"
+'------------------------------------------------------------------------------
+ ^b7:  "Relocation tables required"^b
+
+     ^bExplanation:^b  Your program uses transparent segments, but the
+     segment containing relocation information about them cannot be located.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 8:           "Cannot open file %s" (filename)
+'------------------------------------------------------------------------------
+ ^b8:  "Cannot open file %s" (filename)^b
+
+     ^bExplanation:^b  The DOS/16M loader cannot open the executable file
+     (file name).  If you receive this message after executing the command
+     loader file name, the file name is probably incorrect.  Otherwise, DOS
+     may not have enough file units configured (the FILES= entry in
+     CONFIG.SYS should be larger).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 9:           Obsolete
+'------------------------------------------------------------------------------
+ ^b9:  Obsolete^b
+
+     ^bExplanation:^b  This error should no longer occur.
+
+     ^bAction:^b  call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10:          Obsolete
+'------------------------------------------------------------------------------
+ ^b10:  Obsolete^b
+
+     ^bExplanation:^b  This error should no longer occur.
+
+     ^bAction:^b  call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 11:          Obsolete
+'------------------------------------------------------------------------------
+ ^b11:  Obsolete^b
+
+     ^bExplanation:^b  This error should no longer occur.
+
+     ^bAction: ^b call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 12:          Obsolete
+'------------------------------------------------------------------------------
+ ^b12:  Obsolete^b
+
+     ^bExplanation:^b  This error should no longer occur.
+
+     ^bAction: ^b call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 13:          Obsolete
+'------------------------------------------------------------------------------
+ ^b13:  Obsolete^b
+
+     ^bExplanation:^b  This error should no longer occur.
+
+     ^bAction: ^b call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 14:          "Premature EOF"
+'------------------------------------------------------------------------------
+ ^b14:  "Premature EOF"^b
+
+     ^bExplanation:^b  When loading your protected mode program into memory,
+     the loader found the end of the file before it was expected.  Most
+     likely, the file has been corrupted, incompletely copied at some point,
+     or incorrectly linked.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 15:          "Protected mode requires 80286 or superset"
+'------------------------------------------------------------------------------
+ ^b15:  "Protected mode requires 80286 or superset"^b
+
+     ^bExplanation:^b  DOS/16M requires an 80286 CPU or a superset (such as a
+     386 or 486).  It cannot run on an 8086, 8088, or 80186 CPU.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 16:          "Unable to run under OS/2"
+'------------------------------------------------------------------------------
+ ^b16:  "Unable to run under OS/2"^b
+
+     ^bExplanation:^b  DOS/16M programs can run in an OS/2 2.x virtual DOS
+     machine, but not as OS/2 applications.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 17:          "System software is neither VCPI nor DPMI"
+'------------------------------------------------------------------------------
+ ^b17:  "System software is neither VCPI nor DPMI"^b
+
+     ^bExplanation:^b  Some memory resident program has put your 386 or 486
+     CPU into Virtual 8086 mode.  This is done to provide special memory
+     services to DOS programs, such as EMS simulation (EMS interface without
+     EMS hardware) or high memory.  In this mode, it is not possible to
+     switch into protected mode unless the resident software follows a
+     standard that DOS/16M supports. VCPI (Virtual Control Program Interface)
+     is one such standard and is followed by QEMM from Quarterdeck, 386MAX
+     from Qualitas, and EMM386 from Microsoft, among others. DPMI (DOS
+     Protected Mode Interface) is another standard that DOS/16M supports.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 18:          "Machine type requires ext memory range (SET DOS16M=)"
+'------------------------------------------------------------------------------
+ ^b18:  "Machine type requires ext memory range (SET DOS16M=)"^b
+
+     ^bExplanation:^b  This computer is not IBM AT-compatible, and has no
+     protocol for managing extended memory.  Add an extended memory range
+     specification to the DOS/16M environment variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 20:          "Unsupported machine type %s (SET DOS16M= )" (machine_type)
+'------------------------------------------------------------------------------
+ ^b20:  "Unsupported machine type %s (SET DOS16M= )" (machine_type)^b
+
+     ^bExplanation:^b  The value specified for the DOS/16M environment
+     variable is one that DOS/16M cannot interpret.  You should not get this
+     message unless you have set DOS16M=D bad_machine_type.
+
+     ^bAction:^b  If you need the debugging switch (D), do not set the
+     machine type on AT-compatible machines.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 21:          "Requires DOS 3.0 or later"
+'------------------------------------------------------------------------------
+ ^b21:  "Requires DOS 3.0 or later"^b
+
+     ^bExplanation:^b  DOS/16M programs do not run under DOS 2.x.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 22:          Obsolete
+'------------------------------------------------------------------------------
+ ^b22:  Obsolete^b
+
+     ^bAction: ^b This error should no longer occur.  If you get it, call
+     Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 23:          Obsolete
+'------------------------------------------------------------------------------
+ ^b23:  Obsolete^b
+
+     ^bAction: ^b This error should no longer occur.  If you get it, call
+     Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 24:          Obsolete
+'------------------------------------------------------------------------------
+ ^b24:  Obsolete^b
+
+     ^bAction: ^b This error should no longer occur.  If you get it, call
+     Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 25:          "Unable to initialize VCPI"
+'------------------------------------------------------------------------------
+ ^b25:  "Unable to initialize VCPI"^b
+
+     ^bExplanation:^b  DOS/16M has detected that VCPI is present, but VCPI
+     returns an error when DOS/16M tries to initialize the interface.  The
+     VCPI host is flawed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 26:          "8042 timeout"
+'------------------------------------------------------------------------------
+ ^b26:  "8042 timeout"^b
+
+     ^bExplanation:^b  On most IBM AT-compatible computers, DOS/16M must use
+     the 8042 keyboard processor to enable access to extended memory.  This
+     message means that a command was sent to the 8042 to enable or disable
+     access, but the 8042 has not acknowledged the command.  Most likely, you
+     are running on a non-AT-compatible machine.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 28:          "Free memory list corrupt"
+'------------------------------------------------------------------------------
+ ^b28:  "Free memory list corrupt"^b
+
+     ^bExplanation:^b  DOS/16M discovered an error in the memory allocation
+     chains.
+
+     ^bAction: ^b Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 29:          Obsolete
+'------------------------------------------------------------------------------
+ ^b29:  Obsolete^b
+
+     ^bAction: ^b This error should no longer occur.  If it does, call
+     Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 31:          "Protected mode already in use in this DPMI virtual -machine"
+'------------------------------------------------------------------------------
+ ^b31:  "Protected mode already in use in this DPMI virtual -machine"^b
+
+     ^bExplanation:^b  Due to limitations in the DPMI 0.9 specification, only
+     one DOS/16M program at a time can execute in a DPMI virtual machine.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 35:          Various exceptions
+'------------------------------------------------------------------------------
+ ^b35:  Various exceptions^b
+
+     ^bExplanation:^b  The processor has detected an exception or an
+     unexpected interrupt.  Error 35 is a fatal error.  DOS/16M displays
+     register values before it shuts down to help you debug your code.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:              General protection fault in <module> at <address> Exception...
+'------------------------------------------------------------------------------
+ ^bGeneral protection fault in <module> at <address> Exception 0Dh occurred.^b
+
+     ^bExplanation:^b  The program has violated one of the protected-mode
+     programming restrictions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:              Page Fault <linear address>
+'------------------------------------------------------------------------------
+ ^bPage Fault <linear address>^b
+
+     ^bExplanation:^b  Your program has accessed memory that has not been
+     properly allocated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:              Invalid Opcode Exception 06h occurred.
+'------------------------------------------------------------------------------
+ ^bInvalid Opcode Exception 06h occurred.^b
+
+     ^bExplanation:^b  Most likely, an assembly language program has
+     attempted to execute data or  the module was compiled with the wrong
+     instruction set.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:              Unexpected Interrupt <interrupt number>
+'------------------------------------------------------------------------------
+ ^bUnexpected Interrupt <interrupt number>^b
+
+     ^bExplanation:^b  Your program generated an interrupt that DOS/16M could
+     not manage in an appropriate way.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 38:          "HIMEM.SYS version < 2"
+'------------------------------------------------------------------------------
+ ^b38:  "HIMEM.SYS version < 2"^b
+
+     ^bExplanation:^b  DOS/16M works with versions 2.0 and later of
+     HIMEM.SYS.  The version on your machine is earlier than 2.0.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bCA-Clipper/Exospace Linker Error Messages^b
+!short: 4001:        Command line syntax error on argument <arg number> <"text">...
+'------------------------------------------------------------------------------
+ ^b4001:  Command line syntax error on argument <arg number> <"text">
+ ^b       (Fatal)
+
+     ^bExplanation:^b  CA-Clipper/Exospace did not understand an argument on
+     the command line.
+
+     ^bAction: ^b Check the option list for correct syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4002:        Invalid library directory format (Fatal)
+'------------------------------------------------------------------------------
+ ^b4002:  Invalid library directory format (Fatal) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace cannot read your library.  The
+     library may be corrupted, or it was not built with a
+     Microsoft-compatible librarian.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4003:        Unable to process Microsoft Link command stream (Fatal)
+'------------------------------------------------------------------------------
+ ^b4003:  Unable to process Microsoft Link command stream (Fatal)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace cannot interpret the Microsoft
+     Link commands or script file.
+
+     ^bAction: ^b Make sure you used valid Microsoft syntax in the command
+     line or script file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4004:        Don't know Microsoft Link command <name> (Serious)
+'------------------------------------------------------------------------------
+ ^b4004:  Don't know Microsoft Link command <name> (Serious)^b
+
+     ^bExplanation:^b  You have entered a Microsoft command line option that
+     CA-Clipper/Exospace does not recognize.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4005:        Bad small block allocation (Internal)
+'------------------------------------------------------------------------------
+ ^b4005:  Bad small block allocation (Internal)^b
+
+     ^bExplanation:^b  An internal CA-Clipper/Exospace error.
+
+     ^bAction: ^b call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4007:        Can't find default library (Serious)
+'------------------------------------------------------------------------------
+ ^b4007:  Can't find default library (Serious)^b
+
+     ^bExplanation:^b  The default library is not where CA-Clipper/Exospace
+     expects to find it, or it does not exist.  CA-Clipper/Exospace looks for
+     libraries in the current directory first, and then in the path set in
+     the DOS environment variable LIB.  The default libraries are those
+     specified by the compiler through special records in the object file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4008:        Can't find indicated file (Serious)
+'------------------------------------------------------------------------------
+ ^b4008:  Can't find indicated file (Serious) ^b
+
+     ^bExplanation:^b  You have specified a file without adequate path
+     information, or the file does not exist.  For .OBJ files,
+     CA-Clipper/Exospace searches the current directory first, then looks in
+     the path set in the DOS environment variable OBJ.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4009:        <Segment(text)>: Can't find named segment (Warning)
+'------------------------------------------------------------------------------
+ ^b4009:  <Segment(text)>: Can't find named segment (Warning) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace cannot find the named segment or
+     one of the segments that you specified for a group.
+
+     ^bAction: ^b Check for spelling errors or missing underscores.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4010:        Unable to load library object <obj_name> (Fatal)
+'------------------------------------------------------------------------------
+ ^b4010:  Unable to load library object <obj_name> (Fatal) ^b
+
+     ^bExplanation:^b  The named object in the library has an unsupported
+     format or is corrupted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4013:        Can't open indicated file. (Serious)
+'------------------------------------------------------------------------------
+ ^b4013:  Can't open indicated file. (Serious) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace cannot open a file you indicated.
+     This error message appears most often if you are linking across a
+     network that locks files.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4014:        Unable to process file (Serious)
+'------------------------------------------------------------------------------
+ ^b4014:  Unable to process file (Serious) ^b
+
+     ^bExplanation:^b  The file can be found, but not opened.
+
+     ^bAction: ^b Make sure you have enough memory available to
+     CA-Clipper/Exospace.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4025:        Invalid record type <nn> at file offset <0xnnnn>.  (Warning)
+'------------------------------------------------------------------------------
+ ^b4025:  Invalid record type <nn> at file offset <0xnnnn>.  (Warning)^b
+
+     ^bExplanation:^b  Using the Microsoft object module format,
+     CA-Clipper/Exospace has found a 2-digit hexadecimal record type that it
+     does not recognize.  The object module may be corrupted.
+
+     ^bAction: ^b Try recompiling the object.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4028:        Insufficient memory. Program aborted. Try GLUV. (Fatal)
+'------------------------------------------------------------------------------
+ ^b4028:  Insufficient memory. Program aborted. Try GLUV. (Fatal)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace does not have enough memory to
+     link your program.
+
+     ^bAction: ^b Increase DPMI Memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4029:        Multiple definition of <symbol> from file <name> (Symbol...
+'------------------------------------------------------------------------------
+ ^b4029:  Multiple definition of <symbol_name> from file <filename>
+ ^b       (Symbol definition)
+
+     ^bExplanation:^b  You have defined the same public symbol in two
+     different object files.  The name of the second file is shown in the
+     error message.  Your .MAP file tells you the name of the first file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4030:        Attempt to re-assign segment <segment_name> in group <group>...
+'------------------------------------------------------------------------------
+ ^b4030:  Attempt to re-assign segment <segment_name> in group <group_name>
+ ^b       to group <group_name> (Serious)
+
+     ^bExplanation:^b  You have assigned the same segment to two different
+     groups.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4032:        No specified files found to link. (Fatal)
+'------------------------------------------------------------------------------
+ ^b4032:  No specified files found to link. (Fatal) ^b
+
+     ^bExplanation:^b  You have not specified any recognizable object modules
+     to link.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4034:        Not enough file handles to perform link (Fatal)
+'------------------------------------------------------------------------------
+ ^b4034:  Not enough file handles to perform link (Fatal) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace reuses file handles after it reads
+     a file into memory, starting with the least recently used, but you must
+     have enough handles for all open output files, and three extra.
+
+     ^bAction: ^b Make sure that your CONFIG.SYS file specifies enough file
+     handles.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4036:        Can't open output file (Fatal)
+'------------------------------------------------------------------------------
+ ^b4036:  Can't open output file (Fatal)^b
+
+     ^bExplanation:^b  One of the output files specified in your link cannot
+     be opened.  The output file already exists and is write locked, or the
+     drive is write protected.  Possibly your network denied access to the
+     drive.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4037:        No more space for library symbol tables (Fatal)
+'------------------------------------------------------------------------------
+ ^b4037:  No more space for library symbol tables (Fatal) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace was denied a huge memory
+     allocation it needed to read in the library directory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4038:        File read error. Position: <where>, Size: <read_length> (Fatal)
+'------------------------------------------------------------------------------
+ ^b4038:  File read error. Position: <where>, Size: <read_length> (Fatal) ^b
+
+     ^bExplanation:^b  Your file contains an error at the indicated position.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4039:        Segment <segment_name> is greater than 64KB in length (Serious)
+'------------------------------------------------------------------------------
+ ^b4039:  Segment <segment_name> is greater than 64KB in length (Serious) ^b
+
+     ^bExplanation:^b  The segment has grown beyond the 64Kb limit for 16-bit
+     executables.  Most likely, the segment has contributions from more than
+     one object module.  _DATA is a likely candidate.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4040:        Stack size override less than computed stack length (Warning)
+'------------------------------------------------------------------------------
+ ^b4040:  Stack size override less than computed stack length (Warning)^b
+
+     ^bExplanation:^b  Your stack size override is less than the stack size
+     CA-Clipper/Exospace estimates that you need.  To arrive at its estimate,
+     CA-Clipper/Exospace uses the sum of the lengths of all the stack segment
+     definitions that it encounters during the link.  CA-Clipper/Exospace
+     honors your override.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4041:        Syntax error, command line argument <argument> (Fatal)
+'------------------------------------------------------------------------------
+ ^b4041:  Syntax error, command line argument <argument> (Fatal) ^b
+
+     ^bExplanation:^b  You have entered a command line argument incorrectly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4042:        Unknown file type (Fatal)
+'------------------------------------------------------------------------------
+ ^b4042:  Unknown file type (Fatal) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace opens each file listed on the
+     command line and examines the first byte in an attempt to determine
+     whether it is an object or library file.  The first byte in one of your
+     input files is not valid.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4045:        Total: <number> unresolved symbols (Symbol definition)
+'------------------------------------------------------------------------------
+ ^b4045:  Total: <number> unresolved symbols (Symbol definition) ^b
+
+     ^bExplanation:^b  You have the displayed number of undefined symbols in
+     your compiled modules.  The symbol names are listed.  This message
+     normally appears during development, while you are still writing program
+     modules.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4046:        Unsupported fixup type found (Warning)
+'------------------------------------------------------------------------------
+ ^b4046:  Unsupported fixup type found (Warning) ^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace has found a fixup type that it
+     does not recognize.  CA-Clipper/Exospace recognizes all Microsoft fixup
+     types, but the Intel OMF specification defines additional fixup types
+     that CA-Clipper/Exospace does not recognize.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4047:        Current and previous file versions inconsistent  (Serious)
+'------------------------------------------------------------------------------
+ ^b4047:  Current and previous file versions inconsistent  (Serious)^b
+
+     ^bExplanation:^b  After a file has been read into memory, its handle may
+     be reused if necessary.  If the file is needed again, it is assigned
+     another handle and read again.  If the file has changed in the meantime,
+     you see this message.  It is most likely to occur if the file is on a
+     network.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4049:        Invalid seg record <segname> from module -<module_name>...
+'------------------------------------------------------------------------------
+ ^b4049:  Invalid seg record <segname> from module -<module_name>. (Internal)
+
+     ^bExplanation:^b  The named module contains an invalid segment record.
+
+     ^bAction: ^b Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4050:        Error reading command script file (Serious)
+'------------------------------------------------------------------------------
+ ^b4050:  Error reading command script file (Serious) ^b
+
+     ^bExplanation:^b  The command file you are using to run
+     CA-Clipper/Exospace contains errors, or does not match the personality
+     set in the CA-Clipper/Exospace environment variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4052:        Unable to read <library_name>, invalid library format -(Fatal)
+'------------------------------------------------------------------------------
+ ^b4052:  Unable to read <library_name>, invalid library format -(Fatal) ^b
+
+     ^bExplanation:^b  You have specified a file as a library, but it does
+     not have the expected library format.  Possibly the file is corrupted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4053:        Object file contains too many <class> records (Fatal)
+'------------------------------------------------------------------------------
+ ^b4053:  Object file contains too many <class> records (Fatal) ^b
+
+     ^bExplanation:^b  In a single object file, you have exceeded the 16,384
+     record limit for one class, such as public, external, or segment.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4054:        Too many relocation selectors (Fatal)
+'------------------------------------------------------------------------------
+ ^b4054:  Too many relocation selectors (Fatal) ^b
+
+     ^bExplanation:^b  An internal CA-Clipper/Exospace error.
+
+     ^bAction: ^b Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4055:        Insufficient disk space. Program aborted. (Fatal)
+'------------------------------------------------------------------------------
+ ^b4055:  Insufficient disk space. Program aborted. (Fatal) ^b
+
+     ^bExplanation:^b  The output files cannot be written because you have
+     run out of disk space.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4056:        Abort error level exceeded (Fatal)
+'------------------------------------------------------------------------------
+ ^b4056:  Abort error level exceeded (Fatal)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace error level severity exceeded.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4057:        Premature end of file encountered, file ignored (Serious)
+'------------------------------------------------------------------------------
+ ^b4057:  Premature end of file encountered, file ignored (Serious)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace encountered the end of an object
+     file before it encountered the MODEND record, which marks the logical
+     end of an object file.  CA-Clipper/Exospace ignores the invalid object
+     file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4058:        Bad memory free operation (Internal)
+'------------------------------------------------------------------------------
+ ^b4058:  Bad memory free operation (Internal)^b
+
+     ^bExplanation:^b  An internal CA-Clipper/Exospace error.
+
+     ^bAction: ^b Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4060:        Multiple starting addresses found. Address from -<module>...
+'------------------------------------------------------------------------------
+ ^b4060:  Multiple starting addresses found. Address from -<module_name> used.
+ ^b       (Warning)
+
+     ^bExplanation:^b  You have linked two modules containing a starting
+     address.  CA-Clipper/Exospace ignores the second address.  The modules
+     are named so that you can correct the problem.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4061:        No starting address found (Serious)
+'------------------------------------------------------------------------------
+ ^b4061:  No starting address found (Serious)^b
+
+     ^bExplanation:^b  Your program does not contain a module with a starting
+     address.
+
+     ^bAction: ^b Make sure that you have linked all library or object
+     modules you need.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4063:        Bad symbol table vector. (Fatal)
+'------------------------------------------------------------------------------
+ ^b4063:  Bad symbol table vector. (Fatal)^b
+
+     ^bExplanation:^b  An internal CA-Clipper/Exospace error.
+
+     ^bAction: ^b Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4067:        Out of memory. Last module processed = <modulename>. -(Serious)
+'------------------------------------------------------------------------------
+ ^b4067:  Out of memory. Last module processed = <modulename>. -(Serious)^b
+
+     ^bExplanation:^b  Any modules linked after this module will not have
+     symbols.  Symbols for modules are processed based on the order specified
+     to the linker.
+
+     ^bAction: ^b Try compiling object modules without debugging information.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4080:        Segment <name> already assigned to group <name> (Warning)
+'------------------------------------------------------------------------------
+ ^b4080:  Segment <name> already assigned to group <name> (Warning)^b
+
+     ^bExplanation:^b  You tried to assign a segment that is already in a
+     group to another group.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4081:        Segment <name> definition inconsistent with group <name>...
+'------------------------------------------------------------------------------
+ ^b4081:  Segment <name> definition inconsistent with group <name>,
+ ^b       grouping ignored (Warning)
+
+     ^bExplanation:^b  You tried to assign a segment of one access class to a
+     group of another.  For example, you may have tried to assign a code
+     segment to a data group.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4085:        FILE: <file> Line <line> Incomplete symbol type list (Serious)
+'------------------------------------------------------------------------------
+ ^b4085:  FILE: <file> Line <line> Incomplete symbol type list (Serious)^b
+
+     ^bExplanation:^b  An internal CA-Clipper/Exospace error.
+
+     ^bAction: ^b Call Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4087:        Illegal index field in fixup (Serious)
+'------------------------------------------------------------------------------
+ ^b4087:  Illegal index field in fixup (Serious)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace encountered a malformed or
+     unsupported fixup in the object file.  If you use a Borland compiler
+     without the Vs switch, you will get this error.
+
+     ^bAction:^b  Recompile the object file; if the problem persists, call
+     Computer Associates Technical Support.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4089:        Can't read/write relocation temp file. (Possibly insufficient...
+'------------------------------------------------------------------------------
+ ^b4089:  Can't read/write relocation temp file. (Possibly insufficient disk
+ ^b       space.)
+
+     ^bExplanation:^b  CA-Clipper/Exospace is unable to read the temporary
+     file it created for relocation information.  Somehow, the file has been
+     damaged.
+
+     ^bAction:^b  Set the TMP environment variable to a directory on a local
+     drive.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4090:        Can't open relocation file
+'------------------------------------------------------------------------------
+ ^b4090:  Can't open relocation file^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace is unable to create a temporary
+     file for relocation information.  You either do not have enough memory;
+     or, if you are on a network, you do not have write access to the current
+     drive.
+
+     ^bAction:^b  Use the TMP environment variable to specify a directory for
+     the temporary file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4091:        Conflicting alias of <symbol> from <file> (Symbol -definition)
+'------------------------------------------------------------------------------
+ ^b4091:  Conflicting alias of <symbol> from <file> (Symbol -definition)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace encountered an attempt to use the
+     same symbol as an alias for two different target symbols.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4092:        Conflicting weak linkage of <symbol> from <file> (Symbol...
+'------------------------------------------------------------------------------
+ ^b4092:  Conflicting weak linkage of <symbol> from <file> (Symbol definition)^b
+
+     ^bExplanation:^b  CA-Clipper/Exospace encountered an attempt to define
+     two default resolution symbols for the same target symbol.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:              Not a DOS/16M Executable
+'------------------------------------------------------------------------------
+ ^bNot a DOS/16M Executable^b
+
+     If you get the message "not a DOS/16M executable," your copy of the
+     application may be corrupted.  This could indicate that a virus may
+     exist on your system.  Use a virus scanning program to determine if
+     there is a virus on your system; if there are no viruses, try relinking
+     the application.
+
+     If you encounter this error on any of the CA-Clipper/Exospace
+     distribution files, try reinstalling CA-Clipper/Exospace from the
+     distribution diskettes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:              Extended Memory Not Available
+'------------------------------------------------------------------------------
+ ^bExtended Memory Not Available^b
+
+     CA-Clipper/Exospace uses extended memory, not expanded memory.  If you
+     can configure your memory either way and you are not running under an
+     expanded memory manager, be sure to configure the memory as extended
+     memory.
+
+     If you are using an expanded memory manager that follows the VCPI
+     protocol (such as EMM386, QEMM, or 386MAX), your CA-Clipper/Exospace
+     application allocates its memory from the VCPI host (unless you also
+     have an XMS manager).  Therefore, you do not have to configure it as
+     extended memory.
+
+     If you have a VCPI host and an XMS manager (such as HIMEM.SYS),
+     CA-Clipper/Exospace allocates memory from both the VCPI pool and the XMS
+     pool.
+
+     If you have another program that uses extended memory, see the
+     Troubleshooting section in the "CA-Clipper Protected Mode Linker--
+     EXOSPACE.EXE" chapter of the Programming and Utilities Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

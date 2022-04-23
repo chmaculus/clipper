@@ -1,0 +1,382 @@
+!short: Get System Functions -- Overview                                            ^r^CE4^r
+'------------------------------------------------------------------------------
+
+ ^bDescription^b
+
+    Getsys.prg, the standard GET/READ system, has been restructured to
+    provide a cleaner platform for extensions.
+
+    Some of the functions in the Getsys.prg have been made public so that
+    they can be used when implementing customized Get readers.  These
+    functions are described below.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short: GETACTIVE()        Return the currently active Get object
+'------------------------------------------------------------------------------
+ ^bGETACTIVE()^b
+ Return the currently active Get object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETACTIVE() --> objGet
+
+ ^bReturns^b
+
+     GETACTIVE() returns the current active Get object within the current
+     READ.  If there is no READ active when GETACTIVE() is called, it returns
+     NIL.
+
+ ^bDescription^b
+
+     GETACTIVE() is an environment function that provides access to the
+     active GET object during a READ.  The current active Get object is the
+     one with input focus at the time GETACTIVE() is called.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code uses a WHEN clause to force control to branch to a
+        special reader function.  Within this function, GETACTIVE() retrieves
+        the active Get object:
+
+        @ 10, 10 GET x
+        @ 11, 10 GET y WHEN MyReader()
+        @ 12, 10 GET z
+        READ
+
+        // Called just before second get (above)
+        // becomes current
+        FUNCTION MyReader
+           LOCAL objGet               // Active Get holder
+           objGet := GETACTIVE()      // Retrieve current
+                                      // active Get
+           BarCodeRead( objGet )
+           RETURN (.F.)               // Causes Get to be
+                                      // skipped in READ
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: c52g_002.ngo:"@...SAY" c52g_002.ngo:"READ" c52g_001.ngo:"READMODAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETAPPLYKEY()      Apply a key to a Get object from within a Get reader
+'------------------------------------------------------------------------------
+ ^bGETAPPLYKEY()^b
+ Apply a key to a Get object from within a Get reader
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETAPPLYKEY(<oGet>, <nKey>) --> NIL
+
+ ^bArguments^b
+
+     ^b<oGet>^b is a reference to a Get object.
+
+     ^b<nKey>^b is the INKEY() value to apply to <oGet>.
+
+ ^bReturns^b
+
+     GETAPPLYKEY() always returns NIL.
+
+ ^bDescription^b
+
+     GETAPPLYKEY() is a Get system function that applies an INKEY() value to
+     a Get object.  Keys are applied in the default way.  That is, cursor
+     movement keys change the cursor position within the Get, data keys are
+     entered into the Get, etc.
+
+     If the key supplied to GETAPPLYKEY() is a SET KEY, GETAPPLYKEY() will
+     execute the set key and return; the key is not applied to the Get
+     object.
+
+ ^bNotes^b
+
+     ^b^CFE^b  ^bFocus: ^b The Get object must be in focus before keys are
+        applied. Refer to Get:setFocus and Get:killFocus for more
+        information.
+
+     ^b^CFE^b  ^bCLEAR GETS: ^b The Get object must be in focus before keys
+        are applied.  Refer to Get:setFocus and Get:killFocus for more
+        information.
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: "GETPOSTVALIDATE()" "GETPREVALIDATE()" "GETREADER()" c52g_001.ngo:"READMODAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETDOSETKEY()      Process SET KEY during Get editing
+'------------------------------------------------------------------------------
+ ^bGETDOSETKEY()^b
+ Process SET KEY during Get editing
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETDOSETKEY(<oGet>) --> NIL
+
+ ^bArguments^b
+
+     ^b<oGet>^b is a reference to the current Get object.
+
+ ^bReturns^b
+
+     GETDOSETKEY() always returns NIL.
+
+ ^bDescription^b
+
+     GETDOSETKEY() is a Get system function that executes a SET KEY code
+     block, preserving the context of the passed Get object.
+
+     Note that the procedure name and line number passed to the SET KEY block
+     are based on the most recent call to READMODAL().
+
+ ^bNotes^b
+
+     ^b^CFE^b  If a CLEAR GETS occurs in the SET KEY code, Get:exitState is
+        set to GE_ESCAPE.  In the standard system this cancels the current
+        Get object processing and terminates READMODAL().
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: c52g_001.ngo:"READMODAL()" c52g_002.ngo:"SET KEY" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETPOSTVALIDATE()  Postvalidate the current Get object
+'------------------------------------------------------------------------------
+ ^bGETPOSTVALIDATE()^b
+ Postvalidate the current Get object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETPOSTVALIDATE(<oGet>) --> lSuccess
+
+ ^bArguments^b
+
+     ^b<oGet>^b is a reference the current Get object.
+
+ ^bReturns^b
+
+     GETPOSTVALIDATE() returns a logical value indicating whether the Get
+     object has been postvalidated successfully.
+
+ ^bDescription^b
+
+     GETPOSTVALIDATE() is a Get system function that validates a Get object
+     after editing, including evaluating Get:postBlock (the VALID clause) if
+     present.
+
+     The return value indicates whether the Get has been postvalidated
+     successfully.  If a CLEAR GETS is issued during postvalidation,
+     Get:exitState is set to GE_ESCAPE and GETPOSTVALIDATE() returns true
+     (.T.).
+
+ ^bNotes^b
+
+     ^b^CFE^b  In the default system, a Get:exitState of GE_ESCAPE cancels
+        the current Get and terminates READMODAL().
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: "GETAPPLYKEY()" "GETPREVALIDATE()" "GETREADER()" c52g_001.ngo:"READMODAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETPREVALIDATE()   Prevalidate a Get object
+'------------------------------------------------------------------------------
+ ^bGETPREVALIDATE()^b
+ Prevalidate a Get object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETPREVALIDATE(<oGet>) --> lSuccess
+
+ ^bArguments^b
+
+     ^b<oGet>^b is a reference the current Get object.
+
+ ^bReturns^b
+
+     GETPREVALIDATE() returns a logical value indicating whether the Get
+     object has been prevalidated successfully.
+
+ ^bDescription^b
+
+     GETPREVALIDATE() is a Get system function that validates the Get object
+     for editing, including evaluating Get:preBlock (the WHEN clause) if it
+     is present.  The logical return value indicates whether the Get has been
+     prevalidated successfully.
+
+     Get:exitState is also set to reflect the outcome of the prevalidation:
+
+     ^bGet:exitState Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bGetexit.ch   Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     GE_NOEXIT    Indicates prevalidation success, okay to edit
+     GE_WHEN      Indicates prevalidation failure
+     GE_ESCAPE    Indicates that a CLEAR GETS was issued
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Note that in the default system, a Get:exitState of GE_ESCAPE cancels
+     the current Get and terminates READMODAL().
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: "GETAPPLYKEY()" "GETPOSTVALIDATE()" "GETREADER()" c52g_001.ngo:"READMODAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETREADER()        Execute standard READ behavior for a Get object
+'------------------------------------------------------------------------------
+ ^bGETREADER()^b
+ Execute standard READ behavior for a Get object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETREADER(<oGet>) --> NIL
+
+ ^bArguments^b
+
+     ^b<oGet>^b is a reference to a Get object.
+
+ ^bReturns^b
+
+     GETREADER() always returns NIL.
+
+ ^bDescription^b
+
+     GETREADER() is a Get system function that implements the standard READ
+     behavior for Gets.  By default, READMODAL() uses the GETREADER()
+     function to read Get objects.  GETREADER() in turn uses other functions
+     in Getsys.prg to do the work of reading the Get object.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If a Get object's Get:reader instance variable contains a code
+        block, READMODAL() will evaluate that block in lieu of the call to
+        GETREADER().  For more information refer to the Get:reader reference.
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: "GETAPPLYKEY()" "GETPOSTVALIDATE()" "GETPREVALIDATE()" c52g_001.ngo:"READMODAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: READFORMAT()       Return, and optionally set, the format file code block   ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bREADFORMAT()^b
+ Return, and optionally set, the code block that implements a format (.fmt)
+ file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bREADFORMAT([<bFormat>]) --> bCurrentFormat
+
+ ^bArguments^b
+
+     ^b<bFormat>^b is the name of the code block, if any, to use for
+     implementing a format file.  If no argument is specified, the function
+     simply returns the current code block without setting a new one.
+
+ ^bReturns^b
+
+     READFORMAT() returns the current format file as a code block.  If no
+     format file has been set, READFORMAT() returns NIL.
+
+ ^bDescription^b
+
+     READFORMAT() is a Get system function that accesses the current format
+     file in its internal code block representation.  It lets you manipulate
+     the format file code block from outside of the Get system source code.
+
+     To set a format file, use SET FORMAT (see the SET FORMAT entry in the
+     Reference guide) or READFORMAT().
+
+     READFORMAT() is intended primarily for creating new READ Layers.  The
+     code block that READFORMAT() returns, when evaluated, executes the code
+     that is the format file from which it was created.
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: "READKILL()" "READUPDATED()" c52g_002.ngo:"SET FORMAT*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: READKILL()         Return, and optionally set, the READ terminate flag      ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bREADKILL()^b
+ Return, and optionally set, whether the current READ should be exited
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bREADKILL([<lKillRead>]) --> lCurrentSetting
+
+ ^bArguments^b
+
+     ^b<lKillRead>^b sets the READKILL() flag.  A value of true (.T.)
+     indicates that the current read should be terminated, and a value of
+     false (.F.) indicates that it should not.
+
+ ^bReturns^b
+
+     READKILL() returns the current setting as a logical value.
+
+ ^bDescription^b
+
+     READKILL() is a Get system function that lets you control whether or not
+     to terminate the current READ.
+
+     Unless directly manipulated, READKILL() returns true (.T.) after you
+     issue a CLEAR GETS (see the CLEAR GETS entry in the Reference guide) for
+     the current READ and otherwise returns false (.F.).
+
+     By accessing the function directly, however, you can control the
+     READKILL() flag with its function argument and use it to create new READ
+     Layers.
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: c52g_002.ngo:"CLEAR GETS" "READFORMAT()" "READUPDATED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: READUPDATED()      Return, and optionally set, whether a Get changed        ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bREADUPDATED()^b
+ Return, and optionally set, whether any Get changed during a READ
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bREADUPDATED([<lChanged>]) --> lCurrentSetting
+
+ ^bArguments^b
+
+     ^b<lChanged>^b sets the READUPDATED() flag...A value of true (.T.)
+     indicates that data has changed, and a value of false (.F.) indicates
+     that no change has occurred.
+
+ ^bReturns^b
+
+     READUPDATED() returns the current setting as a logical value.
+
+ ^bDescription^b
+
+     READUPDATED() is a Get system function intended primarily for creating
+     new READ Layers.  It is identical in functionality to UPDATED() (see the
+     UPDATED() entry in the Reference guide), except that it allows the
+     UPDATED() flag to be set.
+
+     READUPDATED() enables you to manipulate the UPDATED() flag from outside
+     of the Get system source code.
+
+ ^bFiles:^b  Library is CLIPPER.LIB, source file is Getsys.prg.
+!seealso: "READFORMAT()" "READKILL()" c52g_001.ngo:"UPDATED()" 
+'------------------------------------------------------------------------------
+
+
+

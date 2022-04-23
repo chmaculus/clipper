@@ -1,0 +1,25 @@
+'------------------------------------------------------------------------------
+                           ------------
+                           VMAPI501.OBJ
+                    ---- (c) 1994 by Mingo --------
+
+  Internal strcture of Clipper 5.01 is slightly different from Clipper
+  5.2, but instead of making a new library specific for 5.01, I've
+  made a small traductor for that structure. This module have been
+  coded in assembler in order to be fast and small. Its name is
+  vmapi501.obj, and it must not be included inside overlays. One
+  example, using RTLINK can be :
+
+      RTLINK FI MYPROG.OBJ, VMAPI501.OBJ LIB MINICBAR
+
+  Possibly, this module can solve similar problems in other libraries
+  coded specifically for the 5.2 version, when the linker shows
+  problems with modules not found wich begins with _xv.
+
+  This module is a part of the MiniCodeBar library, and is not public
+  domain. Using this module with the 5.2's version may result in errors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

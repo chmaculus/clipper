@@ -1,0 +1,29 @@
+'------------------------------------------------------------------------------
+^BSET DELETED^B
+
+    SET DELETED determines whether records that are marked for deletion are
+    included or ignored by other commands.
+
+^USyntax^U
+
+    SET DELETED on/OFF/(<expL>)
+
+^UDefaults^U
+
+    SET DELETED is normally OFF.
+
+^UUsage^U
+
+    WHen SET DELETED is ON, most commands ignore deleted records.  If,
+    however, you refer to a record by record number (GOTO or any command
+    that supports the RECORD scope) the record displays even if marked for
+    deletion.  Additionally, SET DELETED ON has no effect on INDEX and
+    REINDEXing.
+
+    RECALL ALL, however, honors SET DELETED and does not recall any
+    records.
+!seealso: ???.ngo:"DELETE" clip_013.ngo:"INDEX" clip_029.ngo:"RECALL" clip_063.ngo:"SET INDEX" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

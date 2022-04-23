@@ -1,0 +1,2446 @@
+!short:^B Overview Screen Function
+'------------------------------------------------------------------------------
+
+                       ^B Overview Screen Function
+                       ^BÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+
+     It takes us much time to design a screen layout. So, Casual-Kit
+     provides more than 50 functions to support screen  programming.
+
+     The screen functions can be divided into 5 sections, which is
+     ^B<Basic Screen>, <Advance Screen>, <English Box>, <Chinese Box>
+     ^Band <Power Screen>^B. Each section can deal with whole screen
+     programming in difference style, and they can also work together.
+
+
+     ^BBasic Screen
+     ^B~~~~~~~~~~~~
+
+       Functions in this section usually named beginning with ^Bm_^B,
+       and they usually are the shell functions of some clipper commands
+       or improvement from clipper functions.
+
+       These functions are useful for basic screen programming and
+       important for macro programming.
+
+       ^Bm_Cls()^B         Set color and clear screen
+       ^Bm_Say()^B         Similar to @...SAY...COLOR
+       ^Bm_Get()^B         Similar to @ X,Y GET .. WHEN .. VALI.. COLOR
+       ^Bm_pGet()^B        Special m_get()
+       ^Bm_Read()^B        Similar to READ command
+       ^Bm_Prom()^B        Improvement of < @ ... PROM ... command >
+       ^Bm_Menu()^B        Make a simple menu from array
+       ^Bm_Devout()^B      Devpos() + Devout()
+
+       ^Bm_Msg()^B         Common message function, 8 options
+       ^Bm_Alert()^B       Display message and select options
+
+
+     ^BAdvance Screen
+     ^B~~~~~~~~~~~~~~
+
+       Here comes the real support of screen programming, functions in
+       this section usually named beginning with ^BScr_^B, they can be
+       used in both English and Chinese screen.
+
+       Functions in this section usually concern ^BScreen Picture^B.
+
+       for example,
+
+          if x:=savescreen(x1,y1,x2,y2), we call x is a ^BScreen-Picture^B.
+
+       ^BScr_Save()^B      Save screen (include X,Y,COLOR,CURSOR,TEXT)
+       ^BScr_Load()^B      Load screen (include X,Y,COLOR,CURSOR,TEXT)
+
+       ^BCol_Attr()^B      Return the attribute character of color
+       ^BScr_Color()^B     Set text attribute in screen
+       ^BScr_Part()^B      Get a part picture from a screen picture
+       ^BScr_Prest()^B     Restore a part of screen
+
+       ^BScrtoFile()^B     Save screen text to file
+       ^BScrtoMemo()^B     Get  screen text to memo
+       ^BMemotoPict()^B    Translate memo to screen picture
+       ^BMemotoScr()^B     Load screen text from memo
+
+       ^BScr_Open()^B      Expand screen
+       ^BScr_Close()^B     Shrink screen
+
+       ^BScr_Tran()^B      Make a screen picture from a memo (macro,color)
+       ^BScr_Say()^B       Load a screen picture from a memo (macro,color)
+       ^BScr_Menu()^B      Make menu from screen text
+
+       ^BScr_Disp()^B      Display screen from a memo (macro,color,prom)
+       ^BScr_Prom()^B      Make a menu from a prompt array
+       ^BScr_Make()^B      Display screen from a memo (macro,color,menu)
+
+
+     ^BEnglish Screen
+     ^B~~~~~~~~~~~~~~
+
+       Here is a very practical section used to display box/window/menu
+       in English Screen. This section usually named beginning with ^BE_^B.
+
+       ^Be_Dispbox()^B     Display English Box
+       ^Be_Box()^B         Make English Box    (save,expand,shadow)
+       ^Be_Wind()^B        Make English Window (save,expand,shadow)
+       ^Be_Menu()^B        Make English Menu   (save,expand,shadow)
+
+       ^Be_Choice()^B      e_Wind() + aChoice()
+       ^Be_dbEdit()^B      e_Wind() + dbEdit()
+       ^Be_Editmemo()^B    e_Wind() + EditMemo()
+       ^Be_Memoedit()^B    Same as e_EditMemo()
+       ^Be_Edmemo()^B      e_Wind() + EditMemo() + status-indicator.
+
+
+     ^BChinese Screen
+     ^B~~~~~~~~~~~~~~
+
+       Similar to English section, this section is used to display
+       box/window/menu in Chinese Screen. This section usually named
+       beginning with ^BCH_^B.
+
+       ^Bch_Adjust()^B     Adjust window while conflict with chinese character
+       ^Bch_Dispbox()^B    Display Chinese Box
+       ^Bch_Box()^B        Make Chinese Box    (save,expand,shadow,adjust)
+       ^Bch_Wind()^B       Make Chinese Window (save,expand,shadow,adjust)
+       ^Bch_Menu()^B       Make Chinese Menu   (save,expand,shadow,adjust)
+
+       ^Bch_Choice()^B     ch_Wind() + aChoice()
+       ^Bch_Dbedit()^B     ch_Wind() + dbEdit()
+       ^Bch_Editmemo()^B   ch_Wind() + EditMemo()
+       ^Bch_Memoedit()^B   Same as ch_EditMemo()
+       ^Bch_Edmemo()^B     ch_Wind() + EditMemo() + status-indicator
+
+
+     ^BPower Screen
+     ^B~~~~~~~~~~~~
+       This unit includes a special menu system, text button display
+       function and 3D box/menu functions in English and Chinese screen.
+
+       Programming using this section, the screen layout should be
+       luxurious and shocking.
+
+       LazyWriter is an example of this unit.
+
+       ^BMenuMaker() ^B    Make various menu
+       ^BStdMenu()   ^B    Make menu in the standard method of menumaker()
+       ^Be_StdMenu() ^B    combination of e_wind() and stdmenu()
+       ^Bch_StdMenu()^B    combination of ch_wind() and stdmenu()
+
+       ^BButDisp()   ^B    display a button and message
+       ^BButMenu()   ^B    make menu in the method of ButDisp()
+
+       ^BBoxDisp()   ^B    same as E_3DDisp()
+       ^BBoxDraw()   ^B    same as E_3DBox()
+       ^BBoxWind()   ^B    same as E_3DWind()
+       ^BBoxMenu()   ^B    same as E_3DMenu()
+
+       ^BE_3DDisp()  ^B    Display 3D Box and message  (English Screen)
+       ^BE_3DBox()   ^B    Display 3D Box              (English Screen)
+       ^BE_3DWind()  ^B    Display 3D window           (English Screen)
+       ^BE_3DMenu()  ^B    Display 3D menu             (English Screen)
+
+       ^BCH_3DDisp() ^B    Display 3D Box and message  (Chinese Screen)
+       ^BCH_3DBox()  ^B    Display 3D Box              (Chinese Screen)
+       ^BCH_3DWind() ^B    Display 3D window           (Chinese Screen)
+       ^BCH_3DMenu() ^B    Display 3D menu             (Chinese Screen)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^b Basic Screen Functions
+!short: m_Cls()       Set color and clear screen
+'------------------------------------------------------------------------------
+
+    ^bm_Cls ( [<col>], [<x1>], [<y1>], [<x2>], [<y2>] )  ->  NIL
+
+    ^BUsage^B
+
+        Set color to <col>, then clear screen
+
+    ^BSource^B
+
+        func m_cls( col, x1, y1, x2, y2)
+             setcolor( if(empty(col),'w/n,n/w',col) )
+        retu scroll( x1, y1, x2, y2 )
+
+    ^BExample^B
+
+        m_cls()               =>  setcolor(''); clear screen
+        m_cls('w/b',5,5,10)   =>  setcolor('w/b'); scroll(5,5,10,79)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Say()       Similar to @...SAY...COLOR
+'------------------------------------------------------------------------------
+
+    ^bm_Say ( [<x>], [<y>], [<exp>], [<col>] )  ->  <exp>
+
+    ^BUsage^B
+
+       m_Say() is written to instead @...Say...Col command.
+       The only difference is that it always display <exp> to screen
+       no matter device is assigned to SCREEN or PRINTER.
+
+    ^BSource^B
+
+       func m_say( x, y, exp, col)
+            setpos( x, y )
+       retu dispout( exp, col )
+
+    ^BExample^B
+
+       m_say(10,10,'text','w/b')   => @ 10,10 say 'text' color w/b
+       m_say(10,10,tran(x,'9999')) => @ 10,10 say x pict '9999'
+!seealso: "m_Get()" "m_Devout()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Get()       Similar to @ X,Y GET .. WHEN .. VALI.. COLOR
+'------------------------------------------------------------------------------
+
+    ^Bm_Get( [<x>], [<y>], [<col>], <cName>, [<cPict>], ;
+    ^B       [<bValid>], [<b_When>], [<bGet>] )  -->  oGetObj
+
+    ^BUsage^B
+
+        ^BImportant! m_get() can not be used to get the local variables.
+
+        m_Get() is written to instead @...GET command in
+        macro programming or clipper programming.
+        m_get() provides a simple way to make a Get-Object.
+
+        <x>,<y>,<col> default is row(),col(),setcolor()
+
+
+    ^BExample^B
+
+     (1) @ 1,10 get var1 pict "9999" when x>0 vali var1<600
+         @ 2,10 get var2 pict "xxxx" color w/b
+         read
+
+     (2) getlist:={}
+         aadd( getlist, m_get(1,10,,'var1','9999',{||var1<600},{||x>0}) )
+         aadd( getlist, m_get(2,10,'w/b','var2','xxxx') )
+         m_read(getlist)       // or: readmodal(getlist); getlist:={}
+
+     ş There are no difference between (1) and (2). You may feel that it
+       is more complex in example (2), but m_Get() is more flexible.
+       If you want to write macro program or using Get-Object in clipper,
+       m_get() is a simple way.
+!seealso: "m_pGet()" "m_say()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_pGet()      Special m_get()
+'------------------------------------------------------------------------------
+
+    ^Bm_pGet ( [<x>], [<y>], [<col>], <cProm>, <bValid>, [<bWhen>])
+    ^B      -> oGetObj
+
+    ^BUsage^B
+
+        m_pGet() make a special Get-Object that it display <cProm> in
+        the screen only. <bVaild> is the really action will be done.
+
+        m_pGet() is useful to modify memoedit or do other things while
+        GET-OBJECT active.
+
+    ^BExample^B
+
+         cprom:='press enter to edit memo...'
+          @ 10,0 get cprom vali done(.t.,if(lastkey()=13,m:=memoedit(m),))
+          read
+
+         cprom:='press enter to edit memo...'
+          bact :={ || if(lastkey()=13,m:=memoedit(m),), .t. }
+          readmodal( { m_pget(10,0,'w/b',cprom,bact) } )
+!seealso: "m_Get()" "m_Read()" "m_Say()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Read()      Similar to READ command
+'------------------------------------------------------------------------------
+
+    ^Bm_Read ( oGetObj, lSave )   --> NIL
+
+    ^BUsage^B
+
+        m_Read() is used to instead READ command.
+
+        Sometimes, using readmodal() directly maybe more simple.
+
+    ^BSource^B
+
+        func m_read( oGetObj, lSave )
+             readmodal( if( oGetObj=nil, GETLIST, oGetObj ) )
+             if(lSave=.t., ,if(oGetObj=nil, GETLIST:={}, oGetObj:={}) )
+        retu nil
+!seealso: "m_Get()" "m_pGet()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Prom()      Improvement of < @ ... PROM ... command >
+'------------------------------------------------------------------------------
+
+    ^Bm_Prom ( [<x>], [<y>], <cProm>, [<nWide>] )  --> NIL
+
+    ^BUsage^B
+
+        m_Prom() is an improvement of @...PROMPT command.
+
+        <x>,<y> : default is row(), col()
+        <cProm> is a string having the format:
+
+           [*]|[|]|[<][>] <PromptStr> [ -> Message ]
+
+           [*]       means remarks  (say PromptStr only)
+           [|][<][>] mean center/left/right adjust in <nWide>
+
+    ^BExample^B
+
+          m_prom(10,1,"example->This is an example")
+          m_prom(11,1,"*remarks..........")
+          m_prom(12,1,"> right adjust -> testing ',60)
+
+         =>  @ 10,1 prom "example" mess "This is an example"
+             @ 11,1 say  "remarks......."
+             @ 12,1 prom padl("right adjust",60) mess "testing"
+!seealso: "m_Menu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Menu()      Make a simple menu from array
+'------------------------------------------------------------------------------
+
+    ^bm_Menu ( <aMenuItem> , [<nPos>] )  -> nChoice
+
+    ^BUsage^B
+
+        Make a menu by array.
+
+    ^BSource^B
+
+        func m_menu( ma, mpos )
+        loca zi, zl:=if(ma=nil,0,len(ma))
+        for zi=1 to zl
+          m_prom(ma[zi,1],ma[zi,2],ma[zi,3],if(len(ma[zi])>3,ma[zi,4],nil))
+        next
+        if valtype(mpos)#'N' .or. mpos>0
+           menu to mpos
+        endi
+        retu mpos
+!seealso: "m_Prom()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Devout()    Devpos() + Devout()
+'------------------------------------------------------------------------------
+
+    ^Bm_Devout ( <x>, [<y>], <exp>, [<cPict>], [<col>] )  -> <exp>
+
+    ^BSource^B
+
+        func m_devout( x, y, exp, cPict, col )
+             devpos(x,y)
+        retu if( empty(cPict), devout(exp,col), devoutpict(exp,cPict,col) )
+!seealso: "m_say()" "m_get()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Msg()       Common message function, 8 options
+'------------------------------------------------------------------------------
+
+    ^Bm_Msg ( <cMsg>, [<cMode>], [<x>], [<y>], [<Wide>], [<col>] )
+
+    ^BUsage^B
+
+       m_Msg() is used to display a line of message.
+
+       <x>,<y>,<wide>,<col> default is  24,0,maxcol(),'w+/br'
+
+       <cMode> is a string having these options
+
+       M|  -> center adjust
+        >  -> right  adjust
+        <  -> left   adjust  ( default       )
+
+        S  -> make a sound   ( makesound()   )
+        B  -> bell           ( qqout(chr(7)) )
+
+        K  -> wait a key and return <nKeyCode>
+        C  -> wait a key and return Chr(<nKeyCode>)
+        U  -> wait a key and return Uppe(chr(<nKeyCode>))
+
+        Note: you can also describe the inkey time by add a number in the
+              first of <cMode>  ( pl.  m_msg(' message ..', '3k')  )
+
+        R  -> if 'KCU' in <cMode>, restore screen before return
+              else return scr_save(...)  < Notice: not savescreen() ! >
+                          ^^^^^^^^^^^^^
+    ^BExample^B
+
+        s:=' a message .........'
+        m_msg(s)                        //  display
+        m_msg(s,'|KS')                  //  center-display,wait-key,sound
+        m_msg(s,'SC')                   //  center-display,bell
+        m_msg(s,'>RSU',20,10,30,'w/b')  //  right-display,sound,wait,...
+
+        if m_msg('Sure?  Y/[N]','SUR') = 'Y'   // default = 'No'
+           // do something .....
+        endi
+
+        if m_msg('Sure?  [Y]/N','8 SUR') # 'N' // Default = 'Yes'
+           // do something .....               // 8 seconds to confirm
+        endi
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Alert()     Display message and select options
+'------------------------------------------------------------------------------
+
+    ^Bm_Alert( <cMsg>, [<cDelim>], [<nPos>], [<x>], [<y>], ;
+    ^B         [<nWidth>], [<cColor>] )   -> nChoice
+
+    ^BUsage^B
+
+        Display a line of message, and make a options menu for choosen.
+
+        This function is similar to m_msg(), it will display the message
+        at <x,y> in <nWidth> character, then it will make a menu based on
+        the display message. for example :
+
+          ^Bm_alert( 'Do you want to cancel ?   Yes  No')
+
+        The 'Yes' and 'No' will be pickuped to be two menu item for choosen.
+
+        <cMsg>   is the message to be displayed.
+
+        <cDelim> is the flag character for making menu. default is '?',
+                 i.e. the character word right of '?' will be regarded
+                 as menu item.
+
+        <nPos>   is the begin position of menu. If <nPos> less than zero,
+                 that means 'Center adjust the message'.
+
+        <X, Y, nWidth> describe where to display the message, defautl is
+                 < maxrow(), 0, 80 >.
+
+        <cColor> default is 'w+/br, gr+/b'
+
+    ^BExample^B
+
+        if m_alert( 'Do you want to exit system?  Yes  No ' ) = 1
+           exit
+        endi
+
+        m_alert( 'Error Found!  Ignore  Failure  Abort', '!' )
+        m_alert( 'Error Found!  Ignore  Failure  Abort', '!', 3 )
+        m_alert( 'Error Found!  Ignore  Failure  Abort', '!', -3 )
+
+        m_alert( 'Printer not ready! Continue Cancel', '!', -1 )
+        m_alert( 'Printer not ready! Continue Cancel', '!', , 0,0 )
+        m_alert( 'Printer not ready! Continue Cancel', '!', , 0,2,76 )
+        m_alert( 'Printer not ready! Continue Cancel', '!',,,,,'w+/b,w+/r' )
+!seealso: "m_msg()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^b Advance Screen Functions
+!short: Scr_Save()    Save screen (include X,Y,COLOR,CURSOR,TEXT)
+'------------------------------------------------------------------------------
+
+    ^bScr_Save ( [<x1>], [<y1>], [<x2>], [<y2>] )  -> aScrInfo
+
+    ^BUsage^B
+
+        Save screen information, include cursor position,cursor status,
+        color, save area, screen picture.
+
+    ^BSource^B
+
+        Func Scr_Save( x1, y1, x2, y2 )
+          default( @x1, 0 );  default( @x2, maxrow() )
+          default( @y1, 0 );  default( @y2, maxcol() )
+        retu { setcursor(), setcolor(), row(), col(), ;
+               x1, y1, x2, y2, savescreen(x1,y1,x2,y2) }
+
+    ^BExample^B
+
+        scr := scr_save(5,5,15,70)
+        // .........
+        scr_load(scr)
+!seealso: "Scr_Load()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Load()    Load screen (include X,Y,COLOR,CURSOR,TEXT)
+'------------------------------------------------------------------------------
+
+    ^bScr_Load ( <aScrInfo> )   ->  NIL
+
+    ^BUsage^B
+
+        Load (restore) screen information.
+        <aScrInfo> is a array made by Scr_Save().
+
+    ^BSource^B
+
+        Func Scr_load( ms )
+          if ! (valtype(ms)='A' .and. len(ms)>=9)
+             retu nil
+          endi
+          setcursor( ms[1] )
+          setcolor( ms[2] )
+          setpos( ms[3], ms[4] )
+          restscreen( ms[5], ms[6], ms[7], ms[8], ms[9] )
+        retu nil
+
+    ^BExample^B
+
+        scr := scr_save(5,5,15,70)
+        // .........
+        scr_load(scr)
+!seealso: "Scr_Save()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Col_Attr()    Return the attribute-character of color
+'------------------------------------------------------------------------------
+
+    ^BCol_Attr ( [<cColor>] )  -> cAttrChar
+
+    ^BUsage^B
+
+       Return the attribute-char of color. Col_Attr() is use to make
+       screen picture. <cColor> default is 'w/n'
+
+    ^BExample^B
+
+       cattr:=col_attr('w+/b')
+       spict:=tran('Test','@R '+repl('x'+cAttr,4))+cattr
+       restscreen(10,0,10,3,spict)
+!seealso: "Scr_Color()" "Scr_Tran()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Color()   Set text attribute in screen
+'------------------------------------------------------------------------------
+
+    ^BScr_Color ( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>] ) -> cScrPict
+
+    ^BUsage^B
+
+        Set text attribute in screen and return a screen picture.
+
+        <Col> can be attribute-character or ASCII of attribute
+              or a color string.  default is 'w/n'
+
+    ^BExample^B
+
+        scr_color()                  // turn full screen dark
+        scr_color(5,5,10,60,'w/b')   // 1: color string
+        scr_color(5,5,10,60,23)      // 2: ASCII Attr, same as (1)
+        scr_color(5,5,10,60,chr(23)) // 3: Attr-Char, same as (1)
+!seealso: "Col_Attr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Part()    Get a part of picture from a screen picture
+'------------------------------------------------------------------------------
+
+    ^BScr_Part ( <cPict>, [<nPX1>], [<nPY1>], [<nPY2>], ;
+    ^B           [<x1>], [<y1>], [<x2>], [<y2>] )   ->  cPicture
+
+    ^BUsage^B
+
+       Get a part of picture from a screen picture.
+
+       Default <nPX1>, <nPY1>, <nPY2>, <x1>, <y1>,   <x2>,   <y2>
+                   0,      0, maxcol,    0,    0, maxrow, maxcol
+
+       ^BNotice that the <nPx2> is not the argument of this function.
+
+    ^BExample^B
+
+       x := savescreen( 5, 5, 23, 70 )
+       y := scr_part( x, 5, 5, 70, 10, 10, 15, 60 )
+       restscreen( 10, 10, 15, 60, y )
+!seealso: "Scr_pRest()" "Scr_Load()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_pRest()   Restore a part of screen
+'------------------------------------------------------------------------------
+
+   ^BScr_pRest ( <cPict>, [<nPX1>], [<nPY1>], [<nPY2>], ;
+   ^B            [<x1>], [<y1>], [<x2>], [<y2>] )    ->  NIL
+
+    ^BUsage^B
+
+       Restore a part of screen. Scr_pRest() is useful to make a
+       expanding/shrinking screen.
+
+       Default <nPX1>, <nPY1>, <nPY2>, <x1>, <y1>,   <x2>,   <y2>
+                    0,      0, maxcol,    0,    0, maxrow, maxcol
+
+       ^BNotice that the <nPx2> is not the argument of this function.
+
+    ^BSource^B
+
+       Func Scr_Prest( S, Sx, Sy1, Sy2, x1, y1, x2, y2)
+       retu restscreen(x1,y1,x2,y2,Scr_Part(S,Sx,Sy1,Sy2,x1,y1,x2,y2))
+
+    ^BExample^B
+
+       x := savescreen( 5, 5, 23, 70 )
+       scr_prest( x, 5, 5, 70, 10, 10, 15, 60 )
+!seealso: "Scr_Part()" "Scr_Load()" "MemoToScr()" "Scr_Open()" "Scr_Close()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ScrToFile()   Save/append screen text to file
+'------------------------------------------------------------------------------
+
+    ^BScrToFile ( <cName>, [<x1>], [<y1>], [<x2>], [<y2>], [<lAdd>] )
+    ^B   -> lSuccess
+
+    ^BUsage^B
+
+       Save/Append Screen Text to File.
+
+       <cName> default is "Screen.CPY"
+       <lAdd> default is .T. ( append screen text )
+
+    ^BSource^B
+
+        Func ScrToFile( fn, x1, y1, x2, y2, fadd)
+        loca zbuf := ScrToMemo(x1,y1,x2,y2)+'==The End=='+chr(13)+chr(10)
+        default(@fn,'screen.cpy')
+        retu memowrit( fn , if( fadd=.f., zbuf, memoread(fn)+zbuf ) )
+
+    ^BExample^B
+
+       ScrToFile()                 => save full screen to screen.cpy
+       ScrToFile('prn')            => print screen
+
+       ScrToFile('Manual.txt',10,0,23,79)
+!seealso: "ScrToMemo()" "MemotoScr()" "MemoToPict()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ScrToMemo()   Get screen text to memo
+'------------------------------------------------------------------------------
+
+    ^BScrToMemo ( [<x1>], [<y1>], [<x2>], [<y2>], [<cLF>] ) -> cMemo
+
+    ^BUsage^B
+
+       Get screen text to memo, <cLF> default is chr(13)+chr(10)
+
+    ^BExample^B
+
+       x:=scrtomemo(5,5,8,20)             //  save screen text
+       memotoscr(x,5,5,8,20,'w+/b')       //  restore in other color
+!seealso: "ScrToFile()" "MemoToScr()" "MemoToPict()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MemoToPict()  translate memo into screen picture
+'------------------------------------------------------------------------------
+
+    ^BMemoToPict ( <cMemo> [<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B             [<Col>], [<cLF>] )   ->  cPicture
+
+    ^BUsage^B
+
+       Translate Memo/String into Screen Picture.
+
+       <col> default is current color
+       <cLF> default is chr(13)+chr(10)
+
+    ^BExample^B
+
+       x:=memoread('screen.cpy')     // read text from file
+       y:=memotopict(x)              // make screen picture
+       restscreen(,,,,y,'w+/b')      // restore screen
+!seealso: "MemoToScr()" "ScrToFile()" "ScrToMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MemoToScr()   restore screen from memo
+'------------------------------------------------------------------------------
+
+    ^BMemoToScr ( <cMemo> [<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B            [<Col>], [<cLF>])  -> NIL
+
+    ^BUsage^B
+
+       Restore Screen Text From Memo/String.
+
+       <col> default is current color
+       <cLF> default is chr(13)+chr(10)
+
+    ^BSource^B
+
+       Func MemoToScr( ms, x1, y1, x2, y2, col, LF)
+       Retu restscreen(MemoToPict(ms,x1,y1,x2,y2,col,LF),x1,y1,x2,y2)
+
+    ^BExample^B
+
+       x:=memoread('screen.txt')             // read text
+       memotoscr(x,10,10,20,70,'w+/b')       // load to screen
+!seealso: "MemoToPict()" "ScrToFile()" "ScrToMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Open()    Expand screen
+'------------------------------------------------------------------------------
+
+    ^BScr_Open ( <bAct/cAct>, [<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B           [<nMsec>], [<nTimes>] )
+
+    ^BUsage^B
+
+       Expand Screen.  <bAct> will be evaluated <nTimes> in <nMsec> delay
+       with expanding coordinate.
+
+       <bAct/cAct> is a code block or a string to describe the operation.
+       <nMsec>  default is 10 (millisecond)
+       <nTimes> default is 10
+
+    ^BExample^B
+
+       Scr_Open( {|a,b,c,d| dispbox(a,b,c,d) } , 5,5,15,70 )
+
+       Scr_Open( "dispbox(x1,y1,x2,y2)", 5, 5, 15, 70 )
+
+        If <bAct> is a string, it will be translated into block,
+         {|x1,y1,x2,y2|...} is its arguments.
+!seealso: "Scr_Close()" "Scr_Part()" "Scr_pRest()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Close()   Shrink screen
+'------------------------------------------------------------------------------
+
+    ^BScr_Close ( <cPict> , [<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B            [<nMsec>], [<nTimes>], [<bAct>] )   ->  NIL
+
+    ^BUsage^B
+
+       Shrink Screen. <cPict> is used to restore screen and <bAct>
+       will be evaluated <nTimes> in <nMsec> delay  with shrinking
+       coordinate.
+
+       <nMsec>  default is 15 (millisecond)
+       <nTimes> default is 10
+       <bAct>   is a code block, take the default usually.
+
+    ^BExample^B
+
+       x:=savescreen(5,5,20,70)          // save screen first
+       s:=memoedit(s,5,5,20,70)          // do something
+       scr_close(x,5,5,20,70)            // restore screen
+!seealso: "Scr_Open()" "Scr_Part()" "Scr_pRest()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Tran()    Make a screen picture from a memo (macro,color)
+'------------------------------------------------------------------------------
+
+    ^BScr_Tran ( <cMemo/aLines>, [<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B           [<Colors>], [<cSymbol>], [<nrow>], [<nCol>] ) -> cScrPicture
+
+    ^BUsage^B
+
+       Make a screen picture from Memo/Array. 3 symbols are provided:
+
+         (1) %Macro%  => replace with value of macro
+         (2) @n       => change to Nth color  (soft define)
+         (2) @@cAttr  => change color         (hard define)
+
+       <Colors> is a string separated with "," or ";" .
+          such as  "w/b,w/r,w/g,w/n" or "w/b;w/r,w/g;w/n"
+       if <Colors> is omitted, the current color set is the default.
+
+       <cSymbol> is the string described the symbols,  default is '@%%;'
+
+         '@'  is the character to define color
+         '%%' is the delimiter of macro exp.
+         ';'  is the character to join two line
+
+       <nRow>,<nCol> point out the beginning position of <cMemo/aLines>
+       usually take the default: <1,1>.
+
+    ^BExample^B
+
+        A text file is used to define the layout of screen :
+
+        ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ@1Test Scr_Tran()@0ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+        ³  Macro Testing: %  time()  %                      ³
+        ³  Color Testing: @2 Color3 @3 Color4 @@ W/N @0         ³
+        ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+        We can read and translate it into a picture, then restore to screen:
+
+        x:=memoread('screen.def')
+        y:=scr_tran(x,0,10,3,70,'w/b,w+/bg,bg+/b,w+/r')
+        restscreen(y,0,10,3,70)
+!seealso: "Scr_say()" "Scr_Disp()" "Scr_Make()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Say()     Load a screen picture from a memo
+'------------------------------------------------------------------------------
+
+    ^BScr_Say ( <cMemo/aLines>, [<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B          [<Colors>], [<cSymbol>], [<nrow>], [<nCol>]) -> NIL
+
+    ^BUsage^B
+
+       Make and Load a screen picture from Memo/Array.
+
+    ^BSource^B
+
+       Func Scr_Say( SP, X1, Y1, X2, Y2, Col, PictDef, SProw, SPcol )
+       retu restscreen(x1, y1, x2, y2, ;
+             Scr_Tran( SP, X1, Y1, X2, Y2, Col, PictDef, SProw, SPcol) )
+
+    ^BExample^B
+
+       Scr_say( Memoread('Screen.def'), 0,10,3,70 )
+!seealso: "Scr_Tran()" "Scr_Disp()" "Scr_Make()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Menu()    Make menu from screen text
+'------------------------------------------------------------------------------
+
+   ^BScr_Menu ( [<x1>], [<y1>], [<x2>], [<y2>], [<cDelim>], ;
+   ^B           [<Col>], [<nPos>] )   ->  nChoice
+
+    ^BUsage^B
+
+       Make Menu from Screen Text. Scr_Menu() provides a simple way
+       to produce a menu.
+
+       <Col> default is 'w/n,n/w'
+
+       <Pos> is the position of menu-bar.
+       If <Pos> is less than 1 , menu will not be activated, otherwise,
+       Scr_Menu() will wait for a choice.
+
+       If <cDelim> is default or a empty string, all words in specified
+       area will be regarded as Menuitem.
+
+       <cDelim> can be use to define special menu :
+
+          ^B<LeftDelim><I|i><RightDelim>   or   <LeftDelim>
+
+       Character "I" is used to separate left/right delimiter definition.
+       It also determine the mode of menuitem:
+
+       "I"  uppercase letter means <Include Mode>, a menu-item will
+            include  the delimiter.
+       "i"  lowercase letter means <unInclude Mode>, a menu-item will
+            not include the delimiter.
+       If "I/i" is default, that means '<unInclude> and <RigthDelim>
+            is a space'.
+
+    ^BExample^B
+
+       No:=Scr_menu()                   // make menu and choice
+       No:=Scr_menu('<<I>>',5,5,10,20)  // make menu and choice
+
+       Scr_Menu('>>',3,3,10,70,'w/b,gr+/br',0)
+                                        // make menu but not activate
+!seealso: "m_Menu()" "Scr_Say()" "Scr_Disp()" "Scr_Make()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Disp()    Display screen from a memo (macro,color,prom)
+'------------------------------------------------------------------------------
+
+    ^BScr_Disp( <cMemo/aLines>,[<x1>], [<y1>], [<x2>], [<y2>], ;
+    ^B          [<Colors>], [<cSymbol>], [<nRow>], [<nCol>] )  ->  aPromList
+
+    ^BUsage^B
+
+        Scr_Disp() is similar to Scr_Say().
+        Scr_Disp() make a screen layout from Memo or Array and return
+        a PromptList to make menu. 3 kinds of symbol provided :
+
+          (1) @n       => change to Nth color
+          (2) %Macro%  => replace with value of macro
+          (3) {prompt} => prompt items (for menu use)
+
+
+       <Colors> is a string described the color set, ',' and ';' are the
+                delimiters.  "w/b,w/r,w/g,w/n" or "w/b;w/r,w/g;w/n"
+       If <Colors> is omitted, the current color set is the default.
+
+       <cSymbol> is the string described symbols, default is '@%%{};'
+
+         '@'  is the character to define color
+         '%%' is the delimiter of macro exp.
+         '{}' is the delimiter of prompt-items
+         ';'  is the character to join two line
+
+       <nRow>,<nCol> point out the beginning position of <cMemo/aLines>
+       usually take the default value: <1,1>.
+
+    ^BExample^B
+
+       scrdef := memoread( 'screen.003' )
+       colors := 'w+/b,w+/br,w+/g,gr+/b,gr+/br,gr+/g'
+       scr_disp(scrdef,10,0,24,79,colors)
+!seealso: "Scr_Say()" "Scr_Tran()" "Scr_Make()" "Scr_Menu()" "Scr_Prom()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Prom()    Make a menu from a prompt array
+'------------------------------------------------------------------------------
+
+    ^BScr_Prom ( <aPromList>, [<Col>], [<nPos>] )   ->  nChoice
+
+    ^BUsage^B
+
+        Make a menu from a array. Scr_Porm() is used to process the
+        return value of Scr_Disp().
+
+        <aPromList> is an array in the following format:
+
+            <aPromList> ::= { <PromItem,...> }
+            <PromItem>  ::= { <x> , <y>, <prom> }
+
+        <Col> default is NIL, <pos> less than 1 means not activate menu.
+
+    ^BSource^B
+
+        Func Scr_Prom( PA, Col, Pos )
+        loca zc:=setcolor(col)
+        loca zi
+         for zi := 1 to len(PA)
+             __AtPrompt( PA[zi,1], PA[zi,2], PA[zi,3] )
+         next
+         if valtype(pos)#'N' .or. pos>0
+            menu to pos
+         end
+         setcolor(zc)
+        retu pos
+
+    ^BExample^B
+
+       x:=memoread('screen.001')
+       y:=scr_disp(x,0,0,24,79,'w/b,w+/b,gr+/br,w+/g')
+       z:=scr_prom(y,'w+/b,w+/br')
+!seealso: "Scr_Make()" "Scr_Disp()" "m_Menu()" "Scr_Menu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scr_Make()    Display and Make a Menu  (macro,color)
+'------------------------------------------------------------------------------
+
+   ^BScr_Make ( <cMemo/aLines>, [<x1>], [<y1>], [<x2>], [<y2>], ;
+   ^B           [<Colors>], [<Pos>], [<PictDef>], [<SProw>], [<SPcol>] ) ;
+   ^B       ->  nChoice
+
+    ^BUsage^B
+
+       Display and make a menu.
+
+       Scr_Make() uses the 2th and 3th color in <Colors> to make menu.
+
+    ^BSource^B
+
+       Func Scr_Make( SP, X1, Y1, X2, Y2, Col, Pos, PictDef, SProw, SPcol )
+       loca zm:=Scr_Disp( SP, X1, Y1, X2, Y2, @Col, PictDef, SProw, SPcol )
+       retu Scr_Prom( zm, col[1%len(col)+1]+','+col[2%len(col)+1], pos )
+
+    ^BExample^B
+
+       s_menu := memoread( 'menu.001' )
+
+       choice := scr_make( s_menu )
+
+       choice := scr_make( s_menu, 0,40,24,79, 'w/b,w+/br,gr+/g' )
+!seealso: "Scr_Disp()" "Scr_Menu()" "Scr_Tran()" "Scr_Say()" "Scr_Menu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^b English Screen Functions
+!short: e_Dispbox()   Display English box
+'------------------------------------------------------------------------------
+
+    ^BE_DispBox ( [<x1>], [<y1>], [<x2>], [<y2>], [<cBoxStr>], [<Col>] )
+
+    ^BUsage^B
+
+        Display English Box.  ( improvement of dispbox() )
+
+        < x1,y1,x2,y2 > default is < 0,0,maxrow(),maxcol() >
+        <col>           default is the current color
+                        ^BE_DispBOx() will not change the current color set.
+
+        <cBoxStr> define the characters of box frame, default is 'ÚÄ¿³ ³ÀÄÙ'.
+        it can be up to 12 characters.
+        Notice that ^B<cBoxStr> is in difference order to DISPBOX()^B, the
+        5th character is the character to fill window.
+
+    ^BExample^B
+
+        e_display(3,3,5,30)      =>          ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                                             ³                    ³
+                                             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+        e_display(3,3,5,30,'12345678')       1222222222222222222223
+                                             4                    5
+                                =>           6777777777777777777778
+
+        e_display(3,3,5,30,'123456789')      1222222222222222222223
+                                             4555555555555555555556
+                                =>           7888888888888888888889
+
+        e_display(3,3,7,30,'ÚÄ¿³ ³ÀÄÙÃÄ´')   ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                                             ³                    ³
+                                =>           ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                                             ³                    ³
+                                             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+        e_display(3,3,7,30,'ÚÄ¿³ ³ÀÄÙÄ')     ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                                             ³                    ³
+                                =>           ³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+                                             ³                    ³
+                                             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+!seealso: "ch_Dispbox()" "e_Box()" "e_Wind()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_Box()       Make English Box    (save,expand,shadow)
+'------------------------------------------------------------------------------
+
+    ^Be_Box ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B        [<cBoxStr>], [<Col>] )     ->  aScrInfo
+
+    ^BUsage^B
+
+        Make English Box. e_Box() is an extension of e_DispBox().
+
+        There are three options can be used in <cMode> :
+        <cMode> ::=  [<Shadow-Color>] [$] [@[n]]
+
+        <Shadow-Color> must be in the first option in <cMode>.
+               First character in upper-case means fill shadow with
+               foreground color  ( 16 colors )
+               First character in lower-case is used to define the text
+               color of shadow. The foreground color default is 'w'.
+                     For example:  'n' = 'w/n'  => dark shadow
+                                   'g' = 'w/g'  => green shadow
+                                   'w+/r'       => red "shadow"
+
+        [$]    means to save old screen information. If '$' in <cMode>
+               e_Box() will return  Scr_Save(x1,y1,x2,y2), otherwise
+               return NIL
+
+        [@[n]] means make an expand box in [n] millisecond delay.
+               [n] default is 10 millisecond, [n] less than 0 means no delay.
+
+        Other arguments are same as e_Display()
+
+    ^BExample^B
+
+        x:=e_box(5,5,10,20,'n$@')    // make box (dark-shadow,save,expand)
+        ..............
+       scr_load(x)                   // restore screen information
+
+       x:=e_box(5,5,18,70,'w @5','ÚÄ¿³ ³ÀÄÙÃÄ´','w/br')
+       x:=e_box(5,5,18,70,'n $ ','ÚÄ¿³ ³ÀÄÙÄ'  ,'w/br')
+       x:=e_box(5,5,18,70,'w @ ','ÚÄ¿³ ³ÀÄÙÃÄ´','w/br')
+!seealso: "e_DispBox()" "e_Wind()" "e_Menu()" "Scr_Save()" "Scr_Load()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_Wind()      Make English Window (save,expand,shadow)
+'------------------------------------------------------------------------------
+
+    ^Be_Wind ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B         [<cBoxStr>], [<Colors>], [<cTitle>] )   ->  aScrInfo
+
+    ^BUsage^B
+
+        Make English Window.  e_Wind() is an extension of e_Box().
+
+        1-6 arguments are same as e_Box().
+
+        Same as e_Box(), <cMode> has three options :
+             <cMode> ::= [<Shadow-Color>] [$] [@[n]]
+
+        <Colors> defines three colors listed below:
+            <Colors> ::= [ Frame-Col [ ;Title-Col [ ;Wind-Col ] ] ]
+
+        <Colors> is separated with ';' and default is made in this order
+            [setcolor()] -> [Frame-Col] -> [Title-Col] -> [Wind-Col]
+
+        ^Be_Wind() will set current color to [Wind-Col]
+
+        <cTitle> will be displayed in the center in [Title-Col]
+
+    ^BExample^B
+
+        x:=e_wind(5,5,10,20,'n$@')   // dark-shadow,save,expand,no title
+        ..............
+       scr_load(x)                   // restore screen information
+
+       x:=e_wind(5,5,18,70,'w @5','ÚÄ¿³ ³ÀÄÙÃÄ´','w/b;w/r;w+/bg','Title')
+       x:=e_wind(5,5,18,70,'n $ ','ÚÄ¿³ ³ÀÄÙÄ'  ,'w/b;w/r;gr+/b','Sample')
+       x:=e_wind(5,5,18,70,'w @ ','ÚÄ¿³ ³ÀÄÙÃÄ´','w/b')
+!seealso: "e_Box()" "e_Menu()" "e_DispBox()" "ch_Box()" "Scr_Save()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_Menu()      Make English Menu   (save,expand,shadow)
+'------------------------------------------------------------------------------
+
+    ^Be_Menu( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B        [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B          <acMenuItems>, [<nPos>] )           ->  nChoice
+
+    ^BUsage^B
+
+        Make English Menu.   e_Menu() is an extension of e_Wind().
+
+        1-8 arguments are same as e_Wind().
+
+        Same as e_Wind(), <cMode> has three options :
+             <cMode> ::= [<Shadow-Color>] [$] [@[n]]
+
+        <Colors> defines three colors listed below:
+            <Colors> ::= [ Frame-Col [ ;Title-Col [ ;Wind-Col] ] ]
+
+        [Wind-Col] will be the color to make menu.
+
+        If '$' in <bMode>, screen will be restored after chosen.
+
+        <acMenuItem> is a array of string to store menuitem.
+            Empty element will be regarded as a space line.
+            if element is '-' will be displayed as a seperate-line
+            If first character is '*', displayed as remarks.
+
+        ^BIf the length of <acMenuItem> is longer than the window lines,
+        ^Bmenu will be made in multi-column in the window.
+
+        <nPos> defines the position of menu-bar, if it is less than 1,
+        menu will not active and 0 will be returned.
+
+    ^BExample^B
+
+        menuitem := { 'item1','item2','*-------','item3',...}
+        menuitem1:= { nil, 'item1','item2', '-' , 'item3', nil }
+        menuitem2:= { 'item1','*item2', '-' , 'item3', nil }
+
+        nchoice  := e_menu(3,5,15,50,'n$@5', , ;
+                           'w/b;w+/r;w/b,gr+/br','Sample',menuitem)
+!seealso: "e_Wind()" "e_Box()" "e_DispBox()" "ch_Menu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_Choice()    e_Wind() + aChoice()
+'------------------------------------------------------------------------------
+
+    ^Be_Choice( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B          [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B          <aMenuitem>, [<alSelect>], [<cbUsrFunc>],   ;
+    ^B          [<nPos>]   , [<nWindRow>]  )           ->  nChoice
+
+    ^BUsage^B
+
+        e_Choice() is a combination of e_Wind() and aChoice().
+
+        1-4  arguments are common
+        5-8  arguments are same as e_Wind()    => pass to e_Wind()
+        9-13 arguments are same as aChoice()   => pass to achoice()
+
+       There are some improvement in this function :
+
+        you can use code block to define user-function.
+
+        '$' options in <cMode> will restore screen after chosen.
+
+        an option is added in <cMode> to make an indicator of current bar
+            %<char>     <char> is the character of indicator
+
+    ^BExample^B
+
+       aitem   := {'aaa','bbb','ccc','ddd','eee','fff','ggg','hhh'}
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       windbox := 'ÚÄ¿³ ³ÀÄÙÃÄ´'
+       e_choice( 10,20,18,38,'n$@%%',windbox,windcol,aitem)
+!seealso: "e_Wind()" "e_Box()" "ch_Choice()" "e_dbEdit()" "e_edMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_dbEdit()    e_Wind() + dbEdit()
+'------------------------------------------------------------------------------
+
+    ^Be_dbEdit ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B           [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B           <dbEdit-Argument 5...12> )            ->  NIL
+
+    ^BUsage^B
+
+        e_dbEdit() is a combination of e_Wind() and dbEdit().
+
+        1-4  arguments are common
+        5-8  arguments are same as e_Wind()
+        9-16 arguments are same as the 5-12th arguments of dbEdit()
+
+       There are some improvement in this function :
+
+        you can use code block to define user-function.
+
+        '$' options in <cMode> will restore screen while exiting.
+
+        an option is added in <cMode> to make two indicator of current
+         field and record.
+            %<charX><CharY>   <charXY> is the character of indicator.
+                              space means disable X or Y indicator.
+
+    ^BExample^B
+
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       windbox := 'ÚÄ¿³ ³ÀÄÙÃÄ´'
+       use sample inde sample
+       e_dbEdit( 10,20,18,38,'n$@%%%',windbox,windcol )
+!seealso: "e_Wind()" "e_Box()" "ch_dbEdit()" "e_Choice()" "e_edMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_MemoEdit()  Same as e_EditMemo()
+!short: e_EditMemo()  e_Wind() + EditMemo()
+'------------------------------------------------------------------------------
+
+    ^Be_EditMemo ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B             [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B             [<cString>], [<EditMemo-Argument 6...13>] ) ;
+    ^B         ->  cString
+
+    ^BUsage^B
+
+        e_EditMemo() is a combination of e_Wind() and EditMemo().
+
+        1-4  arguments are common
+        5-8  arguments are same as e_Wind()
+        9-16 arguments are same as the 1,6-13th arguments of EditMemo()
+
+       There are some improvements in this function :
+
+        you can use code block to define user-function.
+
+        '$' options in <cMode> will restore screen while exiting.
+
+    ^BExample^B
+
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       windbox := 'ÚÄ¿³ ³ÀÄÙÃÄ´'
+       edtext  := e_EditMemo(10,20,18,38,'n$@',windbox,windcol,' Sample..')
+!seealso: "e_Wind()" ck20_002.ngo:"EditMemo()" "e_edMemo()" "ch_EditMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_edMemo()    Edit Memo with a status-indicator.
+'------------------------------------------------------------------------------
+
+    ^Be_edMemo ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B           [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B           [<cString>], [<lEdMode>], [<nLength>],      ;
+    ^B           [<nRow>], [<nCol>], [<cCOl>] )    ->  cString
+
+    ^BUsage^B
+
+        Edit Memo with a status-indicator.
+        e_edMemo() is a combination of e_Wind() and EditMemo().
+
+        1-8  arguments are same as e_Wind()
+        <cEdStr> <lEdMode> <nLength> are same as memoedit()
+
+        <nRow>,<nCol>,<cCOl> define the position and color to display
+        status. The default setting is the bottom-right corner of window
+        and the color of frame.
+
+        you can use code block to define user-function.
+
+        '$' options in <cMode> will restore screen while exiting.
+
+    ^BExample^B
+
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       windbox := 'ÚÄ¿³ ³ÀÄÙÃÄ´'
+       edtext  := e_EditMemo(10,20,18,38,'n$@',windbox,windcol,' Sample..')
+!seealso: "e_Wind()" ck20_002.ngo:"EditMemo()" "e_EditMemo()" "ch_edMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^b Chinese Screen Functions
+!short: ch_Adjust()   Adjust window while conflict with chinese character
+'------------------------------------------------------------------------------
+
+    ^Bch_Adjust ( [<nMax>], [<x1>], [<y1>], [<x2>], [<y2>] )  -> y1
+
+    ^BUsage^B
+
+        Adjust window while conflict with the chinese characters.
+
+        <x1>,<y1>,<x2>,<y2> default is < 0,0,maxrow(),maxcol() >
+
+        ch_Adjust() is written for ch_Box() to adjust window.
+        <nMax> is the max step to adjust window.
+
+        <nMax> = 0 means not to move window
+        <nMax> < 0 means move window left while conflict
+        <nMax> > 0 means move window right while conflict
+
+        <x1>, <y1>, <x2>, <y2>  must be passed by reference ( @ operation )
+
+    ^BExample^B
+
+        ch_adjust(-50,@x1,@y1,@x2,@y2)  // left-adjust window, max step=50
+        ch_dispbox(x1,y1,x2,y2)         // display...
+!seealso: "ch_Dispbox()" "ch_Box()" "ch_Wind()" "ch_Menu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_Dispbox()  Display Chinese Box
+'------------------------------------------------------------------------------
+
+    ^Bch_DispBox ( [<x1>], [<y1>], [<x2>], [<y2>], [<cBoxstr>], [<Col>] )
+
+    ^BUsage^B
+
+        Display Chinese Box.
+
+        < x1,y1,x2,y2 > default is < 0,0,maxrow(),maxcol() >
+        <col>           default is the current color
+                        ^Bch_DispBox() will not change the current color.
+
+        <cBoxStr> describes the characters of box frame
+        default is '¢z¢w¢{¢x¢x¢|¢w¢}', it can be up to 22 characters.
+
+    ^BExample^B
+
+        ch_display(3,3,5,30)      =>         ¢z¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢{
+                                             ¢x                    ¢x
+                                             ¢|¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢}
+
+        ch_display(3,3,5,30,'0123456789ABCDEF')
+                                             0123232323232323232345
+                                =>           67                  89
+                                             ABCDCDCDCDCDCDCDCDCDEF
+
+        ch_display(3,3,7,30,'0123456789ABCDEFGHIJKL')
+                                             0123232323232323232345
+                                             67                  89
+                                =>           GHIJIJIJIJIJIJIJIJIJKL
+                                             67                  89
+                                             ABCDCDCDCDCDCDCDCDCDEF
+
+        ch_display(3,3,7,30,'0123456789ABCDEFGH')
+                                             0123232323232323232345
+                                             67                  89
+                                =>           67GHGHGHGHGHGHGHGHGH89
+                                             67                  89
+                                             ABCDCDCDCDCDCDCDCDCDEF
+!seealso: "ch_Box()" "ch_Wind()" "e_dispbox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_Box()      Make Chinese Box    (save,expand,shadow,adjust)
+'------------------------------------------------------------------------------
+
+    ^Bch_Box ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B         [<cBoxStr>], [<Col>] )     ->  aScrInfo
+
+    ^BUsage^B
+
+        Make Chinese Box. ch_Box() is an extension of ch_DispBox().
+
+        There are four options can be used in <cMode> :
+        <cMode> ::=  [<Shadow-Color>] [$] [#n] [@[n]]
+
+        <Shadow-Color> must be in the first option in <cMode>.
+               First character in upper-case means fill shadow with
+               foreground color  ( 16 colors )
+               First character in lower-case is used to define the text
+               color of shadow. The foreground color default is 'w'.
+                     For example:  'n' = 'w/n'  => dark shadow
+                                   'g' = 'w/g'  => green shadow
+                                   'w+/r'       => red "shadow"
+
+        [$]    means to save old screen information. If '$' in <cMode>
+               ch_Box() will return  Scr_Save(x1,y1,x2,y2), otherwise
+               return NIL
+
+        [#n]   mean adjust window no more than <n> steps
+               n>0 => right-adjust   n<0 => left adjust
+
+        [@[n]] means make an expand box in [n] millisecond delay.
+               [n] default is 10 millisecond, [n] less than 0 means no delay.
+
+        Other arguments are same as ch_Display()
+
+    ^BExample^B
+
+        x:=ch_box(5,5,10,20,'n$#-5@8')  //dark-shadow,save,expand,adjust
+        ..............
+       scr_load(x)                      // restore screen information
+
+       chbox1 := '¢z¢w¢{¢x¢x¢|¢w¢}¢u¢w¢t'
+       chbox2 := '¢z¢w¢{¢x¢x¢|¢w¢}¢w'
+       chbox3 := '¢~¢w¢¡¢x¢x¢¢¢w¢£¢u¢w¢t'
+
+       oldscr := ch_box(5,5,18,70,'w @5 ',chbox1,'w/br')
+       oldscr := ch_box(5,5,18,70,'n $#5',chbox2,'w/br')
+       oldscr := ch_box(5,5,18,70,'w @  ',chbox3,'w/br')
+!seealso: "ch_DispBox()" "ch_Wind()" "e_Box()" "Scr_Save()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_Wind()     Make Chinese Window (save,expand,shadow,adjust)
+'------------------------------------------------------------------------------
+
+    ^Bch_Wind ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B          [<cBoxStr>], [<Colors>], [<cTitle>] )   ->  aScrInfo
+
+    ^BUsage^B
+
+        Make Chinese Window.  ch_Wind() is an extension of ch_Box().
+
+        1-6 arguments are same as ch_Box().
+
+        Same as ch_Box(), <cMode> has four options :
+          <cMode> ::=  [<Shadow-Color>] [$] [#n] [@[n]]
+
+        <Colors> defines three colors listed below:
+
+          <Colors> ::= [ Frame-Col [ ;Title-Col [ ;Wind-Col ] ] ]
+
+        <Colors> is separated with ';' and default is made in this order:
+
+          [setcolor()] -> [Frame-Col] -> [Title-Col] -> [Wind-Col]
+
+        ^Bch_Wind() will set current color to [Wind-Col]
+
+        <cTitle> will be displayed in the center in [Title-Col]
+
+    ^BExample^B
+
+        x:=ch_wind(5,5,10,20,'n$#-6@8') // dark-shadow,save,expand,adjust
+        ..............
+       scr_load(x)                      // restore screen information
+
+       chbox1 := '¢z¢w¢{¢x¢x¢|¢w¢}¢u¢w¢t'
+       chbox2 := '¢z¢w¢{¢x¢x¢|¢w¢}¢w'
+       chbox3 := '¢~¢w¢¡¢x¢x¢¢¢w¢£¢u¢w¢t'
+
+       oldscr := ch_wind(5,5,18,70,'w @5 ',chbox1,'w/br')
+       oldscr := ch_wind(5,5,18,70,'n $#5',chbox2,'w/br')
+       oldscr := ch_wind(5,5,18,70,'w @  ',chbox3,'w/br')
+!seealso: "ch_Box()" "ch_Menu()" "e_Box()" "Scr_Save()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_Menu()     Make Chinese Menu   (save,expand,shadow,adjust)
+'------------------------------------------------------------------------------
+
+
+    ^Bch_Menu( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B         [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B          <acMenuItems>, [<nPos>] )           ->  nChoice
+
+    ^BUsage^B
+
+        Make Chinese Menu.  ch_Menu() is an extension of ch_Wind().
+
+        1-8 arguments are same as ch_Wind().
+
+        Same as ch_Wind(), <cMode> has four options :
+          <cMode> ::=  [<Shadow-Color>] [$] [#n] [@[n]]
+
+        <Colors> defines three colors listed below:
+          <Colors> ::= [ Frame-Col [ ;Title-Col [ ;Wind-Col] ] ]
+
+        [Wind-Col] will be the color to make menu.
+
+        If '$' in <bMode>, screen will be restored after chosen.
+
+        <acMenuItem> is a array of string to store menuitem.
+            Empty element will be regarded as a space line.
+            if element is '-' will be displayed as a seperate-line
+            If first character is '*', displayed as remarks.
+
+        If the length of <acMenuItem> is longer than the window lines,
+        menu will be made in multi-column in the window.
+
+        <nPos> define the position of menu-bar, if it is less than 1,
+        menu will not active and 0 will be returned.
+
+    ^BExample^B
+
+        menuitem := { 'item1','item2','*-------','item3',...}
+        menuitem1:= { nil, 'item1','item2', '-' , 'item3', nil }
+        menuitem2:= { 'item1','*item2', '-' , 'item3', nil }
+
+        nchoice  := ch_menu(3,5,15,50,'n$#3@5', , ;
+                           'w/b;w+/r;w/b,gr+/br','Sample',menuitem)
+!seealso: "ch_Wind()" "ch_Box()" "ch_DispBox()" "e_Menu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_Choice()   ch_Wind() + aChoice()
+'------------------------------------------------------------------------------
+
+
+    ^Bch_Choice( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B           [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B           <aMenuitem>, [<alSelect>], [<cbUsrFunc>],   ;
+    ^B           [<nPos>]   , [<nWindRow>]  )           ->  nChoice
+
+    ^BUsage^B
+
+        ch_Choice() is a combination of ch_Wind() and aChoice().
+
+        1-4  arguments are common
+        5-8  arguments are same as ch_Wind()   => pass to ch_Wind()
+        9-13 arguments are same as aChoice()   => pass to achoice()
+
+       There are some improvement in this function :
+
+       ş you can use code block to define user-function.
+
+       ş '$' options in <cMode> will restore screen after chosen.
+
+       ş an option is added in <cMode> to make an indicator of current bar
+            %<char>     <char> is the character of indicator (double byte)
+            %%          is equal  %¡°  (default character)
+
+    ^BExample^B
+
+       aitem   := {'aaa','bbb','ccc','ddd','eee','fff','ggg','hhh'}
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       ch_choice( 10,20,18,38,'n$#-5%%', ,windcol,aitem)
+!seealso: "ch_Wind()" "ch_Box()" "e_Choice()" "ch_dbEdit()" "ch_edMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_dbEdit()   ch_Wind() + dbEdit()
+'------------------------------------------------------------------------------
+
+    ^Bch_dbEdit ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B            [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B            <dbEdit-Argument 5...12> )            ->  NIL
+
+    ^BUsage^B
+
+        ch_dbEdit() is a combination of ch_Wind() and dbEdit().
+
+        1-4  arguments are common
+        5-8  arguments are same as ch_Wind()
+        9-16 arguments are same as the 5-12th arguments of dbEdit()
+
+       There are some improvements in this function :
+
+       ş you can use code block to define user-function.
+
+       ş '$' options in <cMode> will restore screen before exit.
+
+       ş an option is added in <cMode> to make two indicators of current
+         field and record.
+            %%                is equal  %¡°¡°  (default characters)
+            %<ch_X><Ch_Y>     <ch_XY> is the chinese character of indicator
+                              double space means disable X or Y indicator.
+
+    ^BExample^B
+
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       use sample index sample
+       ch_dbEdit( 10,20,18,38,'n$@%%',,windcol,'Sample of ch_dbEdit' )
+!seealso: "ch_Wind()" "ch_Box()" "e_dbEdit()" "ch_Choice()" "ch_edMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_MemoEdit() Same as ch_EditMemo()
+!short: ch_EditMemo() ch_Wind() + EditMemo()
+'------------------------------------------------------------------------------
+
+    ^Bch_EditMemo ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B              [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B              [<cString>], [<EditMemo-Argument 6...13>] ) ;
+    ^B          ->  cString
+
+    ^BUsage^B
+
+        ch_EditMemo() is an combination of ch_Wind() and EditMemo().
+
+        1-4  arguments are common
+        5-8  arguments are same as ch_Wind()
+        9-16 arguments are same as the 1,6-13th arguments of EditMemo()
+
+       There are some improvements in this function :
+
+        you can use code block to define user-function.
+
+        '$' options in <cMode> will restore screen before exit.
+
+    ^BExample^B
+
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       edtext  := ch_EditMemo(10,20,18,38,'n$@',windbox,windcol,'TiTle')
+!seealso: "ch_Wind()" ck20_002.ngo:"EditMemo()" "ch_edMemo()" "e_EditMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_edMemo()   ch_Wind() + EditMemo() + status-indicator
+'------------------------------------------------------------------------------
+
+    ^Bch_edMemo ( [<x1>], [<y1>], [<x2>], [<y2>] , [<cMode>], ;
+    ^B            [<cBoxStr>], [<Colors>], [<cTitle>] ,       ;
+    ^B            [<cString>], [<lEdMode>], [<nLength>],      ;
+    ^B            [<nRow>], [<nCol>], [<cCOl>] )    ->  cString
+
+    ^BUsage^B
+
+        Edit memo with an indicator of status-indicator.
+        ch_edMemo() is an improvement of ch_Wind() and EditMemo().
+
+        1-8  arguments are same as ch_Wind()
+        <cEdStr> <lEdMode> <nLength> are same as memoedit()
+
+        <nRow>,<nCol>,<cCOl> define the position and color to display
+        status, default is the bottom right corner of window and the
+        color of frame
+
+        you can use code block to define user-function.
+
+        '$' options in <cMode> will restore screen before exit.
+
+    ^BExample^B
+
+       windcol := ' w+/b; gr+/r; w+/b,bg+/br '
+       edtext  := ch_EditMemo(10,20,18,38,'n$@', ,windcol,' Sample..')
+!seealso: "ch_Wind()" ck20_002.ngo:"EditMemo()" "ch_EditMemo()" "e_edMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^b Power Screen Functions
+!short: MenuMaker()   Make various menu
+'------------------------------------------------------------------------------
+
+    ^BMenuMaker( <aObj>, [<Col>], [<nPos>], [<aMacro>], ;
+    ^B           [<bMethod>], [<bOther>] )    ->  nChoice
+
+    ^BUsage^B
+
+        ^BMenuMaker() think that a menu consists of an active menu-item
+        ^Band other inactive items.
+        ^BMenuMaker() can deal with all menu system within this concept.
+
+        To describe a menu, we need the following information.
+
+          Information of each menu items              -> <aObj>
+          Colors or status of active or inactive      -> <Col>
+          Current position of active item             -> <nPos>
+          The method to display menu item             -> <bMethod>
+
+        In additional, we can also describe these information.
+
+          Key replacement, translate unknown key into others -> <aMacro>
+          The additional method to process unknown key.      -> <bOther>
+
+        If the parameters are omitted, menumaker() make menu just like
+        the commands  @..PROM ...... MENU TO ..
+
+        ^BStdMenu(), BoxMenu() and ButMenu() are the examples of menumaker().
+
+    ^BParameters
+    ^B~~~~~~~~~~
+        ^B<aObj>^B is an array described all menu items message. each
+               element is used to describe a menu item which usually
+               includes the information as { X, Y, Prompt_Message }.
+
+        ^B<Col>^B is used to describe the attributes of active item and
+              common items, it usually consists of two color sets.
+              ';' or '|' is the delimiter of the two attributes.
+              '@' in <col> will cause flash while chosen. The flash times
+              is the number of '@' character.
+
+        ^B<nPos>^b is the position of current active menu item.
+               if nPos less than 1, menumaker() will return 0 directly.
+
+        ^B<bMethod>^B is the most important variable in menumaker().
+               it describes the method of displaying the menu items.
+
+               Two parameter will be sent to <bMethod> to display a menu item.
+
+                 <aMenuItem> ---- aObj[nPos]    : info. of the item.
+                 <Attribute> ---- part of <Col> : attribute to display.
+
+               MenuMaker() will call <bMethod> to display active and inactive
+               items in different attribute.
+
+        ^B<bMacro>^b is an array with string elements. When menumaker() meet
+               an unknown key, it will search <bMacro>. If the key code is
+               same as the first character of an element, it will be replaced
+               with the string from second character.
+
+               ^B<bMacro> is useful to make pop-up menu. <Menu.CH> is the
+               ^Bheader for making POP-UP using menumaker().
+
+        ^B<bOther>^b is a block to describe the method to process unknown
+               key. When IDLE  or a unknown key pressed, <bOther> will be
+               evaluated with 4 parameters :
+
+                     < 0 when IDLE or the KeyCode of the unknown key >
+                     < Current position of active item >
+                     < The number of MenuItems:Len(aobj) >
+                     < aObj >
+
+               ^B<bOther> is usually used to define Direct-Key of menu.
+
+   ^B MenuMaker() Keys
+   ^B ~~~~~~~~~~~~~~~~
+        Enter   =>   select current item
+        Esc     =>   abort selection
+        Up      =>   go to previous item
+        Down    =>   go to next item
+        Home    =>   go to first item
+        End     =>   go to last item
+
+       * If <aMacro> is omitted, the following key will be defined as:
+
+            Left    =>   Up
+            Right   =>   Down
+            PgUp    =>   Up   + Up   + Up
+            PgDn    =>   Down + Down + Down
+
+   ^B Author Notes
+   ^B ~~~~~~~~~~~~
+        I like menumaker() very much because it can make the menu
+        I had known and unknown. I have to use the word "usually"
+        to describe the usage of each variable because I don't know
+        the all usage of them even if I wrote this function.
+        Full source of this function will be enclosed with this tools,
+        and I do hope you can use it better than me.
+
+
+    ^BExample^B
+
+        menuitems := { { 2, 3, ' item1 ' }, { 2, 50, ' item2 ' }, ;
+                       { 3,30, ' item3 ' }, { 4, 50, ' item4 ' }  }
+
+        cPopUp    := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                       chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        menumaker( menuitems, 'w/n;n/w' )           // common menu
+
+        menumaker( menuitems, 'w/n;n/w', 3 )        // pos = 3
+
+        menumaker( menuitems, 'w/n;n/w', 0 )        // not active menu
+
+        menumaker( menuitems, 'w/n;n/w', , cPopUp )  // popup menu(submenu)
+
+        menumaker( menuitems, 'w/n;w/n-', , , ;       // special box menu
+                   { |m,c| boxdisp(m[1],m[2],m[3],c) } )
+
+        menumaker( menuitems, 'w/n;w/b', , , ;       // button menu
+                   { |m,c| butdisp(m[1],m[2],m[3],c) } )
+
+        menumaker( menuitems, 'w/n;w/b @@', , , ;        // blink 2 times
+                   { |m,c| butdisp(m[1],m[2],m[3],c) } ) // while chosen
+!seealso: "StdMenu()" "ButMenu()" "E_3dMenu()" "CH_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MenuAlign()  Align items ( usually used for menumaker )
+'------------------------------------------------------------------------------
+
+    ^BMenuAlign( <aItem>/<cItem>, [<x>], [<y>], [<nSkip>], [<nWidth>] )
+    ^B      ->  aItemArray
+
+    ^BUsage^B
+
+       Align items, this function is useful for the menu system of menumaker.
+
+       <aItem>/<cItem> is the items for alignment. if it is a string, the
+                delimiter is ','.   pl,
+
+                Items = { 'View', 'Edit', 'Delete', 'Recall' }
+                Items = 'View,Edit,Delete,Recall'
+
+       <x>, <y> is the begin position of items. default is 0,0
+
+       <nSkip>  is the skip coordinate of items, default is 1
+
+                nSkip>0 means align in vertical, pl, nSkip=2,
+                means align in vertical and skip 2 lines per item.
+
+                nSkip<=0 means align in horizon, pl, nSkip=5
+                means align in horizon and skip 5 space per item.
+
+       <nWidth> is the width of each item, default is 0
+
+                0   means no adjustment.
+                -n  means center adjustment in n character
+                +n  means left adjustment in n character
+
+              * <nWidth> can also be a code block for advanced usage,
+                 please refer to source code if needed.
+
+    ^bExample^b
+
+       Item1 := { 'E^^dit', 'V^^iew', 'D^^elete', 'R^^ecall' }
+       Item2 := 'E^^dit,V^^iew,D^^elete,R^^ecall'
+
+       a1 := menualign( item1, 2, 0, 1, 20 )
+       stdmenu( a1, Color )
+
+       a2 := menualign( item2, 2, 50, 3, -20 )
+       e_3dmenu( a2, color )
+!seealso: "MenuMaker()" "StdMenu()" "ButMenu()" "E_3dMenu()" "CH_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdMenu()     Standard menu system of menumaker()
+'------------------------------------------------------------------------------
+
+    ^BStdMenu( <aItem>, [<Col>], [<nPos>], [<aMacro>] )  -> nChoice
+
+    ^BUsage^B
+
+       Make a menu in the standard method of menumaker()
+
+       <aItem> is an array with the following format elements :
+
+               { <x>, <y>, <Prompt-String> }
+
+               The character before '^^' in the <Prompt-String> will be
+               displayed in the highlight color, and it will become the
+               hot-key of this item.
+
+       <Col>  is the color of menu items in the following format :
+
+             <inactive color>[,<highlight color>] | <active color> [,<h-col>]
+                           ÀÄÄÄÄÄÄÄÄÄÄÄ                 ÄÄÄÄÄÄÄÄÄÙ
+              for example:          "  w/b, w+/b | w+/br, gr+/br "
+
+       <nPos> is the position of active menu item
+
+       <aMacro> is an array described unknown key replacement, it will
+              be passed to menumaker() directly and it is used to make
+              pop-up effect for sub-menu.
+
+
+    ^BExample^B
+
+        menuitem := { { 2, 3, ' E^^dit ' },  { 2, 50, ' R^^un  ' }, ;
+                      { 3,30, ' B^^rowse' }, { 4, 50, ' Ex^^it ' }  }
+
+        cPopUp   := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                      chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        cColor   := "  w/b, w+/b | w+/br, gr+/br "
+
+        stdmenu( menuitem, cColor )
+
+        stdmenu( menuitem, cColor, 2 )
+
+        stdmenu( menuitem, cColor, 2, cPopup )   // used in sub-menu
+!seealso: "MenuMaker()" "E_3dMenu()" "ButMenu()" "E_StdMenu()" "ch_StdMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: e_StdMenu()   Combination of e_wind() and stdmenu()
+'------------------------------------------------------------------------------
+
+    ^BE_StdMenu( [<x1>], [<y1>], [<x2>], [<y2>], [<cMode>],   ;
+    ^B           [<cBoxStr>], [<cCols>], [<cTitle>], <aItems>, ;
+    ^B           [<nPos>], [<aMacro>] )     ->  nChoice
+
+    ^BUsage^B
+
+       Combination of e_Wind() and StdMenu().
+       E_StdMenu() is similar to e_menu(), it display a box-window and
+       the menu.
+
+       ^BBecause it is Combined of e_Wind() and StdMenu(), it inherits
+       ^Bthe features of both e_Wind() and stdmenu() :
+
+         e_Wind()  :  <Box> <Save,Restore> <Expand> <Shadow>
+         StdMenu() :  <HighLight Character> <HotKey> <Key-Macro>
+
+       These parameters are same as e_Menu():
+
+         <x1>, <y1>, <x2>, <y2>, <cMode>, <cBoxStr> <cCols>, <cTitle>, <nPos>
+
+       <aItems> is an array of string elements described menu items.
+            Empty element will be regarded as a space line.
+            if element is '-' will be displayed as a seperate-line
+
+       <aMacro> is same as stdmenu() to define <key-replacement>.
+
+
+    ^BExample^B
+
+        MenuItem  := { ' E^^dit ', ' R^^un  ', '-', ' B^^rowse', ' Ex^^it ' }
+
+        MenuItem1 := { nil, ' E^^dit ', ' R^^un  ', '-', ' B^^rowse', nil }
+
+        cPopUp    := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                       chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        cColor    := " w/b; w+/r; w/b, w+/b | w+/br, gr+/br "
+
+        e_stdmenu( 8,10,16,50, '@$', , cColor, 'Sample Menu', menuitem )
+
+        e_stdmenu( 8,10,16,50, '@$', , cColor, 'Menu', menuitem, , cPopUp )
+!seealso: "StdMenu()" "e_Wind()" "e_Menu()" "ch_StdMenu()" "MenuMaker()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ch_StdMenu()  Combination of ch_wind() and stdmenu()
+'------------------------------------------------------------------------------
+
+    ^BCh_StdMenu( [<x1>], [<y1>], [<x2>], [<y2>], [<cMode>],   ;
+    ^B            [<cBoxStr>], [<cCols>], [<cTitle>], <aItems>, ;
+    ^B            [<nPos>], [<aMacro>] )     ->  nChoice
+
+    ^BUsage^B
+
+       Combination of ch_Wind() and StdMenu().
+       ch_StdMenu() is similar to ch_Menu(), it display an chinese
+       box-window and active the menu.
+
+       ^BBecause it is combined of ch_Wind() and StdMenu(), it inherits
+       ^Bthe features of both ch_Wind() and stdmenu() :
+
+         ch_Wind()  :  <Box> <Save,Restore> <Expand> <Shadow> <ConflictCheck>
+         StdMenu()  :  <HighLight Character> <HotKey> <Key-Macro>
+
+       These parameters are same as ch_Menu():
+
+         <x1>, <y1>, <x2>, <y2>, <cMode>, <cBoxStr> <cCols>, <cTitle>, <nPos>
+
+       <aItems> is an array of string elements described menu items.
+            Empty element will be regarded as a space line.
+            if element is '-' will be displayed as a seperate-line
+
+       <aMacro> is same as stdmenu() to describe <key-replacement>.
+
+
+    ^BExample^B
+
+        MenuItem  := { ' E^^dit ', ' R^^un  ', ' B^^rowse', ' Ex^^it ' }
+
+        cPopUp    := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                       chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        cColor    := " w/b; w+/r; w/b, w+/b | w+/br, gr+/br "
+
+        ch_stdmenu( 8,10,16,50, '@$', , cColor, 'Sample Menu', menuitem )
+
+        ch_stdmenu( 8,10,16,50, '@$', , cColor, 'Menu', menuitem, , cPopUp )
+!seealso: "StdMenu()" "ch_Wind()" "ch_Menu()" "e_StdMenu()" "MenuMaker()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ButDisp()     Display a button and the message
+'------------------------------------------------------------------------------
+
+    ^BButDisp( <x>, <y>, <cProm>, <Col> )  ->  NIL
+    ^BButtonDisp( <x>, <y>, <cProm>, <Col> )  ->  NIL
+
+    ^BUsage
+
+        Display message in a "button" with a shadow.
+        ButDisp() is used to provide a method of menumaker().
+
+        <cProm> is the prompt string, the character before '^^' in <cProm>
+                will be displayed in highlight color.
+
+        <Col> describes the colors in the following format :
+
+             <Text Color>, <Highlight Color> [, <Shadow Color>]
+
+    ^BExample
+
+        butdisp( 10, 10, ' Sample 1 ' )
+        butdisp( 10, 30, ' Sample 2^^ ', 'w/r, gr+/r' )
+        butdisp( 10, 40, ' S^^ample 3 ', 'w+/g, r+/w, n+' )
+!seealso: "ButMenu()" "E_3DDisp()" "MenuMaker()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ButMenu()     Make menu in the method of ButDisp()
+'------------------------------------------------------------------------------
+
+    ^BButMenu( <aItem>, <Col>, <nPos>, <aMacro> )  ->  nChoice
+
+    ^BUsage
+
+        Make menu in the method of ButDisp().
+
+       Similar to StdMenu() and BoxMenu, it inherits the following features :
+
+         < HighLight Character > , < HotKey > and <Key-Macro>
+
+       ^B<aItem> is an array with the following format elements :
+
+               { <x>, <y>, <Prompt-String> }
+
+               The character before '^^' in the <Prompt-String> will be
+               displayed in the highlight color, and it will be the
+               hot-key of this item.
+
+       ^B<Col>  is the color of menu items in the following format :
+
+         <TextColor>,<HighColor>,<ShadowColor> | <T-Col>, <H-col>, <S-Col>
+
+         for example:   " w/b,w+/b | w+/br, gr+/br,n+ "
+
+       ^B<nPos> is the position of active menu item
+
+       <aMacro> is an array described unknown key replacement, it will
+              be passed to menumaker() directly and it is used to make
+              pop-up effect for sub-menu.
+
+    ^BSource
+
+        func ButMenu( aItem, Col, nPos, aMacro )
+        loca bDisp := { |m,c| butDisp(m[1],m[2],m[3],c) }
+        loca bOthe := { |k,p,l,m| k := uppe(chr(k)), m->cKey := k+'^', ;
+                        if( (l:=ascan(m,{|x|cKey$uppe(x[3])}))=0, p, -l ) }
+        priv cKey
+        retu MenuMaker( aItem, Col, nPos, aMacro, bDisp, bOthe )
+
+    ^BExample^B
+
+        menuitem := { { 2, 3, ' E^^dit ' },  { 2, 50, ' R^^un  ' }, ;
+                      { 3,30, ' B^^rowse' }, { 4, 50, ' Ex^^it ' }  }
+
+        cPopUp   := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                      chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        cColor   := " w/b,w+/b | w+/br, gr+/br,n+ "
+
+        butmenu( menuitem, cColor )
+
+        butmenu( menuitem, cColor, 2 )
+
+        butmenu( menuitem, cColor, 2, cPopup )   // used in sub-menu
+!seealso: "ButDisp()" "MenuMaker()" "StdMenu()" "E_3DMenu()" "ch_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: E_3DDisp()    Display a 3D box and message
+'------------------------------------------------------------------------------
+
+    ^BBoxDisp  ( <x>, <y>, <cProm>, <Col> )   ->  NIL
+    ^BE_3DDisp ( <x>, <y>, <cProm>, <Col> )   ->  NIL
+
+    ^BUsage
+
+        Display a prompt message in a 3D box.
+
+        <cProm> is the string of message, '^^' in <cProm> will be displayed
+                in highlight color.
+
+        <Col>   describes the colors and the box attribute. format is
+
+                          <Color> [,<HighLight Color>] [-]
+
+                for example: " w/b , gr+/b - " or " w/b, gr+b "
+
+                ^B'-' will display a "3D Lowered Box"
+                ^Bdefault is "3D Raised Box"
+
+    ^BExample^B
+
+        BoxDisp( 10, 10, ' Sample (1^^) ', 'b/w,gr+/w -' )
+
+        E_3dDisp( 10, 50, ' Sample (2^^) ', 'w/b, w+/b' )
+
+        The result is :
+
+        ^a70ÚÄÄÄÄÄÄÄÄÄÄÄÄ^a7f¿^B                ^a19ÚÄÄÄÄÄÄÄÄÄÄÄÄ^a10¿^B
+        ^a70³^a71 Sample (^a7e1^a71) ^a7f³^B                ^a19³^a17 Sample (^a1f2^a17) ^a10³^B
+        ^a70À^a7fÄÄÄÄÄÄÄÄÄÄÄÄÙ^B                ^a19À^a10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^B
+!seealso: "E_3dBox()" "E_3dWind()" "E_3dMenu()" "MenuMaker()" "ButDisp()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: E_3DBox()     Display a 3D box
+'------------------------------------------------------------------------------
+
+    ^BBoxDraw( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<BoxStr>] ) -> nil
+    ^BE_3dBox( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<BoxStr>] ) -> nil
+
+    ^BUsage
+
+        Display a 3D box.
+
+        <x1>, <y1>, <x2>, <y2>  default ->  0,0, maxrow(), maxcol()
+
+        <Col> is the background color of the box, default is 'W'.
+              '-' in <Col> means make "3D Lowered Box".
+
+        <BoxStr> usually take the default value : "ÚÄ¿³ ³ÀÄÙ"
+
+
+    ^BExample^B
+
+        BoxDraw( 5, 10, 8, 20 )
+
+        E_3dBox( 5, 40, 8, 60, 'b-' )
+
+        E_3dBox( 10, 20, 13, 40, 'w+', 'ÛßÜÛ ÛßÜÛ' )
+
+        The result is :
+
+         ^a7fÚÄÄÄÄÄÄÄÄÄ^a70¿^B                   ^a10ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^a19¿^B
+         ^a7f³         ^a70³^B                   ^a10³                   ^a19³^B
+         ^a7f³         ^a70³^B                   ^a10³                   ^a19³^B
+         ^a7fÀ^a70ÄÄÄÄÄÄÄÄÄÙ^B                   ^a10À^a19ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^B
+
+                    ^a7fÛßßßßßßßßßßßßßßßßßß^a78Ü^B
+                    ^a7fÛ                  ^a78Û^B
+                    ^a7fÛ                  ^a78Û^B
+                    ^a7fß^a78ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ^B
+!seealso: "E_3dDisp()" "E_3dWind()" "E_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: E_3DWind()    Make a window using 3D box
+'------------------------------------------------------------------------------
+
+    ^BBoxWind ( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<cTitle>] ) -> NIL
+    ^BE_3dWind( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<cTitle>] ) -> NIL
+
+    ^bUsage
+
+        Make a window using the 3D box.
+
+        <col> describes colors of the window. The format is
+
+           <Background>, <Foreground of Title>, <Foreground of Text> [-]
+
+           for example:  "w, b, bg+"  or " b; w+; gr+  -"
+
+
+    ^bExample
+
+       boxwind( 5, 10, 17, 30, , 'Sample' )
+       e_3dwind( 5, 10, 17, 30, 'b, w+, gr+ -', 'Sample' )
+!seealso: "E_3dDisp()" "E_3dBox()" "E_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: E_3dMenu()    Make menu in 3D box
+'------------------------------------------------------------------------------
+
+    ^BBoxMenu( <aItem>, <Col>, [<nPos>], [<aMacro>] )  ->  nChoice
+    ^BE_3dMenu( <aItem>, <Col>, [<nPos>], [<aMacro>] )  ->  nChoice
+
+    ^BUsage
+
+        Make menu in the method of E_3dDisp().
+
+       Similar to StdMenu(), it has the following features :
+
+         < HighLight Character > , < HotKey > and <Key-Macro>
+
+       ^B<aItem> is an array with the elements in the following format:
+
+               { <x>, <y>, <Prompt-String> }
+
+               The character before '^^' in the <Prompt-String> will be
+               displayed in the highlight color, and it will be the
+               hot-key of this item.
+
+       ^B<Col>  is the color of menu items in the format :
+
+         <inactive color>,<highlight color> [-] | <active color>, <h-col> [-]
+                      ÀÄÄÄÄÄÄÄÄÄÄÄ                     ÄÄÄÄÄÄÄÄÄÙ
+            for example:       "  w/b, w+/b     | w+/br, gr+/br "
+                               "  w/b, w+/b     | w+/br, gr+/br - "
+                               "  w/b, w+/b   - | w+/br, gr+/br "
+
+            ^B'-' in <Col> will display "Push-in" Box
+
+       ^B<nPos> is the position of active menu item
+
+       <aMacro> is an array described unknown key replacement, it will
+              be passed to menumaker() directly and it is used to make
+              pop-up effect for sub-menu.
+
+
+    ^BSource
+
+        func E_3dMenu( aItem, Col, nPos, aMacro )
+        loca bDisp := { |m,c| E_3ddisp(m[1],m[2],m[3],c) }
+        loca bOthe := { |k,p,l,m| k := uppe(chr(k)), m->cKey:=k+'^', ;
+                        if( (l:=ascan(m,{|x|cKey$uppe(x[3])}))=0, p, -l ) }
+        priv cKey
+        retu MenuMaker( aItem, Col, nPos, aMacro, bDisp, bOthe )
+
+
+    ^BExample^B
+
+        menuitem := { { 2, 3, ' E^^dit ' },  { 2, 50, ' R^^un  ' }, ;
+                      { 3,30, ' B^^rowse' }, { 4, 50, ' Ex^^it ' }  }
+
+        cPopUp   := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                      chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        cColor   := "  w/b, w+/b | w+/br, gr+/br - "
+
+        boxmenu( menuitem, cColor )
+
+        E_3dmenu( menuitem, cColor, 2 )
+
+        E_3dmenu( menuitem, cColor, 2, cPopup )   // used in sub-menu
+!seealso: "E_3dDisp()" "E_3dBox()" "StdMenu()" "MenuMaker()" "ButMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CH_3DDisp()   Display a 3D box and message in Chinese Screen
+'------------------------------------------------------------------------------
+
+    ^BCH_3DDisp ( <x>, <y>, <cProm>, <Col>, [<cFrame>] )   ->  NIL
+
+    ^BUsage
+
+        Display a prompt message in a 3D box in Chinese Screen.
+
+        <cProm> is the string of message, '^^' in <cProm> will be displayed
+                in highlight color.
+
+        <Col>   describes the colors and the box attribute. format is
+
+                          <Color> [,<HighLight Color>] [-] [(] [)]
+
+                for example: " w/b , gr+/b - " or " w/b, gr+b "
+
+                ^B'-' will display a "3D Lowered Box",
+                ^Bdefault is "3D Raised Box"
+                ^B'(' or ')' will display a round box in Chinese Character.
+
+        <cFrame> is the character of the 3D Box, usually take the default.
+
+    ^BExample^B
+
+        ch_3ddisp( 10, 10, ' Sample (1^^) ', 'b/w,gr+/w ' )
+
+        ch_3dDisp( 10, 50, ' Sample (2^^) ', 'w/b, w+/b -' )
+
+        ch_3dDisp( 10, 50, ' Sample (3^^) ', 'w/b, w+/b (' )
+
+        ch_3dDisp( 10, 50, ' Sample (4^^) ', 'w/b, w+/b (-' )
+!seealso: "E_3dDisp()" "CH_3dBox()" "CH_3dWind()" "CH_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CH_3DBox()    Display a 3D box in Chinese Screen
+'------------------------------------------------------------------------------
+
+    ^BCH_3dBox( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<cFrame>] ) -> nil
+
+    ^BUsage
+
+        Display a 3D box in Chinese Screen.
+
+        <x1>, <y1>, <x2>, <y2>  default ->  0,0, maxrow(), maxcol()
+
+        <Col> is the background color of the box, default is 'W'.
+              '-' in <Col> means make "3D Lowered Box".
+              '(' or ')' will display a round box in Chinese Character.
+
+        <BoxStr> usually take the default.
+
+
+    ^BExample^B
+
+        ch_3dBox( 5, 10, 8, 20 )
+
+        ch_3dBox( 5, 40, 8, 60, 'b-' )
+
+        ch_3dBox( 10, 20, 13, 40, 'w+ )' )
+
+        ch_3dBox( 10, 20, 13, 40, 'w+ )-' )
+!seealso: "E_3dBox()" "ch_3dDisp()" "ch_3dWind()" "ch_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CH_3DWind()   Make a Chinese window using 3D box
+'------------------------------------------------------------------------------
+
+    ^BBoxWind ( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<cTitle>] ) -> NIL
+    ^BE_3dWind( [<x1>], [<y1>], [<x2>], [<y2>], [<Col>], [<cTitle>] ) -> NIL
+
+    ^bUsage
+
+        Make a Chinese window using the 3D box.
+
+        <col> describes colors of the window. The format is
+
+           <Background>, <Foreground of Title>, <Foreground of Text> [-] [(] [)]
+
+           for example:  "w, b, bg+"  or " b; w+; gr+  - ("
+
+
+    ^bExample
+
+       ch_3dwind( 5, 10, 17, 30, , 'Sample' )
+
+       ch_3dwind( 5, 10, 17, 30, 'b, w+, gr+ -', 'Sample' )
+
+       ch_3dwind( 5, 10, 17, 30, 'b, w+, gr+ (-', 'Sample' )
+!seealso: "E_3dWind()" "ch_3dDisp()" "ch_3dBox()" "E_3dMenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CH_3dMenu()    Make menu in Chinese 3D box
+'------------------------------------------------------------------------------
+
+    ^BCH_3dMenu( <aItem>, <Col>, [<nPos>], [<aMacro>] )  ->  nChoice
+
+    ^BUsage
+
+        Make menu in the method of ch_3dDisp()  ( Chinese 3D Box ).
+
+        Similar to StdMenu(), it has the following features :
+
+         < HighLight Character > , < HotKey > and <Key-Macro>
+
+       ^B<aItem> is an array with the elements in the following format:
+
+               { <x>, <y>, <Prompt-String> }
+
+               The character before '^^' in the <Prompt-String> will be
+               displayed in the highlight color, and it will be the
+               hot-key of this item.
+
+       ^B<Col>  is the color of menu items in the format :
+
+         <inactive_col>,<highlight_col> [-|(|)] | <active_col>, <h-col> [-|(|)]
+                    ÀÄÄÄÄÄÄÄÄÄÄÄ                        ÄÄÄÄÄÄÄÙ
+            for example:       "  w/b, w+/b     | w+/br, gr+/br "
+                               "  w/b, w+/b     | w+/br, gr+/br - "
+                               "  w/b, w+/b   - | w+/br, gr+/br "
+                               "  w/b, w+/b   (-| w+/br, gr+/br "
+
+            ^B'-' in <Col> will display "Push-in" Box
+            ^B'(' or ')' will display a round box in Chinese Character.
+
+       ^B<nPos> is the position of active menu item
+
+       <aMacro> is an array described unknown key replacement, it will
+                be passed to menumaker() directly and it is used to make
+                pop-up effect for sub-menu.    (MENU.CH)
+
+
+    ^BSource
+
+        func ch_3dMenu( aItem, Col, nPos, aMacro )
+        loca bDisp := { |m,c| ch_3ddisp(m[1],m[2],m[3],c) }
+        loca bOthe := { |k,p,l,m| k := uppe(chr(k)), m->cKey:=k+'^', ;
+                        if( (l:=ascan(m,{|x|cKey$uppe(x[3])}))=0, p, -l ) }
+        priv cKey
+        retu MenuMaker( aItem, Col, nPos, aMacro, bDisp, bOthe )
+
+
+    ^BExample^B
+
+        menuitem := { { 2, 3, ' E^^dit ' },  { 2, 50, ' R^^un  ' }, ;
+                      { 3,30, ' B^^rowse' }, { 4, 50, ' Ex^^it ' }  }
+
+        cPopUp   := { chr(K_LEFT)+chr(K_ESC)+chr(K_UP)+chr(K_ENTER), ;
+                      chr(K_RIGHT)+chr(K_ESC)+chr(K_DOWN)+chr(K_ENTER) }
+
+        cColor   := "  w/b, w+/b | w+/br, gr+/br (-) "
+
+        ch_3dmenu( menuitem, cColor )
+
+        ch_3dmenu( menuitem, cColor, 2 )
+
+        ch_3dmenu( menuitem, cColor, 2, cPopup )   // used in sub-menu
+!seealso: "E_3dmenu()" "ch_3dDisp()" "ch_3dBox()" "ch_3dWind()" "MenuMaker()" 
+'------------------------------------------------------------------------------
+
+
+

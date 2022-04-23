@@ -1,0 +1,66 @@
+'------------------------------------------------------------------------------
+^BLIST^B
+
+    To LIST the result of one or more expressions for each record
+    processed.
+
+^USyntax^U
+
+    LIST [OFF] [<scope>] <exp list> [FOR <condition>]
+    [WHILE <condition>] [TO PRINT] [TO FILE <file>/(<expC>)]
+
+^UArgument^U
+
+    <exp list> is the list of values displayed for each record processed.
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    LIST.  The default is the current record.  If a condition is specified
+    the scope becomes ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to LIST within the given scope.  The WHILE clause specifies the set of
+    records meeting the condition from the current record until the
+    condition fails.
+
+    ^BOff^B: The OFF clause suppresses the display of the record number.
+
+    ^BPrint^B: The TO PRINT clause echoes output to the printer.
+
+    ^BFile^B: The TO FILE clause echoes output to the specified filename.
+    If an extension is not specified, (.txt) is added.
+
+^UUsage^U
+
+    LIST sends the results of the <exp list> to the screen in a tabular
+    format, each column separated by a space.  LIST is identical to DISPLAY
+    with the exception that its default scope is ALL rather than NEXT 1.
+
+^UExamples^U
+
+    One of the unique uses for LIST in Clipper is to provide the record
+    movement, scope, condition, and end-of-file boundary tests for a
+    procedure that traverses a database file.  The procedure itself only
+    processes the current record.  In the example below, Report() operates
+    only on the current record:
+
+    ^RUSE Sales                         ^R
+    ^RSET DEVICE TO PRINT               ^R
+    ^RLIST Report() FOR Branch = "100"  ^R
+    ^RSET DEVICE TO SCREEN              ^R
+    ^R                                  ^R
+    ^RFUNCTION Report                   ^R
+    ^R@ PROW() + 1, 3 SAY Branch        ^R
+    ^R@ PROW() + 1, COL() + 1 SAY Branch^R
+    ^R@ PROW() + 1, COL() + 1 SAY Amount^R
+    ^RRETURN ""                         ^R
+
+    To interrupt a LIST, use INKEY() as a part of the condition such as:
+
+    ^RDISPLAY Branch, Salesman, Amount FOR INKEY() <> 27^R
+!seealso: ???.ngo:"DISPLAY" 
+'------------------------------------------------------------------------------
+
+
+

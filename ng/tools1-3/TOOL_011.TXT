@@ -1,0 +1,328 @@
+!short: Introduction Database Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions presented in this chapter are a useful extension of
+     database handling.  For example, you can determine if there is a memo
+     file (.dbt) associated with a database, the number of decimal places, or
+     the data type of a particular field.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: DBFDSKSIZE() Determines the size of a selected (.dbf) file on a disk drive
+'------------------------------------------------------------------------------
+ ^bDBFDSKSIZE()^b
+ Determines the size of a selected (.dbf) file on a disk drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDBFDSKSIZE() --> nFileSize
+
+ ^bReturns^b
+
+     DBFDSKSIZE() returns the size of the current database on the floppy or
+     hard disk (i.e., how many bytes are saved in this file).
+
+ ^bDescription^b
+
+     One of the DBFDSKSIZE() function's most useful applications is when it
+     is used in conjunction with DBFSIZE().  When the results for both
+     functions indicate there is a deviation in the size of a database, this
+     means a portion of the data is not yet written to the floppy/hard disk.
+     You can also determine if and when new input is written to a floppy/hard
+     disk.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function operates on the currently SELECTed work area.
+
+ ^bExample^b
+
+     Determine if a portion of data input has been written out to disk yet:
+
+     SIZEIF DBF() - DBFDSKSIZE() >= 512
+        * COMMIT               //  Warning! Works only with DOS 3.3 and up
+        USE File
+     ENDIF
+
+!seealso: "DBFSIZE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBFSIZE()    Determines the size of a selected (.dbf) file in memory
+'------------------------------------------------------------------------------
+ ^bDBFSIZE()^b
+ Determines the size of a selected (.dbf) file in memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDBFSIZE() --> nFileSize
+
+ ^bReturns^b
+
+     DBFSIZE() returns the byte size of the current database in working
+     memory.
+
+ ^bDescription^b
+
+     DBFSIZE() determines how much room a database occupies, before you write
+     this file to a disk.  The function is also useful when used in
+     conjunction with DBFDSKSIZE().  When the results for both functions
+     indicate there is a deviation in the size of a database, this means a
+     portion of the data is not yet written to the floppy/hard disk.  You can
+     also determine if and when new input is written to a floppy/hard disk.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function always operates on the currently SELECTed work
+        area.
+
+ ^bExample^b
+
+     Can a (.dbf) file be copied to the target disk?
+
+     USE DATA.
+     IF DISKFREE("A") < DBFSIZE().
+        ? "The file can not be copied.".
+        ? "Insufficient space remaining on disk.".
+     ELSE.
+        COPY TO A:COPY.
+     ENDIF
+
+!seealso: "DBFDSKSIZE()" tool_008.ngo:"DISKFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIELDDECI()  Determines the number of decimal places in a field
+'------------------------------------------------------------------------------
+ ^bFIELDDECI()^b
+ Determines the number of decimal places in a field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFIELDDECI(<nField>) --> nDecimalPlaces
+
+ ^bArgument^b
+
+     ^b<nField> ^b Designates for which numeric data field to determine the
+     number of decimal places.
+
+ ^bReturns^b
+
+     When a field number is valid, FIELDDECI() returns the number of decimal
+     places in a numeric data field.
+
+ ^bDescription^b
+
+     It is important to know how many decimal places are in a data field so
+     you can limit the input of significant digits in the corresponding
+     number.  FIELDDECI() determines the number of decimal places available.
+     This allows you to tailor inputs to the database without changing the
+     program.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you have an invalid field number, the function returns a
+        value of 0.
+
+ ^bExample^b
+
+     Convert the second field to a string with the correct number of decimal
+     places:
+
+     @ 0, 60 SAY "Price:  " + STR(cField2, 8, FIELDDECI(2))
+
+!seealso: "FIELDSIZE()" "FIELDTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIELDNUM()   Determines field number for a specific field in a database file
+'------------------------------------------------------------------------------
+ ^bFIELDNUM()^b
+ Determines the field number for a specific field in a database file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFIELDNUM(<cFieldName>) --> nFieldNumber
+
+ ^bArgument^b
+
+     ^b<cFieldName>^b  Designates to the field name.
+
+ ^bReturns^b
+
+     FIELDNUM() returns the number of the data field.
+
+ ^bDescription^b
+
+     FIELDNUM() is the exact opposite of the CA-Clipper FIELD() function.
+     Use this function when you need a data field number instead of the data
+     field name.  FIELDNUM() determines if a symbol name pertains to a data
+     field or a memory variable (see Examples).
+
+ ^bNote^b
+
+     ^b^CFE^b  If a data field with the name <cFieldName> is not available,
+        the function returns a value of 0.
+
+ ^bExample^b
+
+     Is it a field or a variable?
+
+     IF FIELDNUM("cName") > 0.
+        REPLACE cName WITH UPPER(cName).
+     ELSE.
+        cName  :=  UPPER(cName).
+     ENDIF
+
+!seealso: "DBFDSKSIZE()" tool_008.ngo:"DISKFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIELDSIZE()  Determines the size of a field
+'------------------------------------------------------------------------------
+ ^bFIELDSIZE()^b
+ Determines the size of a field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFIELDSIZE(<nField>) --> nLength
+
+ ^bArgument^b
+
+     ^b<nField>^b  Designates the number of the field to evaluate.
+
+ ^bReturns^b
+
+     FIELDSIZE() returns a numeric value that corresponds to the field length
+     of a valid field number.
+
+ ^bDescription^b
+
+     Use FIELDSIZE() to determine the length (or size) of data field of
+     desired data types.  This determines the window width needed for output
+     to appear without a line break, or the length needed for an input to
+     automatically fit in the database.
+
+ ^bNote^b
+
+     ^b^CFE^b  If there is an invalid data field number, the function returns
+        a value of 0.
+
+ ^bExample^b
+
+     Determine the total length of fields 3 to 5:
+
+     nLength  :=  0
+     FOR I = 3 TO 5
+        nLength := nLength + FIELDSIZE()
+     NEXT
+
+!seealso: "FIELDDECI()" "FIELDTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIELDTYPE()  Determines the data type for a field
+'------------------------------------------------------------------------------
+ ^bFIELDTYPE()^b
+ Determines the data type for a field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFIELDTYPE(<nField>) --> cType
+
+ ^bArgument^b
+
+     ^b<nField>^b  Designates the data field for which the data type is
+     determined.
+
+ ^bReturns^b
+
+     FIELDTYPE() returns a single character that designates the data type of
+     the data field (assuming the data field number is valid).  FIELDTYPE()
+     returns the following characters for the various data field types:
+
+     ^bTable 10-1: Coding for Data Field Types^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCharacter    Data Type^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     C            Character string
+     N            Numeric
+     D            Date
+     L            Logical
+     M            MEMO
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     FIELDTYPE() operates in a similar fashion to the CA-Clipper TYPE()
+     function.  With TYPE(), you must always know only the name of the data
+     field.  However, FIELDTYPE() requires that you only know the data field,
+     not its name.  Use the function to confirm data types for data fields
+     when a program is working with different databases that have different
+     field names.
+
+ ^bNote^b
+
+     ^b^CFE^b  If there are  invalid data field numbers, the function returns
+        a null string.
+
+ ^bExample^b
+
+     Data type for field number 5:
+
+     IF FIELDTYPE(5) = "C"
+        ? "Field No. 5 is a character field!"
+     ENDIF
+
+!seealso: "FIELDSIZE()" "FIELDDECI()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISDBT()      Determines if a memo file (.dbt) is present
+'------------------------------------------------------------------------------
+ ^bISDBT()^b
+ Determines if a memo file (.dbt) is present
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISDBT() --> lPresent
+
+ ^bReturns^b
+
+     ISDBT() returns .T., if a database has a memo file associated with it.
+
+ ^bDescription^b
+
+     ISDBT() determines if a database has a memo file associated with it, and
+     allows you to compress that memo file.
+
+ ^bExample^b
+
+     If the database has a memo file, the database is copied to minimize the
+     memo file:
+
+     USE DATA
+     IF ISDBT()
+        COPY TO TEMP
+        CLOSE DATABASES
+        DELETEFILE("DATA.DBF")
+        DELETEFILE("DATA.DBT")
+        RENAMEFILE("TEMP.DBF", "DATA.DBF")
+        RENAMEFILE("TEMP.DBT", "DATA.DBT")
+     ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

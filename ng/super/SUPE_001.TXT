@@ -1,0 +1,7241 @@
+!short:A2TOSING()            Copies a given element from an array of arrays
+'------------------------------------------------------------------------------
+ FUNCTION A2TOSING()
+
+  Short:
+  ------
+  A2TOSING() Copies a given element from an array of arrays
+
+  Returns:
+  --------
+  <aSingle> => a single dimensioned array
+
+  Syntax:
+  -------
+  A2TOSING(a2Dim,nElement)
+
+  Description:
+  ------------
+  Copies a given element position from a 2 dimensioned
+  array of arrays into a single dimensioned array. <a2dim> is the
+  source 2 dimensioned array. <nElement> is the element position
+  within each sub-array to copy.
+
+  Examples:
+  ---------
+  Both DBSTRUCT() and DIRECTORY() are good examples.
+  Each return an array of arrays. DBSTRUCT() for instance, returns
+  the structure of the current database file in an array whose
+  length is equal to the number of fields in the database file.
+  Each element of the array is a subarray containing information
+  for one field.  The subarrays have the following format:
+
+        { fieldname, fieldtype, fieldlength,fielddecimals}
+
+  To extract a single dimensioned array of, say, the
+  field names, you could use A2TOSING() with
+  A2TOSING(DBSTRUCT(),1). For the field types you would use
+  A2TOSING(DBSTRUCT(),2), etc.
+
+  Here is an example with DIRECTORY()
+
+   aDir         := DIRECTORY()
+   aNames       := A2TOSING(adir,1)
+   nWhichFile   := mchoice(aNames,10,10,20,20,"Which File?")
+
+  Source:
+  -------
+  S_AFTYPE.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AASKIP()              Use for skipblock for arrays in Tbrowse
+'------------------------------------------------------------------------------
+ FUNCTION AASKIP()
+
+  Short:
+  ------
+  AASKIP() Use for skipblock for arrays in Tbrowse
+
+  Returns:
+  --------
+  <nSkipcount> => number skipped, forward or backward
+
+  Syntax:
+  -------
+  AASKIP(nSkip,@nElement,nMaxRows)
+
+  Description:
+  ------------
+  Use this to create the SKIPBLOCK for a tbrowse that browses
+  an array, as in :
+
+    aTbrowseObject:SKIPBLOCK := {|n|aaskip(n,@nElement,len(aArray)}
+
+  <nSkip>      is passed in by Tbrowse as a +- value, or
+               as zero.
+
+  <nElement>   is the current array element number.
+               PASSED IN BY REFERENCE!
+
+  <nMaxrows>   refers to the length of the array being
+               browsed
+
+  Examples:
+  ---------
+  // this example browses the fields in a database
+
+   local nLastKey,  nElement    := 1
+   local aArray := dbstruct()
+   local oTb        := tBrowseNew(2,2,20,78)
+   oTb:addcolumn(tbcolumnew("Name",{||aArray[nElement,1]}))
+   oTb:addcolumn(tbcolumnew("Type", {||aArray[nElement,2]}))
+   oTb:addcolumn(tbcolumnew("Len " , {||aArray[nElement,3]}))
+   oTb:addcolumn(tbcolumnew("Deci",  {||aArray[nElement,4]}))
+   oTb:Skipblock        := {|n|aaskip(n,@nElement,len(aArray)}
+   oTb:goTopBlock       := {||nElement := 1}
+   oTb:goBottomBlock    := {||nElement := len(aArray)}
+
+   while .t.
+     while !oTb:stabilize()
+     end
+     nLastKey := inkey(0)
+     do case
+        /// various actions.....
+     endcase
+   end
+
+  Notes:
+  -------
+  Aaskip() is used by a lot of SuperLib functions, but
+  is very useful by itself for creating array tbrowses.
+
+  Source:
+  -------
+  S_AASKIP.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AAVERAGE()            Determines average of an array with condition
+'------------------------------------------------------------------------------
+ FUNCTION AAVERAGE()
+
+  Short:
+  ------
+  AAVERAGE() Determines average of an array with condition
+
+  Returns:
+  --------
+  <nAverage> => Average of the array
+
+  Syntax:
+  -------
+  AAVERAGE(aTarget,[bCondition])
+
+  Description:
+  ------------
+  <aTarget> is the target array. Normally an array of numeric values.
+
+  [bCondition] is an optional codeblock used to select
+  a subset of the array. This could be used to filter out 0's or
+  non-numeric elements. The block must accept an array element as
+  a parameter, and return true or false <expL> to determine if
+  this element is part of the desired subset.
+
+  Examples:
+  ---------
+   v := AAVERAGE(aSales)
+   v := AAVERAGE(aSales,{|e|valtype(e)=="N".and.e<>0})
+
+  Source:
+  -------
+  S_ASTATS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ABORT()               Pops up dialog box asking: Abort  Don't Abort
+'------------------------------------------------------------------------------
+ FUNCTION ABORT()
+
+  Short:
+  ------
+  ABORT() Pops up dialog box asking: Abort  Don't Abort
+
+  Returns:
+  --------
+  <lDoAbort> => True or False
+
+  Syntax:
+  -------
+  ABORT([cColor],[nTop,nLeft,nBottom,nRight])
+
+  Description:
+  ------------
+  Tests for escape key press at last wait state. If
+  escape key was pressed, pops up a dialog box asking
+      [Abort] [Don't Abort]
+
+  Returns True if [Abort], False if [Don't Abort] or
+  False if last key was not 27 (escape key).
+
+  Box color is sls_popmenu() or optionally [cColor].
+  Box dimensions are: 9,29,13,51 or optionally
+  [nTop,nLeft,nBottom,nRight]
+
+  Examples:
+  ---------
+   INKEY(0)
+   IF ABORT()  // test for lastkey() = 27
+       exit
+   ENDIF
+
+  Source:
+  -------
+  S_ABORT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ADDSPACE()            Pads right of string with spaces
+'------------------------------------------------------------------------------
+ FUNCTION ADDSPACE()
+
+  Short:
+  ------
+  ADDSPACE() Pads right of string with spaces
+
+  Returns:
+  --------
+  <cPaddedString> => String padded with spaces.
+
+  Syntax:
+  -------
+  ADDSPACE(cInString,nPadSpaces)
+
+  Description:
+  ------------
+  Pads right side of <cInString> with <nPadSpaces> spaces.
+
+  Truncates string if <nPadSpaces> is shorter than
+  original string length.
+
+  Examples:
+  ---------
+   ADDSPACE("GARRY",10)     // => "GARRY           "
+
+  Notes:
+  -------
+  For compatibility. In Clipper 5.x , the function
+  PADR() does the same thing.
+
+  Source:
+  -------
+  S_ADDSP.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AEXTRACT()            Extract and return a conditional set from an array
+'------------------------------------------------------------------------------
+ FUNCTION AEXTRACT()
+
+  Short:
+  ------
+  AEXTRACT() Extract and return a conditional set from an array
+
+  Returns:
+  --------
+  <aSubset> => subset of the array
+
+  Syntax:
+  -------
+  AEXTRACT(aSource,bCondition,[nElement])
+
+  Description:
+  ------------
+  Extracts elements meeting <bCondition> from <aSource>
+  and returns them as in an array.
+
+  <bCondition> is a code block that, for each element
+  of <aSource> is passed the element and the position. So for
+  element 3 the codeblock would be called with
+
+    EVAL(bCondition,aSource[3],3)
+
+  [nElement]  if passed signals that <aSource> is an
+  array of arrays, and that [nElement] is to be extracted from
+  each subarray where <bCondition> is true.
+
+  Examples:
+  ---------
+   aNames    := {"Fred","Wilma","Barney","Betty"}
+   aRubbels  := aextract(aNames,{|e|left(e,1)=="B"} )
+
+   aDir := directory()
+   // extract for size > 100,000
+   aBig := aextract(aDir,{|e,n|aDir[n,2]> 100000})
+   // extract only the name element for size > 100,000
+   aBigNames := aextract(aDir,{|e,n|aDir[n,2]> 100000},1)
+
+  Source:
+  -------
+  S_AEXTRA.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AFDECIX()             Returns an array of field DECIMALS for current dbf
+'------------------------------------------------------------------------------
+ FUNCTION AFDECIX()
+
+  Short:
+  ------
+  AFDECIX() Returns an array of field DECIMALS for current dbf
+
+  Returns:
+  --------
+  <aFields> => an array of field DECIMALS for the
+  current dbf
+
+  Syntax:
+  -------
+  AFDECIX()
+
+  Description:
+  ------------
+  AFDECIX() creates and returns an array of field
+  DECIMALS from the current dbf. Unlike AFIELDS(), it does not
+  require an initialized array beforehand.
+
+  Examples:
+  ---------
+   aArray := AFIELDSX()
+   aDeci  := AFDECIX()
+   if (nSelect := mchoice(aArray,10,10,20,20,"Pick Field")) > 0
+      ?"Field "+aArray[nSelect]+" was selected"
+      ?" with  decimals "+aDeci[nSelect]
+   endif
+
+  Source:
+  -------
+  S_AFTYPE.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AFIELDSTYPE()         Returns an array of field names of particular type
+'------------------------------------------------------------------------------
+ FUNCTION AFIELDSTYPE()
+
+  Short:
+  ------
+  AFIELDSTYPE() Returns an array of field names of particular type
+
+  Returns:
+  --------
+  <aFields> => an array of field names of the selected type(s)
+
+  Syntax:
+  -------
+  AFIELDSTYPE(cTypes)
+
+  Description:
+  ------------
+  <cTypes> is a string containing one or more field
+  type symbols
+
+  Valid symbols are:
+
+       C   character    N   numeric
+       L   logical      D    date          M   memo
+
+  If no fields of the specified type(s) exist, an empty
+  array will be returned.
+
+  Examples:
+  ---------
+   aMemos := AFIELDSTYPE("M")  // an array of memo fields
+   aNums  := AFIELDSTYPE("N")  // an array of numeric fields
+   aNums  := AFIELDSTYPE("LD")  // an array of date &logical fields
+
+  Source:
+  -------
+  S_AFTYPE.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AFIELDSX()            Returns an array of field names for current dbf
+'------------------------------------------------------------------------------
+ FUNCTION AFIELDSX()
+
+  Short:
+  ------
+  AFIELDSX() Returns an array of field names for current dbf
+
+  Returns:
+  --------
+  <aFields> => an array of fields for the current dbf
+
+  Syntax:
+  -------
+  AFIELDSX()
+
+  Description:
+  ------------
+  AFIELDSX() creates and returns an array of field names
+  from the current dbf. Unlike AFIELDS(), it does not
+  require an initialized array beforehand.
+
+  Examples:
+  ---------
+
+   aArray := AFIELDSX()
+   nSelect :=   mchoice( aArray ,10,10,20,20,"Pick Field")
+   if  nSelect > 0
+     ?"Field "+aArray[nSelect]+" was selected"
+   endif
+
+  Source:
+  -------
+  S_AFTYPE.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AFLENSX()             Returns an array of field LENGTHS for current dbf
+'------------------------------------------------------------------------------
+ FUNCTION AFLENSX()
+
+  Short:
+  ------
+  AFLENSX() Returns an array of field LENGTHS for current dbf
+
+  Returns:
+  --------
+  <aFields> => an array of field LENGTHS for the
+  current dbf
+
+  Syntax:
+  -------
+  AFLENSX()
+
+  Description:
+  ------------
+  AFLENSX() creates and returns an array of field
+  lengths from the current dbf. Unlike AFIELDS(), it does not
+  require an initialized array beforehand.
+
+  Examples:
+  ---------
+   aArray := AFIELDSX()
+   aTypes := AFTYPESX()
+   aLens  := AFLENSX()
+   aDeci  := AFDECIX()
+
+   if (nSelect := mchoice(aArray,10,10,20,20,"Pick Field")) >  0
+      ?"Field "+aArray[nSelect]+" was selected"
+      ?" of type     "+aTypes[nSelect]
+      ?" of length   "+aLens[nSelect]
+      ?" of decimals "+aDeci[nSelect]
+   endif
+
+  Source:
+  -------
+  S_AFTYPE.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AFTYPESX()            Returns an array of field types for current dbf
+'------------------------------------------------------------------------------
+ FUNCTION AFTYPESX()
+
+  Short:
+  ------
+  AFTYPESX() Returns an array of field types for current dbf
+
+  Returns:
+  --------
+  <aFields> => an array of field types for the current
+  dbf
+
+  Syntax:
+  -------
+  AFTYPESX()
+
+  Description:
+  ------------
+  AFTYPESX() creates and returns an array of field types
+  from the current dbf. Unlike AFIELDS(), it does not
+  require an initialized array beforehand.
+
+  Examples:
+  ---------
+   aArray := AFIELDSX()
+   aTypes := AFTYPESX()
+
+   if (nSelect := mchoice(aArray,10,10,20,20,"Pick Field")) >  0
+
+      ?"Field "+aArray[nSelect]+" was selected"
+      ?" of type     "+aTypes[nSelect]
+
+   endif
+
+  Source:
+  -------
+  S_AFTYPE.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AKOUNT()              Counts exact matches of value in array
+'------------------------------------------------------------------------------
+ FUNCTION AKOUNT()
+
+  Short:
+  ------
+  AKOUNT() Counts exact matches of value in array
+
+  Returns:
+  --------
+  <nMatches>  => Number of matches
+
+  Syntax:
+  -------
+  AKOUNT(aTarget,expWhatever)
+
+  Description:
+  ------------
+  Counts # of exact matches of <expWhatever> in
+  <aTarget>. <expWhatever> can be of any type.
+
+  Examples:
+  ---------
+
+   AFIELDS(aFields,aTypes)
+   nChar  := AKOUNT(aTypes,"C")  // count C fields
+   nNum   := AKOUNT(aTypes,"N")  // count N fields
+   nDate  := AKOUNT(aTypes,"D")  // count D fields
+
+  Notes:
+  -------
+  See also AMATCHES() which allows a code block.
+
+  Source:
+  -------
+  S_AKOUNT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ALENG()               Actual length of an array, less trailing nil elements
+'------------------------------------------------------------------------------
+ FUNCTION ALENG()
+
+  Short:
+  ------
+  ALENG() Actual length of an array, less trailing nil elements
+
+  Returns:
+  --------
+  <aLength>  => Actual array length, less trailing NILs
+
+  Syntax:
+  -------
+  ALENG(aTarget)
+
+  Description:
+  ------------
+  Determines the actual length of <aTarget>, less
+  trailing nils.
+
+  Examples:
+  ---------
+
+   a := {1,2,3,4,5,nil,nil,nil}
+   ?len(a)       // => returns 8
+   ?aleng(a)     // => returns 5
+
+  Notes:
+  ------
+  This was a C function in prior Super.Libs
+
+  Source:
+  -------
+  S_ALENG.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ALLBUT()              Returns all but last x characters
+'------------------------------------------------------------------------------
+ FUNCTION ALLBUT()
+
+  Short:
+  ------
+  ALLBUT() Returns all but last x characters
+
+  Returns:
+  --------
+  <cAllBut> => All but last n characters
+
+  Syntax:
+  -------
+  ALLBUT(cInString,nAllBut)
+
+  Description:
+  ------------
+  Returns all but the rightmost <nAllbutt> letters of
+  <cInString>
+
+  Examples:
+  ---------
+
+   string := "SUPERFUNCTION"
+   string := ALLBUT(string,8)    //  => returns  "SUPER"
+
+  Notes:
+  -------
+  Useful when you don't know the length of a string in
+  order to take left(x) characters.
+
+  Source:
+  -------
+  S_ALLBUT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AMATCHES()            Counts the matches of an array with condition
+'------------------------------------------------------------------------------
+ FUNCTION AMATCHES()
+
+  Short:
+  ------
+  AMATCHES() Counts the matches of an array with condition
+
+  Returns:
+  --------
+  <nMatches> => Number of matches
+
+  Syntax:
+  -------
+  AMATCHES(aTarget,[bCondition])
+
+  Description:
+  ------------
+  <aTarget> is the target array. Normally an array of
+  numeric values.
+
+  [bCondition] is an optional codeblock used to select
+  a subset of the array. This could be used to filter out 0's or
+  non-numeric elements. The block must accept an array element as
+  a parameter, and return true or false <expL> to determine if
+  this element is part of the desired subset.
+
+  Without [bCondition], the length of the array is
+  returned.
+
+  Examples:
+  ---------
+   v := AMATCHES(aSales)
+   v := AMATCHES(aSales,{|e|valtype(e)=="N".and.e<>0})
+   v := AMATCHES(aSales,{|e|valtype(e)=="C".and.e=="D"})
+
+  Source:
+  -------
+  S_ASTATS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AMAVERAGE()           Average on a given element of multi-dim array
+'------------------------------------------------------------------------------
+ FUNCTION AMAVERAGE()
+
+  Short:
+  ------
+  AMAVERAGE() Average on a given element of multi-dim array
+
+  Returns:
+  --------
+  <nAverage> => average of array element
+
+  Syntax:
+  -------
+  AMAVERAGE(aMult,nElem,[bCondition])
+
+  Description:
+  ------------
+  Returns average of array <aMult> element <nElem>.
+
+  [bCondition] is an optional codeblock used to select
+  a subset of the  array. This could be used to filter out 0's or
+  non-numeric elements.  The block must accept a subarray as a
+  parameter, and return  true or false <expL> to determine if this
+  element is part of the desired  subset.
+
+  Please not that the codeblock accepts the whole
+  subarray, not  just subarray element <nElem>
+
+  Examples:
+  ---------
+
+   ?"Average file size here is "
+   ??amaverage(DIRECTORY(),2)
+
+   ?"Average .EXE file size here is "
+   ??amaverage(DIRECTORY(),2,{|e|".EXE"$e[1]}  )
+
+   use customer
+   ?"Average field size "
+   ??amaverage(DBSTRUCT(),3)
+
+  Notes:
+  -------
+  Presumes all sub-arrays are of equal length
+
+  Coded by Matthew Maier.
+
+  Source:
+  -------
+  S_AMSTAT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AMSG()                Pop up message box for an array of messages
+'------------------------------------------------------------------------------
+ FUNCTION AMSG()
+
+  Short:
+  ------
+  AMSG() Pop up message box for an array of messages
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  aMsg(aMsgs,[cTitle],[cFooter],[lCenter],[cColor],[nTop,nLeft])
+
+  Description:
+  ------------
+  Pops up a box to display messages in <aMsgs>. Each
+  element of <aMsgs> can be of type Character, Numeric, Date or
+  Logical.
+
+  The box is centered in the middle of the screen by
+  default.
+
+  [cTitle]  is an optional title string displayed at
+  <nTop>,<nLeft+1>
+
+  [cFooter] is an optional footer string displayed at
+  <nBottom>, <nLeft+1>. Default footer is "Press a key.."
+
+  [lCenter]  determines center messages in box or not.
+  by default, message lines are left justified. Passing True
+  causes messages to be centered.
+
+  [cColor] is the color of the popup box. By default,
+  is sls_popcol()
+
+  [nTop,nLeft] are optional TOP/LEFT dimensions for the
+  box. Default is centered on the screen, and big enough to hold
+  all of the message lines.
+
+  Examples:
+  ---------
+
+  aArray := {"Attention:","all items are on sale for",1.99,;
+     "today only",date()}
+
+  amsg(aArray,"Sale",nil,.t.)
+
+  Notes:
+  -------
+  If there are more message lines than will fit in the
+  box, up/down arrows will scroll the messages.
+
+  See MSG()
+
+  Source:
+  -------
+  S_AMSG.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AMSTDDEV()            Standard Deviation on a given element of
+'------------------------------------------------------------------------------
+ FUNCTION AMSTDDEV()
+
+  Short:
+  ------
+  AMSTDDEV() Standard Deviation on a given element of
+  multi-dim array
+
+  Returns:
+  --------
+  <nVariance> => average of array element
+
+  Syntax:
+  -------
+  AMSTDDEV(aMult,nElem,[bCondition])
+
+  Description:
+  ------------
+  Returns Standard Deviation of array <aMult> element
+  <nElem>.  [bCondition] is an optional codeblock used to select a
+  subset of the array. This could be used to filter out 0's or
+  non-numeric elements.
+
+  The block must accept a subarray as a parameter, and
+  return true or false <expL> to determine if this element is
+  part of the desired subset. Please note that the codeblock
+  accepts the whole subarray, not  just subarray element <nElem>
+
+  Examples:
+  ---------
+   ?"Total file size here is "
+   ??AMSUM(DIRECTORY(),2)
+
+   ?"Total .EXE file size here is "
+   ??AMSUM(DIRECTORY(),2,{|e|".EXE"$e[1]}  )
+
+   ?"Standard Deviation:"
+   ??AMSTDDEV(DIRECTORY(),2,{|e|".EXE"$e[1]}  )
+
+  Notes:
+  -------
+  Coded by Matthew Maier.
+
+  Presumes all sub-arrays are of equal length
+
+  Source:
+  -------
+  S_AMSTAT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AMSUM()               Sum on a given element of multi-dim array
+'------------------------------------------------------------------------------
+ FUNCTION AMSUM()
+
+  Short:
+  ------
+  AMSUM() Sum on a given element of multi-dim array
+
+
+  Returns:
+  --------
+  <nSum> => sum of array element
+
+  Syntax:
+  -------
+  AMSUM(aMult,nElem,[bCondition])
+
+  Description:
+  ------------
+  Returns sum of array <aMult> element <nElem>.
+
+  [bCondition] is an optional codeblock used to select
+  a subset of the  array. This could be used to filter out 0's or
+  non-numeric elements.  The block must accept a subarray as a
+  parameter, and return  true or false <expL> to determine if this
+  element is part of the desired subset. Please note that the
+  codeblock accepts the whole subarray, not  just subarray element
+  <nElem>
+
+  Examples:
+  ---------
+
+   ?"Total file size here is "
+   ??AMSUM(DIRECTORY(),2)
+
+   ?"Total .EXE file size here is "
+   ??AMSUM(DIRECTORY(),2,{|e|".EXE"$e[1]}  )
+
+   use customer
+   ?"Total field size "
+   ??AMSUM(DBSTRUCT(),3)
+
+   use customer
+   ?"Total CHARACTER field size "
+   ??AMSUM(DBSTRUCT(),3,{|e|e[2]=="C"} )
+
+  Notes:
+  -------
+  Coded by Matthew Maier.
+
+  Presumes all sub-arrays are of equal length
+
+  Source:
+  -------
+  S_AMSTAT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AMVARIANCE()          Variance on a given element of multi-dim array
+'------------------------------------------------------------------------------
+ FUNCTION AMVARIANCE()
+
+  Short:
+  ------
+  AMVARIANCE() Variance on a given element of multi-dim array
+
+
+  Returns:
+  --------
+  <nVariance> => average of array element
+
+  Syntax:
+  -------
+  AMVARIANCE(aMult,nElem,[bCondition])
+
+  Description:
+  ------------
+  Returns variance of array <aMult> element <nElem>.
+  [bCondition] is an optional codeblock used to select a subset of
+  the array. This could be used to filter out 0's or non-numeric
+  elements. The block must accept a subarray as a parameter, and
+  return  true or false <expL> to determine if this element is
+  part of the desired subset. Please note that the codeblock
+  accepts the whole subarray, not  just subarray element <nElem>
+
+  Examples:
+  ---------
+
+   ?"Total file size here is "
+   ??AMSUM(DIRECTORY(),2)
+
+   ?"Total .EXE file size here is "
+   ??AMSUM(DIRECTORY(),2,{|e|".EXE"$e[1]}  )
+
+   ?"Variance:"
+   ??AMVARIANCE(DIRECTORY(),2,{|e|".EXE"$e[1]}  )
+
+  Notes:
+  -------
+  Coded by Matthew Maier.
+
+  Presumes all sub-arrays are of equal length
+
+  Source:
+  -------
+  S_AMSTAT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:APPENDIT()            Intelligent APPEND FROM replacement
+'------------------------------------------------------------------------------
+ FUNCTION APPENDIT()
+
+  Short:
+  ------
+  APPENDIT() Intelligent APPEND FROM replacement
+
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  APPENDIT()
+
+  Description:
+  ------------
+  Allows appending records from a database of
+  dissimiliar structures, allowing point-and-shoot selection of
+  field to field import. Import All/Query matches or Tagged
+  records. There are no parameters, but a database is required to
+  be open.
+
+  Examples:
+  ---------
+   USE CUSTOMER
+   APPENDIT()            // metafunction, menu driven
+
+  Notes:
+  -------
+  This can be painfully slow on a busy network
+
+  Source:
+  -------
+  S_APPEND.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ARRANGE()             Rearranges text in a string
+'------------------------------------------------------------------------------
+ FUNCTION ARRANGE()
+
+  Short:
+  ------
+  ARRANGE() Rearranges text in a string
+
+
+  Returns:
+  --------
+  <cNewString> => String rearranged
+
+  Syntax:
+  -------
+  ARRANGE(cInString,nStart,nLength,nNewPosit)
+
+  Description:
+  ------------
+  Extracts text from <cInString> starting at <nStart>
+  for a length of <nLength> and moves it to position
+  <nNewPosition>.
+
+  Examples:
+  ---------
+   cString := "SUPERFUNCTION"
+   cString := ARRANGE(cString,6,8,1)
+    // =>  "FUNCTIONSUPER"
+
+  Notes:
+  ------
+  New position is position AFTER text is cut from
+  original position
+
+  Source:
+  -------
+  S_ARRANG.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ARRAY2DBF()           Replaces current record with values in an array
+'------------------------------------------------------------------------------
+ FUNCTION ARRAY2DBF()
+
+  Short:
+  ------
+  ARRAY2DBF() Replaces current record with values in an array
+
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  ARRAY2DBF(aValues)
+
+  Description:
+  ------------
+  Replaces the values in the current record with the
+  values in <aValues>. Array order is assumed to be the same as
+  the ordinal field order.
+
+  Examples:
+  ---------
+   use customer
+   a := DBF2ARRAY()            // store values
+
+   for i = 1 to len(a)
+     @0+i,0 get a[i]
+   next
+   read                        // edit them
+
+   if AUPDATED(a)              // if they were updated from
+                               // the DBF values
+     ARRAY2DBF(a)              // save them
+   endif
+
+  Source:
+  -------
+  S_DBARR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ASCIITABLE()          Pops up an ASCII table for character selection
+'------------------------------------------------------------------------------
+ FUNCTION ASCIITABLE()
+
+  Short:
+  ------
+  ASCIITABLE() Pops up an ASCII table for character selection
+
+
+  Returns:
+  --------
+  <nChar> => ascii value of character selected
+
+  Syntax:
+  -------
+  ASCIITABLE([bAction],[cTitle],[nStart])
+
+  Description:
+  ------------
+  This is a popup ASCII table, allowing selection of an
+  ASCII character [bAction] optional codeblock which will be
+  eval'd and passed the character if a character is selected. i.e.
+  eval(codeblock,chr(nChar))
+
+  [cTitle] is an optional box title. Default is none.
+
+  [nStart] is an optional starting ASCII number.
+  Default is 1.
+
+  Examples:
+  ---------
+   IF ( nChar := ASCIITABLE() ) > 0
+     cChar := chr(nChar)
+   ENDIF
+
+  Source:
+  -------
+  S_ASCII.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ASORTMULT()           Sort multiple arrays on order of single array
+'------------------------------------------------------------------------------
+ FUNCTION ASORTMULT()
+
+  Short:
+  ------
+  ASORTMULT() Sort multiple arrays on order of single array
+
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  ASORTMULT(aArray1,aArray2,[...aArray15])
+
+  Description:
+  ------------
+  Sorts [aArray2] through [aArray15] based on the sort
+  results of [aArray1]. All arrays must be of the same length!
+  [aArray3]- [aArray15] are optional.
+
+  Examples:
+  ---------
+   // sort the fieldname array, as well as the arrays  containing
+   // field types, lengths, and decimals
+
+   ASORTMULT(aFieldNames,aFieldTypes,aFieldLens,aFieldDeci)
+
+  Notes:
+  -------
+  ASORTMULTR() does the same, except sorts in reverse
+  order
+
+  Source:
+  -------
+  S_AMSORT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ASORTMULTR()          Reverse sort multiple arrays on order of single array
+'------------------------------------------------------------------------------
+ FUNCTION ASORTMULTR()
+
+  Short:
+  ------
+  ASORTMULTR() Reverse sort multiple arrays on order of single array
+
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  ASORTMULTR(aArray1,aArray2,[...aArray15])
+
+  Description:
+  ------------
+  Sorts [aArray2] through [aArray15] based on the sort
+  results of [aArray1]. Sort is in reverse (descending) order. All
+  arrays must be of the same length! [aArray3]-[aArray15] are
+  optional.
+
+  Examples:
+  ---------
+   // sort the fieldname array, as well as the arrays containing
+   // field types, lengths, and decimals
+
+   ASORTMULTR(aFieldNames,aFieldTypes,aFieldLens,aFieldDeci)
+
+  Notes:
+  -------
+  ASORTMULT() does the same, except sorts in ascending
+  order
+
+  Source:
+  -------
+  S_AMSORT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ASTDDEV()             Standard deviation of an array with condition
+'------------------------------------------------------------------------------
+ FUNCTION ASTDDEV()
+
+  Short:
+  ------
+  ASTDDEV() Standard deviation of an array with condition
+
+
+  Returns:
+  --------
+  <nStdDev> => Standard deviation
+
+  Syntax:
+  -------
+  ASTDDEV(aTarget,[bCondition])
+
+  Description:
+  ------------
+  <aTarget> is the target array. Normally an array of
+  numeric values. [bCondition] is an optional codeblock used to
+  select a subset of the array. This could be used to filter out
+  0's or non-numeric elements. The block must accept an array
+  element as a parameter, and return true or false <expL> to
+  determine if this element is part of the desired subset.
+
+  Examples:
+  ---------
+   v := ASTDDEV(aSales)
+   v := ASTDDEV(aSales,{|e|valtype(e)=="N".and.e<>0})
+
+  Source:
+  -------
+  S_ASTATS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ASUM()                Determines the sum of an array with condition
+'------------------------------------------------------------------------------
+ FUNCTION ASUM()
+
+  Short:
+  ------
+  ASUM() Determines the sum of an array with condition
+
+
+  Returns:
+  --------
+  <nArraySum> => Array sum
+
+  Syntax:
+  -------
+  ASUM(aTarget,[bCondition])
+
+  Description:
+  ------------
+  <aTarget> is the target array. Normally an array of
+  numeric values. [bCondition] is an optional codeblock used to
+  select a subset of the array. This could be used to filter out
+  0's or non-numeric elements.
+
+  The block must accept an array element as a
+  parameter, and return true or false <expL> to determine if this
+  element is part of the desired subset.
+
+  Examples:
+  ---------
+   v := ASUM(aSales)
+   v := ASUM(aSales,{|e|valtype(e)=="N".and.e<>0})
+
+  Source:
+  -------
+  S_ASTATS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AT2CHAR()             Returns the String color equivalent of a color number
+'------------------------------------------------------------------------------
+ FUNCTION AT2CHAR()
+
+  Short:
+  ------
+  AT2CHAR() Returns the String color equivalent of a color number
+
+  Returns:
+  --------
+  <cColorString> => Color string
+
+  Syntax:
+  -------
+  AT2CHAR(nColorAttribute)
+
+  Description:
+  ------------
+  <nColorAttribute> the numeric color to be converted,
+  is changed to <cColorString>, a clipper color string.
+
+  Examples:
+  ---------
+   AT2CHAR(47)  // =>  "W/G"
+
+  Source:
+  -------
+  S_AT2C.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ATT()                 Colors a section of the screen, leaving the text intact
+'------------------------------------------------------------------------------
+ FUNCTION ATT()
+
+  Short:
+  ------
+  ATT() Colors a section of the screen, leaving the text intact
+
+
+  Returns:
+  --------
+  <cUnder> => Underlying screen before change
+
+  Syntax:
+  -------
+  Att(nTop,nLeft,nBottom,nRight,nColorAttribute)
+
+  Description:
+  ------------
+  <nTop>             - top row
+  <nLeft>            - left col
+  <nBottom>          - bottom row
+  <nRight>           - right column
+  <nColorAttribute>  - attribute to set area  (numeric color )
+
+  Saves and returns the underlying screen at <ntop,nLeft,nBottom,nRight>
+
+  Examples:
+  ---------
+   ATT(5,5,10,10,79)   // sets 5,5,10,10 to +W/R
+
+  Notes:
+  ------
+  This was a C file previously
+
+
+
+  Source:
+  -------
+  S_ATT.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AUPDATED()            Determines if array contains updated values for record
+'------------------------------------------------------------------------------
+ FUNCTION AUPDATED()
+
+  Short:
+  ------
+  AUPDATED() Determines if array contains updated values for record
+
+
+  Returns:
+  --------
+  <lUpdated> => Are the values in the array updated
+
+  Syntax:
+  -------
+  AUPDATED(aCheck)
+
+  Description:
+  ------------
+  Compares the values in an array (usually created with
+  a call to DBF2ARRAY() )  <aCheck> with the current values in the
+  current record. The order of the array is presumed to match the
+  order of the fields, and to be of length fcount(). If the values
+  in the array are updated (changed), True is returned.
+
+  Examples:
+  ---------
+   use customer
+   a := DBF2ARRAY()            // store values
+   for i = 1 to len(a)
+     @0+i,0 get a[i]
+   next
+   read                               // edit them
+   if AUPDATED(a)              // if they were updated from  the DBF values
+     ARRAY2DBF(a)              // save them
+   endif
+
+  Source:
+  -------
+  S_DBARR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:AVARIANCE()           Determines the variance of an array with condition
+'------------------------------------------------------------------------------
+ FUNCTION AVARIANCE()
+
+  Short:
+  ------
+  AVARIANCE() Determines the variance of an array with condition
+
+
+  Returns:
+  --------
+  <nVariance> => Array variance
+
+  Syntax:
+  -------
+  AVARIANCE(aTarget,[bCondition])
+
+  Description:
+  ------------
+  <aTarget> is the target array. Normally an array of
+  numeric values. [bCondition] is an optional codeblock used to
+  select a subset of the array. This could be used to filter out
+  0's or non-numeric elements. The block must accept an array
+  element as a parameter, and return true or false <expL> to
+  determine if this element is part of the desired subset.
+
+  Examples:
+  ---------
+   v := AVARIANCE(aSales)
+   v := AVARIANCE(aSales,{|e|valtype(e)=="N".and.e<>0})
+
+  Source:
+  -------
+  S_ASTATS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BEGEND()              Determines beginning or end of week,month or quarter
+'------------------------------------------------------------------------------
+ FUNCTION BEGEND()
+
+  Short:
+  ------
+  BEGEND() Determines beginning or end of week,month or quarter
+
+
+  Returns:
+  --------
+  <dReturnDate> => Date of  beginning/end of week,month,qtr
+
+  Syntax:
+  -------
+  BEGEND(dStartDate,nBeginEnd,nWkMnthQtr,[nDayofWeek])
+
+  Description:
+  ------------
+  Returns date which is beginning (1) or end (0)
+  <nBeginEnd> of week (1) , month (2) ,or quarter (3)
+  <nWkMnthQtr> in which input date <dStartDate> falls. If week,
+  [nDayofWeek] is day of the week beginning or end of the week
+  <nBeginEnd> falls on, with Sunday being 1 and Saturday being 7.
+
+  Examples:
+  ---------
+   dDate := ctod("01/15/90")
+   bow   := BEGEND(dDate,1,1,1)  // beg of week
+   eow   := BEGEND(dDate,0,1,7)  // end of week
+   bom   := BEGEND(dDate,1,2)    // beg of month
+   eow   := BEGEND(dDate,0,2)    // end of month
+   boq   := BEGEND(dDate,1,3)    // beg of quarter
+   eoq   := BEGEND(dDate,0,3)    // end of quarter
+
+  Source:
+  -------
+  S_BEGEND.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BIGELEM()             Returns length of longest string in an array
+'------------------------------------------------------------------------------
+ FUNCTION BIGELEM()
+
+  Short:
+  ------
+  BIGELEM() Returns length of longest string in an array
+
+  Returns:
+  --------
+  <nLength> => Length of longest string in an array
+
+  Syntax:
+  -------
+  BIGELEM(aTarget)
+
+  Description:
+  ------------
+  Determines the length of the longest string element
+  in <aTarget> Array may have mixed types
+
+  Examples:
+  ---------
+   ?BIGELEM(  {"1","22","333"}  )  => returns 3
+
+  Notes:
+  -------
+  This was a C function in previous SuperLibs
+
+  Source:
+  -------
+  S_BIGEL.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLANKFIELD()          Returns a blank value corresponding to a field
+'------------------------------------------------------------------------------
+ FUNCTION BLANKFIELD()
+
+  Short:
+  ------
+  BLANKFIELD() Returns a blank value corresponding to a field
+
+  Returns:
+  --------
+  <expBlank> => blank value, corresponding to a field
+
+  Syntax:
+  -------
+  BLANKFIELD(cField)
+
+  Description:
+  ------------
+  <cField> is the name of the field. Can also include
+  the alias
+
+  A blank value is returned:
+
+  For: Character           Spaces the length of the field
+       Numeric             Zero
+       Logical             .f.
+       Date                Blank date
+       Memo                ""
+
+  Examples:
+  ---------
+   // fill an array with matching blanks for the record - good
+   // for an ADD routine
+
+   aAdds := array(fcount())
+   for i = 1 to fcount()
+     aAdds[i] := BLANKFIELD(field(i))
+   next
+
+  Source:
+  -------
+  S_BLANKS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLANKREC()            Blanks out a record
+'------------------------------------------------------------------------------
+ FUNCTION BLANKREC()
+
+  Short:
+  ------
+  BLANKREC() Blanks out a record
+
+
+  Returns:
+  --------
+  <lSuccess> => success, or not
+
+  Syntax:
+  -------
+  BLANKREC([nTries,lInteractive,cMessage])
+
+  Description:
+  ------------
+  Attempts to lock the record <nTries> (default 5), and
+  if no luck and <lInteractive> (default False), prompts
+  the user with <cMessage> (default "Unable to lock record. Keep
+  trying?")
+
+  If a lock is gotten, the record is replaced with
+  blank values.
+
+  See BLANKFIELD()
+
+  Examples:
+  ---------
+   DELETE
+   BLANKREC()
+
+  Notes:
+  -------
+  Use ISBLANKREC() to locate blank records. This is a
+  good way to re-use records, rather than using PACK.
+
+  Source:
+  -------
+  S_BLANK.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLDARR()              Builds an array from a delimited string
+'------------------------------------------------------------------------------
+ FUNCTION BLDARR()
+
+  Short:
+  ------
+  BLDARR() Builds an array from a delimited string
+
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  BLDARR(aTarget,nCount,cDelimited)
+
+  Description:
+  ------------
+  Fills in the elements of an existing array <aTarget>
+  with <nCount> character values extracted from a delimited string
+  <cDelimited> of the form "Garry:Wyn:Ralph:Ed". The colon [:] is
+  the delimiter. The first parameter is an array of any length. It
+  will be sized to fit.
+
+  Examples:
+  ---------
+   aLunch := array(3)
+   BLDARR(aLunch,3,"Pizza:Chicken:Burgers")
+       // =>  {"Pizza","Chicken","Burgers"}
+
+  Notes:
+  -------
+  Array must be declared prior to calling.
+  Of course, in Clipper 5.01 you can also use:
+  myarray := {"Pizza","Chicken","Burgers"},
+  and this function is mainly here for compatibility.
+
+  Source:
+  -------
+  S_BLDAR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLDDBF()              Create a DBF from a delimited string or an array
+'------------------------------------------------------------------------------
+ FUNCTION BLDDBF()
+
+  Short:
+  ------
+  BLDDBF() Create a DBF from a delimited string or an array
+
+
+  Returns:
+  --------
+  <lSuccess> => Success or failure
+
+  Syntax:
+  -------
+  BLDDBF(cDbfName,acDefinition)
+
+  Description:
+  ------------
+  Creates DBF file named <cDbfName> from delimited
+  strings in <acDefinition>.
+
+  <acDefinition>  is either:
+
+  1.  a Delimited string in the form
+      "name,type,[size],[decimals]:name,type..."
+      Fields delimited by colon, field elements delimited by commas
+
+  2.  an array of delimited strings in
+      the form "name,type,[size],[decimals]". One field
+      per array element, field elements delimited by
+      commas.
+
+  Examples:
+  ---------
+   1. Passing long delimited string
+
+       BLDDBF('CUSTOMER','LNAME,C,15:FNAME,;
+         C,10:AGE,N,2:PROSPECT,L:')
+
+   2. Passing array of short delimited strings
+
+       aNewdbf       := array(4)
+       aNewdbf[1]    :="LNAME,C,15"
+       aNwdbf[2]     :="FNAME,C,10"
+       aNewdbf[3]    :="AGE,N,2"
+       aNewdbf[4]    :="PROSPECT,L"
+       lSuccess      := BLDDBF('CUSTOMER',aNewdbf)
+
+  Notes:
+  -------
+  BLDDBF() expects an unused area to work in, and will
+  return .f. if it detects a DBF open in the current area. An
+  overwrite will not be allowed. BLDDBF() uses Clipper's low level
+  file functions to create the DBF file. You could also (and
+  should) use Clipper 5.01's DBCREATE() function. This function is
+  here mainly for compatibility with previous SuperLibs.
+
+  Source:
+  -------
+  S_BLDBF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLDNDX()              Interactively create a new index
+'------------------------------------------------------------------------------
+ FUNCTION BLDNDX()
+
+  Short:
+  ------
+  BLDNDX() Interactively create a new index
+
+  Returns:
+  --------
+  <cIndexName> => New index name less extension
+
+  Syntax:
+  -------
+  BLDNDX([aFields,aDescriptions],[aIndexfiles],[Buildex])
+
+  Description:
+  ------------
+  Allows point and shoot building of a new index.
+
+  [aFields] - an array of legal field names. If not
+  passed, all fields  in current DBF will be used.
+
+  [aDescriptions] - an array of field descriptions. If
+  not passed,field names  in current DBF will be used.
+
+  Pass both or neither of  [aFields] and
+  [aDescriptions].
+
+  [aIndexFiles]   - an array of currently open index
+  files to be reopened on exit from bldndx() (up to 10).
+  Otherwise, only the newly created index file will be left open.
+
+  [lBuildex]  - allow use of Buildex() to build complex
+  expressions. Default is False.
+
+  Examples:
+  ---------
+   BLDNDX()
+
+    -- or --
+
+   aNdxFlds  := {"LASTNAME","FIRSTNAME","CITY"}
+   aNdxDesc  := {"Last Name","First Name","City"}
+   aNdxOpen  := {"CUSTOMER","STATE","ZIPCODE"}
+   BLDNDX(aNdxFlds,aNdxDesc,aNdxOpen)
+   BLDNDX(nil,nil,aNdxOpen,.t.)   // use buildex()
+
+  Warnings:
+  ----------
+  Indexes created with this function will require the
+  functions DTOS() and NBR2STR() be loaded prior to use if a date
+  or numeric field is part of the index. You can do this with the
+  EXTERNAL statement.
+
+  EXTERNAL DTOS, NBR2STR
+
+  Notes:
+  -------
+  All fields are converted to type Character. The
+  function NBR2STR() is used to create a usable character
+  expression from a numeric field by first adding 1,000,000 to the
+  number.
+
+  Source:
+  -------
+  S_BLDNDX.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BOM()                 Calculates beginning of the month date
+'------------------------------------------------------------------------------
+ FUNCTION BOM()
+
+  Short:
+  ------
+  BOM() Calculates beginning of the month date
+
+  Returns:
+  --------
+  <dReturn> => Date which is beginning of the month
+
+  Syntax:
+  -------
+  BOM(dTarget)
+
+  Description:
+  ------------
+  Calculates date which is beginning of the month from
+  <dTarget>
+
+  Examples:
+  ---------
+   dDate := ctod("10/15/90")
+
+   dBom  := BOM(DDate)    //    => 10/01/90
+
+  Source:
+  -------
+  S_BOM.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BOYEAR()              Determine beginning of year a date falls in
+'------------------------------------------------------------------------------
+ FUNCTION BOYEAR()
+
+  Short:
+  ------
+  BOYEAR() Determine beginning of year a date falls in
+
+  Returns:
+  --------
+  <dReturn> => Date of the beginning of the year
+
+  Syntax:
+  -------
+  BOYEAR([dTarget])
+
+  Description:
+  ------------
+  Determines beginning of the year of a date and
+  returns it as <dReturn>. [dTarget] a date variable. Default is
+  DATE()
+
+  Examples:
+  ---------
+   dBegyear := BOYEAR(date())
+
+  Source:
+  -------
+  S_BOYEAR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BROWSE2D()            Popup  tbrowse of 2 dimension array (array of arrays)
+'------------------------------------------------------------------------------
+ FUNCTION BROWSE2D()
+
+  Short:
+  ------
+  BROWSE2D() Popup  tbrowse of 2 dimension array (array of arrays)
+
+  Returns:
+  --------
+  <nSelection> => selected item, 0 if none
+
+  Syntax:
+  -------
+  BROWSE2D(nTop,nLeft,nBottom,nRight,aArr,[aHead],[cColor],;
+        [cTitle],[bExcept])
+
+  Description:
+  ------------
+  Pops up a box at <nTop,nLeft,nBottom,nRight> and
+  tbrowses array contained in <aArr>.
+
+  <aArr> must be a 2 dimensioned array, like the ones
+  returned from DIRECTORY() or DBSTRUCT().
+
+  i.e. { array(n),array(n),array(n) } where <n> is the
+  same length for each subarray.
+
+  [aHead] an array of column headers matching the
+  number of elements in a single subarray of <aArr>. Default is
+  none.
+
+  [cColor] popup box color. Default is sls_popcol()
+
+  [cTitle] title string for the box. Default is none.
+
+  [bExcept] is a codeblock that will be evaluated for
+  any exception keys - any keys other than up/ down/ right/ left/
+  pgup/ pgdn/ home/ end/ enter/ esc. [bExcept] will be passed the
+  parameters: key value, tbrowse object, element
+
+  Examples:
+  ---------
+
+   proc test
+
+   local a := directory()
+   browse2d(5,5,20,40,a, ;
+           {"File","Size","Date","Time","Attribute"},,"Choose a File")
+
+   use customer
+   a := dbstruct()
+   browse2d(5,5,20,40,a,nil,nil,nil,;
+    {|k|msg(str(k)+" is not a valid key")})
+   // note the exception block
+
+  Source:
+  -------
+  S_2DBRZ.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BROWSEDELIM()         Tbrowse a delimited file
+'------------------------------------------------------------------------------
+ FUNCTION BROWSEDELIM()
+
+  Short:
+  ------
+  BROWSEDELIM() Tbrowse a delimited file
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  BROWSEDELIM(cFile,aDesc,aTypes,aLens,[cFieldDelim],;
+            [cCharDelim])
+
+  Description:
+  ------------
+  Browse delimited file <cFile>.
+
+  Column titles are contained in <aDesc> (one for each 'field').
+
+  Field types are contained in <aTypes>, Field lengths
+  are contained in <aLens>.
+
+  [cFieldDelim] - Field delimiter - default is a comma [,]
+
+  [cCharDelim] - Character type delimiter - default is
+  a double quote [""]
+
+  Examples:
+  ---------
+
+   //sample.asc looks like  this:
+
+   //"AHLBERG","STEPHEN",23.45,19890226
+   //"SMITH","JEFF",45.00,19890301
+   //"SMITH","DENNIS",0.00,19890313
+   //"ALVARADO","DAVID",25.00,19890330
+   //"AMPOLSUK","EARL",60.00,19890406
+   //"ANDRADE","GARRY",55.00,19890301
+   //"ANDRADE","WALT",99.99,19890703
+
+
+   browsedelim("sample.asc",{"First","Last","Due","Date"},;
+                          {"C","C","N","D"},;
+                          {15,25,6,8})
+
+  Source:
+  -------
+  S_BDELIM.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BROWSESDF()           Tbrowse an SDF file
+'------------------------------------------------------------------------------
+ FUNCTION BROWSESDF()
+
+  Short:
+  ------
+  BROWSESDF() Tbrowse an SDF file
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  BROWSESDF(cFile,aDesc,aTypes,aLengths)
+
+  Description:
+  ------------
+  Tbrowses an SDF file <cFile>, using column headers in
+  <aDesc>, with field 'types' in <aTypes>, and field lengths in
+  <aLengths>
+
+  Examples:
+  ---------
+
+   //sample.sdf looks like this:
+
+   //AHLBERG              STEPHEN           23.4519890226
+   //SMITH                JEFF              45.0019890301
+   //SMITH                DENNIS             0.0019890313
+   //ALVARADO             DAVID             25.0019890330
+
+   //note: widths have to be exact
+
+
+   browseSDF("sample.sdf",{"Last","First","Due","Date"},;
+                          {"C","C","N","D"},;
+                          {20,15,8,8})
+
+  Source:
+  -------
+  S_BRSDF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUILDEX()      ^b(diff)^n Interactively builds and returns an expression string
+'------------------------------------------------------------------------------
+ FUNCTION BUILDEX()                           *changed*
+
+  Short:
+  ------
+  BUILDEX() Interactively builds and returns an expression string
+
+  Returns:
+  --------
+  <cExpression> => An expandable expression string
+
+  Syntax:
+  -------
+  BUILDEX(cDescript,cStart,lTypeChange,[aFields,aDesc])
+
+  Description:
+  ------------
+  Interactively builds and returns an expression string.
+
+  Pass parameters of <cDescript> - a descriptive name
+  for the expression, <cStart> an existing expression
+  (field,etc.),
+
+  <lTypeChange> allow TYPE change by BUILDEX()
+
+  Pass all or none of the following arrays
+
+  [aFields]   An array of field names
+
+  [aDesc]     An array of field descriptions
+
+  Examples:
+  ---------
+   cExpress :=buildex("Index Expression",COMPANY,.F.)
+
+  Notes:
+  ------
+  Release 3.5 adds the ability to directly edit the expression.
+
+
+  Source:
+  -------
+  S_BUILD.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGDROP()     ^b(new)^n  Causes dropdown during BUNGEE() menu def sequence
+'------------------------------------------------------------------------------
+ FUNCTION BUNGDROP()                              *new*
+
+  Short:
+  ------
+  BUNGDROP() Causes dropdown during BUNGEE() menu def sequence
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+  BUNGDROP([nDown],[nOver])
+
+  Description:
+  ------------
+  BUNGDROP() causes a dropdown to occur during a BUNGEE() menu
+  definition sequence. This is followed by a series of BUNGOPTION()
+  and then BUNGUNDROP() to end the dropdown.
+
+  [nDown] Number of rows down from row of current option (default 1)
+  [nOver] Number of columns over from column of current option
+          (default is 0 for bar options, 1 for dropdown options)
+
+
+  Use BUNGSTART(), BUNGEND(), BUNGOPTION(),
+  BUNGDROP(), BUNGUNDROP() together to create a menu definition
+  array for BUNGEE(). While it is not necessary to use these
+  functions to create the array, it is helpful when you have
+  a complex, multi-level dropdown structure.
+
+  See BUNGEE for more information.
+
+  Examples:
+  ---------
+
+  bungstart()
+
+     bungoption("Files")
+     bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+     bungundrop()
+     bungoption("Edit")
+     bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+     bungundrop()
+     bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+  bungee(0,0,79,aMenu)
+
+  Source:
+  -------
+  S_BUNGDEF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGEE()       ^b(new)^n  Mouseable, multi-level dropdown menu with triggers
+'------------------------------------------------------------------------------
+ FUNCTION BUNGEE()                             *new*
+
+  Short:
+  ------
+  BUNGEE() Mouseable, multi-level dropdown menu with triggers
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+
+  BUNGEE(<nTop>,<nLeft>,<nRight>,<aMenu>,[aColumns],;
+         [aColors],[aHotMice],[aHotKeys],[bExitCheck],;
+         [lImmediate],[lDropped],[nHideLevel],[nShadowPos],;
+         [nShadowAtt],[lHandleAlt] )
+
+  Description:
+  ------------
+  Creates and activates a dropdown menu (bungee style)
+
+  <nTop>          Row of menu bar
+  <nLeft>         Left side of menu bar
+  <nRight>        Right side of menu bar
+  <aMenu>         A menu definition array of arrays
+
+                  You  use the BUNGEE() menu array definition functions:
+                  BUNGSTART(), BUNGEND(), BUNGOPTION(),BUNGDROP(),
+                  BUNGUNDROP() together to create a menu definition array
+                  for BUNGEE( ). This basically defines the menu options,
+                  boxes and actions
+
+  [aColumns]      An array of columns to determine the column
+                  positions for the top bar options. Optional, as
+                  this is automatically determined otherwise.
+
+  [aColors]       An array of seven elements describing 6 colors
+                  and the box drawing frame string
+
+                  BACKGROUND COLOR         1
+                  SELECTED OPTION COLOR    2
+                  UNSELECTED OPTION COLOR  3
+                  INACTIVE OPTION COLOR    4
+                  SELECTED TRIGGER COLOR   5
+                  UNSELECTED TRIGGER COLOR 6
+                  BOX FRAME STRING         7   (as in "ÚÄ¿³ÙÄÀ³ ")
+
+                  Defaults are extracted from the current
+                  values in SETCOLOR(), and adjusted to
+                  account for trigger letters and inactive
+                  colors.
+
+
+  [aHotMice]      An array of hot areas where, should the
+                  mouse click, a codeblock will be evaluated.
+                  The array is an array of arrays, where each
+                  sub-array is in the form:
+                      {nTop,nLeft,nBottom,nRight,bCodeblock}
+                  Where nTop..nRight refer to the screen
+                  coordinates of the hot area.
+                  i.e.
+                  @24,0 say "<Help>"
+                  aHotMice := { {24,0,24,5,{||dohelp}}  }
+
+
+  [aHotKeys]      An array of hotkey values, which, if one of
+                  the keys is pressed, a codeblock will be
+                  evaluated on the spot.
+                  The array is an array of arrays, where each
+                  sub-array is of the form:
+                      {nASCIIValue,bCodeblock}
+
+                  @24,0 say "<Help>"
+                  aHotKeys := { {K_F1,{||dohelp()}  }  }
+
+
+  [bExitBlock]    This is a codeblock which returns a LOGICAL
+                  which is evaluated before a menu exit is
+                  allowed. If it returns .f., a menu exit will
+                  not be allowed.
+                  i.e. {||MESSYN("Really exit?")}
+
+  [lImmediate]    Do mouse clicks or hot keys on options other
+                  than current option cause an immediate action
+                  request? Default = True
+
+  [lDropped]      Should the menu start up in dropped mode (boxes
+                  are already dropped from top bar) Default is
+                  True.
+
+  [nHideLevel]    This indicates the level to which the menu hides
+                  itself when executing an option action, a mouse
+                  hot button or a hot key.
+                  0 - does not hide itself at all
+                  1 - hides everything except the top bar  (default)
+                  2 - hides everything
+
+  [nShadowPos]    Optional shadow position for menu dropdown boxes.
+                  Valid options are:
+                       1. Lower left
+                       3. Lower right
+                       0. None
+                  Upper left and upper right shadow positions are not
+                  allowed. (they can overwrite parts of the menu bar)
+                  Default is SLS_SHADPOS(), unless SLS_SHADPOS() is
+                  upper left or upper right (7,9), in which case it
+                  is set to 0 (none).
+
+                  To force no shadows for the menu, pass 0.
+
+                  Boxes may not always have shadows, if the shadow would
+                  be drawn offscreen.
+
+  [nShadowAtt]   Numeric shadow attribute. Default is SLS_SHADATT(), whose
+                 default is 8. (grey on black)
+
+  [lHandleAlt]   Allow ALT+trigger letter combinations (ALT-A through ALT-Z)
+                 to select menu options
+
+  Examples:
+  ---------
+
+  (Also see S3META2.PRG in the sample files for a good example)
+
+  bungstart()
+  bungoption("Files")
+  bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+  bungundrop()
+  bungoption("Edit")
+  bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+  bungundrop()
+  bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+
+  @24,0 say "[ALT-X=exit]"   // set up Alt-X as a hotkey exit also
+  aHotKeys := { {K_ALT_X,{||bungeequit()}           }
+  aHotMice := {  {24,0,24,11,{||bungeequit()}     }  }
+
+  bungee(0,0,79,aMenu,nil,nil,aHotMice,aHotKeys, { ||messyn("Exit now?") }   )
+
+  Example 2
+  ---------
+
+  bungstart()
+  bungoption("Next",{||dbskip(1)})
+  bungoption("Prev",{||dbskip(-1)})
+  bungoption("Edit",{||doedit()})
+  bungoption("Add ",{||doadd()})
+  bungoption("Delete",{||dodelete()})
+  bungoption("Table",{||editdb(.t.)})
+  bungoption("Search")
+       bungdrop()
+       bungoption("Field Search",{||searchme()} )
+       bungoption("Key Search",{||SPOPSEEK()} )
+       bungoption("Query ",{||query()} )
+       bungundrop()
+  bungoption("Memo")
+       bungdrop()
+       bungoption("View",{||viewmemo()} )
+       bungoption("Edit",{||editmemo()} )
+       bungundrop()
+  bungoption("Hardcopy")
+       bungdrop()
+       bungoption("Record",{||hcrecord()})
+       bungoption("Memo",{||hcmemo()})
+       bungundrop()
+  bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+  bungee(0,0,79,aMenu)
+
+
+
+  Notes:
+  ------
+  Notes: Dropdown boxes will adjust for 'too far right' or 'too far down',
+  but there is no adjustment for 'too many options in the box to fit on
+  screen'
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Source:
+  -------
+  S_BUNGEE.PRG, S_BUNGDE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGEEQUIT()   ^b(new)^n  BUNGEEQUIT( ) is how a Bungee menu is terminated. You would normally
+'------------------------------------------------------------------------------
+ FUNCTION BUNGEEQUIT()                             *new*
+
+  Short:
+  ------
+  BUNGEEQUIT( ) is how a Bungee menu is terminated. You would normally
+  call it from one of the menu option codeblocks.
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+
+  BUNGEEQUIT()
+
+  Description:
+  ------------
+  BUNGEEQUIT( ) is how a Bungee menu is terminated. You would normally
+  call it from one of the menu option codeblocks.
+
+  Examples:
+  ---------
+  bungstart()
+  bungoption("Files")
+  bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+  bungundrop()
+  bungoption("Edit")
+  bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+  bungundrop()
+  bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+
+  @24,0 say "ALT-X=exit"   // set up Alt-X as a hotkey exit also
+  aHotKeys := { {K_ALT_X,{||bungeequit()}}  }
+
+  bungee(0,0,79,aMenu,nil,nil,nil,aHotKeys)
+
+
+  Source:
+  -------
+  S_BUNGEE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGEETOP()    ^b(new)^n  Sends the current menu back to the top level box (not all
+'------------------------------------------------------------------------------
+ FUNCTION BUNGEETOP()                             *new*
+
+  Short:
+  ------
+  Sends the current menu back to the top level box (not all
+  the way to the top bar, but to the bar plus the current box)
+
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+
+  BUNGEETOP()
+
+  Description:
+  ------------
+  Sends the current menu back to the top level box (not all
+  the way to the top bar, but to the bar plus the current box)
+
+  Examples:
+  ---------
+  bungstart()
+  bungoption("Files")
+  bungdrop()
+     bungoption("Open" ,{} ,{||!lFileIsOpen} )
+     bungdrop()
+       bungoption("DBF" ,{||opendbf(),bungeetop()},nil )  // go back to top
+       bungoption("Ascii",{||opendbf(),bungeetop()},nil )  // after these two
+     bungundrop()
+     bungoption("Close",{||nil},{||lFileIsOpen } )
+  bungundrop()
+  bungoption("Edit")
+          bungoption("Quit",{||bungeequit()},nil)
+  aMenu := bungend()
+
+  bungee(0,0,79,aMenu)
+
+
+  Source:
+  -------
+  S_BUNGEE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGEND()      ^b(new)^n  Ends a BUNGEE() menu array definition sequence
+'------------------------------------------------------------------------------
+ FUNCTION BUNGEND()                               *new*
+
+  Short:
+  ------
+  BUNGEND() Ends a BUNGEE() menu array definition sequence
+
+  Returns:
+  --------
+  <aBungeeMenu> => a BUNGEE() menu array
+
+  Syntax:
+  -------
+  BUNGEND()
+
+  Description:
+  ------------
+  BUNGEND() ends a BUNGEE() menu definition sequence, returning
+  a completed BUNGEE() menu array.
+
+  Use BUNGSTART(), BUNGEND(), BUNGOPTION(),
+  BUNGDROP(), BUNGUNDROP() together to create a menu definition
+  array for BUNGEE(). While it is not necessary to use these
+  functions to create the array, it is helpful when you have
+  a complex, multi-level dropdown structure.
+
+  See BUNGEE for more information.
+
+  Examples:
+  ---------
+
+  bungstart()
+
+     bungoption("Files")
+     bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+     bungundrop()
+     bungoption("Edit")
+     bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+     bungundrop()
+     bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+  bungee(0,0,79,aMenu)
+
+  Source:
+  -------
+  S_BUNGDEF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGOPTION()   ^b(new)^n  Adds option during a BUNGEE() menu definition sequence
+'------------------------------------------------------------------------------
+ FUNCTION BUNGOPTION()                            *new*
+
+  Short:
+  ------
+  BUNGOPTION() Adds option during a BUNGEE() menu definition sequence
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+  BUNGOPTION(cPrompt,expAction,bActive)
+
+  Description:
+  ------------
+  BUNGOPTION() adds an option during a BUNGEE() menu initialization
+  sequence.
+
+  [cPrompt] is the menu prompt, a character prompt, which is what will be
+            displayed. i.e. "Files", "Edit". Imbed a tilde (~) to determine
+            the trigger character which will be highlighted i.e.
+            "Files","e~xit". The default trigger is the first letter.
+
+            A specialized form of the character prompt is
+            "CROSSBAR". If you include "CROSSBAR" as the text,
+            a crossbar will be drawn joining the left and right sides of the
+            dropdown box.
+
+  [expAction] can be one of 3 things:
+            1. a codeblock. this is simply evaluated
+               when the option is selected
+            2. An array (or nil) if the action is a dropdown box
+               Creates a dropdown box when the prompt is selected.
+               (this option must be then followed by a BUNGDROP()..
+                BUNGUNDROP() sequence to define the dropdown menu. )
+            3. NIL for CROSSBAR types
+
+  [bActive] is the "is this option active?" codeblock
+            This can either be NIL (always active)
+            or is a codeblock which _must_ return type L
+            (logical). This will determine if the prompt
+            is active (available) or not (disabled). If disabled,
+            the prompt is show in the disabled color.
+
+
+  Use BUNGSTART(), BUNGEND(), BUNGOPTION(),
+  BUNGDROP(), BUNGUNDROP() together to create a menu definition
+  array for BUNGEE(). While it is not necessary to use these
+  functions to create the array, it is helpful when you have
+  a complex, multi-level dropdown structure.
+
+  See BUNGEE for more information.
+
+  Examples:
+  ---------
+
+  bungstart()
+
+     bungoption("Files")
+     bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+     bungundrop()
+     bungoption("Edit")
+     bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+     bungundrop()
+     bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+  bungee(0,0,79,aMenu)
+
+  Source:
+  -------
+  S_BUNGDEF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGREDRAW()   ^b(new)^n  Redraws the current menu, with optional change of colors
+'------------------------------------------------------------------------------
+ FUNCTION BUNGREDRAW()                             *new*
+
+  Short:
+  ------
+  Redraws the current menu, with optional change of colors
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+  BUNGEETOP([aColors],[nShadowPos,[nShadowAtt])
+
+  Description:
+  ------------
+  Redraws the current menu, with optional change of colors and shadows.
+  The only time you would use this is to change colors and redraw the
+  entire menu. [aColors] is the same as the parameter for BUNGEE() of
+  the same name. You can also just use SETCOLOR() to change colors, and
+  BUNGREDRAW() will parse out the colors it  needs for the menu. What this
+  function does, is 1. Hide the menu 2. Reset the colors  3. Show the menu.
+
+  [nShadowPos]    Optional shadow position for menu dropdown boxes.
+                  Valid options are:
+                       1. Lower left
+                       3. Lower right
+                       0. None
+                  Upper left and upper right shadow positions are not
+                  allowed. (they can overwrite parts of the menu bar)
+                  Default is SLS_SHADPOS(), unless SLS_SHADPOS() is
+                  upper left or upper right (7,9), in which case it
+                  is set to 0 (none).
+
+                  To force no shadows for the menu, pass 0.
+
+                  Boxes may not always have shadows, if the shadow would
+                  be drawn offscreen.
+
+  [nShadowAtt]   Numeric shadow attribute. Default is SLS_SHADATT(), whose
+                 default is 8. (grey on black)
+
+  Examples:
+  ---------
+  bungstart()
+          bungoption("Files")
+          [etc...]
+          bungoption("Colors",{||setcolors(),bungredraw()}  )
+          [etc...]
+    aMenu := bungend()
+
+    bungee(0,0,79,aMenu)
+
+  Source:
+  -------
+  S_BUNGEE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGSTART()    ^b(new)^n  Starts a BUNGEE() menu array definition sequence
+'------------------------------------------------------------------------------
+ FUNCTION BUNGSTART()                          *new*
+
+  Short:
+  ------
+  BUNGSTART() Starts a BUNGEE() menu array definition sequence
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+  BUNGSTART()
+
+  Description:
+  ------------
+  BUNGSTART() initializes a BUNGEE() menu definition sequence.
+
+  Use BUNGSTART(), BUNGEND(), BUNGOPTION(),
+  BUNGDROP(), BUNGUNDROP() together to create a menu definition
+  array for BUNGEE(). While it is not necessary to use these
+  functions to create the array, it is helpful when you have
+  a complex, multi-level dropdown structure.
+
+  See BUNGEE for more information.
+
+  Examples:
+  ---------
+
+  bungstart()
+
+     bungoption("Files")
+     bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+     bungundrop()
+     bungoption("Edit")
+     bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+     bungundrop()
+     bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+  bungee(0,0,79,aMenu)
+
+  Source:
+  -------
+  S_BUNGDEF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BUNGUNDROP()   ^b(new)^n  Ends dropdown during BUNGEE() menu def sequence
+'------------------------------------------------------------------------------
+ FUNCTION BUNGUNDROP()                            *new*
+
+  Short:
+  ------
+  BUNGUNDROP() Ends dropdown during BUNGEE() menu def sequence
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+  BUNGUNDROP()
+
+  Description:
+  ------------
+  BUNGUNDROP() ends a dropdown during a BUNGEE() menu
+  definition sequence.
+
+  Use BUNGSTART(), BUNGEND(), BUNGOPTION(),
+  BUNGDROP(), BUNGUNDROP() together to create a menu definition
+  array for BUNGEE(). While it is not necessary to use these
+  functions to create the array, it is helpful when you have
+  a complex, multi-level dropdown structure.
+
+  See BUNGEE for more information.
+
+  Examples:
+  ---------
+
+  bungstart()
+
+     bungoption("Files")
+     bungdrop()
+          bungoption("Open" ,{} ,{||!lFileIsOpen} )
+          bungoption("Close",{||nil},{||lFileIsOpen } )
+     bungundrop()
+     bungoption("Edit")
+     bungdrop()
+          bungoption("DBF"  ,{||nil},nil )
+          bungoption("Ascii",{||nil},nil )
+     bungundrop()
+     bungoption("Quit",{||bungeequit()},nil)
+
+  aMenu := bungend()
+  bungee(0,0,79,aMenu)
+
+
+  Source:
+  -------
+  S_BUNGDEF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BXX()                 Draws a box on the screen of a given color
+'------------------------------------------------------------------------------
+ FUNCTION BXX()
+
+  Short:
+  ------
+  BXX() Draws a box on the screen of a given color
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  Bxx(nTop,nLeft,nBottom,nRight,[nColor],[nShadow],;
+                      [nShadowColor],[cFrame])
+
+  Description:
+  ------------
+  <nTop >      - top row
+  <nLeft>      - left col
+  <nBottom>    - bottom row
+  <nRight>     - right column
+  [nColor]     - attribute to box default setcolor()
+  [nShadow]    - numeric shadow type  (default 0)
+                        follow numeric keypad
+                            7 = upper left
+                            1 = lower left
+                            3 = lower right
+                            9 = upper right
+                            0 = no shadow
+
+  [nShadowColor] - shadow attribute (default 7 - grey
+  on black)
+
+  [cFrame ] - frame string - MUST be 9 characters -
+  default single line
+
+  Examples:
+  ---------
+   BXX(10,10,20,20,47,9,8,"ÚÄ¿³ÙÄÀ³ ")
+
+  Source:
+  -------
+  S_BXX.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALCKCLR()            Clears hot keys set by CALCKSET()
+'------------------------------------------------------------------------------
+ FUNCTION CALCKCLR()
+
+  Short:
+  ------
+  CALCKCLR() Clears hot keys set by CALCKSET()
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  CALCKCLR()
+
+  Description:
+  ------------
+  Clears hot keys set by CALCKSET()
+
+  Examples:
+  ---------
+   // this will pop up a the calculator when F2 is pressed  while
+   // on the get V2. The value will be assigned to V2.
+
+   proc test
+   v1 := 123
+   v2 := 456
+
+   @10,10 get v1
+   @11,10 get v2
+
+   CALCKSET(K_F2,"TEST","V2",.t.)
+
+   read
+
+   CALCKCLR()  // clear it out
+
+  Source:
+  -------
+  S_CALCK.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALCKSET()            Allows use of GETCALC() calculator in GETS
+'------------------------------------------------------------------------------
+ FUNCTION CALCKSET()
+
+  Short:
+  ------
+  CALCKSET() Allows use of GETCALC() calculator in GETS
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  CALCKSET(nKey,cProc,cVar,lAssign)
+
+  Description:
+  ------------
+  Sets up a call to GETCALC() when key <nKey> is
+  pressed while in proc or function <cProc> at variable <cVar>.
+
+  If <lAssign> is True, the value returned from
+  GETCALC() is assigned to the current get. Use CALCKCLR() when
+  done.
+
+  Examples:
+  ---------
+   // this will pop up a the calculator when F2 is pressed  while
+   // on the get V2. The value will be assigned to V2.
+
+   proc test
+
+   v1 := 123
+   v2 := 456
+
+   @10,10 get v1
+   @11,10 get v2
+
+   CALCKSET(K_F2,"TEST","V2",.t.)
+
+   read
+
+   CALCKCLR()  // clear it out
+
+  Source:
+  -------
+  S_CALCK.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALCVALID()           Uses GETCALC() calculator function as a GET VALID
+'------------------------------------------------------------------------------
+ FUNCTION CALCVALID()
+
+  Short:
+  ------
+  CALCVALID() Uses GETCALC() calculator function as a GET VALID
+  clause
+
+  Returns:
+  --------
+  <lValid> => valid condition
+
+  Syntax:
+  -------
+  CALCVALID([bValid])
+
+  Description:
+  ------------
+  This sets up the popup GETCALC() calculator for use
+  in a GET VALID clause. (the post validation block). If a value
+  is selected, it is assigned to the get. (if ESCAPE is pressed,
+  it is not) The Calculator function will pop up upon exit from a
+  GET field.
+
+  [bValid] If you pass a validation codeblock, it will
+  be checked first. If the GET is already valid, according to the
+  codeblock, the calculator will not be popped up. The codeblock
+  must return a logical value.
+
+  Examples:
+  ---------
+
+   proc test
+
+   v1 := 10
+   v2 := 10
+   v3 := 10
+   v4 := 10
+
+   @10,10 get v1
+   @11,10 get v2 when calcwhen(.f.)
+   @12,10 get v3 valid calcvalid( {||v3>0}  )   // note the valid                                           // block
+                                                 // IF V3 > 0, the calculator
+                                                  // will not be called
+   @13,10 get v4
+
+   read
+
+  Notes:
+  -------
+  You might want to look at CALCWHEN() and CALCKSET()
+  for other options.
+
+  Source:
+  -------
+  S_CALCVW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALCWHEN()            Uses GETCALC() calculator function as a GET WHEN
+'------------------------------------------------------------------------------
+ FUNCTION CALCWHEN()
+
+  Short:
+  ------
+  CALCWHEN() Uses GETCALC() calculator function as a GET WHEN
+  clause
+
+  Returns:
+  --------
+  <lWhen> => when condition
+
+  Syntax:
+  -------
+  CALCWHEN([lShowonUp],[lReturn])
+
+  Description:
+  ------------
+  This sets up the popup GETCALC() calculator for use
+  in a GET WHEN clause. (the pre validation block). If a value is
+  selected, it is assigned to the get. (if ESCAPE is pressed, it
+  is no) The Calculator function will pop up upon entry into a GET
+  field.
+
+  [lShowOnUp] Normally you wouldn't want this WHEN to
+  occur if the user is using the up arrow, and if <lShowOnUp> is
+  .f. (the default) it does not occur (the GET is just skipped)
+
+  [lReturn] If set to False (the default) the GET is
+  never actually edited, as the WHEN will always return .f., but
+  it is assigned the value returned by GETCALC(). By setting it to
+  True, the Calculator will pop up, and then the GET will also be
+  put thorugh the normal get editor.
+
+  Examples:
+  ---------
+
+   proc test
+
+   v1 := 10
+   v2 := 10
+   v3 := 10
+   v4 := 10
+
+   @10,10 get v1
+   @11,10 get v2 when calcwhen(.f.)   // calculator pops up  when
+                                   // get is entered. No  direct
+                                   // editing.
+   @12,10 get v3 valid calcvalid(  {||v3>0}  )
+   @13,10 get v4
+
+   read
+
+  Notes:
+  -------
+  You might want to look at CALCVALID() and CALCKSET()
+  for other options.
+
+  Source:
+  -------
+  S_CALCVW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALENDKCLR()          Clears hot keys set up by CALENDKSET()
+'------------------------------------------------------------------------------
+ FUNCTION CALENDKCLR()
+
+  Short:
+  ------
+  CALENDKCLR() Clears hot keys set up by CALENDKSET()
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  CALENDKCLR()
+
+  Description:
+  ------------
+  Clears hot keys set up by CALENDKSET(). Always use
+  this after using CALENDKSET()
+
+  Examples:
+  ---------
+   // this will pop up a the calendar when F2 is pressed while
+   // on the get V2. The value will be assigned to V2.
+
+   proc test
+   local v1 := DATE(), v2 := DATE()+1
+   @10,10 get v1
+   @11,10 get v2
+
+   CALENDKSET(K_F2,"TEST","V2",.t.)
+
+   read
+
+   CALENDKCLR()  // clear it out
+
+  Source:
+  -------
+  S_DATEK.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALENDKSET()          Allows use of GETDATE() calendar in GETS
+'------------------------------------------------------------------------------
+ FUNCTION CALENDKSET()
+
+  Short:
+  ------
+  CALENDKSET() Allows use of GETDATE() calendar in GETS
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  CALENDKSET(nKey,cProc,cVar,lAssign)
+
+  Description:
+  ------------
+  Sets up a call to GETDATE() when key <nKey> is
+  pressed while in proc or function <cProc> at variable <cVar>.
+
+  If <lAssign> is True, the value returned from
+  GETDATE() is assigned to the current get. Use CALENDKCLR() when
+  done.
+
+  Examples:
+  ---------
+
+  // this will pop up a the calendar when F2 is pressed while
+  // on the get V2. The value will be assigned to V2.
+
+  proc test
+  local v1 := DATE(),  v2 := DATE()+1
+  @10,10 get v1
+  @11,10 get v2
+  CALENDKSET(K_F2,"TEST","V2",.t.)
+  read
+
+  CALENDKCLR()  // clear it out
+
+  Source:
+  -------
+  S_DATEK.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALENDVALID()         Uses GETDATE() popup calendar function as a GET
+'------------------------------------------------------------------------------
+ FUNCTION CALENDVALID()
+
+  Short:
+  ------
+  CALENDVALID() Uses GETDATE() popup calendar function as a GET
+  VALID clause
+
+
+  Returns:
+  --------
+  <lValid> => valid condition
+
+  Syntax:
+  -------
+  CALENDVALID([bValid])
+
+  Description:
+  ------------
+  This sets up the popup GETDATE() calendar for use in
+  a GET VALID clause. (the post validation block). If a value is
+  selected, it is assigned to the get. (if ESCAPE is pressed, it
+  is not) The Calendar function will pop up upon exit from a GET
+  field.
+
+  [bValid] If you pass a validation codeblock, it will
+  be checked first. If the GET is already valid, according to the
+  codeblock, the calculator will not be popped up. The codeblock
+  must return a logical value.
+
+  Examples:
+  ---------
+
+   proc test
+
+   v1 := date()
+   v2 := date()
+   v3 := date()
+   v4 := date()
+
+   @10,10 get v1
+   @11,10 get v2 when calendwhen(.f.)
+   @12,10 get v3 valid calendvalid( {||v3>date()}  )
+                      // note the validation block
+                      // IF V3 > date(), the calendar
+                      // will not be called
+   @13,10 get v4
+
+   read
+
+  Notes:
+  -------
+  You might want to look at CALENDWHEN() and
+  CALENDKSET() for other options.
+
+  Source:
+  -------
+  S_CALCVW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CALENDWHEN()          Uses GETDATE() function as a GET WHEN clause
+'------------------------------------------------------------------------------
+ FUNCTION CALENDWHEN()
+
+  Short:
+  ------
+  CALENDWHEN() Uses GETDATE() function as a GET WHEN clause
+
+
+  Returns:
+  --------
+  <lWhen> => when condition
+
+  Syntax:
+  -------
+  CALENDWHEN([lShowonUp],[lReturn])
+
+  Description:
+  ------------
+  This sets up the popup GETDATE() function for use in
+  a GET WHEN clause. (the pre validation block). If a date is
+  selected, it is assigned to the get. The Calendar function will
+  pop up upon entry into a GET field.
+
+  [lShowOnUp] Normally you wouldn't want this WHEN to
+  occur if the user is using the up arrow, and if <lShowOnUp> is
+  .f. (the default) it does not occur (the GET is just skipped)
+
+  [lReturn] If set to False (the default) the GET is
+  never actually edited, as the WHEN will always return .f., but
+  it is assigned the value returned by GETDATE(). By setting it to
+  True, the Calendar will pop up, and then the GET will also be
+  put through the normal get editor.
+
+  Examples:
+  ---------
+
+   proc test
+
+   v1 := date()
+   v2 := date()+1
+   v3 := date()+1
+   v4 := date()+1
+
+   @10,10 get v1
+   @11,10 get v2 when calendwhen(.f.) // calendar pops up  when the
+                                   // get is entered. No  direct
+                                   // editing.
+   @12,10 get v3 valid calendvalid( {||v3>date()} )
+   @13,10 get v4
+
+   read
+
+  Notes:
+  -------
+  You might want to look at CALENDVALID() and
+  CALENDKSET() for other options.
+
+  Source:
+  -------
+  S_DATVW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CENTR()               Centers a string in x spaces
+'------------------------------------------------------------------------------
+ FUNCTION CENTR()
+
+  Short:
+  ------
+  CENTR() Centers a string in x spaces
+
+  Returns:
+  --------
+  <cCentered> => String centered
+
+  Syntax:
+  -------
+  CENTR(cInString,[nSpaces])
+
+  Description:
+  ------------
+  Centers <cInString> in [nSpaces] spaces
+
+  [nSpaces] spaces is optional. Default is current
+  string length
+
+  Examples:
+  ---------
+
+   cString := "Superfunction "
+
+   cString := CENTR(cString,20)     //   => "  Superfunction  "
+
+  Notes:
+  -------
+  In Clipper 5.01, use PADC(), which does the same
+  thing and faster. Here for compatibility.
+
+  Source:
+  -------
+  S_CENTR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CLABEL()       ^b(diff)^n Menu driven module for label management
+'------------------------------------------------------------------------------
+ FUNCTION CLABEL()                     *changed*
+
+  Short:
+  ------
+  CLABEL() Menu driven module for label management
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  CLABEL([aInFieldNames,aInFieldDesc,aInFieldTypes],[lUseBuildex],[lRelease])
+
+  Description:
+  ------------
+  This function requires no parameters and is entirely
+  menu driven. Clipper compatible LBL files can be imported from.
+  Definitions are stored in a DBF format. Labels may be printed by
+  Query matches, by Tagging, or all records.
+
+  Three arrays may be passed - <aInFieldNames> is an
+  array of allowable field names. <aInFieldDesc>  is an array of
+  field descriptions. <aInFieldTypes> is an array of field types.
+  All three must be passed, or none. All fields are used as
+  default, with field names being the default field descriptions.
+
+  [lUseBuildex] if True, allows calling BUILDEX() to
+  build complex expressions.
+
+  [lRelease] if this is TRUE, CLABEL() will release the printer every
+  50 labels. If on a network, this will allow the queue to empty out.
+  If you are printing a bunch of labels, this can be important. Default
+  is False.
+
+  Examples:
+  ---------
+   use CUSTOMER
+
+   CLABEL()
+
+       or
+
+   USE CUSTOMER
+   aFlds := {"FNAME","LNAME","MI"}
+   aFdes := {"First","Last","Middle"}
+   aType := {"C","C","C"}
+   CLABEL(aFlds,aFdes,aType,.t.)
+
+  Notes:
+  -------
+  Requires datafile to be open.
+
+  Reads Clipper compatible LBL files. Writes to a DBF.
+  Does not call LABEL FORM. instead, uses its own label printing
+  routine. Label printing routine optionally compresses blank
+  lines (i.e. a 2nd address), as well as removing all but single
+  space in a line (i.e. FIRSTNAME+ LASTNAME) See SLSF_LABEL() for
+  notes on the storage DBF.
+
+  Source:
+  -------
+  S_CLAB.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CLS()                 Clear the screen with optional color,character
+'------------------------------------------------------------------------------
+ FUNCTION CLS()
+
+  Short:
+  ------
+  CLS() Clear the screen with optional color,character
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  CLS([nAttribute],[cChar])
+
+  Description:
+  ------------
+  Clear the screen.
+
+  Optional color [nAttribute] and character [cChar].
+
+  Examples:
+  ---------
+   CLS()   // clears screen with current color
+
+   CLS(48) // clears screen with black on cyan
+
+   CLS(8,chr(177))  // clears screen grey on black
+                    // with character 177
+
+  Notes:
+  -------
+  Of course in Clipper 5.01 you can also do:
+  dispbox(0,0,24,79,repl(chr(177),9),"+N/N") and get the same
+  result.
+
+
+  Source:
+  -------
+  S_CLS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:COLPIK()              Allows selection of colors from a list
+'------------------------------------------------------------------------------
+ FUNCTION COLPIK()
+
+  Short:
+  ------
+  COLPIK() Allows selection of colors from a list
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  COLPIK()
+
+  Description:
+  ------------
+  Gives the user a choice of 12 pre-defined color
+  combinations to choose from
+
+  Examples:
+  ---------
+   COLPIK()
+
+  Notes:
+  -------
+  Color combo is stored to COLORS.DBF (or whatever name
+  is assigned - see SLSF_COLOR()  ).
+
+  See appendix for more info on colors usage by the
+  library.
+
+  Source:
+  -------
+  S_COLPIK.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:COPYFIELDS()          Copies selected fields of selected records to new dbf
+'------------------------------------------------------------------------------
+ FUNCTION COPYFIELDS()
+
+  Short:
+  ------
+  COPYFIELDS() Copies selected fields of selected records to new dbf
+
+  Returns:
+  --------
+  None
+
+  Syntax:
+  -------
+  COPYFIELDS([aFields,[aDescript]])
+
+  Description:
+  ------------
+  This metafunction allows selection of fields, and
+  selection of record criteria (filter) to be copied to a new DBF.
+
+  [aFields]  is an array of valid field names. Default
+  is all fields. Fields not of the current area are not allowed.
+
+  [aDescript] is an array of field descriptions, which
+  can only be passed if [aFields]  is passed, and which must
+  reflect the fields in [aFields]
+
+  Examples:
+  ---------
+   use (cDbfName)
+
+   COPYFIELDS()  // its a metafunction...
+
+  Source:
+  -------
+  S_COPYF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:COPYITOUT()           Copies records to a new DBF
+'------------------------------------------------------------------------------
+ FUNCTION COPYITOUT()
+
+  Short:
+  ------
+  COPYITOUT() Copies records to a new DBF
+
+  Returns:
+  --------
+  nothing
+
+  Syntax:
+  -------
+  COPYITOUT()
+
+  Description:
+  ------------
+  Copies records to a new DBF, with query and tagging
+  options.
+
+  Examples:
+  ---------
+   Use (dbf_file)
+
+   COPYITOUT()
+
+  Notes:
+  -------
+  For more control, see COPYFIELDS(). If field
+  selection is not needed, use COPYITOUT(), which is smaller and
+  faster.
+
+  Source:
+  -------
+  S_COPY.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CRUNCH()              Moves spaces in a string to end of string
+'------------------------------------------------------------------------------
+ FUNCTION CRUNCH()
+
+  Short:
+  ------
+  CRUNCH() Moves spaces in a string to end of string
+
+  Returns:
+  --------
+  <cCrunched> string with spaces moved to end
+
+  Syntax:
+  -------
+  CRUNCH(cOriginal,nAllor1)
+
+  Description:
+  ------------
+  Moves spaces to end of string <cOriginal>. If
+  <nAllor1> = 1, moves all but single spaces to right end of the
+  string. If <nAllor1> = 0 moves all spaces to the right end.
+
+  Examples:
+  ---------
+
+  cString := "SUPER    Library version 2.50"
+
+  cString := CRUNCH(cString,1) // "SUPER Library version 2.50  "
+
+  cString := CRUNCH(cString,0) // "SUPERLibraryversion2.50     "
+
+  Notes:
+  -------
+  Handy for names (i.e. FIRST and LAST)
+
+  Source:
+  -------
+  S_CRUNCH.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CTRLW()               Sends chr(23) (Control-W) to the keyboard
+'------------------------------------------------------------------------------
+ FUNCTION CTRLW()
+
+  Short:
+  ------
+  CTRLW() Sends chr(23) (Control-W) to the keyboard
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  SET KEY XXX to CTRLW
+
+  Description:
+  ------------
+  Allows remapping a key to Ctrl-W - a common Clipper
+  EXIT key. CTRL-W is not a really intuitive key, but is often
+  required by Clipper. I'll often set F10 to act as Ctrl-W.
+
+  Examples:
+  ---------
+   EXTERNAL CTRLW
+
+   SET KEY 27 to CTRLW  // remaps ESCAPE to CTRL-W
+   also
+   SETKEY(K_F10,{||ctrlw()})
+
+  Notes:
+  -------
+  Declare as EXTERNAL i.e. EXTERNAL CTRLW
+
+  Source:
+  -------
+  S_CTRLW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CURD()                Return current drive letter
+'------------------------------------------------------------------------------
+ FUNCTION CURD()
+
+  Short:
+  ------
+  CURD() Return current drive letter
+
+  Returns:
+  --------
+  <cDrive> => drive letter
+
+  Syntax:
+  -------
+  CURD()
+
+  Description:
+  ------------
+  Returns the current drive letter, less colon (:).
+
+  Examples:
+  ---------
+   ?"Current drive is ",CURD(),":"
+
+  Source:
+  -------
+  CURD.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DATECALC()            Adds/subtracts days,weeks,months,years to a date
+'------------------------------------------------------------------------------
+ FUNCTION DATECALC()
+
+  Short:
+  ------
+  DATECALC() Adds/subtracts days,weeks,months,years to a date
+
+  Returns:
+  --------
+  <dNew> => new date
+
+  Syntax:
+  -------
+  DATECALC(dStart,nUnits,nUnitType)
+
+  Description:
+  ------------
+  <nUnits> is the number of units to add or subtract.
+  If negative, subtraction takes place.
+
+  <nUnitType> is the type of unit, where 1=days ,2=wks,
+  3=mnths, 4=yrs
+
+  <dStart> is the source date, to which units are added
+  or subtracted.
+
+  Examples:
+  ---------
+   dDate          := ctod("10/15/89")
+
+   dLess5days    := DATECALC(dDate,-5,1)  // subtract 5 days
+   dLess5weeks   := DATECALC(dDate,-5,2)  // subtract 5 weeks
+   dAdd5months   := DATECALC(dDate,5,3) // add 5 months
+   dAdd5years    := DATECALC(dDate,5,4)  // add 5 years
+
+  Notes:
+  -------
+  Month adding/subtracting where the day of current
+  month is greater than the # of days in the target month is done
+  by using the # of days in the target month. i.e. 01/31/90 + 1
+  month = 02/28/90
+
+  If the input date is Feb 29th of a leap year, it is
+  adjusted to Feb 28th before month or year calculations.
+
+  Source:
+  -------
+  S_DATCAL.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DAYSIN()              Calculates number of days in a month
+'------------------------------------------------------------------------------
+ FUNCTION DAYSIN()
+
+  Short:
+  ------
+  DAYSIN() Calculates number of days in a month
+
+  Returns:
+  --------
+  <nDays> => days in month of target date
+
+  Syntax:
+  -------
+  DAYSIN(dTarget)
+
+  Description:
+  ------------
+  Returns # of days in month in which <dTarget> falls
+
+  Examples:
+  ---------
+   dDate    := ctod("10/15/89")
+
+   nDimonth := DAYSIN(dDate)  // (returns 31)
+
+  Source:
+  -------
+  S_DAYSIN.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DBF2ARRAY()           Returns an array of values for the current record
+'------------------------------------------------------------------------------
+ FUNCTION DBF2ARRAY()
+
+  Short:
+  ------
+  DBF2ARRAY() Returns an array of values for the current record
+
+  Returns:
+  --------
+  <aValues> => an array of values in the current record
+
+  Syntax:
+  -------
+  DBF2ARRAY()
+
+  Description:
+  ------------
+  Returns an array of values for the current record,
+  with the order of the array the same as the ordinal field
+  order.
+
+  Examples:
+  ---------
+   use customer
+
+   a := DBF2ARRAY()            // store values
+   for i = 1 to len(a)
+     @0+i,0 get a[i]
+   next
+
+   read                        // edit them
+   if AUPDATED(a)              // if they were updated from  the DBF values
+     ARRAY2DBF(a)              // save them
+   endif
+
+  Source:
+  -------
+  S_DBARR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DBSTATS()             Statistical report on dbf, including
+'------------------------------------------------------------------------------
+ FUNCTION DBSTATS()
+
+  Short:
+  ------
+  DBSTATS() Statistical report on dbf, including
+  sum/avg/min/max/std/var/count
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  DBSTATS()
+
+  Description:
+  ------------
+  This is a point & shoot metafunction which allows the
+  user to get statistical data on a dbf, particularly with
+  numeric fields.
+
+  Statistics available are: count, sum, average,
+  minimum, maximum, variance and standard deviation. the analysis
+  may also be based on a conditional criteria.
+
+  Examples:
+  ---------
+   use (cDbfName)
+
+   DBSTATS()    // its a menu driven metafunction
+
+  Source:
+  -------
+  S_DBSTAT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DELARRAY()            Deletes all elements of an array
+'------------------------------------------------------------------------------
+ FUNCTION DELARRAY()
+
+  Short:
+  ------
+  DELARRAY() Deletes all elements of an array
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  DELARRAY(aTarget)
+
+  Description:
+  ------------
+  Deletes all elements of an array <aTarget>. Basically
+  un-initializes the array.
+
+  Examples:
+  ---------
+     // Same as
+
+   afill(aTarget,nil)
+
+   (In 5.01 you can do afill(aTarget,NIL) instead, but
+  this is here for compatibility.)
+
+  Source:
+  -------
+  S_DELAR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DELREC()              Dialog box to delete/undelete current record
+'------------------------------------------------------------------------------
+ FUNCTION DELREC()
+
+  Short:
+  ------
+  DELREC() Dialog box to delete/undelete current record
+
+  Returns:
+  --------
+  <nStatus> => If deleted 1, if undeleted-1, if no
+  action 0
+
+  Syntax:
+  -------
+  DELREC()
+
+  Description:
+  ------------
+  Asks for delete/undelete record with menu prompt and
+  then deletes/undeletes or not If current record is not deleted,
+  prompt will be
+
+       DELETE  NOACTION
+
+  If current record is deleted, prompt will be
+
+       UNDELETE  NOACTION
+
+  Examples:
+  ---------
+   IF nChoice = 6
+       nDelstat := DELREC()
+   ENDIF
+
+  Source:
+  -------
+  S_DELET.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DOYEAR()              Calculates day of the year from date
+'------------------------------------------------------------------------------
+ FUNCTION DOYEAR()
+
+  Short:
+  ------
+  DOYEAR() Calculates day of the year from date
+
+  Returns:
+  --------
+  <nDayOfYear> => day of the year of date
+
+  Syntax:
+  -------
+  DOYEAR(dTarget)
+
+  Description:
+  ------------
+  Calculates day of the year from <dTarget>
+
+  Examples:
+  ---------
+   dDate   := ctod("10/15/90")
+   nDoYear := DOYEAR(dDate)   //(returns 288)
+
+  Source:
+  -------
+  S_DOYEAR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DTDIFF()              Returns difference between dates
+'------------------------------------------------------------------------------
+ FUNCTION DTDIFF()
+
+  Short:
+  ------
+  DTDIFF() Returns difference between dates
+
+  Returns:
+  --------
+  <nDifference> => days,weeks,months or years between
+  dates
+
+  Syntax:
+  -------
+  DTDIFF(dFirst,dSecond,nUnitType)
+
+  Description:
+  ------------
+  Calculates difference between <dFirst> and <dSecond>
+  in quantity defined by <nUnitType> as:
+
+  1=whole days    2=whole weeks
+
+  3=whole months  4=whole years
+
+  Examples:
+  ---------
+   dDate     := ctod("10/15/89")
+   dDate2    := ctod("10/26/89")
+   nDiffdays     := DTDIFF(dDate,dDate2,1)
+   nDiffweeks    := DTDIFF(dDate,dDate2,2)
+   nDiffmonth    := DTDIFF(dDate,dDate2,3)
+   nDiffyears    := DTDIFF(dDate,dDate2,4)
+
+  Source:
+  -------
+  S_DTDIFF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DTOW()                Converts date to words
+'------------------------------------------------------------------------------
+ FUNCTION DTOW()
+
+  Short:
+  ------
+  DTOW() Converts date to words
+
+  Returns:
+  --------
+  <cDateWords> => date as words
+
+  Syntax:
+  -------
+  DTOW(dTarget)
+
+  Description:
+  ------------
+  Returns date in <dTarget> as words
+
+  Examples:
+  ---------
+   dDate     := ctod("10/15/89")
+   cWdate     := DTOW(dDate)
+   // returns "October 15, 1989"
+
+  Source:
+  -------
+  S_DTOW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DUPHANDLE()           Duplicate record finder with delete/copy options
+'------------------------------------------------------------------------------
+ FUNCTION DUPHANDLE()
+
+  Short:
+  ------
+  DUPHANDLE() Duplicate record finder with delete/copy options
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  DUPHANDLE([aFields,aDesc],[aOpenIndexes])
+
+  Description:
+  ------------
+  DUPHANDLE() is similiar to DUPLOOK(), but takes a
+  different approach The user is asked to select fields (only
+  Character fields are presented) to check for duplication. The
+  fields selected are combined into an index key, and an index is
+  created. The database is then scanned for duplicates. If a
+  duplicate set is found, a Tbrowse/tag window is popped up, and
+  the user is asked to tag records. This continues until all
+  duplicate sets are found, or the user chooses to quit the
+  process. The user is then allowed to Process the tagged
+  duplicate records. There are 4 possible options:
+
+         Delete all tagged records
+         Delete all NOT tagged records
+         Copy all tagged records
+         Copy all NOT tagged records
+
+  The options are not mutually exclusive. For instance,
+  you could copy all tagged records to a history file, and then
+  delete them.
+
+  As with all SuperLib deletions, the PACKING is left
+  to you.
+
+  [aFields,aDesc] are optional arrays of fieldnames and
+  field descriptions
+
+  [aOpenIndexes] is an optional array of currently open
+  index names. Clipper has no way to determine the names of
+  currently open indexes and, since this function creates
+  temporary indexes, the current indexes will be closed. Only by
+  having a list [aOpenIndexes] can we re-open the indexes on exit.
+
+  Examples:
+  ---------
+
+  USE customer
+
+  duphandle()
+
+  Warnings:
+  ----------
+  Closes all indexes.
+
+  Source:
+  -------
+  S_DUPH.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DUPLOOK()             Locates possible duplicates based on user criteria
+'------------------------------------------------------------------------------
+ FUNCTION DUPLOOK()
+
+  Short:
+  ------
+  DUPLOOK() Locates possible duplicates based on user criteria
+
+  Returns:
+  --------
+  nothing
+
+  Syntax:
+  -------
+  DUPLOOK([cInfo],[aIndexes])
+
+  Description:
+  ------------
+  Searches current dbf for exact duplicates of field(s)
+  selected by user. User picks a field or fields, DUPLOOK()
+  creates an index and prepares a possible duplicates report.
+
+  [cInfo] is a character expression as additional info
+  for each report line printed. (report normally only refers to
+  record# and the fields selected )
+
+  [aIndexes] is an array of currently open index files
+  to be reopened on exit from duplook() (up to 10)
+
+  Examples:
+  ---------
+   aIndexOpen := {"CUSTOMER","STATE","ZIPCODE"}
+   DUPLOOK("Lastname+'  '+Firstname",aIndexOpen)
+   * the fields the user picks to check duplicates
+   * on,the LASTNAME and FIRSTNAME fields are also
+   * printed on the report.
+   Sample Output:
+   Record #    FNAME
+       1   GARRY
+       2   GARRY
+
+  Warnings:
+  ----------
+  THIS FUNCTION CLOSES ANY OPEN INDEXES YOU WILL NEED
+  TO RE-OPEN INDEXES ON EXIT. (UNLESS YOU PASS AN ARRAY OF OPEN
+  INDEXES AS ABOVE...)
+
+  Source:
+  -------
+  S_DUP.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITDB()       ^b(diff)^n Customized database browser with edit/add/search
+'------------------------------------------------------------------------------
+ FUNCTION EDITDB()                     *changed*
+
+  Short:
+  ------
+  EDITDB() Customized database browser with edit/add/search
+  capabilities
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  EDITDB([lModify],[aFields,aFieldDesc],[lBypassAsk],[lBypassLeave],;
+         [nLock])
+
+  Description:
+  ------------
+  Customized browse interface allowing searching, goto,
+  vertical view and (if <lModify> is True) add edit delete.
+
+  Also allows limiting of fields viewed.
+
+  [lModify] allows add-edit-delete or not.
+
+  The two arrays [aFields, aFieldDesc] are of field
+  names and field descriptions. Default is all fields, field names
+  as descriptions.
+
+  [lByPassAsk] allows bypass of the "BROWSE ALL/SELECT
+  FIELDS" opening menu choice, and defaults to .f.
+
+  [lByPassLeave] allows bypass of "Quit?" dialog. Just quits
+
+  [nLock] number of columns to lock (default is 0)
+
+  Examples:
+  ---------
+   USE CUSTOMER
+
+   aFlds := {"FNAME","LNAME","MI"}
+   aDesc := {"First","Last","Middle"}
+   editdb(.t.,aFlds,aDesc)
+
+  Notes:
+  -------
+  Allows record deletion, but does not pack. Does not
+  'SET DELETED' one way or the other.
+
+  Source:
+  -------
+  S_EDIT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITMEMO()     ^b(diff)^n Performs a windowed memoedit() on a memo field
+'------------------------------------------------------------------------------
+ FUNCTION EDITMEMO()                           *changed*
+
+  Short:
+  ------
+  EDITMEMO() Performs a windowed memoedit() on a memo field
+
+  Returns:
+  --------
+  <lChanged> -> Was the memo field changed
+
+  Syntax:
+  -------
+  EDITMEMO([cMemoName],[nTop,nLeft,nBottom,nRight],;
+        [lModify],[nLineLength],[cTitle])
+
+  Description:
+  ------------
+  Pops up a box allowing editing of a memo field.
+  Escape exits, F10 saves.
+
+  Options for import and export as well.
+
+  Edits field named MEMO by default, otherwise edits
+  fieldname passed as [cMemoName]. Uses coordinates 2,10,20,69
+  unless passed coordinates as [nTop, nLeft, nBottom, nRight]
+
+  [lModify] - True = allow edit (default), False = view only
+
+  [nLineLength] - line length - default is window width-1
+
+  [cTitle]  Title (max 25 characters) Default is MEMO PAD (new to 3.5)
+
+  Examples:
+  ---------
+   editmemo()
+   editmemo("NOTES")
+   editmemo("NOTES",2,2,22,78)
+   editmemo("NOTES",2,2,22,78,.f.)
+
+  Notes:
+  -------
+  If editing, must have a box width of at least 50
+  Requires a memo FIELD - will not work on a memvar.
+
+  See EDITMEMOV() to edit memvars.
+
+  Source:
+  -------
+  S_EDITM.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITMEMOV()    ^b(diff)^n Performs a windowed memoedit() on a string
+'------------------------------------------------------------------------------
+ FUNCTION EDITMEMOV()                          *changed*
+
+  Short:
+  ------
+  EDITMEMOV() Performs a windowed memoedit() on a string
+
+  Returns:
+  --------
+  <cBuffer> => changed string
+
+  Syntax:
+  -------
+  EDITMEMO(cBuffer,[nTop,nLeft,nBottom,nRight],[lModify],;
+            [nLineLength],[cTitle])
+
+  Description:
+  ------------
+  Pops up a box allowing memo editing of a string.
+  Edits string <cBuffer>. Options for import and export as well.
+
+  Escape exits, F10 saves [cBuffer]. Uses coordinates
+  2,10,20,69 unless passed coordinates as
+  [nTop,nLeft,nBottom,nRight]
+
+  [lModify] - True = allow edit (default), False = view
+  only
+
+  [nLineLength] - line length - default is window
+  width-1
+
+  [cTitle]  Title (max 25 characters) Default is MEMO PAD (new to 3.5)
+
+  Examples:
+  ---------
+   cNew := editmemov("Good golly miss molly!")
+   cNew := editmemov(memoread("DOCS.DOC"),2,2,22,78)
+   cNew := editmemov(memoread("DOCS.DOC"),2,2,22,78,.f.)
+
+  Notes:
+  -------
+  If editing, must have a box width of at least 50.
+  Unlike EDITMEMO, this works on a memvar and returns a memvar.
+
+  Source:
+  -------
+  S_EDITM.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ED_G_PIC()            Returns appropriate picture for getting a field
+'------------------------------------------------------------------------------
+ FUNCTION ED_G_PIC()
+
+  Short:
+  ------
+  ED_G_PIC() Returns appropriate picture for getting a field
+
+  Returns:
+  --------
+  <cPicture> picture clause
+
+  Syntax:
+  -------
+  ED_G_PIC(cFieldName)
+
+  Description:
+  ------------
+  Returns a picture clause appropriate for editing
+  field where <cFieldName> is the name of the field. Applicable to
+  Character and numeric fields
+
+  Examples:
+  ---------
+   @10,10 GET AMOUNT PICT ED_G_PIC("AMOUNT")
+   * would return a picture of "9999.99" depending
+   * on length and decimals
+
+  Source:
+  -------
+  S_EDPICT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ENDSWITH()            Determines if a string ends with another string
+'------------------------------------------------------------------------------
+ FUNCTION ENDSWITH()
+
+  Short:
+  ------
+  ENDSWITH() Determines if a string ends with another string
+
+  Returns:
+  --------
+  <lEndsWith> => True or False, string 2 ends with
+  string 1
+
+  Syntax:
+  -------
+  ENDSWITH(cTarget,cEndsWith)
+
+  Description:
+  ------------
+  Determines if string 1 <cTarget> ends with string 2
+  <cEndsWith>
+
+  Examples:
+  ---------
+   cStr1    = "SUPERFUNCTION"
+   cStr2    = "FUNCTION"
+   cStr3    = "FUNKY"
+   ENDSWITH(cStr1,cStr2)  //returns .t.
+   ENDSWITH(cStr1,cStr3)     //returns .f.
+
+  Source:
+  -------
+  S_ENDSW.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ENHANCED()            Returns color integer for ENHANCED setting
+'------------------------------------------------------------------------------
+ FUNCTION ENHANCED()
+
+  Short:
+  ------
+  ENHANCED() Returns color integer for ENHANCED setting
+
+  Returns:
+  --------
+  <nColor> => color integer for ENHANCED setting
+
+  Syntax:
+  -------
+  ENHANCED()
+
+  Description:
+  ------------
+  Gets the 2nd part of the color string and converts it
+  to color INTEGER
+
+  Examples:
+  ---------
+   nEnh := ENHANCED()
+   ATT(10,10,10,20,nEnh)
+
+  Notes:
+  -------
+  See appendix for more info on Super.Lib color usage
+
+
+  Source:
+  -------
+  S_ENHAN.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EVALQ()               Evaluates a logical condition in a string
+'------------------------------------------------------------------------------
+ FUNCTION EVALQ()
+
+  Short:
+  ------
+  EVALQ() Evaluates a logical condition in a string
+
+  Returns:
+  --------
+  <lTrue> => result of evaluating condition
+
+  Syntax:
+  -------
+  EVALQ(cCondition)
+
+  Description:
+  ------------
+  Macro expands <cCondition> and returns logical result
+
+  Examples:
+  ---------
+   locate for evalq( sls_query() )
+
+  Notes:
+  -------
+  In Clipper 5.01, you're better off doing
+       bQueryblock := &("{||"+sls_query()+"}")
+       locate for eval(bQueryblock)
+
+  You'll get close to a 100% speed improvement.
+
+  Source:
+  -------
+  S_EVALQ.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EXPBLOCK()            Returns a codeblock to evaluate an expresson
+'------------------------------------------------------------------------------
+ FUNCTION EXPBLOCK()
+
+  Short:
+  ------
+  EXPBLOCK() Returns a codeblock to evaluate an expresson
+
+  Returns:
+  --------
+  <bBlock> => codeblock to evaluate an expression
+
+  Syntax:
+  -------
+  EXPBLOCK(cExpress)
+
+  Description:
+  ------------
+  Returns a codeblock built around the expression in
+  cExpress.
+
+  Using EVAL() on the codeblock will return the current
+  value of the expression.
+
+  Examples:
+  ---------
+   cExp := "UPPER(LEFT(CUSTOMER->LNAME,5))"
+   bExp := EXPBLOCK(cExp)
+
+   ?eval(bExp)
+     // displays current value of customer->lname, upper,left 5
+
+  Notes:
+  -------
+  See also WORKBLOCK()
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FADEAWAY()            Fades screen away , alternative to restscreen()
+'------------------------------------------------------------------------------
+ FUNCTION FADEAWAY()
+
+  Short:
+  ------
+  FADEAWAY() Fades screen away , alternative to restscreen()
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  FADEAWAY(cInScreen,nTop,nLeft,nBottom,nRight)
+
+  Description:
+  ------------
+  Fades <cInscreen>, a screen stored with SAVESCREEN(),
+  back onto the screen at <nTop>,<nLeft>,<nBottom>,<nRight>. Here
+  for compatibility. See SS_FADE().
+
+  Examples:
+  ---------
+   See SS_FADE()
+
+  Source:
+  -------
+  S_SCREEN.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FASTFORM()            Prints a selected formletter for current record
+'------------------------------------------------------------------------------
+ FUNCTION FASTFORM()
+
+  Short:
+  ------
+  FASTFORM() Prints a selected formletter for current record
+
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  FASTFORM()
+
+  Description:
+  ------------
+  Presents a picklist of formletters to print against
+  contents of current record.
+
+  Examples:
+  ---------
+   If nChoice = 4    // form letter
+     FASTFORM()
+   endif
+
+  Notes:
+  -------
+  Utilizes a form created by FORMLETR() and plugs in
+  values from the current record. Interface is a picklist of forms
+  available. Depends on the current DBF to match the field values
+  in the form.
+
+  Source:
+  -------
+  S_FFORM.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FIELDDECX()           Returns decimals of field
+'------------------------------------------------------------------------------
+ FUNCTION FIELDDECX()
+
+  Short:
+  ------
+  FIELDDECX() Returns decimals of field
+
+  Returns:
+  --------
+  <nDec> => field DECIMALS
+
+  Syntax:
+  -------
+  FIELDDECX(expField)
+
+  Description:
+  ------------
+  <expField> is either the numeric position of the
+  field in the database, or the name of the field.
+
+  Examples:
+  ---------
+   FOR i = 1 to fcount()
+     nSumDecs += FIELDDECX(i)
+     // could also be:  nSumDecs += FIELDDECX(FIELD(i))
+   ENDIF
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FIELDLENX()           Returns length of field
+'------------------------------------------------------------------------------
+ FUNCTION FIELDLENX()
+
+  Short:
+  ------
+  FIELDLENX() Returns length of field
+
+  Returns:
+  --------
+  <nLength> => field LENGTH
+
+  Syntax:
+  -------
+  FIELDLENX(expField)
+
+  Description:
+  ------------
+  <expField> is either the numeric position of the
+  field in the database, or the name of the field.
+
+  Examples:
+  ---------
+   FOR i = 1 to fcount()
+     nSumLengths += FIELDLENX(i)
+   ENDIF
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FIELDPOSX()           Returns position of field named in expression
+'------------------------------------------------------------------------------
+ FUNCTION FIELDPOSX()
+
+  Short:
+  ------
+  FIELDPOSX() Returns position of field named in expression
+
+  Returns:
+  --------
+  <nPosition> => natuaral position of field (0 if not found)
+
+  Syntax:
+  -------
+  FIELDPOSX(cField)
+
+  Description:
+  ------------
+  <cField> is an expression containing the name of a  field. Can
+  also include the alias.
+
+  Examples:
+  ---------
+   ?FIELDPOSX("CUSTOMER->LNAME")
+   ?FIELDPOSX("LNAME")
+
+  Notes:
+  -------
+  FIELDPOS() (a Clipper function) works with field
+  names, but will not allow the ALIAS.
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FIELDTYPEX()          Returns type of field
+'------------------------------------------------------------------------------
+ FUNCTION FIELDTYPEX()
+
+  Short:
+  ------
+  FIELDTYPEX() Returns type of field
+
+
+  Returns:
+  --------
+  <cType> => field TYPE
+
+  Syntax:
+  -------
+  FIELDTYPEX(expField)
+
+  Description:
+  ------------
+  <expField> is either the numeric position of the
+  field in the database, or the name of the field.
+
+  Examples:
+  ---------
+   IF FIELDTYPEX(i) =="N"
+     nSum += fieldget(i)
+   ENDIF
+
+  Notes:
+  -------
+  Just using VALTYPE(FIELDGET(n)) is fine, except that
+  memo fields then show as type "C". Not always wanted.
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FILEINFO()            Returns file date,time,size
+'------------------------------------------------------------------------------
+ FUNCTION FILEINFO()
+
+  Short:
+  ------
+  FILEINFO() Returns file date,time,size
+
+  Returns:
+  --------
+  <expInfo> => Returns file date,time or size
+
+  Syntax:
+  -------
+  FILEINFO(cFileName,nInfo)
+
+  Description:
+  ------------
+  Returns info on file in <cFileName> based on param
+  passed as <nInfo>
+
+     1  - returns file size (numeric)
+
+     2  - returns file date (date)
+
+     3  - returns file time (character)
+
+  Examples:
+  ---------
+   nFilesize     := fileinfo("customer.dbf",1)
+   dFileDate     := fileinfo("customer.dbf",2)
+   dFileTime     := fileinfo("customer.dbf",3)
+
+  Source:
+  -------
+  S_FILEIN.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FILEREAD()            Lists a text file of unlimited size
+'------------------------------------------------------------------------------
+ FUNCTION FILEREAD()
+
+  Short:
+  ------
+  FILEREAD() Lists a text file of unlimited size
+
+  Returns:
+  --------
+  nothing
+
+  Syntax:
+  -------
+  FILEREAD([nTop,nLeft,nBottom,nRight],[cFileName],[cTitle],;
+            [lSearch],[lMark])
+
+  Description:
+  ------------
+  Lists text file [cFileName] of unlimited size in a
+  programmer definable window of dimensions [nTop..nRight]
+
+  Allows up down right left scrolling. Use this for
+  reports or output sent to a disk file.
+
+  If [cFileName]  is not passed, a box asks for the
+  filespec and then allows a picklist of files of that spec. If
+  [cFileName] is passed as a wildcard (i.e. "*.DOC"). a picklist
+  of files of that spec is presented.
+
+  If [nTop..nRight] are not passed, a default window of
+  dimensions 2,2,22,78 is used.
+
+  [cTitle] is an optional title. This overrides the
+  default which is the file name.
+
+  [lSearch] is a switch to allow text searches. Default
+  is True
+
+  [lMark] is a switch to allow block marking (with Copy
+  to File or Print) Default is True.
+
+  Examples:
+  ---------
+   REPORT FORM summary TO summary.txt
+   FILEREAD(2,2,22,78,"SUMMARY.TXT","Summary File")
+
+  Notes:
+  -------
+  Fileread() will use SET DEFAULT if no path is
+  specified.
+
+  Source:
+  -------
+  S_FILER.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FILLARR()             Fill type, length, decimal arrays
+'------------------------------------------------------------------------------
+ FUNCTION FILLARR()
+
+  Short:
+  ------
+  FILLARR() Fill type, length, decimal arrays
+
+  Returns:
+  --------
+  Nothing - works on arrays passed
+
+  Syntax:
+  -------
+  FILLARR(aNames,aTypes,[aLens],[aDeci])
+
+  Description:
+  ------------
+  Fills in TYPE <aTypes> , LENGTH [aLens] and DECIMAL
+  [aDeci] arrays given a FIELDNAME array <aNames>.
+
+  Arrays (3 and 4) are optional.
+
+  Examples:
+  ---------
+   nFields   :=LEN(aFieldNames)
+   aFldtypes     := array(nFields)
+   aFldLens      := array(nFields)
+   aFldDeci      := array(nFields)
+   FILLAR(aFieldNames,aFldTypes,aFldLens,aFldDeci)
+
+  Warnings:
+  ----------
+  Macro expands an expression to obtain type-could
+  crash if expression passed is invalid. Not really meant for
+  expressions, but people will pass them from time to time.
+
+  Notes:
+  -------
+  In most circumstances you would fill all of these
+  arrays with one call to AFIELDS(), but there are exceptions.
+
+  Source:
+  -------
+  S_FILLAR.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FMOVE2NEXT()          Move to beginning of next line in a text file
+'------------------------------------------------------------------------------
+ FUNCTION FMOVE2NEXT()
+
+  Short:
+  ------
+  FMOVE2NEXT() Move to beginning of next line in a text file
+
+  Returns:
+  --------
+  <lSuccess> => success in doing so
+
+  Syntax:
+  -------
+  FMOVE2NEXT(nHandle)
+
+  Description:
+  ------------
+  Moves pointer in text file <nHandle> to beginning of
+  next line.
+
+  Presuming lines end in CRLF. Returns <expL> for
+  success. End of file would return .f.
+
+  Examples:
+  ---------
+
+   // this will list off the text file REPORT.LST to the  screen
+
+   h := fopen("report.lst")
+   ?SFREADLINE(h)
+   while  FMOVE2NEXT(h)
+    ?SFREADLINE(h)
+   end
+
+  Source:
+  -------
+  S_FM2N.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FMOVE2PRIOR()         Moves to beginning of previous CRLF delimited
+'------------------------------------------------------------------------------
+ FUNCTION FMOVE2PRIOR()
+
+  Short:
+  ------
+  FMOVE2PRIOR() Moves to beginning of previous CRLF delimited
+  line in a text file
+
+  Returns:
+  --------
+  <lSuccess> => for success
+
+  Syntax:
+  -------
+  FMOVE2PRIOR(nHandle)
+
+  Description:
+  ------------
+  Moves pointer in a text file <nHandle> opened with
+  FREAD() to the beginning if the next CRLF delimited line in the
+  file. Returns .f. if unable to.
+
+  Examples:
+  ---------
+   FMOVE2PRIOR(handle)
+
+   ?FREADLINE(handle)
+
+  Source:
+  -------
+  S_FM2P.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FORMLETR()            Interactive formletter and mailmerge utility
+'------------------------------------------------------------------------------
+ FUNCTION FORMLETR()
+
+  Short:
+  ------
+  FORMLETR() Interactive formletter and mailmerge utility
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  FORMLETTER([aNames,aDesc,aTypes];
+        [aMoreFuncs,aMoreDesc,aMoreHot])
+
+  Description:
+  ------------
+  Provides a menu driven interface to the creation,
+  modification and merging/printing of form letters with DBFs.
+
+  Three field arrays may be passed - [aNames] is an
+  array of allowable field names, [aDesc] is an array of
+  field descriptions, and [aTypes] is an array of field types. All
+  fields are used as a default, with field names being the default
+  field descriptions. Pass all or none of the first three arrays.
+
+  Three additional arrays may be passed for up to 30
+  additional hotkeys.
+
+  [aMoreFuncs] is an array of functions which will be
+  placed between ®¯ delimiters. [aMoreDesc] is a corresponding
+  descriptive array of these functions, to be shown when the user
+  presses F1. Format:
+
+       "hotkey     description "
+        | column 1 |column 17
+
+  [aMoreHot] is the corresponding hotkeys as their
+  numeric ascii values.
+
+  All three arrays must be passed, if any, and all must
+  be of same length with no null or undefined elements.
+
+  You could use these for Printer control, special
+  combined fields, etc. Be sure the functions you wish to call are
+  available to the linker, usually by declaring them EXTERNAL.
+
+  Examples:
+  ---------
+
+  USE CUSTOMER
+
+  aFields := {"Fname","lname","mi"}
+  aDesc   := {"First","Last","Middle"}
+  aTypes  := {"C","C","C"}
+
+  * hotkey arrays
+  aMoreFuncs := {"BOLD_ON()","BOLD_OFF"}
+
+  aMoreDesc  := {"F5    BOLD PRINT ON", "F6    BOLD PRINT OFF"}
+  aMoreKeys  := {K_F5,K_F6}
+
+  FORMLETR(aFields,aDesc,aTypes,  ;
+             aMoreFuncs,aMoreDesc,aMoreKeys)
+
+  //or...
+
+  USE CUSTOMER
+  FORMLETR()
+
+  Notes:
+  -------
+  See index for notes on using a different file name
+  for FORM.DBF
+
+  Source:
+  -------
+  S_FORML.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FORMULATE()    ^b(new)^n  Builds a free-form formula or User Defined Field
+'------------------------------------------------------------------------------
+ FUNCTION FORMULATE()                          *new*
+
+  Short:
+  ------
+  FORMULATE() Builds a free-form formula or User Defined Field
+
+  Returns:
+  --------
+  <cFormula> => String containing formula
+
+  Syntax:
+  -------
+  FORMULATE([cInFormula],[aFields], [aFDesc], [cDisplay],[cTypes] )
+
+
+  Description:
+  ------------
+  Allows ad hoc creation of formulas (expressions) by mixing freeform
+  text, function templates and operators.
+
+  [cInFormula] Optional character string containing the formula to
+               modify
+  [aFields]    Optional list of dbf field names
+  [aFDesc ]    Optional list of alternate names for dbf field names
+  [cDisplay]   Optional text for the prompt. Default is :
+               "Create Formula/User Defined field:"
+  [cTypes]     Optional string containing allowed return types (in caps)
+               Default is "CDNL" (char, date, numeric, logical)
+
+  Examples:
+  ---------
+
+  1. cExpress := FORMULATE("",nil,nil,"Create logical expression","L")
+
+  2.(taken from FORMLETR() )
+
+    cAddExpress := FORMULATE(aEdit[nThisLine],aFieldNames,aFieldDesc,;
+       "Modify Label Contents (must result in type CHARACTER):",;
+       "C")
+
+
+  Notes:
+  -------
+
+  Source:
+  -------
+  S_FORMU.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FREQANAL()     ^b(diff)^n Performs a frequency analysis on a DBF
+'------------------------------------------------------------------------------
+ FUNCTION FREQANAL()                           *changed*
+
+  Short:
+  ------
+  FREQANAL() Performs a frequency analysis on a DBF
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  FREQANAL()
+
+  Description:
+  ------------
+  Performs a point&shoot frequency analysis on selected
+  fields of the DBF.
+
+  Allows for tallying of additional numeric fields.
+
+  New to 3.5 - now allows fields of type C D and N to be added
+  to the frequency string. Additional Summary fields are now named
+  SUM_1, SUM_2...etc in the output results. (previously they retained
+  their original name)
+
+  Examples:
+  ---------
+   USE (cDbfName)
+
+   FREQANAL()
+
+  Source:
+  -------
+  S_FREQ.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FULLDIR()             Interactively navigate directories
+'------------------------------------------------------------------------------
+ FUNCTION FULLDIR()
+
+  Short:
+  ------
+  FULLDIR() Interactively navigate directories
+
+  Returns:
+  --------
+  <lSelected> => Directory was selected
+
+  Syntax:
+  -------
+  FULLDIR([lChange],[@cDirName])
+
+  Description:
+  ------------
+  Interactively navigates directories on the current
+  drive.
+
+  Allows reading of a file ( with FILEREAD() ) in a
+  directory.
+
+  If file is DBF, does a DBEDIT browse (watch your
+  memory..)
+
+  [lChange]    True - change to selected directory
+               False - don't change to selected directory
+               Default is True - change
+
+  [@cDirName] Char string passed by reference, will
+  contain name of selected directory on return.
+
+  Examples:
+  ---------
+   cNewDir := ""
+
+   if FULLDIR(.F.,@cNewDir)
+       SET DEFAULT TO (cNewDir)
+       ?"New directory is:"
+       ?Curdir()
+   endif
+
+   if FULLDIR(.t.)
+       ?"New directory is:"
+       ?Curdir()
+   endif
+
+  Source:
+  -------
+  S_FULLD.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GENED()        ^b(diff)^n Generic dbf editing screen
+'------------------------------------------------------------------------------
+ FUNCTION GENED()                              *changed*
+
+  Short:
+  ------
+  GENED() Generic dbf editing screen
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  GENED([lModify],[nTop,nBottom],[aFields,aDesc])
+
+  Description:
+  ------------
+  Edit ( [lModify] =.f.) current record (DEFAULT) or
+
+  Add  ( [lModify] =.t.) new record.
+
+  Window top [nTop] and bottom [nBottom] default to
+  centered.
+
+  Use optional [aFields] (field names) and [aDesc]
+  (field descriptions), or use all fields in dbf.
+
+  Examples:
+  ---------
+   use Customer index Customer
+
+   Gened(.f.,2,20)   // edit
+
+  Notes:
+  -------
+  Allows memo editing (multiple memo fields)
+  New to 3.5: memo editing is done to a memvar. Changes aren't
+  saved unless the whole record is saved. A global [F3=Memo] key
+  lets you pick which memo to edit.
+
+  Source:
+  -------
+  S_GENED.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GENREADER()           Creates specialized user defined get reader block
+'------------------------------------------------------------------------------
+ FUNCTION GENREADER()
+
+  Short:
+  ------
+  GENREADER() Creates specialized user defined get reader block
+
+
+  Returns:
+  --------
+  <bReader> => get reader block for GET
+
+  Syntax:
+  -------
+  GENREADER(bBlock,lPass)
+
+  Description:
+  ------------
+  Creates a get reader block that first passes control
+  to code block <bBlock> for each keypress. <bBlock> is passed
+  the following values:
+
+       1. lastkey() value
+       2. proc name
+       3. var name
+       4. current get value
+
+  If <bBlock> returns any value but a Nil, the get is
+  assigned this value. If a Nil is returned, and <lPass> is True,
+  then the key is passed to the regular get handler.
+
+  Implement by using the SEND keyword for your
+  @Say..Get.. statements.
+
+    @10,10 say blah get blahblah SEND reader:=GENREADER(bBlock,lPass)
+
+  Or simply refer to the last get added with ATAIL(getlist)
+
+    @10,10 say blah get blahlblah
+    ATAIL(getlist):reader := GENREADER(bBlock,lPass)
+
+  Examples:
+  ---------
+   // while in the get V1, you will be able to type 1, 2 or 3
+   // to get a value from the array
+
+   aValues := {"Section 1","Section 2","Section 3"}
+   bBlock  := ;
+        {  | k|  iif( (nAtk:=at(chr(k),"123")) >  0,aValues[nAtk],nil)  }
+
+   v1 := "Section 1"
+   @10,10 get v1 send reader := genreader(bBlock)
+   READ
+
+  Source:
+  -------
+  S_READRS.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GENVAL()              Generic VALID clause validation with message
+'------------------------------------------------------------------------------
+ FUNCTION GENVAL()
+
+  Short:
+  ------
+  GENVAL() Generic VALID clause validation with message
+
+  Returns:
+  --------
+  <lValid> => logical result of passed condition
+
+  Syntax:
+  -------
+  GENVAL(expValid,expMessage)
+
+  Description:
+  ------------
+  Evaluates <expValid>, which is either a bode block or
+  a string to be macro expanded, as a logical value. If result is
+  False, displays message <expMessage> and waits for a keypress.
+  <expMessage> can be a single string, or an array of strings (see
+  aMsg() ).
+
+  Examples:
+  ---------
+   if genval("fcount() < 60",'Too many fields')
+       COPY TO TEMP
+   endif
+
+   * ...or as a VALID CLAUSE macro'd
+
+   @10,10 get lname VALID ;
+     GENVAL("!empty(lname)","Need a last name")
+
+   * ...or as a VALID CLAUSE eval'd
+
+   @10,10 get fname VALID ;
+     GENVAL( { || !empty(fname) },"Need a last name")
+
+  Source:
+  -------
+  S_GENVA.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GETAKEY()             Gets intent of last keystroke
+'------------------------------------------------------------------------------
+ FUNCTION GETAKEY()
+
+  Short:
+  ------
+  GETAKEY() Gets intent of last keystroke
+
+  Returns:
+  --------
+  <cIntent> as key direction (FWD,BWD,ESC,CTW,UNK)
+
+  Syntax:
+  -------
+  GETAKEY(nKeyVal)
+
+  Description:
+  ------------
+  Gives key direction of last key, for evaluating what
+  direction in a read the user is heading.
+
+  Examples:
+  ---------
+   If GETAKEY(LASTKEY())=="FWD"
+       nActive_field++
+   elseif GETAKEY(LASTKEY())=="BWD"
+       nActive_field--
+   endif
+
+  Source:
+  -------
+  S_GETKEY.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GETCALC()      ^b(diff)^n Pops up a quick 'solar' calculator
+'------------------------------------------------------------------------------
+ FUNCTION GETCALC()                            *changed*
+
+  Short:
+  ------
+  GETCALC() Pops up a quick 'solar' calculator
+
+  Returns:
+  --------
+  <expTotal> => total from calculator as either type
+  "N" or "C"
+
+  Syntax:
+  -------
+  GETCALC([nStart],[lReturnChar])
+
+  Description:
+  ------------
+  Pop up 'solar' calculator for simple arithmetic
+
+  [nStart]  starting number
+
+  [lReturnChar]  return as character string (default
+  .t.). False returns as a number.
+
+  Examples:
+  ---------
+   GETCALC(5)
+
+  NOTES:
+  -------
+  See also CALCWHEN(), CALCVALID(), CALCKSET()
+
+  Source:
+  -------
+  S_GETCAL.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GETDATE()             Point and shoot calendar
+'------------------------------------------------------------------------------
+ FUNCTION GETDATE()
+
+  Short:
+  ------
+  GETDATE() Point and shoot calendar
+
+  Returns:
+  --------
+  <dSelect> => date selected
+
+  Syntax:
+  -------
+  GETDATE([dStart])
+
+  Description:
+  ------------
+  Allows user to point to and select a date [dStart]
+  optional date parameter to start with. If no date passed, system
+  date is used.
+
+  Examples:
+  ---------
+   set key -1 to GETDATE
+
+  NOTES:
+  -------
+  See also CALENDWHEN(), CALENDVALID(), CALENDKSET()
+
+  Source:
+  -------
+  S_GETDAT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GETDFP()              Gets SET DEFAULT path
+'------------------------------------------------------------------------------
+ FUNCTION GETDFP()
+
+  Short:
+  ------
+  GETDFP() Gets SET DEFAULT path
+
+  Returns:
+  --------
+  SET DEFAULT path as string
+
+  Syntax:
+  -------
+  GETDFP()
+
+  Description:
+  ------------
+  Retrieves and returns SET DEFAULT path from Clipper.
+  Appends a "\" if needed. If no SET DEFAULT is active, returns an
+  empty string ""
+
+  Examples:
+  ---------
+   // using ERASE, for instance
+
+   ERASE (getdfp()+tempfile)
+
+  Source:
+  -------
+  S_GETDFP.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GETJUMP2()     ^b(new)^n  Determines if mouse clicked on a get
+'------------------------------------------------------------------------------
+ FUNCTION GETJUMP2()                   *new*
+
+  Short:
+  ------
+  GETJUMP2() Determines if mouse clicked on a get
+
+  Returns:
+  --------
+  <nJumpTo> => Number of get that mouse clicked on
+
+  Syntax:
+  -------
+  GETJUMP2(nMouseRow, nMousecol, [aGetList] )
+
+  Description:
+  ------------
+  This function checks nMouseRow and nMouseCol against the getlist,
+  either passed by you as [aGetList], or by accessing the most recent
+  RAT_READ() get list, and determines if the user clicked on a
+  get. How you then get to that get is up to you. RAT_READ and the
+  specialized get readers in SuperLib make use of this function to
+  jump to non-contiguous gets.
+
+  Examples:
+  ---------
+  IF (nGet := GETJUMP2(nMouseR, nMouseC,getlist) ) > 0
+     ....
+  ENDIF
+
+  Notes:
+  -------
+
+  Source:
+  -------
+  S_RREAD.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GLOBREP()      ^b(diff)^n Performs global selective replace of a field
+'------------------------------------------------------------------------------
+ FUNCTION GLOBREP()                    *changed*
+
+  Short:
+  ------
+  GLOBREP() Performs global selective replace of a field
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  GLOBREP([aFields,aDesc])
+
+  Description:
+  ------------
+  Allows user to point to a field and then enter a
+  replacement value for it. Replacement can be executed for all
+  records, query matches, or tagged records.
+
+  [aFields,aDesc] arrays of field names, and field
+  descriptions.
+
+  Examples:
+  ---------
+   If nChoice == 9   // Global replace
+
+     GLOBREP()
+
+   endif
+
+  Warnings:
+  ----------
+  These changes are, of course, permanent.
+  New to 3.5:
+  -Preview (view changes before they happen)
+  -'Build Formula' replacement option type. Lets user build a
+  formula for replacing the target field.
+
+  Source:
+  -------
+  S_GLOBR.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:HARDCOPY()            Prints current record or memo fields to printer
+'------------------------------------------------------------------------------
+ FUNCTION HARDCOPY()
+
+  Short:
+  ------
+  HARDCOPY() Prints current record or memo fields to printer
+
+  Returns:
+  --------
+  Nil
+
+  Syntax:
+  -------
+  HARDCOPY([aFields,aFieldDesc,aFieldTypes])
+
+  Description:
+  ------------
+  Prints out contents of the current record, or any
+  memo fields in the current record, to printer or file.
+
+  [aFields,aFieldDesc,aFieldTypes] are optional arrays
+  of field names, field descriptions, and field types. Default is
+  field names, field names, and field types in current area.
+
+  Examples:
+  ---------
+   HARDCOPY()
+
+  Source:
+  -------
+  S_HARDC.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:HELP()                Provides context sensitive popup help
+'------------------------------------------------------------------------------
+ FUNCTION HELP()
+
+  Short:
+  ------
+  HELP() Provides context sensitive popup help
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  SET KEY xxx TO HELP
+
+  Description:
+  ------------
+  By setting a key xxx to this function, the current
+  PROC and VARIABLE are passed to it when the key is pressed
+  during the program.
+
+  By comparing the PROC and VARIABLE parameters against
+  entries in the HELP.DBF, HELP() can then provide the appropriate
+  help screen for the user. If no matching record is found, HELP()
+  displays a 'No Help Found' message to the user.
+
+  HELP() works in conjunction with HELPMOD() which is
+  used to create help screen records for the HELP.DBF. HELPMOD()
+  allows online creation and modification of the size, location
+  and contents of the help screen for the current PROC,VARIABLE
+  combination.
+
+  Examples:
+  ---------
+   EXTERNAL HELP
+
+   SET KEY 28 to HELP
+
+  Warnings:
+  ----------
+  The SET KEY that called this proc is still active
+  inside the proc. You may wish to modify the proc to turn off/on
+  the set key.
+
+  i.e. if called with key 28 (F1)
+
+  at start :  SET KEY 28 to
+  at end:     SET KEY 28 to HELP
+
+  Notes:
+  -------
+  Will not be much use during ACHOICE or MENU TO
+
+  Source:
+  -------
+  S_HELP.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:HELPMOD()             Interactively build and modify help screens
+'------------------------------------------------------------------------------
+ FUNCTION HELPMOD()
+
+  Short:
+  ------
+  HELPMOD() Interactively build and modify help screens
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  SET KEY xxx TO HELPMOD
+
+  Description:
+  ------------
+  HELPMOD() creates and modifies help screens for
+  HELP() which are stored in HELP.DBF.
+
+  HELPMOD() allows online creation and modification of
+  the size, location and contents of the help screen for the
+  current PROC,VARIABLE combination, and stores the results in
+  HELP.DBF.
+
+  HELPMOD() is intended to be used online, during
+  program execution, by the developer/programmer. It can be
+  removed after development.
+
+  By setting a key xxx to this function, the current
+  PROC and VARIABLE are passed to it when the key is pressed
+  during the program.
+
+  By comparing the PROC and VARIABLE parameters against
+  entries in the HELP.DBF, HELPMOD() can then provide the
+  appropriate help screen for modification, or, if no matching
+  record is found, allow creation of a new help screen record.
+
+  HELP.DBF is created if not present.
+
+  Examples:
+  ---------
+   EXTERNAL HELPMOD
+
+   SET KEY -30 TO HELPMOD  && alt-F1
+
+  Notes:
+  -------
+  Will not be much use during ACHOICE or MENU TO
+
+  Source:
+  -------
+  S_HELPM.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:IFMOUSEHD()    ^b(new)^n  Checks if mouse held down,evals codeblock while it is
+'------------------------------------------------------------------------------
+ FUNCTION IFMOUSEHD()             *new*
+
+  Short:
+  ------
+  IFMOUSEHD() Checks if mouse held down,evals codeblock while it is
+
+  Returns:
+  --------
+  NIL
+
+  Syntax:
+  -------
+  IFMOUSEHD(bBlock, [oTbrowse])
+
+  Description:
+  ------------
+  You'll often want to hold the left mouse button down on a hot object
+  in order to cause an action to repeat rapidly over and over. An
+  example would be on an up or down arrow that caused a tbrowse object
+  to go up or down. Rather than go click-release-click-release-click..etc,
+  you prefer to just hold the mouse down.
+
+  If you detect the mouse has been pressed and you then want to check
+  if its held down and perform an action repetetively while it is,
+  you can use this function.
+
+  <bBlock> is the code block to be evaluated continuously while the mouse
+  is held down. (there is a .01 second delay between iterations).
+
+  [oTbrowse] is an optional Tbrowse object that you wish to be refreshed
+  during the evaluation of the block. (otherwise, you could hold the mouse
+  button down continuously and not se anything happen. You could have
+  your codeblock refresh the Tbrowse, of course. Its just easier this
+  way.
+
+
+  Examples:
+  ---------
+  // this code is taken from SMALLS(), our lookup table popup
+
+  case ISMOUSEAT(nMouseR, nMouseC, nBot+2, nLeft, nBot+2, nLeft+2)
+      oTb:up()
+      IFMOUSEHD({||oTb:up()},oTb)
+  case ISMOUSEAT(nMouseR, nMouseC, nBot+2, nLeft+3, nBot+2, nLeft+5)
+      oTb:down()
+      IFMOUSEHD({||oTb:down()},oTb)
+
+  Source:
+  -------
+  S_MOOSE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:INITSUP()             Sets SuperLib system interface vars for MONO or COLOR
+'------------------------------------------------------------------------------
+ FUNCTION INITSUP()
+
+  Short:
+  ------
+  INITSUP() Sets SuperLib system interface vars for MONO or COLOR
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  INITSUP([lMakePublic])
+
+  Description:
+  ------------
+  Checks SLS_ISCOLOR(), and calls SATTCOLOR() or
+  SATTMONO() appropriately, to set to default color or mono color
+  sets. This is only done the first time INITSUP() is called.
+
+  If [lMakePublic] is True (default), the old style
+  SuperLib PUBLIC variables are declared and set to their
+  corresponding values based on the new SLS_*() and SLSF_*()
+  functions. This is to help with conversion, but be sure to
+  change any reference to the old style PUBLIC variables to the
+  new function calls, as the PUBLICs will not be an option in the
+  next SuperLib.
+
+  Each time INITSUP() is called with (True), the values
+  in the PUBLIC variables are reset from their SLS_*() and
+  SLSF_*() counterparts. The PUBLIC declaration is only done
+  once.
+
+  Examples:
+  ---------
+   INITSUP(.f.)  // do not initialize publics
+
+  Notes:
+  -------
+  This is mainly here for compatibility with older
+  versions, where INITSUP() was everywhere. INITSUP() previously
+  set up the PUBLIC variables for use by SuperLib. The PUBLIC
+  variable set have now been replaced by the SET/ACCESS function
+  scheme in S_ATTRIB.PRG. INITSUP()'s previous duties have been
+  replaced by the functions:
+
+    SLSF_*()
+    SLS_*()
+    SATT*()
+
+  See the APPENDIX for upgrading guidance.
+
+  Source:
+  -------
+  S_INIT.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISBLANKREC()          Determines if a record is blank
+'------------------------------------------------------------------------------
+ FUNCTION ISBLANKREC()
+
+  Short:
+  ------
+  ISBLANKREC() Determines if a record is blank
+
+  Returns:
+  --------
+  <lIsblank> => is the record blank
+
+  Syntax:
+  -------
+  ISBLANKREC()
+
+  Description:
+  ------------
+  Returns True if the record is all blanks
+
+  Examples:
+  ---------
+   LOCATE for ISBLANKREC()
+
+   if found()
+     // re-use
+   else
+     APPEND BLANK
+   endif
+
+  Source:
+  -------
+  S_BLANK.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISFIELD()             Determines if an expression is the name of a field
+'------------------------------------------------------------------------------
+ FUNCTION ISFIELD()
+
+  Short:
+  ------
+  ISFIELD() Determines if an expression is the name of a field
+
+  Returns:
+  --------
+  <lIsfield> => Is the expression a field
+
+  Syntax:
+  -------
+  ISFIELD(cExpress)
+
+  Description:
+  ------------
+  Determines if <cExpress> contains the name of a
+  field. If <cExpress> contains an alias, the area of the alias
+  will be checked.
+
+  Examples:
+  ---------
+   isfield( "LASTNAME" )            // actual field, returns  .t.
+
+   isfield( "CUSTOMER->LASTNAME")   // actual field, returns  .t.
+
+   isfield( "LEFT(LNAME,5)" )       // expression, returns .f.
+
+  Notes:
+  -------
+  Companion functions are ISTHISAREA(), ISEDITABLE(),
+  PARSFIELD(), PARSALIAS(), EXPBLOCK(), WORKBLOCK()
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISINLOOK()            Checks for existence of a value in a lookup dbf
+'------------------------------------------------------------------------------
+ FUNCTION ISINLOOK()
+
+  Short:
+  ------
+  ISINLOOK() Checks for existence of a value in a lookup dbf
+
+  Returns:
+  --------
+  lFound  => value was found
+
+  Syntax:
+  -------
+  ISINLOOK(expCurrent,nArea,[bCompare],[lBlankOk],[cMsg])
+
+  Description:
+  ------------
+  Looks for <expCurrent>, and expression of any type,
+  in the workarea indicated in <nArea>.
+
+  [bCompare]  - Normally a SEEK would be done, but if
+  [bCompare] (a codeblock ) is passed, this acts as a LOCATE FOR ,
+  as in LOCATE FOR eval(bCompare)
+
+  [lBlankOk] - If this is false (the default), and
+  <expCurrent> is empty, an automatic false is returned.
+
+  [cMsg] - If this is passed, and the value is not
+  found ,or is blank and <lBlankOk> is false, this message is
+  displayed. Default is no message
+
+  Examples:
+  ---------
+   @3,0 GET V3 WHEN  !ISINLOOK(v3,5,nil,.f.,"Not Valid or is blank")
+
+   @4,0 GET V4 VALID ;
+     ISINLOOK(v4,5,{||adbf->company},.f.,"Not Valid or is  blank")
+
+  Source:
+  -------
+  S_INLOOK.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISLOADED()            Determines  function is loaded or not
+'------------------------------------------------------------------------------
+ FUNCTION ISLOADED()
+
+  Short:
+  ------
+  ISLOADED() Determines  function is loaded or not
+
+  Returns:
+  --------
+  <lIsLoaded> => is function loaded
+
+  Syntax:
+  -------
+  ISLOADED(cFunction)
+
+  Description:
+  ------------
+  This function will test for <cFunction> being loaded
+  into memory. <cFunction > can be any function in the
+  form "FUNCTION()" but must refer to a function NOT in
+  CLIPPER.LIB.
+
+  Examples:
+  ---------
+   if ISLOADED("QUERY()")
+       @row()+1,3 prompt "Build Query"
+   endif
+
+  Source:
+  -------
+  S_ISLOAD.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISMOUSEAT()    ^b(new)^n  Checks for mouse click within passed coordinates
+'------------------------------------------------------------------------------
+ FUNCTION ISMOUSEAT()             *new*
+
+  Short:
+  ------
+  ISMOUSEAT() Checks for mouse click within passed coordinates
+
+  Returns:
+  --------
+  <lClicked> => true if mouse click occured within the passed
+                coordinates
+
+  Syntax:
+  -------
+  ISMOUSEAT(nMouseRow, nMouseCol, nTop,nLeft,nBottom,nRight)
+
+  Description:
+  ------------
+  Checks <nMouseRow>, <nMouseCol> against the coordinates
+  <nTop>, <nLeft>,<nBottom>,<nRight> and returns True if the
+  mouse row and col are within the screen coordinates.
+
+  Examples:
+  ---------
+
+  case ISMOUSEAT(nMouseR, nMouseC, nBot+2, nLeft, nBot+2, nLeft+2)
+     oTb:up()
+
+
+  Source:
+  -------
+  S_MOOSE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISNOTDUP()            Checks for a duplicate field
+'------------------------------------------------------------------------------
+ FUNCTION ISNOTDUP()
+
+  Short:
+  ------
+  ISNOTDUP() Checks for a duplicate field
+
+  Returns:
+  --------
+  <lDup>  => is duplicate field
+
+  Syntax:
+  -------
+  ISNOTDUP(expCurrent,[nOrder],[bCompare],;
+        [lBlankOk],[nExceptRec],[cMsg])
+
+  Description:
+  ------------
+  Looks in the current DBF for <expCurrent> - an
+  expression of any type. [nOrder]  is the index order to SEEK on.
+  Default is INDEXORD(). [bCompare]  - in lieu of an index key,
+  this block is used in a locate compare of <expCurrent> as in
+
+  LOCATE FOR eval(bCompare)==expCurrent.
+
+  [lBlankOk]    if <expCurrent> is blank, and this is
+  .f. (the default), then and automatic .f. is returned.
+
+  [nExceptRec]  if this is passed, will check all BUT
+  this record number. Useful for editing routine, where you don't
+  wish to check for a duplicate of the existing record.
+
+  [cMsg]  the message displayed if a duplicate is
+  found. Default is none.
+
+  Examples:
+  ---------
+
+   @6,0 GET V6 valid   ;
+    ISNOTDUP(v6,nil,nil,nil,nil,"Duplicate found")
+
+   @6,0 GET V6 valid   ;
+    ISNOTDUP(v6,3,nil,nil,recno(),"Duplicate found")
+
+   @6,0 GET V6 valid  ;
+     ISNOTDUP(v6,nil,{||afile->v6},nil,recno(),"Duplicate found")
+
+  Notes:
+  -------
+  Normally for use in making sure a duplicate record is
+  not entered.
+
+  Source:
+  -------
+  S_NOTDUP.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISPART()              Determines if a value is part of a set
+'------------------------------------------------------------------------------
+ FUNCTION ISPART()
+
+  Short:
+  ------
+  ISPART() Determines if a value is part of a set
+
+  Returns:
+  --------
+  <lIsPart> => if value is part of set
+
+  Syntax:
+  -------
+  ISPART(expX1,expX2,[expX3],...[expX10])
+
+  Description:
+  ------------
+  Compares a value <expX1> to a set of values of same
+  type <expX2..expX10> to determine if it is equal to any of
+  them. Returns True if it is, False otherwise. Up to 9 values to
+  compare.
+
+  Examples:
+  ---------
+   If ISPART(nChoice,5,6,7,12)
+     MSG("Need a DBF open")
+     loop
+   endif
+
+   If ISPART(cChars,"A","B","C","D")
+
+   endif
+
+  Source:
+  -------
+  S_ISPART.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISTHISAREA()          Determines if expression is the name of a field
+'------------------------------------------------------------------------------
+ FUNCTION ISTHISAREA()
+
+  Short:
+  ------
+  ISTHISAREA() Determines if expression is the name of a field
+  in this area
+
+  Returns:
+  --------
+  <lIsThisArea> => Is the expression a field in this
+  area
+
+  Syntax:
+  -------
+  ISTHISAREA(cExpress)
+
+  Description:
+  ------------
+  Determines if <cExpress> contains the name of a field
+  in this area.
+
+  If <cExpress> contains an alias, the area of the
+  alias will be checked.
+
+  ISTHISAREA() first calls ISFIELD() to ensure the
+  expression is a field name.
+
+  If a field in another area is passed, and no alias is
+  used, False will be returned.
+
+  Examples:
+  ---------
+   ISTHISAREA("LASTNAME")             // actual field,  returns .t.
+
+   ISTHISAREA("CUSTOMER->LASTNAME")  // actual field, returns .t.
+
+   ISTHISAREA("LEFT(LNAME,5)")        // expression, returns  .f.
+
+   ISTHISAREA("AGENT")                //field, but in another area. Returns .f.
+
+  Notes:
+  -------
+  Companion functions are ISFIELD(), ISEDITABLE(),
+  PARSFIELD(), PARSALIAS(), EXPBLOCK(), WORKBLOCK()
+
+  Source:
+  -------
+  S_FIELDS.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISVALFILE()           Checks a file name for validity
+'------------------------------------------------------------------------------
+ FUNCTION ISVALFILE()
+
+  Short:
+  ------
+  ISVALFILE() Checks a file name for validity
+
+  Returns:
+  --------
+  <lValid> => is file name a valid dos file name
+
+  Syntax:
+  -------
+  ISVALFILE(cName,[lCheckDup],[@cMessage])
+
+  Description:
+  ------------
+  Checks the proposed file name in <cName> for
+  adherance to the dos file naming conventions.
+
+  [lCheckDup] will check for existance of the file if
+  True. Default False.
+
+  [@cMessage] a string passed by reference. The reason
+  for rejection will be placed in the string. Messages returned
+  are:
+
+    "File name is empty"
+    "Duplicate file exists"
+    "File name is too long"
+    "Too many periods"
+    "Too many characters after the period"
+    "Too many characters before the period"
+    "Too many characters with no period"
+    "Invalid character: " (character)
+    "Illegal file name"
+
+  Examples:
+  ---------
+
+   cFn := space(15)
+
+   while .t.
+     cMessage := ""
+     @10,10 get cFn
+     read
+     @20,10 say iif(isvalfile(cFn,.t.,@cMessage),"Valid  ","Not Valid")
+     @21,10 say padr(cMessage,50)
+   end
+
+  Source:
+  -------
+  S_ISVALF.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:KBDESC()              Keyboards character 27 (escape) when key pressed
+'------------------------------------------------------------------------------
+ FUNCTION KBDESC()
+
+  Short:
+  ------
+  KBDESC() Keyboards character 27 (escape) when key pressed
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  SET KEY xxx TO KBDESC
+
+  Description:
+  ------------
+  Allows setting an alternate key to the ESCAPE key.
+  ESCAPE normally means 'get me outta here', but sometimes is the
+  key you need to indicate the user is done selecting or some
+  such. This function allows setting another key (e.g. F10) to act
+  as the ESCAPE key.
+
+  Examples:
+  ---------
+   SET KEY -9 TO KBDESC
+
+  Warnings:
+  ----------
+  Be sure to issue a   SET KEY xxx TO   command to
+  un-map this function when done
+
+  Notes:
+  -------
+  Declare as EXTERNAL i.e.
+
+  EXTERNAL KBDESC
+
+  Source:
+  -------
+  S_KBDESC.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:LISTER()              Build, format,print SIMPLE lists to
+'------------------------------------------------------------------------------
+ FUNCTION LISTER()
+
+  Short:
+  ------
+  LISTER() Build, format,print SIMPLE lists to
+  printer,screen,file
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  LISTER([aNames,aDesc])
+
+  Description:
+  ------------
+  A menu driven utility for creation, printing and
+  storage of list definitions.
+
+  The user is asked to pick the fields to be included
+  on the list. The selected fields, in the order in which
+  they will be listed, are shown in the bottom information box.
+  The user may select which records are to be included in the list -
+  all records, query matches or tagged records.
+
+  The user may select output as PRINTER, SCREEN or
+  FILE, and choose the maximum line length to avoid printer
+  wraparound.
+
+  The user may save list definitions to PLIST.DBF and
+  later restore them.
+
+  Two arrays may be passed - fieldnames [aNames], and
+  field descriptions [aDesc] Pass both or none. Normally, field
+  names are used as the column headings for the list, but if
+  [aDesc] is passed, these descriptions are used in the column
+  headings of corresponding fields.
+
+  By default, all fields are used, field names are used
+  for descriptions.
+
+  Examples:
+  ---------
+   USE CUSTOMER
+
+   LISTER()
+
+  Source:
+  -------
+  S_LIST.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:LJUST()               Left justifies a string
+'------------------------------------------------------------------------------
+ FUNCTION LJUST()
+
+  Short:
+  ------
+  LJUST() Left justifies a string
+
+  Returns:
+  --------
+  <cJustified> => string left justified
+
+  Syntax:
+  -------
+  LJUST(cTarget)
+
+  Description:
+  ------------
+  Left justifies <cTarget>
+
+  Examples:
+  ---------
+   string = "      Superfunction"
+
+   string = LJUST(string)
+
+   // (returns "Superfunction    "
+
+  Source:
+  -------
+  S_LJUST.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MAKEBOX()             Draws a box on the screen and returns saved screen
+'------------------------------------------------------------------------------
+ FUNCTION MAKEBOX()
+
+  Short:
+  ------
+  MAKEBOX() Draws a box on the screen and returns saved screen
+
+  Returns:
+  --------
+  <cScreen> => string containing underlying screen &
+  colors
+
+  Syntax:
+  -------
+  MAKEBOX(nTop,nLeft,nbottom,nRight,[cColor],[nShadowPos])
+
+  Description:
+  ------------
+  Draws a box at screen coordinates <nTop..nRight> and
+  returns a string containing the underlying screen and previous color.
+  Box will explode or not based on the setting of SLS_XPLODE().
+
+  Default color is setcolor(). Default shadow position
+  is the setting in SLS_SHADPOS(). These may be passed as
+  options . Shadow position [nShadowPos] has allowable values of
+  (1,3,7,9,0) to match the corner positions on the numeric keypad.
+  0 is no shadow. [cColor] is a valid color string or variable.
+
+  Examples:
+  ---------
+
+   cBox := MAKEBOX(5,5,10,10)
+   //draws a box at 5,5,10,10. Color is SETCOLOR().
+   //shadow position is based on SLS_SHADPOS().
+
+   cBox: = MAKEBOX(5,5,10,10,SLS_POPCOL())
+   //draws a box at 5,5,10,10. Color is SLS_POPCOL().
+   //shadow position is based on SLS_SHADPOS().
+
+   cBox: = MAKEBOX(5,5,10,10,SLS_POPCOL(),9)
+   //draws a box at 5,5,10,10. Color is SLS_POPCOL().
+   //shadow position is 9 (upper right hand corner)
+
+  Warnings:
+  ----------
+  Use only UNBOX() to remove screens stored with
+  MAKEBOX().
+
+  Notes:
+  -------
+  UNBOX() removes the box and restores the underlying
+  screen and prior colors.
+
+  The shadow will not be drawn if it would go off the
+  edge of the screen.
+
+  Source:
+  -------
+  S_MAKEB.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MBRZCLICK()    ^b(new)^n  Checks for mouse click on current Tbrowse row/col
+'------------------------------------------------------------------------------
+ FUNCTION MBRZCLICK()             *new*
+
+  Short:
+  ------
+  MBRZCLICK() Checks for mouse click on current Tbrowse row/col
+
+  Returns:
+  --------
+  <lClicked> => if the mouse clicked on the current Tbrowse cursor row and
+                column.
+
+  Syntax:
+  -------
+  MBRZCLICK(oTBrowse, nMouseRow, nMouseCol)
+
+  Description:
+  ------------
+  Determines if the mouse coordinates <nMouseRow> and <nMouseCol>
+  are within the area of the current Tbrowse row and column.
+
+  Examples:
+  ---------
+  from MCHOICE():
+
+   case nLastKey == K_MOUSELEFT
+         do case
+         case ISMOUSEAT(nMouseR, nMouseC, nBottom,nRight-3, nBottom, nRight-2)
+            oTb:down()
+            IFMOUSEHD({||oTb:down()},oTb)
+         case MBRZMOVE(oTb,nMouseR, nMouseC,nTop+1,nLeft+1,nBottom-1,nRight-1)
+            keyboard chr(K_ENTER)
+         case MBRZCLICK(oTb,nMouseR, nMouseC)   //<-----here
+            EXIT
+         endcase
+   endcase
+
+  Source:
+  -------
+  S_MOOSE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MBRZMOVE()     ^b(new)^n  Checks for mouse click at and moves to Tbrowse row/col
+'------------------------------------------------------------------------------
+ FUNCTION MBRZMOVE()              *new*
+
+  Short:
+  ------
+  MBRZMOVE() Checks for mouse click at and moves to Tbrowse row/col
+
+  Returns:
+  --------
+  <lClicked> => If the mouse clicked on a new Tbrowse Row/Column.
+
+  Syntax:
+  -------
+  MBRZMOVE(oTBrowse, nMouseRow, nMouseCol,[nTop,nLeft,nBottom,nRight])
+
+  Description:
+  ------------
+  Determines if the mouse coordinates <nMouseRow> and <nMouseCol>
+  are on a new Tbrowse row/column, and causes the Tbrowse cursor to
+  move there.
+
+  [nTop,nLeft,nBottom,nRight] determine the Tbrowse 'live' area - the
+  area exclusive of headers, footers, seperators etc. MBRZMOVE() can
+  determine this on its own, but it is much faster to pass these
+  coordinates if you can.
+
+  Examples:
+  ---------
+  from MCHOICE():
+
+   case nLastKey == K_MOUSELEFT
+     do case
+     case ISMOUSEAT(nMouseR, nMouseC, nBottom,nRight-3, nBottom, nRight-2)
+        oTb:down()
+        IFMOUSEHD({||oTb:down()},oTb)
+     case MBRZMOVE(oTb,nMouseR, nMouseC,nTop+1,nLeft+1,nBottom-1,nRight-1)
+        keyboard chr(K_ENTER)
+     case MBRZMOVE(oTb,nMouseR, nMouseC)
+        EXIT
+     endcase
+   endcase
+
+  Source:
+  -------
+  S_MOOSE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MCHOICE()             Does a boxed, achoice() style popup on an array
+'------------------------------------------------------------------------------
+ FUNCTION MCHOICE()
+
+  Short:
+  ------
+  MCHOICE() Does a boxed, achoice() style popup on an array
+
+  Returns:
+  --------
+  <expN> Achoice selection
+
+  Syntax:
+  -------
+  MCHOICE(aOptions,[nTop,nLeft],[nBottom,nRight],[cTitle],[lTrigger],;
+                   [nStart],[@nRow],[aSelectable])
+
+  Description:
+  ------------
+  Provides a box for selection from array <aOptions> of
+  character elements.
+
+  [nTop,nLeft] may be specifed to determine the
+  starting top and left of the popup box.
+
+  [nBottom,nRight] may be specified to complete the box
+  dimensions.
+
+  Default box dimensions are centered on the screen. If the dimensions
+  passed are not wide enough to display the mouse hot areas on the
+  bottom, the box is widened and centered on the screen.
+
+  [cTitle] is a string to display at the top of the box.
+
+  [lTrigger] determines (yes or no) whether a return is
+  to be executed on a first letter match.(default .f.)
+
+  [nStart] optional starting element (default 1)
+  [@nRow] optional starting row. Pass by reference to retain value
+  between calls.
+
+  [aSelectable] is an array of logicals that determines which items
+  are selectable. This array must be the same size as [aOptions], and
+  all elements must be either True or False, not NIL. Where an element
+  is False, the corresponding element in [aOptions] will be dimmed
+  and will emit a BEEP when you attempt to select it.
+
+  Examples:
+  ---------
+   aMeals   := {"Pizza","Chicken","Chinese"}
+   nSelect  := mchoice(aMeals)
+
+   // or box with title
+   aMeals   := {"Pizza","Chicken","Chinese"}
+   nSelect  := mchoice(aMeals,,,,"Meals")
+
+   // or box with title, first letter match = return and top/left specified
+   aMeals   := {"Pizza","Chicken","Chinese"}
+   nSelect  := mchoice(aMeals,10,10,,,"Meals",.t.)
+
+   //to retain element and position between calls
+   nSelect := 1
+   nRow    := 1
+   aMeals   := {"Pizza","Chicken","Chinese"}
+   while nSelect > 0
+     nSelect  := mchoice(aMeals,,,,,"Meals",.t.,nSelect,@nRow)
+     // code
+   endif
+
+
+  Notes:
+  -------
+  Bottom of window adjusts (shrinks) to adjust to array
+  size if needed.
+
+  Now uses Tbrowse() instead of ACHOICE().
+
+  Source:
+  -------
+  S_MCHOI.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MENU_V()              Vertical popup menu from variable # parameters
+'------------------------------------------------------------------------------
+ FUNCTION MENU_V()
+
+  Short:
+  ------
+  MENU_V() Vertical popup menu from variable # parameters
+
+  Returns:
+  --------
+  <nSelection> => selection - 0 for no selection
+
+  Syntax:
+  -------
+  MENU_V(cTitle,cOption1,[cOption2,...cOption16])
+
+  Description:
+  ------------
+  Creates a popup vertical menu in a centered box,
+  using <cTitle> as the title, and performing a menu to on
+  <cOption1...cOption16> (variable #)
+
+  <cTitle> may be passed as "" for no title.
+
+  [cOption2..cOption16] are optional
+
+  Examples:
+  ---------
+   nChoice :=  menu_v("Selection","Edit","Add","Quit")
+
+       -or-
+
+   nChoice :=  menu_v("","Edit","Add","Quit")
+
+  Source:
+  -------
+  S_MENUV.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MESSYN()              Popup YesNo prompt box
+'------------------------------------------------------------------------------
+ FUNCTION MESSYN()
+
+  Short:
+  ------
+  MESSYN() Popup YesNo prompt box
+
+  Returns:
+  --------
+  <lYes> => True for yes, False for No
+
+  Syntax:
+  -------
+  MESSYN(cQuestion,[cYes],[cNo],[nTop],[nLeft])
+
+  Description:
+  ------------
+  Pops up a box and displays a question <cQuestion>
+  and two prompts.
+
+  [cYes] ,[cNo] are optional prompts 1 and 2. Default
+  is YES/NO.
+
+  [nTop] and [nLeft] are optional box top and left
+  coordinates. Default is centered.
+
+  Examples:
+  ---------
+   if messyn("Are you done")
+
+   if messyn("Are you done","Not yet","Almost",10,10)
+
+   if messyn("Are you done","Not Yet","Almost")
+
+  Source:
+  -------
+  S_MESSYN.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MFIELDS()             Pops up a selection box for current dbf fields
+'------------------------------------------------------------------------------
+ FUNCTION MFIELDS()
+
+  Short:
+  ------
+  MFIELDS() Pops up a selection box for current dbf fields
+
+  Returns:
+  --------
+  <cFieldName> => field name or "" if none selected
+
+  Syntax:
+  -------
+  Mfields([cTitle],[nTop,nLeft,nBottom,nRight])
+
+  Description:
+  ------------
+  Popus up a box and presents an selection menu for the
+  current dbf fields.
+
+  [cTitle] is a title for the box.
+
+  [nTop...nRight]  are coordinates of the box. Default
+  is centered.
+
+  Examples:
+  ---------
+   cFieldname := MFIELDS()
+
+   // *or
+
+   cFieldname := MFIELDS("Pick a Field")
+
+   //*or
+
+   cFieldname := MFIELDS('Pick a Field',10,10,20,40)
+
+  Source:
+  -------
+  S_MFLD.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MFIELDSTYPE()         Pops up a list of fields of given type(s)
+'------------------------------------------------------------------------------
+ FUNCTION MFIELDSTYPE()
+
+  Short:
+  ------
+  MFIELDSTYPE() Pops up a list of fields of given type(s)
+
+  Returns:
+  --------
+  <cFieldName> => name of selected field
+
+  Syntax:
+  -------
+  MFIELDSTYPE(cType,[cTitle],[nTop,nLeft,nBottom,nRight])
+
+  Description:
+  ------------
+  <cType> is a string containing 1 or more field TYPE
+  symbols:
+
+       C   Character
+       N   Numeric
+       D   Date
+       L   Logical
+       M   Memo
+
+  Only fields of this type(s) are presented for the
+  picklist. If no fields of this type(s) are present, a "" is returned.
+
+  [cTitle] is a string placed at the top of the popup
+  box for a title
+
+  [nTop,nLeft,nBottom,nRight] are the coordinates of
+  the box
+
+  Examples:
+  ---------
+   // this selects memo field to edit
+
+   use customer
+
+   cField := mfieldstype("M")
+
+   if !empty(cField)
+      memoedit(FIELDGET(FIELDPOS(cField)),0,0,24,79)
+   endif
+
+  Source:
+  -------
+  S_MFLDT.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MODIFY()              Create or modify DBF structures
+'------------------------------------------------------------------------------
+ FUNCTION MODIFY()
+
+  Short:
+  ------
+  MODIFY() Create or modify DBF structures
+
+  Returns:
+  --------
+  <cFile> => name of datafile created/modified
+
+  Syntax:
+  -------
+  MODIFY()
+
+  Description:
+  ------------
+  dBase-like MODI STRU for creating/modifying DBFs.
+
+  Examples:
+  ---------
+   MODIFY()
+
+  Warnings:
+  ----------
+  NOT A NETWORK FUNCTION - DO NOT USE ON A NETWORK
+
+  Source:
+  -------
+  S_MODIFY.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MOUSEHOTAT()   ^b(new)^n  Checks for mouse click from array of hot coordinates
+'------------------------------------------------------------------------------
+ FUNCTION MOUSEHOTAT()            *new*
+
+  Short:
+  ------
+  MOUSEHOTAT() Checks for mouse click from array of hot coordinates
+
+  Returns:
+  --------
+  <nReturn> => either number of element containing hot coordinates, or,
+               if element (an array) contains > 4 elements, the value in
+               the fifth element.
+
+  Syntax:
+  -------
+  MOUSEHOTAT(nMouseRow, nMouseCol, aHotSpots)
+
+  Description:
+  ------------
+  Checks an array of arrays for hot coordinates against <nMouseRow>
+  and <nMouseCol> to see if the mouse clicked on one of the hot spots.
+  The hot spot array is of the form:
+         {  {nTop,nLeft,nBottom,nRight,[nValue] },...}
+  Where each subarray is an array containing Top, Left, Bottom, Right
+  coordinates for an area of the screen which is mouse hot. If a match
+  is gotten and the subarray is four elements long, the number of the
+  subarray is returned. If the subarray is 5 elements long, the value
+  in the fifth element is returned.
+
+  Examples:
+  ---------
+  #include "INKEY.CH"
+  @10,10 say "<OK>
+  @11,10 say "<Cancel>"
+  aHotAreas  := {  {10,10,10,13}, {11,10,11,18} }
+  nLastKey   := RAT_EVENT(0,.f.,.f.,@nMouseRow, @nMouseCol)
+  nHotMouse  := MOUSEHOTAT(nMouseRow, nMouseCol, aHotAreas)
+  DO CASE
+  CASE nHotMouse==1    // <OK>
+  CASE nHotMouse==2    // <Cancel>
+  ENDCASE
+
+  // OR ALTERNATELY....Here I'll map the hot areas to the same return
+  // values as the hot keys the buttons represent...F10 and ESCAPE
+  // this is useful as you'll often have a button or hot area also
+  // assigned to a hot key.
+
+  @10,10 say "<F10 Save  >
+  @11,10 say "<ESC Cancel>"
+  aHotAreas   := {  {10,10,10,21,K_F10}, {11,10,11,21,K_ESC} }
+  nLastKey    := RAT_EVENT(0,.f.,.f.,@nMouseRow, @nMouseCol)
+  nHotMouse   := MOUSEHOTAT(nMouseRow, nMouseCol, aHotAreas)
+  DO CASE
+  CASE nHotMouse==K_F10 .or. nLastKey==K_F10    // <F10 Save  >
+  CASE nHotMouse==K_ESC .or. nLastKey==K_ESC   // <ESC Cancel>
+  ENDCASE
+
+  Source:
+  -------
+  S_MOOSE.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MSG()                 Displays up to a 9 line message in a window
+'------------------------------------------------------------------------------
+ FUNCTION MSG()
+
+  Short:
+  ------
+  MSG() Displays up to a 9 line message in a window
+
+  Returns:
+  --------
+  Nothing
+
+  Syntax:
+  -------
+  MSG(c1,[c2,c3,c4,c5,c6,c7,c8,c9])
+
+  Description:
+  ------------
+  Displays in a popup box up to 9 lines of a message
+  <c1..c9>.
+
+  Then waits for a keypress or optionally a time-out.
+  First parameter can be a number equaling a time-out value in
+  seconds
+
+  Examples:
+  ---------
+   MSG("An error has been detected",;
+       "...don't move!")
+
+   MSG("A","B","C","D","E","F")
+
+   MSG(5,"A","B","C","D","E","F")
+
+  Notes:
+  -------
+  Message is centered on screen in a box
+  Once message is displayed, waits for keypress and
+  then removes window, restoring screen underneath.
+  Or waits for time-out value.
+
+  Source:
+  -------
+  S_MSG.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MULTIMSGYN()          Multi-line popup message - yes -no
+'------------------------------------------------------------------------------
+ FUNCTION MULTIMSGYN()
+
+  Short:
+  ------
+  MULTIMSGYN()          Multi-line popup message - yes -no
+
+  Returns:
+  --------
+  <lYesNo> => True or False for yes or no
+
+  Syntax:
+  -------
+  MULTIMSGYN(aMsgs,[cYes,[cNo],[cColor],[cTitle],[lCenter],[nTop,nLeft])
+
+  Description:
+  ------------
+  Pops up a multi-line message contained in array
+  <aMsgs> and prompts for a Yes or No. Returns <lYesNo> based on
+  response.
+
+  Each element of the array may be of type CNDL.
+
+  [cYes]  Yes prompt - default is "Yes"
+
+  [cNo]   No prompt - default is "No"
+
+  [cColor]  popup color- default is sls_popcol()
+
+  [cTitle] string to display at box top - default is
+  none
+
+  [lCenter]  center the messages in the box (each line
+  centered) - default is no - left justified.
+
+  [nTop,nLeft]  popup box top and left. Default is
+  centered on the screen.
+
+  Examples:
+  ---------
+   ?multimsgyn({"Would you really like","to fly?"},"Sure","Nope")
+   ?multimsgyn({"Is it ",date()+1,"yet?"},"Sure","Nope",;
+         "N/W","There yet")
+
+   ?multimsgyn({"Start with",nStart,"End with",nEnd},;
+         nil,nil,,nil,nil,.t.,10,10)
+
+  Source:
+  -------
+  S_MULMYN.PRG
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,2262 @@
+!short: Chapter 3: Reference
+'------------------------------------------------------------------------------
+ ^bChapter 3: Reference^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper 5.2 provides many new and enhanced commands and functions
+     that can be used to access and manipulate databases and get specific
+     information about the RDD in use.  These language elements were
+     summarized in the previous chapter, and this chapter provides a detailed
+     alphabetical reference to them.
+
+     This chapter contains entries for all new CA-Clipper commands and
+     functions designed for use with RDDs.  As for existing language
+     elements, only those that were changed to accommodate the new RDD
+     architecture are documented here.
+
+     Other language elements that are specifically designed for database
+     manipulation and have not been altered (e.g., USE) are documented in the
+     Reference guide.  Using Appendix G: Categorized Language Tables in the
+     Error Messages and Appendices guide, you can find these language
+     elements categorized under database or index.
+
+     The refinement of the CA-Clipper language, both additions and
+     enhancements, ensures consistent language support for access to
+     different data formats and allows you to design applications that are
+     not dependent on a particular data format.  In other words, you can use
+     the same commands and functions to manipulate a FoxPro database as you
+     would use to manipulate a dBASE IV database.
+
+     The entries in this chapter are organized like the entries in the
+     Reference guide.  The ^bStatus^b section, however, is new to this
+     chapter.  This section declares the command or function as New or
+     Enhanced.  These categories are defined as follows:
+
+     ^b^CFE  New: ^b The entry is completely new, as of version 5.2, to the
+        CA-Clipper language.
+
+     ^b^CFE  Enhanced: ^b The entry is an established part of the CA-Clipper
+        language (i.e., it existed prior to version 5.2) but has been
+        modified to accommodate the new RDD architecture.
+
+        All syntax changes for enhanced commands and functions are marked in
+        ^bbold^b.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: APPEND FROM     Import records from a (.dbf) or ASCII file                  ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bAPPEND FROM command^b
+ Import records from a (.dbf) or ASCII file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     APPEND FROM <xcFile>
+        [FIELDS <idField list>]
+        [<scope>] [WHILE <lCondition>] [FOR <lCondition>]
+        [SDF | DELIMITED [WITH BLANK | <xcDelimiter>] ^b|^b
+        ^b[VIA <xcDriver>]^b]
+
+ ^bArguments^b
+
+     ^bFROM <xcFile>^b specifies the name of the source file.  You can
+     specify <xcFile> either as a literal filename or as a character
+     expression enclosed in parentheses.  If a file extension is not
+     specified, (.dbf) is the default input file type.  If SDF or DELIMITED
+     is specified, the file extension is assumed to be (.txt) unless
+     otherwise specified.
+
+     ^bFIELDS <idField list>^b specifies the list of fields to copy from
+     <xcFile>.  The default is all fields.
+
+     ^b<scope>^b is the portion of the source database file to APPEND FROM.
+     NEXT <n> APPENDs the first <n> records.  RECORD <n> APPENDs only record
+     number <n> from <xcFile>.  The default scope is ALL records in <xcFile>.
+
+     ^bWHILE <lCondition>^b specifies the set of records meeting the
+     condition from the first record in the source file until the condition
+     fails.
+
+     ^bFOR <lCondition>^b specifies the conditional set of records to APPEND
+     FROM within the given scope.
+
+     ^bSDF^b identifies a System Data Format ASCII file.  Records and fields
+     are fixed length.
+
+     ^bDELIMITED^b identifies an ASCII text file, where character fields are
+     enclosed in double quote marks (the default delimiter).  Note that
+     delimiters are not required and CA-Clipper correctly APPENDs character
+     fields not enclosed in them.  Fields and records are variable length.
+
+     ^bDELIMITED WITH BLANK^b identifies an ASCII text file in which fields
+     are separated by one space and character fields are not enclosed in
+     delimiters.
+
+     ^bDELIMITED WITH <xcDelimiter>^b identifies a delimited ASCII text file,
+     where character fields are enclosed using the specified delimiter.  You
+     can specify <xcDelimiter> as a literal character or as a character
+     expression enclosed in parentheses.
+
+     See the tables below for more information regarding the format
+     specification requirements for ASCII text files that you want to APPEND
+     using these arguments.
+
+     ^bVIA <xcDriver>^b specifies the replaceable database driver (RDD) to
+     use to import the desired data.  <cDriver> is name of the RDD specified
+     as a character expression.  If <cDriver> is specified as a literal
+     value, it must be enclosed in quotes.
+
+     If the VIA clause is omitted, APPEND FROM uses the driver in the current
+     work area.  If you specify the VIA clause, you must REQUEST the
+     appropriate RDDs be linked into the application.
+
+     ^bWarning! ^b If the DELIMITED WITH clause is specified on a COPY TO or
+     APPEND FROM command line, it must be the last clause specified.
+
+ ^bDescription^b
+
+     APPEND FROM adds records to the current database file from an ASCII text
+     file or another database file.  Only fields with the same names and
+     types are APPENDed.  Fields with the same name from both the current
+     database file and <xcFile> must be the same data type.  If they are not,
+     a runtime error occurs when the APPEND FROM command is invoked.
+
+     Any date information in <xcFile> must be in the format yyyymmdd to be
+     properly APPENDed.
+
+     In a network environment, APPEND FROM does not require that the current
+     database file be USEed EXCLUSIVEly or locked with FLOCK() to perform its
+     operation.  As each record is added, CA-Clipper automatically arbitrates
+     contention for the new record.
+
+     When you invoke APPEND FROM, CA-Clipper attempts to open <xcFile> shared
+     and read-only.  If access is denied, APPEND FROM terminates with a
+     runtime error.  Refer to the Network Programming chapter in the
+     Programming and Utilities guide for more information.  No error is
+     raised if you attempt to open a (.dbf) file that is already open.
+
+     This table shows the format specifications for SDF text files.
+
+     ^bSDF Text File Format Specifications^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFile Element        Format^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character fields    Padded with trailing blanks
+     Date fields         yyyymmdd
+     Logical fields      T or F
+     Memo fields         Ignored
+     Numeric fields      Padded with leading blanks or zeros
+     Field separator     None
+     Record separator    Carriage return/linefeed
+     End of file marker  1A hex or CHR(26)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This table shows the format specifications for DELIMITED and DELIMITED
+     WITH <xcDelimiter> ASCII text files.
+
+     ^bDELIMITED Text File Format Specifications^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFile Element        Format^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character fields    May be delimited, with trailing blanks truncated
+     Date fields         yyyymmdd
+     Logical fields      T or F
+     Memo fields         Ignored
+     Numeric fields      Leading zeros may be truncated
+     Field separator     Comma
+     Record separator    Carriage return/linefeed
+     End of file marker  1A hex or CHR(26)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This table shows the format specifications for DELIMITED WITH BLANK
+     ASCII text files.
+
+     ^bDELIMITED WITH BLANK Text File Format Specifications^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFile Element        Format^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character fields    Not delimited, trailing blanks may be truncated
+     Date fields         yyyymmdd
+     Logical fields      T or F
+     Memo fields         Ignored
+     Numeric fields      Leading zeros may be truncated
+     Field separator     Single blank space
+     Record separator    Carriage return/linefeed
+     End of file marker  1A hex or CHR(26)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE  Deleted records:^b If DELETED is OFF, deleted records in
+        <xcFile> are APPENDed to the current database file and retain their
+        deleted status.  If DELETED is ON, however, none of the deleted
+        <xcFile> records are APPENDed.
+
+     ^b^CFE  Unmatched field widths:^b If a field in the current database
+        file is character type and has a field length greater than the
+        incoming <xcFile> data, CA-Clipper pads the <xcFile> data with
+        blanks.  If the current field is character data type and its field
+        length is less than the incoming <xcFile> data, the <xcFile> data is
+        truncated to fit.  If the current field is numeric type and the
+        incoming <xcFile> data has more digits than the current field length,
+        a runtime error occurs.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example demonstrates an APPEND FROM command using a
+        fields list and a condition:
+
+        USE Sales NEW
+        APPEND FROM BranchFile FIELDS Branch, Salesman, Amount;
+           FOR Branch = 100
+
+     ^b^CFE^b  This example demonstrates how a <scope> can be specified to
+        import a particular record from another database file:
+
+        APPEND RECORD 5 FROM Temp
+
+ ^bFiles:^b  Library is CLIPPER.LIB.
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  COPY TO
+!seealso: "COPY TO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COPY TO         Export records to a new (.dbf) or ASCII file                ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bCOPY TO command^b
+ Export records to a new (.dbf) or ASCII file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     COPY [FIELDS <idField list>] TO <xcFile>
+        [<scope>] [WHILE <lCondition>] [FOR <lCondition>]
+        [SDF | DELIMITED [WITH BLANK | <xcDelimiter>] ^b| ^b
+     ^b   [VIA <xcDriver>]^b]
+
+ ^bArguments^b
+
+     ^bFIELDS <idField list>^b specifies the list of fields to copy to the
+     target file.  The default is all fields.
+
+     ^bTO <xcFile>^b specifies the name of the target file.  The filename can
+     be specified either as a literal filename or as a character expression
+     enclosed in parentheses.  If SDF or DELIMITED is specified, (.txt) is
+     the default extension.  Otherwise, (.dbf) is the default extension.
+
+     ^b<scope>^b defines the portion of the current database file to COPY.
+     The default is ALL records.
+
+     ^bWHILE <lCondition>^b specifies the set of records meeting the
+     condition from the current record until the condition fails.
+
+     ^bFOR <lCondition>^b specifies the conditional set of records to COPY
+     within the given scope.
+
+     ^bSDF^b specifies the output file type as a System Data Format ASCII
+     text file.  Records and fields are fixed length.
+
+     ^bDELIMITED^b specifies the output file type as a delimited ASCII text
+     file where character fields are enclosed in double quote marks (the
+     default delimiter).  Records and fields are variable length.
+
+     ^bDELIMITED WITH BLANK^b identifies an ASCII text file in which fields
+     are separated by one space and character fields have no delimiters.
+
+     ^bDELIMITED WITH <xcDelimiter>^b identifies a delimited ASCII text file
+     where character fields are enclosed using the specified delimiter.
+     <xcDelimiter> can be specified either as a literal character or as a
+     character expression enclosed in parentheses.
+
+     See the tables below for more information regarding the format
+     specifications for ASCII text files created using these arguments.
+
+     ^bVIA <xcDriver>^b specifies the replaceable database driver (RDD) to
+     use to create the resulting copy.  <cDriver> is name of the RDD
+     specified as a character expression.  If <cDriver> is specified as a
+     literal value, it must be enclosed in quotes.
+
+     If the VIA clause is omitted, COPY TO uses the driver in the current
+     work area.  If you specify the VIA clause, you must REQUEST the
+     appropriate RDDs be linked into the application.
+
+     ^bNote: ^b If the DELIMITED WITH clause is specified on a COPY or APPEND
+     command, it must be the last clause specified.
+
+ ^bDescription^b
+
+     COPY TO is a database command that copies all or part of the current
+     database file to a new file.  Records contained in the active database
+     file are copied unless limited by a <scope>, a FOR|WHILE clause, or a
+     filter.
+
+     If DELETED is OFF, deleted records in the source file are copied to
+     <xcFile> where they retain their deleted status.  If DELETED is ON,
+     however, no deleted records are copied.  Similarly, if a FILTER has been
+     SET invisible records are not copied.
+
+     Records are copied in controlling index order if there is an index open
+     in the current work area and SET ORDER is not zero.  Otherwise, records
+     are copied in natural order.
+
+     In a network environment, CA-Clipper opens the target database file
+     EXCLUSIVEly before the COPY TO operation begins.  Refer to the Network
+     Programming chapter in the Programming and Utilities guide for more
+     information.
+
+     This table shows the format specifications for SDF text files.
+
+     ^bSDF Text File Format Specifications^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFile Element        Format^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character fields    Padded with trailing blanks
+     Date fields         yyyymmdd
+     Logical fields      T or F
+     Memo fields         Ignored
+     Numeric fields      Padded with leading blanks for zeros
+     Field separator     None
+     Record separator    Carriage return/linefeed
+     End of file marker  1A hex or CHR(26)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This table shows the format specifications for DELIMITED and DELIMITED
+     WITH <xcDelimiter> ASCII text files.
+
+     ^bDELIMITED Text File Format Specifications^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFile Element        Format^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character fields    Delimited, with trailing blanks truncated
+     Date fields         yyyymmdd
+     Logical fields      T or F
+     Memo fields         Ignored
+     Numeric fields      Leading zeros truncated
+     Field separator     Comma
+     Record separator    Carriage return/linefeed
+     End of file marker  1A hex or CHR(26)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This table shows the format specifications for DELIMITED WITH BLANK
+     ASCII text files.
+
+     ^bDELIMITED WITH BLANK Text File Format Specifications^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFile Element        Format^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character fields    Not delimited, trailing blanks truncated
+     Date fields         yyyymmdd
+     Logical fields      T or F
+     Memo fields         Ignored
+     Numeric fields      Leading zeros truncated
+     Field separator     Single blank space
+     Record separator    Carriage return/linefeed
+     End of file marker  1A hex or CHR(26)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example demonstrates COPYing to another database file:
+
+        USE Sales NEW
+        COPY TO Temp
+
+     ^b^CFE^b  This example demonstrates the layout of an SDF file with four
+        fields, one for each data type:
+
+        USE Testdata NEW
+        COPY NEXT 1 TO Temp SDF
+        TYPE Temp.txt
+
+        Result:
+
+        Character     12.0019890801T
+
+     ^b^CFE^b  This example demonstrates the layout of a DELIMITED file:
+
+        COPY NEXT 1 TO Temp DELIMITED
+        TYPE Temp.txt
+
+        Result:
+
+        "Character",12.00,19890801,T
+
+     ^b^CFE^b  This example demonstrates the layout of a DELIMITED file WITH
+        a different delimiter:
+
+        COPY NEXT 1 TO Temp DELIMITED WITH '
+        TYPE Temp.txt
+
+        Result:
+
+        'Character',12.00,19890801,T
+
+ ^bFiles:^b  Library is CLIPPER.LIB.
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  APPEND FROM, COPY FILE, COPY STRUCTURE, SET DELETED
+!seealso: "APPEND FROM" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBAPPEND()      Append a new record to the database in the current work area^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bDBAPPEND() function^b
+ Append a new record to the database open in the current work area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DBAPPEND(^b[<lReleaseRecLocks>]^b) --> NIL
+
+ ^bArguments^b
+
+     ^b<lReleaseRecLocks>^b  is a logical data type that if true (.T.),
+     clears all pending record locks, then appends the next record.  If
+     <lReleaseRecLocks> is false (.F.), all pending record locks are
+     maintained and the new record is added to the end of the Lock List.  The
+     default value of <lReleaseRecLocks> is true (.T.).
+
+ ^bReturns^b
+
+     DBAPPEND() always returns NIL.
+
+ ^bDescription^b
+
+     DBAPPEND() is a database function that lets you add records to the
+     current database.  The enhancement to this function lets you maintain
+     multiple record locks during an append.
+
+     DBAPPEND(), without a parameter, as in earlier versions of CA-Clipper,
+     clears all pending record locks prior to an append.  This is the same as
+     DBAPPEND(.T.).
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example appends a blank record to the database, Sales,
+        without releasing the record locks in the current Lock List, then
+        checks for a network error:
+
+        USE Sales NEW
+        SET INDEX TO Sales
+
+        DBAPPEND(.F.)
+
+        IF NETERR()
+           ? "A network error has occurred!"
+        ENDIF
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  APPEND BLANK
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBGOTO()        Position record pointer to a specific identity              ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bDBGOTO() function^b
+ Position record pointer to a specific identity
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DBGOTO(^b<xIdentity>^b) --> NIL
+
+ ^bArguments^b
+
+     ^b<xIdentity>^b is a unique value guaranteed by the structure of the
+     data file to reference a specific item in a data source (database).  In
+     a (.dbf) <xIdentity> is the record number.  In other data formats,
+     <xIdentity> is the unique primary key value.  <xIdentity> could be an
+     array offset or virtual memory handle if the data set is in memory
+     instead of on disk.
+
+ ^bReturns^b
+
+     DBGOTO() always returns NIL.
+
+ ^bDescription^b
+
+     DBGOTO() is a database function that positions the record pointer in the
+     current work area at the specified <xIdentity>.  In an Xbase data
+     structure, this identity is the record number because every record, even
+     an empty record, has a record number.  In non-Xbase data structures,
+     identity may be defined as something other than record number.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example saves the current record number, searches for a
+        key, then restores the record pointer to the saved position:
+
+        FUNCTION KeyExists( xKeyExpr )
+
+           LOCAL nSavRecord := RECNO()      // Save the current record
+                                            // pointer position
+           LOCAL lFound
+
+           SEEK xKeyExpr
+           IF ( lFound := FOUND() )
+           .
+           .< statements >
+           .
+           ENDIF
+
+           DBGOTO( nSavRecord )             // Restore the record
+                                            // pointer position
+           RETURN ( lFound )
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  BOF(), DBGOBOTTOM(), DBGOTOP(), DBSEEK(), DBSKIP(), EOF(), GO
+!seealso: "GO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBRLOCK()       Lock the record at the current or specified identity        ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bDBRLOCK() function^b
+ Lock the record at the current or specified identity
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DBRLOCK([<xIdentity>]) --> lSuccess
+
+ ^bArguments^b
+
+     ^b<xIdentity>^b is a unique value guaranteed by the structure of the
+     data file to reference a specific item in a data source (database).  In
+     a (.dbf) <xIdentity> is the record number.  In other data formats,
+     <xIdentity> is the unique primary key value.
+
+ ^bReturns^b
+
+     DBRLOCK() returns lSuccess, a logical data type that is true (.T.) if
+     successful, false (.F.) if unsuccessful.
+
+ ^bDescription^b
+
+     DBRLOCK() is a database function that locks the record identified by the
+     value <xIdentity>.  In Xbase, <xIdentity> is the record number.
+
+     If you do not specify <xIdentity>, all record locks are released and the
+     current record is locked.  If you specify <xIdentity>, DBRLOCK()
+     attempts to lock it and, if successful, adds it to the locked record
+     list.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example shows two different methods for locking multiple
+        records:
+
+        FUNCTION dbRLockRange( nLo, nHi )
+
+           LOCAL nRec
+           FOR nRec := nLo TO nHi
+              IF ! DBRLOCK( nRec )
+                 DBRUNLOCK()         // Failed - unlock everything
+              ENDIF
+           NEXT
+           RETURN DBRLOCKLIST()      // Return array of actual locks
+
+        FUNCTION dbRLockArray( aList )
+
+           LOCAL nElement, nLen, lRet
+           lRet := .T.
+           nLen := LEN( aList )
+           FOR nElement := 1 TO nLen
+              IF ! DBRLOCK( aList[ nElement ] )
+                 DBRUNLOCK()         // Failed - unlock everything
+                 lRet := .F.
+              ENDIF
+           NEXT
+           RETURN DBRLOCKLIST()
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  DBUNLOCK(), DBUNLOCKALL(), FLOCK(), RLOCK(), UNLOCK
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBRLOCKLIST()   Return an array of the current Lock List                    ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bDBRLOCKLIST() function^b
+ Return an array of the current Lock List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DBRLOCKLIST() --> aRecordLocks
+
+ ^bReturns^b
+
+     Returns an array of the locked records in the current or aliased work
+     area.
+
+ ^bDescription^b
+
+     DBRLOCKLIST() is a database function that returns a one-dimensional
+     array that contains the identities of record locks active in the
+     selected work area.
+
+ ^bExamples^b
+
+     PROCEDURE PrintCurLocks()
+
+        LOCAL aList
+        LOCAL nSize
+        LOCAL nCount
+
+        aList := DBRLOCKLIST()
+        nSize := LEN( aList )
+
+        ? "Currently locked records: "
+        FOR nCount := 1 TO nSize
+           ?? aList[ nCount ]
+           ?? SPACE( 1 )
+        NEXT
+        ?
+
+        RETURN
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  RLOCK(), UNLOCK, DBRLOCK(), DBRUNLOCK()
+!seealso: "DBRLOCK()" "DBRUNLOCK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBRUNLOCK()     Release all or specified record locks                       ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bDBRUNLOCK() function^b
+ Release all or specified record locks
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DBRUNLOCK([<xIdentity>]) --> NIL
+
+ ^bArguments^b
+
+     ^b<xIdentity>^b is a unique value guaranteed by the structure of the
+     data file to reference a specific item in a data source (database).  In
+     a (.dbf) <xIdentity> is the record number.  In other data formats,
+     <xIdentity> is the unique primary key value.
+
+ ^bReturns^b
+
+     DBRUNLOCK() always returns NIL.
+
+ ^bDescription^b
+
+     DBRUNLOCK() is a database function that releases the lock on <xIdentity>
+     and removes it from the Lock List.  If <xIdentity> is not specified, all
+     record locks are released.
+
+ ^bExamples^b
+
+     PROCEDURE dbRUnlockRange( nLo, nHi )
+
+        LOCAL nCounter
+
+        // Unlock the records in the range from nLo to nHi
+        FOR nCounter := nLo TO nHi
+           DBRUNLOCK( nCounter )
+        NEXT
+
+        RETURN
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  RLOCK(), DBRLOCK(), DBRLOCKLIST()
+!seealso: "DBRLOCK()" "DBRLOCKLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBSETINDEX()*   Empty Orders from an Order Bag into the Order List          ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bDBSETINDEX() function*^b
+ Empty Orders from an Order Bag into the Order List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DBSETINDEX(^b<cOrderBagName>^b) --> NIL
+
+ ^bArguments^b
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or extension.  If you do not include the extension as part
+     of <cOrderBagName>, CA-Clipper uses the default extension of the current
+     RDD.
+
+ ^bReturns^b
+
+     DBSETINDEX() always returns NIL.
+
+ ^bDescription^b
+
+     DBSETINDEX() is a database function that adds the contents of an Order
+     Bag into the Order List of the current work area.  Any Orders already
+     associated with the work area continue to be active.  If the newly
+     opened Order Bag is the only Order associated with the work area, it
+     becomes the controlling Order; otherwise, the controlling Order remains
+     unchanged.  If the Order Bag contains more than one Order, and there are
+     no other Orders associated with the work area, the first Order in the
+     new Order Bag becomes the controlling Order.
+
+     DBSETINDEX() is a compatibility command and therefore not recommended.
+     It is superseded by the ORDLISTADD() function.
+
+ ^bExamples^b
+
+     USE Customer NEW
+     DBSETINDEX( "Cust01" )        // Open the index Cust01
+                                   // in the current work area
+     DBSETINDEX( "Cust02" )        // Open the index Cust02
+                                   // leaving Cust01 open
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  ORDLISTADD()
+!seealso: "ORDLISTADD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DELETE TAG      Delete a Tag                                                ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bDELETE TAG command^b
+ Delete a Tag
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     DELETE TAG <cOrderName> [IN <xcOrderBagName>]
+        [, <cOrderName> [IN xcOrderBagName] list>]
+
+ ^bArguments^b
+
+     ^b<cOrderName>^b is a character string that represents the Order Name.
+
+     ^b<xcOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <xcOrderBagName> as the filename with or
+     without the pathname or appropriate extension.  If you do not include
+     the extension as part of <xcOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+     ^b<cOrderName ...list>^b is an optional list of Order and Order Bag Name
+     pairs, separated by commas.  Any reference to <cOrderName> that results
+     in either a null string ("") or spaces is ignored.  You can specify each
+     Order as a literal expression or as a character expression enclosed in
+     parentheses.  If you specify no extension for the Order Bag Name, the
+     current database driver supplies a default extension.
+
+ ^bDescription^b
+
+     This command removes an Order from an Order Bag in the current or
+     specified work area.  If you do not specify an <xcOrderBagName>, all
+     Orders Bags are searched in the current or specified work area.  The
+     first occurrence of <cOrderName> is deleted.  A runtime recoverable
+     error is raised if the Order is not found.
+
+     If <cOrderName> is the active Order, the database in the current or
+     specified work area reverts to its identity Order (natural or entry)
+     order and SET FILTER scoping.
+
+     A runtime error is raised if <xcOrderBagName> does not exist or if it
+     exists but does not contain <cOrderName>.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default DBFNTX and the DBFNDX drivers only support single-Order Bags,
+     while other RDDs may support multiple-Order Bags (e.g., the DBFCDX and
+     DBFMDX drivers).
+
+ ^bExamples^b
+
+     USE Customer VIA "DBFCDX" NEW
+     SET INDEX TO Customer
+
+     // Delete the Orders (Tags) Cust01 and Cust02 that
+     // exist in the index file Customer
+     DELETE TAG Cust01 IN Customer
+     DELETE TAG Cust02 IN Customer
+
+     // or
+     // DELETE TAG Cust01 IN Customer, Cust02 IN Customer
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  ORDDESTROY()
+!seealso: "ORDDESTROY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GO              Move the pointer to the specified identity                  ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bGO command^b
+ Move the pointer to the specified identity
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     GO[TO] ^b<xIdentity>^b
+
+ ^bArguments^b
+
+     ^b<xIdentity>^b a unique value guaranteed by the structure of the data
+     file to reference a specific item in a data source (database).  In a
+     (.dbf), identity is the record number.  In other data formats, identity
+     is the unique primary key value.
+
+ ^bDescription^b
+
+     GO[TO] is a database command that positions the record pointer in the
+     current work area at the specified identity.  In an Xbase data
+     structure, this identity is the record number because every record, even
+     an empty record, has a record number.  In data structures of different
+     design, identity may be defined as something other than record number.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example saves the current record number, searches for a
+        key, then restores the record pointer to the saved position:
+
+        FUNCTION KeyExists( xKeyExpr )
+
+           LOCAL nSavRecord := RECNO()      // Save the current record
+                                            // pointer position
+           LOCAL lFound
+
+           SEEK xKeyExpr
+           IF ( lFound := FOUND() )
+              .
+              .  < statements >
+              .
+           ENDIF
+
+           GOTO nSavRecord      // Restore the record pointer position
+
+           RETURN ( lFound )
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  DBGOTO(), LASTREC(), RECNO(), SET DELETED, SET FILTER,
+                SET RELATION, SKIP
+!seealso: "DBGOTO()" "RECNO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INDEX           Create an index file                                        ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bINDEX command^b
+ Create an index file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     INDEX ON <expKey> ^b[TAG <cOrderName>]^b TO
+        ^b<xcOrderBagName>^b [FOR <lCondition>] ^b[ALL]^b
+        [WHILE <lCondition>] ^b[NEXT <nNumber>]^b
+        ^b[RECORD <nRecord>] [REST]^b
+        [EVAL ^b<bBlock> [EVERY <nInterval>]^b
+        ^b[UNIQUE]^b [ASCENDING|DESCENDING]
+
+     OR
+
+     INDEX ON <expKey> ^bTAG <cOrderName>^b [TO
+        ^b<xcOrderBagName>^b] [FOR <lCondition>] ^b[ALL]^b
+        [WHILE <lCondition>] ^b[NEXT <nNumber>]^b
+        ^b[RECORD <nRecord>] [REST]^b
+        [EVAL ^b<bBlock> [EVERY <nInterval>]^b
+        ^b[UNIQUE]^b [ASCENDING|DESCENDING]
+
+ ^bArguments^b
+
+     ^b<expKey>^b is an expression that returns the key value to place in the
+     index for each record in the current work area.  <expKey> can be
+     character, date, logical, or numeric type.  The maximum length of the
+     index key expression is determined by the driver.
+
+     ^bTAG <cOrderName>^b is the name of the Order to be created.  In (.ntx)
+     and (.ndx) files the filename, without extension or pathname, is the
+     Order Name if none is specified.  <cOrderName> can be any CA-Clipper
+     expression that evaluates to a string constant.
+
+     ^bTO <xcOrderBagName>^b is the name of a disk file containing one or
+     more Orders.  The active RDD determines the Order capacity of an Order
+     Bag.  The default DBFNTX driver only supports single-Order Bags, while
+     other RDDs may support multiple-Order Bags (e.g., the DBFCDX and DBFMDX
+     drivers).  You may specify <xcOrderBagName> as the filename with or
+     without pathname or extension.  If an extension is not provided as part
+     of <xcOrderBagName> CA-Clipper will use the default extension of the
+     current RDD.
+
+     Both the TAG and the TO clauses are optional, but you must use at least
+     one of them.
+
+     ^bFOR <lCondition>^b specifies the conditional set of records on which
+     to create the Order.  Only those records that meet the condition are
+     included in the resulting Order.  <lCondition> is an expression that may
+     be no longer than 250 characters under the DBFNTX and DBFNDX drivers.
+     The maximum value for these expressions is determined by the RDD.  The
+     FOR condition is stored as part of the Order Bag and used when updating
+     or recreating the index using the REINDEX command.  Duplicate key values
+     are not added to the Order Bag.
+
+     Drivers that do not support the FOR condition will produce an
+     "unsupported" error.
+
+     The FOR clause provides the only scoping that is maintained for all
+     database changes.  All other scope conditions create Orders that do not
+     reflect database updates.
+
+     ^bALL^b specifies all Orders in the current or specified work area.  ALL
+     is the default scope of INDEX ON.
+
+     ^bWHILE <lCondition>^b specifies another condition that must be met by
+     each record as it is processed.  As soon as a record is encountered that
+     causes the condition to fail, the INDEX command terminates.  If a WHILE
+     clause is specified, the data is processed in the controlling order.
+     The WHILE condition is transient (i.e., it is not stored in the file and
+     not used for index updates and REINDEXing purposes).  The WHILE clause
+     creates temporary Orders, but these Orders are not updated.
+
+     Drivers that do not support the WHILE condition will produce an
+     "unsupported" error.
+
+     Using the WHILE clause is more efficient and faster than using the FOR
+     clause.  The WHILE clause only processes data for which <lCondition> is
+     true from the current position.  The FOR clause, however, processes all
+     data in the data source.
+
+     ^bNEXT <nNumber>^b specifies the portion of the database to process.  If
+     you specify NEXT, the database is processed in the controlling order for
+     the <nNumber> number of identities.  The scope is transient (i.e., is
+     not stored in the Order and not used for REINDEXing purposes).
+
+     ^bRECORD <nRecord>^b specifies the processing of the specified record.
+
+     ^bREST^b specifies the processing of all records from the current
+     position of the record pointer to the end of file (EOF).
+
+     ^bEVAL <bBlock>^b evaluates a code block every <nInterval>, where
+     <nInterval> is a value specified by the EVERY clause.  The default value
+     is 1.  This is useful in producing a status bar or odometer that
+     monitors the indexing progress.  The return value of <bBlock> must be a
+     logical data type.  If <bBlock> returns false (.F.), indexing halts.
+
+     ^bEVERY <nInterval>^b is a clause containing a numeric expression that
+     modifies the number of times <bBlock> is EVALuated.  The EVERY option of
+     the EVAL clause offers a performance enhancement by evaluating the
+     condition for every nth record instead of for every record ordered.  The
+     EVERY keyword is ignored if you specify no EVAL condition.
+
+     ^bUNIQUE^b specifies that the key value of each record inserted into the
+     Order be unique.  Duplicate key values are not added to the Order.
+
+     ^bASCENDING^b specifies that the keyed pairs be sorted in increasing
+     order of value.  If neither ASCENDING nor DESCENDING is specified,
+     ASCENDING is assumed.  Although not stored as an explicit part of the
+     file, ASCENDING is an implicit file attribute that is understood by the
+     REINDEX command.
+
+     Drivers that do not support the ASCENDING condition will produce an
+     "unsupported" error.
+
+     ^bDESCENDING^b specifies that the keyed pairs be sorted in decreasing
+     order of value.  Using this keyword is the same as specifying the
+     DESCEND() function within <expKey>, but without the performance penalty
+     during Order updates.  If you create a DESCENDING index, you won't need
+     to use the DESCEND() function during a SEEK.  DESCENDING is an attribute
+     of the file, where it is stored and used for REINDEXing purposes.
+
+     Drivers that do not support the DESCENDING condition will produce an
+     "unsupported" error.
+
+ ^bDescription^b
+
+     The INDEX ON command adds a set of keyed pairs, ordered by <expKey> to a
+     file specified by <xcOrderBagName> using the database open in the
+     current work area.
+
+     In RDDs that support production or structural indexes (e.g., DBFCDX,
+     DBFMDX), if you specify a Tag but do not specify an Order Bag, the Tag
+     is created and added to the Order Bag.  If no production or structural
+     index exists, it will be created and the Tag will be added to it.  When
+     using RDDs that support multiple Order Bags, you must explicitly SET
+     ORDER (or ORDSETFOCUS()) to the desired controlling Order.  If you do
+     not specify a controlling Order, the data file will be viewed in natural
+     Order.
+
+     If <xcOrderBagName> does not exist, it is created in accordance with the
+     RDD in the current or specified work area.
+
+     If <xcOrderBagName> exists and the RDD specifies that Order Bags can
+     only contain a single Order, <xcOrderBagName> is erased and the new
+     Order is added to the Order Bag and to the Order List in the current or
+     specified work area.
+
+     If <xcOrderBagName> exists and the RDD specifies that Order Bags can
+     contain multiple Tags, <cOrderName> is created if it does not already
+     exist, otherwise <cOrderName> is replaced in <xcOrderBagName> and the
+     Order is added to the Order List in the current or specified work area.
+
+     ASCENDING or DESCENDING specifies the sequence of keyed pairs in the
+     Order.  If neither clause is specified, the default is ASCENDING.
+
+     If you specify the UNIQUE clause, the resulting Order will contain only
+     unique records.  Some RDDs may do this by only including record
+     references to a key value once.  Others may produce a runtime
+     recoverable error as a nonunique key insertion is attempted.
+
+     The EVAL clause lets you specify a code block to be evaluated as each
+     record is placed in the Order.  The EVERY clause lets you modify how
+     often <bBlock> is called.  Instead of evaluation as each record is
+     placed in the Order, evaluation only occurs as every <nInterval> records
+     are placed in the Order.
+
+     The INDEX ON command accepts certain clauses that let the user create
+     conditional and partial Orders.  Some Orders are intended to be
+     maintained across the application, others are considered "temporary"
+     Orders.
+
+     The FOR clause provides the only Order scoping that is permanent and can
+     be maintained across the life of the application.  The string passed as
+     the FOR condition is stored within the Order for later use in
+     maintaining the Order.  Though only accessing part of a database, Orders
+     created using this clause exist as long as the database is active.  The
+     FOR clause lets you create maintainable scoped Orders.
+
+     The WHILE, NEXT, REST and RECORD clauses process data from the current
+     position of the database cursor in the default or specified work area.
+     If you specify these clauses, the Order List remains open and the active
+     Order is used to organize the database while it is being created.  These
+     clauses let you create temporary (non-maintainable) Orders.  Orders
+     created using these clauses contain records in which <lCondition> is
+     true (.T.) at the location of the record pointer.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example creates a simple order (index) based on
+        one field (Acct):
+
+        USE Customer NEW
+        INDEX ON Customer->Acct TO CuAcct
+
+
+     ^b^CFE^b  This example creates a conditional Order (index) based on a
+        FOR clause.  This index will contain only records whose field
+        TransDate contains a date greater than or equal to January 1, 1992:
+
+        USE Invoice NEW
+        INDEX ON Invoice->TransDate   ;
+           TO InDate                  ;
+           FOR ( Invoice->TransDate >= CTOD( "01/01/92" ) )
+
+
+     ^b^CFE^b  This example creates an order in a multiple-Order Bag (i.e. a
+        tag in an index that can support multiple tags in an index file):
+
+        USE Customer NEW
+        INDEX ON Customer->Acct TAG CuAcct TO Customer
+
+
+     ^b^CFE^b  The following example creates an order that calls a routine
+        "MyMeter" during its creation:
+
+        #define MTR_INCREMENT   10
+
+        USE Customer NEW
+        INDEX ON Customer->Acct TO CuAcct EVAL ;
+              {|| MyMeter() } EVERY MTR_INCREMENT
+
+        FUNCTION MyMeter()
+
+           STATIC nRecsDone := 0
+
+           nRecsDone := += MTR_INCREMENT
+           ? ( nRecsDone/LASTREC() ) * 100
+
+           RETURN ( .T. )
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  CLOSE, DESCEND(), DTOS(), INDEXKEY(), INDEXORD(), ORDCREATE(),
+                REINDEX, SEEK, SET INDEX, SET ORDER, SORT, SOUNDEX(), USE
+!seealso: "ORDCREATE()" "SEEK" "SET INDEX" "SET ORDER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDBAGEXT()     Return the default Order Bag RDD extension                  ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDBAGEXT() function^b
+ Return the default Order Bag RDD extension
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDBAGEXT() --> cBagExt
+
+ ^bReturns^b
+
+     ORDBAGEXT() returns a character expression.
+
+ ^bDescription^b
+
+     ORDBAGEXT() is an Order management function that returns a character
+     expression that is the default Order Bag extension of the current or
+     aliased work area.  cBagExt is determined by the RDD active in the
+     current work area.
+
+     ORDBAGEXT() supersedes the INDEXEXT() and is not recommended.
+
+ ^bExamples^b
+
+     USE sample VIA "DBFNTX"
+     ? ORDBAGEXT()      //  Returns .ntx
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  INDEXEXT(), ORDBAGNAME()
+!seealso: "ORDBAGNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDBAGNAME()    Return the Order Bag name of a specific Order               ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDBAGNAME() function^b
+ Return the Order Bag name of a specific Order
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDBAGNAME(<nOrder> | <cOrderName>) --> cOrderBagName
+
+ ^bArguments^b
+
+     ^b<nOrder>^b is an integer that identifies the position in the Order
+     List of the target Order whose Order Bag name is sought.
+
+     ^b<cOrderName>^b is a character string that represents the name of the
+     target Order whose Order Bag name is sought.
+
+ ^bReturns^b
+
+     ORDBAGNAME() returns a character string, the Order Bag name of the
+     specific Order.
+
+ ^bDescription^b
+
+     ORDBAGNAME() is an Order management function that lets you access the
+     name of the Order Bag in which <cOrderName> resides.  You may identify
+     the Order as a character string or with an integer that represents its
+     position in the Order List.  In case of duplicate names, ORDBAGNAME()
+     only recognizes the first matching name.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example uses ORDBAGNAME() with the default
+        DBFNTX driver:
+
+        USE Customer VIA "DBFNTX" NEW
+        SET INDEX TO CuAcct, CuName, CuZip
+        ORDBAGNAME( 2 )               // Returns: CuName
+        ORDBAGNAME( 1 )               // Returns: CuAcct
+        ORDBAGNAME( 3 )               // Returns: CuZip
+
+
+     ^b^CFE^b  In this example, Customer.cdx contains three orders named
+        CuAcct, CuName, CuZip:
+
+        USE Customer VIA "DBFCDX" NEW
+        SET INDEX TO Customer
+        ORDBAGNAME( "CuAcct" )        // Returns: Customer
+        ORDBAGNAME( "CuName" )        // Returns: Customer
+        ORDBAGNAME( "CuZip" )         // Returns: Customer
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  ORDBAGEXT()
+!seealso: "ORDBAGEXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDCREATE()     Create an Order in an Order Bag                             ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDCREATE() function^b
+ Create an Order in an Order Bag
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDCREATE(<cOrderBagName>,[<cOrderName>],    <cExpKey>,
+        [<bExpKey>], [<lUnique>]) --> NIL
+
+ ^bArguments^b
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or extension.  If you do not include the extension as part
+     of <cOrderBagName> CA-Clipper uses the default extension of the current
+     RDD.
+
+     ^b<cOrderName>^b is the name of the Order to be created.
+
+     ^bNote:^b Although both <cOrderBagName> and <cOrderName> are both
+     optional, at least one of them must be specified.
+
+     ^b<cExpKey>^b is an expression that returns the key value to place in
+     the Order for each record in the current work area.  <cExpKey> can
+     represent a character, date, logical, or numeric data type.  The maximum
+     length of the index key expression is determined by the database driver.
+
+     ^b<bExpKey>^b is a code block that evaluates to a key value that is
+     placed in the Order for each record in the current work area.  If you do
+     not supply <bExpKey>, it is macro-compiled from <cExpKey>.
+
+     ^b<lUnique>^b is an optional logical value that specifies whether a
+     unique Order is to be created.  If <lUnique> is omitted, the current
+     global _SET_UNIQUE setting is used.
+
+ ^bReturns^b
+
+     ORDCREATE() always returns NIL.
+
+ ^bDescription^b
+
+     ORDCREATE() is an Order management function that creates an Order in the
+     current work area.  It works like DBCREATEINDEX() except that it lets
+     you create Orders in RDDs that recognize multiple-Order Bags.
+     ORDCREATE() supersedes the DBCREATEINDEX() function because of this
+     capability, and is the preferred function.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default  DBFNTX and the DBFNDX drivers only support single-Order Bags,
+     while other RDDs may support multiple-Order Bags (e.g., the DBFCDX and
+     DBFMDX drivers).
+
+     In RDDs that support production or structural indexes (e.g., DBFCDX,
+     DBPX), if you specify a Tag but do not specify an Order Bag, the Tag is
+     created and added to the index.  If no production or structural index
+     exists, it will be created and the Tag will be added to it.  When using
+     RDDs that support multiple Order Bags, you must explicitly SET ORDER (or
+     ORDSETFOCUS()) to the desired controlling Order.  If you do not specify
+     a controlling Order, the data file will be viewed in natural Order.
+
+     If <cOrderBagName> does not exist, it is created in accordance with the
+     RDD in the current or specified work area.
+
+     If <cOrderBagName> exists and the RDD specifies that Order Bags can only
+     contain a single Order, <cOrderBagName> is erased and the new Order is
+     added to the Order List in the current or specified work area.
+
+     If <cOrderBagName> exists and the RDD specifies that Order Bags can
+     contain multiple Tags, <cOrderName> is created if it does not already
+     exist, otherwise <cOrderName> is replaced in <cOrderBagName> and the
+     Order is added to the Order List in the current or specified work area.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example demonstrates ORDCREATE() with the DBFNDX
+        driver:
+
+        USE Customer VIA "DBFNDX" NEW
+        ORDCREATE( "CuAcct",, "Customer->Acct" )
+
+
+     ^b^CFE^b  The following example demonstrates ORDCREATE() with the
+        default DBFNTX driver:
+
+        USE Customer VIA "DBFNTX" NEW
+        ORDCREATE( "CuAcct", "CuAcct", "Customer->Acct", ;
+              {|| Customer->Acct } )
+
+     ^b^CFE^b  The following example demonstrates ORDCREATE() with the FoxPro
+        driver, DBFCDX:
+
+        USE Customer VIA "DBFCDX" NEW
+        ORDCREATE( "Customer", "CuAcct", "Customer->Acct" )
+
+     ^b^CFE^b  This example creates the Order "CuAcct" and adds it to the
+        production index (Order Bag) "Customer".  The production index , will
+        be created if it doesn't exist:
+
+        USE Customer VIA "DBFMDX" NEW
+        ORDCREATE( , "CuAcct", "Customer->Acct" )
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  DBCREATEIND(), INDEX, SET UNIQUE*
+!seealso: "INDEX" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDDESTROY()    Remove a specified Order from an Order Bag                  ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDDESTROY() function^b
+ Remove a specified Order from an Order Bag
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDDESTROY(<cOrderName> [, <cOrderBagName> ]) --> NIL
+
+ ^bArguments^b
+
+     ^b<cOrderName>^b is the name of the Order to be removed from the current
+     or specified work area.
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <cOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bReturns^b
+
+     ORDDESTROY() always returns NIL.
+
+ ^bDescription^b
+
+     ORDDESTROY() is an Order management function that removes a specified
+     Order from multiple-Order Bags.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default DBFNTX and the DBFNDX drivers only support single-Order Bags,
+     while other RDDs may support multiple-Order Bags (e.g., the DBFCDX and
+     DBPX drivers).
+
+     ^bNote:^b  RDD suppliers may define specific behaviors for this command.
+
+     ^bWarning!^b  ORDDESTROY() is not supported for DBFNDX and DBFNTX.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example demonstrates ORDDESTROY() with the FoxPro driver,
+        DBFCDX:
+
+        USE Customer VIA "DBFCDX" NEW
+        SET INDEX TO Customer, CustTemp
+        ORDDESTROY( "CuAcct", "Customer" )
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  DELETE TAG, ORDCREATE()
+!seealso: "DELETE TAG" "ORDCREATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDFOR()        Return the FOR expression of an Order                       ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDFOR() function^b
+ Return the FOR expression of an Order
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDFOR(<cOrderName> | <nOrder>
+        [, <cOrderBagName>]) --> cForExp
+
+ ^bArguments^b
+
+     ^b<cOrderName>^b is the name of the target Order, whose cForExp is
+     sought.
+
+     ^b<nOrder>^b is an integer that identifies the position in the Order
+     List of the target Order whose cForExp is sought.
+
+     ^b<cOrderBagName>^b is the name of an Order Bag containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <cOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bReturns^b
+
+     ORDFOR() returns a character expression, cForExp, that represents the
+     FOR condition of the specified Order.  If the Order was not created
+     using the FOR clause the return value will be an empty string ("").  If
+     the database driver does not support the FOR condition, it may either
+     return an empty string ("") or raise an "unsupported function" error,
+     depending on the driver.
+
+ ^bDescription^b
+
+     ORDFOR() is an Order management function that returns the character
+     string, cForExp, that represents the logical FOR condition of the Order,
+     <cOrderName> or <nOrder>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example retrieves the FOR condition from an Order:
+
+        USE Customer NEW
+        INDEX ON  Customer->Acct ;
+           TO  Customer          ;
+           FOR Customer->Acct > "AZZZZZ"
+
+        ORDFOR( "Customer" )      // Returns: Customer->Acct > "AZZZZZ"
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  INDEX, ORDKEY(), ORDCREATE(), ORDNAME(), ORDNUMBER()
+!seealso: "INDEX" "ORDKEY()" "ORDCREATE()" "ORDNAME()" "ORDNUMBER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDKEY()        Return the key expression of an Order                       ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDKEY() function^b
+ Return the key expression of an Order
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDKEY(<cOrderName> | <nOrder>
+        [, <cOrderBagName>]) --> cExpKey
+
+ ^bArguments^b
+
+     ^b<cOrderName>^b is the name of an Order, a logical ordering of a
+     database.
+
+     ^b<nOrder>^b is an integer that identifies the position in the Order
+     List of the target Order whose cExpKey is sought.
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <cOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bReturns^b
+
+     Returns a character string, cExpKey.
+
+ ^bDescription^b
+
+     ORDKEY() is an Order management function that returns a character
+     expression, cExpKey, that represents the key expression of the specified
+     Order.
+
+     You may specify the Order by name or with a number that represents its
+     position in the Order List.  Using the Order name is the preferred
+     method.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default DBFNTX and the DBFNDX drivers only support single-Order Bags,
+     while other RDDs may support multiple-Order Bags (e.g., the DBFCDX and
+     DBFMDX drivers).
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example retrieves the index expression from an Order:
+
+        USE Customer NEW
+        INDEX ON  Customer->Acct  ;
+           TO  Customer           ;
+           FOR Customer->Acct > "AZZZZZ"
+
+        ORDKEY( "Customer" )      // Returns: Customer->Acct
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  ORDFOR(), ORDNAME(), ORDNUMBER()
+!seealso: "ORDFOR()" "ORDNAME()" "ORDNUMBER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDLISTADD()    Add Orders to the Order List                                ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDLISTADD() function^b
+ Add Orders to the Order List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDLISTADD(<cOrderBagName>
+        [, <cOrderName>]) --> NIL
+
+ ^bArguments^b
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <cOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+     ^b<cOrderName>^b the name of the specific Order from the Order Bag to be
+     added to the Order List of the current work area.  If you do not specify
+     <cOrderName>, all orders in the Order Bag are added to the Order List of
+     the current work area.
+
+ ^bReturns^b
+
+     ORDLISTADD() always returns NIL.
+
+ ^bDescription^b
+
+     ORDLISTADD() is an Order management function that adds the contents of
+     an Order Bag , or a single Order in an Order Bag, to the Order List.
+     This function lets you extend the Order List without issuing a SET INDEX
+     command that, first, clears all the active Orders from the Order List.
+
+     Any Orders already associated with the work area continue to be active.
+     If the newly opened Order Bag contains the only Order associated with
+     the work area, it becomes the controlling Order; otherwise, the
+     controlling Order remains unchanged.
+
+     After the new Orders are opened, the work area is positioned to the
+     first logical record in the controlling Order.
+
+     ORDLISTADD() is similar to the SET INDEX command or the INDEX clause of
+     the USE command, except that it does not clear the Order List prior to
+     adding the new order(s).
+
+     ORDLISTADD() supersedes the DBSETINDEX() function.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default  DBFNTX and the DBFNDX drivers only support single-Order Bags,
+     while other RDDs may support multiple-Order Bags (e.g., the DBFCDX and
+     DBPX drivers).  When using RDDs that support multiple Order Bags, you
+     must explicitly SET ORDER (or ORDSETFOCUS()) to the desired controlling
+     Order.  If you do not specify a controlling Order, the data file will be
+     viewed in natural Order.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example Customer.cdx contains three orders, CuAcct,
+        CuName, and CuZip.  ORDLISTADD() opens Customer.cdx but only uses the
+        order named CuAcct:
+
+        USE Customer VIA "DBFCDX" NEW
+        ORDLISTADD( "Customer", "CuAcct" )
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  DBSETINDEX(), INDEX, SET INDEX, USE
+!seealso: "DBSETINDEX()*" "INDEX" "SET INDEX" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDLISTCLEAR()  Clear the current Order List                                ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDLISTCLEAR() function^b
+ Clear the current Order List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDLISTCLEAR() --> NIL
+
+ ^bReturns^b
+
+     ORDLISTCLEAR() always returns NIL.
+
+ ^bDescription^b
+
+     ORDLISTCLEAR() is an Order management function that removes all Orders
+     from the Order List for the current or aliased work area.  When you are
+     done, the Order List is empty.
+
+     This function supersedes the function DBCLEARINDEX().
+
+ ^bExamples^b
+
+     USE Sales NEW
+     SET INDEX TO SaRegion, SaRep, SaCode
+     .
+     . < statements >
+     .
+     ORDLISTCLEAR()      // Closes all the current indexes
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  SET INDEX, DBCLEARINDEX()
+!seealso: "SET INDEX" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDLISTREBUI()  Rebuild all Orders in Order List of the current work area   ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDLISTREBUILD() function^b
+ Rebuild all Orders in the Order List of the current work area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDLISTREBUILD() --> NIL
+
+ ^bReturns^b
+
+     ORDLISTREBUILD() always returns NIL.
+
+ ^bDescription^b
+
+     ORDLISTREBUILD() is an Order management function that rebuilds all the
+     orders in the current or aliased Order List.
+
+     To only rebuild a single Order use the function ORDCREATE().
+
+     Unlike ORDCREATE(), this function rebuilds all Orders in the Order List.
+     It is equivalent to REINDEX.
+
+ ^bExamples^b
+
+     USE Customer NEW
+     SET INDEX TO CuAcct, CuName, CuZip
+     ORDLISTREBUILD()     // Causes CuAcct, CuName, CuZip to
+                          // be rebuilt
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  REINDEX, INDEX, ORDCREATE()
+!seealso: "INDEX" "ORDCREATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDNAME()       Return the name of an Order in the Order List               ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDNAME() function^b
+ Return the name of an Order in the Order List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDNAME(<nOrder>[,<cOrderBagName>])
+        --> cOrderName
+
+ ^bArguments^b
+
+     ^b<nOrder>^b is an integer that identifies the position in the Order
+     List of the target Order whose database name is sought.
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <xcOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bReturns^b
+
+     ORDNAME() returns the name of the specified Order in the current Order
+     List or the specified Order Bag if opened in the Current Order list.
+
+ ^bDescription^b
+
+     ORDNAME() is an Order management function that returns the name of the
+     specified Order in the current Order List.
+
+     If <cOrderBagName> is an Order Bag that has been emptied into the
+     current Order List, only those Orders in the Order List that correspond
+     to <cOrderBagName> Order Bag are searched.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default DBFNTX and the DBFNDX drivers only support single-Order Bags,
+     while other RDDs may support multiple-Order Bags (e.g., the DBFCDX and
+     DBPX drivers).
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example retrieves the name of an Order using its position
+        in the order list:
+
+        USE Customer NEW
+        SET INDEX TO CuAcct, CuName, CuZip
+        ORDNAME( 2 )                        // Returns: CuName
+
+     ^b^CFE^b  This example retrieves the name of an Order given its position
+        within a specific Order Bag in the Order List:
+
+        USE Customer NEW
+        SET INDEX TO Temp, Customer
+        // Assume Customer contains CuAcct, CuName, CuZip
+        ORDNAME( 2, "Customer" )            // Returns: CuName
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  ORDFOR(), ORDKEY(), ORDNUMBER()
+!seealso: "ORDFOR()" "ORDKEY()" "ORDNUMBER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDNUMBER()     Return the position of an Order in the current Order List   ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDNUMBER() function^b
+ Return the position of an Order in the current Order List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDNUMBER(<cOrderName>
+        [, <cOrderBagName>]) --> nOrderNo
+
+ ^bArguments^b
+
+     ^b<cOrderName>^b the name of the specific Order whose position in the
+     Order List is sought.
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <cOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bReturns^b
+
+     Returns nOrderNo, an integer that represents the position of the
+     specified Order in the Order List.
+
+ ^bDescription^b
+
+     ORDNUMBER() is an Order management function that lets you determine the
+     position in the current Order List of the specified Order.  ORDNUMBER()
+     searches the Order List in the current work area and returns the
+     position of the first Order that matches <cOrderName>.    If
+     <cOrderBagName> is the name of an Order Bag newly emptied into the
+     current Order List, only those orders in the Order List that have been
+     emptied from <cOrderBagName> are searched.
+
+     If <cOrderName> is not found ORDNUMBER() raises a recoverable runtime
+     error.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default DBFNTX driver only supports single-Order Bags, while other RDDs
+     may support multiple-Order Bags (e.g., the DBFCDX and DBPX drivers).
+
+ ^bExamples^b
+
+     USE Customer VIA "DBFNTX" NEW
+     SET INDEX TO CuAcct, CuName, CuZip
+     ORDNUMBER( "CuName" )            // Returns: 2
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  INDEXORD()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ORDSETFOCUS()   Set focus to an Order in an Order List                      ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bORDSETFOCUS() function^b
+ Set focus to an Order in an Order List
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ORDSETFOCUS([<cOrderName> | <nOrder>]
+        [,<cOrderBagName>]) --> cPrevOrderNameInFocus
+
+ ^bArguments^b
+
+     ^b<cOrderName>^b is the name of the selected Order, a logical ordering
+     of a database.  ORDSETFOCUS() ignores any invalid values of
+     <cOrderName>.
+
+     ^b<nOrder>^b is a number representing the position in the Order List of
+     the selected Order.
+
+     ^b<cOrderBagName>^b is the name of a disk file containing one or more
+     Orders.  You may specify <cOrderBagName> as the filename with or without
+     the pathname or appropriate extension.  If you do not include the
+     extension as part of <cOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bReturns^b
+
+     ORDSETFOCUS() returns the Order Name of the previous controlling Order.
+
+ ^bDescription^b
+
+     ORDSETFOCUS() is an Order management function that returns the Order
+     Name of the previous controlling Order and optionally sets the focus to
+     an new Order.
+
+     If you do not specify <cOrderName> or <nOrder>, the name of the
+     currently controlling order is returned and the controlling order
+     remains unchanged.
+
+     All Orders in an Order List are properly updated no matter what
+     <cOrderName> is the controlling Order.  After a change of controlling
+     Orders, the record pointer still points to the same record.
+
+     The active RDD determines the Order capacity of an Order Bag.  The
+     default DBFNTX driver only supports single-Order Bags, while other RDDs
+     may support multiple-Order Bags (e.g., the DBFCDX and DBPX drivers).
+
+     ORDSETFOCUS() supersedes INDEXORD().
+
+ ^bExamples^b
+
+     USE Customer VIA "DBFNTX" NEW
+     SET INDEX TO CuAcct, CuName, CuZip
+     ? ORDSETFOCUS( "CuName" )        // Displays: "CuAcct"
+     ? ORDSETFOCUS()                  // Displays: "CuName"
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  SET INDEX, SET ORDER
+!seealso: "SET INDEX" "SET ORDER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RDDLIST()       Return an array of available Replaceable Database Drivers   ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bRDDLIST() function^b
+ Return an array of the available Replaceable Database Drivers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     RDDLIST([<nRDDType>]) --> aRDDList
+
+ ^bArguments^b
+
+     ^b<nRDDType>^b is an integer that represents the type of the RDD you
+     wish to list.  The constants RDT_FULL and RDT_TRANSFER represent the two
+     types of RDDs currently available.
+
+     ^bRDDType Summary^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Value     Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     RDT_FULL       1         Full RDD implementation
+     RDT_TRANSFER   2         Import/Export only driver
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RDT_FULL identifies full-featured RDDs that have all the capabilities
+     associated with an RDD.
+
+     RDT_TRANSFER identifies RDDs of limited capability.  They can only
+     transfer records between files.  You cannot use these limited RDD
+     drivers to open a file in a work area.  The SDF and DELIM drivers are
+     examples of this type of RDD.  They are only used in the implementation
+     of APPEND FROM and COPY TO with SDF or DELIMITED files.
+
+ ^bReturns^b
+
+     RDDLIST() returns a one-dimensional array of the RDD names registered
+     with the application as <nRDDType>.
+
+ ^bDescription^b
+
+     RDDLIST() is an RDD function that returns a one-dimensional array that
+     lists the available RDDs.
+
+     If you do not supply <nRDDType>, all available RDDs, regardless of type,
+     are returned.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example RDDLIST() returns an array containing the
+        character strings, "DBF", "SDF", "DELIM", "DBFCDX", and "DBFNTX":
+
+        REQUEST DBFCDX
+
+        .
+        . < statements >
+        .
+
+        aRDDs := RDDLIST()
+
+              // Returns {"DBF", SDF", "DELIM", "DBFCDX", "DBFNTX" }
+
+     ^b^CFE^b  In this example, RDDLIST() returns an array containing the
+        character strings, "SDF" and "DELIM":
+
+        #include "rddsys.ch"
+        .
+        . < statements >
+        .
+        aImpExp := RDDLIST( RDT TRANSFER )
+
+ ^bFiles:^b  RDDSYS.CH
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  DBSETDRIVER(), RDDNAME(), RDDSETDEFAULT()
+!seealso: "RDDNAME()" "RDDSETDEFAULT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RDDNAME()       Return name of RDD active in current or specified work area ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bRDDNAME() function^b
+ Return the name of the RDD active in the current or specified work area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     RDDNAME() --> cRDDName
+
+ ^bReturns^b
+
+     Returns a character string, cRDDName, the registered name of the active
+     RDD in the current or specified work area.
+
+ ^bDescription^b
+
+     RDDNAME() is an RDD function that returns a character string, cRDDName,
+     the name of the active RDD in the current or specified work area.
+
+     You can specify a work area other than the currently active work area by
+     aliasing the function.
+
+ ^bExamples^b
+
+     USE Customer VIA "DBFNTX" NEW
+     USE Sales    VIA "DBFCDX" NEW
+
+     ? RDDNAME()                          // Returns: DBFCDX
+     ? Customer->( RDDNAME() )            // Returns: DBFNTX
+     ? Sales->( RDDNAME() )               // Returns: DBFCDX
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  RDDLIST()
+!seealso: "RDDLIST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RDDSETDEFAULT() Set or return the default RDD for the application           ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bRDDSETDEFAULT() function^b
+ Set or return the default RDD for the application
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     RDDSETDEFAULT([<cNewDefaultRDD>])
+        --> cPreviousDefaultRDD
+
+ ^bArguments^b
+
+     ^b<cNewDefaultRDD>^b is a character string, the name of the RDD that is
+     to be made the new default RDD in the application.
+
+ ^bReturns^b
+
+     RDDSETDEFAULT() returns a character string, cPreviousDefaultRDD, the
+     name of the previous default driver.  The default driver is the driver
+     that CA-Clipper uses if you do not explicitly specify an RDD with the
+     VIA clause of the USE command.
+
+ ^bDescription^b
+
+     RDDSETDEFAULT() is an RDD function that sets or returns the name of the
+     previous default RDD driver and, optionally, sets the current driver to
+     the new RDD driver specified by cNewDefaultRDD.  If <cNewDefaultDriver>
+     is not specified, the current default driver name is returned and
+     continues to be the current default driver.
+
+     This function replaces the DBSETDRIVER() function.
+
+ ^bExamples^b
+
+     // If the default driver is not DBFNTX, make it the default
+
+     IF ( RDDSETDEFAULT() != "DBFNTX" )
+        cOldRdd := RDDSETDEFAULT( "DBFNTX" )
+     ENDIF
+
+ ^bStatus:^b  New
+
+ ^bSee also:^b  DBSETDRIVER()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: RECNO()         Return the identity at the position of the record pointer   ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bRECNO() function^b
+ Return the identity at the position of the record pointer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     RECNO() --> ^bIdentity^b
+
+ ^bReturns^b
+
+     RECNO() returns the identity found at the position of the record
+     pointer.
+
+ ^bDescription^b
+
+     RECNO() is a database function that returns the identity found at the
+     current position of the record pointer.  Identity is a unique value
+     guaranteed by the structure of the data file to reference a specific
+     record of data file.  The data file need not be a traditional Xbase
+     file.  Therefore, unlike earlier versions of CA-Clipper, the value
+     returned need not be a numeric data type.
+
+     Under all RDDs, RECNO() returns the value at the position of the record
+     pointer; the data type and other characteristics of this value are
+     determined by the content of the accessed data and the RDD active in the
+     current work area.  In an Xbase database this value is the record
+     number.
+
+ ^bExamples^b
+
+     USE Sales VIA "DBFNTX"
+     .
+     . < statements >
+     .
+     DBGOTOP()
+     RECNO()            // Returns 1
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  DBGOTO()
+!seealso: "DBGOTO()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SEEK            Search an Order for a specified key value                   ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bSEEK command^b
+ Search an Order for a specified key value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     SEEK <expSearch> ^b[SOFTSEEK]^b
+
+ ^bArguments^b
+
+     ^b<expSearch>^b is an expression to match with an Order key value.
+
+     ^bSOFTSEEK^b causes the record pointer to be moved to the next record
+     with a higher key value after a failed Order search.  Default behavior
+     moves the record pointer to EOF() after a failed Order search.
+
+ ^bDescription^b
+
+     SEEK is a database command that searches the controlling Order from the
+     first key value and proceeding until a match is found or there is a key
+     value greater than <expSearch>.  If there is a match, the record pointer
+     is positioned to the identity found in the Order.  If SOFTSEEK is OFF
+     (the default) and SEEK does not find a match, the record pointer is
+     positioned to LASTREC() + 1, EOF() returns true (.T.), and FOUND()
+     returns false (.F.).
+
+     SOFTSEEK enables a method of searching an Order and returning a record
+     even if there is no match for a specified key.
+
+     When SOFTSEEK is ON and a match for a SEEK is not found, the record
+     pointer is set to the next record in the Order with a higher key value
+     than the SEEK argument.  Records not visible because SET FILTER and/or
+     SET DELETED are skipped when searching for the next higher key value.
+     If there is no record with a higher key value, the record pointer is
+     positioned at LASTREC() + 1, EOF() returns true (.T.), and FOUND()
+     returns false (.F.).  FOUND() returns true (.T.) only if the record is
+     actually found.  FOUND() never returns true (.T.) for a relative find.
+
+     When SOFTSEEK is OFF and a SEEK is unsuccessful, the record pointer is
+     positioned at LASTREC() + 1, EOF() returns true (.T.), and FOUND()
+     returns false (.F.).
+
+     SEEK with the SOFTSEEK clause is, effectively, the same as performing
+     SET SOFTSEEK then SEEK in earlier versions of CA-Clipper except that is
+     does not change the global setting of SOFTSEEK.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example searches for "Doe" using the SEEK
+        command:
+
+        USE Customer NEW
+        SET ORDER TO Customer
+
+        ? SET( _SET_SOFTSEEK )   // (.F.)
+        SEEK "Doe"
+        ? SET( _SET_SOFTSEEK )   // Still (.F.)
+
+        IF FOUND()
+           .
+           . < statements >
+           .
+        ENDIF
+
+     ^b^CFE^b  The following example performs a soft seek for "Doe" using
+        SOFTSEEK clause of the SEEK command:
+
+        USE Customer NEW
+        SET ORDER TO Customer
+
+        SEEK "Doe" SOFTSEEK
+
+        IF !FOUND()
+           ? Customer->Name      // Returns next logical name after "Doe"
+        ENDIF
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  DBSEEK()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET INDEX       Open one or more Order Bags in the current work area        ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bSET INDEX command^b
+ Open one or more Order Bags in the current work area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     SET INDEX TO ^b[<xcOrderBagName list>] [ADDITIVE]^b
+
+ ^bArguments^b
+
+     ^b<cOrderBagName list>^b specifies Order Bags to be emptied into the
+     Order List of the current work area.
+
+     ^bADDITIVE^b adds Order Bags to an existing Order List.
+
+ ^bDescription^b
+
+     By default, SET INDEX, without the ADDITIVE clause, clears the currently
+     active Order List, then constructs a new Order List from the Orders in
+     the specified Order Bags in the current work area.  When several Order
+     Bags are opened, the first Order in the first Order Bag becomes the
+     controlling Order (has focus).  The record pointer is initially
+     positioned at the first logical identity in this Order.
+
+     If an Order List exists when you SET INDEX ... ADDITIVE, the Orders in
+     the new Order Bag are added to the end of the Order List.  The previous
+     controlling Order continues to be the controlling Order.
+
+     If no Order List exists when you SET INDEX ... ADDITIVE, the first Order
+     in the first Order Bag in <cOrderBagName list> becomes the controlling
+     Order.
+
+     During database processing, all open Orders are updated whenever a key
+     value is appended or changed, unless the Order was created using a
+     scoping condition and the key value does not match.  To change the
+     controlling Order without issuing another SET INDEX command, use SET
+     ORDER or ORDSETFOCUS().  To add Orders without closing the currently
+     open Orders, use the ADDITIVE clause.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example opens a database and its associated indexes:
+
+        USE Sales NEW
+        SET INDEX TO Sales, Sales1, Sales2
+
+     ^b^CFE^b  This example opens an index without closing any indexes that
+        are already open:
+
+        SET INDEX TO Sales3 ADDITIVE
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  CLOSE, DBCLEARINDEX(), DBSETINDEX(), INDEX, REINDEX,
+                SET ORDER, USE
+!seealso: "DBSETINDEX()*" "INDEX" "SET ORDER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET ORDER       Select the controlling Order                                ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^bSET ORDER command^b
+ Select the controlling Order
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     SET ORDER TO ^b[<nOrder> | [TAG <cOrderName>]^b
+        ^b[IN <xcOrderBagName>]]^b
+
+ ^bArguments^b
+
+     ^bTAG^b is an optional clause that provides compatibility with RDDs that
+     access multiple-Order Order Bags.  You must use this keyword anytime you
+     specify <cOrderName>.
+
+     ^b<cOrderName>^b is the name of an Order, a logical arrangement of a
+     database according to a keyed pair.  This Order will become the
+     controlling Order in the Order List.  If you specify <cOrderName>, you
+     must use the keyword TAG.
+
+     ^bNote:^b  This differs from dBASE and FoxPro where TAG is totally
+     optional.
+
+     ^b<nOrder>^b is the number of the target Order in the Order List.
+
+     You may represent the Order as an integer or as a character string
+     enclosed in quotes.
+
+     ^bIN <xcOrderBagName>^b is the name of a disk file containing one or
+     more Orders.  You may specify <xcOrderBagName> as the filename with or
+     without the pathname or appropriate extension.  If you do not include
+     the extension as part of <xcOrderBagName> CA-Clipper uses the default
+     extension of the current RDD.
+
+ ^bDescription^b
+
+     When you SET ORDER TO a new controlling Order (index), all Orders are
+     properly updated when you either append or edit records.  This is true
+     even if you SET ORDER TO 0.  After a change of controlling Order, the
+     record pointer still points to the same record.
+
+     SET ORDER TO 0 restores the database access to natural order, but leaves
+     all Orders open.  SET ORDER TO with no arguments closes all Orders and
+     empties the Order List
+
+     Though you may use <cOrderName> or <nOrder> to specify the target Order,
+     <nOrder> is only provided for compatibility with earlier versions of
+     CA-Clipper.  Using <cOrderName> is a surer way of accessing the correct
+     Order in the Order List.
+
+     If you supply <xcOrderBagName> only the Orders belonging to
+     <xcOrderBagName> in the Order List are searched.  Usually, you need not
+     specify <xcOrderBagName> if you use unique Order Names throughout an
+     application.
+
+     To determine which Order is the controlling Order use the ORDSETFOCUS()
+     function.
+
+     In RDDs that support production or structural indexes (e.g., DBFCDX,
+     DBPX), if you specify a Tag but do not specify an Order Bag, the Tag is
+     created and added to the index.  If no production or structural index
+     exists, it will be created and the Tag will be added to it.  When using
+     RDDs that support multiple Order Bags, you must explicitly SET ORDER (or
+     ORDSETFOCUS()) to the desired controlling Order.  If you do not specify
+     a controlling Order, the data file will be viewed in natural Order.
+
+     SET ORDER can open Orders in a network environment instead of the INDEX
+     clause of the USE command.  Generally, specify USE, then test to
+     determine whether the USE succeeded.  If it did succeed, open the
+     associated Orders with SET ORDER.  See the example below.
+
+ ^bExamples^b
+
+     USE Customer NEW
+     IF (! NETERR())
+        SET ORDER TO Customer
+     ENDIF
+
+     SET ORDER TO "CuAcct"         // CuAcct is an Order in Customer
+
+ ^bStatus:^b  Enhanced
+
+ ^bSee also:^b  INDEX, INDEXORD(), SEEK, SET INDEX, USE
+!seealso: "INDEX" "SEEK" "SET INDEX" 
+'------------------------------------------------------------------------------
+
+
+

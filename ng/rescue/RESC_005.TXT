@@ -1,0 +1,544 @@
+!short: Hardware and software requirements
+'------------------------------------------------------------------------------
+^BHardware and software requirements
+
+
+ ^A1ARescue5 required resources:
+
+   An IBM PC or compatible
+
+   MS-DOS version 3 or above
+
+   ^U535Kb^U of conventional memory
+
+   To decompile .OBJ and .LIB files you will need a linker,
+    such as RTlink, Blinker, ^UExospace^U or MS Link
+
+   To configure source code output in subsequent passes you
+    will need a text editor capable of editing plain ASCII files
+
+
+ ^A1ARescue5 recommended resources:
+
+   1Mb of expanded or extended memory.
+
+   Disk caching software.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Known anomalies
+'------------------------------------------------------------------------------
+^UKnown anomalies
+
+ 1) MAIN is sometimes not the first procedure in the .LNK file
+
+    Rescue5 sometimes fails to place MAIN first in the list of
+    procedures in the .LNK file, resulting in an EXE file that does
+    not run.
+
+    The workaround is to edit the .LNK file to make MAIN the first
+    procedure.
+
+    This does not apply to systems in which all the code was
+    compiled with the /b switch, which do not have a MAIN.UDF.
+
+ 2) CA-Clipper reports 'string space exhausted error'
+
+    This can occur when compiling source files that contain a very
+    large number of string operations.  The CA-Clipper parser
+    simply runs out of the memory it reserves for string
+    processing.
+
+    In every case identified to date, the original source code had
+    embedded quotes in strings, which Rescue5 recovers as chr(34)
+    string concatenations:
+
+
+      Original:
+
+         '"This is a fine example", she said'
+
+
+      Recovered:
+
+         chr(34) + "This is a fine example" + chr(34) + ", she said"
+
+    Workarounds include reducing the number of string operations by
+    editing the strings, moving some of the strings into another
+    source file by splitting the procedures(s) concerend, or trying
+    a different memory configuration and/or different version of
+    CA-Clipper 5.x.
+
+ 3) CA-Clipper reports 'too many segments' error
+
+    A recovered source file is too large for CA-Clipper to compile.
+
+    Although Rescue5 splits files that are becoming too large, it is
+    difficult to predict the point beyond which this error will
+    occur (it is only indirectly related to the number of lines of
+    code and file size).
+
+    Workarounds include changing the grouping file to move code
+    into another file, using a different /s switch setting or
+    manually splitting the file.
+
+ 4) CA-Clipper reports 'phase error'
+
+    Phase errors are caused by some combination of STATIC
+    declarations (both variable and procedure).  The precise
+    combination varies from version to version, and a source file
+    that CA-Clipper 5.01 compiles without a problem may cause
+    CA-Clipper 5.2 to choke, or vice-versa.
+
+    If a version of CA-Clipper reports a phase error in Rescue5
+    recovered code, then that error would also have been reported
+    in the original code.
+
+    The workarounds are not very precise - change the order of
+    STATIC's or assign them at a different point in the program, or
+    try a different version of CA-Clipper.
+
+ 5) CA-Clipper reports 'duplicate procedure name' in ORPHAN.UDF
+
+    ORPHAN.UDF is now included in the .RMK and .LNK files (contrary
+    to the printed documentation), and it can contain duplicate
+    procedure names.
+
+    Workarounds include removing ORPHAN.UDF from the .RMK and .LNK
+    files, renaming the procedures concerned or distributing the
+    duplicate procedures in different source files by editing the
+    grouping file.
+
+ 6) RDD request statements
+
+    The REQUEST <rdd> statement is a directive to the linker, not a
+    CA-Clipper command.  If your system uses RDD's other than
+    DBFNTX you will need to insert the appropriate REQUEST
+    statements in the source code in addition to adding the
+    appropriate libraries to the .LNK file.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Troubleshooting
+'------------------------------------------------------------------------------
+^BTroubleshooting
+
+
+ We are confident that Rescue5 will accurately recover source
+ code from the vast majority of CA- Clipper 5 applications.  It
+ is however self evident that the number of possible
+ combinations of source statements is so large as to be
+ effectively infinite, and that there may be versions of linkers
+ and/or CA-Clipper that we have not come across.
+
+ Should Rescue5 fail to recover source code for any of the above
+ reasons it is our policy that, provided you supply us with a
+ copy of the file you are trying to recover the source from, we
+ will recover the source code for you.
+
+ Note that this service is conditional on the following:
+
+     The .EXE, .LIB or .OBJ file concerned has not been
+      protected by some password, encryption or scrambling device
+
+     You have not failed to recover the source code through
+      misuse of Rescue5
+
+     You can prove that own the rights to the source code you
+      are trying to recover
+
+ In addition to the above service we will release linker and
+ CA-Clipper version upgrades to Rescue5 from time to time.
+
+ Before you contact us, please check the following:
+
+ If CA-Clipper reports errors compiling the recovered code
+
+ 1) Ensure (where possible) that the application is being
+    re-compiled with the same version of the CA-Clipper compiler
+    as it was originally built with.  Note that the library
+    version reported in the .RMK file identifies the CLIPPER.LIB
+    file it was linked with and not the compiler version.  We
+    have encountered legal code that some versions of CA-Clipper
+    5 fail to compile, reporting internal errors, but which
+    other versions compile without fault.
+
+ 2) Check that you have enough free memory and disk space; it is
+    possible to get an "out of string space" error with
+    CA-Clipper if you do not have enough free memory.
+
+ 3) If CA-Clipper reports a macro error when there is no macro
+    in sight, try compiling with a different version of the
+    compiler (see 1 above).
+
+ 4) If you used /r0 to disable line splitting the recovered code
+    may have lines that are too long for CA-Clipper to parse.
+    Either split the lines manually or use a different /r
+    setting.
+
+ If all else fails see the Support section for details of how to
+ contact us.
+
+ If there are missing symbols when you try to link the
+ application:
+
+ 1) Check the source code produced to see if any initialisation
+    procedures exist for RDD's other that DBFNTX.  Link again
+    with the appropriate RDD.
+
+ 2) You may not have the third party libraries necessary to
+    re-link the application.  Identify the libraries you need
+    and include them in the link script.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Error messages
+'------------------------------------------------------------------------------
+^BError messages
+
+
+ Rescue5 errors take the form:
+
+    ^A1AError: <number> <message> [<information>]
+
+ Errors are displayed on the screen and written into the ERROR
+ file (if possible).
+
+ If you encounter an error, please take the recommended action.
+
+ ^BCommand line errors
+
+ ^A1AInvalid switch
+
+   You specified a command line switch Rescue5 does not
+   recognise.
+
+ ^A1AMultiple filename ignored
+
+   You specified more than one .EXE file on the command line.
+   Only the first filename is used.
+
+ ^A1AInvalid directory specified
+
+   The directory specified by /o was not valid.
+
+   Ensure the directory exists then run Rescue5 again.
+
+
+ ^B<.EXE name>.GRP errors
+
+ ^A1AInvalid function name
+
+   A symbol name was specified in the <.EXE name>.GRP file
+   and/or <.EXE name>.VAR file that does not exist, or requires
+   a static function qualifier (i.e. fname(123)).
+
+   Check the grouping and variable files, correct the problem
+   then run Rescue5 again.  If all else fails, run Rescue5 with
+   the /1 switch to force it to recreate the <.EXE name>.GRP and
+   <.EXE name>.VAR files.
+
+ ^A1ADuplicate groups
+
+   The same group has been defined more than once.
+
+   Remove one of the groups, redistributing its contents if
+   necessary, then run Rescue5 again.  If all else fails, run
+   Rescue5 with the /1 switch to force it to recreate the <.EXE
+   name>.GRP and <.EXE name>.VAR files.
+
+ ^A1AAttempt to group static frames together
+
+   A group has been defined with more than one static frame
+   (i.e. [6] [8]).
+
+   Split the static frames across groups, one to each group,
+   then run Rescue5 again.  If all else fails, run Rescue5 with
+   the /1 switch to force it to recreate the <.EXE name>.GRP and
+   <.EXE name>.VAR files.
+
+
+
+ ^B<.EXE name>.VAR errors
+
+ ^A1AUnknown identifier in variable file
+
+   '(LOCAL)', '(BLOCK)' or '[]' was expected.  Something else
+   was supplied.
+
+   Check the variable file, correct the problem then run Rescue5
+   again.  If all else fails, run Rescue5 with the /1 switch to
+   force it to recreate the <.EXE name>.GRP and <.EXE name>.VAR
+   files.
+
+ ^A1AInvalid function name
+
+   A symbol name was specified in the <.EXE name>.GRP file
+   and/or <.EXE name>.VAR file that does not exist, or requires
+   a static function qualifier (i.e. fname(123)).
+
+   Check the grouping and variable files, correct the problem
+   then run Rescue5 again.  If all else fails, run Rescue5 with
+   the /1 switch to force it to recreate the <.EXE name>.GRP and
+   <.EXE name>.VAR files.
+
+
+
+ ^BVARIABLE.UDT and user defined type file errors
+
+ ^A1AGenericBaseNames already declared
+
+   More than one GenericBaseNames section has been defined in
+   the same user defined type file (multiple GenericBaseNames
+   sections are allowed, but each must be in a different file).
+
+   Merge the sections into a single section or split the
+   sections into files, one to a file, and @ include them.
+
+ ^A1AUsertype file not found
+
+   The file specified with the @ command cannot be found.
+
+   Check that the file exists in the path specified, or use the
+   /i switch to tell Rescue5 where it is.
+
+ ^A1ANo generic types have been defined
+
+   The GenericBaseNames: section is missing.
+
+   There must be at least one GenericBaseNames:  section in one
+   of the user defined type files.
+
+ ^A1AType not defined in GenericBaseNames
+
+   Rescue5 encountered a variable base name in the
+   FunctionBaseNames: section that uses a type prefix not
+   defined in the GenericBaseNames:  section.
+
+   Add a variable base name with the correct type to the
+   GenericBaseNames: section.
+
+ ^A1AUnknown header in user defined type file
+
+   Rescue5 encountered an identifier other than
+   GenericBaseNames: or FunctionBaseNames:.
+
+   Remove or correct the spelling of the identifier concerned.
+
+
+
+ ^B.EXE file errors
+
+ ^A1AProtected .EXE <.EXE name>
+
+   The .EXE has been protected against decompilation.
+
+   If you can prove that you have the right to recover the code
+   from the .EXE in question, contact us.  We may be able to
+   recover the code for you.
+
+ ^A1AUnrecognised .EXE format <.EXE name>
+
+   Rescue5 does not recognise this .EXE format because of one or
+   more of the following:
+
+     It was linked with a linker or linker version currently not
+      supported by Rescue5.
+     It has been encrypted.
+     It is corrupt.
+     It is not a Clipper 5.x .EXE file.
+
+   Check the above.  If you are sure that Rescue5 should be able
+   to recover the code from this .EXE file, report this error
+   and supply us with a copy of the .EXE file.
+
+ ^A1AUnrecognised Blinker .EXE format <.EXE name>
+
+   The .EXE is in Blinker format but was linked with a version
+   of Blinker currently not supported by Rescue5 (or possibly a
+   Blinker-like linker we have not come across).
+
+   Please report this error and supply us with a copy of the
+   .EXE file.
+
+ ^A1AUnrecognised RTlink .EXE format <.EXE name>
+
+   The .EXE is in RTlink format but was linked with a version of
+   RTlink currently not supported by Rescue5 (or possibly an
+   RTlink-like linker we have not come across).
+
+   Please report this error and supply us with a copy of the
+   .EXE file.
+
+
+ ^BMemory errors
+
+ ^A1ANot enough free memory
+
+   You have less than 500Kb of conventional memory free.
+
+   Free some more conventional memory and try again.
+
+ ^A1ANot enough memory for VM (Try freeing n bytes)
+
+   Rescue5 just needs a little bit more conventional memory...
+
+   Free some more conventional memory and try again.
+
+ ^A1AUnable to allocated Fixed Memory
+
+   Conventional memory is either exhausted or has become too
+   fragmented for Rescue5 to continue.
+
+   Change your memory setup and run Rescue5 again.  If the error
+   persists, please report it.
+
+ ^A1AUnable to allocate Virtual Memory
+
+   Virtual memory is either exhausted or has become corrupt.
+
+   Change your memory setup and run Rescue5 again.  If the error
+   persists, please report it.
+
+ ^BDisk errors
+
+ ^A1ACan't open file
+ ^A1ACan't create file
+ ^A1AInsufficient disk space available
+
+   Rescue5 has been unable to perform a file operation.
+
+   Check your MS-DOS environment (disk space, write protection
+   etc).
+
+ ^A1AIllegal stack reference
+
+   Memory has become corrupted.
+
+   Change your memory setup and run Rescue5 again.  If the error
+   persists, please report it.
+
+
+ ^BDecompilation errors
+
+ ^A1ACode generation error
+
+   One of Rescue5's internal parsing rules has been violated.
+
+   This could be caused by a failed link producing a corrupt or
+   incomplete .EXE file.  Please report this error and supply us
+   with the .EXE file.
+
+ ^A1AStatic frame or ID mismatch
+
+   Rescue5 has encountered a static function that has been
+   called but does not exist in the .EXE file.
+
+   This could be caused by a failed link producing a corrupt or
+   incomplete .EXE file.  Please report this error and supply us
+   with the .EXE file.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Limitations
+'------------------------------------------------------------------------------
+^BLimitations
+
+
+ Rescue5 has the following limitations:
+
+ 1) Comments cannot be recovered (CA-Clipper removes these).
+
+ 2) Local and static variable names cannot be recovered from
+    code compiled without the /b switch (CA-Clipper converts
+    them into indices into local stack frames).  Note that
+    static procedure names are recovered.  Rescue5 creates its
+    own local and static names and allows you to change them.
+
+ 3) Unreachable code may not be recovered since this is
+    optimised out by CA-Clipper.
+
+ 4) Code cannot necessarily be grouped into the same source
+    files it was compiled in.  In a fully linked .EXE file the
+    original object modules are combined and it is not possible
+    to identify how procedures were grouped before compilation.
+    In practice, Rescue5 manages to correctly group most
+    procedures.
+
+ 5) Rescue5 cannot guarantee to decompile code that relies on
+    undocumented features of the CA-Clipper compiler, although
+    we have tested it with all the undocumented features we know
+    about.
+
+ 6) Rescue5 can only recover the first 10 characters of memvar
+    and procedure names, since CA-Clipper truncates symbol names
+    when it compiles.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Technical support
+'------------------------------------------------------------------------------
+^BSupport
+
+
+ If you have problems that you think are program defects, or you
+ would like us to try to recover source code for you, please
+ contact your dealer, who will contact us on your behalf. We
+ will then contact you directly.
+
+ Alternatively, if you have access to Compuserv you can mail
+ either of the authors:
+
+    ^A1A70374,3334  (James Ormrod) ^B
+    ^A1A100325,3304 (Lee Brown)^B
+
+ We usually check our mail daily.
+
+ Please have the following information ready:
+
+     Your registration number
+
+     Details of your hardware, operating system and TSR's
+      (including memory managers such as 386Max or QEMM).  A
+      report from MSD.EXE (supplied with Windows), or MEM/C or
+      something similar would be helpful.
+
+     Details of the CA-Clipper and linker versions used to
+      build the .EXE file you are trying to decompile, if known.
+
+     The error message you encountered.
+
+     The stage at which Rescue5 stopped.
+
+ Please leave any Rescue5 output files intact on your disk until
+ you have spoken to us.
+
+ If we cannot solve the problem immediately, we will ask you to
+ send us the .EXE that is causing the problem.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

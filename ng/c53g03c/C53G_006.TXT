@@ -1,0 +1,1295 @@
+!short: _fsChDir()         Change the current DOS directory
+'------------------------------------------------------------------------------
+ ^b_fsChDir()^b
+ Change the current DOS directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bBOOL _fsChDir(
+     ^b                  BYTEP fpDirName
+     ^b                )
+
+ ^bArguments^b
+
+     ^bfpDirName^b is the name of the directory to change to, including an
+     optional drive.  If you do not specify a drive, the current one is used.
+
+ ^bReturns^b
+
+     _fsChDir() returns TRUE if successful; otherwise, FALSE.
+
+ ^bDescription^b
+
+     This function changes the current DOS directory.  This function may also
+     be used to determine whether or not a directory exists.  It is equivalent
+     to the CA-Clipper function DIRCHANGE().  If an error occurs, _fsError()
+     will return the number of the error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsChDir():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        if (! _fsChDir( "c:\dos" ) )
+        {
+           // Report the error condition using _fsError()
+        }
+
+     ^b^CFE^b  You may also use something like this:
+
+        _fsChDir( "..\..\test" )
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsError()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsChDrv()         Change the current DOS disk drive
+'------------------------------------------------------------------------------
+ ^b_fsChDrv()^b
+ Change the current DOS disk drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+ ^b#include "filesys.api"
+
+     ^bUSHORT _fsChDrv(
+     ^b                  BYTE nDrive
+     ^b                )
+
+ ^bArguments^b
+
+     ^bnDrive^b is the number of the disk drive that is to be the current
+     disk drive.
+
+ ^bReturns^b
+
+     _fsChDrv() returns zero if successful; otherwise, FS_ERROR.
+
+ ^bDescription^b
+
+     This function changes the current DOS drive.  It is equivalent to the
+     CA-Clipper function DISKCHANGE().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsChDrv():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        BYTE cDrv = 'd';
+        if ( _fsChDrv( (BYTE) ( cDrv - 'a' ) ) )
+        {
+           // Report the error condition
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsClose()         Close a file
+'------------------------------------------------------------------------------
+ ^b_fsClose()^b
+ Close a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bvoid _fsClose(
+     ^b                  FHANDLE hFileHandle
+     ^b                )
+
+ ^bArguments^b
+
+     ^bhFileHandle^b is a valid DOS reference to the file to be closed.
+
+ ^bReturns^b
+
+     _fsClose() has no return value.
+
+ ^bDescription^b
+
+     This function closes the file indicated by hFileHandle.  It is
+     equivalent to the CA-Clipper function FCLOSE().  Use the _fsError()
+     function to determine if the file close operation resulted in an error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsClose().
+        Note that error handling should be performed at each step.  Refer to
+        the "Error System API Reference" chapter of this guide for details on
+        communicating with the CA-Clipper Error system:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+
+        hFile = _fsOpen( "Foo", FO_READWRITE | FO_EXCLUSIVE );
+
+        if (! _fsError() )
+        {
+           .
+           .
+           .
+           _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsCreate()" "_fsError()" "_fsOpen()" "_fsRead()" "_fsSeek()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsCommit()        Flush a buffer to disk
+'------------------------------------------------------------------------------
+ ^b_fsCommit()^b
+ Flush a buffer to disk
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bvoid _fsCommit(
+     ^b                     FHANDLE hFileHandle
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bhFileHandle^b is a valid DOS reference to the file to be committed to
+     disk.
+
+ ^bReturns^b
+
+     _fsCommit() has no return value.
+
+ ^bDescription^b
+
+     This function flushes the file buffer of the file whose handle is
+     specified by hFileHandle.  It is equivalent to the CA-Clipper function
+     DBCOMMIT().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of
+        _fsCommit():
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+
+        // Open a file for reading and writing
+        hFile = _fsOpen( "Foo", FO_READWRITE | FO_EXCLUSIVE );
+
+        if (! _fsError() )
+        {
+           .
+           .
+           .
+           _fsCommit( hFile );  // Flush buffers to disk
+           .
+           .
+           .
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsCreate()        Create a file
+'------------------------------------------------------------------------------
+ ^b_fsCreate()^b
+ Create a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bFHANDLE _fsCreate(
+     ^b                        BYTEP fpFilename,
+     ^b                        USHORT uiAttribute
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bfpFilename^b is the name of the file to create specified as a null-
+     terminated string.  The fpFilename must be fully specified, including
+     the drive letter, path, and extension.
+
+     ^buiAttribute^b is one of the DOS archive attributes shown in the table
+     below:
+
+     ^bFile Create Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FC_NORMAL      0x0000    No file attributes are set
+     FC_READONLY    0x0001    Read-only file attribute is set
+     FC_HIDDEN      0x0002    Hidden file attribute is set
+     FC_SYSTEM      0x0004    System file attribute is set
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bReturns^b
+
+     _fsCreate() returns a DOS handle to the newly created file, or FS_ERROR,
+     if an error occurs.
+
+ ^bDescription^b
+
+     This function creates a file named fpFilename according to the value of
+     uiAttribute.  It is equivalent to the CA-Clipper function FCREATE().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of
+        _fsCreate().  Note that error handling should be performed at each
+        step.  Refer to the "Error System API Reference" chapter of this
+        guide for details on communicating with the CA-Clipper Error system:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+
+        // Create a normal read/write file
+        hFile = _fsCreate( "Foo", FC_NORMAL );
+
+        if (! _fsError() )
+        {
+           .
+           .
+           .
+           _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" "_fsError()" "_fsOpen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsCurDir()        Return a name of the current directory
+'------------------------------------------------------------------------------
+ ^b_fsCurDir()^b
+ Return a name of the current directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bBYTEP _fsCurDir(
+     ^b                     USHORT uiDrive
+     ^b                  )
+
+ ^bArguments^b
+
+     ^buiDrive^b is the number of the disk drive to check, where 0 = current
+     drive, 1 = A, 2 = B, 3 = C, etc.
+
+ ^bReturns^b
+
+     _fsCurDir() returns a name of the current directory.  If an error
+     occurs, or the current directory of the specified drive is the root
+     directory, _fsCurDir() returns a null string ("").
+
+ ^bDescription^b
+
+     This function gets a name of the current directory on a specified disk
+     drive.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of
+        _fsCurDir():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        BYTEP cDir;
+        cDir = _fsCurDir( 0 )      // Checks the current drive
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsError()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsCurDrv()        Return the current DOS drive
+'------------------------------------------------------------------------------
+ ^b_fsCurDrv()^b
+ Return the current DOS drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bBYTE _fsCurDrv(void)
+
+ ^bReturns^b
+
+     _fsCurDrv() returns the current DOS drive code, where 0 = A, 1 = B,
+     2 = C, etc.
+
+ ^bDescription^b
+
+     This function gets the current DOS drive code.  Please refer to the
+     documentation of the DISKNAME() function for more information.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of
+        _fsCurDrv():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        BYTE cDrvName;
+        cDrvName = 'a' + _fsCurDrv();
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsDelete()        Delete a file
+'------------------------------------------------------------------------------
+ ^b_fsDelete()^b
+ Delete a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bvoid _fsDelete(
+     ^b                     BYTEP fpFilename
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bfpFilename^b is the name of the file to delete specified as a null-
+     terminated string.  The fpFilename must be fully specified, including
+     the drive letter, path, and extension.
+
+ ^bReturns^b
+
+     _fsDelete() has no return value.
+
+ ^bDescription^b
+
+     This function deletes the file fpFilename.  It is equivalent to the
+     CA-Clipper function FERASE().  Use the _fsError() function to determine
+     if the file delete operation resulted in an error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of
+        _fsDelete().  Note that error handling should be performed at each
+        step.  Refer to the "Error System API Reference" chapter of this
+        guide for details on communicating with the CA-Clipper Error system:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+
+        // Create a temporary read/write file
+        hFile = _fsCreate( "Temp", FC_NORMAL );
+
+        if (! _fsError() )
+        {
+           .
+           .
+           .
+           _fsClose( hFile );  // Can't delete an open file
+           _fsDelete( "Temp" );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsError()" "_fsRename()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsError()         Return the number of the last DOS error
+'------------------------------------------------------------------------------
+ ^b_fsError()^b
+ Return the number of the last DOS error
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bUSHORT _fsError(void)
+
+ ^bReturns^b
+
+     _fsError() returns the DOS error code (summarized in the table below)
+     for the last Filesys function.  If there is no error, _fsError() returns
+     zero.
+
+     ^b_fsError() Return Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bError    Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0        Successful
+     2        File not found
+     3        Path not found
+     4        Too many files open
+     5        Access denied
+     6        Invalid handle
+     8        Insufficient memory
+     15       Invalid drive specified
+     19       Attempted to write to a write-protected disk
+     21       Drive not ready
+     23       Data CRC error
+     29       Write fault
+     30       Read fault
+     32       Sharing violation
+     33       Lock Violation
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     This function returns the last DOS error that occurred.  Each of the
+     Filesys functions saves its error status to a static variable that is
+     retrieved by this function.  This function is equivalent to the
+     CA-Clipper function FERROR().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsError()
+        to determine if the last operation resulted in an error:
+
+     #include "filesys.api"
+
+        FHANDLE hFile;
+
+        hFile = _fsCreate( "Foo", FC_NORMAL );
+
+        // Check for an open error before using the file
+
+        if (! _fsError() )
+        {
+           .
+           .
+           .
+           _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" "_fsCreate()" "_fsDelete()" "_fsOpen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsExtOpen()       Extended file open
+'------------------------------------------------------------------------------
+ ^b_fsExtOpen()^b
+ Extended file open
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bFHANDLE _fsExtOpen(
+     ^b                        BYTEP fpFilename,
+     ^b                        BYTEP fpDefExt,
+     ^b                        USHORT uiFlags,
+     ^b                        BYTEP fpPaths,
+     ^b                        ERRORP pError
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bfpFilename^b is the name of the file to open, specified as a null-
+     terminated string.  It may include the path and file extension.
+
+     ^bfpDefExt^b is the default extension to use, which must include the (.)
+     extension separator.
+
+     ^buiFlags^b are the open mode flags, which may consist of both extended
+     open mode and normal open mode flags.
+
+     ^bfpPaths^b are the paths to be searched when opening fpFilename.
+
+     ^bpError^b is a pointer to an Error object created via the _errNew()
+     function (see the "Error System API Reference" chapter of this guide).
+
+ ^bReturns^b
+
+     _fsExtOpen() returns a DOS handle to the newly created file or FS_ERROR
+     if an error occurs.
+
+ ^bDescription^b
+
+     This function opens the file specified by fpFilename.  If fpFilename
+     does not include a file extension, the default extension fpDefExt, if
+     supplied, will be used.
+
+     ^bNote:^b  If an extension is supplied, it must contain the (.)
+     extension separator (i.e., ".txt").
+
+     The value of the specified uiFlags determines the mode in which the file
+     is opened.  In addition to the open mode flags shown in the _fsOpen()
+     entry, uiFlags also accommodates the extended mode flags shown in the
+     table below.  To specify multiple flags, combine them with the bitwise
+     OR operator (e.g., FXO_DEFAULT | FO_EXCLUSIVE | FO_INHERITED).
+
+     ^bExtended Mode Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FXO_TRUNCATE   0x0100    Create (truncate file if it exists)
+     FXO_APPEND     0x0200    Create (append to file if it exists)
+     FXO_FORCEEXT   0x0800    Force default extension
+     FXO_DEFAULTS   0x1000    Use SET command defaults
+     FXO_DEVICERAW  0x2000    Open devices in raw mode
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FXO_TRUNCATE creates the file fpFilename, unless it already exists.  If
+     it already exists, it is truncated to zero-length.
+
+     FXO_APPEND opens fpFilename, if it exists; otherwise it creates
+     fpFilename.  If the file is successfully opened, and the file is not
+     empty, the file pointer is positioned to the last data byte in the file.
+     This file positioning only applies to files, not devices.
+
+     ^bNote:^b  Files created by either FXO_TRUNCATE or FXO_APPEND are
+     created using the FC_NORMAL attribute (see _fsCreate()).
+
+     If fpFilename includes a path, no other path is ever tried.  If
+     fpFilename does not include a path, the file will be searched for, based
+     on the following rules:
+
+     ^b^CFE^b  FXO_DEFAULTS, if specified when opening a file, causes
+        _fsExtOpen() to search the paths specified by SET DEFAULT and
+        SET PATH.  Paths specified by the fpPaths argument are ignored.
+
+        If specified when creating a file, FXO_DEFAULTS causes _fsExtOpen() to
+        create the file in the path specified by SET DEFAULT.
+
+     ^b^CFE^b  If FXO_DEFAULTS is not specified, _fsExtOpen() uses the fpPaths
+        argument (if not NULL) as a search path for opening files.  For
+        creating files, the fpFilename is created using the current
+        drive/directory.
+
+     ^b^CFE^b  FXO_FORCEEXT causes the fpDefExt argument (if not NULL) to
+        be used as the file extension, even if fpFilename includes an
+        extension.  Otherwise the extension specified by fpDefExt is used,
+        only if fpFilename does not include an extension.
+
+     ^b^CFE^b  FXO_DEVICERAW sets the device referenced by fpFilename to raw
+        (binary) mode.  This allows low-order or high-order characters to be
+        passed to devices.  This flag affects only devices--it has no effect
+        on files.
+
+     The pointer pError, if not NULL, must point to a properly created error
+     object.  The Error object's filename member (if not NULL) must contain
+     abuffer of at least 80 bytes. If pError is not NULL, _fsExtOpen will
+     assign values to the Error object as follows:
+
+     ^b^CFE^b  If _fsExtOpen() is successful, the fully qualified file
+        specification (i.e., including the drive, path, filename, and
+        extension) will be copied into the buffer pointed to by the Error
+        object's filename.
+
+     ^b^CFE^b  If _fsExtOpen() is not successful, the file name specifying the
+        file that it attempted to open will be copied into the buffer pointed
+        to by the error object's filename.  The filename may or may not be
+        fully qualified depending on the path determination rules above.
+        Also osCode will be set to the appropriate DOS error number and
+        genCode will be set to EG_CREATE if the operation was an FXO_TRUNCATE,
+        or EG_OPEN if the operation was an FXO_APPEND.
+
+     ^bWarning!^b  Failure to provide a buffer of at least 80 bytes of memory
+     will result in a memory overwrite, which will likely cause major system
+     problems.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example illustrates _fsExtOpen().  Screen output
+        is performed using the GT subsystem.  See the "General Terminal API
+        Reference" chapter of this guide for more information:
+
+        #include "filesys.api"
+        #include "error.api"
+
+        #define FILE_LEN 80
+
+
+        CLIPPER TEST( void )
+        {
+           USHORT  uiFlags;
+           BYTE    buff[FILE_LEN];
+           FHANDLE hFileHandle;
+           ERRORP  pError;
+           ERRCODE uiError = 0;  // Initialize to 0 (no error)
+
+           pError = _errNew();
+           _errPutFileName( pError, buff );
+
+           /*
+               uiFlags:    access          = FO_READWRITE
+                           sharing         = FO_EXCLUSIVE
+                           inheritance     = FO_PRIVATE
+                           extended        = FXO_DEFAULTS
+           */
+
+           uiFlags = FO_READWRITE | FO_EXCLUSIVE | FO_PRIVATE |
+                     FXO_DEFAULTS;
+
+           hFileHandle = _fsExtOpen(
+
+                     "Test",  /* File name will use default extension */
+                     ".txt",  /* Default extension to use            */
+                     uiFlags, /* Open mode flags shown above         */
+                     NULL,    /* Path: ignored with FXO_DEFAULTS     */
+                     pError   /* Full file spec returned             */
+                      );
+
+           if (hFileHandle == FS_ERROR)
+           {
+               uiError = _errLaunch( pError );
+           }
+
+           else
+           {
+               _gtWriteCon( "Opened file: ", 13 );  /* Display status */
+               _gtWriteCon( buff, strlen( buff ) ); /* using GT API   */
+               _gtWriteCon( "\r\n", 2 );
+               _retni( hFileHandle );
+           }
+
+           _errRelease( pError );
+           _errPost( uiError );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsCreate()" "_fsOpen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsIsDrv()         Check if a disk drive is available
+'------------------------------------------------------------------------------
+ ^b_fsIsDrv()^b
+ Check if a disk drive is available
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bUSHORT _fsIsDrv(
+     ^b                  BYTE nDrive
+     ^b                )
+
+ ^bArguments^b
+
+     ^bnDrive^b is the number of the disk drive to check.
+
+ ^bReturns^b
+
+     _fsIsDrv() returns zero if successful; otherwise, FS_ERROR.
+
+ ^bDescription^b
+
+     This function checks if a disk drive is available.  It is equivalent to
+     the CA-Clipper function ISDISK().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsIsDrv():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        BYTEP AllDrives()
+        {
+           BYTE i, nDrives, cDrives[27];
+
+           nDrives = 0;
+           for ( i = 0, i < 26, i++)
+           {
+              if(! _fsIsDrv( i ) )
+                 cDrives[nDrives++] = 'a' + i;
+           }
+           cDrives[nDrives++] = '\0';
+           return( cDrives );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsLock()          Lock or unlock a portion of a file
+'------------------------------------------------------------------------------
+ ^b_fsLock()^b
+ Lock or unlock a portion of a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bBOOL _fsLock(
+     ^b                  FHANDLE hFileHandle,
+     ^b                  ULONG ulStart,
+     ^b                  ULONG ulLength,
+     ^b                  USHORT uiMode
+     ^b              )
+
+ ^bArguments^b
+
+     ^bhFileHandle^b is a valid DOS reference to the file to be locked or
+     unlocked.
+
+     ^bulStart^b is the offset from the start of the file that specifies
+     the starting location of the portion of the file to be locked or
+     unlocked.
+
+     ^bulLength^b is the number of bytes to lock or unlock.
+
+     ^buiMode^b is a flag that specifies whether the file is to be locked or
+     unlocked.  The following constants are defined for uiMode:
+
+     ^bFile Lock Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant      Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FL_LOCK       0x0000    Lock the region
+     FL_UNLOCK     0x0001    Unlock the region
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bReturns^b
+
+     _fsLock() returns a boolean value indicating success or failure of the
+     specified operation.
+
+ ^bDescription^b
+
+     This function locks or unlocks a region of the file whose handle is
+     specified by hFileHandle.  The region starts at offset ulStart and
+     continues for ulLength bytes.  The flag uiMode specifies whether the
+     area is to be locked or unlocked.  This function has no CA-Clipper
+     equivalent.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsLock()
+        to both lock and unlock a part of the file:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+
+        hFile = _fsCreate( "Foo", FC_NORMAL );
+
+        // Check for an open error before using the file
+        if (! _fsError() )
+        {
+           if (_fsLock( hFile, 0, 1, FL_LOCK ) ) // Lock first byte
+           {
+              .
+              .
+              .
+              _fsLock( hFile, 0, 1, FL_UNLOCK ); // Unlock first byte
+           }
+           .
+           .
+           .
+              _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsMkDir()         Create a directory
+'------------------------------------------------------------------------------
+ ^b_fsMkDir()^b
+ Create a directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bBOOL _fsMkDir(
+     ^b                  BYTEP fpDirName
+     ^b                )
+
+ ^bArguments^b
+
+     ^bfpDirName^b is the name of the directory to create, including an
+     optional drive.  If you do not specify a drive, the current one is used.
+
+ ^bReturns^b
+
+     _fsMkDir() returns TRUE if successful; otherwise, FALSE.
+
+ ^bDescription^b
+
+     This function creates a specified directory.  You must have sufficient
+     rights to create a directory.  To create nested subdirectories, you must
+     create each subdirectory separately, starting from the top-level
+     directory that you want to create.  This function is equivalent to the
+     CA-Clipper function DIRMAKE().  If an error occurs, _fsError() will
+     return the number of the error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsMkDir():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        if (! _fsMkDir( "c:\test" ) )
+        {
+           // Report the error condition using _fsError()
+        }
+
+     ^b^CFE^b  You may also use something like this:
+
+        _fsMkDir( "..\test" )
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsError()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsOpen()          Open a file
+'------------------------------------------------------------------------------
+ ^b_fsOpen()^b
+ Open a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bFHANDLE _fsOpen(
+     ^b                     BYTEP fpFilename,
+     ^b                     USHORT uiFlags
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bfpFilename^b is the name of the file to open specified as a null-
+     terminated string.  The fpFilename must be fully qualified, including
+     the drive letter, path, and extension.
+
+     ^buiFlags^b contains the file open attribute bits that indicate how the
+     file is to be opened.  The following constants are defined for uiFlags:
+
+     ^bAccess Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FO_READ        0x0000    File is opened for reading
+     FO_WRITE       0x0001    File is opened for writing
+     FO_READWRITE   0x0002    File is opened for reading and writing
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bSharing Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FO_COMPAT      0x0000    No sharing specified
+     FO_COMPAT      0x0000    No sharing specified
+     FO_EXCLUSIVE   0x0010    Subsequent attempts to open the file are not
+                              allowed
+     FO_DENYWRITE   0x0020    Deny subsequent attempts to open the file for
+                              writing
+     FO_DENYREAD    0x0030    Deny subsequent attempts to open the file for
+                              reading
+     FO_DENYNONE    0x0040    Do not deny subsequent attempts to open the
+                              file in shared mode
+     FO_SHARED      0x0040    Same as FO_DENYNONE
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bInheritance Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FO_INHERITED   0x0000    Spawned processes can inherit
+     FO_PRIVATE     0x0080    Spawned processes cannot inherit
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To specify multiple flags, combine them with the bitwise OR operator
+     (e.g., FO_READWRITE | FO_EXCLUSIVE | FO_INHERITED).
+
+ ^bReturns^b
+
+     _fsOpen() returns a DOS handle to the newly created file or FS_ERROR, if
+     an error occurs.
+
+ ^bDescription^b
+
+     This function opens the file specified by fpFilename.  The value of the
+     specified uiFlags determines the mode in which the file is opened.
+     _fsOpen() is equivalent to the CA-Clipper function FOPEN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsOpen().
+        Note that error handling should be performed at each step.  Refer to
+        the "Error System API Reference" chapter of this guide for details on
+        communicating with the CA-Clipper Error system:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+
+        hFile = _fsOpen( "Foo", FO_READWRITE | FO_EXCLUSIVE );
+
+        // Check for an open error before using the file
+        if (! _fsError() )
+        {
+           .
+           .
+           .
+           _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" "_fsCreate()" "_fsError()" "_fsExtOpen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsRead()          Read a file
+'------------------------------------------------------------------------------
+ ^b_fsRead()^b
+ Read a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bUSHORT _fsRead(
+     ^b                     FHANDLE hFileHandle,
+     ^b                     BYTEP fpBuff,
+     ^b                     USHORT uiCount
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bhFileHandle^b is a valid DOS reference to the file to be read.
+
+     ^bfpBuff^b is a pointer to an allocated memory buffer.
+
+     ^buiCount^b is the number of bytes to be read from the file.
+
+ ^bReturns^b
+
+     _fsRead() returns the number of bytes read from the file.
+
+ ^bDescription^b
+
+     _fsRead() reads characters from the file specified by hFileHandle into
+     the buffer area specified by fpBuff.  It reads from the file starting at
+     the current DOS file pointer position, advancing the file pointer by the
+     number of bytes read.  If the return value is not equal to the uiCount
+     specified, use _fsError() to determine the nature of the read error.
+
+     This function is equivalent to the CA-Clipper FREAD() function.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsRead().
+        Note that error handling should be performed at each step.  Refer to
+        the "Error System API Reference" chapter of this guide for details on
+        communicating with the CA-Clipper Error system:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+        BYTEP fpBuff[15];
+
+        hFile = _fsOpen( "Foo", FO_READWRITE | FO_EXCLUSIVE );
+
+        // Check for an open error before using the file
+        if (! _fsError() )
+        {
+           // Seek to EOF
+           _fsSeek( hFile, 0, FS_END );
+
+           _fsRead( hFile, fpBuff, 15 );
+
+           _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" "_fsCreate()" "_fsError()" "_fsOpen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsRmDir()         Remove a directory
+'------------------------------------------------------------------------------
+ ^b_fsRmDir()^b
+ Remove a directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bBOOL _fsRmDir(
+     ^b                  BYTEP fpDirName
+     ^b                )
+
+ ^bArguments^b
+
+     ^bfpDirName^b is the name of the directory to remove, including an
+     optional drive.  If you do not specify a drive, the current one is used.
+
+ ^bReturns^b
+
+     _fsRmDir() returns TRUE if successful; otherwise, FALSE.
+
+ ^bDescription^b
+
+     This function removes a specified directory.  You must have sufficient
+     rights to delete a directory.  A directory must be empty in order to be
+     deleted.  Therefore, to delete a directory that contains subdirectories,
+     you must first delete the subdirectories.  This function is equivalent
+     to the CA-Clipper function DIRREMOVE().  If an error occurs, _fsError()
+     will return the number of the error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsRmDir():
+
+        #include "filesys.api"
+        .
+        .
+        .
+        if (! _fsRmDir( "c:\test\one" ) )
+        {
+           // Report the error condition using _fsError()
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsError()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsRename()        Rename a file
+'------------------------------------------------------------------------------
+ ^b_fsRename()^b
+ Rename a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bvoid _fsRename(
+     ^b                     BYTEP fpOldName,
+     ^b                     BYTEP fpNewName
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bfpOldName^b is the current name of the file.
+
+     ^bfpNewName^b is the new name for the file.
+
+ ^bReturns^b
+
+     _fsRename() has no return value.
+
+ ^bDescription^b
+
+     This function renames the file, fpOldName, to the new name, fpNewName.
+     This function is equivalent to the CA-Clipper function FRENAME().  If an
+     error occurs, _fsError() will return the number of the error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of
+        _fsRename().  Note that error handling is important when renaming a
+        file as the function can fail for a number of reasons:
+
+        #include "filesys.api"
+        .
+        .
+        .
+        _fsRename( "Foo", "Temp" );
+
+        // Always check for errors when renaming a file
+        if (_fsError() )
+        {
+           // Report the error condition
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsDelete()" "_fsError()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsSeek()          Reposition the pointer within a file
+'------------------------------------------------------------------------------
+ ^b_fsSeek()^b
+ Reposition the pointer within a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bULONG _fsSeek(
+     ^b                  FHANDLE hFileHandle,
+     ^b                  LONG lOffset,
+     ^b                  USHORT uiMode
+     ^b                )
+
+ ^bArguments^b
+
+     ^bhFileHandle^b is a valid DOS reference to the file to be repositioned.
+
+     ^blOffset^b is the memory location to set the file pointer to.
+
+     ^buiMode^b specifies the starting point for the seek.  The following
+     constants are defined for uiMode:
+
+     ^bFile Mode Flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Flag      Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     FS_SET         0x0000    Seek from beginning of file
+     FS_RELATIVE    0x0001    Seek from current file pointer
+     FS_END         0x0002    Seek from end of file
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bReturns^b
+
+     _fsSeek() returns the new file pointer position.
+
+ ^bDescription^b
+
+     This function repositions the file pointer in the file whose handle is
+     specified by hFileHandle.  The file pointer is positioned based on
+     lOffset and uiMode.  This function is equivalent to the CA-Clipper
+     function FSEEK().  If an error occurs, _fsError() will return the number
+     of the error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example uses _fsSeek() to determine the size of
+        a file by seeking to the end:
+
+        #include "filesys.api"
+
+        ULONG FileSize( BYTEP fpFileName )
+        {
+
+           FHANDLE hFile;
+           ULONG ulSize = 0;
+
+           hFile = _fsOpen( "Foo", FO_READWRITE | FO_EXCLUSIVE );
+
+           // Check for an open error before using the file
+           if (! _fsError() )
+           {
+              // Determine size by seeking to EOF
+              ulSize = _fsSeek( hFile, 0, FS_END );
+
+              _fsClose( hFile );
+           }
+
+           return (ulSize);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" "_fsCreate()" "_fsError()" "_fsOpen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _fsWrite()         Write a file
+'------------------------------------------------------------------------------
+ ^b_fsWrite()^b
+ Write a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "filesys.api"
+     ^bUSHORT _fsWrite(
+     ^b                     FHANDLE hFileHandle,
+     ^b                     BYTEP fpBuff,
+     ^b                     USHORT uiCount
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bhFileHandle^b is a valid DOS reference to the file to be written.
+
+     ^bfpBuff^b is a pointer to an allocated memory buffer.
+
+     ^buiCount^b is the number of bytes to write to the file.
+
+ ^bReturns^b
+
+     _fsWrite() returns the number of bytes written to the file.
+
+ ^bDescription^b
+
+     This function attempts to write uiCount bytes from the memory buffer
+     fpBuff to the file specified by hFileHandle.  It is equivalent to the
+     CA-Clipper function FWRITE().
+
+     This function returns the number of bytes actually written.  If this
+     return value is not equal to uiCount, use _fsError() to determine the
+     nature of the error.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following code fragment illustrates the use of _fsWrite().
+        Note that error handling should be performed at each step.  Refer to
+        the "Error System API Reference" chapter of this guide for details on
+        communicating with the CA-Clipper Error system:
+
+        #include "filesys.api"
+
+        FHANDLE hFile;
+        BYTEP fpBuff[15];
+
+        hFile = _fsOpen( "Foo", FO_READWRITE | FO_EXCLUSIVE );
+
+        // Check for an open error before using the file
+        if (! _fsError() )
+        {
+           // Seek to EOF
+           _fsSeek( hFile, 0, FS_END );
+
+           _fsWrite( hFile, fpBuff, 15 );
+
+           _fsClose( hFile );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Filesys.api.
+
+!seealso: "_fsClose()" "_fsCreate()" "_fsError()" "_fsOpen()" 
+'------------------------------------------------------------------------------
+
+
+

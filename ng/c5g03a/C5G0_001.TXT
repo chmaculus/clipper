@@ -1,0 +1,1446 @@
+!short: Extend.h  -- Extend System header file
+'------------------------------------------------------------------------------
+/***
+*   extend.h
+*   C language definitions for Clipper EXTEND system.
+*   Copyright (c) 1987,1988,1989,1990 Nantucket Corp.  All rights reserved.
+*
+*   Clipper uses Microsoft C large model calling conventions.
+*/
+
+
+#ifndef CLIPPERDEFS
+
+#define CLIPPER     void pascal
+
+#define FALSE   0
+#define TRUE    1
+
+#define NIL     '\0'
+#define NULL    0L
+
+typedef unsigned char byte;
+typedef unsigned int quant;
+typedef int Boolean;
+typedef double XDOUBLE;
+
+#define CLIPPERDEFS
+#endif
+
+
+
+#define UNDEF       0
+#define CHARACTER   1
+#define NUMERIC     2
+#define LOGICAL     4
+#define DATE        8
+#define ALIAS       16
+#define MPTR        32      /* or'ed with type when passed by reference */
+#define MEMO        65
+#define WORD        128
+#define ARRAY       512
+
+
+/* parameter count/type */
+extern int _parinfo(int);
+extern int _parinfa(int, unsigned int);
+
+
+/* parameter values */
+extern char *_parc(int, ...);
+extern unsigned int _parcsiz(int, ...);
+extern unsigned int _parclen(int, ...);
+extern int _parni(int, ...);
+extern long _parnl(int, ...);
+extern XDOUBLE _parnd(int, ...);
+extern int _parl(int, ...);
+extern char *_pards(int, ...);
+
+
+/* return a value */
+extern void _retc(char far *);
+extern void _retclen(char far *, unsigned int);
+extern void _retni(int);
+extern void _retnl(long);
+extern void _retnd(XDOUBLE);
+extern void _retl(int);
+extern void _retds(char far *);
+
+/* return no value (NIL) */
+extern void _ret(void);
+
+
+/* store values */
+int _storc(char far *, int, ...);
+int _storclen(char far *, int, ...);
+int _storni(int, int, ...);
+int _stornl(long, int, ...);
+int _stornd(XDOUBLE, int, ...);
+int _storl(int, int, ...);
+int _stords(char far *, int, ...);
+
+
+/***
+*   Note:
+*   _xalloc() returns NULL if the request cannot be satisfied
+*   _xgrab() generates a runtime error if the request cannot be satisfied
+*/
+
+/*  allocate memory */
+extern void far * _xalloc(unsigned int numberOfBytes);
+extern void far * _xgrab(unsigned int numberOfBytes);
+extern void _xfree(void far *allocatedBlock);
+
+
+/* S87 compat. */
+#define _exmgrab(size)          _xgrab(size)
+#define _exmback(ptr, size)     _xfree(ptr)
+
+
+/* parameter check macros */
+#define PCOUNT      (_parinfo(0))
+#define ISCHAR(n)   (_parinfo(n) & CHARACTER)
+#define ISNUM(n)    (_parinfo(n) & NUMERIC)
+#define ISLOG(n)    (_parinfo(n) & LOGICAL)
+#define ISDATE(n)   (_parinfo(n) & DATE)
+#define ISMEMO(n)   (_parinfo(n) & MEMO)
+#define ISBYREF(n)  (_parinfo(n) & MPTR)
+#define ISARRAY(n)  (_parinfo(n) & ARRAY)
+#define ALENGTH(n)  (_parinfa(n, 0))
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: _parc()     Retrieve a character parameter
+'------------------------------------------------------------------------------
+ ^b_parc()^b
+ Retrieve a character parameter
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bchar *_parc(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _parc() returns a far pointer to a series of bytes representing the
+     character value.
+
+ ^bDescription^b
+
+     _parc() is used to retrieve a character value passed as a parameter
+     from Clipper.
+
+     The pointer returned by _parc() may or may not point to the actual
+     character value passed from Clipper.  In some cases, the pointer may
+     point to a copy of the actual value.  In other cases, it may point to
+     an internal value that is shared by more than one Clipper variable.
+
+     The pointer returned from _parc() should not be used to directly modify
+     the character value.  Doing so will produce unpredictable results.  To
+     modify a character value, use the _retc() interface function to return
+     a modified copy of the value, or pass the associated Clipper parameter
+     by reference and use the _storc() interface function to modify it.
+
+ ^bExamples^b
+
+     From C:
+
+     char *str;
+     str = _parc(1);
+
+     From Assembly language:
+
+     EXTRN   __parc:FAR
+       mov   ax, 1
+       push  ax
+       call  __parc         ; pointer returned in DX:AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parclen()" "_retc()" "_ret()" "_storc()" "_xunlock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parclen()  Retrieve the length of a character parameter
+'------------------------------------------------------------------------------
+ ^b_parclen()^b
+ Retrieve the length of a character parameter
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bunsigned int _parclen(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _parclen() returns the length of the character value as an unsigned
+     int.
+
+ ^bDescription^b
+
+     _parclen() returns the logical length of a character value passed as a
+     parameter from Clipper.  The byte containing the null terminator is not
+     included in the logical length.  Embedded null bytes, however, are
+     included if present.
+
+ ^bExamples^b
+
+     From C:
+
+     unsigned int len;
+     len = _parclen(1);
+
+     From Assembly language:
+
+     EXTRN   __parclen:FAR
+       mov   ax, 1
+       push  ax
+       call  __parclen      ; length returned in AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parc()" "_retc()" "_storclen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _pards()    Retrieve a date parameter as a string
+'------------------------------------------------------------------------------
+ ^b_pards()^b
+ Retrieve a date parameter as a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bchar *_pards(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _pards() returns a far pointer to a series of bytes representing the
+     date value.
+
+ ^bDescription^b
+
+     _pards() is used to retrieve a date value passed as a parameter from
+     Clipper.  _pards() converts the date value to a null-terminated
+     character string in the form yyyymmdd, and returns a far pointer to
+     that string.
+
+     Note that _pards() uses a single statically allocated buffer to contain
+     the string representation of the date value.  Each call to _pards()
+     overwrites this buffer.  If your function needs to access more than one
+     date, you should preserve the string value before calling _pards()
+     again.
+
+ ^bExamples^b
+
+     From C:
+
+     char *str;
+     str = _pards(1);
+
+     From Assembly language:
+
+     EXTRN   __pards:FAR
+       mov   ax, 1
+       push  ax
+       call  __pards        ; pointer returned in DX:AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_retds()" "_stords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parinfa()  Determine the length or element type of an array parameter
+'------------------------------------------------------------------------------
+ ^b_parinfa()^b
+ Determine the length or element type of an array parameter
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _parinfa(int paramNum, int arrayIndex)^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is the array element index.
+
+ ^bReturns^b
+
+     If arrayIndex is zero, _parinfa() returns the number of elements in the
+     specified array.  Otherwise, _parinfa() returns an integer value that
+     indicates the data type of the specified array element.  The type codes
+     are summarized in the table below:
+
+     ^bTable 11-1: _parinfa() Return Values^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bValue              Clipper Type            Constant^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     0                  NIL                     UNDEF
+     1                  Character               CHARACTER
+     2                  Numeric                 NUMERIC
+     4                  Logical                 LOGICAL
+     8                  Date                    DATE
+     32                 Passed by reference     MPTR
+     65                 Memo                    MEMO
+     512                Array                   ARRAY
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bDescription^b
+
+     _parinfa() is used to determine the length of an array parameter or the
+     type of one of its elements.  The length of the array can also be
+     determined by using the ALENGTH() macro defined in Extend.h.
+
+     Type checking is important since Clipper arrays are mixed type.  To
+     assure that your C function receives the correct data type, each
+     element should be type checked before it is used.
+
+ ^bExamples^b
+
+     From C:
+
+     int len;
+     int type;
+     len = _parinfa(1, 0);
+     type = _parinfa(1, 1);
+
+     From Assembly language:
+
+     EXTRN   __parinfa:FAR
+       mov   ax, 0       ; params pushed in reverse
+       push  ax
+       mov   ax, 1
+       push  ax
+       call  __parinfa   ; length returned in AX
+       add   sp, 4       ; reset stack pointer
+
+       mov   ax, 1
+       push  ax
+       push  ax
+       call  __parinfa   ; type code returned in AX
+       add   sp, 4       ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parinfo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parinfo()  Determine the parameter count or the data type of a parameter
+'------------------------------------------------------------------------------
+ ^b_parinfo()^b
+ Determine the parameter count or the data type of a parameter
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _parinfo(int paramNum)^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+ ^bReturns^b
+
+     If paramNum is zero, _parinfo() returns the position of the last
+     parameter passed from Clipper.  Otherwise, _parinfo() returns an
+     integer value representing the data type of the indicated parameter.
+     The type codes are summarized in the following table:
+
+     ^bTable 11-2: _parinfo() Return Values^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bValue              Clipper Type                  Constant^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     0                  NIL                           UNDEF
+     1                  Character                     CHARACTER
+     2                  Numeric                       NUMERIC
+     4                  Logical                       LOGICAL
+     8                  Date                          DATE
+     32                 Passed by reference           MPTR
+     65                 Memo                          MEMO
+     512                Array                         ARRAY
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bDescription^b
+
+     _parinfo() is used to determine the Clipper data type of a parameter,
+     or the number of parameters passed.  The latter can also be determined
+     using the PCOUNT macro.
+
+     To use _parinfo() to determine if a parameter is of a particular type
+     and was also passed by reference, OR together the desired type code
+     with the MPTR code and test for that combination.  For example, when a
+     Clipper variable containing a character value is passed by reference,
+     _parinfo() returns 33 (32 OR'ed with 1).
+
+     The ISBYREF() macro defined in Extend.h can also be used to determine
+     if a parameter is passed by reference.  This pseudo-function accepts a
+     parameter number as its argument and returns one (TRUE) if the
+     parameter was passed by reference.
+
+ ^bExamples^b
+
+     From C:
+
+     int count;
+     int type;
+     count = _parinfo(0);
+     type = _parinfo(1);
+
+     From Assembly language:
+
+     EXTRN   __parinfo:FAR
+       mov   ax, 0
+       push  ax
+       call  __parinfo      ; count returned in AX
+       add   sp, 2          ; reset stack pointer
+
+       mov   ax, 1
+       push  ax
+       call  __parinfo      ; type code returned in AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parinfa()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parl()     Retrieve a logical parameter as an int
+'------------------------------------------------------------------------------
+ ^b_parl()^b
+ Retrieve a logical parameter as an int
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _parl(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _parl() returns an int value where one represents true (.T.) and zero
+     represents false (.F.).
+
+ ^bDescription^b
+
+     _parl() is used to retrieve a logical value passed as a parameter from
+     Clipper.  If the specified Clipper parameter was true (.T.), _parl()
+     returns one; otherwise _parl() returns zero.
+
+ ^bExamples^b
+
+     From C:
+
+     int log;
+     log = _parl(1);
+
+     From Assembly language:
+
+     EXTRN   __parl:FAR
+       mov   ax, 1
+       push  ax
+       call  __parl         ; value returned in AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_retl()" "_storl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parnd()    Retrieve a numeric parameter as a double
+'------------------------------------------------------------------------------
+ ^b_parnd()^b
+ Retrieve a numeric parameter as a double
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bdouble _parnd(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _parnd() returns the value of the specified parameter as a double.
+
+ ^bDescription^b
+
+     _parnd() is used to retrieve a numeric value passed as a parameter from
+     Clipper.  The value is converted to a double precision floating point
+     value.
+
+     _parnd() actually returns a far pointer to a statically allocated
+     buffer which contains the double numeric value.  When you call _parnd()
+     from C, the double value is automatically copied from the buffer into
+     your C variable.  If you call from Assembly language, however, you
+     should take care to preserve the double value, as subsequent calls to
+     _parnd() will overwrite the buffer.
+
+ ^bExamples^b
+
+     From C:
+
+     double num;
+     num = _parnd(1);
+
+     From Assembly language:
+
+     EXTRN   __parnd:FAR
+       mov   ax, 1
+       push  ax
+       call  __parnd        ; value pointed to by DX:AX
+       add   sp, 2          ; reset stack pointer
+       mov   es, dx         ; load pointer in ES:BX
+       mov   bx, ax         ; copy double into save area (not shown)
+       mov   word ptr MySaveArea, es:[bx]
+       mov   word ptr MySaveArea+2, es:[bx+2]
+       mov   word ptr MySaveArea+4, es:[bx+4]
+       mov   word PTR MySaveArea+6, es:[bx+6]
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parni()" "_parnl()" "_retnd()" "_stornd()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parni()    Retrieve a numeric parameter as an int
+'------------------------------------------------------------------------------
+ ^b_parni()^b
+ Retrieve a numeric parameter as an int
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _parni(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _parni() returns the value of the specified parameter as an int.
+
+ ^bDescription^b
+
+     _parni() is used to retrieve a numeric value passed as a parameter from
+     Clipper.  _parni() converts the specified parameter value to an int.
+
+ ^bExamples^b
+
+     From C:
+
+     int num;
+     num = _parni(1);
+
+     From Assembly language:
+
+     EXTRN   __parni:FAR
+       mov   ax, 1
+       push  ax
+       call  __parni        ; value returned in AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parnd()" "_parnl()" "_retni()" "_storni()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parnl()    Retrieve a numeric parameter as a long
+'------------------------------------------------------------------------------
+ ^b_parnl()^b
+ Retrieve a numeric parameter as a long
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^blong _parnl(int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^BparamNum^B is the position of the parameter in the parameter list.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _parnl() returns the value of the specified parameter as a long.
+
+ ^bDescription^b
+
+     _parnl() is used to retrieve a numeric value passed as a parameter from
+     Clipper.  _parnl() converts the specified parameter value to a long.
+
+ ^bExamples^b
+
+     From C:
+
+     long num;
+     long = _parnl(1);
+
+     From Assembly language:
+
+     EXTRN   __parnl:FAR
+       mov   ax, 1
+       push  ax
+       call  __parnl        ; value returned in DX:AX
+       add   sp, 2          ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parnd()" "_parni()" "_retnl()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _ret()      Post a NIL return value
+'------------------------------------------------------------------------------
+ ^b_ret()^b
+ Post a NIL return value
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid _ret(void)^b
+
+ ^bReturns^b
+
+     _ret() has no return value.
+
+ ^bDescription^b
+
+     _ret() posts a NIL value into Clipper's return value area.  Later, when
+     your C or Assembly language function returns control to the calling
+     Clipper program, the posted return value will be available as the
+     Clipper return value from your C or Assembly language function.
+
+ ^bExamples^b
+
+     From C:
+
+     _ret();
+
+     From Assembly ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     _retds() converts the supplied string to a date value.  The string need
+     not be preserved after the call to _retds().
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: !short: _retc()     Post a character return value using a null terminated string
+!short: _retclen()  Post a character return value with explicit length              ^r^CE4^r
+!short: _retds()    Post a date return value using a date string
+'------------------------------------------------------------------------------
+ ^b_retds()^b
+ Post a date return value using a date string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid _retds(char *string)^b
+
+ ^bArguments^b
+
+     ^Bstring^B is a far pointer to a null-terminated string representing
+     the date value to be returned.  The date string must have the form
+     yyyymmdd.
+
+ ^bReturns^b
+
+     _retds() has no return value.
+
+ ^bDescription^b
+
+     _retds() is used to post a date value into Clipper's return value
+     area.  Later, when your C or Assembly language function returns control
+     to the calling Clipper program, the posted return value will be
+     available as the Clipper return value from your C or Assembly language
+     function.
+
+     _retds() converts the supplied string into a Clipper date value.  If
+     you supply a string which does not represent a valid date, a blank date
+     value will be stored.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     _retds() converts the supplied string to a date value.  The string need
+     not be preserved after the call to _retds().
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     From C:
+
+     _retds("19991231");
+
+     From Assembly language:
+
+     EXTRN   __retds:FAR
+       mov   dx, seg MyDateString    ; pass address of string (not shown)
+       push  dx
+       mov   ax, offset MyDateString
+       push  ax
+       call  __retds
+       add   w function that is equivalent to the DELETE
+     command.
+
+!seealso: !short: _retl()     Post a logical return value
+!short: _retnd()    Post a numeric return value using a double
+!short: _retni()    Post a numeric return value using an int
+!short: _retnl()    Post a numeric return value using a long
+'------------------------------------------------------------------------------
+ ^b_retnl()^b
+ Post a numeric return value using a long
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid _retnl(long n)^b
+
+ ^bArguments^b
+
+     ^bn^b is a numeric expression of type long.
+
+ ^bReturns^b
+
+     _retnl() has no return value.
+
+ ^bDescription^b
+
+     _retnl() is used to post a numeric value into Clipper's return value
+     area.  Later, when your C or Assembly language function returns control
+     to the calling Clipper program, the posted return value will be
+     available as the Clipper return value from your C or Assembly language
+     function.
+
+ ^bExamples^b
+
+     From C:
+
+     _retnl(1234567689L);
+
+     From Assembly language:
+
+     EXTRN   __retni:FAR
+       mov   dx, 1883
+       mov   ax, 52501
+       push  dx          ; push hi-order first
+       push  ax
+       call  __retnl
+       add   sp, 4       ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parnl()" "_retnd()" "_retni()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storc()    Assign a null terminated string to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_storc()^b
+ Assign a character value to a referenced variable using a null terminated
+ string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _storc(char *string, int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Bstring^B is a far pointer to a null terminated string representing
+     the character value to be assigned.
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _storc() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storc() stores a character value to a Clipper variable passed by
+     reference as a parameter from Clipper.  If the parameter specified by
+     paramNum is not a Clipper variable passed by reference, _storc()
+     ignores the call and returns a value of zero.
+
+     _storc() determines the logical length of the character value by
+     scanning the supplied string for a null terminator byte.  If you are
+     attempting to assign binary data that may contain embedded null bytes,
+     use _storclen().
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     _storc() automatically allocates memory in the Clipper heap and makes a
+     copy of the supplied string.  The string need not be preserved after
+     the call to _storc().
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     From C:
+
+     _storc("hello world", 1);
+
+     From Assembly language:
+
+     EXTRN   __storc:FAR
+       mov   ax, 1             ; paramNum
+       push  ax
+       mov   dx, seg MyString  ; pass address of string (not shown)
+       mov   ax, offset MyString
+       push  dx
+       push  ax
+       call  __storc
+       add   sp, 6             ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parc()" "_parclen()" "_retc()" "_retclen()" "_storclen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storclen() Assign a string of explicit length to a referenced variable     ^r^CE4^r
+'------------------------------------------------------------------------------
+ ^b_storclen()^b
+ Assign a character value to a referenced variable using a string with
+ explicit length
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _storclen(char *string, unsigned int length,^b
+          ^bint paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Bstring^B is a far pointer to data representing the character value to
+     be assigned.
+
+     ^Blength^B specifies the logical length of the character value to be
+     assigned.
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _storclen() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storclen() stores a character value to a Clipper variable passed by
+     reference as a parameter from Clipper.  If the parameter specified by
+     paramNum is not a Clipper variable passed by reference, _storclen()
+     ignores the call and returns a value of zero.
+
+     Since _storclen() allows you to specify an explicit logical length for
+     the character value, the string you supply does not need to be null
+     terminated, and may safely contain embedded null bytes.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     _storclen() automatically allocates memory in the Clipper heap and
+     makes a copy of the supplied string.  The string need not be preserved
+     after the call to _storclen().
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     From C:
+
+     char data[5] = {1, 0, 2, 0, 3, 3};
+     _storclen(data, 5, 1);
+
+     From Assembly language:
+
+     EXTRN   __storclen:FAR
+       mov   ax, 1             ; paramNum
+       push  ax
+       mov   ax, 5             ; logical length
+       push  ax
+       mov   dx, seg MyData    ; pass address of data (not shown)
+       mov   ax, offset MyData
+       push  dx
+       push  ax
+       call  __storclen
+       add   sp, 8             ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parc()" "_parclen()" "_retc()" "_retclen()" "_storc()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _stords()   Assign a date string to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_stords()^b
+ Assign a date value to a referenced variable using a date string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _stords(char *string, int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Bstring^B is a far pointer to a null terminated string representing
+     the date value to be assigned.  The string must have the form yyyymmdd.
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _stords() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _stords() stores a date value to a Clipper variable passed by reference
+     as a parameter from Clipper.  If the parameter specified by paramNum is
+     not a Clipper variable passed by reference, _stords() ignores the call
+     and returns a value of zero.
+
+     _stords() converts the supplied string into a date value.  If you
+     supply a string which does not represent a valid date, a blank date
+     value will be stored.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     _stords() automatically allocates memory in the Clipper heap and makes
+     a copy of the supplied string.  The string need not be preserved after
+     the call to _stords().
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     From C:
+
+     _stords("19991231", 1);
+
+     From Assembly language:
+
+     EXTRN   __stords:FAR
+       mov   ax, 1                   ; paramNum
+       push  ax
+       mov   dx, seg MyDateString    ; pass address of string (not shown)
+       mov   ax, offset MyDateString
+       push  dx
+       push  ax
+       call  __stords
+       add   sp, 6                   ; reset stack pointer
+
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_pards()" "_retds()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storl()    Assign a logical value to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_storl()^b
+ Assign a logical value to a referenced variable
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _storl(int logical, int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Blogical^B is an int representing the logical value to be assigned.  A
+     value of zero represents false (.F.); any other value represents true
+     (.T.).
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _storl() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storl() stores a logical value to a Clipper variable passed by
+     reference as a parameter from Clipper.  If the parameter specified by
+     paramNum is not a Clipper variable passed by reference, _storl()
+     ignores the call and returns a value of zero.
+
+ ^bExamples^b
+
+     From C:
+
+     _storl(1, 1);
+
+     From Assembly language:
+
+     EXTRN   __storl:FAR
+       mov   ax, 1       ; paramNum
+       push  ax
+       push  ax
+       call  __storl
+       add   sp, 4       ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parl()" "_retl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _stornd()   Assign a numeric value to a referenced variable using a double
+'------------------------------------------------------------------------------
+ ^b_stornd()^b
+ Assign a numeric value to a referenced variable using a double
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _stornd(double n, int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Bn^B is a numeric expression of type double.
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _stornd() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _stornd() stores a numeric value to a Clipper variable passed by
+     reference as a parameter from Clipper.  If the parameter specified by
+     paramNum is not a Clipper variable passed by reference, _stornd()
+     ignores the call and returns a value of zero.
+
+ ^bExamples^b
+
+     From C:
+
+     _stornd( (double)3.14, 1 );
+
+     From Assembly language:
+
+     EXTRN   __stornd:FAR
+       mov   ax, 1
+       push  ax                   ; paramNum
+       push  word ptr (MyPi+6)    ; push double number (not shown)
+       push  word ptr (MyPi+2)
+       push  word ptr (MyPi+4)
+       push  word ptr MyPi
+       call  __stornd
+       add   sp, 10               ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parnd()" "_retnd()" "_storni()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storni()   Assign a numeric value to a referenced variable using an int
+'------------------------------------------------------------------------------
+ ^b_storni()^b
+ Assign a numeric value to a referenced variable using an int
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _storni(int n, int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Bn^B is a numeric expression of type int.
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _storni() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storni() stores a numeric value to a Clipper variable passed by
+     reference as a parameter from Clipper.  If the parameter specified by
+     paramNum is not a Clipper variable passed by reference, _storni()
+     ignores the call and returns a value of zero.
+
+ ^bExamples^b
+
+     From C:
+
+     _storni( 123, 1 );
+
+     From Assembly language:
+
+     EXTRN   __storni:FAR
+       mov   ax, 1
+       push  ax       ; paramNum
+       mov   ax, 123
+       push  ax       ; paramNum
+       call  __storni
+       add   sp, 4    ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parni()" "_retni()" "_stornd()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _stornl()   Assign a numeric value to a referenced variable using a long
+'------------------------------------------------------------------------------
+ ^b_stornl()^b
+ Assign a numeric value to a referenced variable using a long
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bint _stornl(long n, int paramNum [, int arrayIndex])^b
+
+ ^bArguments^b
+
+     ^Bn^B is a numeric expression of type long.
+
+     ^BparamNum^B is the position in the parameter list of the parameter to
+     be assigned.
+
+     ^BarrayIndex^B is an array index to specify a particular element if the
+     indicated parameter is an array.
+
+ ^bReturns^b
+
+     _stornl() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _stornl() stores a numeric value to a Clipper variable passed by
+     reference as a parameter from Clipper.  If the parameter specified by
+     paramNum is not a Clipper variable passed by reference, _stornl()
+     ignores the call and returns a value of zero.
+
+ ^bExamples^b
+
+     From C:
+
+     _stornl( 123456789L, 1 );
+
+     From Assembly language:
+
+     EXTRN   __stornl:FAR
+       mov   ax, 1
+       push  ax       ; paramNum
+       mov   dx, 1883
+       mov   ax, 52501
+       push  dx       ; push hi-order first
+       push  ax
+       call  __stornl
+       add   sp, 6    ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parnl()" "_retnl()" "_stornd()" "_storni()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xalloc()   Allocate memory and return NULL if unsuccessful
+'------------------------------------------------------------------------------
+ ^b_xalloc()^b
+ Allocate memory and return NULL if unsuccessful
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid far *_xalloc(unsigned int size)^b
+
+ ^bArguments^b
+
+     ^Bsize^B is the number of bytes to allocate.
+
+ ^bReturns^b
+
+     _xalloc() returns a far pointer to the allocated memory or NULL if the
+     requested memory could not be allocated.
+
+ ^bDescription^b
+
+     _xalloc() allows a C or Assembly language function to allocate memory
+     from Clipper's fixed heap.  If the allocation request is unsuccessful,
+     a NULL pointer is returned.
+
+     Memory allocated with _xalloc() must be freed after use with _xfree().
+
+ ^bExamples^b
+
+     From C:
+
+     char *mem;
+     mem = _xalloc(32);
+
+     From Assembly language:
+
+     EXTRN   __xalloc:FAR
+       mov   ax, 32
+       push  ax
+       call  __xalloc    ; pointer in DX:AX
+       add   sp, 2       ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_xfree()" "_xgrab()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xfree()    Free allocated memory
+'------------------------------------------------------------------------------
+ ^b_xfree()^b
+ Free allocated memory
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid _xfree(void far *mem)^b
+
+ ^bArguments^b
+
+     ^Bmem^B is a far pointer to memory allocated with _xalloc() or
+     _xgrab().
+
+ ^bReturns^b
+
+     _xfree() has no return value.
+
+ ^bDescription^b
+
+     _xfree() releases memory allocated by _xalloc() or _xgrab().  Note that
+     the same pointer returned by _xalloc() or _xgrab() must be passed as
+     the argument to _xfree().
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     In Extend.h, _exmback() is #defined to _xfree() to maintain
+     compatibility with Summer '87.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     From C:
+
+     char *mem;
+     mem = _xgrab(32);
+     _xfree(mem);
+
+     From Assembly language:
+
+     EXTRN   __xgrab:FAR
+     EXTRN   __xfree:FAR
+        mov   ax, 32
+        push  ax
+        call  __xgrab        ; pointer in DX:AX
+        add   sp, 2          ; reset stack pointer
+        push  dx
+        push  ax
+        call  __xfree        ; give it right back
+        add   sp, 4
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_xalloc()" "_xgrab()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xgrab()    Allocate memory, generating an error if unsuccessful
+'------------------------------------------------------------------------------
+ ^b_xgrab()^b
+ Allocate memory, generating an error if unsuccessful
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid far *_xgrab(unsigned int size)^b
+
+ ^bArguments^b
+
+     ^Bsize^B is the number of bytes to allocate.
+
+ ^bReturns^b
+
+     _xgrab() returns a pointer to the allocated memory.
+
+ ^bDescription^b
+
+     _xgrab() allows a C or Assembly language function to allocate memory
+     from Clipper's fixed heap.  If the allocation request is unsuccessful,
+     a runtime error is generated.  Thus, _xgrab() always returns a valid
+     pointer (never NULL).
+
+     Memory allocated with _xgrab() must be freed after use with _xfree().
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     In Extend.h, _exmgrab() is #defined to _xgrab() to maintain
+     compatibility with Summer '87.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     From C:
+
+     char *mem;
+     mem = _xgrab(32);
+
+     From Assembly language:
+
+     EXTRN   __xgrab:FAR
+        mov   ax, 32
+        push  ax
+        call  __xgrab     ; pointer in DX:AX
+        add   sp, 2       ; reset stack pointer
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_xalloc()" "_xfree()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xunlock()  Unlock all VM segments locked by _parc()                        ^R^CEA^R
+'------------------------------------------------------------------------------
+ ^b_xunlock()^b
+ Unlock all VM segments locked by _parc()
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bC Prototype^b
+
+     ^b#include "Extend.h"^b
+     ^bvoid _xunlock(void)
+
+ ^bReturns^b
+
+     _xunlock() has no return value.
+
+ ^bDescription^b
+
+     _xunlock() unlocks all VM segments which have been locked by the
+     _parc() function.  Note that _xunlock() is generally unnecessary since
+     the system automatically unlocks these segments when your C function
+     returns to Clipper.  However, if your C function works with very large
+     character values or creates large character values using _storc(),
+     _xunlock() may help to avoid an out of memory condition.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Caution^b
+
+     After a call to _xunlock(), all pointers returned from previous calls
+     to _parc() are invalid.  You must call _parc() to get new pointers if
+     you wish to inspect any character parameters after a call to
+     _xunlock().
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bFiles:^b  Library is CLIPPER.LIB, header file is Extend.h.
+!seealso: "_parc()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,19 @@
+'------------------------------------------------------------------------------
+
+ ^bConflicts with other libraries
+
+
+ Other than naming conflicts, there is no reason that
+ SuperLib should conflict with other libraries.  a) SuperLib uses
+ no direct screen writing - it is all done through Clipper. b)
+ SuperLib does not take over any interrupts. c) SuperLib uses no
+ Clipper internals.  d) SuperLib does not replace the Clipper GET
+ system.
+
+ If, however, another library you are using does any
+ of these things,  there may be unpredictable results.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

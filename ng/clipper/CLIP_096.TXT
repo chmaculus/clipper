@@ -1,0 +1,28 @@
+'------------------------------------------------------------------------------
+^BINDEXKEY()^B
+
+    INDEXKEY() returns the name of an index.
+
+^USyntax^U
+
+    INDEXKEY(<exp N>)
+
+^UArgument^U
+
+    <expN> is the ordinal position of the index in the list of index files
+    opened by the last USE...INDEX or SET INDEX TO command for the current
+    work area.  A zero value points to the controlling index, no matter
+    what its actual position in the list.
+
+^UReturns^U
+
+    A character string.
+
+    INDEXKEY() returns the key expression of the specified index.  If there
+    is no index for the position the function argument points to,
+    INDEXKEY() returns a null string ("").
+!seealso: clip_088.ngo:"USE" clip_063.ngo:"SET INDEX" clip_068.ngo:"SET ORDER" clip_095.ngo:"INDEXEXT" clip_097.ngo:"INDEXORD" 
+'------------------------------------------------------------------------------
+
+
+

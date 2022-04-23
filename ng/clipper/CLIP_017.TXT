@@ -1,0 +1,52 @@
+'------------------------------------------------------------------------------
+^BLABEL FORM^B
+
+    To display labels from a definition held in a (.lbl) file.
+
+^USyntax^U
+
+    LABEL FORM <file1>/(<expC1>) [<scope>] [FOR <condition>]
+    [WHILE <condition>] [SAMPLE] [TO PRINT] [TO FILE <file2>/(<expC2>)]
+
+^UArgument^U
+
+    <file1> is the name of the (.lbl) file that contains the FORM
+    definition of the LABEL.  If the extension is not specified (.lbl) is
+    assumed.
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    display labels.  The default is ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to LABEL FORM within the given scope.  The WHILE clause specifies the
+    set of records meeting the condition from the current record until the
+    condition fails.
+
+    ^BPrint^B: The TO PRINT clause echoes output to the printer.
+
+    ^BFile^B: The TO FILE clause echoes output to the specified filename,
+    <file2>.  If an extension is not specified, (.txt) is added.
+
+    ^BSample^B: The SAMPLE clause displays test labels as rows of
+    asterisks.  Each test label has the same number of columns and rows as
+    the label definition.  Then following each test label display is the
+    query, "Do you want more samples?"  Answering "Y" repeats the display
+    of the test label.  Answering "N" causes LABEL FORM to display the
+    actual labels for the specified scope and condition.
+
+^UUsage^U
+
+    LABEL FORM displays labels using a definition stored in a (.lbl) file.
+    The .lbl file can be created using RL.EXE, which is provided with the
+    Clipper distribution diskettes.
+
+    The contents of a LABEL field must be a valid expression.  Note that
+    Clipper does not support an expression list in the LABEL FORM contents.
+    Anything following a comma in a LABEL FORM is ignored.
+!seealso: clip_034.ngo:"REPORT FORM" 
+'------------------------------------------------------------------------------
+
+
+

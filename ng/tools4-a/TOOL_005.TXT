@@ -1,0 +1,397 @@
+!short: Introduction Capture Services
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions of this chapter allow the start and termination of capture
+     processes from within a CA-Clipper application.  Additionally, the most
+     important parameters for a capture process can be set.
+
+     The Print Job Definition chapter can be substituted for these functions.
+     When working with print job definitions you do not have to worry about
+     the settings of capture processes.  You only have to activate a print
+     job definition that can be created and maintained with the Novell
+     utility PRINTCON.EXE.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETBANNER() Sets or queries the current banner name
+'------------------------------------------------------------------------------
+ ^bNNETBANNER()^b
+ Sets or queries the current banner name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETBANNER([<cBannerName>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cBannerName>^b  Designates an optional parameter that must be passed
+     to set a new banner name for the current capture processes.
+
+ ^bReturns^b
+
+     NNETBANNER() returns the banner name that is set.
+
+ ^bDescription^b
+
+     NOVELL NET BANNER
+     NNETBANNER() allows you to set or determine the current banner name.  To
+     query the banner name, the function can be called without the parameter.
+     To set a new banner name, the name must be passed in <cBannerName>.  The
+     banner name is the same for all current capture processes (capture for
+     different interfaces).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the current banner name:
+
+        ? NNETBANNER()
+
+     ^b^CFE^b  Set the banner name to MICK:
+
+        NNETBANNER('MICK')
+!seealso: tool_010.ngo:"NNETPJBAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPACT() Determines if the capture mode is active for an LPT device
+'------------------------------------------------------------------------------
+ ^bNNETCAPACT()^b
+ Determines if the capture mode is active for an LPT device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPACT(<nPrinter>) --> lActive
+
+     ^bNetware : 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates the LPT device that is examined to determine
+     if the capture mode is active.  LPT1(1) to LPT3(3) are allowed.
+
+ ^bReturns^b
+
+     NNETCAPACT() returns .T. when the capture mode for the designated LPT
+     device is active.
+
+ ^bDescription^b
+
+     NOVELL NETWORK CAPTURE ACTIVE
+     With NNETCAPACT(), you can determine if the capture mode is active for
+     the designated LPT device and if the printer output has been redirected
+     accordingly.  If the function returns .T., the print output is on the
+     network server in the allocated queue.
+
+ ^bExample^b
+
+     Determine the capture mode status for LPT1:
+
+     NNETCAPBEG(1)                 // Start capture mode
+     ? NNETCAPACT(1)               // .T.
+     NNETCAPEND(1)                 // End capture mode
+     ? NNETCAPACT(1)               // .F.
+!seealso: "NNETCAPBEG()" "NNETCAPEND()" "NNETCAPCAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPBEG() Activates the capture mode for an LPT device
+'------------------------------------------------------------------------------
+ ^bNNETCAPBEG()^b
+ Activates the capture mode for an LPT device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPBEG(<nPrinter>)    --> lActivate
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates the LPT device for which the capture mode is
+     activated.  LPT1(1) to LPT3(3) are possible.
+
+ ^bReturns^b
+
+     NNETCAPBEG() returns .T. when the capture mode for the designated LPT
+     device can be activated.
+
+ ^bDescription^b
+
+     NOVELL NETWORK CAPTURE BEGIN
+     With NNETCAPBEG(), the capture mode for a particular LPT device can be
+     activated directly from within a CA-Clipper application.  Optimal
+     control of print output within a Novell network is possible in
+     conjunction with other NNETCAPXXX() functions.
+
+     All print output parameters (flags) can be selected using the
+     NNETCAPSSF() function.  These parameters must be set before every BEGIN
+     CAPTURE command.  In this way, the auto form feed, the banner page, and
+     other settings can be carried out from within the CA-Clipper program.
+
+     By contrast, the print queue can be selected using the NNETSETQ()
+     function, where another server had been previously selected using
+     NNETSETSRV().
+
+ ^bExample^b
+
+     Activate the capture mode for LPT2:
+
+     SET PRINTER TO LPT2
+     ? NNETCAPBEG(2)                  // .T., when active
+     SET PRINT ON
+        ? "That is a test 234"
+     SET PRINT OFF
+     NNETCAPEND(2)                    // End capture mode
+!seealso: "NNETCAPSSF()" tool_009.ngo:"NNETSETQ()" tool_004.ngo:"NNETSETSRV()" "NNETCAPEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPCAN() Deactivates the capture mode and aborts the print job
+'------------------------------------------------------------------------------
+ ^bNNETCAPCAN()^b
+ Deactivates the capture mode and aborts the print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPCAN(<nPrinter>) --> lAbort
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates the LPT device for which the network print
+     output is aborted.  LPT1(1) to LPT3(3) are possible.
+
+ ^bReturns^b
+
+     NNETCAPCAN() returns .T. when an existing network print output has been
+     aborted.
+
+ ^bDescription^b
+
+     NOVELL NETWORK CAPTURE CANCEL
+     Using NNETCAPCAN(), you can deactivate an existing capture mode and
+     abort the print job in progress.  Only output not yet "in service" is
+     aborted.  If the capture mode is not active, the function returns .F..
+
+ ^bNote^b
+
+     ^b^CFE^b  If a timeout is selected using NNETCAPSSF(), it is possible
+        that the print job in progress is already "in service".
+
+ ^bExample^b
+
+     Activate the capture mode for LPT3.  Then either abort or pause the
+     print job:
+
+     SET PRINTER TO LPT3
+     ? NNETCAPBEG(3)               // .T., if active
+     SET DEVICE TO PRINT
+        @ 10, 10 SAY "This is a test 234"
+     SET DEVICE TO SCREEN
+     EJECT
+     Key  :=  INKEY(0)
+     IF Key = 27                   // ESC do not print
+        NNETCAPCAN(3)
+     ENDIF
+!seealso: "NNETCAPBEG()" "NNETCAPEND()" "NNETCAPSSF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPEND() Terminates the capture mode for an LPT device
+'------------------------------------------------------------------------------
+ ^bNNETCAPEND()^b
+ Terminates the capture mode for an LPT device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPEND(<nPrinter>) --> lTerminate
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates the LPT device for which the capture mode is
+     terminated.  LPT1(1) to LPT3(3) are possible.
+
+ ^bReturns^b
+
+     NNETCAPEND() returns .T. when an existing capture mode for the
+     designated LPT device has been terminated.
+
+ ^bDescription^b
+
+     NOVELL NETWORK CAPTURE END
+     This function can terminate an active capture mode.  Subsequent print
+     output occurs on the local printer.  Print jobs still open are
+     terminated and transferred to "service".
+
+ ^bNote^b
+
+     ^b^CFE^b  If you want to abort the output for the last print job "in
+        progress", use NNETCAPCAN().
+
+ ^bExample^b
+
+     Activate the capture mode for LPT1, and turn it off after the ensuing
+     print output:
+
+     SET PRINTER TO LPT1
+     ? NNETCAPBEG(1)                // .T. when active
+     SET DEVICE TO PRINT
+        @ 10, 10 SAY "This is a test 234"
+     SET DEVICE TO SCREEN
+     EJECT
+     NNETCAPEND(1)                  // Terminate LPT1 capture
+!seealso: "NNETCAPBEG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPFLU() Closes the current print job and dispatches it
+'------------------------------------------------------------------------------
+ ^bNNETCAPFLU()^b
+ Closes the current print job and dispatches it
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPFLU(<nPrinter>) --> lTransfer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates the LPT device for which an active print job
+     is closed and transferred to "service".  LPT1(1) to LPT3(3) are
+     possible.
+
+ ^bReturns^b
+
+     NNETCAPFLU() returns .T. when the print job has been transferred to
+     "service".
+
+ ^bDescription^b
+
+     NOVELL NETWORK CAPTURE FLUSH
+     In CA-Clipper, print output occurs in the network when the application
+     has been exited or the device has been closed.  To close the current
+     print job and dispatch that job, you can set a timeout with the
+     NNETCAPSSF() or use the NNETCAPFLU() function.
+
+     If a timeout does not provide you with an acceptable solution, you can
+     close a previously occurring print job using the NNETCAPFLU() function
+     under Novell; the print job is transferred to "service".  Internally,
+     this function corresponds to the END CAPTURE or START CAPTURE commands.
+     Subsequent print output can occur in the network without calling
+     NNETCAPBEG() again.
+
+ ^bExample^b
+
+     Activate the capture mode for LPT1, and then stop it after the print
+     output occurs:
+
+     SET PRINTER TO LPT1
+     ? NNETCAPBEG(1)               // .T. if active
+     SET DEVICE TO PRINT
+     ? "This is a test 234"
+     SET DEVICE TO SCREEN
+     EJECT
+     NNETCAPFLU(1)                 // Terminate print job.
+!seealso: "NNETCAPBEG()" "NNETCAPEND()" "NNETCAPCAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCAPSSF() Sets the Novell capture mode flags
+'------------------------------------------------------------------------------
+ ^bNNETCAPSSF()^b
+ Sets the Novell capture mode flags
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCAPSSF(<nPrinter>,[<lPageFeed>,<lBanner>,
+     ^b   <nServerPrinterNr>,<nTimeout>,<nTab>,<nCopies>,
+     ^b   <nForm>]) --> lAmended
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nPrinter>^b  Designates the number of the LPT device for which the
+     flags are set.  LPT1(1) to LPT3(3) are possible.
+
+     ^b<lPageFeed>^b  Designates whether the form feed at the end of a print
+     job is suppressed (.T.) or transmitted (.F.).  The default value is .F..
+
+     ^b<lBanner>^b  Designates whether a banner page is transmitted (.T.) or
+     not (.F.).  The default value is .F..
+
+     ^b<nServerPrinterNr>^b  Designates the server printer number between 0
+     and 4.  The default value for the server printer is 0.
+
+     ^b<nTimeout>^b  Designates if a timeout is used and which one.  When you
+     input 0, print jobs are not "sent off" after a particular time span.
+     However, you can specify a time delay in seconds.  The default value (0)
+     specifies no timeout.
+
+     ^b<nTab>^b  Designates which tabs are used, if any.  If this parameter
+     is a 0, there are no tabs.  You can designate tab values between 1 and
+     18.  The default value (0) specifies no tabs.
+
+     ^b<nCopies>^b  Designates the number of copies of the print job that the
+     server creates.  Values between 1 and 255 are valid.  The default value
+     (1) creates one copy.
+
+     ^b<nForm>^b  Designates the form definition that the server uses during
+     printing.  Values between 0 and 255 are valid.  The default value
+     specifies that no form definition is used.
+
+ ^bReturns^b
+
+     NNETCAPSSF() returns .T. when the flags for the capture system have been
+     changed to the designated values.
+
+ ^bDescription^b
+
+     NOVELL NETWORK CAPTURE SET SPECIFIC FLAGS
+     This function allows you to make settings for the Novell capture mode.
+     These setting are normally done in conjunction with the CAPTURE command
+     in the DOS environment or through the PRINTCON for the print job.  All
+     capture mode settings must be complete before you initiate a START
+     CAPTURE command, or there is no effect.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If this function has not yet been called during the course of
+        an application, the values preset by Novell or those selected in the
+        last capture mode apply.
+
+     ^b^CFE^b  A precise description of the flags can be found in the Novell
+        Command Utilities Handbook under the Capture Commands heading.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Configure a print job.  Specify LPT1; suppress the form feed,
+        and the "banner page"; and specify server printer 1:
+
+        ? NNETCAPSSF(1, .T., .F., 1)      // .T. when set
+
+     ^b^CFE^b  Specify LPT2, with form feed and banner page, server printer
+        0, a 5-second timeout, a tab width of 8, and two print copies:
+
+        NNETCAPSSF(2, .F., .T., 0, 5, 8, 2)
+!seealso: "NNETCAPBEG()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,2047 @@
+!short: About aptFiler
+'------------------------------------------------------------------------------
+^BAbout aptFiler
+
+
+ aptFiler.exe has been supplied as an example "application" to
+ illustrate the use of Rescue5.
+
+ aptFiler is a directory dialog function from aptLib, our own
+ in-house development library.  It has been compiled as a
+ stand-alone .EXE for this example, although it would normally
+ be called as a dialog within an application to allow the user
+ to select a file.
+
+ For the purposes of this example, we will look in detail at a
+ single module, aptFiler.prg.  The original source code for this
+ is provided in aptFiler.src for comparison with the code
+ recovered by Rescue5.
+
+ aptFiler is hereby placed in the public domain.  Feel free to
+ use it as you will, including any code decompiled from the .EXE
+ (note that only the files listed at the bottom of this page are
+ public domain, all other files supplied on the master disk are
+ part of Rescue5 and are protected by copyright).
+
+^A1A     APTFILER.CH
+^A1A     APTFILER.EXE
+^A1A     APTFILER.SRC
+^A1A     APTFILER.UDT
+^A1A     APTFILER.GRP
+^A1A     APTFILER.VAR
+^A1A     SAMPLE.LIB
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rescue aptFiler
+'------------------------------------------------------------------------------
+^BRescue aptFiler
+
+
+ To recover the source from aptFiler.exe:
+
+   1) Install Rescue5, including the files in the SAMPLE
+      directory.  You may also like to print listings of
+      aptFiler.src and aptfiler.ch.  Ensure Rescue5 is in your
+      DOS PATH.
+
+   2) Move to the newly installed sample directory, create an
+      output directory called filer and type:
+
+            ^A1Arescue aptfiler /ofiler^A1A
+
+   3) Examine the files written by Rescue5:
+
+      ^A1AREPORT        ^A1AStatistics about the decompilation
+      ^A1AAPTFILER.GRP  ^A1AHow procedures in APTFILER.EXE are grouped
+      ^A1AAPTFILER.VAR  ^A1ASuggested variable names for the 2nd pass
+      ^A1AAPTFILER.LNK  ^A1ALink file to rebuild aptFiler
+      ^A1AAPTFILER.RMK  ^A1ARMake file to rebuild aptFiler
+      ^A1AMAIN.UDF      ^A1AThe first procedure and its dependent static procedures
+      ^A1AAPTALERT.UDF  ^A1AEach non-static procedure with more lines than the
+      ^A1AAPTBOX.UDF    ^A1A/s setting (defaults to 30) is given its own source
+      ^A1AERRORSYS.UDF  ^A1Amodule, named after it (except ERRORSYS and GETSYS,
+      ^A1AGETSYS.UDF    ^A1Awhich Rescue5 will recognise unless they have been
+      ^A1AISMOUSE.UDF   ^A1Aradically altered).  Static and interdependent
+      ^A1APUSHSCR.UDF   ^A1Aprocedures (through sharing a common static variable)
+      ^A1ATBKEYHAN.UDF  ^A1Aare grouped in the same source file.
+      ^A1ALIB.UDF       ^A1AAtomic procedures with fewer lines than the /s setting.
+
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Examine the grouping file
+'------------------------------------------------------------------------------
+^BThe APTFILER.GRP file
+
+
+ The APTFILER.GRP file consists of three sections;
+ the first is used by Rescue5 during the second pass,  the
+ second and third are provided for information.
+
+ The first section in the APTFILER.GRP file looks like this:
+
+
+  ^A1AMAIN.UDF:       [0]                                     ^A1A
+  ^A1AERRORSYS.UDF:   DEFERROR(140)  ERRORMESSA(145)          ^A1A
+  ^A1APUSHSCR.UDF:    [1]                                     ^A1A
+  ^A1AISMOUSE.UDF:    [2]                                     ^A1A
+  ^A1ATBKEYHAN.UDF:   [3]                                     ^A1A
+  ^A1AAPTBOX.UDF:     [4]                                     ^A1A
+  ^A1AGETSYS.UDF:     [6]                                     ^A1A
+  ^A1ALIB.UDF:        NORMPATH     APTSTABILI   TBQUIT        ^A1A
+  ^A1A                FNAME        APTBACKPLA   HILITE        ^A1A
+  ^A1A                APTINPUTBO   PBUTT                      ^A1A
+  ^A1AAPTALERT.UDF:   APTALERT                                ^A1A
+
+
+ Each entry refers to a single source module, named on the left.
+
+ Each source module has its contents listed alongside it.  There
+ are three types of item:
+
+   A number within square brackets is a cross reference to a
+   list of procedures that share a common static variable.  For
+   convenience these lists are reproduced in Section 2 of the
+   APTFILER.GRP file.
+
+   A procedure name with a number in round brackets is a cross
+   reference to a list of procedures that share a common static
+   procedure.  For convenience these lists are reproduced in
+   Section 3 of the APTFILER.GRP file.
+
+   A procedure name on its own refers to that procedure.
+
+
+ To get a clearer idea of how procedures have been grouped on
+ the first pass, look at the second section in APTFILER.GRP:
+
+
+  ^A1A[0]: APTFILER        TRIMPATH(12)    APTDIRECTO           ^A1A
+  ^A1A     SELECTFILE(33)  GETWCARD(44)                         ^A1A
+  ^A1A[1]: PUSHSCR         PUSHHOT         POPSCR               ^A1A
+  ^A1A     SPUT            SGET            SIS                  ^A1A
+  ^A1A     SDEL            TBGETUDM        TBPUTUDM             ^A1A
+  ^A1A     TBDELUDM        PUSHWORKAR      POPWORKARE           ^A1A
+  ^A1A     POPHOT          ISHOT           HOTSNEST             ^A1A
+  ^A1A     APTMLINES       APTSWITCH                            ^A1A
+  ^A1A[2]: ISMOUSE         APTMOUSE        MDBLCLK              ^A1A
+  ^A1A     VSCROLLBAR      HSCROLLBAR      MBVSCROLL            ^A1A
+  ^A1A     MBHSCROLL       MTBBROW         GETMOVBLOC(104)      ^A1A
+  ^A1A     MFKEYS          MGVSCROLL       MGBROW               ^A1A
+  ^A1A     MBUTT           APTINKEY                             ^A1A
+  ^A1A[3]: TBKEYHANDL                                           ^A1A
+  ^A1A[4]: APTBOX          APTBUTTONS      APTDISPMSG           ^A1A
+  ^A1A[6]: READMODAL       CLEARGETSY(215) SETTLE(216)          ^A1A
+  ^A1A     POSTACTIVE(217) GETREADER       RESTOREGET(220)      ^A1A
+  ^A1A     GETPREVALI      GETAPPLYKE      GETPOSTVAL           ^A1A
+  ^A1A     GETDOSETKE      SHOWSCOREB(231) DATEMSG(242)         ^A1A
+  ^A1A     READEXIT        GETACTIVE       GETREADVAR(252)      ^A1A
+  ^A1A     __SETFORMA      __KILLREAD      UPDATED              ^A1A
+  ^A1A     READINSERT      RANGECHECK      READKILL             ^A1A
+  ^A1A     READUPDATE      READFORMAT                           ^A1A
+
+
+ These first two sections in combination give you the name of
+ each source file and its contents.  For example, in the first
+ section the file called ISMOUSE.UDF refers to cross reference
+ index [2].  In the second section the contents of reference [2]
+ are listed as the procedures:
+
+  ^A1A[2]: ISMOUSE         APTMOUSE        MDBLCLK              ^A1A
+  ^A1A     VSCROLLBAR      HSCROLLBAR      MBVSCROLL            ^A1A
+  ^A1A     MBHSCROLL       MTBBROW         GETMOVBLOC(104)      ^A1A
+  ^A1A     MFKEYS          MGVSCROLL       MGBROW               ^A1A
+  ^A1A     MBUTT           APTINKEY                             ^A1A
+
+ The third section lists static procedure interdependencies.
+ This information is relevant if you want to restructure the
+ source files on the second pass. On the left are static
+ procedures, called from the procedures listed on the right.
+ You can track interdependent procedures by tracing them through
+ the list:
+
+  ^A1ATRIMPATH(12):    APTFILER        SELECTFILE(33)           ^A1A
+  ^A1ASELECTFILE(33):  APTFILER                                 ^A1A
+  ^A1AGETWCARD(44):    APTFILER                                 ^A1A
+  ^A1AGETMOVBLOC(104): MTBBROW                                  ^A1A
+  ^A1ADEFERROR(140):   ERRORSYS                                 ^A1A
+  ^A1AERRORMESSA(145): DEFERROR(140)                            ^A1A
+  ^A1ACLEARGETSY(215): READMODAL                                ^A1A
+  ^A1ASETTLE(216):     READMODAL                                ^A1A
+  ^A1APOSTACTIVE(217): READMODAL                                ^A1A
+  ^A1ARESTOREGET(220): READMODAL                                ^A1A
+  ^A1ASHOWSCOREB(231): POSTACTIVE(217) GETPREVALI GETAPPLYKE    ^A1A
+  ^A1A                 GETPOSTVAL      GETDOSETKE               ^A1A
+  ^A1ADATEMSG(242):    GETPOSTVAL                               ^A1A
+  ^A1AGETREADVAR(252): POSTACTIVE(217)                          ^A1A
+
+ For example, aptFiler calls getWcard, selectFile and trimPath.
+ selectFile in turn calls trimPath.  This means that we could
+ move aptDirectory out of MAIN.UDF, but aptFiler, selectFile,
+ getWcard and trimPath must be kept together.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Examine the variable file
+'------------------------------------------------------------------------------
+^BThe APTFILER.VAR file
+
+
+ Look at the contents of the APTFILER.VAR file.  The entry for
+ aptFiler is reproduced below:
+
+  ^A1A APTFILER:         ^A1A
+  ^A1A  (LOCAL)          ^A1A
+  ^A1A     cStr   # P1   ^A1A
+  ^A1A     oTbCol # L2   ^A1A
+  ^A1A     oTb    # L3   ^A1A
+  ^A1A     _Def   # L4   ^A1A
+  ^A1A     nNum   # L5   ^A1A
+  ^A1A     nNum1  # L6   ^A1A
+  ^A1A     nNum2  # L7   ^A1A
+  ^A1A     _Def1  # L8   ^A1A
+  ^A1A     cStr1  # L9   ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     _bDef  # BL1  ^A1A
+  ^A1A     nbNum  # BL2  ^A1A
+  ^A1A     nbNum1 # BL3  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     _bDef  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     _bDef  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     obObj  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     _bDef  # BL1  ^A1A
+  ^A1A  (BLOCK)          ^A1A
+  ^A1A     _bDef  # BL1  ^A1A
+
+ This is the local variable section.  The mnemonic on the right
+ is the variable name Rescue5 used on the first pass:
+
+  ^A1A Pn    Local declared as a procedure parameter  ^A1A
+  ^A1A Ln    Local declared at the top of a procedure ^A1A
+  ^A1A BLn   Local declared as a code block parameter ^A1A
+
+ The names on the left are the suggested new names that will be
+ used if you run Rescue5 again with this APTFILER.VAR file.
+ These names are derived from the definitions in the
+ VARIABLE.UDT file.
+
+ The order of entries is critical - during Pass 2 Rescue5
+ assumes that the first variable definition it encounters is the
+ first local.  You must be careful not to change the order of
+ the variables in APTFILER.VAR!
+
+ To change the name of a variable, locate the mnemonic of the
+ variable concerned and type the new name to the left, replacing
+ the suggested name.  Be sure to follow CA-Clipper variable
+ naming conventions, and be careful to avoid duplicate variable
+ names.  Rescue5 supports variable names of up to 32 characters,
+ but only the first 10 are significant.
+
+ There is also a static entry for aptFiler, located at the
+ bottom of the file:
+
+ ^A1A  STATIC:          ^A1A
+ ^A1A  [0]              ^A1A
+ ^A1A  _sDef   # S0_1   ^A1A
+ ^A1A  csStr   # S0_2   ^A1A
+ ^A1A  csStr1  # S0_3   ^A1A
+ ^A1A  nsLen   # S0_4   ^A1A
+
+ This is identified by the cross reference index into the
+ APTFILER.GRP file.  You can change static variable names in the
+ same manner as local's, but be sure to follow the same rules.
+
+ Run Rescue5 again to replace variable names with the names
+ defined in APTFILER.VAR.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: User defined base names
+'------------------------------------------------------------------------------
+^BThe VARIABLE.UDT file
+
+
+ Examine the user defined type file APTFILER.UDT:
+
+ ^A1A  FunctionBaseNames:           ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # MAIN.UDF                   ^A1A
+ ^A1A  aptfiler         cFile       ^A1A
+ ^A1A  trimpath         cPath       ^A1A
+ ^A1A  aptdirectory     aDir        ^A1A
+ ^A1A  selectfile       oTbDir      ^A1A
+ ^A1A  getwcard         cWCard      ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # PUSHSCR.UDF                ^A1A
+ ^A1A  pushscr          lTrue       ^A1A
+ ^A1A  pushhot          uNil        ^A1A
+ ^A1A  popscr           lTrue       ^A1A
+ ^A1A  sput             uNil        ^A1A
+ ^A1A  sget             vItem       ^A1A
+ ^A1A  sis              nPos        ^A1A
+ ^A1A  sdel             uNil        ^A1A
+ ^A1A  tbgetudm         bMethod     ^A1A
+ ^A1A  tbputudm         uNil        ^A1A
+ ^A1A  tbdeludm         uNil        ^A1A
+ ^A1A  pushworkarea     uNil        ^A1A
+ ^A1A  popworkarea      uNil        ^A1A
+ ^A1A  pophot           aHots       ^A1A
+ ^A1A  ishot            vItem       ^A1A
+ ^A1A  hotsnest         uNil        ^A1A
+ ^A1A  aptmlines        nLines      ^A1A
+ ^A1A  aptswitch        vSet        ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # ISMOUSE.UDF                ^A1A
+ ^A1A  ismouse          lMouse      ^A1A
+ ^A1A  aptmouse         vStatus     ^A1A
+ ^A1A  mdblclk          lDblClk     ^A1A
+ ^A1A  vscrollbar       uNil        ^A1A
+ ^A1A  hscrollbar       uNil        ^A1A
+ ^A1A  mbvscroll        uNil        ^A1A
+ ^A1A  mbhscroll        uNil        ^A1A
+ ^A1A  mtbbrow          uNil        ^A1A
+ ^A1A  getmovbloc       bMovBlk     ^A1A
+ ^A1A  mfkeys           uNil        ^A1A
+ ^A1A  mgvscroll        uNil        ^A1A
+ ^A1A  mgbrow           uNil        ^A1A
+ ^A1A  mbutt            uNil        ^A1A
+ ^A1A  aptinkey         nKey        ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # TBKEYHANDL.UDF             ^A1A
+ ^A1A  tbkeyhandler     oTb         ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # APTBOX.UDF                 ^A1A
+ ^A1A  aptbox           nPos        ^A1A
+ ^A1A  aptbuttons       nButton     ^A1A
+ ^A1A  aptdispmsg       uNil        ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # LIB.UDF                    ^A1A
+ ^A1A  normpath         cPath       ^A1A
+ ^A1A  aptstabili       oSelf       ^A1A
+ ^A1A  tbquit           oSelf       ^A1A
+ ^A1A  fname            cFile       ^A1A
+ ^A1A  aptbackplane     uNil        ^A1A
+ ^A1A  hilite           uNil        ^A1A
+ ^A1A  aptinputbox      uNil        ^A1A
+ ^A1A  pbutt            uNil        ^A1A
+ ^A1A                               ^A1A
+ ^A1A  # APTALERT.UDF               ^A1A
+ ^A1A  aptalert         nChoice     ^A1A
+
+ Each of the user defined functions in APTFILER.SRC and
+ SAMPLE.LIB has an entry defining the base name to use when a
+ variable is defined as a result of calling the function.
+
+ Note that the list of functions was 'cut' from REPORT to save
+ typing.
+
+ Use a text editor to edit VARIABLE.UDT; add the line
+
+    ^A1A@APTFILER.UDT^A1A
+
+ immediately before the line FunctionBaseNames:  (after the last
+ entry in the GenericBaseNames:  section), then run Rescue5 with
+ the /1 switch to utilise these naming conventions:
+
+    ^A1Arescue aptfiler /ofiler /1^A1A
+
+
+ The new APTFILER.VAR file will now have more explicitly named
+ variables than before, for example the entry for aptFiler now
+ includes:
+
+  ^A1AAPTFILER:                                  ^A1A
+  ^A1A (LOCAL)                                   ^A1A
+  ^A1A    clStr    # P1                          ^A1A
+  ^A1A    oTbCol   # L2                          ^A1A
+  ^A1A    oTb      # L3                          ^A1A
+  ^A1A    nPos     # L4           was _Def       ^A1A
+  ^A1A    nNum     # L5                          ^A1A
+  ^A1A    nNum1    # L6                          ^A1A
+  ^A1A    nNum2    # L7                          ^A1A
+  ^A1A    nChoice  # L8           was _Def1      ^A1A
+  ^A1A    cStr1    # L9                          ^A1A
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Change grouping
+'------------------------------------------------------------------------------
+^BChange APTFILER.GRP
+
+
+ To change the way procedures are grouped into source modules,
+ edit the first section of the APTFILER.GRP file:
+
+  ^A1A MAIN.UDF:       [0]                                      ^A1A
+  ^A1A ERRORSYS.UDF:   DEFERROR(140)  ERRORMESSA(145)           ^A1A
+  ^A1A PUSHSCR.UDF:    [1]                                      ^A1A
+  ^A1A ISMOUSE.UDF:    [2]                                      ^A1A
+  ^A1A TBKEYHAN.UDF:   [3]                                      ^A1A
+  ^A1A APTBOX.UDF:     [4]                                      ^A1A
+  ^A1A GETSYS.UDF:     [6]                                      ^A1A
+  ^A1A LIB.UDF:        NORMPATH       APTSTABILI     TBQUIT     ^A1A
+  ^A1A                 FNAME          APTBACKPLA     HILITE     ^A1A
+  ^A1A                 APTINPUTBO     PBUTT                     ^A1A
+  ^A1A APTALERT.UDF:   APTALERT                                 ^A1A
+
+ In addition to changing file extensions to .PRG, MAIN.UDF
+ should be renamed to APTFILER.PRG and LIB.UDF removed and its
+ contents redistributed.  APTALERT.UDF and APTBOX.UDF can be
+ combined to form DIALOGS.PRG.
+
+ The new APTFILER.GRP Section 1 looks like this:
+
+  ^A1A APFILER.PRG:    [0]            NORMPATH       FNAME        ^A1A
+  ^A1A ERRORSYS.PRG:   DEFERROR(140)  ERRORMESSA(145)             ^A1A
+  ^A1A PUSHSCR.PRG:    [1]                                        ^A1A
+  ^A1A ISMOUSE.PRG:    [2]                                        ^A1A
+  ^A1A TBKEYHAN.PRG:   [3]            APTSTABILI                  ^A1A
+  ^A1A TBQUIT                                                     ^A1A
+  ^A1A DIALOGS.PRG:    [4]            APTALERT       APTBACKPLA   ^A1A
+  ^A1A                 HILITE         APTINPUTBO     PBUTT        ^A1A
+  ^A1A GETSYS.PRG:     [6]                                        ^A1A
+
+ Remember to make changes only in Section 1 - Rescue5 ignores
+ the other sections.
+
+ To rename local and static variables you need to have an
+ understanding of the source code, and the source code will be
+ more readable after you have performed the second pass.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Change variable names
+'------------------------------------------------------------------------------
+^BChange APTFILER.VAR
+
+
+ If you changed the .UDF extensions to .PRG, delete the .UDF
+ files.
+
+ Rescue aptFiler.exe again with the new APTFILER.GRP file (if
+ you don't want to type the changes yourself, copy SAMPLE.GRP
+ over the current APTFILER.GRP file).
+
+    rescue aptfiler /ofiler
+
+ Examine the code in the recovered APTFILER.PRG:
+
+ ^A1AFUNCTION APTFILER(cStr)
+
+ ^A1A05) LOCAL oTbCol, oTb, nPos, nNum, nNum1, nNum2, nChoice, cStr1 := SUBSTR(;
+ ^A1A          GETARGV(0), 1, RAT("\", GETARGV(0)))
+  ^A1A
+ ^A1A01) cStr := IF(cStr == NIL, "*.*", cStr )
+  ^A1A   PUSHSCR(0, 0, MAXROW(), MAXCOL())
+  ^A1A   SETBLINK(.F.)
+  ^A1A   SETCURSOR(0)
+  ^A1A   csPath := NORMPATH(cStr1)
+  ^A1A   nPos := APTBOX(37, 13, NIL, NIL, NIL, TRIMPATH(csPath, 35), NIL, .T., .F.)
+ ^A1A02) nNum := INT(nPos / MAXCOL())
+ ^A1A03) nNum1 := INT(nPos % MAXCOL())
+  ^A1A
+  ^A1A   DO WHILE .T.
+  ^A1A
+  ^A1A     nNum2 := 1
+  ^A1A
+  ^A1A     IF LEN(asDir := APTDIRECTO(cStr, "D")) == 0
+  ^A1A
+  ^A1A       IF APTALERT("No matching files!;Set specification set to all?", {;
+  ^A1A         "YES", "NO"}, "w+/b,b+/w,w+/b,b/b,w+/b", " ") == 2
+  ^A1A
+  ^A1A         csStr := "."
+  ^A1A         EXIT
+  ^A1A
+  ^A1A       ENDIF
+  ^A1A
+  ^A1A       cStr := "*.*"
+  ^A1A       LOOP
+  ^A1A
+  ^A1A     ENDIF
+  ^A1A
+  ^A1A     oTb := TBROWSENEW(nNum + 1, nNum1 + 4, nNum + 9, nNum1 + 19)
+ ^A1A06)   oTb:SKIPBLOCK := {|_bDef,nbNum,nbNum1|nbNum1 := nNum2, nbNum := ;
+ ^A1A        nNum2 + _bDef, nNum2 := IF(nbNum > nsLen, nsLen, IF(nbNum < 1,;
+ ^A1A        1, nNum2 + _bDef ) ), nNum2 - nbNum1}
+ ^A1A04)   oTb:GOTOPBLOC := {||nNum2 := 1}
+  ^A1A     oTb:GOBOTTOMB := {||nNum2 := nsLen}
+  ^A1A     oTb:COLORSPEC := "rg+/b"
+  ^A1A     oTb:CARGO := ARRAY(31)
+  ^A1A     oTb:CARGO[4] := .F.
+  ^A1A     oTb:CARGO[12] := .T.
+  ^A1A     oTb:CARGO[13] := .F.
+  ^A1A     oTb:CARGO[20] := .F.
+  ^A1A     oTb:CARGO[25] := {|_bDef|APTSTABILI(_bDef)}
+  ^A1A     oTb:CARGO[22] := " "
+ ^A1A07)   oTb:CARGO[1] := {{27, {|_bDef|TBQUIT(_bDef)}}, {5, {|obObj|obObj:UP(),;
+  ^A1A       obObj}}, {24, {|obObj|obObj:DOWN(), obObj}}, {3, {|obObj|;
+  ^A1A       obObj:PAGEDOWN(), obObj}}, {18, {|obObj|obObj:PAGEUP(), obObj}},;
+  ^A1A       {1, {|obObj|obObj:HOME(), obObj}}, {6, {|obObj|obObj:END(), ;
+  ^A1A       obObj}}, {31, {|obObj|obObj:GOTOP(), obObj}}, {30, {|obObj|;
+  ^A1A       obObj:GOBOTTOM(), obObj}}, {13, {|_bDef|SELECTFILE(_bDef, ;
+  ^A1A       cStr)}}, {9, {|_bDef|TBQUIT(_bDef)}}}
+  ^A1A
+  ^A1A     IF ISMOUSE()
+  ^A1A
+  ^A1A       oTb:CARGO[23] := {||PUSHHOT(nNum, nNum1 + 21, nNum + 8, nNum1 ;
+  ^A1A         + 33, {||APTPUTKEY(9)})}
+  ^A1A
+  ^A1A     ENDIF
+  ^A1A
+  ^A1A     oTbCol := TBCOLUMNNE("", {||asDir[nNum2, 1]})
+  ^A1A     oTbCol:WIDTH := 15
+  ^A1A     oTb:ADDCOLUMN(oTbCol)
+  ^A1A     APTBUTTONS(.F., {"WCARD", "OK", "CANCEL"}, nNum + 1, nNum1 + 23, 0,;
+  ^A1A       "w+/b,b+/w,w+/b,b/b,w+/b", .F.)
+  ^A1A     oTb := TBKEYHANDL(oTb, .F.)
+  ^A1A
+  ^A1A
+  ^A1A     IF LASTKEY() == 9 .OR. LASTKEY() == 27
+  ^A1A
+  ^A1A       IF LASTKEY() == 27 .OR. (nChoice := APTBUTTONS(.T.)) == 3
+  ^A1A
+  ^A1A         CHDIR(SUBSTR(cStr1, 1, LEN(cStr1) - 1))
+  ^A1A         csStr := "."
+  ^A1A         EXIT
+  ^A1A
+  ^A1A       ELSEIF nChoice == 1
+  ^A1A
+  ^A1A         cStr := GETWCARD(cStr)
+  ^A1A
+  ^A1A       ELSE
+  ^A1A
+  ^A1A         EXIT
+  ^A1A
+  ^A1A       ENDIF
+  ^A1A
+  ^A1A     ELSEIF LASTKEY() == 13
+  ^A1A
+  ^A1A       EXIT
+  ^A1A
+  ^A1A     ENDIF
+  ^A1A
+  ^A1A   ENDDO
+  ^A1A
+  ^A1A   APTBOX()
+  ^A1A   POPSCR()
+  ^A1A   SETCURSOR(1)
+
+ ^A1A08) RETURN IF(csStr == ".", "", csPath + csStr )
+
+ Looking at the variables in context helps in assigning more
+ meaningful names:
+
+ ^A1A  cStr   # P1   cWildCard // The parameter is a DOS wildcard (ref 01)
+ ^A1A  nNum0  # L5   nRow      // (ref 02)
+ ^A1A  nNum   # L6   nCol      // (ref 03)
+ ^A1A  nNum1  # L7   nFile     // Array index (ref  04)
+ ^A1A  cStr1  # L9   cHome     // Starting directory (ref 05)
+ ^A1A  _bDef  # BL1  nToSkip   // Standard first parameter to skipBlock (ref 06)
+ ^A1A  nbNum  # BL2  nSkipped  // Calculated in skipBlock (ref 06)
+ ^A1A  nbNum1 # BL3  nOldI     // Assigned in skipBlock (ref 06)
+ ^A1A  _bDef  # BL1  oSelf     // An array of code blocks is a commonly used
+ ^A1A  obObj  # BL1  oSelf     //  way of encapsulating methods in a TBrowse
+ ^A1A                          //  object using procedural code. (ref 07)
+ ^A1A  csStr  # STATIC cFile   // (ref 08)
+
+
+ To make these changes in the source code, edit APTFILER.VAR.
+ Being careful to maintain the order of the entries, substitute
+ the names above for the suggested name in the left column.  A
+ fragment of the completed file is reproduced below.  If you
+ prefer, copy SAMPLE.VAR over APTFILER.VAR.
+
+  ^A1A #----------APTFILER
+  ^A1A APTFILER:
+  ^A1A (LOCAL)
+  ^A1A    cWildCard  # P1
+  ^A1A    oTbCol     # L2
+  ^A1A    oTb        # L3
+  ^A1A    nPos       # L4
+  ^A1A    nRow       # L5
+  ^A1A    nCol       # L6
+  ^A1A    i          # L7
+
+ Rescue aptFiler.exe again with the new APTFILER.VAR file and
+ examine the output.  This time use some of the formatting
+ switches:
+
+   ^A1Arescue aptfiler /ts2 /pl /kl /g /r0 /ofiler^A1A
+
+ You can run Rescue5 as many times as you wish to change
+ formatting, grouping and variable names.
+
+ Try compiling the original APTFILER.SRC with the CA- Clipper /b
+ switch and then linking it with SAMPLE.LIB.  If you Rescue the
+ result you should find that the local and static variable names
+ for the procedures in APTFILER.PRG are recovered as per the
+ original source, and that there is no entry for any of these
+ procedures in the APTFILER.VAR file.
+
+ Note that to recover the code from SAMPLE.LIB alone you could
+ use a linker to produce a .EXE file specifically for the
+ purpose:
+
+   ^A1ARTlink fi sample.lib^A1A
+
+ The resulting .EXE file cannot be run, but Rescue5 can recover
+ any CA-Clipper code from it.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAMPLE.VAR
+'------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Rescue Variable File: APTFILER.EXE
+#           Created on: Sun Jan 16 00:42:32 1994
+#  Linked with Library: Clipper (R) 5.2 Intl. Rev. 1.96 BRITISH
+# ---------------------------------------------------------------------------
+#
+# The variable names in this file are generated from the definitions in
+# USERTYPE.  To change types and/or qualifiers globally, edit USERTYPE (or
+# create a new .UDT file and use @ to include it in USERTYPE) then re-run
+# Pass 1 (either use the /1 switch or delete VARIABLE and GROUPING).
+#
+# Section 1 is a list of the locally scoped variables for each procedure,
+# including LOCALs, local parameters and code block parameters.
+#
+# Section 2 lists STATIC variables for each module, modules being
+# identified by cross reference index into Section 2 in the GROUPING file.
+#
+# Order is important in this file.  The names to the right of the "#"
+# are for reference only.  Rescue assigns variable names according to
+# their ordinal position after each heading.
+#
+# To change variable names during Rescue Pass 2 edit the names to the left
+# of the '#'.  Be sure to adhere to CA-Clipper 5 naming conventions.
+#
+#
+# ===========================================================================
+
+# ^A1ASection 1^A1A
+
+# ---------------------------------------------------------------------------
+
+APTFILER:
+(LOCAL)
+   cWCard         # P1
+   oTbCol         # L2
+   oTb            # L3
+   nPos           # L4
+   nRow           # L5
+   nCol           # L6
+   i              # L7
+   nChoice        # L8
+   cHome          # L9
+(BLOCK)
+   nToSkip        # BL1
+   nSkipped       # BL2
+   nOldI          # BL3
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+(BLOCK)
+   oSelf          # BL1
+
+# ---------------------------------------------------------------------------
+
+PUSHSCR:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # L5
+
+# ---------------------------------------------------------------------------
+
+NORMPATH:
+(LOCAL)
+   cFile          # P1
+   _Def           # P2
+   _Def1          # P3
+
+# ---------------------------------------------------------------------------
+
+APTBOX:
+(LOCAL)
+   vVar           # P1
+   nNum           # P2
+   nNum1          # P3
+   cStr           # P4
+   cStr1          # P5
+   cStr2          # P6
+   _Def           # P7
+   lLog           # P8
+   lLog1          # P9
+   nNum2          # L10
+   nNum3          # L11
+   nNum4          # L12
+   vVar1          # L13
+   nLen           # L14
+   aArr           # L15
+   nNum5          # L16
+   cColor         # L17
+   vVar2          # L18
+
+# ---------------------------------------------------------------------------
+
+TRIMPATH(12):
+(LOCAL)
+   cStr           # P1
+   nNum           # P2
+
+# ---------------------------------------------------------------------------
+
+APTDIRECTO:
+(LOCAL)
+   cStr           # P1
+   nNum           # L2
+   aDir           # L3
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+
+# ---------------------------------------------------------------------------
+
+APTALERT:
+(LOCAL)
+   cStr           # P1
+   aArr           # P2
+   cStr1          # P3
+   cStr2          # P4
+   nNum           # L5
+   nLen           # L6
+   nNum1          # L7
+   nNum2          # L8
+   aArr1          # L9
+   aArr2          # L10
+   nOffset        # L11
+   vVar           # L12
+   nNum3          # L13
+   nNum4          # L14
+   lLog           # L15
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+
+# ---------------------------------------------------------------------------
+
+APTSTABILI:
+(LOCAL)
+   oObj           # P1
+
+# ---------------------------------------------------------------------------
+
+TBQUIT:
+(LOCAL)
+   oObj           # P1
+
+# ---------------------------------------------------------------------------
+
+SELECTFILE(33):
+(LOCAL)
+   oObj           # P1
+   _Def           # P2
+   nNum           # L3
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+PUSHHOT:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # P5
+
+# ---------------------------------------------------------------------------
+
+APTBUTTONS:
+(LOCAL)
+   lLog           # P1
+   _Def           # P2
+   _Def1          # P3
+   _Def2          # P4
+   nNum           # P5
+   cStr           # P6
+   lLog1          # P7
+   nNum1          # L8
+   nNum2          # L9
+   nNum3          # L10
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+
+# ---------------------------------------------------------------------------
+
+TBKEYHANDL:
+(LOCAL)
+   vVar           # P1
+   _Def           # P2
+   nNum           # L3
+   nNum1          # L4
+   _Def1          # L5
+   lMouse         # L6
+   aArr           # L7
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+(BLOCK)
+   _bDef          # BL1
+   _bDef1         # BL2
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+GETWCARD(44):
+(LOCAL)
+   cStr           # P1
+   nPos           # L2
+   aArr           # L3
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+POPSCR:
+(LOCAL)
+   _Def           # L1
+
+# ---------------------------------------------------------------------------
+
+READMODAL:
+(LOCAL)
+   _Def           # P1
+   nGet           # P2
+   oObj           # L3
+   aSysVars       # L4
+
+# ---------------------------------------------------------------------------
+
+SPUT:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+
+# ---------------------------------------------------------------------------
+
+SGET:
+(LOCAL)
+   _Def           # P1
+   nNum           # L2
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+SIS:
+(LOCAL)
+   _Def           # P1
+   lLog           # L2
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+SDEL:
+(LOCAL)
+   _Def           # P1
+   nNum           # L2
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+TBGETUDM:
+(LOCAL)
+   _Def           # P1
+   nFound         # L2
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+TBPUTUDM:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   nFound         # L3
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+TBDELUDM:
+(LOCAL)
+   _Def           # P1
+   nFound         # L2
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+POPHOT:
+(LOCAL)
+   aArr           # L1
+
+# ---------------------------------------------------------------------------
+
+ISHOT:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   nFound         # L3
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+HOTSNEST:
+(LOCAL)
+   _lDef          # P1
+
+# ---------------------------------------------------------------------------
+
+APTMLINES:
+(LOCAL)
+   _lDef          # P1
+
+# ---------------------------------------------------------------------------
+
+APTSWITCH:
+(LOCAL)
+   _lDef          # P1
+   _lDef1         # P2
+   nFound         # L3
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+APTMOUSE:
+(LOCAL)
+   _lDef          # P1
+   _lDef1         # P2
+   _lDef2         # P3
+   nNum           # P4
+   nNum1          # P5
+   _lDef3         # L6
+
+# ---------------------------------------------------------------------------
+
+MDBLCLK:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   nNum           # L3
+   nNum1          # L4
+   nNum2          # L5
+   nSecs          # L6
+
+# ---------------------------------------------------------------------------
+
+VSCROLLBAR:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # P5
+
+# ---------------------------------------------------------------------------
+
+HSCROLLBAR:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # P5
+
+# ---------------------------------------------------------------------------
+
+MBVSCROLL:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   oObj           # P3
+   vVar           # L4
+
+# ---------------------------------------------------------------------------
+
+MBHSCROLL:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   oObj           # P3
+   lLog           # P4
+   vVar           # L5
+
+# ---------------------------------------------------------------------------
+
+MTBBROW:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   vVar           # P3
+   vVar1          # L4
+   nRow           # L5
+   nNum           # L6
+   vVar2          # L7
+   vVar3          # L8
+   bMovBlk        # L9
+   bMovBlk1       # L10
+
+# ---------------------------------------------------------------------------
+
+GETMOVBLOC(105):
+(LOCAL)
+   oObj           # P1
+   _Def           # P2
+   nFound         # L3
+   bMethod        # L4
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+MFKEYS:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   nNum           # L4
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+MGVSCROLL:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # P5
+   nNum           # L6
+
+# ---------------------------------------------------------------------------
+
+MGBROW:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   nRow           # L4
+   nCol           # L5
+   cStr           # L6
+
+# ---------------------------------------------------------------------------
+
+MBUTT:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   nRow           # L3
+   nNum           # L4
+   nRow1          # L5
+   nCol           # L6
+   cStr           # L7
+
+# ---------------------------------------------------------------------------
+
+APTINKEY:
+(LOCAL)
+   _Def           # P1
+   nNum           # L2
+   nSecs          # L3
+   vStatus        # L4
+   nNum1          # L5
+   nNum2          # L6
+   nNum3          # L7
+   lMouse         # L8
+
+# ---------------------------------------------------------------------------
+
+FNAME:
+(LOCAL)
+   cStr           # P1
+   _Def           # P2
+   nOffset        # L3
+
+# ---------------------------------------------------------------------------
+
+APTDISPMSG:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   cStr           # P3
+   cStr1          # P4
+   nLen           # L5
+   nNum           # L6
+   aArr           # L7
+
+# ---------------------------------------------------------------------------
+
+HILITE:
+(LOCAL)
+   _Def           # P1
+   nNum           # P2
+   cStr           # P3
+   _Def1          # P4
+   _Def2          # P5
+   nNum1          # L6
+   lLog           # L7
+
+# ---------------------------------------------------------------------------
+
+APTINPUTBO:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # P5
+   cStr           # P6
+   cStr1          # P7
+   nNum           # L8
+   nNum1          # L9
+
+# ---------------------------------------------------------------------------
+
+PBUTT:
+(LOCAL)
+   _Def           # P1
+   _Def1          # P2
+   _Def2          # P3
+   _Def3          # P4
+   _Def4          # P5
+   _Def5          # P6
+
+# ---------------------------------------------------------------------------
+
+ERRORSYS:
+(BLOCK)
+   _bDef          # BL1
+
+# ---------------------------------------------------------------------------
+
+CLEARGETSY(217):
+(LOCAL)
+   aArr           # L1
+
+# ---------------------------------------------------------------------------
+
+SETTLE(218):
+(LOCAL)
+   _Def           # P1
+   nNum           # P2
+   vVar           # L3
+
+# ---------------------------------------------------------------------------
+
+POSTACTIVE(219):
+(LOCAL)
+   _Def           # P1
+
+# ---------------------------------------------------------------------------
+
+GETREADER:
+(LOCAL)
+   oObj           # P1
+
+# ---------------------------------------------------------------------------
+
+RESTOREGET(222):
+(LOCAL)
+   _Def           # P1
+
+# ---------------------------------------------------------------------------
+
+GETPREVALI:
+(LOCAL)
+   oObj           # P1
+   _Def           # L2
+   vVar           # L3
+
+# ---------------------------------------------------------------------------
+
+GETAPPLYKE:
+(LOCAL)
+   oObj           # P1
+   _Def           # P2
+   cChr           # L3
+   bSetKey        # L4
+
+# ---------------------------------------------------------------------------
+
+GETPOSTVAL:
+(LOCAL)
+   oObj           # P1
+   _Def           # L2
+   vVar           # L3
+
+# ---------------------------------------------------------------------------
+
+GETDOSETKE:
+(LOCAL)
+   _Def           # P1
+   oObj           # P2
+   _Def1          # L3
+
+# ---------------------------------------------------------------------------
+
+SHOWSCOREB(233):
+(LOCAL)
+   nRow           # L1
+   nCol           # L2
+
+# ---------------------------------------------------------------------------
+
+DATEMSG(244):
+(LOCAL)
+   nRow           # L1
+   nCol           # L2
+
+# ---------------------------------------------------------------------------
+
+READEXIT:
+(LOCAL)
+   _Def           # P1
+
+# ---------------------------------------------------------------------------
+
+GETACTIVE:
+(LOCAL)
+   _Def           # P1
+   _Def1          # L2
+
+# ---------------------------------------------------------------------------
+
+GETREADVAR(254):
+(LOCAL)
+   oObj           # P1
+   cStr           # L2
+   nNum           # L3
+
+# ---------------------------------------------------------------------------
+
+__SETFORMA:
+(LOCAL)
+   _Def           # P1
+
+# ---------------------------------------------------------------------------
+
+READINSERT:
+(LOCAL)
+   _Def           # P1
+
+# ---------------------------------------------------------------------------
+
+RANGECHECK:
+(LOCAL)
+   oObj           # P1
+   _Def           # P2
+   _Def1          # P3
+   _Def2          # P4
+   cStr           # L5
+   nRow           # L6
+   nCol           # L7
+   vVar           # L8
+
+# ---------------------------------------------------------------------------
+
+READKILL:
+(LOCAL)
+   _Def           # P1
+   _Def1          # L2
+
+# ---------------------------------------------------------------------------
+
+READUPDATE:
+(LOCAL)
+   _Def           # P1
+   _Def1          # L2
+
+# ---------------------------------------------------------------------------
+
+READFORMAT:
+(LOCAL)
+   _Def           # P1
+   _Def1          # L2
+
+# ---------------------------------------------------------------------------
+
+DEFERROR(141):
+(LOCAL)
+   oObj           # P1
+   nNum           # L2
+   cStr           # L3
+   aArr           # L4
+   nNum1          # L5
+
+# ---------------------------------------------------------------------------
+
+ERRORMESSA(146):
+(LOCAL)
+   oObj           # P1
+   vVar           # L2
+
+# ---------------------------------------------------------------------------
+# ^A1ASection 2
+# ---------------------------------------------------------------------------
+
+
+STATIC:
+[0]
+   asDir           # S0_1
+   cFile           # S0_2
+   csPath          # S0_3
+   nsLen           # S0_4
+
+# ---------------------------------------------------------------------------
+
+STATIC:
+[1]
+   asArr           # S1_1
+   asArr1          # S1_2
+   asArr2          # S1_3
+   nsNum           # S1_4
+   asArr3          # S1_5
+   nsNum1          # S1_6
+   asArr4          # S1_7
+   nsNum2          # S1_8
+   nsNum3          # S1_9
+   asArr5          # S1_10
+   asArr6          # S1_11
+
+# ---------------------------------------------------------------------------
+
+STATIC:
+[2]
+   asArr           # S2_1
+   lsLog           # S2_2
+   lsLog1          # S2_3
+   nsNum           # S2_4
+
+# ---------------------------------------------------------------------------
+
+STATIC:
+[3]
+   asArr           # S3_1
+   nsNum           # S3_2
+   bsMethod        # S3_3
+
+# ---------------------------------------------------------------------------
+
+STATIC:
+[4]
+   nsNum           # S4_1
+   csStr           # S4_2
+   nsNum1          # S4_3
+   asArr           # S4_4
+   asArr1          # S4_5
+   nsNum2          # S4_6
+   nsNum3          # S4_7
+   bsBlk           # S4_8
+   bsBlk1          # S4_9
+   bsBlk2          # S4_10
+   asArr2          # S4_11
+   nsLen           # S4_12
+   _sDef           # S4_13
+   _sDef1          # S4_14
+
+# ---------------------------------------------------------------------------
+
+STATIC:
+[5]
+   csStr           # S5_1
+
+# ---------------------------------------------------------------------------
+
+STATIC:
+[6]
+   usNil           # S6_1
+   lsLog           # S6_2
+   lsLog1          # S6_3
+   lsLog2          # S6_4
+   lsLog3          # S6_5
+   vsVar           # S6_6
+   nsNum           # S6_7
+   _sDef           # S6_8
+   csStr           # S6_9
+   nsNum1          # S6_10
+# ---------------------------------------------------------------------------
+# End of VARIABLE
+# ---------------------------------------------------------------------------
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAMPLE.GRP
+'------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Rescue Grouping File: APTFILER.EXE
+#           Created on: Sun Jan 16 06:28:19 1994
+#  Linked with Library: Clipper (R) 5.2 Intl. Rev. 1.96 BRITISH
+# ---------------------------------------------------------------------------
+# Section 1 is a list of the source modules generated by Rescue.  Each
+# module has one or more items identifying the procedure(s) that are
+# grouped within it.  Items fall into one of three categories:
+#
+# 1) [n] is a cross reference to an entry in Section 2 that identifies
+#    procedures that share a common STATIC variable.
+#
+# 2) <procedure>(n) cross references to an entry in Section 3 that identifies
+#    procedures that share a common STATIC procedure.
+#
+# 3) <procedure> identifies the procedure with that name.
+#
+# To change the way procedures are grouped during Rescue Pass 2, edit
+# Section 1.  Items of type 3) can be moved anywhere.  Types 1) and 2)
+# that are grouped must remain grouped.
+# ===========================================================================
+
+# ^A1ASection 1
+
+ERRORSYS.PRG: DEFERROR(141)    ERRORMESSA(146)
+APTFILER.PRG: [0]              NORMPATH         FNAME
+PUSHSCR.PRG:  [1]
+ISMOUSE.PRG:  [2]
+TBKEYHAN.PRG: [3]              APTSTABILI       TBQUIT
+DIALOGS.PRG:  [4]              APTALERT         APTBACKPLA
+              HILITE           APTINPUTBO       PBUTT
+GETSYS.PRG:   [6]
+
+# ---------------------------------------------------------------------------
+# ^A1ASection 2
+# ---------------------------------------------------------------------------
+
+[0]:    APTFILER         TRIMPATH(12)     APTDIRECTO
+        SELECTFILE(33)   GETWCARD(44)
+[1]:    PUSHSCR          PUSHHOT          POPSCR
+        SPUT             SGET             SIS
+        SDEL             TBGETUDM         TBPUTUDM
+        TBDELUDM         PUSHWORKAR       POPWORKARE
+        POPHOT           ISHOT            HOTSNEST
+        APTMLINES        APTSWITCH
+[2]:    ISMOUSE          APTMOUSE         MDBLCLK
+        VSCROLLBAR       HSCROLLBAR       MBVSCROLL
+        MBHSCROLL        MTBBROW          GETMOVBLOC(105)
+        MFKEYS           MGVSCROLL        MGBROW
+        MBUTT            APTINKEY
+[3]:    TBKEYHANDL
+[4]:    APTBOX           APTBUTTONS       APTDISPMSG
+[6]:    READMODAL        CLEARGETSY(217)  SETTLE(218)
+        POSTACTIVE(219)  GETREADER        RESTOREGET(222)
+        GETPREVALI       GETAPPLYKE       GETPOSTVAL
+        GETDOSETKE       SHOWSCOREB(233)  DATEMSG(244)
+        READEXIT         GETACTIVE        GETREADVAR(254)
+        __SETFORMA       __KILLREAD       UPDATED
+        READINSERT       RANGECHECK       READKILL
+        READUPDATE       READFORMAT
+
+# ---------------------------------------------------------------------------
+# ^A1ASection 3
+# ---------------------------------------------------------------------------
+
+TRIMPATH(12):     APTFILER         SELECTFILE(33)
+SELECTFILE(33):   APTFILER
+GETWCARD(44):     APTFILER
+GETMOVBLOC(105):  MTBBROW
+DEFERROR(141):    ERRORSYS
+ERRORMESSA(146):  DEFERROR(141)
+CLEARGETSY(217):  READMODAL
+SETTLE(218):      READMODAL
+POSTACTIVE(219):  READMODAL
+RESTOREGET(222):  READMODAL
+SHOWSCOREB(233):  POSTACTIVE(219)  GETPREVALI       GETAPPLYKE
+                  GETPOSTVAL       GETDOSETKE
+DATEMSG(244):     GETPOSTVAL
+GETREADVAR(254):  POSTACTIVE(219)
+# ---------------------------------------------------------------------------
+# End of GROUPING
+# ---------------------------------------------------------------------------
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: APTFILER.UDT
+'------------------------------------------------------------------------------
+^A1AFunctionBaseNames:
+
+# MAIN.UDF
+
+aptfiler     cFile
+trimpath     cPath
+aptdirectory aDir
+selectfile   oTbDir
+getwcard     cWCard
+
+# PUSHSCR.UDF
+
+pushscr      lTrue
+pushhot      uNil
+popscr       lTrue
+sput         uNil
+sget         vItem
+sis          nPos
+sdel         uNil
+tbgetudm     bMethod
+tbputudm     uNil
+tbdeludm     uNil
+pushworkarea uNil
+popworkarea  uNil
+pophot       aHots
+ishot        vItem
+hotsnest     uNil
+aptmlines    nLines
+aptswitch    vSet
+
+# ISMOUSE.UDF
+
+ismouse      lMouse
+aptmouse     vStatus
+mdblclk      lDblClk
+vscrollbar   uNil
+hscrollbar   uNil
+mbvscroll    uNil
+mbhscroll    uNil
+mtbbrow      uNil
+getmovbloc   bMovBlk
+mfkeys       uNil
+mgvscroll    uNil
+mgbrow       uNil
+mbutt        uNil
+aptinkey     nKey
+
+# TBKEYHANDL.UDF
+
+tbkeyhandler oTb
+
+# APTBOX.UDF
+
+aptbox       nPos
+aptbuttons   nChoice
+aptdispmsg   uNil
+
+# LIB.UDF
+
+normpath     cPath
+aptstabili   oSelf
+tbquit       oSelf
+fname        cFile
+aptbackplane uNil
+hilite       uNil
+aptinputbox  uNil
+pbutt        uNil
+
+# APTALERT.UDF
+
+aptalert     nChoice
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: APTFILER.SRC
+'------------------------------------------------------------------------------
+ /*
+   Source File: APTFILER.PRG
+        System: ApT Library
+        Author: JAO
+      Comments: Pick list of files dialog box
+
+   Function list
+   =============
+   function aptFiler()     : File selection dialog
+   function aptDirectory() : Load file into array and sort the result
+   static selectFile()     : Record the currently highlighted file
+   static getWcard()       : Change wildcard specification
+   static trimPath()       : Trim a path to fit in the box
+
+   Copyright (c) 1991 - 1993, APTware Ltd
+ */
+
+ #include "aptfiler.ch"
+ #include "inkey.ch"
+ #include "directry.ch"
+ #include "setcurs.ch"
+
+ static aDir     ,;  // Directory array
+        cFileName,;  // File selected
+        cPath    ,;  // Path of file selected
+        nLen         // Number of files
+
+ /*
+              FUNCTION aptFiler
+    Purpose : Display files pick-list and allow selection
+    In      : cWcard - DOS Wildcard                    Default: "*.*"
+    Returns : Fully qualified filename (pathname + filename)
+    Example : cFile := aptFiler("*.prn")
+    Notes   : aptFiler() is a general purpose dialog box that offers a pick
+            : list of the files that match the wildcard in the current
+            : directory, and lets the user change directory at will.
+ */
+
+ function aptFiler(cWcard)
+
+   local oDCol    ,; // tbcolumn object
+        oDIR      ,; // tbrowse object
+        nP, nR, nC,; // Screen coordinates
+        i         ,; // Index into files array (details for a single file)
+        nAsk      ,; // Button selected in dialog box
+        cDir := substr(getargv(0), 1, rat("\", getargv(0)))
+
+   default cWcard to "*.*"
+
+   pushscr(0,0,maxrow(),maxcol())
+   setblink(.f.)
+   setcursor(SC_NONE)
+   cPath := normPath(cDir)
+
+   nP := aptBox(37,13,,,,trimPath(cPath,35),,.t.,.f.)
+   nR := abs2r(nP)
+   nC := abs2c(nP)
+   do while .t.
+     i := 1
+     if len(aDir := aptDirectory(cWcard,"D")) == 0
+      if aptAsk("No matching files!;Set specification set to all?", YESNO) == 2
+        cFileName := "."
+        exit
+      endif
+      cWcard := "*.*"
+      loop
+     endif
+     oDIR := tbrowsenew(nR + 1, nC + 4, nR + 9, nC + 19)
+     oDIR:skipBlock         := {|x,k,o| o := i, k := i + x,;
+                                        i := if(k > nLen, nLen,;
+                                             if(k < 1, 1, i + x)), i - o}
+     oDIR:goTopBlock        := {|| i := 1}
+     oDIR:goBottomBlock     := {|| i := nLen}
+     oDIR:colorSpec         := PICKC
+     oDIR:cargo             := array(TB_CARGO_DIM)
+     oDIR:cargo[TB_LEDIT]   := .f.
+     oDIR:cargo[TB_REDRAW]  := .t.
+     oDIR:cargo[TB_REOPEN]  := .f.
+     oDIR:cargo[TB_SHADOW]  := .f.
+     oDIR:cargo[TB_STABIL]  := {|o| aptStabilize(o)}
+     oDIR:cargo[TB_BOX]     := BROWB
+     oDIR:cargo[TB_METHODS] := ;
+       {{K_ESC       , {|o| tbQuit(o)}}                 ,;
+        {K_UP        , {|o| o:up(),o}}                  ,;
+        {K_DOWN      , {|o| o:down(),o}}                ,;
+        {K_PGDN      , {|o| o:pageDown(),o}}            ,;
+        {K_PGUP      , {|o| o:pageUp(),o}}              ,;
+        {K_HOME      , {|o| o:home(),o}}                ,;
+        {K_END       , {|o| o:end(),o}}                 ,;
+        {K_CTRL_PGUP , {|o| o:goTop(),o}}               ,;
+        {K_CTRL_PGDN , {|o| o:goBottom(),o}}            ,;
+        {K_ENTER     , {|o| selectFile(o,cWcard)}}      ,;
+        {K_TAB       , {|o| tbQuit(o)}}}
+
+     if isMouse()
+       oDIR:cargo[TB_INIT] := {|| pushHot(nR, nC + 21, nR + 8, nC + 33, ;
+                              {|| aptputkey(K_TAB)})}
+     endif
+
+     oDCol := tbcolumnnew("", {|| aDir[i, F_NAME]})
+     oDCol:width := 15
+     oDIR:addColumn(oDCol)
+     aptButtons(BUT_SAY, {"WCARD", BUT_OK, BUT_CANCEL},;
+       nR + 1, nC + 23, 0, ASKC, BUT_VERTICAL)
+     oDIR := tbKeyHandler(oDIR, .f.)
+     if lastkey() == K_TAB .or. lastkey() == K_ESC
+       if lastkey() == K_ESC .or. (nAsk := aptButtons(BUT_GET)) == 3
+         chdir(substr(cDir, 1, len(cDir) - 1))
+         cFilename := "."
+         exit
+       elseif nAsk == 1
+         cWcard := getWcard(cWcard)
+       else
+         exit
+       endif
+     elseif lastkey() == K_ENTER
+       exit
+     endif
+   enddo
+   aptBox()
+   popScr()
+   setcursor(SC_NORMAL)
+
+ return if(cFileName == ".", "", cPath + cFileName)
+
+ /*
+              FUNCTION aptDirectory
+    Purpose : Load file names into an array
+    In      : cWcard - DOS Wildcard                       Default: "*.*"
+    Returns : Array of files (same structure as Clipper DIRECTORY() func)
+    Example : aFiles := aptDirectory("*.prn")
+    Notes   : List of files that match the wildcard in the current directory.
+            :
+            : "." is replaced with "\".
+            : Directories above the current directory are prefixed with
+            : "", those below with "".  File names are not prefixed.
+ */
+
+ function aptDirectory(cWcard)
+
+   local nStartAt := 1, aDir
+
+   default cWcard to "*.*"
+
+   aDir := directory(cWcard, "D")
+   if (nLen := len(aDir)) > 0
+     if aDir[1, F_NAME] == "."
+       aDir[1] := {"\",0,"","","D"}
+     endif
+     aeval(aDir, {|x,i| aDir[i, F_NAME] := padr(lower(aDir[i, F_NAME]), 12) + ;
+       if(aDir[i,F_ATTR] == "D", if(trim(aDir[i,F_NAME]) $ "\..", "","")," ")})
+   endif
+
+ return aDir
+
+ /*
+              FUNCTION selectFile
+    Purpose : Pick a file from aptFiler() dialog
+    In      : oD     - Tbrowse object
+            : cWcard - DOS Wildcard
+    Returns : oDIR   - Modified tbrowse object
+    Notes   : Select file method.  Copies the currently highlighted file
+            : name to a file-wide static and tells the tbrowse to quit.
+ */
+
+ static function selectFile(oD, cWcard)
+
+   local nScan := 0
+
+   cFileName := substr(eval(oD:getColumn(oD:colPos):block), 1, 12)
+   nScan := ascan(aDir, {|x| cFileName == substr(x[F_NAME],1,12) .and.;
+     "D" $ x[F_ATTR]})
+   cFileName := rtrim(cFileName)
+   if nScan <> 0
+     if chdir(cFileName) == 0
+       if cFileName == ".."
+         cPath := substr(cPath, 1, rat("\", substr(cPath, 1, len(cPath) - 1)))
+       elseif cFileName == "\"
+         cPath := substr(cPath, 1, at("\", cPath))
+       else
+         cPath += upper(cFileName) + "\"
+       endif
+       @ oD:nTop-2, oD:nLeft-3 say padc(trimPath(cPath,35),35) color GROUPC
+       aDir := aptDirectory(cWcard)
+       oD:refreshAll()
+       oD:goTop()
+     endif
+   else
+     oD:cargo[TB_QUIT] := .t.
+   endif
+
+ return oD
+
+ /*
+              FUNCTION getWcard
+    Purpose : Change wildcard specification
+    In      : cSpec - Current wildcard
+    Returns : cGet  - New specification
+ */
+
+ static function getWcard(cSpec)
+
+   local nP := aptBox(30,1,,INPUTB,PICKC,,,.t.,.f.),;
+         getlist := {}
+
+   cSpec := padr(cSpec, 12)
+   @ abs2r(nP), abs2c(nP) say "Enter wildcard" get cSpec picture "@!"
+   setcursor(SC_NORMAL)
+   readmodal(getlist)
+   setcursor(SC_NONE)
+   aptBox()
+
+ return rtrim(cSpec)
+
+ /*
+              FUNCTION trimPath
+    Purpose : Trims a DOS path, prepending "..." on overflow
+    In      : cPath - DOS path to trim
+            : nLen  - Length to trim it to
+    Returns : Trimmed path
+ */
+
+ static function trimPath(cPath, nLen)
+
+   nLen -= 3                // Make room for "..."
+   if len(cPath) > nLen
+     cPath := right(cPath, nLen)
+     cPath := "...\" + substr(cPath, at("\", cPath) + 1)
+   endif
+
+ return cPath
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: APTFILER.CH
+'------------------------------------------------------------------------------
+// DEFAULT mvar TO value, mvar2 to value2, ...
+// -------------------------------------------
+
+   #command DEFAULT <p> TO <v> [,<pn> TO <vn>]  ;
+            =>                                  ;
+           <p> := iif(<p> == NIL, <v>, <p>)       ;
+           [;<pn> := iif(<pn> == NIL, <vn>, <pn>)]
+
+// Absolute screen coordinate system (ABS = row + (col * maxcol()))
+// ----------------------------------------------------------------
+   #xtranslate absolute(<r>, <c>) => (((<r>) * maxcol()) + (<c>))
+   #xtranslate abs2r(<p>)         => int((<p>) / maxcol())
+   #xtranslate abs2c(<p>)         => int((<p>) % maxcol())
+
+// ===========================================================================
+// DIALOGS
+// ===========================================================================
+
+// Each dialog definition has at least a colour definition (xxxxC)
+// and a window border (xxxxB):
+
+// Group box definitions:
+// ----------------------
+   #define B_BLOCK     "ÛßÛÛÛÜÛÛ "
+   #define B_SINGLE    "ÚÄ¿³ÙÄÀ³ "
+   #define GROUPC   "w+/b,n/rg*,w+/b,b/b,w+/b"
+   #define GROUPB   B_BLOCK
+
+// Input box definitions:
+// ----------------------
+   #define INPUTC   "rg+/n*,rg+/b,bg+/n*,n/n*,n+/b"
+   #define INPUTB   B_SINGLE
+   #define INPUTS   "rg+/n*"
+   #define INPUTG   "rg+/b"
+
+// TBrowse box definitions:
+// ------------------------
+                 // Say---SaySel-Del-Delsel-Unsel-Frozen-DelFrozen
+   #define BROWC      "rg+/b,n/rg*,n/b,n+/w,b+/w,w+/b,n+/b"
+   #define BROWB      B_SINGLE
+   #define BROWTXTC   "n/bg,b/w"    // Text browser
+   #define BROWTXTB   B_DS
+   #define NORMHS    "ÄÂÄ"          // Header
+   #define NORMCS    " ³ "          // Column
+   #define NORMFS    "ÄÁÄ"          // Footer
+   #define BROWSW    3              // Width of column separators
+
+// Picklist definitions
+// --------------------
+   #define PICKC   "rg+/b"
+   #define PICKB   B_DS
+   #define LFTCHR  "Ã"              // Split box left side
+   #define RGTCHR  "´"              // Split box right side
+   #define SEPCHR  "Ä"              // Split box row
+   #define TOPCHR  "Ñ"              // Split box top side
+   #define BOTCHR  "Ï"              // Split box bottom side
+   #define COLCHR  "³"              // Split box column
+   #define MIDCHR  "ÅÄ´"            // Split box cross
+   #define SCRBAR  "±"              // Generic scroll bar
+   #define VSCRB   "±"              // Vertical scroll bar
+   #define HSCRB   "±"              // Horizontal scroll bar
+   #define BARC   "w+/b"            // Scroll bar colour
+   #define ARRC   "b+/w*"           // Scroll bar icon colour
+   #define TAGCHR  chr(7)           // Tag character
+   #define SUP  chr(24)             // Up arrow icon
+   #define SDN  chr(25)             // Down arrow icon
+   #define SLT  chr(26)             // Left arrow icon
+   #define SRT  chr(27)             // Right arrow icon
+   #define ARROWS SLT+SRT+SUP+SDN   // Icon set
+
+   #define MNU_IDX    1
+   #define MNU_ARR    2
+   #define MNU_LEN    3
+   #define MNU_TAG    4
+
+// ALERT dialogs
+// -------------
+   #define ERRC         "w+/r,r+/w,w+/r,r/r,w+/r"
+   #define ERRB         B_BLOCK
+   #define TELC         "w+/g,g+/w,w+/g,g/g,w+/g"
+   #define TELB         B_BLOCK
+   #define ASKC         "w+/b,b+/w,w+/b,b/b,w+/b"
+   #define ASKB         B_BLOCK
+   #define BUT_OK       "OK"
+   #define BUT_CANCEL   "CANCEL"
+   #define BUT_YES      "YES"
+   #define BUT_NO       "NO"
+   #define BUT_RETRY    "RETRY"
+   #define BUT_DEFAULT  "DEFAULT"
+   #define BUT_SAVE     "SAVE"
+   #define BUT_EDIT     "EDIT"
+   #define BUT_DELETE   "DELETE"
+   #define BUT_HORIZONTAL   .t.      // Button orientation
+   #define BUT_VERTICAL     .f.
+   #define BUT_SAY          .f.      // Display buttons
+   #define BUT_GET          .t.      // Activate previously displayed
+
+   #define OKCANCEL     {BUT_OK, BUT_CANCEL}
+   #define YESNO        {BUT_YES, BUT_NO}
+   #define RETRYCANCEL  {BUT_RETRY, BUT_CANCEL}
+   #define SAVEEDITCAN  {BUT_SAVE,BUT_EDIT,BUT_CANCEL}
+
+   #xtranslate aptErr(<msg>  [,<act>]) => aptalert(<msg>, <act>, ERRC, ERRB)
+   #xtranslate aptTell(<msg> [,<act>]) => aptalert(<msg>, <act>, TELC, TELB)
+   #xtranslate aptAsk(<msg>  [,<act>]) => aptalert(<msg>, <act>, ASKC, ASKB)
+
+// ===========================================================================
+// TBROWSE extensions
+// ===========================================================================
+
+#define TB_CARGO_DIM 31
+   #define TB_METHODS   01  // Array of method code blocks
+      #define MT_KEY     1  // Methods array inkey number
+      #define MT_BLOCK   2  // Methods array code block
+   #define TB_DBF       02  // DBF file name or data source
+   #define TB_NTX       03  // Index order number
+   #define TB_LEDIT     04  // ALLOW/disallow Lotus-like editing
+   #define TB_DICT      05  // Clone of data-dictionary for this DBF
+   #define TB_STARTAT   06  // Record to start at (0 == bof())
+   #define TB_MAXROW    07  // Video mode (25 = CGA, 50 = VGA)
+   #define TB_BOTTOM    08  // Block to work out bottom row of browse
+   #define TB_SGWIDTH   09  // Width of the scrolling get list box
+   #define TB_SGSAYLEN  10  // Width of the SAY part of the scrolling get list
+   #define TB_WIDTH     11  // Width of the visible tbrowse
+   #define TB_REDRAW    12  // Browse is redrawn if .t.
+   #define TB_REOPEN    13  // File/index is reopened if .t.
+   #define TB_GETLIST   14  // Getlist array
+   #define TB_MSG1      15  // Message line 1
+   #define TB_MSG2      16  // Message line 2
+   #define TB_QUIT      17  // .t. causes keyhandler to quit
+   #define TB_PICK      18  // .t. indicates a pick-list browse
+   #define TB_GRAY      19  // .t. causes background to be grayed out
+   #define TB_SHADOW    20  // .t. causes a shadow to be drawn around box
+   #define TB_BCKGND    21  // Code block to draw background (aptBackPlane())
+   #define TB_BOX       22  // Box characters
+   #define TB_INIT      23  // Init code block
+   #define TB_EXIT      24  // Exit code block
+   #define TB_STABIL    25  // Stabilization code block
+   #define TB_MSG1A     26  // Arrays of coordinates and inkey codes for
+   #define TB_MSG2A     27  //  function keys on message lines.
+   #define TB_PREVAL    28  // Full screen edit prevalidate block
+   #define TB_POSVAL    29  // Full screen edit postvalidate block
+   #define TB_DEFREP    30  // List option report name (if NIL, generic used)
+   #define TB_POS       31  // Data row index
+
+#define TBC_CARGO_SIZE 3
+   #define NUMBER       1   // Column number
+   #define READER       2   // Get reader for this column
+   #define FROZEN       3   // .t. if column is currently frozen
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

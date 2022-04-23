@@ -1,0 +1,21 @@
+'------------------------------------------------------------------------------
+^BREINDEX^B
+
+    REINDEX rebuilds all open index (.ntx) files in the current work area.
+
+^USyntax^U
+
+    REINDEX
+
+^UUsage^U
+
+    When REINDEXing, the major consideration is the UNIQUE SETting.  If you
+    have UNIQUE ON, be aware that all indexes open in the current work area
+    will be indexed UNIQUE regardless of how they were originally created.
+    Remember, in Clipper UNIQUE is a global SETting and not an attribute of
+    the index.
+!seealso: clip_013.ngo:"INDEX" clip_022.ngo:"PACK" clip_063.ngo:"SET INDEX" clip_077.ngo:"SET UNIQUE" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

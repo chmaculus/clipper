@@ -1,0 +1,63 @@
+'------------------------------------------------------------------------------
+
+
+ ^bUpgrading from a previous SuperLib
+
+ Previous to SuperLib 3.5
+ ------------------------
+ Code written for SuperLib 3.0 will run fine with SuperLib 3.5.
+ Changes to existing functions are almost all mouse related, with
+ no need to change the parameters. SuperLib 3.5 is mouse aware. You
+ don't need to do anything extra to have SuperLib functions respond
+ to the mouse. (except have a mouse, plug it in, and load a mouse
+ driver...) If you DO NOT WANT mouse awareness, call SLS_ISMOUSE(.f.).
+
+ The .LIB files are now called:
+
+        SUPER.LIB     for Clipper 5.2d
+
+
+ Previous to SuperLib 3.0
+ ------------------------
+
+ The main non-upward compatible feature of SuperLib
+ 3.0 when compared with previous SuperLibs is the global system
+ variables.
+
+ In SuperLibs previous to 3.0, a scheme of PUBLIC
+ variables was used to represent certain global SuperLib
+ environment settings. To avoid PUBLICs, a new set of functions
+ exists to set and retrieve these previously PUBLIC variables.
+
+ 1. If you have used any of these variables in your own
+    code, you will need to search and replace all instances of their
+    old PUBLIC syntax with the new function syntax. Watch out   for
+    places where you may have used macro expansion.
+
+   See "Old style PUBLICs vs. new functions" below
+   for a complete listing of old vs. new.
+
+
+
+ 2. If you have stored the color variables to
+    COLORS.MEM, you'll need to convert over to the new COLORS.DBF.
+    If you do not, nothing disastrous will happen - SuperLib will
+    just use its  built in default color sets.
+
+    A function has been provided for this:
+    SATTGETMEM([cMemFile])  will retrieve the .mem file you
+    previously used for colors.mem, and will store these color
+    settings using  the new function calls.
+
+    Following this, a call to SATTPUT([cSetName]) will
+    store these color settings to COLORS.DBF, with an optional set
+    name of   [cSetName] (default name is DEFAULT)
+
+    SETCOLORS() and COLPIK() store color sets to
+    COLORS.DBF. SETCOLORS()  allows naming of the set. COLPIK()
+    overwrites the set named DEFAULT.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

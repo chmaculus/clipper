@@ -1,0 +1,42 @@
+'------------------------------------------------------------------------------
+^BUSE^B
+
+    USE opens an existing database file, its associated memo (.dbt) file,
+    and optionally associated index files in the currently selected work
+    area.
+
+^USyntax^U
+
+    USE [<file>/(<expC>)] [INDEX <file list>/(<expC>)] [,(<expC)]...]
+    [EXCLUSIVE] [ALIAS <alias>/(<expC>)]
+
+^UArgument^U
+
+    <file> is the name of the database file to open.
+
+^UOptions^U
+
+    ^BIndex^B: The INDEX <file list> clause specifies the name(s) of up to
+    15 index files to open in the current work area.
+
+    ^BAlias^B: The <alias> is the name to associate with the work area when
+    the database file is opened.  If this clause is not specified, the
+    alias defaults to the database filename.
+
+    ^BExclusive^B: The EXCLUSIVE clause opens the database file for non-
+    shared use in a network environment.  All other users are denied access
+    until the database file is CLOSEd.
+
+^UUsage^U
+
+    When a database file is opened, the record pointer is positioned at the
+    first logical record in the file (record 1 if there is no index file
+    specified).
+
+    USE without an argument CLOSEs the active database file, associated
+    index, and memo files in the current work area.
+!seealso: ???.ngo:"CLOSE" clip_013.ngo:"INDEX" clip_042.ngo:"SELECT" clip_063.ngo:"SET INDEX" 
+'------------------------------------------------------------------------------
+
+
+

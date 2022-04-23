@@ -1,0 +1,37 @@
+'------------------------------------------------------------------------------
+^BRECALL^B
+
+    RECALL reinstates records that are marked for deletion in the active
+    database file.
+
+^USyntax^U
+
+    RECALL [<scope>] [FOR <condition>] [WHILE <condition>]
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    RECALL.  The default scope is the current record.  If a condition is
+    specified the scope becomes ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to RECALL within the given scope.  The WHILE clause specifies the set
+    of records meeting the condition from the current record until the
+    condition fails.
+
+^UUsage^U
+
+    If DELETED is ON, RECALL only reinstates the current record or a
+    specific record if you specify the RECORD scope.
+
+^UNetwork^U
+
+    In a network environment, RECALL requires the current record be locked
+    with RLOCK() if you are RECALLing a single record; the current database
+    file be locked with FLOCK() or USEd EXCLUSIVEly, if you are RECALLing
+    several records.
+!seealso: ???.ngo:"DELETE" clip_022.ngo:"PACK" clip_053.ngo:"SET DELETED" clip_090.ngo:"ZAP" 
+'------------------------------------------------------------------------------
+
+
+

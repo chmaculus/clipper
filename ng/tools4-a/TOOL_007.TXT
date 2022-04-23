@@ -1,0 +1,1795 @@
+!short: Introduction Volumes, Directories, Files, and Rights
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This chapter combines functions that deal with server volumes and files
+     on server volumes.  The NNETVOLXXX() functions return information about
+     server volumes.  The functions, NNETDIRS() and NNETFILES(), allow you to
+     determine extended directory information (analogous to the Novell
+     utility NDIR).  The chapter also includes functions used to query and
+     set rights, extended file attributes, and functions that can perform the
+     tasks of the Novell utilities PURGE and SALVAGE.  The operation of the
+     functions NNETPURGE() and NNETSALVAG() depends on the Netware version.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETCOPY()   Copies files within a Novell file server
+'------------------------------------------------------------------------------
+ ^bNNETCOPY()^b
+ Copies files within a Novell file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCOPY(<cSourceFile>,<cTargetFile>,[<nBytes>])
+     ^b   --> nCopiedBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cSourceFile>^b  Designates the name of the file that is copied.  This
+     parameter can contain the drive and path designation but must be
+     resident on a network drive.
+
+     ^b<cTargetFile>^b  Designates  the name of the target file that is
+     created.  This parameter can contain the drive and path designation but
+     must be resident on a network drive.
+
+     ^b<nBytes>^b  Designates the number of bytes that are copied.  The
+     default value designates the entire file.
+
+ ^bReturns^b
+
+     NNETCOPY() returns the number of bytes copied.  If a copy did not occur,
+     the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET COPY
+     This function was planned specifically for copying files within a Novell
+     file server.  The copy speed is very high because the file content is
+     copied within the server and is not transmitted over the network.  In
+     this way the function corresponds to the Novell NCOPY utility program.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If the size of the file that is copied is already known,
+        (through FILESEEK()/FILESIZE()), you should pass that size as the
+        third parameter.  The function then does not have to determine the
+        size of the source file and the copy speed is quicker.
+
+     ^b^CFE^b  Notice that the source and target file must be resident on
+        network drives on the same file server.  You cannot copy to or from
+        hard disks or floppies, or copy between different servers.
+        FILECOPY() must be used for all other file copying.
+
+     ^b^CFE^b  Distinctions can be made based on the source of the error
+        through ERRORCODE() (source file not found; target file cannot be
+        created) or through NNETERROR() (different file servers).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Drive J: is mapped on a Novell server.  Copy a file, giving
+        the source and target path:
+
+        NNETCOPY("J:\SUPPORT\TEST.EXE", "J:\USER\TEST2.EXE")
+
+     ^b^CFE^b  FILECOPY() is a simple method of copying a file every time.
+        If you cannot copy with NNETCOPY(), use FILECOPY():
+
+        IF FILE(cFileName)
+           IF NNETCOPY(cFileName, cTargetFile) = -1
+              FILECOPY(cFileName, cTargetFile)
+           ENDIF
+           IF ERRORCODE(.T.) = 0
+              ? "File copied successfully!"
+           ENDIF
+        ENDIF
+!seealso: tool_014.ngo:"NNETERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDIRFRE() Determines the number of free directory entries in a volume
+'------------------------------------------------------------------------------
+ ^bNNETDIRFRE()^b
+ Determines the number of free directory entries in a volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDIRFRE(<nVolume>) --> nFreeDirectoryEntries
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nVolume>^b  Designates the selected volume number of the related
+     default file server.  This value can be from 0 to 31.
+
+ ^bReturns^b
+
+     NNETDIRFRE() returns the number of directory entries still free on the
+     volume specified in <nVolume>.
+
+ ^bDescription^b
+
+     NOVELL NET DIRECTORY FREE
+     This function allows you to determine how many directory entries are
+     still available for each volume on the default file server.  This allows
+     you to determine if new files can be created on the related volume.  The
+     number of directory entries in the Novell network software installation
+     program can be increased if necessary.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the station have console
+        privileges.
+
+ ^bExample^b
+
+     Determine if directory entries are still available for all volumes:
+
+     FOR I = 0 TO NNETVOLNUM()
+        ? NNETDIRFRE(I)         // Avail. entries, each volume
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVOLNUM()" "NNETVOLNAM()" "NNETVOLMAX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDIRMAX() Determines the maximum number of directory entries in a volume
+'------------------------------------------------------------------------------
+ ^bNNETDIRMAX()^b
+ Determines the maximum number of directory entries in a volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDIRMAX(<nVolume>) --> nMaxEntries
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nVolume>^b  Designates the selected volume number of the related
+     default file server.  This value can be from 0 to 31.
+
+ ^bReturns^b
+
+     NNETDIRMAX() returns the total number of available directory entries on
+     the volume specified in <nVolume>.
+
+ ^bDescription^b
+
+     NOVELL NET DIRECTORY MAXIMUM
+     This function allows you to determine the maximum number of directory
+     entries for each volume on the default file server.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the station have console
+        privileges at least.
+
+ ^bExample^b
+
+     Determine the total number of directory entries available for all
+     volumes:
+
+     FOR I = 0 TO NNETVOLNUM()
+        ? NNETDIRMAX(I)         // Max. entries per volume
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVOLNUM()" "NNETVOLNAM()" "NNETVOLMAX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDIRS()   Determines the extended information about subdirectories
+'------------------------------------------------------------------------------
+ ^bNNETDIRS()^b
+ Determines the extended information about subdirectories
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDIRS([<cPath>],[<nAttr>|<cAttr>],[<l386>]) --> aDir
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPath>^b  Designates the directory for which the subdirectories are
+     read.  The parameter contains a search mask for the directories that are
+     read.  Within the search mask, the wildcard characters "?" and "*" can
+     be used.  A file identifier is not permitted.  The search mask is
+     ignored if the function is called on a Netware 2.x server, but this
+     parameter must be passed.
+
+     ^b<nAttr>^b  Designates the file attributes in numeric form, according
+     to the table in the description .  The default value is 16.
+
+     ^b<cAttr>^b Designates the file attributes in the form of a character
+     string, according to the table in the description.  The default value is
+     "D".
+
+     ^b<l386>^b Designates whether NNETDIRS() also returns extended
+     information that is only available on Netware 3.x servers.  The
+     parameter must be designated .T..  The default value ( .F.) does not
+     return extended information.
+
+ ^bReturns^b
+
+     NNETDIRS() returns an array with subarrays (two-dimensional array).
+     Each subarray contains information about each directory entry that is
+     found.  The structure of the subarrays is described in the following
+     table.
+
+     ^bTable 23.1:  NNETDIRS() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition  Metasymbol CTNNET.CH    Definition ^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1         cName      ND_NAME      Directory name
+     2         dCrDate    ND_CREADATE  Creation date
+     3         cCrTime    ND_CREATIME  Creation time
+     4         nRights    ND_RIGHTS    Maximum (2.x) / Inherited (3.x) Rights
+     5         cOwner     ND_OWNER     Owner
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If <l386> has been designated .T., the returned array contains the
+     following extension:
+
+     ^bTable 23.2:  Extended NNETDIRS() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTNNET.CH      Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     6            cUpdDate       ND_UPDDATE     Date of last update
+     7            dUpdTime       ND_UPDTIME     Time of last update
+     8            cArcDate       ND_ARCDATE     Date of last  archive
+     9            nArcTime       ND_ARCTIME     Time of last archive
+     10           cArchive       ND_ACHIVER     Name of archivist
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET DIRECTORIES
+     NNETDIRS() returns extended information about the subdirectories of file
+     server directories.  On Netware 3.x servers, the subdirectories can be
+     determined by a search mask in <cPath>.  You can also determine the
+     default file attribute.  The attribute can be passed in the form of a
+     numeric value or a character string:
+
+     ^bTable 23.3:  File Attribute Coding for NNETDIRS()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symbol    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       R         Read Only
+     2       H         Hidden directories
+     4       S         System directories
+     16      D         Subdirectories (always set by  NNETDIRS())
+     32      A         Archive bit set
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To specify an attribute, numeric values must be added or the related
+     symbols must be added to a character string.
+
+     A call of NNETDIRS() for a Netware 2.x file server also requires a
+     search mask in <cPath>; however, the mask is ignored.  Under Netware
+     2.x, the function returns all subdirectories that correspond to the
+     passed attributes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read the subdirectories of L:\, and display the directory
+        names:
+
+        #include "ctnnet.ch"
+
+        aDirs=NNETDIRS('L:\*')
+
+        FOR i=1 TO LEN(aDirs)
+           ? aDirs[i,ND_NAME]
+        NEXT i
+
+     ^b^CFE^b  Read the subdirectories of NANGERTOOLS1/VOL1:DATA, including
+        the hidden system directories:
+
+        aDirs=NNETDIRS('NANGERTOOLS1/VOL1:DATA/*','SH')
+
+     ^b^CFE^b  Read the subdirectories of L:\ with extended 3.x information.
+        Display the directory name and the date of the last update:
+
+        #include "ctnnet.ch"
+
+        aDirs=NNETDIRS('L:\*',,.T.)
+
+        FOR i=1 TO LEN(aDirs)
+           ? aDirs[i,ND_NAME],aDirs[i,ND_UPDDATE])
+        NEXT i
+!seealso: "NNETFILES()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDSKUSE() Determines the server disk capacity occupied by a user
+'------------------------------------------------------------------------------
+ ^bNNETDSKUSE()^b
+ Determines the server disk capacity occupied by a user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDSKUSE([<cUser>],[<nVol>|<cVol>],[<cServer>|
+     ^b   <nConId>])   --> nKByte
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser>^b  Designates the name of the user whose disk capacity is
+     determined.  The default value designates the logged in user.
+
+     ^b<nVol>^b  Designates the volume number.  Under Novell, volume numbers
+     start with 0.  This parameter is only important if the specified file
+     server runs under Netware 3.x.
+
+     ^b<cVol>^b  Designates the volume name.  A server name is not allowed.
+     This parameter is only important if the specified file server runs under
+     Netware 3.x.
+
+     ^b<cServer>^b  Designates the name of the file server where the used
+     disk capacity is determined.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDSKUSE() returns the disk capacity in kByte on the specified file
+     server or volume occupied by <cUser>.
+
+ ^bDescription^b
+
+     NOVELL NET DISK SPACE IN USE
+     NNETDSKUSE() allows you to determine the disk capacity on a file server
+     occupied by a user.  Under Netware 2.x and Netware 3.x, the function
+     returns the total of the used disk capacity over all volumes on the
+     specified file server when it is called without the parameter
+     <nVol>|<cVol>.  Under  Netware 3.x, it is possible to determine the
+     capacity for a specific volume by passing the volume number <nVol> or
+     the volume name <cVol>.  With the parameters <cServer> or <nConId>, the
+     occupied capacity on any attached file server can be determined.  The
+     connection ID of a server is returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExample^b
+
+     Determine the total occupied disk capacity for user MIKE under Netware
+     3.x for all volumes.  Also determine the total occupied disk capacity
+     for user MIKE for any Netware version:
+
+     IF NNETVER()>'2'
+     FOR i = 0 TO NNETVOLNUM()
+     ? NNETVOLNAM(i),NNETDSKUSE('MIKE',i)
+     NEXT i
+     ? '======================'
+     ENDIF
+     ? 'Total: ',NNETDSKUSE('MIKE')
+!seealso: "NNETUSRFRE()" "NNETVOLNAM()" "NNETVOLNUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETEXTATT() Sets or queries extended file attributes
+'------------------------------------------------------------------------------
+ ^bNNETEXTATT()^b
+ Sets or queries extended file attributes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETEXTATT(<cFile>,[<nAttr>]) --> nNewAttr
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cFile>^b  Designates the file for which the extended file attributes
+     are set or queried.  <cFile> can contain a path specification.
+
+     ^b<nAttr>^b  Designates an optional parameter that must be passed to set
+     the new extended file attributes of <cFile> .  The value for <nAttr> can
+     be calculated according to the table in the description.
+
+ ^bReturns^b
+
+     NNETEXTATT() returns a numeric value that contains the extended file
+     attributes of <cFile>.  These numeric values correspond to the table in
+     the description.  If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET EXTENDED ATTRIBUTES
+     Besides the DOS file attributes, Netware supports additional extended
+     file attributes.  NNETEXTATT() allows you to set or query these
+     attributes.  The coding of the extended file attributes can be seen in
+     the following table:
+
+     ^bTable 23.4:  Coding of Extended File Attributes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Value     CTNNET.CH    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     5       16        EXA_TTS      Transaction attribute
+     6       32        EXA_INDEX    Index attribute
+     7       64        EXA_READAU   Read audit attribute
+     8       128       EXA_WRITAU   Write audit attribute
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To specify more attributes, the numeric values must be added.
+
+ ^bNote^b
+
+     ^b^CFE^b  Currently, read and write audit attributes (protocol of read
+        and write access) are not supported by Netware.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check to see if the transaction attribute is set for
+        CLIENT.DBF:
+
+        IF ISBIT(NNETEXTATT('CLIENT.DBF'),5)
+           ? 'CLIENT.DBF is flagged transactional!'
+        ELSE
+           ? 'TTS not possible for CLIENT.DBF!'
+        ENDIF
+
+     ^b^CFE^b  Set the transaction attribute for CLIENT.DBF:
+
+        #include "ctnnet.ch"
+
+        NNETEXTATT('CLIENT.DBF',EXA_TTS)
+!seealso: tool_013.ngo:"NNETTTSBEG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETFILES()  Determines the extended information about subdirectories
+'------------------------------------------------------------------------------
+ ^bNNETFILES()^b
+ Determines the extended information about subdirectories
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETFILES([<cPath>],[<nAttr>|<cAttr>],[<l386>])
+     ^b   --> aFiles
+
+ ^bArguments^b
+
+     ^b<cPath>^b  Designates the directory for which the subdirectories are
+     read.  The parameter contains a search mask for the directories that are
+     read.  Within the search mask, the wildcard characters "?" and "*" can
+     be used.
+
+     ^b<nAttr>^b  Designates the file attributes in numeric form, according
+     to the following table.  The default (0) designates  normal files.
+
+     ^b<cAttr>^b  Designates the file attributes in form of a character
+     string, according to the following table .  The default value ("")
+     designates  normal files.
+
+     ^b<l386>^b Designates whether NNETFILES() also returns extended
+     information that is only available on Netware 3.x servers.  The
+     parameter must be designated .T..  The default value (.F.) does not
+     return extended information.
+
+ ^bReturns^b
+
+     NNETFILES() returns an array with subarrays (two-dimensional array).
+     Each subarray contains information about each directory entry that is
+     found.  The structure of the subarrays are described in the following
+     table.
+
+     ^bTable 23.5:  NNETFILES() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTNNET.CH      Definition ^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            cName          NF_NAME        Directory name
+     2            nSize          NF_SIZE        File size
+     3            cUpdDate       NF_UPDDATE     Date of last update
+     4            cUpdTime       NF_UPDTIME     Time of last update
+     5            dCrDate        NF_CREADATE    Creation date
+     6            nAttr          NF_ATTR        File attributes
+     7            nExtAttr       NF_EXTATTR     Extended file attributes
+     8            cOwner         NF_OWNER       Owner
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If <l386> has been designated .T., the returned array contains the
+     following extension:
+
+     ^bTable 23.6:  Extended NNETFILES() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTNNET.CH      Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     9            cArcDate       NF_ARCDATE     Date of last archive
+     10           nArcTime       NF_ARCTIME     Time of last archive
+     11           cArchiver      NF_ARCHIVER    Name of archivist
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NET FILES
+     NNETFILES() returns extended information about files on file servers.
+     The files can be specified by a search mask in <cPath> and by
+     determining the file attribute.  The attribute can be passed in the form
+     of a numeric value or a character string:
+
+     ^bTable 23.7:  Coding of File Attributes for NNETFILES()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symbol    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       R         Read Only
+     2       H         Hidden directories
+     4       S         System directories
+     32      A         Archive bit set
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To specify an attribute, numeric values must be added or the related
+     symbols must be added to a character string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read the files in L:\, and display the file names:
+
+        #include "ctnnet.ch"
+
+        aFiles=NNETFILES('L:\*.*')
+
+        FOR i=1 TO LEN(aFiles)
+           ? aFiles[i,NF_NAME]
+        NEXT i
+
+     ^b^CFE^b  Read the files in NANGERTOOLS1/VOL1:DATA, including the hidden
+        files and the system files:
+
+        aFiles=NNETFILES('NANGERTOOLS1/VOL1:DATA/*.*','SH')
+
+     ^b^CFE^b  Read the files in L:\ with extended 3.x information, and
+        display he file names and the date of the last archive:
+
+        #include "ctnnet.ch"
+
+        aFiles=NNETFILES('L:\*.*',,.T.)
+
+        FOR i=1 TO LEN(aFiles)
+           ? aFiles[i,NF_NAME],aFiles[i,NF_ARCDATE])
+
+        NEXT i
+!seealso: "NNETDIRS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMAXRGH() Sets or queries maximum and inherited rights for a directory
+'------------------------------------------------------------------------------
+ ^bNNETMAXRGH()^b
+ Sets or queries the maximum and inherited rights for a directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMAXRGH([<cPath>],[<nRights>|<cRights>]) --> nRights
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPath>^b  Designates a directory or a file (only Netware 3.x) of
+     which the maximum (Netware 2.x) or the inherited (Netware 3.x) rights
+     are set or queried.  If no value is passed for <cPath>, the maximum or
+     inherited rights for the current directory are determined.
+
+     ^b<cRights>^b  Designates a character string that contains the rights
+     for the new directory in form of symbols (maximum rights under Netware
+     2.x, inherited rights under Netware 3.x).  If no value is passed for
+     <cRights> or <nRights>, the rights for <cPath> are not modified.
+
+     ^b<nRights>^b  Designates a numeric value that contains a bit mask for
+     the determination of the rights for the new directory (maximum rights
+     under Netware 2.x, inherited rights under Netware 3.x).  If no value is
+     passed for <cRights> or <nRights>, the rights for  <cPath> are not
+     modified.
+
+ ^bReturns^b
+
+     NNETMAXRGH() returns the maximum rights (Netware 2.x) or the inherited
+     rights (Netware 3.x) for <cPath>.
+
+ ^bDescription^b
+
+     NOVELL NET MAXIMUM RIGHTS
+     Under Netware 2.x, NNETMAXRGH() allows you to set or query the maximum
+     rights for a directory.  The maximum rights are the rights a user can be
+     granted for a directory.  The maximum rights cannot be exceeded even if
+     additional trustee rights are defined for a user.  To query the rights,
+     do not pass a value for <cRights>|<nRights>.
+
+     Rights can be set by passing a character string whereby each character
+     indicates an attribute (<cRights>), or by passing a numeric value that
+     results from a bitwise OR operation of the binary significance  of the
+     attributes (nRights).  The maximum rights are coded as follows:
+
+     ^bTable 23.8:  Rights Coding under Netware 2.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write files
+     3       OPEN           Open files
+     4       CREATE         Create new files
+     5       DELETE         Delete files
+     6       PARENTAL       Create new directories
+     7       SEARCH         Search files in directories
+     8       MODIFY         Modify files or attributes
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The symbols for <cRights> correspond to the first letter of each keyword
+     under "Definition" in the above table.  Individual rights of the return
+     value can be checked with ISBIT().
+
+     Under Netware 3.x, NNETMAXRGH() allows you to set or query the inherited
+     rights for a directory as well as for individual files.  The inherited
+     rights determine which trustee rights a directory or a file inherits
+     from a parent directory, as long as a user has not been explicitly
+     granted trustee rights for the directory or file.
+
+     Under Netware 3.x, the rights are coded as follows:
+
+     ^bTable 23.9:  Rights Coding under Netware 3.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       RESERVED
+     4       CREATE         Create new files
+     5       ERASE          Delete files
+     6       ACCESS CONTROL Trustee rights can be modified
+     7       FILE SCAN      Search files in directories
+     8       MODIFY         Modify files or attributes
+     9       SUPERVISORY    All rights / can grant rights
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The first letter of each keyword under "Definition" represents the
+     symbol for <cRights>.
+
+ ^bNote^b
+
+     ^b^CFE^b  For detailed information about rights and security, see the
+        Novell documentation.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the rights for the directory L:DATA:
+
+        nRights=NNETMAXRGH('L:DATA')
+        IF NNETVER('L:')<'3'
+           ? 'Maximum rights:',nRights
+        ELSE
+           ? 'Inherited rights:',nRights
+        ENDIF
+
+     ^b^CFE^b  Set the rights for the directory VOL1:DATA/APRIL:
+
+        IF NNETVER()<'3'
+           NNETMAXRGH('VOL1:DATA/APRIL','RWOCDPSM')
+        ELSE
+           NNETMAXRGH('VOL1:DATA/APRIL','RWCEFM')
+        ENDIF
+!seealso: "NNETMKDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMKDIR()  Creates a directory on a volume
+'------------------------------------------------------------------------------
+ ^bNNETMKDIR()^b
+ Creates a directory on a volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMKDIR(<cPath>,<cRights>|<nRights>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPath>^b  Designates a directory on a server volume.  The path can
+     contain a server name.
+
+     ^b<cRights>^b  Designates a character string that contains the rights
+     for the new directory in form of symbols ( maximum rights under Netware
+     2.x, inherited rights under Netware 3.x).
+
+     ^b<nRights>^b  Designates a numeric value that contains a bit map to
+     determine the rights for the new directory ( maximum rights under
+     Netware 2.x, inherited rights under Netware 3.x).
+
+ ^bReturns^b
+
+     NNETMKDIR() returns .T. if the new directory has been created
+     successfully.
+
+ ^bDescription^b
+
+     NOVELL NET MAKE DIRECTORY
+     NNETMKDIR() allows you to create a new directory on any server volume.
+     The volume must not be mapped to a drive.  <cPath> is the path
+     designation for the new directory.  With the parameters <cRights> or
+     <nRights>, rights can be assigned for the new directory.  The rights can
+     be passed as a string where each character represents an attribute, or
+     as a numeric value that results from a bit wise OR operation of the
+     binary significance of the attributes.
+
+     The possible rights are interpreted differently under Novell 2.x and
+     3.x.
+
+     The following table contains the rights under Netware 2.x:
+
+     ^bTable 23.10:  Rights Coding under Netware 2.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       OPEN           Open files
+     4       CREATE         Create new files
+     5       DELETE         Delete files
+     6       PARENTAL       Create new directories
+     7       SEARCH         Search files in directories
+     8       MODIFY         Modify files or attributes
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The first letter of each keyword under "Definition" represents the
+     symbol for <cRights>.  Under Novell 2.x, the rights necessary to create
+     a directory are the maximum rights a user can get for a directory.  Even
+     if additional trustee rights are granted to a user, the maximum rights
+     cannot be overwritten.
+
+     The following table contains the possible rights under Netware 3.x:
+
+     ^bTable 23.11:  Rights Coding under Netware 3.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       RESERVED
+     4       CREATE         Create new files
+     5       ERASE          Delete files
+     6       ACCESS CONTROL Trustee rights can be modified
+     7       FILE SCAN      Search files in directories
+     8       MODIFY         Modify files or attributes
+     9       SUPERVISORY    All rights / can grant rights
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The first letter of each keyword under "Definition" represents the
+     symbol for <cRights>.  Under Novell 3.x, the rights that are granted
+     when a user creates the directory specify which trustee rights are
+     inherited from the parent directory, as long as the user has not been
+     granted trustee rights for the directory.
+
+ ^bNote^b
+
+     ^b^CFE^b  For detailed information about rights and security, see the
+        Novell documentation.
+
+ ^bExample^b
+
+     Create the directory VOL1:DATA/APRIL on the default server:
+
+     IF NNETVER()<'3'
+     NNETMKDIR('VOL1:DATA/APRIL','RWOCDPSM')
+     ELSE
+     NNETMKDIR('VOL1:DATA/APRIL','RWCEFM')
+     ENDIF
+!seealso: "NNETRENDIR()" "NNETRMDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPURGE()  Removes the files that are marked for deletion from the server
+'------------------------------------------------------------------------------
+ ^bNNETPURGE()^b
+ Removes the files that are marked for deletion from the server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPURGE(<cFile>,[<lAll>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cFile>^b  Designates the file that is deleted, but depends on the
+     Netware version that is used.
+
+     Under Netware 3.x, <cFile> designates the file that is deleted.  The
+     file name can contain a path, but the path must be unique.  Wildcard
+     characters are not allowed.
+
+     Under Netware 2.x, the operating system permits a definite purging of
+     files only for the entire file server.  If NNETPURGE() determines that
+     the server is running under Netware 2.x after a server change is implied
+     by <cFile>, the file specification in <cFile> is no longer taken into
+     account.  All the files on the related server that are marked for
+     deletion are purged.
+
+     ^b<lAll>^b  Designates the files that are deleted.  <lAll> is only taken
+     into account if the function is called on a Netware 2.x server.  If the
+     parameter is designated .F., all the marked files of the current user
+     are deleted.  If the parameter is designated .T., all the files of the
+     related file server that are marked for deletion are deleted.  The
+     default value is .F..
+
+ ^bReturns^b
+
+     NNETPURGE() returns .T. if the function has been completed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PURGE
+     NNETPURGE() allows you to physically delete all the files that are
+     marked for deletion on a server disk.  (These files can no longer be
+     restored with the Novell utility SALVAGE).  The function is supported
+     differently by Netware 2.x and 3.x.  Under Netware 3.x, files can be
+     purged individually.  Under Netware 2.x, all the files of the current
+     user (<lAll>=.F.) or all the files that are marked for deletion
+     (<lAll>=.T.) are removed.  Console operator rights are required to purge
+     all the files that are marked for deletion.  You should query the
+     Netware version with NNETVER() before calling NNETPURGE() to avoid a
+     purging of all files marked for deletion.
+
+ ^bNote^b
+
+     ^b^CFE^b  For compatibility reasons the previous version of the
+        NNETPURGE() function is still supported (NNETPURGE() -->
+        lSuccessful).  A call in this form is only valid for Netware 2.x
+        servers.  With console operator rights, NNETPURGE() purges of all of
+        the files that are marked for deletion.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete and purge the file CONFID.DBF:
+
+        NNETMAP('L','FSERVER386/SYS:DATA')
+
+        ERASE L:CONFID.DBF
+
+        IF NNETVER('FSERVER386') > '2'
+           NNETPURGE('L:CONFID.DBF')
+        ENDIF
+
+     ^b^CFE^b  Purge all the files that are marked for deletion for the
+        current user on FSERVER286 (2.x server):
+
+        NNETPURGE('FSERVER286/SYS:')
+
+        The definition of the volume SYS: is necessary to identify FSERVER286
+        as server name.  If FSERVER286 contains more volumes, all the volumes
+        are purged.
+!seealso: "NNETSALVAG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRENDIR() Renames a directory on a volume
+'------------------------------------------------------------------------------
+ ^bNNETRENDIR()^b
+ Renames a directory on a volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRENDIR(<cPath>,<cNewDir>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cPath>^b  Designates an existing directory on a server volume.  The
+     path can contain a server name.
+
+     ^b<cNewDir>^b  Designates the new name for the directory specified by
+     <cPath>.  This character string can contain a maximum of an eight-
+     character name, a period, and a three-character extension.
+
+ ^bReturns^b
+
+     NNETRENDIR() returns .T. if the directory has been renamed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET RENAME DIRECTORY
+     NNETRENDIR() allows you to rename an existing directory (<cPath>) on any
+     server volume.  The volume must not be mapped to a drive.  Under Netware
+     2.x, the rights MODIFY and PARANTEL are required to rename a directory.
+     Under Netware 3.x, the right MODIFY for the parent directory of <cPath>
+     is required to rename a directory.
+
+ ^bNote^b
+
+     ^b^CFE^b  The default directories on volume SYS: (LOGIN, PUBLIC, MAIL,
+        SYSTEM) cannot be renamed.
+
+ ^bExamples^b
+
+     Rename the directory ACCOUNT/VOL1:DATEN/ACT to
+     ACCOUNT/VOL1:DATEN/BACKUP:
+
+     IF NNETRENDIR('ACCOUNT/VOL1:DATEN/ACT','BACKUP')
+     ? 'Directory has been renamed successfully!'
+     ELSE
+     ? 'Failure during rename!'
+     ENDIF
+!seealso: "NNETMKDIR()" "NNETRMDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRGHMSK() Returns the rights mask, dependent on the Netware version
+'------------------------------------------------------------------------------
+ ^bNNETRGHMSK()^b
+ Returns the rights mask, dependent on the Netware version
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRGHMSK([<cServer>|<nConId>]) --> cRightsMask
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     rights mask is determined.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETRGHMSK() returns a string that contains the rights symbols in a
+     descending order of their bit significance.
+
+ ^bDescription^b
+
+     NOVELL NET RIGHTS MASK
+     The possible rights and their definitions are interpreted differently
+     under Novell 2.x and 3.x.  NNETRGHMSK() returns a character string that
+     contains the symbols of the rights, dependent on the Netware version.
+     The possible rights can be seen in the following tables.  The first
+     letter of each keyword under "Definition" represents the symbol used by
+     NNETRGHMSK().
+
+     The following table contains the rights under Netware 2.x:
+
+     ^bTable 23.12:  Rights Coding under Netware 2.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       OPEN           Open files
+     4       CREATE         Create new files
+     5       DELETE         Delete files
+     6       PARENTAL       Create new directories
+     7       SEARCH         Search files in directories
+     8       MODIFY         Modify files or attributes
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following table contains the possible rights under Netware 3.x:
+
+     ^bTable 23.13:  Rights Coding under Netware 3.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       RESERVED
+     4       CREATE         Create new files
+     5       ERASE          Delete files
+     6       ACCESS CONTROL Trustee rights can be modified
+     7       FILE SCAN      Search files in directories
+     8       MODIFY         Modify files or attributes
+     9       SUPERVISORY    All rights / can grant rights
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The return value of NNETRGHMSK() can be used in the function BITTOC().
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETRGHTMSK() returns a constant that depends on the Netware
+        version on the file server used.  The function does not return
+        information about the access rights of the currently logged in user.
+
+ ^bExample^b
+
+     In the following example, file server TEST286 runs under Netware 2.15
+     and file server WORK386 runs under Netware 3.11:
+
+     ? NNETRGHMSK('TEST286')   // Returns: MSPDCOWR
+     ? NNETRGHMSK('WORK386')   // Returns: SMFAEC WR
+!seealso: "NNETRIGHTS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRIGHTS() Tests for access rights to a Novell file server directory
+'------------------------------------------------------------------------------
+ ^bNNETRIGHTS()^b
+ Tests for access rights to a Novell file server directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRIGHTS(<cPath>) --> nBitMap
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cPath>^b  Designates the complete path, including the drive
+     designation for the directory that is tested.
+
+ ^bReturns^b
+
+     NNETRIGHTS() returns a value between 0 and 255 that corresponds to a bit
+     map for the related directory rights.  A right is present when the
+     designated bit is set at 1.
+
+     ^bTable 23.14:  Access Right Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read from files
+     2       WRITE          Write to files
+     3       OPEN           Open files
+     4       CREATE         Create new files
+     5       DELETE         Delete files
+     6       PARENTAL       Create subdirectories
+     7       SEARCH         Search for files in directories
+     8       MODIFY         Change file names or attributes
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Beginning with NETWARE386 version 3.0, the numeric range for the access
+     rights coding has been extended from 1 bit up to 9 bits.  Additionally,
+     the meaning of the individual bits has been changed according to the
+     following table.
+
+     ^bTable 23.15:  Access Right Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read from files
+     2       WRITE          Write to files
+     3       RESERVED
+     4       CREATE         Create new files
+     5       ERASE          Delete files
+     6       ACCESS CONTROL Trustee rights can be changed
+     7       FILE SCAN      Search for files in directories
+     8       MODIFY         Change file names or attributes
+     9       SUPERVISORY    All rights / can assign access rights
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     With an invalid parameter, the function returns 0 (which equates to no
+     rights).
+
+ ^bDescription^b
+
+     This function determines the access rights to a directory of a Novell
+     file server.  The parameter must always relate the complete path to the
+     root directory and must include the drive designation.  The construction
+     of this type of absolute path can be done with the aid of functions like
+     DIRNAME(), DISKNAME(), and TRUENAME().
+
+     You can determine if a Novell network is active and if a drive is
+     resident on a file server with the NETDISK() and NNETWORK() functions.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function always returns a value of 511 for a local drive
+        and displays full rights to the designated directory.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the rights to the CA-Clipper directory on drive J:
+
+        ? NNETRIGHTS("J:\CLIPPER")                // Returns numeric
+                                                  // value
+
+     ^b^CFE^b  Test for a particular right:
+
+        ? ISBIT(NNETRIGHTS("J:\CLIPPER"), 6)      // Allowed to create
+                                                  // a directory
+
+     ^b^CFE^b  Display the rights in the current directory:
+
+        ? NNETRIGHTS(DISKNAME() + ":" + DIRNAME())
+
+     ^b^CFE^b  Rights depend on the version:
+
+        cDrive := "J:"
+        IF NNETVER(cDrive) < "3.00"
+           ? BITTOC(NNETRIGHTS(cDrive+"\CLIPPER"), "MSPDCOWR", .T.)
+        ELSE
+           ? BITTOC(NNETRIGHTS(cDrive+"\CLIPPER"), "SMFAEC WR", .T.)
+        ENDIF
+!seealso: tool_001.ngo:"NETDISK()" tool_014.ngo:"NNETWORK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRMDIR()  Removes a directory from a volume
+'------------------------------------------------------------------------------
+ ^bNNETRMDIR()^b
+ Removes a directory from a volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRMDIR(<cPath>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cPath>^b  Designates an existing directory on a server volume.  The
+     path can contain a server name.
+
+ ^bReturns^b
+
+     NNETRMDIR() returns .T. if the directory has been removed successfully.
+
+ ^bDescription^b
+
+     NOVELL NET REMOVE DIRECTORY
+     NNETRMDIR() allows you to remove an existing directory (<cPath>) from a
+     server volume.  The volume must not be mapped to a drive.  Under Netware
+     2.x, the rights DELETE and PARANTEL are required to remove a directory.
+     Under Netware 3.x, the right ERASE for the parent directory of <cPath>
+     is required to remove a directory.  A directory can be removed only if
+     it is empty and it is not currently mapped on another workstation.
+
+ ^bNote^b
+
+     ^b^CFE^b  The default directories on volume SYS: (LOGIN, PUBLIC, MAIL,
+        SYSTEM) cannot be removed.
+
+ ^bExample^b
+
+     Remove the directory VOL1:DATEN from file server ACCOUNT:
+
+     IF NNETRMDIR('ACCOUNT/VOL1:DATEN')
+     ? 'Directory has been removed successfully!'
+     ELSE
+     ? 'Directory could not be removed!'
+     ENDIF
+!seealso: "NNETMKDIR()" "NNETRENDIR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSALLST() Determines the list of recoverable files (Netware 3.x only)
+'------------------------------------------------------------------------------
+ ^bNNETSALLST()^b
+ Determines the list of recoverable files (Netware 3.x only)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSALLST([<cPath>]) --> aFiles
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cPath>^b  Designates the directory on a server volume in which the
+     recoverable files are searched.  The default value designates the
+     current directory on the current drive.
+
+ ^bReturns^b
+
+     NNETPSQL() returns an array with subarray (two-dimensional array).  Each
+     subarray contains information about a recoverable file.  For the
+     subarray structure, see the following table:
+
+     ^bTable 23.16:  NNETSALLST() Subarray Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Metasymbol     CTNNET.CH      Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            cName          SAL_NAME       File name
+     2            cSize          SAL_SIZE       File size
+     3            dDate          SAL_DATE       Salvage date
+     4            cTime          SAL_TIME       Salvage time
+     5            cDeletor       SAL_DELETOR    Deletor
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs, the function returns an empty array.
+
+ ^bDescription^b
+
+     NOVELL NET SALVAGE LIST
+     Files on a server volume that are deleted within DOS or within an
+     application are logically marked for deletion and can be recovered with
+     the Novell utility SALVAGE or the CA-Clipper Tools function
+     NNETSALVAG().  NNETSALLST() returns a list of all files in the directory
+     <cPath> that can be recovered.  This service is only available under
+     Netware 3.x.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the list of recoverable files in L:\DATA.  Display
+        the name of the files and the name of the user that deleted these
+        files:
+
+        #include "ctnnet.ch"
+
+        aFiles=NNETSALLST('L:\DATA')
+
+        FOR i=1 TO LEN(aFiles)
+           ? aFiles[i,SAL_NAME],aFiles[i,SAL_DELETOR]
+        NEXT i
+
+     ^b^CFE^b  Purge all recoverable files in L:\DATA:
+
+        #include "ctnnet.ch"
+
+        aFiles=NNETSALLST('L:\DATA')
+
+        FOR i=1 TO LEN(aFiles)
+           NNETPURGE('L:\DATA\'+aFiles[i,SAL_NAME])
+        NEXT i
+!seealso: "NNETSALVAG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSALVAG() Recovers the files marked for deletion
+'------------------------------------------------------------------------------
+ ^bNNETSALVAG()^b
+ Recovers the files marked for deletion
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSALVAG(<cOldFile>,[<cNewFile>]) --> cFile
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cOldFile>^b  Designates the file that is marked for deletion, but
+     depends on the Netware version used.
+
+     Under Netware 3.x, <cFile> designates the file that is  recovered.  The
+     file name can contain a path, but the path must be unique.  Wildcard
+     characters are not allowed.
+
+     Under Netware 2.x, the operating system only permits files to be
+     salvaged sequentially for the entire volume.  If NNETSALVAG() determines
+     that the server is running under Netware 2.x after a server change is
+     implied by <cOldFile>, only the volume definition from the remaining
+     part of <cOldFile> is taken into account.  The first recoverable file is
+     salvaged.
+
+     ^b<cNewFile>^b  Designates the name under which <cOldFile> is recovered.
+     This parameter is only taken into account if the function is called on a
+     Netware 3.x server.  <cNewFile> can only contain a file name (an eight-
+     character name, and a three-character extension).
+
+ ^bReturns^b
+
+     NNETSALVAG() returns the name of the file that is recovered.  If an
+     error occurs, the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET SALVAGE
+     Files on a server volume that are deleted within DOS or within an
+     application are logically marked for deletion.   These files can be
+     recovered with the function NNETSALVAG().  The function is supported
+     differently under Netware 2.x and 3.x.  Under Netware 3.x, files can be
+     salvaged individually.  Under Netware 2.x, only the first recoverable
+     file of the current user on the related volume is salvaged.  Files
+     cannot be recovered individually under Netware 2.x.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Salvage the file CLIENT.DBF on a Netware 3.x server:
+
+        NNETMAP('L','FSERVER386/SYS:DATA')
+
+        NNETSALVAG('L:CLIENT.DBF')
+
+     ^b^CFE^b  Salvage all recoverable files in the directory L:\DATA:
+
+        #include "ctnnet.ch"
+
+        aFiles=NNETSALLST('L:\DATA')
+
+        FOR i=1 TO LEN(aFiles)
+           NNETSALVAG('L:\DATA\'+aFiles[i,SAL_NAME])
+        NEXT i
+
+     ^b^CFE^b  Salvage all the files of the current user on volume SYS: of a
+        Netware 2.x server:
+
+        WHILE .T.
+           IF EMPTY(cFile:=NNETSALVAG('FSERVER286/SYS:'))
+              EXIT
+           ENDIF
+           ? cFile
+        ENDDO
+!seealso: "NNETPURGE()" "NNETSALLST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETTRSLST() Determines the trustee directories and files
+'------------------------------------------------------------------------------
+ ^bNNETTRSLST()^b
+ Determines the trustee directories and files
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETTRSLST(<cName>,[<nType>],[<cServer>|<nConId>]
+     ^b   --> aTrusteeDir
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b  Designates the name of the bindery object for which the
+     trustee directories and files are determined.  In most cases, <cName>
+     represents the login name of a user.
+
+     ^b<nType>^b  Designates the object type of <cName>.  The default value
+     designates the object type, user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     trustee directories and files are determined.  Your workstation must be
+     attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETTRSLST() returns a two-dimensional array.
+
+     The number of lines of the array corresponds to the number of trustee
+     directories and files of <cName> on the related file server.  Each line
+     (subarray) contains a complete path name (including the volume name) and
+     the rights of <cName> in this directory.
+
+ ^bDescription^b
+
+     NOVELL NET TRUSTEES LIST
+     Under Netware, the access rights for each user can be assigned on the
+     directory level.  Under Netware 3.x, the access rights for each user can
+     be assigned on the file level.  These rights are called trustee rights.
+     NNETTRSLST() allows you to determine all trustee assignments for a
+     bindery object.  However, supervisor rights on the related file server
+     are required.
+
+     NNETTRSLST() returns a two-dimensional array that contains each trustee
+     assignment as a separate line (subarray).  Each subarray consists of two
+     elements: a complete pathname that specifies the directory or the file
+     for which the trustee rights have been granted, and a numeric value that
+     represents the rights that have been granted to <cName> for the
+     directory.
+
+     The interpretation of the numeric value depends on the Netware version
+     used.  Table 23.17 and 23.18 show the definition of the bits.  A right
+     is granted if the corresponding bit is represented in the return value.
+
+     ^bTable 23.17:  Rights Coding under Netware 2.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write files
+     3       OPEN           Open files
+     4       CREATE         Create new files
+     5       DELETE         Delete files
+     6       PARENTAL       Create new directories
+     7       SEARCH         Search files in directories
+     8       MODIFY         Modify files or attributes
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bTable 23.18:  Rights Coding under Netware 3.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       RESERVED
+     4       CREATE         Create new files
+     5       ERASE          Delete files
+     6       ACCESS CONTROL Trustee rights can be modified
+     7       FILE SCAN      Search files in directories
+     8       MODIFY         Modify files or attributes
+     9       SUPERVISORY    All rights / can grant rights
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  For detailed information about rights and security, see the
+        Novell documentation.
+
+ ^bExamples^b
+
+     Determine and display the trustee directories and files for user MIKE.
+     Granted rights are represented by the first letter of their definition:
+
+     aTrust=NNETTRSLST('MIKE')
+     FOR i = 1 TO LEN(aTrust)
+     ? PADR(aTrust[i,1],64),BITTOC(aTrust[i,2],NNETRGHMSK(),.T.)
+     NEXT i
+!seealso: "NNETTRUST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETTRUST()  Grants or removes trustee rights
+'------------------------------------------------------------------------------
+ ^bNNETTRUST()^b
+ Grants or removes trustee rights
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETTRUST(<cName>,[<nType>],<cPath>,[<cRights>|
+     ^b   <nRights>]    --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b  Designates the name of the bindery object for which the
+     trustee rights are granted or removed.  In most cases, <cName>
+     represents the login name of a user.
+
+     ^b<nType>^b  Designates the object type of <cName>.  The default value
+     designates the object type, user.
+
+     ^b<cPath>^b  Designates a path designation that specifies a directory or
+     a file for which the trustee rights are granted.  The path can be passed
+     in the Novell notation or in the DOS notation if the directory or file
+     has been mapped to a drive.
+
+     ^b<cRights>^b  Designates a character string that contains the symbols
+     for the rights that are granted to <cName> on <cPath>.
+
+     ^b<nRights>^b  Designates a numeric value that contains a bit mask for
+     the rights that are granted to <cName> on <cPath>.
+
+ ^bReturns^b
+
+     NNETTRUST() returns .T. if the rights have been granted or removed
+     successfully.
+
+ ^bDescription^b
+
+     NOVELL NET TRUSTEE
+     Under Netware, the access rights for each user can be assigned on the
+     directory level.  Under Netware 3.x, the access rights for each user can
+     be assigned on the file level.  These rights are called trustee rights.
+     NNETTRUST() allows you to grant or remove trustee rights within a
+     CA-Clipper application  However, supervisor rights are required.
+
+     <cPath> specifies the directory or the file for which the trustee rights
+     are granted or removed.  To set trustee rights, a value must be passed
+     for <cRights> or <nRights>.  <cRights> must contain a character string
+     in which each character represents an attribute.  <nRights> must be
+     passed as numeric value resulting from a bitwise OR operation of the
+     binary significance of the attributes.
+
+     The possible rights under Netware 2.x and Netware 3.x are shown in the
+     following tables:
+
+     ^bTable 23.19:  Rights Coding under Netware 2.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write files
+     3       OPEN           Open files
+     4       CREATE         Create new files
+     5       DELETE         Delete files
+     6       PARENTAL       Create new directories
+     7       SEARCH         Search files in directories
+     8       MODIFY         Modify files or attributes
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bTable 23.20:  Rights Coding under Netware 3.x^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition     Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       READ           Read files
+     2       WRITE          Write to files
+     3       RESERVED
+     4       CREATE         Create new files
+     5       ERASE          Delete files
+     6       ACCESS CONTROL Trustee rights can be modified
+     7       FILE SCAN      Search files in directories
+     8       MODIFY         Modify files or attributes
+     9       SUPERVISORY    All rights / can grant rights
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The first letter of the definition represents the symbol for <cRights>.
+
+     To remove trustee rights, do not pass a value for the parameters
+     <cRights>|<nRights>.
+
+ ^bNote^b
+
+     ^b^CFE^b  For detailed information about rights and security, see the
+        Novell documentation.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Grant read and write access and the rights to create, delete,
+        search, and modify files and directories for user MIKE on directory
+        VOL1:DATEN/APRIL on the default server.  The following example
+        differentiates between Netware 2.x and 3.x:
+
+        IF NNETVER()<'3'
+        lOk=NNETTRUST('MIKE',,'VOL1:DATEN/APRIL','RWOCDPSM')
+        ELSE
+        lOk=NNETTRUST('MIKE',,'VOL1:DATEN/APRIL','RWCEFM')
+        ENDIF
+        IF lOk
+         ? 'Trustee rights set successfully'
+        ELSE
+         ? 'Rights could not be set, supervisor rights required!'
+        ENDIF
+
+     ^b^CFE^b  Remove the trustee rights for user MIKE in directory
+        VOL1:DATEN/APRIL:
+
+        IF NNETTRUST('MIKE',,'VOL1:DATEN/APRIL')
+         ? 'Trustee rights removed successfully'
+        ELSE
+         ? 'Rights could not be removed, supervisor rights required!'
+        ENDIF
+!seealso: "NNETTRSLST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETUSRFRE() Determines the server disk space still available to a user
+'------------------------------------------------------------------------------
+ ^bNNETUSRFRE()^b
+ Determines the server disk space still available to a user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETUSRFRE([<cUser>]) --> nByte
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cUser>^b  Designates the object name, which must be of the type,
+     user.  The default value designates the logged in user.
+
+ ^bReturns^b
+
+     NNETUSRFRE() returns the disk space that an object (user) can still
+     occupy on the default server.
+
+ ^bDescription^b
+
+     NOVELL NET USER'S FREE SPACE
+     Available free disk capacity on the file server can be limited relative
+     to an object in newer Novell versions; for example, user JIM can only
+     occupy 10 MB.  With NNETUSRFRE(), you can determine how much disk
+     capacity an individual user still has available.  If the <cUser>
+     parameter is not specified, the function returns the space available for
+     the login name.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Console privileges are required in order to determine this
+        information for other users; however, the user's own free capacity
+        can be determined without additional rights.
+
+     ^b^CFE^b  The value returned for free available space does not guarantee
+        that it is actually available on the file server hard disk.  This can
+        be done using NNETVOLFRE().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine your individual disk space still available:
+
+        ? NNETUSRFRE()
+
+     ^b^CFE^b  Determine the free capacity for user JIM.  This function
+        requires console privileges at least:
+
+        IF NNETCOPRIV()
+           ? NNETUSRFRE("JIM")      // e.g. 2000 kB
+        ENDIF
+!seealso: tool_004.ngo:"NNETSETSRV()" tool_003.ngo:"NNETCOPRIV()" tool_003.ngo:"NNETSPRVSR()" "NNETVOLFRE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETVOLFRE() Determines the available capacity of a server volume
+'------------------------------------------------------------------------------
+ ^bNNETVOLFRE()^b
+ Determines the available capacity of a server volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETVOLFRE(<nVolume>) --> nBytesAvailable
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nVolume>^b  Designates the number of the selected volume on the
+     related default file server.  This value can be from 0 to 31.
+
+ ^bReturns^b
+
+     NNETVOLFRE() returns the available free memory capacity on the volume
+     designated by <nVolume>.
+
+ ^bDescription^b
+
+     NOVELL NET VOLUME FREE
+     With NNETVOLFRE(), you can determine the amount of free memory capacity
+     available for each volume on the default file server.  In this way you
+     can determine if memory intensive file operations can be executed
+     without difficulty, or if files can be copied onto the server.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the station have console
+        privileges at least.
+
+ ^bExample^b
+
+     Determine the capacity still available for all volumes:
+
+     FOR I = 0 TO NNETVOLNUM()
+        ? NNETVOLFRE(I)         // Available capacity
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVOLNUM()" "NNETVOLNAM()" "NNETVOLMAX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETVOLMAX() Determines the maximum capacity of a server volume
+'------------------------------------------------------------------------------
+ ^bNNETVOLMAX()^b
+ Determines the maximum capacity of a server volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETVOLMAX(<nVolume>) --> nMaxBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nVolume>^b  Designates the selected volume number of the related
+     default file server.  This value can be from 0 to 31.
+
+ ^bReturns^b
+
+     NNETVOLMAX() returns the total capacity available on the volume
+     designated by <nVolume>.
+
+ ^bDescription^b
+
+     NOVELL NET VOLUME MAXIMUM
+     Using NNETVOLMAX(), you can determine the total available capacity of
+     any volume on the default file server.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the station have console
+        privileges at least.
+
+ ^bExample^b
+
+     Determine the capacities for all volumes:
+
+     FOR I = 0 TO NNETVOLNUM()
+        ? NNETVOLMAX(I)         // The related capacity
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVOLNUM()" "NNETVOLNAM()" "NNETVOLFRE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETVOLNAM() Determines the name of a server volume
+'------------------------------------------------------------------------------
+ ^bNNETVOLNAM()^b
+ Determines the name of a server volume
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETVOLNAM(<nVolume>) --> cVolumeName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nVolume>^b  Designates the number of the selected default file server
+     volume.  This value can be from 0 to 31.
+
+ ^bReturns^b
+
+     NNETVOLNAM() returns the name of the volume selected using <nVolume> on
+     the default file server.
+
+ ^bDescription^b
+
+     NOVELL NET VOLUME NAME
+     With NNETVOLNAM(), you can determine the name of a volume on the default
+     file server.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function requires that the station have console
+        privileges at least.
+
+ ^bExample^b
+
+     Determine the names of all volumes:
+
+     FOR I = 0 TO NNETVOLNUM()
+        ? NNETVOLNAM(I)         // Displays related names
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVOLNUM()" "NNETVOLMAX()" "NNETVOLFRE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETVOLNUM() Determines the maximum number of available server volumes
+'------------------------------------------------------------------------------
+ ^bNNETVOLNUM()^b
+ Determines the maximum number of available server volumes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETVOLNUM() --> nMaxVol
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETVOLNUM() returns the maximum number of available volumes on the
+     default file server.  If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET VOLUME NUMBER
+     This function returns the maximum number of available volumes for the
+     default file server.  This value can be between 0 and NNETVOLNUM().
+     With NETVOLNUM() you can determine the name and total free capacity for
+     each active volume.  You can also determine all of the available
+     directory entries that are possible.
+
+ ^bNote^b
+
+     ^b^CFE^b  Volumes between 0 and NNETVOLNUM() can be inactive (not
+        mounted).
+
+ ^bExample^b
+
+     Determine the names of all the volumes.  The function returns a null
+     string if a volume is inactive:
+
+     FOR I = 0 TO NNETVOLNUM()
+        ? NNETVOLNAM(I)         // Displays related names
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVOLNAM()" "NNETVOLMAX()" "NNETVOLFRE()" 
+'------------------------------------------------------------------------------
+
+
+

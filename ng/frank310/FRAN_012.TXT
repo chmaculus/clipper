@@ -1,0 +1,855 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADg_many()            The engine function
+'------------------------------------------------------------------------------
+ ADg_many( <aGets>, [bConfig], [xHelpID], [xHelpHeader] ) --> <xRetVal>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements an ADread() of an array of Gets.  Automatically draws a box
+ around the Gets, and centers the box on the screen.
+
+ <aGets> is an array of Get variables to be read.
+
+ [bConfig] is a configuration block.  If passed, ADg_many() EVALuates it to
+ configure itself.  It is typically a series of ADgm_.. API calls.
+
+ [xHelpID] is a Help ID string, or an array of Help ID strings.  If it is a
+ string, it applies for the whole Read.  If it is an array, there must be one
+ string for each Get in <aGets>.
+
+ [xHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.  If it is
+ passed as a string, it will be used as title for the Help screens of all the
+ Gets.  If passed as an array, each element in the array must correspond to
+ each Get.
+
+ <xRetval> is the return value whose type depends on ADg_many()'s
+ configuration.  If it is configured to be _display only_, the return value
+ is the saved screen which can be passed to ADrestscn() to restore it.
+ Otherwise, it is a logical value.  It is TRUE if any of the Gets was
+ changed AND the Read was saved.  It is a FALSE in any other situation.
+
+ v2.30 -> v3.00
+ --------------
+ 1.  Added the 4th parameter, [xHelpHeader].
+ 2.  Modified the type of the return value depending on how it is
+     configured.  See also ADgm_disponly().
+
+ Example 1
+ ---------
+ func main()
+ local lStatus
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk";
+                }
+ cls
+ lStatus := ADg_many( aGets )
+ ? if( lStatus, "Saved", "Aborted and/or Not Changed" )
+ ? aGets[1]
+ ? aGets[2]
+ return nil
+
+ Example 2
+ ---------
+ // Adds labels to the Gets, changes the default colors, and relocates the
+ // box.
+ func main()
+ local lStatus
+ local aLabels := {;
+                     "Library",;
+                     "Author",;
+                     "Impression";
+                  }
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_labels( aLabels ),;                   // labels
+                     ADgm_corner( 2,2 ),;                       // relocates
+                     ADgm_color( { "W+/B", "GR+/R", "W/B" } );  // colors
+                  }
+ cls
+ lStatus := ADg_many( aGets, bConfig )
+ ? if( lStatus, "Saved", "Aborted and/or Not Changed" )
+ ? aGets[1]
+ ? aGets[2]
+ return nil
+!seealso: fran_011.ngo:"ADg_one()" fran_011.ngo:"ADg_oneb()" "ADgm_multi()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADgm_boxattr()        Configures the attributes of the box.
+'------------------------------------------------------------------------------
+ ADgm_boxattr( <aAttrib> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the ADg_many() box attributes.
+
+ <aAttrib> is an array consisting of these elements:
+
+   1 - box frame string
+   2 - shadow (FALSE -> no shadow, TRUE -> with N+/N shadow, color
+       specifier -> shadow with that color).
+   3 - explode (FALSE -> no explosion, TRUE -> exploding box)
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local aGets := {;
+                       "Frankie Clipper Library",;
+                       "The Programmer's Desk",;
+                       "Excellent!";
+                }
+ local bConfig := {||ADgm_boxattr( { FRAME11, "B/N", .F. } )}
+
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+                                                                                                                                                                           return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_calc()           Tells ADg_many() which Gets are to be CALC-claused.
+'------------------------------------------------------------------------------
+ ADgm_calc( <aIsCalc> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADg_many() which Gets are to be CALC-claused.
+
+ <aIsCalc> is an array of logical values, one for each Get.  A TRUE indicates
+ that the corresponding Get is to be CALC-claused.
+
+ Example
+ -------
+ func main()
+ local aIsCalc := { .t., .f., .t. }
+ local aGets := {;
+                       "Frankie Clipper Library",;
+                       "The Programmer's Desk",;
+                       "Excellent!";
+                }
+ local bConfig := {||ADgm_calc( aIsCalc )}
+
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+                                                                                                                                                                           return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_color()          Redefines the colors
+'------------------------------------------------------------------------------
+ ADgm_color( <aColor> ) --> <aOldColor>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Changes ADg_many()'s colors.
+
+ <aColor> is an array of 4 color strings.
+
+    1 - the label and box color
+    2 - the Get enhanced color
+    3 - the Get unselected color
+    4 - Box header and footer color
+
+ The default Get colors are the current Clipper color settings.  The default
+ header/footer color is whatever the current label and box color is.  You
+ may pass a NIL in any of the elements if you do not want to change that
+ corresponding color setting.
+
+ <aOldColor> is the array of old color settings
+
+ Example
+ -------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_color( { "W+/B", "GR+/R", "W/B" } )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_corner()         Specifies the location of the edit box.
+'------------------------------------------------------------------------------
+ ADgm_corner( [nTop], [nLeft] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the top/left corner of the edit box.  By default, the box is
+ centered on the screen.
+
+ [nTop] is the new top coordinate.  If this is not passed, the box is
+ centered vertically.
+
+ [nLeft] is the new left coordinate.  If this is not passed, the box is
+ centered horizontally.
+
+ Example
+ -------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_corner( 0, 0 )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_disponly()       Configures ADg_many() to be _display_only_
+'------------------------------------------------------------------------------
+ ADgm_disponly() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures ADg_many() to be _display_only_.
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ local aScnInfo, aScn, nKey, lExit := .f., aCsr := ADsavecsr(0)
+ local aLabels := {;
+                     "Hotel #",;
+                     "Hotel Name",;
+                     "Street",;
+                     "City",;
+                     "State",;
+                     "Zip";
+                  }
+ local bConfig := {||ADgm_labels( aLabels ),;                   // labels
+                     ADgm_color( { "W+/B", "GR+/R", "W/B" } ),;  // colors
+                     ADgm_boxattr( { , .f., .f. } ),; // no expl nor shadow
+                     ADgm_disponly();
+                  }
+ cls
+ use hotel
+ aScnInfo := xInfo()
+
+ dispbegin()
+ do while !lExit
+    aScn := ADg_many( ADgetrec(), bConfig )
+    dispend()
+    if ( nKey := inkey(0) ) == K_ESC
+        lExit := .t.
+    elseif nKey == K_DOWN
+        skip
+    elseif nKey == K_UP
+        skip -1
+    endif
+
+    dispbegin()
+    ADrestscn( aScn )
+ enddo
+ dispend()
+
+ use
+ ADrestscn( aScnInfo )
+ ADrestcsr( aCsr )
+ return nil
+
+ static func xInfo()
+ return ADmessage( { "Use Down and Up arrow keys to browse",;
+                     "through the database, Esc to quit." },;
+                   19, NIL, .f., .f. )
+
+ NOTE: If ADg_many() is configured as _display_only_, it's return value
+       is the overwritten screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_extra()          Defines before and/or after behaviors.
+'------------------------------------------------------------------------------
+ ADgm_extra( [bBefore], [bAfter], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines before and/or after behaviors.
+
+ [bBefore] is a codeblock that ADg_many() EVALuates before displaying the
+ boxed Gets.
+
+ [bAfter] is a codeblock that ADg_many() EVALuates after displaying the
+ boxed Gets.
+
+ [lAdditive] is a logical value.  If it is TRUE, [bBefore] and [bAfter] will
+ chained to previously defined behaviors.  If it is FALSE, it will replace
+ previous definitions.
+
+ v2.1 -> v2.2
+ ------------
+ Added third parameter.
+
+ Example
+ -------
+ #define DO_NOT_EXPLODE      .f.
+ #define DEFAULT_FRAME       NIL
+ #define WITH_SHADOW         NIL
+ //---------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk  ",;
+                     "Excellent!";
+                }
+ local aLabels := {;
+                     "Library",;
+                     "Author",;
+                     "Impression";
+                  }
+
+ local bConfig := {|| ADgm_labels( aLabels ),;
+                      ADgm_colors( { "W+/B",, "R+/W" } ),;
+                      ADgm_extra( {||dispbegin(),;
+                                     aScn := ADchgcolor(0,0,24,79, "N/BG" );
+                                  },;
+                                  {||aCoords := ADgm_coords(),;
+                                     aScn2 := ADbox( aCoords[1],;
+                                                     aCoords[4] + 1,;
+                                                     aCoords[3],;
+                                                     aCoords[4] + 20,;
+                                                     "GR+/B",;
+                                                     DEFAULT_FRAME,;
+                                                     WITH_SHADOW,;
+                                                     DO_NOT_EXPLODE;
+                                                   ),;
+                                     ADcsay( aCoords[1] + 2,;
+                                             aCoords[4] + 1,;
+                                             aCoords[4] + 20,;
+                                             "­WOW!",;
+                                             "GR+/B";
+                                           ),;
+                                     dispend();
+                                  };
+                                );
+                  }
+ local aScn, aScn2, aCoords
+
+ ADmessage({""})
+ ADg_many( aGets, bConfig )
+ ADrestscn( aScn2 )
+ ADrestscn( aScn )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_header()         Adds a header and/or footer to the box.
+'------------------------------------------------------------------------------
+ ADgm_header( [cHeader], [cFooter] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a header and/or footer to the box.
+
+ [cHeader] is an optional string that is displayed at the top of the box.
+
+ [cFooter] is an optional string that is displayed at the bottom of the box.
+
+ Example
+ -------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_header( " Header ", " Footer " )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_jumpkeys()       Defines jump keys.
+'------------------------------------------------------------------------------
+ ADgm_jumpkeys( <aJumpKeys> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines jump keys.
+
+ <aJumpKeys> is an array of inkey codes, one for each Get.  If there are more
+ jump keys than there are Gets, the excess will be disregarded.  If there are
+ more Gets than there are jump keys, the unkeyed Gets will be just that - no
+ assigned jump key.  If an <aJumpKeys> element is NIL, the corresponding Get
+ will be not be assigned a jump key.
+
+ Example:
+ --------
+ #include "inkey.ch"
+ func main()
+ local aJumpKeys := {;
+                       K_ALT_L }
+                       K_ALT_P,;
+                       K_ALT_E;
+                    }
+ local aGets := {;
+                       "Frankie Clipper Library",;
+                       "The Programmer's Desk",;
+                       "Excellent!";
+                }
+ local bConfig := {||ADgm_jumpkeys( aJumpKeys )}
+
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+                                                                                                                                                                           return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_labels()         Adds labels to the Gets.
+'------------------------------------------------------------------------------
+ ADgm_labels( <aLabels> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds labels to the box.
+
+ <aLabels> is an array of string labels, one for each Get.  If there are more
+ labels than there are Gets, the excess will be disregarded.  If there are
+ more Gets than there are labels, the unlabeled Gets will be just that -
+ unlabeled.  If an <aLabels> element is NIL, the corresponding Get will be
+ unlabeled.
+
+ Example
+ -------
+ func main()
+ local aLabels := {;
+                     "Library",;
+                     "Author",;
+                     "Impression";
+                  }
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_labels( aLabels )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_memo()           Tells ADg_many() which Gets are memo fields.
+'------------------------------------------------------------------------------
+ ADgm_memo( <aMemos> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADg_many() which Gets are memo fields.
+
+ <aMemos> is an array of logical values, one for each Get.  A TRUE indicates
+ that the corresponding Get is a memo field.
+
+ Example
+ -------
+ func main()
+ local aRec := ADgetrec()
+ local aMemo := ADamemo()
+ local bConfig := {||ADgm_memo( aMemo )}
+ cls
+ ADg_many( aRec, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_minwidth()     ^rn^r Specifies the allowable minimum width of the edit box
+'------------------------------------------------------------------------------
+ ADgm_minWidth( <nMinWidth> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the allowable minimum width of the edit box.
+
+ <nMinWidth> is the allowable minimum width.  The box will not be drawn
+ narrower than this value even if the length of the prompts and the length
+ of the Gets are short.
+
+ Example
+ -------
+ func main()
+ local aGets, aLabels
+
+ use mydbf
+ aGets := ADgetrec()      // place the record into an array
+ aLabels := array( fcount() )
+ afields( aLabels )       // make the field names the Get labels
+
+ if ADg_many( aGets, {||ADgm_labels( aLabels ),;
+                        ADgm_minwidth( 70 );
+                     };
+            )
+    ADputrec( aGets )     // save the record if any Get was modified
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_pads()           Sizes the space between the Gets and the box sides.
+'------------------------------------------------------------------------------
+ ADgm_pads( <aPads> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sizes the space padding between the Gets and the box sides, and between the
+ labels and the Gets.  By default, there is no padding between the Gets and
+ the top/bottom sides, there is a space between the Gets and the left/right
+ sides, and there is a space between the labels and the Gets.
+
+ <aPads> is an array of 5 numeric values:
+
+   1 - top padding
+   2 - left padding
+   3 - bottom padding
+   4 - right padding
+   5 - space between the labels and Gets
+
+ If any of the elements is NIL, the corresponding default value is not
+ changed.
+
+ Example
+ -------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_pads( { , 5,, 5, 3 } )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_pictures()       Adds picture clauses to the Gets.
+'------------------------------------------------------------------------------
+ ADgm_pictures( <aPictures> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds picture clauses to the Gets.
+
+ <aPictures> is an array of picture clauses, one for each Get.  If there are
+ more clauses than there are Gets, the excess will be disregarded.  If there
+ are more Gets than there are clauses, the "unclaused" Gets will be just that
+ - "unclaused".  If an <aPictures> element is NIL, the corresponding Get will
+ be "unclaused".
+
+ Example
+ -------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_pictures( { "@!", "@!" } )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_readconfig()     Configures the ADread() engine used by ADg_many()
+'------------------------------------------------------------------------------
+ ADgm_readconfig( <bConfig> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the ADread() engine used by ADg_many()
+
+ <bConfig> is a Configuration Block used by the Read engine.  See ADread()
+ for a full description of this block.
+
+ Example
+ -------
+ func main()
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!",;
+                     "Yes";
+                }
+ local aLabels := {;
+                     "Library",;
+                     "Author",;
+                     "Impression",;
+                     "Recommended?";
+                  }
+ local aPads := {;
+                     ,;     // top
+                     15,;   // left
+                     ,;     // bottom
+                     ,;     // horizontal
+                     ;      // middle
+                }
+
+ local bConfig := {|| ADgm_labels( aLabels ),;
+                      ADgm_pads( aPads ),;
+                      ADgm_colors( { "GR+/B",, "R+/W" } ),;
+                      ADgm_extra( , {||Xextra2()} );
+                  }
+ local lStatus
+
+ lStatus := ADg_many( aGets, bConfig )
+ ADmessage( { if( lStatus, "Changed and Saved", "Cancelled or Not Changed" ) } )
+ return nil
+
+
+ //------------
+ func Xextra2()
+ local aCoords := ADgm_coords()
+ local nPB := ADpb_vertical( aCoords[1] + 1, aCoords[2] + 2,;
+                             { "   OK   ", " Cancel " },;
+                             {     4,        2 },;
+                             1;
+                           )
+ local bReadConfig := {|| ADr_lbuttons( ADpb_spots( nPB ),;
+                                        {|n|Xprocess(n,nPB)};
+                                      );
+                      }
+
+ ADgm_readconfig( bReadConfig )
+ ADpb_show( nPB, "B" )
+ return NIL
+
+
+ //---------------------
+ func Xprocess(nth, nPB)
+ if nth == 1     // OK
+     ADpb_push( nPB, nth )
+     ADr_save()
+ elseif nth == 2
+     ADpb_push( nPB, nth )
+     ADr_abort()
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_removecr()       Instructs ADg_many() to remove CRs from expanded memos.
+'------------------------------------------------------------------------------
+ ADgm_removecr( <aRemove> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <aRemove> is an array of logical values, one for each Get.  If an element
+ is TRUE, the expanded Get, if it is a memo, will be stripped of Carriage
+ Returns.  If there are more elements included in <aRemove> than there are
+ Gets, the excess will be disregarded.  If there are more Gets than there are
+ elements, the undefined Gets will default to FALSE.  If an element is NIL,
+ the corresponding Get will default to FALSE.
+
+ NOTE: This applies only to memo Gets.  Character Gets are automatically
+       stripped of carriage returns.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_valids()         Adds valid clauses to the Gets.
+'------------------------------------------------------------------------------
+ ADgm_valids( <aValids> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds valid clauses to the Gets.
+
+ <aValids> is an array of valid clauses, one for each Get.  If there are
+ more clauses than there are Gets, the excess will be disregarded.  If there
+ are more Gets than there are clauses, the "unclaused" Gets will be just that
+ - "unclaused".  If an <aValids> element is NIL, the corresponding Get will
+ be "unclaused".
+
+ Example
+ -------
+ func main()
+ local aValids := {;
+                     {|| left( ADr_varget(), 1 ) == "F"},;
+                     {|| left( ADr_varget(), 3 ) == "The"},;
+                     {|| right( ADr_varget(), 1 ) == "!"};
+                  }
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local bConfig := {||ADgm_valids( aValids )}
+ cls
+ ADg_many( aGets, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADgm_whens()          Adds when clauses to the Gets.
+'------------------------------------------------------------------------------
+ ADgm_whens( <aWhens> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds when clauses to the Gets.
+
+ <aWhens> is an array of when clauses, one for each Get.  If there are more
+ clauses than there are Gets, the excess will be disregarded.  If there are
+ more Gets than there are clauses, the "unclaused" Gets will be just that -
+ "unclaused".  If an <aWhens> element is NIL, the corresponding Get will be
+ "unclaused".
+
+ Example
+ -------
+ func main()
+ local aLabels := {;
+                     "Library",;
+                     "Author",;
+                     "Impression!";
+                  }
+ local aGets := {;
+                     "Frankie Clipper Library",;
+                     "The Programmer's Desk",;
+                     "Excellent!";
+                }
+ local aValids := {;
+                     {|| Xvalid() },;
+                     {|| Xvalid() },;
+                     {|| Xvalid() };
+                  }
+ local aWhens := {;
+                     {|| Xwhen() },;
+                     {|| Xwhen() },;
+                     {|| Xwhen() };
+                 }
+ local bConfig := {||ADgm_labels( aLabels ),;
+                     ADgm_valids( aValids ),;
+                     ADgm_whens( aWhens ),;
+                     ADgm_corner( 6 ),;
+                     ADgm_color( { "W+/B", "GR+/R", "W/B" } );
+                  }
+ cls
+ ADg_many( aGets, bConfig )
+ ADrestscn( aScn )
+ return nil
+
+
+ //-----------
+ func Xvalid()
+ local nthGet :=  ADr_nthget()
+ local lValid := .t.
+
+ if nthGet == 1
+     if left( ADr_varget(), 1 ) != "F"
+         ADmessage( { "The first letter must be an 'F'" }, 0 )
+         lValid := .f.
+     endif
+ elseif nthGet == 2
+     // no validation
+ elseif nthGet == 3
+     if right( trim( ADr_varget() ), 1 ) != "!"
+         ADmessage( { "The last character must be an '!'" }, 0 )
+         lValid := .f.
+     endif
+ endif
+ return lValid
+
+
+ //-----------
+ func Xwhen()
+ local nthGet :=  ADr_nthget()
+ local lValid := .t.
+
+ if nthGet == 1
+     // no pre-validation
+ elseif nthGet == 2
+     // no pre-validation
+ elseif nthGet == 3
+     if empty( ADr_varget(2) )
+         lValid := .f.
+     endif
+ endif
+ return lValid
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADgm_coords()         Returns the coordinates of the box.
+'------------------------------------------------------------------------------
+ ADgm_coords() --> <aCoords>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the coordinates of the box.  This is valid only inside the
+ [bAfter] parameter of ADgm_extra().
+
+ Example
+ -------
+ See ADgm_extra()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized G_Many Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADgm_multi()        ^rn^r Implements a multi-page ADg_many()
+'------------------------------------------------------------------------------
+ ADgm_multi( <aGets>, [aLabels], [nPageSize], [aCorner], [aCascade] )
+      --> <lEdited>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a multi-page ADg_many().  Every page has its own hot bar.  The
+ source code is included as "gm_multi.prg."
+
+ <aGets> is the array of Get values to edit.  Similar to the <aGets>
+ parameter of ADg_many().
+
+ [aLabels] is an optional array of labels for the Gets.  Similar to the
+ <aLabels> parameter of ADgm_labels().
+
+ [nPageSize] is an optional page size, that is, number of Gets in a page.
+ Defaults to 10.
+
+ [aCorner] is an optional { nTop, nLeft } coordinates of the first page.
+ If this is not passed, the first page will be centered on the screen.
+
+ [aCascade] is an optional { nRows, nCols } cascade increment for the 2nd
+ and subsequent pages.  Each subsequent page is cascaded nRows below
+ and nCols to the right of the preceeding page.  Defaults to { 1, 2 }.
+
+ <lEdited> is the return logical value.  It is set to TRUE if any of the
+ Gets is changed, and FALSE if otherwise.
+
+ NOTE: If you have too many pages, some of them may scroll off the screen,
+       or you may run into a stack error.
+
+ Example
+ -------
+ func main()
+ local aGets, aLabels
+ local nGetsPerPage := 4   // 4 Gets per page
+ local aCorner := { 0, 0 } // first page is at top/left corner of the screen
+
+ use \frank300.53\fsmaster
+ aGets := ADgetrec()      // place the record into an array
+ aLabels := array( fcount() )
+ afields( aLabels )       // make the field names the Get labels
+
+ if ADgm_multi( aGets, aLabels, nGetsPerPage, aCorner )
+    ADputrec( aGets )     // save the record if any Get was modified
+ endif
+ return NIL
+!seealso: "ADg_many()" fran_011.ngo:"ADg_one()" fran_011.ngo:"ADg_oneb()" 
+'------------------------------------------------------------------------------
+
+
+

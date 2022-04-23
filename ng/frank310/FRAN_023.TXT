@@ -1,0 +1,458 @@
+!short: ADset_help()          Sets up the Help Facility
+'------------------------------------------------------------------------------
+ ADset_help( <cHelpFile>, [aCoords], [aColors], [lMessage], [aPrompts],
+    [nTimeOut], [lIndex] ) --> <nHandle>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Sets up the Help Facility.
+
+ <cHelpFile> is the name of the Help file without any extension.  .HLP is
+ assumed.  The Help index file with the same name but with an extension of
+ .HLX will be read.  It is also assumed that the Help file resides in the
+ same directory as the application's executable file, if it is not prefixed
+ with a path specifier.  The default file extensions may be changed with
+ ADh_fileext().
+
+ [aCoords] is an array of screen coordinates that define the Help Window
+ boundaries.  Defaults to the whole screen.
+
+ [aColors] is an array of colors of 4 elements:
+
+   1 - The standard color
+   2 - The header color, and the standard color of the NextHelp vertical menu
+   3 - The enhanced color of the NextHelp vertical menu
+   4 - The trigger color of the NextHelp vertical menu
+
+   The default values are:
+
+      Color    Mono
+      -----    -----
+   1 - "W+/B"   "W/N"
+   2 - "R/GR*"  "N/W"
+   3 - "GR+/G"  "N/W"
+   4 - "B"      "W+"
+
+ [lMessage] is a logical value.  If it is TRUE, the messages:
+
+     "No Help File"
+     "Undefined Help ID"
+     "Undefined Help Text For: ..."
+
+ are displayed if the Help key is pressed and the Help File is missing, or
+ no Help ID has been defined, or the Help ID is not found in the Help File.
+ If it is FALSE, no such message is displayed.  Defaults to TRUE.  These
+ messages may be redefined using ADh_messages().
+
+ [aPrompts] is an array of two elements that are used to replace the
+ default footer prompts:
+
+    1 - replacement of "Esc:CloseWindow   :ScrollUP   :ScrollDown"
+    2 - replacement of "   F1:NextHelp"
+
+ Note that only the string prompts may be replaced.  The active keys, Esc,
+ , , and F1 stay the same.
+
+ [nTimeOut] is number of seconds that the Help screen may be left idle before
+ it automatically exits.
+
+ [lIndex] is a logical flag.  When TRUE, it initiates the (re)indexing of the
+ help file.  Defaults to FALSE.  (Re)indexing is done with no status message,
+ that is, with the [nShow] flag in ADhelp_index() set to HELPINDEX_SHOWNONE.
+
+ <nHandle> is the file handle of the help file.
+
+ Example
+ -------
+ ADset_help( "f_tour", { 10,10,20,69 } )
+
+ v2.30 -> v3.00
+ --------------
+ 1.  Added the 7th parameter [lIndex]
+
+ v2.1 -> 2.2
+ -----------
+ 1.  Now returns the file handle of the help file.
+ 2.  A timeout feature was added.
+ 3.  If the help screen does not occupy the whole screen, it may be moved.
+ 4.  The footer prompts are now user-definable.
+ 5.  A path to the help file may now be specified.
+!seealso: "ADhelp_index()" "ADh_messages()" "ADh_fileext()" "ADh_handle()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhelp_index()        Indexes a Help file
+'------------------------------------------------------------------------------
+ ADhelp_index( <cHelpFile>, [nShow] ) --> NIL
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Indexes a Help file.
+
+ <cHelpFile> - The passed file name is not given an extension. .HLP is
+ assumed.  An index file with the same name but with an extension of .HLX
+ will be created.  The default file extention may be changed with
+ ADh_fileext().
+
+ [nShow] a numeric flag with these possible values (#defined in Frankie.ch)
+
+    HELPINDEX_SHOWDOTS - will show dots to indicate indexing progress
+    HELPINDEX_SHOWBAR  - will display an indexing progress bar
+    HELPINDEX_SHOWNONE - will not show any progress status
+
+ Example
+ -------
+ #include "frankie.ch"
+ ADhelp_index( "f_tour", HELPINDEX_SHOWDOTS )
+ ADhelp_index( "f_tour", HELPINDEX_SHOWBAR )
+ ADhelp_index( "f_tour", HELPINDEX_SHOWNONE )
+ ADhelp_index( "f_tour" )   // defaults to SHOWDOTS
+
+ 2.3
+ ---
+ The second parameter was added.
+!seealso: "ADhi_sbxconfig()" "ADh_fileext()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhi_sbxconfig()      Posts a progress bar config block
+'------------------------------------------------------------------------------
+ ADhi_sbxconfig( <bConfig> ) --> NIL
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Posts a config block for use by the progress bar engine when indexing
+ the Help file with the INDEXHELP_SHOWBAR option.  This provides a way to
+ change its configuration from the default.
+
+ <bConfig> is the scroll bar configuration that is typically passed to
+ ADSBarCreate().
+
+ Example
+ -------
+ #include "frankie.ch"
+
+ func main()
+ ADhi_sbxconfig( {||ADSBarHeader( "Indexing My Help File" ),;
+                    ADSBarColor( { "R/W", "W+/W" } );
+                 };
+               )
+ ADhelp_index( "myfile", HELPINDEX_SHOWBAR )
+ return NIL
+!seealso: "ADhelp_index()" fran_018.ngo:"ADSBarCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhelp()              Displays a Help screen
+'------------------------------------------------------------------------------
+ ADhelp( <cHelpID>, [cHeader] ) --> NIL
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Displays a Help screen.
+
+ <cHelpID> is the Help identifier string.  There must be a Help Block in the
+ Help file that is identified by this string.
+
+ [cHeader] is a string that will be displayed as the title or heading of the
+ Help window.  It defaults to " HELP " but may be changed with ADh_header()
+
+
+ NOTES:
+
+ 1.  If ADset_help() has not been called yet, ADhelp() calls are ignored.
+
+ 2.  If the Help file is missing, ADhelp() calls will display "No Help File".
+
+ 3.  If <cHelpID> is NIL, ADhelp() will display "Undefined Help ID".
+
+ 4.  If <cHelpID> is not in the Help file, or there is no Help Block for
+     <cHelpID>, ADhelp() will display "Undefined Help Text for <cHelpID>".
+
+ 5.  The default messages may be changed with ADh_messages().
+
+ Example 1
+ ---------
+ ADhelp( "SAMPLE HELP ID", "Sample Help Screen Title" )
+
+ Example 2
+ ---------
+ The Frankie engines use ADhelp() to display context sensitive Help
+ screens.  Aside from providing a Help ID, you, the developer, need not
+ spend any time and effort figuring out when and where to use ADhelp.
+ However, you may want to write your own event-handling routine wherein
+ you may want to display Help when F1 is pressed.  Here's a simple but
+ illustrative way of accomplishing that:
+
+ do while ( nKey := inkey() ) != K_ESC
+    if nKey == K_F1
+        ADhelp( cHelpID )
+    ..
+    endif
+ enddo
+
+ Example 3
+ ---------
+ If you still use a non-Frankie wait state, e.g. the WAIT command, you can
+ still use the Frankie Help Facility by SETKEYing F1 like this:
+
+ setkey( K_F1, {||ADhelp( cHelpID )} )
+ wait
+!seealso: "ADh_messages()" "ADh_header()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_rbnoexit()        Prevents exiting help on right button click
+'------------------------------------------------------------------------------
+ ADh_rbnoexit() --> NIL
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Prevents exiting of the help when the right mouse button is clicked.
+
+ Example
+ -------
+ func main()
+ ADset_help( "myhelp" )
+ ADh_rbnoexit()
+ ADfview( "myfile.txt",,, "MY_HELP_ID" )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_fileext()       ^rn^r Specifies the extensions of the Help files
+'------------------------------------------------------------------------------
+ ADh_fileext( [aNew] ) --> <aOld>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Specifies the file extensions of the Help files.
+
+ [aNew] is an array of two elements:
+
+   1 - extension of the Help message file. Defaults to "HLP".
+   2 - extension of the Help index file.  Defaults to "HLX".
+
+ When passing [aNew], it must contain the two elements, and may not contain
+ a period.
+
+ <aOld> the old file extensions.
+
+ Example
+ -------
+ func main()
+ ADh_fileext( { "hhh", "xxx" } )
+ ADset_help( "myprog" )
+ return nil
+!seealso: "ADset_help()" "ADhelp_index()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_header()        ^rn^r Specifies a default header for Help screens
+'------------------------------------------------------------------------------
+ ADh_header( [cNew] ) --> <cOld>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Specifies a default header for Help screens.  This gives you the ability to
+ change the Frankie default, "HELP".
+
+ [cNew] is the new default header.
+
+ <cOld> is the old header.  If [cNew] is not passed, the default header
+ is not changed, but is still returned by the function.
+
+ NOTE: ADh_header() is a global function.
+!seealso: "ADhelp()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_messages()      ^rn^r Specifies the various Help error messages
+'------------------------------------------------------------------------------
+ ADh_messages( [aNew] ) --> <aOld>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Specifies the messages displayed by the help facility when there is no
+ help file, etc.  Useful in internationalizing these messages.
+
+ [aNew] is an optional array of 6 optional elements:
+
+  1 - The 'No Help File' message.
+  2 - The 'Undefined help indentifier' message.
+  3 - The 'Undefined help text for:" message
+  4 - The 'Next Help' ADvermenu() header.
+  5 - The 'Indexing Help' message.
+  6 - The 'Done!' message displayed after indexing.
+
+  If any of the above elements is not passed, it is given a default value.
+
+ <aOld> - the old Help messages
+
+ Example
+ -------
+ func main()
+ ADh_messages( {;
+                  "There is no Help file.",;
+                  "The Help Identifier is not found in the Help file",;
+                  "There is no Help text in the Help file for:",;
+                  "More Help Available",;
+                  "We Are Indexing the Help File",;
+                  "Finished!";
+               } )
+ ADhelp_index( "f_tour" )
+ ADset_help( "f_tour",,,,,, .t. )
+ ADhelp( "f_tour" )
+ return nil
+!seealso: "ADset_help()" "ADhelp_index()" "ADh_fileext()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_handle()        ^rn^r Returns the handle of the Help file.
+'------------------------------------------------------------------------------
+ ADh_handle() --> <nHandle>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the numeric DOS handle of the Help file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_helpid()        ^rn^r Returns the Help identifier that was last accessed
+'------------------------------------------------------------------------------
+ ADh_helpid() --> <cHelpID>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the Help string identifier last accessed by the Help facility. Each
+ time F1 is pressed, or ADhelp() is called, the string returned by
+ ADh_helpid() is changed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_reset()         ^rn^r Resets the help facility
+'------------------------------------------------------------------------------
+ ADh_reset() --> NIL
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Resets the help facility by re-reading the Help index file, and closing
+ and re-opening of the Help file.  You may need to do this if you modified
+ and re-indexed the Help file while it's currently open.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADh_shadow()        ^rn^r Specifies whether the Help box casts a shadow or not
+'------------------------------------------------------------------------------
+ ADh_shadow( [lNew] ) --> <lOld>
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Specifies whether or not to add a shadow to the Help box.  The Frankie
+ default is .F. (no shadow).
+
+ [lNew] is a logical value that specifies whether or not to add a shadow.
+ (.F. = without shadow, .T. = with shadow).
+
+ <lOld> is the old value of the logical flag.
+
+ NOTE:  ADh_shadow() is a global function.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: The Help File Format
+'------------------------------------------------------------------------------
+
+ The Help file is divided into two areas, the Comments Area and the Screens
+ Area.
+
+ The Comments Area
+ -----------------
+ This is the area between-and-including the top and the first occurrence of
+ a tilde (~) character.  The Help Facility disregards anything within this
+ area.  It may serve as documentation purposes for the developer.
+
+
+ The Screens Area
+ ----------------
+ This is everything from-and-including the first occurrence of the tilde (~)
+ character and the bottom of the file.
+
+ It is a series of Help Blocks.  A help Block contains all the information
+ needed by the Help Facility to display the desired Help screen correctly.
+ It follows a format of its own.
+
+
+ The Help Block Format
+ ---------------------
+ A Help Block is a block of text that starts with:
+
+ 1. A tilde (~) character, alone on a line.  This signals the start of a Help
+ block.
+
+ 2. The Help identifier string of this Help Block.  There are no special
+ restrictions on this string.  This is the same string that you pass to
+ ADhelp() to display the Help screen.  It is also the string indexed by
+ ADhelp_index().
+
+ 3. A NextHelp Descriptions line.  This is a comma-delimited list of
+ descriptions of additional Help screens callable from the current Help
+ screen.  Leave this as a blank line if no other Help screen is to be called
+ from the current Help screen.
+
+ 4. A NextHelp Options line.  This is a comma-separated list of Help
+ identifiers corresponding to the NextHelp Descriptions list.  Leave this
+ line as a blank line if the NextHelp Descriptions line is blank.
+
+ 5. The Help screen text.  What appears in this section will be displayed as
+ is, including any special formatting, line drawing, etc.  This text starts
+ from the 5th line of the Help Block and ends to the line just before the
+ next tilde (~) character.
+
+ 6. A tilde (~) character, alone on a line.  This signals the end of a Help
+ block.
+
+ An Example of a Help Block
+ --------------------------
+
+ ~
+ SAMPLE IDENTIFIER
+ Additional Help 1, Additional Help 2, Additional Help 3
+ IDENTIFIER_1     , IDENTIFIER_2     , IDENTIFIER_3
+ This is a sample Help Screen.
+ ~
+
+ A Typical Help File Structure
+ -----------------------------
+ Comments Area starts from this line up to the line just before the first
+ tilde (~).
+
+ This is still part of the comments area.
+
+ Copyright, Angelito Dizon, 1992,1993.  All rights reserved.
+
+
+ This is the last line of the comments area.
+ ~
+ First Help Block starts here up to the line just before the next tilde (~).
+
+
+
+
+
+ This is the last line of the first block.
+ ~
+ 2nd Help Block starts here up to the line just before the next tilde (~).
+
+
+
+
+
+ This is the last line of the 2nd block.
+ ~
+ 3rd Help Block starts here up to the line just before the next tilde (~).
+
+
+
+
+
+ This is the last line of the 3rd block.
+ ~
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

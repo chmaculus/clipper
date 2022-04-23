@@ -1,0 +1,798 @@
+!short: ckSystem()   System information of Casual-Kit
+'------------------------------------------------------------------------------
+
+    ^BckSystem()           ->    "Casual Kit 2.01(a)"
+    ^BckSystem(0)          ->    "Casual Kit 2.01(a)"
+    ^BckSystem(1)          ->    <Serial No>
+    ^BckSystem(2)          ->    <User Name>
+    ^BckSystem(3)          ->    <Company Name>
+
+    After you had setup Casual-Kit, you can use the following command
+    to get your Serial No., User Name and Company Name in your clipper
+    program :
+
+       ^BckSystem(1)          ->    <Your Serial No>
+       ^BckSystem(2)          ->    <Registered User Name>
+       ^BckSystem(3)          ->    <Your Company Name>
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ckSetup()    Setup the library of Casual-Kit
+'------------------------------------------------------------------------------
+
+    ^BckSetup()   ->  NIL
+
+    Setup the library of Casual-Kit. This function will requiry to input
+    the <Serial NO.> <UserName> <Company Name>, and write these message
+    to the library of Casual-Kit.
+
+    After setup the <Serial NO.> <UserName> <Company Name>, you can get
+    the message using ---  ckSystem( <n> )
+
+    ^BWarning: Casual-Kit won't run if you setup an invalid <Serial No.>
+    ^B         Please make sure that you have input a valid Serial No.
+    ^B         and setup the library successfully.
+!seealso: "ckSystem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Done()       Do nothing but return the first argument
+'------------------------------------------------------------------------------
+
+    ^BDone ( <var...> )    ->   Var
+
+    ^BUsage
+
+        Done() run all expressions in argument-list and then return
+        the first value.
+
+    ^BSource
+
+        Func Done(x)
+        retu x
+
+    ^BExample
+
+        ş done(.t.,tone(200),tone(300),tone(400))
+            ->  sound and return .t.
+
+        ş done(x:=1,y:=2,z:=3)
+            ->  set value to x,y,z and return 1
+
+        ş done(@x,x:='do something...')
+            ->  return 'do something...'
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Default()    Return/Set default value (type checking)
+'------------------------------------------------------------------------------
+
+    ^BDefault ( <var> , <DefaultValue> )    ->   Value
+
+    ^BUsage
+
+        Default() return/set the default value if the type of <var>
+        is different to the type of <defvar>
+
+        "@" operation (pass variable by reference) is used to set
+        variable value.
+
+    ^BSource
+
+        Func Default(var,defval)
+        retu if(valtype(var)=valtype(defval),var,var:=defval)
+
+    ^BExample
+
+        ş default(x,3)    -> return 3 if x not N-type
+
+        ş default(@x,3)   -> return 3 and set x if x not N-type
+
+        ş default(@y,maxcol())
+!seealso: "Ndefault()" "Edefault()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Ndefault()   Return/set default value (nil-checking)
+'------------------------------------------------------------------------------
+
+    ^BNdefault( <var> , <DefaultValue> )    ->   Value
+
+    ^BSource
+
+        Func Ndefault(var,defval)
+        retu if(var=nil,var:=defval,var)
+!seealso: "Default()" "Edefault()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Edefault()   Return/set default value (empty-checking)
+'------------------------------------------------------------------------------
+
+     ^BEdefault ( <var> , <DefaultValue> )    ->   Value
+
+     ^BSource
+
+         Func Edefault(var,defval)
+         retu if(empty(var),var:=defval,var)
+!seealso: "Default()" "Ndefault()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: MakeSound()  Make a sound
+'------------------------------------------------------------------------------
+
+    ^BMakeSound ( [<n>] )    ->   NIL
+
+    ^BUsage
+
+        This function is used to make program formatted in making sounds,
+        you can define your sound set, and then using makesound(n) to
+        make sounds.
+
+        _CKSound is an array with block element to define how to make a sound.
+
+    ^BSource
+
+        Func MakeSound(n)
+        publ _CKSound
+          default(@_CKSound,{ { || tone(180) } })
+          default(@n,0)
+        retu eval(_CKSound[n%len(_CKSound)+1])
+
+    ^BExample^B
+
+        _ckSound:= { {||tone(100)}, {||tone(200)}, {||tone(300)} }
+
+        makesound()          // =>  tone(100)
+        makesound(0)         // =>  tone(100)
+        makesound(1)         // =>  tone(200)
+        makesound(2)         // =>  tone(300)
+        makesound(3)         // =>  tone(100)
+        makesound(4)         // =>  tone(200)
+        makesound(5)         // =>  tone(300)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DelayMsec()  Time delay in milliseconds
+'------------------------------------------------------------------------------
+
+    ^BDelayMsec ( [<n>] )    ->   n
+
+    ^BUsage
+
+        Time delay in milliseconds
+
+    ^BExample^B
+
+        delaymsec(100)         ->   delay 100 msec
+        delaymsec(3)           ->   delay 3 msec
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Date_Add()   Calculate date
+'------------------------------------------------------------------------------
+
+    ^BDate_Add ( <dDate> , [<nYear>] , [<nMonth>] , [<nDay>] ) -> date
+
+    ^BUsage^B
+
+        Calculate date.
+
+    ^BExample
+
+        date_add( ctod('94.03.02'), 1, 3, 2)    =>  95.06.04
+        date_add( ctod('94.03.02'),-1,18, 6)    =>  94.09.08
+
+        date_add( ctod('94.01.31'),0,1)         =>  94.03.03
+        date_add( ctod('94.01.01'),0,1,30)      =>  94.03.03
+
+      ^Bş Date_Add( [yy.mm.dd], y, m ) == Date_Add( [yy.mm.01], y, m, dd-1 )
+                        ~~~~                            ~~~~        ~~~~
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: isField()     Determine if a string is a field of current area
+'------------------------------------------------------------------------------
+
+    ^BisField( <cName> )  -> lField
+
+    ^BUsage^B
+
+        Determine if a string is a field of current area.
+
+    ^BExample
+
+        if isfield( 'name' )
+
+           @ 10,10 get name
+           read
+
+        endi
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: m_KeyBoard() Send string to keyboard buffer
+'------------------------------------------------------------------------------
+
+    ^Bm_KeyBoard ( <str> , [<aTranList>] )    ->   NIL
+
+    ^BUsage
+
+        Send string to keyboard buffer.
+
+    ^BExample
+
+        m_keyboard('123456')          ==> KEYBOARD '123456'
+
+        Tlist := { {'1','A'},{'3','C'}}
+        m_keyboard('12345',tList)     ==> KEYBOARD 'A2C45'
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Run()      Run dos commands
+'------------------------------------------------------------------------------
+
+    ^Bm_Run ( <cDosCom> , [<cdeli>] )    ->   NIL
+
+    ^BUsage
+
+        Run multi-dos-command. <cDeli> default is '\\'
+
+    ^BExample
+
+        m_run('copy dot.exe a:')                => RUN copy dot.exe a:
+        m_run('dir /w \\ del *.bak \\ dir /p ') => RUN dir /w
+                                                   RUN del *.bak
+                                                   RUN dir /p
+!seealso: "m_Dos()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Dos()      Dos Shell
+'------------------------------------------------------------------------------
+
+    ^Bm_Dos()    ->   NIL
+
+    Dos Shell, type "exit" to return clipper.
+!seealso: "m_Run()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_Inkey()    Instead of inkey()
+'------------------------------------------------------------------------------
+
+    ^Bm_Inkey ( [<x>] )    ->   nKeyCode
+
+    ^BUsage
+
+        m_Inkey() is used to instead inkey() to activate the block code
+        assigned to the key pressed.
+
+        A public variable named ^B_ckInkey^B is declared in this function.
+        When _ckInkey=.f., m_Inkey() is same as inkey(). But after you set
+        ^B_ckInkey:=.t.^B, m_Inkey() will activate the code block assigned
+        to the key pressed.
+
+        It is suggested to add this command in the first of your program:
+
+          #xtranslate  inkey([<x>])  =>  m_inkey([<x>])
+
+        If you want to make your HOT-KEY functions can be activated when
+        your program run to the command: inkey(), you can simply set 1
+        to the public variable <_ckInkey>.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: m_dbEdit()   Instead of dbEdit()
+'------------------------------------------------------------------------------
+
+    ^Bm_dbEdit ( <Arguments,...> )   ->  NIL
+
+    ^BUsage
+
+       This function is same as dbEdit(), but it allow to define
+       user-function with block code.
+
+    ^BExample
+
+       blk := { |s,c| usrfunc(s,c) }
+       m_dbedit(x1,y1,x2,y2,,blk)
+!seealso: ck20_004.ngo:"e_dbEdit()" ck20_004.ngo:"ch_dbEdit()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EditMemo()   Instead of memoedit()
+'------------------------------------------------------------------------------
+
+    ^BEditMemo( <var,...> )   ->  cMemo
+
+    ^BUsage
+
+       EditMemo() is same as MemoEdit() but allow you to send a code block
+       to define UserFunction.
+
+    ^BSource
+
+       func editmemo(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14)
+       priv _ufedmemo:=a7
+       retu if(valtype(a7)#'B',;
+            memoedit(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14),;
+            memoedit(a1,a2,a3,a4,a5,a6,'__editmemo',a8,a9,a10,a11,a12,a13,a14))
+
+       func __editmemo(nMode,nRow,nCol)
+       memvar _ufedmemo
+       retu eval(m->_ufedmemo,nMode,nRow,nCol)
+!seealso: "EditFile()" ck20_004.ngo:"e_EditMemo()" ck20_004.ngo:"ch_EditMemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EditFile()   Edit or view file (full screen)
+'------------------------------------------------------------------------------
+
+    ^BEditFile ( <cFile>, [<nWide>], [<col>], [<cHead>], [<cFoot>], ;
+    ^B           [<nRow>], [<nCol>] )     ->  lModify
+
+    ^BUsage^B
+
+        Edit or view a file. (full screen)
+
+         <nWide> default is 200, <nWide> less then zero means View-File
+         <col>   default is NIL (w/n,n/w)
+         <cHead> default is file name
+
+         If the length of file is more than 54K, EditFile() will change
+          to view mode automatically
+
+         If you had saved the file, a backup file named *.bak will be
+          created.
+
+    ^BExample^B
+
+       editfile('test.prg')                        => edit file
+       editfile('printer.buf',-230,'w/b,w+/br')    => view printer.buf
+!seealso: "editmemo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: aItem()      Return item value with bound checking
+'------------------------------------------------------------------------------
+
+    ^BaItem ( <aVar>, <nNo>, [<ErrVal>] )    ->   ArrayItem
+
+    ^BUsage^B
+
+        Return the item of array with bound checking
+
+        <ErrVal> default is NIL
+
+    ^BSource^B
+
+        func aitem( ary, no, errval )
+        retu if( no<=0 .or. no>len(ary), errval, ary[no] )
+
+    ^BExample^B
+
+        x := { 1, 3, 5, 7, 9 }
+        aitme(x,1)               ==>  1
+        aitme(x,3)               ==>  5
+        aitme(x,6)               ==>  nil
+        aitme(x,8,'error')       ==>  'error'
+!seealso: "aItem()" "aJoin()" "aInit()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: aInit()      Initialize array with a value
+'------------------------------------------------------------------------------
+
+    ^BaInit ( <nLen>, <InitVal> )     ->  array
+
+    ^BUsage^B
+
+        Initialize array with a value.
+
+    ^BSource^B
+
+        func aInit( nLen, InitVal )
+        retu afill( array(nLen), InitVal )
+
+    ^BExample^B
+
+        ainit( 10 )      =>   array(10)
+
+        ainit( 5, 3 )    =>   { 3, 3, 3, 3, 3 }
+
+        ainit( 3, 'I' )  =>   { 'I', 'I', 'I' }
+!seealso: "aItem()" "aJoin()" "aInsert()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: aJoin()      Join two array
+'------------------------------------------------------------------------------
+
+    ^BaJoin ( <aVar1>, <aVar2> )    ->   aJoinArray
+
+    ^BUsage^B
+
+        Join two array.
+
+        ^BaJoin() return a new array and it will not change <aVar1>,<aVar2>.
+
+    ^BSource^B
+
+        func aJoin( a1, a2 )
+        loca na
+          if valtype(a1) + valtype(a2) # 'AA'
+             retu a1
+          end
+          na := array( len(a1) + len(a2) )
+          acopy( a1 , na )
+        retu acopy( a2, na, 1, , len(a1)+1 )
+
+    ^BExample^B
+
+        a1 := { 1, 2, 3 }
+        a2 := { 6, 7, 8 }
+        a3 := ajoin( a1, a2 )
+
+        result:     a1 == { 1, 2, 3 }
+                    a2 == { 6, 7, 8 }
+                    a3 == { 1, 2, 3, 6, 7, 8 }
+!seealso: "aItem()" "aInit()" "aInsert()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: aInsert()    Insert elements to array
+'------------------------------------------------------------------------------
+
+   ^BaInsert ( <aVar>, [<aIns>], [<nPos>], [<nCount>] )  -> aNewVar
+
+    ^BUsage^B
+
+        Insert <aIns> into <aVar> at <nPos>.
+
+        ^BaInsert() return a new array and it will not change <aVar>.
+
+        ^B<aIns>^B default is NIL. If <aIns> is not a array, it is
+        equal to a long-array: {<ains>,<ains>,...}
+
+        ^B<nPos>^B describe the position to insert, default is 0.
+
+        ^B<nCount>^B describe the number of elements to insert. default
+        is the length of <aIns>.
+
+         This function is useful to make the array of demonstration.
+
+    ^BExample^B
+
+        a1 := { 'A','B','C' }
+        a2 := {  1 , 2 , 3  }
+
+        a3 := aInsert(a1,a2)       ->  { 1,'A',2,'B',3,'C' }
+        a4 := aInsert(a1,a2,1)     ->  { 'A',1,'B',2,'C' }
+        a5 := aInsert(a1,a2,1,1)   ->  { 'A',1,'B','C' }
+        a6 := aInsert(a1,10)       ->  { 10,'A',10,'B',10,'C' }
+        a1                         ->  {'A','B','C'}  // no changed.
+!seealso: "aInit()" "aJoin()" ck20_006.ngo:"Demonstrate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: aPickup()    Pick up a array-section from array/file
+'------------------------------------------------------------------------------
+
+    ^BaPickup( <aInfo/cFile>, [<cName>], [<cBegin>], [<cEnd>], ;
+    ^B         [<cFlag>], [<cJoin>], [<cRemark>] )  ->  aArraySection
+
+    ^BUsage^B
+
+        Pick up a section from array or file. This function allow you
+        to store several sections information in a file/array, and then
+        pick it up whenever needed.
+
+        This function is very useful for scr_say(),scr_make(),prn_aform()...
+
+        <ainfo/cFile> : array or file name
+        <cName> : name of the section, if name default, return ainfo
+        <cBegin>: the word begin a section, default is 'BEGIN'
+        <cEnd>  : the word end of section, default is 'END'
+        <cFlag> : the flag character of <cBegin/cEnd>, default is '\'
+        <cJoin> : the string to join two lines, default is ';'
+        <cReamrk> : the delimiter of remarks, default is NIL
+
+    ^BExample^B
+
+        here is a file named <test.txt>
+
+          \ begin name1
+            text of name1 ...
+          \ end
+
+          # Screen name2
+            text of name2 ...;
+            continue
+            others ...
+          # ends
+
+        now you access them using:
+
+          apickup('test.txt','name1')     -> { 'text of name1 ...' }
+
+          apickup('test.txt','name2','screen','ends','#')
+               -> { 'text of name2 ...   continue','others ...' }
+
+          atest:= str_line( memoread('test.txt'),';' )
+           apickup(atest,'name2','screen','ends','#')
+               -> same as last example
+!seealso: ck20_003.ngo:"Str_Line()" ck20_004.ngo:"Scr_Say()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: PushStack()   Push value to array stack
+'------------------------------------------------------------------------------
+
+    ^BPushStack ( <val> , [<aStack>] )  -> val
+
+    ^BUsage^B
+
+        Push value to array stack.
+
+        <_SysStack> is the default stack when <astack> is omitted.
+
+    ^BExample^B
+
+        PushStack(3)
+        PushStack(6,mystack)
+        ...........
+        PopStack()               =>  3
+        PopStack(mystack)        =>  6
+!seealso: "PopStack()" "PopushStack()" "PushArea()" "PushScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PopStack()    Pop value from array stack
+'------------------------------------------------------------------------------
+
+    ^BPopStack ( [<aStack>] )    -> val
+
+    ^BUsage^B
+
+        Pop value from array stack.
+
+        _SysStack is the default stack when <aStack> is omitted.
+
+    ^BExample^B
+
+        PushStack(3)
+        PushStack(6,mystack)
+        ...........
+        PopStack()               =>  3
+        PopStack(mystack)        =>  6
+!seealso: "PushStack()" "PopushStack()" "PopArea()" "PopScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PopushStack() Look-up the value in stack
+'------------------------------------------------------------------------------
+
+    ^BPopushStack ( [<n>], [<aStack>] )    -> val
+
+    ^BUsage^B
+
+        Return the value in stack or return all stack array.
+        The action is just like pop a value and push it again.
+
+        <n> is the level of stack to be seeked. if <n> is omitted, it
+            return the latest value pushed in. if <n> is more than the
+            level in stack, NIL is returned.
+
+        <n> = 0 will return all stack array.
+
+        For more details, please refer to source code.
+
+    ^BExample^B
+
+        PopushStack()           // get the last pushed value.
+        PopushStack(1)          // get the last pushed value. (level 1)
+        PopushStack(2)          // get the level 2 value.
+        PopushStack(10)         // get the level 10 value.
+
+        PushStack(0)            // return the system stack "_sysstack"
+!seealso: "PushStack()" "PopStack()" "PushArea()" "PushScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PushArea()    Push current area to stack and switch to other area
+'------------------------------------------------------------------------------
+
+    ^BPushArea ( [<nArea/cAlias>] )  ->  NIL
+
+    ^BUsage^B
+
+        Push current area to stack and switch to other area.
+
+    ^BExample^B
+
+        PushArea()               // push current work area
+
+        PushArea(1)              // push current area and select 1
+        PushArea('master')       // push current area and select master
+
+        PopArea()                // return to Area 1 from master
+!seealso: "PopArea()" "PopushArea()" "PushStack()" "PushScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PopArea()     Switch to the work area latest push in. (restore area)
+'------------------------------------------------------------------------------
+
+    ^BPopArea ( )    ->   NIL
+
+    ^BUsage^B
+
+        Switch to the work area latest pushed in. (restore area)
+
+    ^BExample^B
+
+        PushArea( 'input' )     // save current area and select input
+        PushArea( 'output' )    // Switch from 'input' -> 'output'
+
+        // .....  Note: the current area is 'output'
+
+        poparea()               // return to 'input'
+        poparea()               // return to the beginning area
+!seealso: "PushArea()" "PopushArea()" "PopStack()" "PopScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PopushArea()  Look-up the area no in AreaStack
+'------------------------------------------------------------------------------
+
+    ^BPopushStack ( [<n>] )    ->  nAreaNo
+
+    ^BUsage^B
+
+        Return the Area No. in stack or return all area stack array.
+
+        <n> is the level of stack to be seeked. if <n> is omitted, it
+            return the latest value pushed in. if <n> is more than the
+            level in stack, NIL is returned.
+
+        <n> = 0 will return all stack array.
+
+        For more details, please refer to source code.
+
+
+    ^BExample^B
+
+        // Assume : the current area is 10
+
+        PushArea( 'input' )     // save current area and select input
+        PushArea( 'output' )    // Switch from 'input' -> 'output'
+
+        select()                // -> area no of 'output'
+
+        PopushArea()           // -> area no of 'input'
+        PopushArea(1)          // -> area no of 'input'
+        PopushArea(-1)         // -> _AreaArea[1] -> 10
+        PopushArea(2)          // -> 10
+        PopushArea(10)         // NIL
+
+        PushArea(0)            // return the system stack "_AreaStack"
+!seealso: "PushArea()" "PopArea()" "PushStack()" "PushScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PushScreen()  Save screen and push it to a stack
+'------------------------------------------------------------------------------
+
+    ^BPushScreen( [<x1>], [<y1>], [<x2>], [<y2>] )  ->  NIL
+
+    ^BUsage^B
+
+        Save screen and push it to a stack.
+
+
+    ^BExample^B
+
+        PushScreen()             // save whole screen
+        PushScreen(5,5,15,50)    // save an area
+
+        PopScreen()              // restore screen
+        PopScreen()              // restore screen
+!seealso: "PopScreen()" "PopushScr()" "PushArea()" "PushStack()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PopScreen()   Restore screen from stack
+'------------------------------------------------------------------------------
+
+    ^BPopStack ( )    ->  NIL
+
+    ^BUsage^B
+
+        Restore screen from stack.
+
+    ^BExample^B
+
+        PushScreen()             // save whole screen
+        PushScreen(5,5,15,50)    // save an area
+
+        PopScreen()              // restore screen
+        PopScreen()              // restore screen
+!seealso: "PushScreen()" "PopushScr()" "PopArea()" "PopStack()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PopushScr()   Look-up the value in screen stack
+'------------------------------------------------------------------------------
+
+    ^BPopushScr    ( [<n>] )    -> aScreenPicture
+    ^BPopushScreen ( [<n>] )    -> aScreenPicture
+
+    ^BUsage^B
+
+        Return the value in screen stack or return all stack array.
+
+        <n> is the level of stack to be seeked. if <n> is omitted, it
+            return the latest value pushed in. if <n> is more than the
+            level in stack, NIL is returned.
+
+        <n> = 0 will return all stack array.
+
+        For more details, please refer to source code.
+
+    ^BExample^B
+
+        PopushStack()           // get the last pushed value.
+        PopushStack(1)          // get the last pushed value. (level 1)
+        PopushStack(2)          // get the level 2 value.
+        PopushStack(10)         // get the level 10 value.
+
+        PushStack(0)            // return the system stack "_ScrStack"
+!seealso: "PushStack()" "PopStack()" "PushArea()" "PushScreen()" 
+'------------------------------------------------------------------------------
+
+
+

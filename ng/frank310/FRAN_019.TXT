@@ -1,0 +1,183 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhotbar()            The engine function
+'------------------------------------------------------------------------------
+ADhotbar( <nRow>, <nLeft>, <nRight>, <aMenu>, [bConf] )
+  --> <aReturn>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a hotbar that can be attached to another engine using that
+ engine's AD.._keys() and AD.._lbuttons() APIs (See example below).
+
+ <nRow> is the row position where the hotbar will be displayed
+
+ <nLeft> and <nRight> are the left and right column positions of the
+ hotbar.
+
+ <aMenu> is an array of option prompts.  The prompts may be embedded with
+ the '&' character to specify the trigger character.
+
+ [bConf] is the Configuration Specifier.  It is typically a codeblock that
+ calls one or a series of APIs that send messages to the engine to
+ reconfigure itself.  (See any of the ADhb_..() APIs).
+
+ <aReturn> is the return value and consists of 3 elements:
+
+   1 - the screen that the hotbar overwrites
+   2 - an array of hot alt-keys
+   3 - an array of hotspots
+
+ These values, particularly the 2nd and 3rd element, can be used to link
+ the hotbar to another engine using the other engine's AD.._keys() and
+ AD.._lbuttons() APIs.  (See example below).
+
+
+ Example
+ -------
+ func main()
+ local aHotBar
+ local aMenu := { "&Run", "&Edit", "&Sort", "&Find", "&Overview", "&Text" }
+ local bConf := {||ADdb_extra( {||aHotBar := ADhotbar( maxrow(),;
+                                                       0,;
+                                                       maxcol(),;
+                                                       aMenu;
+                                                     ),;
+                                  ADdb_keys( aHotBar[2], {|n|xHots(n)} ),;
+                                  ADdb_lbuttons( aHotBar[3], {|n|xHots(n)} );
+                               },;
+                               NIL,;
+                               {||ADrestscn( aHotBar[1] )};
+                             );
+                }
+
+ use demo
+ ADdbview( 0, 0, maxrow()-1, maxcol(), bConf )
+ return NIL
+
+ static func xHots( n )
+ ADm_rwait()
+
+ if n == 1
+     ADnotyet( "run" )
+ elseif n == 2
+     ADnotyet( "edit" )
+ elseif n == 3
+     ADnotyet( "Sort" )
+ elseif n == 4
+     ADnotyet( "Find" )
+ elseif n == 5
+     ADnotyet( "overview" )
+ elseif n == 6
+     ADnotyet( "text" )
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADhb_colors()         Reconfigures the hotbar's colors
+'------------------------------------------------------------------------------
+ ADhb_colors( <aColors> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the colors of ADhotbar().
+
+ <aColors> is an array of two elements:
+
+    1 - the option standard color, defaults to "W/R"
+    2 - the trigger color, defaults to "BG+/R"
+
+ Example
+ -------
+ func main()
+ local aHotBar
+ local aMenu := { "&Edit", "&Sort", "&Find" }
+ local bHBConf := {||ADhb_colors( { "GR+/G", "R+/G" } )}
+ local bConf := {||ADdb_extra( {||aHotBar := ADhotbar( maxrow(),;
+                                                       0,;
+                                                       maxcol(),;
+                                                       aMenu,;
+                                                       bHBConf;
+                                                     ),;
+                                  ADdb_keys( aHotBar[2], {|n|xHots(n)} ),;
+                                  ADdb_lbuttons( aHotBar[3], {|n|xHots(n)} );
+                               },;
+                               NIL,;
+                               {||ADrestscn( aHotBar[1] )};
+                             );
+                }
+
+ use demo
+ ADdbview( 0, 0, maxrow()-1, maxcol(), bConf )
+ return NIL
+
+ static func xHots( n )
+ ADm_rwait()
+
+ if n == 1
+     ADnotyet( "edit" )
+ elseif n == 2
+     ADnotyet( "Sort" )
+ elseif n == 3
+     ADnotyet( "Find" )
+ endif
+
+ return NIL
+!seealso: "ADhb_pads()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADhb_pads()           Specifies spacing distance between hotbar options
+'------------------------------------------------------------------------------
+ ADhb_pads( [nStartCol], [nSpaceBetween] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies spacing distance between hotbar options
+
+ [nStartCol] is the column position of the first hotbar option relative to
+ the starting column position of the hotbar.  Defaults to 1.
+
+ [nSpaceBetween] is the number of spaces between hotbar options.  Defaults
+ to 2.
+
+ Example
+ -------
+ func main()
+ local aHotBar
+ local aMenu := { "&Edit", "&Sort", "&Find" }
+ local bHBConf := {||ADhb_pads( 4, 4 )}
+ local bConf := {||ADdb_extra( {||aHotBar := ADhotbar( maxrow(),;
+                                                       0,;
+                                                       maxcol(),;
+                                                       aMenu,;
+                                                       bHBConf;
+                                                     ),;
+                                  ADdb_keys( aHotBar[2], {|n|xHots(n)} ),;
+                                  ADdb_lbuttons( aHotBar[3], {|n|xHots(n)} );
+                               },;
+                               NIL,;
+                               {||ADrestscn( aHotBar[1] )};
+                             );
+                }
+
+ use demo
+ ADdbview( 0, 0, maxrow()-1, maxcol(), bConf )
+ return NIL
+
+ static func xHots( n )
+ ADm_rwait()
+
+ if n == 1
+     ADnotyet( "edit" )
+ elseif n == 2
+     ADnotyet( "Sort" )
+ elseif n == 3
+     ADnotyet( "Find" )
+ endif
+
+ return NIL
+!seealso: "ADhb_colors()" 
+'------------------------------------------------------------------------------
+
+
+

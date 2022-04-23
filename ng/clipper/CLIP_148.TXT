@@ -1,0 +1,21 @@
+'------------------------------------------------------------------------------
+^BUPDATED()^B
+
+    UPDATED() returns a logical true (.T.) if the last READ changed any of
+    the data in the associated GETs.
+
+^USyntax^U
+
+    UPDATED()
+
+^UUsage^U
+
+    Each time READ executes, it resets UPDATED() to false (.F.).  Note that
+    within a READ, a change to any GET sets UPDATED() to true (.T.).
+    Subsequent testing of UPDATED() within a SET KEY procedure or VALID
+    reflects this status.
+!seealso: clip_028.ngo:"READ" 
+'------------------------------------------------------------------------------
+
+
+

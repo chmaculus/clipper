@@ -1,0 +1,259 @@
+!short: ADfdate()           Returns a file's date stamp
+'------------------------------------------------------------------------------
+ ^bADfdate( <cFile> ) --> <dStamp>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns a file's date stamp.
+
+ <cFile> is the name of the file.  It must exist.
+
+ <dStamp> is the date stamp of <cFile>.
+
+ Example
+ -------
+ dStamp := ADfdate( "Frankie.lib" )
+!seealso: "ADftime()" "ADfsize()" "ADftouch()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfdrive()          Returns the drive letter in a file spec
+'------------------------------------------------------------------------------
+ ^bADfdrive( <cFileSpec> ) --> <cDrive>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the drive letter in a file spec.
+
+ Example
+ -------
+ ? ADfdrive( "c:\autoexec.bat" )      // "c"
+!seealso: "ADfname()" "ADfextension()" "ADfpath()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfeof()            Checks for end of file
+'------------------------------------------------------------------------------
+ ^bADfeof( <nHandle> ) --> <lEOF>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Checks if the file pointer of the file whose handle is <nHandle> is
+ at the end of file.
+
+ ^bExample:  See ADfgetl()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfextension()      Returns the file extension portion from a file spec
+'------------------------------------------------------------------------------
+ ^bADfextension( <cFileSpec> ) --> <cExt>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the file extension portion from a file spec.
+
+ Example
+ -------
+ ? ADfextension( "c:\autoexec.bat" )      // "bat"
+!seealso: "ADfdrive()" "ADfname()" "ADfpath()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfgetl()           Retrieves a line from a file
+'------------------------------------------------------------------------------
+ ^bADfgetl( <nHandle> --> <cLine>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns a line from a file whose handle is <nHandle>.  The return value,
+ <cLine> is stripped of the CRLF characters.  Returns a "" if it is at
+ end of file.
+
+ ^bExample:
+ ^b--------
+ func main()
+ local h := fopen( "OVERVIEW.F" )
+
+ do while !ADfeof( h )
+    ? ADfgetl( h )
+ enddo
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfllength()        Gets/Sets the line length used by ADfgetl()
+'------------------------------------------------------------------------------
+ ^bADfllength( [nLength] ) --> <nOld>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the current value of the line length used by ADfgetl(), and
+ optionally resets it to a new value.  The default value is 256.  Increase it
+ if you are reading a file with longer lines.
+
+ ^bExample:
+ ^b--------
+ func main()
+ local h := fopen( "OVERVIEW.F" )
+
+ ADfllength( 512 )
+
+ do while !ADfeof( h )
+    ? ADfgetl( h )
+ enddo
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfname()           Returns the file name portion from a file spec
+'------------------------------------------------------------------------------
+ ^bADfname( <cFileSpec> ) --> <cName>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the file name portion from a file spec.
+
+ Example
+ -------
+ ? ADfname( "c:\autoexec.bat" )      // "autoexec"
+!seealso: "ADfdrive()" "ADfextension()" "ADfpath()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfpath()         ^rn^r Returns the path portion from a file spec
+'------------------------------------------------------------------------------
+ ^bADfpath( <cFileSpec> ) --> <cPath>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the path portion from a file spec.
+
+ Example
+ -------
+ ? ADfpath( "c:\autoexec.bat" )      // "c:\"
+!seealso: "ADfdrive()" "ADfextension()" "ADfname()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfprint()          Prints a file
+'------------------------------------------------------------------------------
+ ^bADfprint( <cFile>, [nPort] ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Prints a file.  It checks for the readiness of the printer before
+ attempting to send data.  It does not check for the existence of file.
+
+ <cFile> is the name of the file to print
+
+ [nPort] is the numeric address of the LPT port (1=LPT1, 2=LPT2, 3=LPT3).
+ Defaults to 1.
+
+ ^bExample:
+ ^b--------
+ if file( "myfile.txt" )
+   ADfprint( "myfile.txt" )
+ endif
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfsize()           Returns a file's size in bytes
+'------------------------------------------------------------------------------
+ ^bADfsize( <cFile> ) --> <nBytes>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns a file's size in bytes.
+
+ <cFile> is the name of the file.  It must exist.
+
+ <nBytes> is the size of <cFile> in bytes.
+
+ Example
+ -------
+ nBytes := ADfsize( "Frankie.lib" )
+!seealso: "ADftime()" "ADfdate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADftime()           Returns a file's time stamp
+'------------------------------------------------------------------------------
+ ^bADftime( <cFile> ) --> <cTime>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns a file's time stamp.
+
+ <cFile> is the name of the file.  It must exist.
+
+ <cTime> is the time stamp of <cFile>.
+
+ Example
+ -------
+ cTime := ADftime( "Frankie.lib" )
+!seealso: "ADfdate()" "ADfsize()" "ADftouch()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADftouch()          Date/time stamps files
+'------------------------------------------------------------------------------
+ ^bADftouch( <aFiles>, <cDate>, <cTime> --> <nSuccess>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Date/time stamps a file or an array of files.
+
+ <aFiles> is an array of files to be date/time stamped.  If there is only
+ one file, it can be passed either as an array of one file or as a string.
+
+ <cDate> is the date stamped in MM/DD/YY format.
+
+ <cTime> is the time stamp in HH:MM:SS format. (Note: the colons must be
+ present)
+
+ <nSuccess> is the return value and is a measure of success.  A zero means
+ successful, that is, all the files were stamped.  Any other number indicates
+ the index position of the last file that was attempted but failed. If a
+ failure occurs, the file that failed and the rest of the files were not
+ stamped.
+
+
+ Example
+ -------
+ aFiles := { "mydbf.dbf", "mydbf.dbt", "mydbf.ntx" }
+ ADftouch( aFiles, "10/10/93", "13:30:00" )
+!seealso: "ADfdate()" "ADftime()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADtemp_create()     Attempts to create a temporary file.
+'------------------------------------------------------------------------------
+ ^bADtemp_create( [cPath] ) --> <cFileName>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Attempts to create temporary file of 0 byte length in compatibility mode.
+
+ [cPath] is an optional path specifier where you want the file to be
+ created.  It defaults to the root directory of the current drive.  If you
+ want to create the file in the current directory, do "ADtemp_create( [.] )".
+
+ <cFileName> is the name of the file attempted to create.  Note that the
+ function always returns a file name even if the file was not created.
+ Use ADtemp_handle() to check if the file was actually created or not.
+
+ ^bExample:
+ ^b--------
+ ? ADtemp_create("d:\temp")   // attempts to create a temp file in d:\temp
+ ? ADtemp_handle()            // not -1 if successful
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADtemp_handle()     Returns the file handle of the last temp file created.
+'------------------------------------------------------------------------------
+ ^bADtemp_handle() --> <nHandle>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the handle of the last temporary file created with ADtemp_create().
+ Returns a -1 if the last attempt to create was not successful.
+ ADtemp_handle() must be called immediately after ADtemp_create() because its
+ value is overwritten every time ADtemp_create() is called.
+
+ ^bExample:  See ADtemp_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

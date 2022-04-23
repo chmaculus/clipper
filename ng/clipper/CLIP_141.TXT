@@ -1,0 +1,44 @@
+'------------------------------------------------------------------------------
+^BSTRTRAN()^B
+
+    STRTRAN() searches and replaces within a character string.
+
+^USyntax^U
+
+    STRTRAN(<expC1>,<expC2>[,<expC3>] [,<expN1>] [,<expN2>})
+
+^UArguments^U
+
+    <expC1> is the character string to search.
+
+    <expC2> is the sequence of characters to locate.
+
+    <expC3> is the sequence of characters to replace with.  If this
+    argument is not specified, all instances of the search argument are
+    replaced with a null string ("").
+
+    <expN1> is the first occurrence that will be replace.  If this
+    argument is omitted, the default is one.
+
+    <expN2> is the number of occurrences to replace.  If this argument is
+    not specified, the default is all.
+
+^UReturns^U
+
+    A character string.
+
+^UUsage^U
+
+    STRTRAN() performs a standard substring search within a character
+    string.  When it finds a match, it replaces the search string with the
+    specified replacement string.  All instances of the search string are
+    replaced.
+
+    Note that STRTRAN() replaces substrings and therefore does not account
+    for whole words.  Additionally, SET EXACT ON has no effect on its
+    operation.  STRTRAN() always acts as if SET EXACT is OFF.
+!seealso: ???.ngo:"AT" clip_126.ngo:"RAT" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,28 @@
+'------------------------------------------------------------------------------
+^BWORD()^B
+
+    WORD() converts numeric parameters of the CALL command from type DOUBLE
+    to type INT.
+
+^USyntax^U
+
+    WORD(<expN>)
+
+^UArguments^U
+
+    <expN> is the numeric value to convert to type INT.
+
+^UUsage^U
+
+    Use WORD() when you want to convert numeric parameters from DOUBLE to
+    INT in order to reduce the overhead of the CALLed routine.  Be sure
+    that the value does not exceed positive or negative 32,767.
+
+    Example:
+
+    ^RCALL C_proc WITH WORD(30000)^R
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

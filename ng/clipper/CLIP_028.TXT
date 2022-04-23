@@ -1,0 +1,99 @@
+'------------------------------------------------------------------------------
+^BREAD^B
+
+    READ enters full-screen editing mode using the current pending GETs.
+
+^USyntax^U
+
+    READ [SAVE]
+
+^UUsage^U
+
+    READ executes full-screen editing using all GETs pending since the most
+    recent CLEAR, CLEAR GETS, CLEAR ALL or READ.  If there is a FORMAT SET,
+    READ passes control to it before entering full-screen edit.
+
+    Within a READ, you can edit the contents of and navigate between GETs.
+    Whenever you press a key that terminates a GET, control passes to the
+    VALID clause if it has been specified.  A return value of true (.T.)
+    terminates the GET and processes the navigation key.  A false (.F.)
+    value does not process the navigation key.  The following keys are
+    available during READ:
+
+                          ^BFull-Screen Navigation Keys^B
+
+    Key              Action
+
+    Leftarrow,       Character left.  Does not move cursor to previous GET.
+    Ctrl-S
+
+    Rightarrow,      Character right.  At end of GET, moves cursor to next
+    Ctrl-D           GET.
+
+    Ctrl-Leftarrow,  Word left.
+    Ctrl-A
+
+    Ctrl-Rightarrow, Word right.
+    Ctrl-F
+
+    Uparrow,         Previous GET.
+    Ctrl-E
+
+    Downarrow,       Next GET.
+    Ctrl-X, Ctrl-M,
+    Return
+
+    Home             Beginning of GET.
+    End              Last character of GET.
+
+    Ctrl-Home        Beginning of first GET.
+    Ctrl-End         Beginning of last GET.
+
+                           ^BFull-Screen Editing Keys^B
+
+    Key              Action
+
+    Del, Ctrl-G      Delete character at cursor position.
+    Backspace        Destructive backspace.
+    Ctrl-H
+    Ctrl-T           Delete word right.
+    Ctrl-Y           Delete from cursor position to end of GET.
+    Ctrl-U           Restore current GET to original value.
+
+                             ^BFull-Screen Mode Keys^B
+
+    Key              Action
+
+    Ins, Ctrl-V      Toggle insert mode.
+
+                           ^BFull-Screen Mode Keys^B
+
+    Key              Action
+
+    Ins, Ctrl-V      Toggle insert mode.
+
+
+                          ^BFull-Screen Escape Keys^B
+
+    Key              Action
+
+    Ctrl-W,          Terminate READ saving current GET.
+    Ctrl-C,
+    PgUp,
+    PgDn
+
+    Return, Ctrl-M   Terminate READ from last GET.
+
+    Esc              Terminate READ without saving current GET.
+
+    READ clears all GETs after you finish editing.
+
+^UOptions^U
+
+    ^BSave^B: The SAVE option does not clear GETs.  This means that the
+    next time you issue READ, the same set of GETs appears for editing.
+!seealso: ???.ngo:"@...SAY...GET" ???.ngo:"CLEAR GETS" clip_061.ngo:"SET FORMAT" clip_102.ngo:"LASTKEY()" 
+'------------------------------------------------------------------------------
+
+
+

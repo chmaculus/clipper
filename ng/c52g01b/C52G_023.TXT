@@ -1,0 +1,223 @@
+!short: TBColumn -- Overview
+'------------------------------------------------------------------------------
+ ^bTBColumn^b
+ Provides column objects for TBrowse objects
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bDescription^b
+
+     A TBColumn object is a simple object containing the information needed
+     to fully define one data column of a TBrowse object (see the TBrowse
+     reference in this chapter).  TBColumn objects have no methods, only
+     exported instance variables.
+
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example is a code fragment that creates a TBrowse object
+        and adds some TBColumn objects to it:
+
+        USE Customer NEW
+        //
+
+        // Create a new TBrowse object
+        objBrowse := TBrowseDB(1, 1, 23, 79)
+        //
+
+        // Create some new TBColumn objects and
+        // add them to the TBrowse object
+        objBrowse:addColumn(TBColumnNew( "Customer", ;
+              {|| Customer->Name} ))
+        objBrowse:addColumn(TBColumnNew( "Address", ;
+              {|| Customer->Address} ))
+        objBrowse:addColumn(TBColumnNew( "City", ;
+              {|| Customer->City} ))
+        .
+        . <statements to actually browse the data>
+        .
+        CLOSE Customer
+
+        For more information on TBrowse, refer to the Introduction to TBrowse
+        chapter in the Programming and Utilitites guide.  For a fully
+        operational example of a TBrowse object, see also TbDemo.prg located
+        in \CLIPPER5\SOURCE\SAMPLE.
+!seealso: c52g_001.ngo:"BROWSE()*" c52g_001.ngo:"DBEDIT()*" c52g_022.ngo:"TBrowse" 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bClass Function^b
+!short:
+!short: TBColumnNew()   Create a new TBColumn object
+'------------------------------------------------------------------------------
+
+     ^bTBColumnNew(<cHeading>, <bBlock>) --> objTBColumn
+
+        Returns a new TBColumn object with the specified heading and data
+        retrieval block.  Other elements of the TBColumn object can be
+        assigned directly using the syntax for assigning exported instance
+        variables.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExported Instance Variables^b
+!short:
+!short: block           Code block to retrieve data for the column
+'------------------------------------------------------------------------------
+
+     ^bblock                                             (Assignable)
+
+        Contains a code block that retrieves data for the column.  Any code
+        block is valid, and no block arguments are supplied when the block is
+        evaluated.  The code block must return the appropriate data value for
+        the column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: cargo           User-definable variable
+'------------------------------------------------------------------------------
+
+     ^bcargo                                             (Assignable)
+
+        Contains a value of any data type provided as a user-definable slot,
+        allowing arbitrary information to be attached to a TBColumn and
+        retrieved later.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colorBlock      Code block that determines color of data items
+'------------------------------------------------------------------------------
+
+     ^bcolorBlock                                       (Assignable)
+
+        Contains an optional code block that determines the color of data
+        items as they are displayed.  If present, this block is executed each
+        time a new value is retrieved via the TBColumn:block (the data
+        retrieval block).  The newly retrieved data value is passed as an
+        argument to the TBColumn:colorBlock, which must return an array
+        containing two numeric values.  The values returned are used as
+        indexes into the color table of the TBrowse object as described in
+        the TBColumn:defColor reference below.
+
+        The TBColumn:colorBlock allows display colors for data items based on
+        the value of the data being displayed.  For example, negative numbers
+        may be displayed in a different color than positive numbers.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colSep          Column separator character
+'------------------------------------------------------------------------------
+
+     ^bcolSep                                          (Assignable)
+
+        Contains an optional character string that draws a vertical separator
+        to the left of this column if there is another column to the left of
+        it.  If no value is supplied for TBColumn:colSep, the value contained
+        in TBrowse:colSep is used instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: defColor        Array of numeric indexes into the color table
+'------------------------------------------------------------------------------
+
+     ^bdefColor                                       (Assignable)
+
+        Contains an array of two numeric values used as indexes into the
+        color table in the TBrowse object.  The first value determines the
+        unselected color which displays headings, footings, etc.  It also
+        displays data values when the browse cursor is not on the data value
+        being displayed.  The second value determines the selected color.
+        The selected color displays the current browse cell.
+
+        The default value for TBColumn:defColor is {1, 2}.  This causes the
+        first two colors in the TBrowse color table to be used for unselected
+        and selected, respectively.  Note that colors set using
+        TBColumn:colorBlock override those set by TBColumn:defColor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: footing         Column footing
+'------------------------------------------------------------------------------
+
+     ^bfooting                                          (Assignable)
+
+        Contains a character value that defines the footing for this data
+        column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: footSep         Footing separator character
+'------------------------------------------------------------------------------
+
+     ^bfootSep                                          (Assignable)
+
+        Contains a character value that draws a horizontal line between the
+        data values and the footing.  If it does not contain a character
+        value: TBrowse:footSep is used instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: heading         Column heading
+'------------------------------------------------------------------------------
+
+     ^bheading                                          (Assignable)
+
+        Contains a character value that defines the heading for this data
+        column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: headSep         Heading separator character
+'------------------------------------------------------------------------------
+
+     ^bheadSep                                          (Assignable)
+
+        Contains an optional character string that draws a horizontal
+        separator between the heading and the data values.  If it does not
+        contain a character value, the TBrowse:headSep is used instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: width           Column display width
+'------------------------------------------------------------------------------
+
+     ^bwidth                                             (Assignable)
+
+        Contains a numeric value that defines the display width for the
+        column.  If TBColumn:width is not explicitly set, the width of the
+        column will be the greater of: the length of the heading, the length
+        of the footing, or the length of the data at the first evaluation of
+        TBColumn:block.
+
+        If this instance variable is explicitly set, the width of the column
+        will be TBColumn:width.  Displayed headings, footings, and data will
+        all be truncated to this width when necessary.  The width of the
+        displayed data will be the length at the first evaluation of
+        TBColumn:block for all data types other than character.  Character
+        data will be extended to TBColumn:width for display purposes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,2355 @@
+!short: ^bRelease Note #2 -- Clipper 5.01 Change Summary^b
+'------------------------------------------------------------------------------
+ Document:  ^bRelease Note #2^b
+            ^bClipper 5.01 Change Summary^b
+
+            Copyright (c) 1991, Nantucket Corporation
+
+ Version:   5.01a (April 19, 1991)
+
+ Summary:   This document provides a summary of changes from Clipper
+            5.00 to Clipper 5.01.  This includes new and changed
+            features as well as fixes.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bIn General^b
+!short:
+!short: 1   Memory Management
+'------------------------------------------------------------------------------
+ ^b1   Memory Management^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, there have been many improvements made to the
+     memory management.  These include:
+
+     1.  The virtual memory system has been improved to make better use
+         of available conventional memory.
+
+     2.  Conventional memory requirements have been reduced by 20K-30K.
+
+     3.  Performance in tight memory situations has been improved.
+
+     4.  New "runtime warnings" have been implemented to allow graceful
+         handling of low memory conditions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2   Linker
+'------------------------------------------------------------------------------
+ ^b2   Linker^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     A new version of .RTLink is supplied which corrects problems in the
+     release version.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 3   Debugger
+'------------------------------------------------------------------------------
+ ^b3   Debugger^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     A new version of the Debugger is supplied with substantial
+     revised.  See below for more information on specific changes to The
+     Clipper Debugger.
+
+     New documentation is supplied in Debugger.doc.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bData Types^b
+!short:
+!short: 4   CHANGED: Maximum Character String Length
+'------------------------------------------------------------------------------
+ ^b4   CHANGED: Maximum Character String Length^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, the maximum length of a character string has been
+     changed from 65,535 to 65,519 characters.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bStandard Functions^b
+!short:
+!short: 5   NEW:     ALERT()
+'------------------------------------------------------------------------------
+ ^b5   NEW: ALERT()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ALERT() is a new function that creates a simple modal dialog.  It
+     is useful in error handlers and other "pause" functions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 6   CHANGED: ALLTRIM()
+'------------------------------------------------------------------------------
+ ^b6   CHANGED: ALLTRIM()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In version 5.0, the standard function ALLTRIM() was defined in
+     STD.CH as an EXTEND.LIB replacement.  This made it unavailable for
+     use with the macro (&) operator as well as within index key
+     expressions.  In version 5.01 ALLTRIM() is now included in
+     EXTEND.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 7   NEW:     ATAIL()
+'------------------------------------------------------------------------------
+ ^b7   NEW: ATAIL()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ATAIL() is a new function that returns the right-most (i.e.,
+     highest numbered) element of an array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 8   NEW:     DBAPPEND()
+'------------------------------------------------------------------------------
+ ^b8   NEW: DBAPPEND()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBAPPEND() is a new function that is equivalent to the APPEND BLANK
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 9   NEW:     DBCLEARFILTER()
+'------------------------------------------------------------------------------
+ ^b9   NEW: DBCLEARFILTER()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCLEARFILTER() is a new function that is equivalent to the SET
+     FILTER TO command with no argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10  NEW:     DBCLEARINDEX()
+'------------------------------------------------------------------------------
+ ^b10  NEW: DBCLEARINDEX()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCLEARINDEX() is a new function that is equivalent to the SET
+     INDEX TO command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 11  NEW:     DBCLEARRELATION()
+'------------------------------------------------------------------------------
+ ^b11  NEW: DBCLEARRELATION()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCLEARRELATION() is a new function that is equivalent to the SET
+     RELATION TO command with no argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 12  NEW:     DBCLOSEALL()
+'------------------------------------------------------------------------------
+ ^b12  NEW: DBCLOSEALL()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCLOSEALL() is a new function that is equivalent to the CLOSE ALL
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 13  NEW:     DBCLOSEAREA()
+'------------------------------------------------------------------------------
+ ^b13  NEW: DBCLOSEAREA()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCLOSEAREA() is a new function that is equivalent to the CLOSE
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 14  NEW:     DBCOMMIT()
+'------------------------------------------------------------------------------
+ ^b14  NEW: DBCOMMIT()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCOMMIT() is a new function that commits the current work area
+     only.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 15  NEW:     DBCOMMITALL()
+'------------------------------------------------------------------------------
+ ^b15  NEW: DBCOMMITALL()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCOMMITALL() is a new function that is equivalent to the COMMIT
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 16  NEW:     DBCREATEINDEX()
+'------------------------------------------------------------------------------
+ ^b16  NEW: DBCREATEINDEX()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBCREATEINDEX() is a new function that is equivalent to the INDEX
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 17  NEW:     DBDELETE()
+'------------------------------------------------------------------------------
+ ^b17  NEW: DBDELETE()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBDELETE() is a new function that is equivalent to the DELETE
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 18  NEW:     DBGOBOTTOM()
+'------------------------------------------------------------------------------
+ ^b18  NEW: DBGOBOTTOM()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBGOBOTTOM() is a new function that is equivalent to the GO BOTTOM
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 19  NEW:     DBGOTO()
+'------------------------------------------------------------------------------
+ ^b19  NEW: DBGOTO()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBGOTO() is a new function that is equivalent to the GO <nRecord>
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 20  NEW:     DBGOTOP()
+'------------------------------------------------------------------------------
+ ^b20  NEW: DBGOTOP()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBGOTOP() is a new function that is equivalent to the GO TOP
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 21  NEW:     DBRECALL()
+'------------------------------------------------------------------------------
+ ^b21  NEW: DBRECALL()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBRECALL() is a new function that is equivalent to the RECALL
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 22  NEW:     DBREINDEX()
+'------------------------------------------------------------------------------
+ ^b22  NEW: DBREINDEX()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBREINDEX() is a new function that is equivalent to the REINDEX
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 23  NEW:     DBSEEK()
+'------------------------------------------------------------------------------
+ ^b23  NEW: DBSEEK()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSEEK() is a new function that is equivalent to the SEEK command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 24  NEW:     DBSELECTAREA()
+'------------------------------------------------------------------------------
+ ^b24  NEW: DBSELECTAREA()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSELECTAREA() is a new function that is equivalent to the SELECT
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 25  NEW:     DBSETFILTER()
+'------------------------------------------------------------------------------
+ ^b25  NEW: DBSETFILTER()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSETFILTER() is a new function that is equivalent to the SET
+     FILTER TO <lCondition> command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 26  NEW:     DBSETINDEX()
+'------------------------------------------------------------------------------
+ ^b26  NEW: DBSETINDEX()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSETINDEX() is a new function that is equivalent to the SET INDEX
+     TO command with no arguments.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 27  NEW:     DBSETORDER()
+'------------------------------------------------------------------------------
+ ^b27  NEW: DBSETORDER()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSETORDER() is a new function that is equivalent to the SET ORDER
+     TO command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 28  NEW:     DBSETRELATION()
+'------------------------------------------------------------------------------
+ ^b28  NEW: DBSETRELATION()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSETRELATION() is a new function that is equivalent to the SET
+     RELATION TO command when used with arguments.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 29  NEW:     DBSKIP()
+'------------------------------------------------------------------------------
+ ^b29  NEW: DBSKIP()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSKIP() is a new function that is equivalent to the SKIP command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 30  CHANGED: DBSTRUCT()
+'------------------------------------------------------------------------------
+ ^b30  CHANGED: DBSTRUCT()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBSTRUCT() has been revised to return an empty array (instead of
+     NIL) when no fields are active in the work area.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 31  NEW:     DBUNLOCK()
+'------------------------------------------------------------------------------
+ ^b31  NEW: DBUNLOCK()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBUNLOCK() is a new function that is equivalent to the UNLOCK
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 32  NEW:     DBUNLOCKALL()
+'------------------------------------------------------------------------------
+ ^b32  NEW: DBUNLOCKALL()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBUNLOCKALL() is a new function that is equivalent to the UNLOCK
+     ALL command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 33  NEW:     DBUSEAREA()
+'------------------------------------------------------------------------------
+ ^b33  NEW: DBUSEAREA()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DBUSEAREA() is a new function that is equivalent to the USE
+     command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 34  CHANGED: DEVOUT() color
+'------------------------------------------------------------------------------
+ ^b34  CHANGED: DEVOUT() color^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The DEVOUT() function has been revised to take an optional second
+     parameter containing a color specifier.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 35  CHANGED: DIRECTORY()
+'------------------------------------------------------------------------------
+ ^b35  CHANGED: DIRECTORY()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DIRECTORY() has been revised to return an empty array (instead of
+     NIL) when no files match the specified search skeleton.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 36  NEW:     DISPBEGIN()
+'------------------------------------------------------------------------------
+ ^b36  NEW: DISPBEGIN()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DISPBEGIN() is a new function that informs the Clipper display
+     output system that the application is about to perform a series of
+     display operations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 37  NEW:     DISPBOX()
+'------------------------------------------------------------------------------
+ ^b37  NEW: DISPBOX()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DISPBOX() is a new function that draws a box at the specified
+     display coordinates in the color specified.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 38  NEW:     DISPEND()
+'------------------------------------------------------------------------------
+ ^b38  NEW: DISPEND()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DISPEND() is a new function that informs the Clipper display output
+     system that the application has finished performing a series of
+     display operations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 39  NEW:     DISPOUT() color
+'------------------------------------------------------------------------------
+ ^b39  NEW: DISPOUT() color^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The DISPOUT() function has been revised to take an optional second
+     parameter containing a color specifier.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 40  CHANGED: DOSERROR()
+'------------------------------------------------------------------------------
+ ^b40  CHANGED: DOSERROR()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     DOSERROR() has been changed to accept an argument that sets the
+     DOSERROR() value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 41  CHANGED: FIELDBLOCK() / FIELDWBLOCK()
+'------------------------------------------------------------------------------
+ ^b41  CHANGED: FIELDBLOCK() / FIELDWBLOCK()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     These functions have been revised so that they do not require the
+     specified field to be defined at the time the block is created (the
+     field must become defined before the block is executed, however).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 42  NEW:     FIELDPOS()
+'------------------------------------------------------------------------------
+ ^b42  NEW: FIELDPOS()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     FIELDPOS() is a new function that returns the position of a
+     specified field within a list of fields associated with the current
+     work area.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 43  NEW:     MLCTOPOS()
+'------------------------------------------------------------------------------
+ ^b43  NEW: MLCTOPOS()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     MLCTOPOS() is a new function that, given a text string and optional
+     formatting information, determines the byte position that
+     corresponds with a particular line and column within the formatted
+     text.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 44  NEW:     MPOSTOLC()
+'------------------------------------------------------------------------------
+ ^b44  NEW: MPOSTOLC()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     MPOSTOLC() is a new function that, given a text string and optional
+     formatting information, determines the formatted line and column
+     corresponding to a particular byte position within the text.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 45  CHANGED: NETERR()
+'------------------------------------------------------------------------------
+ ^b45  CHANGED: NETERR()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     NETERR() has been changed to accept an argument that sets the
+     NETERR() status.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 46  CHANGED: OS()
+'------------------------------------------------------------------------------
+ ^b46  CHANGED: OS()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     OS() has been changed to return the real operating system version
+     instead of a constant value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 47  CHANGED: RIGHT()
+'------------------------------------------------------------------------------
+ ^b47  CHANGED: RIGHT()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In version 5.0, the standard function RIGHT() was defined in STD.CH
+     as an EXTEND.LIB replacement.  This made it unavailable for use
+     with the macro (&) operator as well as within index key
+     expressions.  In version 5.01 RIGHT() is now included in
+     EXTEND.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 48  CHANGED: SCROLL()
+'------------------------------------------------------------------------------
+ ^b48  CHANGED: SCROLL()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     All parameters to the SCROLL() function are now optional.  If
+     parameters are omitted, the dimensions of the visible display are
+     used.  If the last parameter (number of lines to scroll) is
+     omitted, zero (clear area) is assumed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 49  CHANGED: SET()
+'------------------------------------------------------------------------------
+ ^b49  CHANGED: SET()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1.  The SET() function has been revised to take a third parameter
+         for these settings:
+
+         _SET_ALTFILE
+         _SET_PRINTFILE
+         _SET_EXTRAFILE
+
+         The third parameter is a logical value indicating whether or
+         not the specified file should be truncated or opened in append
+         mode.  A value of false (.F.) means the file should be
+         truncated.  A value of true (.T.) means the file should be
+         opened in append mode.  In either case, if the file does not
+         exist, it is created.
+
+     2.  A new global setting, _SET_SCROLLBREAK, has been added.  This
+         setting determines how Ctrl-S is interpreted by the keyboard
+         driver.  When _SET_SCROLLBREAK is true (.T.) Ctrl-S is
+         interpreted as a request to pause execution upon the next
+         attempt to perform output via Clipper.  When _SET_SCROLLBREAK
+         is false (.F.) Ctrl-S is interpreted as a data or cursor
+         control key.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bStandard Commands^b
+!short:
+!short: 50  NEW:     @...BOX...COLOR
+'------------------------------------------------------------------------------
+ ^b50  NEW: @...BOX...COLOR^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The @...BOX command supports the COLOR <cColorString> clause to
+     specify the color of the box border.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 51  NEW:     @...GET...COLOR
+'------------------------------------------------------------------------------
+ ^b51  NEW: @...GET...COLOR^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The @...GET command supports the COLOR <cColorString> clause.  The
+     COLOR clause can be used to specify both the selected and
+     unselected colors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 52  NEW:     @...SAY...COLOR
+'------------------------------------------------------------------------------
+ ^b52  NEW: @...SAY...COLOR^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The @...SAY command supports the COLOR <cColorString> clause to
+     determine the standard color used for the SAY value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 53  NEW:     @...TO...COLOR
+'------------------------------------------------------------------------------
+ ^b53  NEW: @...TO...COLOR^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The @...TO command supports the COLOR <cColorString> clause to
+     specify the color of the box border.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 54  CHANGED: DISPLAY TO PRINTER
+'------------------------------------------------------------------------------
+ ^b54  CHANGED: DISPLAY TO PRINTER^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.0, the TO PRINTER clause could only be specified as TO
+     PRINT.  This is fixed in version 5.01.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 55  CHANGED: INPUT
+'------------------------------------------------------------------------------
+ ^b55  CHANGED: INPUT^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The INPUT command has been changed to preserve the previous value
+     of the target variable when no new value is entered.  This change
+     preserves compatibility with the Summer '87 INPUT command.  In
+     Clipper 5.0 the variable is set to NIL if no new value is entered.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 56  CHANGED: LIST TO PRINTER
+'------------------------------------------------------------------------------
+ ^b56  CHANGED: LIST TO PRINTER^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.0, the TO PRINTER clause could only be specified as TO
+     PRINT.  This is fixed in version 5.01.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 57  NEW:     SET ALTERNATE...ADDITIVE option
+'------------------------------------------------------------------------------
+ ^b57  NEW: SET ALTERNATE...ADDITIVE option^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The SET ALTERNATE TO command now supports the ADDITIVE option.  If
+     ADDITIVE is specified, the alternate file is not truncated before
+     new information is written to it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 58  NEW:     SET PRINTER...ADDITIVE option
+'------------------------------------------------------------------------------
+ ^b58  NEW: SET PRINTER...ADDITIVE option^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The SET PRINTER TO command now supports the ADDITIVE option.  If
+     ADDITIVE is specified, the print file is not truncated before new
+     information is written to it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 59  NEW:     USE VIA option
+'------------------------------------------------------------------------------
+ ^b59  NEW: USE VIA option^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The USE command now supports the VIA <cDriver> clause.  VIA allows
+     a replaceable database driver to be specified when a work area is
+     used.  If no VIA clause is specified, the default DBFNTX driver is
+     used.  This driver implements the standard Clipper database
+     behaviors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bStatements^b
+!short:
+!short: 60  CHANGED: BEGIN SEQUENCE
+'------------------------------------------------------------------------------
+ ^b60  CHANGED: BEGIN SEQUENCE^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper version 5.01, you can no longer RETURN from between a
+     BEGIN SEQUENCE statement and its corresponding RECOVER statement.
+     If you do not specify a RECOVER statement, then you cannot RETURN
+     from anywhere in the BEGIN SEQUENCE...END construct.  A RETURN
+     encountered in either of these conditions generates the following
+     compiler error:
+
+     C2086 RETURN violates enclosing SEQUENCE
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bPreprocessor Directives^b
+!short:
+!short: 61  NEW:     #xcommand | #xtranslate directives
+'------------------------------------------------------------------------------
+ ^b61  NEW: #xcommand | #xtranslate directives^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, the new directives #xcommand and #xtranslate have
+     been added.  These directives work like #command and #translate
+     except that the four letter abbreviation rules used by #command and
+     #translate do not apply.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 62  NEW:     #error directive
+'------------------------------------------------------------------------------
+ ^b62  NEW: #error directive^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, the #error directive causes the compiler to
+     generate error C2074 and display a user-supplied message.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bStandard Classes^b
+!short:
+!short: ^bError Class^b
+!short: 63  NEW:     e:severity
+'------------------------------------------------------------------------------
+ ^b63  NEW: e:severity^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Error:severity is a new exported instance variable of Error
+     objects.  It indicates, using a numeric value, the severity of the
+     condition with which the error object is associated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 64  CHANGED: e:osCode
+'------------------------------------------------------------------------------
+ ^b64  CHANGED: e:osCode^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, Error:osCode now properly reflects the DOS
+     extended error code for file errors.  This allows proper
+     distinction between errors which result from sharing violations
+     (e.g., opening EXCLUSIVE when another process has already opened
+     the file) and access violations (e.g., opening read/write when the
+     file is marked read-only).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bGet Class^b
+!short: 65  NEW:     Get:subscript
+'------------------------------------------------------------------------------
+ ^b65  NEW: Get:subscript^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Get:subscript is a new exported instance variable that returns
+     information about Gets on array elements.  For a Get object which
+     operates on an array element, Get:subscript returns an array of
+     numeric values representing the subscripts used in the @...GET
+     statement.  If the Get involves a regular variable, Get:subscript
+     returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 66  NEW:     Get:exitState
+'------------------------------------------------------------------------------
+ ^b66  NEW: Get:exitState^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Get:exitState is a new exported instance variable used by the
+     Clipper 5.01 READMODAL() system to record the means by which the
+     Get object was exited when it was last read.  For a list of the
+     exit states, refer to Getexit.ch.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 67  NEW:     Get:reader
+'------------------------------------------------------------------------------
+ ^b67  NEW: Get:reader^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Get:reader is a new exported instance variable that can be used to
+     implement special read behaviors for any Get.  Get:reader allows
+     particular Get objects to have specialized read behaviors without
+     changing the standard READMODAL() function.  This preserves
+     compatibility for Gets which are to be handled in the customary way
+     and also eliminates potential conflicts between different
+     extensions to the GET/READ system.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 68  NEW:     Get:colorDisp()
+'------------------------------------------------------------------------------
+ ^b68  NEW: Get:colorDisp()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Get:colorDisp() is a new method that changes the colors of a Get
+     object and then redisplays it.  The method is exactly equivalent to
+     assigning Get:colorSpec and issuing Get:display().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bTBrowse Class^b
+!short: 69  NEW:     TBrowse:insColumn()
+'------------------------------------------------------------------------------
+ ^b69  NEW: TBrowse:insColumn(<nPos>, <oColumn>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TBrowse:insColumn() is a new method that allows a column object to
+     be inserted into the middle of a browse.  The return value is a
+     reference to the column object being inserted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 70  NEW:     TBrowse:delColumn()
+'------------------------------------------------------------------------------
+ ^b70  NEW: TBrowse:delColumn(<nPos>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TBrowse:delColumn() is a new method that allows a column to be
+     deleted from a browse.  The return value is a reference to the
+     column object being deleted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 71  NEW:     TBrowse:invalidate()
+'------------------------------------------------------------------------------
+ ^b71  NEW: TBrowse:invalidate()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TBrowse:invalidate() is a new method that causes the next
+     stabilization of the TBrowse to repaint the entire TBrowse display,
+     including headings, footings, and all data rows.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 72  NEW:     TBrowse:leftVisible
+'------------------------------------------------------------------------------
+ ^b72  NEW: TBrowse:leftVisible^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TBrowse:leftVisible is a new instance variable that indicates the
+     left-most unfrozen column visible in a TBrowse display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 73  NEW:     TBrowse:rightVisible
+'------------------------------------------------------------------------------
+ ^b73  NEW: TBrowse:rightVisible^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TBrowse:rightVisible is a new instance variable that indicates the
+     right-most unfrozen column visible in a TBrowse display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 74  CHANGED: Display Behavior
+'------------------------------------------------------------------------------
+ ^b74  CHANGED: Display Behavior^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, TBrowse objects no longer clear the entire window
+     before output during redisplay operations.  Part of the window may
+     still be cleared when data from the existing display is scrolled.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 75  NEW:     TBrowse:colWidth()
+'------------------------------------------------------------------------------
+ ^b75  NEW: TBrowse:colWidth()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TBrowse:colWidth() is a new method that returns the display width
+     of a specified column contained in the TBrowse object.  If the
+     specified column is out of bounds or not supplied or not a number,
+     the method returns zero.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bTBColumn Class^b
+!short: 76  CHANGED: TBColumn:width
+'------------------------------------------------------------------------------
+ ^b76  CHANGED: TBColumn:width^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     If this instance variable is not explicitly set, the width of the
+     column will be the greater of:
+
+     1.  Length of heading
+     2.  Length of footing
+     3.  Length of data at first evaluation of data block
+
+     The width of the displayed data will be the length at first
+     evaluation of the data block.  If this instance variable is
+     explicitly set, the width of the column will be TBColumn:width.
+     Displayed headings, footings, and data will all be truncated to
+     this width when necessary.
+
+     The width of the displayed data will be length at first evaluation
+     of data block for all data types other than character.  Character
+     data will be extended to TBColumn:width for display purposes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bExtend System^b
+!short:
+!short: 77  CHANGED: _parc()
+'------------------------------------------------------------------------------
+ ^b77  CHANGED: _parc()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, the _parc() function has been changed to provide
+     better compatibility with C functions and add-on libraries written
+     for earlier versions of Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 78  NEW:     _xunlock()
+'------------------------------------------------------------------------------
+ ^b78  NEW: _xunlock()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     _xunlock() is a new function in Clipper 5.01 that unlocks all VM
+     segments that have been locked by the _parc() function.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bError System^b
+!short:
+!short: 79  NEW:     EG_NOVARMETHOD, EG_APPENDBLOCK, EG_MEM
+'------------------------------------------------------------------------------
+ ^b79  NEW: EG_NOVARMETHOD, EG_APPENDBLOCK, EG_MEM^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The following new generic error codes have been added:
+
+     ^bTable: New Generic Error Codes^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bConstant           Meaning^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     EG_NOVARMETHOD     For errors that occur when attempting to assign
+                        an instance variable of an object
+     EG_APPENDBLOCK     For when APPEND BLANK is unable to lock a new
+                        record at the end of the file
+     EG_MEM             For when the amount of conventional memory
+                        available may be insufficient to allow continued
+                        execution
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 80  CHANGED: Errorsys.prg
+'------------------------------------------------------------------------------
+ ^b80  CHANGED: Errorsys.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The default Errorsys.prg has been revised to improve handling of
+     network errors and to use the ALERT() function to display messages.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bGet System^b
+!short:
+!short: 81  CHANGED: Getsys.prg
+'------------------------------------------------------------------------------
+ ^b81  CHANGED: Getsys.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Getsys.prg, the standard GET/READ system, has been restructured to
+     provide a cleaner platform for extensions.
+
+     Some of the functions in Getsys.prg have been made public so that
+     they can be used when implementing customized Get readers (see
+     Get:reader above)  These functions are summarized below.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 82  NEW:     GetReader()
+'------------------------------------------------------------------------------
+ ^b82  NEW: GetReader()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     GetReader() implements the standard read behavior for Gets.  By
+     default, READMODAL() uses the GetReader() function to read Get
+     objects.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 83  NEW:     GetApplyKey()
+'------------------------------------------------------------------------------
+ ^b83  NEW: GetApplyKey()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     GetApplyKey() applies an INKEY() value to the Get object having
+     input focus.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 84  NEW:     GetPreValidate()
+'------------------------------------------------------------------------------
+ ^b84  NEW: GetPreValidate()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     GetPreValidate() validates the Get object for editing, including
+     evaluating Get:preBlock (the WHEN clause) if it is present.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 85  NEW:     GetPostValidate()
+'------------------------------------------------------------------------------
+ ^b85  NEW: GetPostValidate()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     GetPostValidate() validates a Get after editing, including
+     evaluating Get:postBlock (the VALID clause) if present.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 86  NEW:     GetDoSetKey()
+'------------------------------------------------------------------------------
+ ^b86  NEW: GetDoSetKey()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     GetDoSetKey() executes a SET KEY block, preserving the context of
+     the passed Get object.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 87  CHANGED: Parameters to Get:preBlock
+'------------------------------------------------------------------------------
+ ^b87  CHANGED: Parameters to Get:preBlock^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In previous versions of Getsys.prg, no parameters were passed to
+     Get:preBlock when it was run during pre-validation.  In this
+     version, the Get object is passed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 88  CHANGED: Parameters to Get:postBlock
+'------------------------------------------------------------------------------
+ ^b88  CHANGED: Parameters to Get:postBlock^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In previous versions of Getsys.prg, two parameters were passed to
+     Get:postBlock during post-validation: the updated value of the get
+     variable, and a logical value representing whether the Get had been
+     edited.  In this version, only a single parameter is passed: the
+     Get object itself.  This allows more control in the post-validation
+     code.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bCompiler^b
+!short:
+!short: 89  NEW:     /Z Option
+'------------------------------------------------------------------------------
+ ^b89  NEW: /Z Option^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Clipper 5.01 compiler now supports the /Z option which
+     suppresses shortcut evaluations of logical .AND. and .OR.
+     operations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 90  NEW:     Error Messages
+'------------------------------------------------------------------------------
+ ^b90  NEW: Error Messages^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The following new compiler messages have been added in Clipper
+     5.01:
+
+     1.  ^bWarning C1007^b occurs when a function ends with a statement
+         other than RETURN.
+
+     2.  ^bError C2074^b occurs when a #error directive is encountered
+         during compilation.
+
+     3.  ^bError C2086^b indicates that a RETURN statement was
+         encountered between a BEGIN SEQUENCE statement and the
+         corresponding RECOVER statement (or END statement, if no
+         RECOVER statement is used).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bThe Clipper Debugger^b
+!short:
+!short: 91  NEW:     INIT.CLD
+'------------------------------------------------------------------------------
+ ^b91  NEW: INIT.CLD^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In addition to any script file called for on the CLD command-line,
+     the Debugger automatically searches for a script file with the name
+     INIT.CLD.  If a file by this name is located in the current
+     directory or anywhere in the DOS PATH, the Debugger executes it as
+     a script file.  If both INIT.CLD and a command-line script file are
+     present, INIT.CLD is executed first followed by the command-line
+     script file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 92  CHANGED: Script File Extensions
+'------------------------------------------------------------------------------
+ ^b92  CHANGED: Script File Extensions^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, the default Debugger script extension has changed
+     to (.CLD).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bDebugger Commands^b
+!short: 93  NEW:     Menu Commands
+'------------------------------------------------------------------------------
+ ^b93  NEW: Menu Commands^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Any menu option can be turned into a command that can be executed
+     from the Command Window or a script file.  These commands, called
+     menu commands, are formed using the menu name followed by the first
+     word of the option name.  Arguments can be specified following a
+     menu command if the menu option requires further input.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 94  NEW:     ??
+'------------------------------------------------------------------------------
+ ^b94  NEW: ??^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ?? is a new command.  It is identical in functionality to the ?
+     command except that the return value of the expression is displayed
+     in a pop-up window instead of in the Command Window.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 95  CHANGED: CALLSTACK
+'------------------------------------------------------------------------------
+ ^b95  CHANGED: CALLSTACK^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The syntax for CALLSTACK has been changed so that the on|OFF
+     keyword is optional.  Issued without an argument, CALLSTACK toggles
+     the Callstack Window status.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 96  CHANGED: DELETE
+'------------------------------------------------------------------------------
+ ^b96  CHANGED: DELETE^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Since Passpoints are no longer used by the Debugger, the PP keyword
+     has been removed from the DELETE command syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 97  CHANGED: GOTO
+'------------------------------------------------------------------------------
+ ^b97  CHANGED: GOTO^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     GOTO now prompts you for a line number using a dialog box if issued
+     without an argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 98  REMOVED: INSPECT CALLSTACK
+'------------------------------------------------------------------------------
+ ^b98  REMOVED: INSPECT CALLSTACK^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     INSPECT CALLSTACK has been removed.  To inspect the Callstack
+     Window, use Tab to select the window and Uparrow and Dnarrow to
+     move to the item you want to display in the Code Window.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 99  REMOVED: INSPECT WP
+'------------------------------------------------------------------------------
+ ^b99  REMOVED: INSPECT WP^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The INSPECT WP command has been deleted.  All Watchpoints and
+     Tracepoints are displayed in the Watch Window.  To inspect a
+     Watchpoint, use Tab to select the window and Uparrow and Dnarrow to
+     move the highlight to the item you want to inspect.  Pressing
+     Return displays the selected item in a dialog box where you can
+     inspect it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 100 CHANGED: LIST
+'------------------------------------------------------------------------------
+ ^b100 CHANGED: LIST^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Since Passpoints are no longer used by the Debugger, the PP keyword
+     has been removed from the LIST command syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 101 REMOVED: NEW
+'------------------------------------------------------------------------------
+ ^b101 REMOVED: NEW^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The NEW command has been deleted.  To load a new executable file,
+     you must exit the Debugger and name the new .EXE file on the
+     CLD.EXE command-line.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 102 CHANGED: NEXT
+'------------------------------------------------------------------------------
+ ^b102 CHANGED: NEXT^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The NEXT command now prompts you for a search string using a dialog
+     box if no previous FIND has been issued.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 103 CHANGED: NUM
+'------------------------------------------------------------------------------
+ ^b103 CHANGED: NUM^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The syntax for NUM has been changed so that the ON|off keyword is
+     optional.  Issued without an argument, NUM toggles the line number
+     display status.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 104 REMOVED: PP
+'------------------------------------------------------------------------------
+ ^b104 REMOVED: PP^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Since Passpoints are no longer used by the Debugger, the PP command
+     has been deleted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 105 CHANGED: PREV
+'------------------------------------------------------------------------------
+ ^b105 CHANGED: PREV^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     PREV now prompts you for a search string using a dialog box if no
+     previous FIND has been issued.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 106 CHANGED: SPEED
+'------------------------------------------------------------------------------
+ ^b106 CHANGED: SPEED^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     SPEED now prompts you for a step delay using a dialog box if the
+     command is issued without an argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 107 CHANGED: STEP
+'------------------------------------------------------------------------------
+ ^b107 CHANGED: STEP^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     STEP no longer accepts a command-line argument.  This command runs
+     the current program in Single Step Mode.  Use the Run:To Cursor
+     menu option to run several lines before stopping.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 108 CHANGED: TP
+'------------------------------------------------------------------------------
+ ^b108 CHANGED: TP^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     TP now prompts you for an expression using a dialog box if the
+     command is issued without an argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 109 CHANGED: VIEW
+'------------------------------------------------------------------------------
+ ^b109 CHANGED: VIEW^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     VIEW now prompts you for a filename using a dialog box if the
+     command is issued without an argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 110 CHANGED: WP
+'------------------------------------------------------------------------------
+ ^b110 CHANGED: WP^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     WP now prompts you for an expression using a dialog box if the
+     command is issued without an argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bDebugger Keys^b
+!short: 111 REMOVED: F3
+'------------------------------------------------------------------------------
+ ^b111 REMOVED: F3^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The F3 key, previously used to retype the last command in the
+     Command Window, is no longer valid.  Instead, the Command Window
+     maintains a command history.  When the window is active, Uparrow
+     displays the previously issued commands and Return executes the
+     currently displayed command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 112 CHANGED: F6
+'------------------------------------------------------------------------------
+ ^b112 CHANGED: F6^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The F6 key opens the View Workareas Window.  The functionality of
+     this key is actually the same as in the previous version, but the
+     window that is displayed has been changed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 113 CHANGED: F10
+'------------------------------------------------------------------------------
+ ^b113 CHANGED: F10^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The F10 key executes the current application in Trace Mode.  The
+     functionality of this key is actually the same as in the previous
+     version, but the name of the mode has been changed from Step Over
+     Function to Trace.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 114 REMOVED: Shift-F9
+'------------------------------------------------------------------------------
+ ^b114 REMOVED: Shift-F9^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Shift-F9 key, previously used to set and delete Passpoints, is
+     no longer valid.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 115 NEW:     Alt-X
+'------------------------------------------------------------------------------
+ ^b115 NEW: Alt-X^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Alt-X key is a quick key equivalent for the File:Exit menu
+     option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 116 NEW:     Shift-Tab
+'------------------------------------------------------------------------------
+ ^b116 NEW: Shift-Tab^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Shift-Tab key selects the previous window on the main Debugger
+     screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bDebugger Menus^b
+!short: 117 CHANGED: File:View/Open
+'------------------------------------------------------------------------------
+ ^b117 CHANGED: File:View/Open^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The View option name has been changed to Open on the File menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 118 CHANGED: File:Quit/Exit
+'------------------------------------------------------------------------------
+ ^b118 CHANGED: File:Quit/Exit^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Quit option name has been changed to Exit in the File menu.  In
+     addition, Alt-X has been added as a quick key equivalent for this
+     menu option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 119 CHANGED: View:Pre Code, Ex Scr, Line No
+'------------------------------------------------------------------------------
+ ^b119 CHANGED: View:Pre Code, Ex Scr, Line No^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Preprocessed Code, Exchange Screens, and Line Number options in
+     the old View menu have been moved to the new Options menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 120 CHANGED: View:Application  Screen/App Screen
+'------------------------------------------------------------------------------
+ ^b120 CHANGED: View:Application  Screen/App Screen^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Application Screen option name has been changed to App Screen
+     in the View menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 121 NEW:     View:Sets
+'------------------------------------------------------------------------------
+ ^b121 NEW: View:Sets^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Sets option has been added to the View menu.  View:Sets opens
+     the View Sets Window where you can inspect the system settings.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 122 NEW:     View:Workareas
+'------------------------------------------------------------------------------
+ ^b122 NEW: View:Workareas^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Workareas option has been added to the View menu.
+     View:Workareas opens the View Workareas Window which is similar to
+     the Status Window in the previous version.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 123 CHANGED: View:Callstack
+'------------------------------------------------------------------------------
+ ^b123 CHANGED: View:Callstack^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Callstack option has been added to the View menu.
+     View:Callstack toggles the Callstack Window status and replaces the
+     old Callstack:Open and Callstack:Close menu options.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 124 CHANGED: Run:Restart Program/Restart
+'------------------------------------------------------------------------------
+ ^b124 CHANGED: Run:Restart Program/Restart^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Restart Program option name has been changed to Restart in the
+     Run menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 125 REMOVED: Run:Execute New EXE
+'------------------------------------------------------------------------------
+ ^b125 REMOVED: Run:Execute New EXE^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Execute New EXE option has been removed from the Run menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 126 CHANGED: Run:Animate Program/Animate
+'------------------------------------------------------------------------------
+ ^b126 CHANGED: Run:Animate Program/Animate^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Animate Program option name has been changed to Animate on the
+     Run menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 127 NEW:     Run:Step
+'------------------------------------------------------------------------------
+ ^b127 NEW: Run:Step^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Step option has been added to the Run menu to run the current
+     application in Single Step Mode.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 128 NEW:     Run:Trace
+'------------------------------------------------------------------------------
+ ^b128 NEW: Run:Trace^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Trace option has been added to the Run menu.  This command runs
+     the current application in Trace Mode.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 129 NEW:     Run:Go
+'------------------------------------------------------------------------------
+ ^b129 NEW: Run:Go^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Go option has been added to the Run menu.  This command runs
+     the current application in Run Mode until a Breakpoint or
+     Tracepoint is encountered.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 130 NEW:     Run:To Cursor
+'------------------------------------------------------------------------------
+ ^b130 NEW: Run:To Cursor^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The To Cursor option has been added to the Run menu.  This command
+     runs the current application in Run Mode until the line of code
+     indicated by the cursor in the Code Window is reached.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 131 CHANGED: Run:Step Speed/Speed
+'------------------------------------------------------------------------------
+ ^b131 CHANGED: Run:Step Speed/Speed^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Step Speed option name has been changed to Speed on the Run
+     menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 132 CHANGED: Watch/Point
+'------------------------------------------------------------------------------
+ ^b132 CHANGED: Watch/Point^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Watch menu has been changed to the Point menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 133 REMOVED: Watch:Inspect
+'------------------------------------------------------------------------------
+ ^b133 REMOVED: Watch:Inspect^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Inspect option, previously located in the Watch menu has been
+     removed.  Inspection of Watchpoints and Tracepoints is accomplished
+     by selecting the Watch Window which is open on the main Debugger
+     screen as long as a Watchpoint or Tracepoint is set.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 134 NEW:     Point:Breakpoint
+'------------------------------------------------------------------------------
+ ^b134 NEW: Point:Breakpoint^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Breakpoint option has been added to the Point menu.  This
+     command sets and deletes Breakpoints.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 135 CHANGED: Monitor Menu
+'------------------------------------------------------------------------------
+ ^b135 CHANGED:  Monitor Menu^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Monitor menu opens a separate window for monitored variables
+     rather than displaying them in the Watch Window.  The new window is
+     called the Monitor Window and it remains open on the main Debugger
+     screen as long as variables are being monitored.  The Monitor
+     Window may be selected in order to inspect monitored variables.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 136 REMOVED: Callstack Menu
+'------------------------------------------------------------------------------
+ ^b136 REMOVED: Callstack Menu^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Callstack menu has been removed.  Callstack:Open and
+     Callstack:Close were replaced by the single View:Callstack menu
+     command.  Callstack:Inspect is accomplished by selecting the
+     Callstack Window when it is open on the main Debugger screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 137 NEW:     Options Menu
+'------------------------------------------------------------------------------
+ ^b137 NEW: Options Menu^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Options menu is new.  It contains the Preprocessed Code, Line
+     Numbers, and Exchange Screens commands that were on the View menu
+     along with many new commands in Clipper 5.00.  The new commands are
+     as follows:
+
+     ^bTable: New Options Menu Commands^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bMenu Command       Action^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Swap on Input      Controls exchanging screens when user input is
+                        requested
+     Codeblock Trace    Toggles trace back to code block definitions
+                        when code blocks are evaluated
+     Menu Bar           Toggles the display of the menu bar
+     Mono Display       Toggles monochrome display
+     Colors             Invokes the Set Colors Window
+     Tab Width          Sets the display width of Tabs in the Code
+                        Window
+     Save Settings      Save the current configuration of the Debugger
+                        to a script file
+     Restore Settings   Restore a saved configuration making it the
+                        current state of the Debugger
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 138 NEW:     Window Menu
+'------------------------------------------------------------------------------
+ ^b138 NEW: Window Menu^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Window menu is new.  It contains commands to allow you to
+     control the manner in which windows are displayed on the main
+     Debugger screen.  The commands are Next, Prev, Move, Size, Zoom,
+     Iconize and Tile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 139 NEW:     Help Menu
+'------------------------------------------------------------------------------
+ ^b139 NEW: Help Menu^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The new Help menu opens the Help Window with a particular topic
+     highlighted.  The menu commands are Keys, Windows, Menus, and
+     Commands.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bDebugger Windows^b
+!short: 140 NEW:     Window Operations
+'------------------------------------------------------------------------------
+ ^b140 NEW: Window Operations^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     A full range of window operations are available in Clipper 5.01 for
+     windows on the main Debugger screen.
+
+     1.  New operations include sizing, moving, tiling, iconizing and
+         selecting the previously active window.
+
+     2.  All window operations can be accomplished using the Window menu
+         commands.
+
+     3.  Tab and Shift-Tab now select next and previous windows.
+
+     4.  The order for window selection is as follows: Code, Monitor,
+         Watch, Callstack, Command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 141 CHANGED: Code Window
+'------------------------------------------------------------------------------
+ ^b141 CHANGED: Code Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, the Position Indicator (>>) in the Code Window has
+     been replaced by the block cursor when the window is active.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 142 NEW:     Monitor Window
+'------------------------------------------------------------------------------
+ ^b142 NEW: Monitor Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Monitor Window is new.  It is used to display monitored
+     variables which used to be displayed in the Watch Window.  The
+     Monitor remains open on the main Debugger screen as long as
+     variables are being monitored.  When the Monitor Window is active,
+     variables within the window can be inspected.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 143 CHANGED: Watch Window
+'------------------------------------------------------------------------------
+ ^b143 CHANGED: Watch Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Watch Window is now used exclusively for Tracepoints and
+     Watchpoints.  This window remains open on the main Debugger screen
+     as long as a Tracepoint or Watchpoint is set.  When the Watch
+     Window is active, variables within the window can be inspected.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 144 CHANGED: Callstack Window
+'------------------------------------------------------------------------------
+ ^b144 CHANGED: Callstack Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     To inspect the Callstack Window, simply select the window using the
+     Tab or Shift-Tab keys and highlight the item you want to view.  It
+     is no longer necessary to press Return to inspect the highlighted
+     item.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 145 CHANGED: Command Window
+'------------------------------------------------------------------------------
+ ^b145 CHANGED: Command Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01 Debugger, the Command Window has been enhanced:
+
+     1.  The Command Window is now treated like other windows.  It can
+         be selected, sized, zoomed, etc...
+
+     2.  The Command Window prompt has been changed from the hash sign
+         (#) to the greater than sign (>).
+
+     3.  The Command Window now has command history.  Each command is
+         saved after it is executed to a history buffer.  Previous
+         commands can be accessed by pressing Uparrow.  Pressing F2 Zoom
+         displays an extended list of previous commands.
+
+     4.  Commands can be entered at any time, regardless of which window
+         is currently active.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 146 CHANGED: Help Window
+'------------------------------------------------------------------------------
+ ^b146 CHANGED: Help Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Help Window has been changed considerably and many new topics
+     are covered.  This window can be opened using the HELP command,
+     pressing F1, or selecting one of the Help menu options.  It is
+     closed by pressing Esc.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 147 NEW:     View Sets Window
+'------------------------------------------------------------------------------
+ ^b147 NEW: View Sets Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The View Sets Window has been added.  This window is opened using
+     View:Sets and closed by pressing Esc.  When the View Sets Window is
+     open, all system settings can be inspected.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 148 CHANGED: View Workareas Window
+'------------------------------------------------------------------------------
+ ^b148 CHANGED: View Workareas Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The View Workareas Window replaces the old Status Window.  This
+     window is opened using View:Workareas and closed by pressing Esc.
+     The View Workareas window displays extensive information regarding
+     any database file currently in use.  You select the file you are
+     interested in from the left window pane and Tab to the other panes
+     to get a closer look.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 149 NEW:     Set Colors Window
+'------------------------------------------------------------------------------
+ ^b149 NEW: Set Colors Window^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The Set Colors Window has been added.  This window is opened using
+     Options:Colors and closed by pressing Esc.  When the Set Colors
+     Window is open, all of the Debugger color settings can be
+     inspected.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bRuntime Environment^b
+!short:
+!short: 150 NEW:     TEMPPATH, NOIDLE
+'------------------------------------------------------------------------------
+ ^b150 NEW: TEMPPATH, NOIDLE^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The CLIPPER runtime configuration variable has been enhanced.  The
+     following lists summarizes the new CLIPPER settings:
+
+     ^BTable: New Clipper 5.01 Configuration Settings^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^bSetting      Meaning^b
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     TEMPPATH     Controls the placement of temporary files created
+                  during sorting and indexing
+     NOIDLE       Prevents Clipper from detecting and taking advantage
+                  of idle time during execution of compiled applications
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 151 REMOVED: XHEAP, DYNK
+'------------------------------------------------------------------------------
+ ^b151 REMOVED: XHEAP, DYNK^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The DYNK and XHEAP settings have been removed and are no longer
+     supported as part of the CLIPPER environment variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: ^bSample Programs^b
+!short:
+!short:152 CHANGED:  Array.prg
+'------------------------------------------------------------------------------
+ ^b152 CHANGED: Array.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In general, ABrowse() was rewritten using a new architecture.
+
+     1. ^bABlock():^b The existing ABlock() was retained unchanged in
+        case anyone was using it.
+
+     2. ^bABrowse():^b Changed to use detached function locals instead
+        of a macro-compiled block.
+
+     3. ^bABrowse():^b Changed to save and restore cursor setting.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:153 CHANGED:  Browse.prg
+'------------------------------------------------------------------------------
+ ^b153 CHANGED: Browse.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Browse.prg is a new source file that contains the source code for
+     the standard function, BROWSE().  The source code for this function
+     was missing from the Clipper 5.00 system.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     Note that this file contains the source code for a standard
+     function and therefore is not necessarily useful as an example of
+     how to create a TBrowse.  If you are looking for sample code for
+     TBrowse, Tbdemo.prg is recommended instead.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:154 CHANGED:  Box.prg
+'------------------------------------------------------------------------------
+ ^b154 CHANGED: Box.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Changed to used MAXROW() and MAXCOL() instead of assuming the
+     standard screen dimensions of 24 by 80.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:155 NEW:      Dict.prg
+'------------------------------------------------------------------------------
+ ^b155 NEW: Dict.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     This is a new sample file that contains functions to model arrays
+     as dictionary objects.
+
+     A dictionary is a list of keyed entries where each entry consists
+     of a character key and a value of any type.  New keys and values
+     can be entered, and existing values can be retrieved based on their
+     key.
+
+     Dictionaries are useful if you want to keep a list of keyed values
+     without using a database (.dbf) file.  Since they're arrays, you
+     can hang onto them with any variable or array element (handy for
+     keeping track of multiple cargo items, for example).  If you have
+     lots of values, however, a database/index is usually more
+     appropriate.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:156 INCLUDED: EXAMPLEA.ASM
+'------------------------------------------------------------------------------
+ ^b156 INCLUDED: EXAMPLEA.ASM^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     This source file was not included in the Clipper 5.00 release.  It
+     is exactly the same as the version on Summer '87 including use of
+     the Summer '87 assembler header which is no longer supported in
+     Clipper 5.0.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:157 INCLUDED: EXAMPLEC.C
+'------------------------------------------------------------------------------
+ ^b157 INCLUDED: EXAMPLEC.C^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     This source file was not included in the Clipper 5.00 release.  In
+     Clipper 5.01, it has been completely rewritten.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:158 CHANGED:  Examplep.prg
+'------------------------------------------------------------------------------
+ ^b158 CHANGED: Examplep.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1. The AmPm() function was changed to properly handle times between
+        midnight and 1 a.m.
+
+     2. The source code for OS() was removed. The OS() function was
+        enhanced to properly return the operating system name and
+        version.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:159 CHANGED:  Fileio.prg
+'------------------------------------------------------------------------------
+ ^b159 CHANGED: Fileio.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1. ^bFReadLn()^b now correctly accepts a delimiter.  It also more
+        closely matches the spec of C's fgets() in that the max line
+        length actually read is (line length - length of delimiter).
+
+     2. ^bFWriteLn()^b is now the complement to FReadLn().
+
+     3. ^bFEval()^b was removed.
+
+     4. ^bFileEval()^b was added.  It is a text file iterator function
+        that works like DBEVAL() with scoping behavior including a FOR
+        and WHILE condition capability.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:160 CHANGED:  Gauge.prg
+'------------------------------------------------------------------------------
+ ^b160 CHANGED: Gauge.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Added persistence to gauge so that GaugeDisplay() would display
+     with the last percentage used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:161 CHANGED:  Omenu.prg
+'------------------------------------------------------------------------------
+ ^b161 CHANGED: Omenu.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1. Fixed flickering problem.
+
+     2. Added screen bounds checking.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:162 CHANGED:  Print.prg
+'------------------------------------------------------------------------------
+ ^b162 CHANGED: Print.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The PrintCodes() function was changed as follows:
+
+     ^B^CFE^b  Output to the console is suppressed.
+
+     ^B^CFE^b  The function no longer returns a usable value.
+
+     Note that the latter change is a compatibility issue. Formerly, the
+     return value seemed to imply that PrintCodes() would be used like
+     this:
+
+     ? "Something" + PrintCodes(CHR(27)) + "Something else"
+
+     This wouldn't have worked before and will definitely not work now.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:163 CHANGED:  Stack.prg
+'------------------------------------------------------------------------------
+ ^b163 CHANGED: Stack.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1. ^bStackNew()^b was added so that the user does not need to be
+        aware that the stack is implemented as an array.
+
+     2. ^bStackPop()^b was changed so that popping an empty stack
+        returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:164 CHANGED:  Tbdemo.prg
+'------------------------------------------------------------------------------
+ ^b164 CHANGED: Tbdemo.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In Clipper 5.01, Tbdemo.prg was completely rewritten and now
+     represents a better example of how to solve the problems of
+     creating and using TBrowse objects.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:165 CHANGED:  Time.prg
+'------------------------------------------------------------------------------
+ ^b165 CHANGED: Time.prg^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Comments were added to explain functions duplicated in
+     Examplep.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

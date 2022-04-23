@@ -1,0 +1,704 @@
+!short: Introduction GET/READ Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     CA-Clipper enables you to program nested  GET/READ masks.  The functions
+     in this chapter are retained in CA-Clipper Tools for compatibility
+     reasons and to make them easy to use.
+
+     The active GET is saved with the help of a character string and restored
+     through this string later.  This allows you to newly query inputs
+     without losing your main input mask.  You can save KEYTRAP() definitions
+     the same way and redefine them as you wish.
+
+     ^bImportant!^b  It is impossible to use the saved information any longer
+     that the runtime of an application.  The character string that results
+     cannot be saved to a file and reloaded later.
+
+     Other functions in this chapter return information about GET fields,
+     such as screen position, the names of the accompanying variables, or
+     information about whether a field is currently active.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: COUNTGETS()  Determines the number of posted GET fields
+'------------------------------------------------------------------------------
+ ^bCOUNTGETS()^b
+ Determines the number of posted GET fields
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOUNTGETS() --> nFields
+
+ ^bReturns^b
+
+     COUNTGETS() returns the number of currently posted fields within a READ.
+
+ ^bDescription^b
+
+     COUNTGETS() determines how many GET fields are currently open in a VALID
+     UDF or within a KEYTRAP procedure.  Posted means the GET fields have
+     been recently defined before with @ ...GET ...
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the number of GET fields that are currently posted
+        from within a valid UDF:
+
+           @ 10, 10 GET Field1
+           @ 10, 20 GET Field2 VALID MYFUNC()
+           @ 10, 30 GET Field3
+        READ
+        RETURN
+
+     ^b^CFE^b  Returns COUNTGETS() within the UDF:
+
+        FUNCTION MYFUNC
+           ? COUNTGETS()          // Result: 3
+           RETURN(.T.)
+
+!seealso: "CURRENTGET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CURRENTGET() Determines the number of the currently active GET field
+'------------------------------------------------------------------------------
+ ^bCURRENTGET()^b
+ Determines the number of the currently active GET field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCURRENTGET() --> nField
+
+ ^bReturns^b
+
+     CURRENTGET() returns the number of the currently active GET field.
+
+ ^bDescription^b
+
+     CURRENTGET() determines the number of the currently active GET fields.
+     This information is useful in functions called through VALID.
+
+ ^bExample^b
+
+     Pass the number of the active GET fields as a parameter:
+
+     @@ XX,YY GET field  VALID MYFUNC(CURRENTGET())
+
+!seealso: "COUNTGETS()" "GETFLDROW()" "GETFLDCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETFLDCOL()  Determines the screen column of a GET field
+'------------------------------------------------------------------------------
+ ^bGETFLDCOL()^b
+ Determines the screen column of a GET field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETFLDCOL([<nField>]) --> nColumn
+
+ ^bArgument^b
+
+     ^b<nField>^b  Designates the number of the GET field for which the
+     screen column is determined.  The default is the currently active field.
+
+ ^bReturns^b
+
+     GETFLDCOL() returns the screen column for the first position of the
+     currently active or the specified field.  If there is an invalid
+     parameter, a value of -1 is returned.
+
+ ^bDescription^b
+
+     GET FIELD COLUMN
+     This function determines the first column of an input field.  If the
+     <nField> parameter is not specified, the function returns the column for
+     the currently active field.  With an invalid field number or in a
+     situation where there is no active field, a value of -1 is returned.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the screen column for the second posted GET:
+
+        @ 10, 10 GET....
+        @ 10, 20 GET....
+        @ 10, 30 GET.....
+
+        ? GETFLDCOL(2)            // Result: 20
+
+     ^b^CFE^b  Display the column for the currently active GET field:
+
+        READ                      // Assuming field 1 is active
+        Within a UDF or KEYTRAP procedure:
+        ? GETFLDCOL()             // Result: 10
+
+!seealso: "GETFLDROW()" "CURRENTGET()" "COUNTGETS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETFLDROW()  Determines the row of a GET field on the screen
+'------------------------------------------------------------------------------
+ ^bGETFLDROW()^b
+ Determines the row of a GET field on the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETFLDROW([<nField>]) --> nRow
+
+ ^bArgument^b
+
+     ^b<nField>^b  Designates the number of the GET field for which the
+     screen is determined.  The default is the currently active field.
+
+ ^bReturns^b
+
+     GETFLDROW() returns the screen row for the first position of the
+     currently active or specified field.  If there is an invalid parameter a
+     value of -1 is returned.
+
+ ^bDescription^b
+
+     GET FIELD ROW
+     This function determines the first row of an input field.  If the
+     <nField> parameter is not specified, the function returns the row for
+     the currently active field.  When <nField> is an invalid field number or
+     if there are no active GET fields, a value of -1 is returned.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the row for the second posted GET:
+
+        @ 10, 10 GET....
+        @ 11, 20 GET....
+        @ 12, 30 GET.....
+
+        ? GETFLDROW(2)            // Result: 11
+        READ                      // Assuming field 1 is active
+        ? GETFLDROW()             // Result: 10
+
+!seealso: "GETFLDCOL()" "CURRENTGET()" "COUNTGETS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETFLDVAR()  Determines the name of a GET field
+'------------------------------------------------------------------------------
+ ^bGETFLDVAR()^b
+ Determines the name of a GET field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETFLDVAR([<nField>]) --> cField
+
+ ^bArgument^b
+
+     ^b<nField> ^b Designates for which number of the GET field to determine
+     the name of the accompanying variable.  The default is the currently
+     active field.
+
+ ^bReturns^b
+
+     GETFLDVAR() returns the name for the first position of the currently
+     active or specified field.  If there is an invalid parameter, a value of
+     -1 is returned.
+
+ ^bDescription^b
+
+     GET FIELD VARIABLE
+     This function determines the name of an input field.  If the <nField>
+     parameter is not specified, the function returns the name for the
+     currently active field.  With an invalid field number or if there is on
+     active field, a value of -1 is returned
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the name of the variable associated with the second
+        posted GET:
+
+        @ 10, 10 GET VAR1
+        @ 10, 20 GET VAR2
+        @ 10, 30 GET VAR3
+
+        ? GETFLDVAR(2)               //  "VAR2"
+
+     ^b^CFE^b  Display the name for the active field:
+
+        READ                         // Assuming field 1 is active
+        ? GETFLDVAR()                // "VAR1"
+
+     ^b^CFE^b  Within a UDF or KEYTRAP procedure:
+
+        ? GETFLDVAR()                // "VAR1"
+
+!seealso: "GETFLDROW()" "CURRENTGET()" "COUNTGETS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETINPUT()   Keyboard input function similar to a GET field
+'------------------------------------------------------------------------------
+ ^bGETINPUT()^b
+ Keyboard input function similar to a GET field
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETINPUT(<cDefault>,[<nRow>],[<nColumn>],[<lSAY>],
+     ^b   [<cPrompt>]) --> cInput
+
+ ^bArguments^b
+
+     ^b<cDefault>^b  Designates the content and length of the input field.
+
+     ^b<nRow>^b  Designates the row in which the input occurs.  The default
+     is the current cursor position.
+
+     ^b<nColumn> ^b Designates the column in which the input occurs.  The
+     default is the current cursor position.
+
+     ^b<lSAY>^b  When you specify .T. and close GETINPUT(), the actual data
+     input is displayed with the standard color attribute.
+
+     ^b<cPrompt>^b  Designates text to display in front of the input field at
+     the selected coordinates.  The default is no prompt text.
+
+ ^bReturns^b
+
+     GETINPUT() returns the input string.
+
+ ^bDescription^b
+
+     If you call this function, a simple input field is made available.  All
+     control keys are interpreted exactly as in a CA-Clipper GET mask.  The
+     length and default for the string are specified in the <cDefault>
+     parameter.  This allows you to portray a normal input field with VAR=
+     SPACE(length).  The input field starts at the current cursor position or
+     at the designated row and column.  Similar to @ ... SAY...GET,  you can
+     also display text just before the input text.  The field starting
+     position is moved accordingly.
+
+     In the CA-Clipper SET COLOR TO command, the first color you designate
+     stands for screen output; the second for input fields. GETINPUT() uses
+     these color designators exactly like CA-Clipper.  If you designate the
+     <lSAY> parameter as .T., you can determine (as with a SAY), whether to
+     redisplay the data in its amended form at the point of input.  After
+     data input is complete, the data displayed on the screen is the same as
+     the values returned by the function.  This is useful when an input
+     breaks off due to an ESC.  For example, the data is "the quick brown
+     fox" and you change it to "the slow brown fox".  If <lSAY> is .T. and
+     you press escape, the original data (the quick brown fox) is restored.
+     The affected area also contains the default color attribute.
+
+ ^bNotes^b
+
+     ^b^CFE^b  GETINPUT() uses the CA-Clipper console input internal routines
+        and supports the INS display in SCOREBOARD.  In addition, the SET
+        ESCAPE, SET BELL, SET INTENSITY, SET DELIMITERS, and SET CONFIRM
+        switches are acknowledged.
+
+     ^b^CFE^b  Key traps may occur within GETINPUT() when the cursor position
+        within a field is saved.  GETINPUT() is then called recursively, as
+        long as sufficient stack memory is available.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Input at the current cursor position:
+
+        cVar := SPACE(20)           // 20 position input field
+        cVar := GETINPUT(cVar)      // Retain input attribute
+
+     ^b^CFE^b  Input a 10 space field, row 10, column 20:
+
+        cVar := GETINPUT(SPACE(10), 10, 20)
+
+     ^b^CFE^b  After input is finished, the actual data input is redisplayed
+        on the screen.  This area contains the standard color attribute.  The
+        input is moved by the text preceding the input field:
+
+        SET CONFIRM ON              //  Close with RETURN
+        cVAR := "Default text"
+        GETINPUT(cVar, 10, 20, .T., "Please input: ")
+
+!seealso: "GETSECRET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETSECRET()  Keyboard input function for hidden input similar to a GET field
+'------------------------------------------------------------------------------
+ ^bGETSECRET()^b
+ Keyboard input function for hidden input (similar to a GET field)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETSECRET(<cDefault>,[<nRow>],[<nColumn>],[<lSAY>],
+     ^b   [<cPrompt>]) --> cInput
+
+ ^bArguments^b
+
+     ^b<cDefault>^b  Designates the length and contents of the input field.
+
+     ^b<nRow> ^b Designates the row in which the input occurs.  The default
+     is the current cursor position.
+
+     ^b<nColumn>^b  Designates the column in which the input occurs.  The
+     default is the current cursor position.
+
+     ^b<lSAY>^b  When you specify .T. and close GETSECRET(), the actual data
+     input is displayed with the default color attribute.
+
+     ^b<cPrompt>^b  Designates the text to display in front of the input
+     field at the selected coordinates.
+
+ ^bReturns^b
+
+     GETSECRET() returns the input string.
+
+ ^bDescription^b
+
+     If you call this function, a simple input field is made available.  All
+     characters input are displayed as asterisks (*) to hide the actual
+     input.  All control keys are interpreted exactly as in a CA-Clipper GET
+     mask.
+
+     The length and default for the string are specified in the <cDefault>
+     parameter.  This allows a normal input field to be portrayed with VAR =
+     SPACE(length).  The input field starts at the current cursor position or
+     at the designated row and column.
+
+     Similar to @ ... SAY ... GET, you can also display text just before the
+     input field.  The field starting position is moved accordingly
+
+     In the CA-Clipper SET COLOR TO command, the first color you designate is
+     used for screen output; the second for input fields. GETSECRET() uses
+     these color designators exactly like CA- Clipper.  If you designate the
+     <lSAY> parameter as .T., you can determine (as with a SAY), whether the
+     data is redisplayed in its amended form at the point of input.  However,
+     GETSECRET() only displays asterisks to hide this data.  This is useful
+     when input breaks off due to an ESC, because at least the correct number
+     of asterisks is displayed.  The affected area also contains the standard
+     color attribute.
+
+ ^bNotes^b
+
+     ^b^CFE^b  GETSECRET() uses the CA-Clipper console input internal
+        routines and supports the INS display in SCOREBOARD.  In addition,
+        the SET ESCAPE, SET BELL, SET INTENSITY, SET DELIMITERS, and SET
+        CONFIRM switches are acknowledged.
+
+     ^b^CFE^b  Key traps may occur with GETSECRET() when the cursor position
+        within a field is saved.  You can then call GETSECRET() recursively,
+        as long as sufficient stack memory is available.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the secret field at the current cursor position:
+
+        cVar:= SPACE(20)            // 20 position secret field
+        cVar:= GETSECRET(cVar)      // Retain input attribute
+
+     ^b^CFE^b  Show the secret a 10-space field,  row 10, column 20:
+
+        cVar:= GETSECRET(SPACE(10), 10, 20)
+
+     ^b^CFE^b  After input is finished, the actual data input is redisplayed
+        on the screen.  This area contains the standard color attribute.  The
+        input is moved by the text preceding the input field:
+
+        SET CONFIRM ON              //  Close with RETURN
+        cVar:= "Default text"
+        GETSECRET(cVar, 10, 20, .T., "Please input: ")
+
+!seealso: "GETINPUT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RESTGETS()   Restores GET settings from an array
+'------------------------------------------------------------------------------
+ ^bRESTGETS()^b
+ Restores GET settings from an array
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRESTGETS(<aSavedGets>) --> lRestored
+
+ ^bArgument^b
+
+     ^b<aSavedGets>^b  Designates a variable previously created by the
+     SAVEGETS() function.
+
+ ^bReturns^b
+
+     RESTGETS() returns .T. when the GET settings are successfully restored.
+
+ ^bDescription^b
+
+     This function restores the information previously saved to an array with
+     SAVEGETS().  This reactivates a previously active GET mask.
+
+ ^bNote^b
+
+     ^bImportant!^b  Never use the CA-Clipper CLEAR GETS commands within the
+     SAVEGETS()/RESTGETS() construction.
+
+ ^bExample^b
+
+     F1 is used to activate the HELP procedure from an input mask.  The
+     active GET is saved and then newly opened.  Both GET masks use different
+     PICTURE definitions like different VALID UDF's:
+
+       CLEAR
+        SET KEY 28 TO HELP            // KEYTRAP definition
+        cFirstname  :=  SPACE(10)
+        cLastname   :=  SPACE(10)
+        @ 10, 10 GET cFirstname PICTURE "@!"
+        @ 11, 10 GET cLastname PICTURE "@!" VALID MAINFUNC()
+        READ
+     *
+     * HELP procedure opens new GET
+     *
+
+     PROCEDURE HELP (A, B, C)
+        LOCAL aOldGets
+        aOldGets := SAVEGETS()        // Save GETS
+        WOPEN(4, 30, 20, 76)          // Open window
+        WBOX()                        // Window border
+        cHelp1  :=  SPACE(10)
+        cHelp2  :=  SPACE(10)
+        @ 10, 10 GET cHelp1 PICTURE "@A"
+        @ 11, 10 GET cHelp2 PICTURE "@A" VALID HELPFUNC()
+        READ
+
+        RESTGETS(aOldGets)            // Recreate GETS
+        WCLOSE()                      // Close window
+        RETURN
+
+     FUNCTION MAINFUNC
+        SOUND(1000, 10)               //  Short beep
+        RETURN(.T.)
+
+     FUNCTION HELPFUNC
+        SOUND(1000, 100)              // One long beep
+        RETURN(.T.)
+
+!seealso: "SAVEGETS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RESTSETKEY() Restores SET KEY..TO settings from an array
+'------------------------------------------------------------------------------
+ ^bRESTSETKEY()^b
+ Restores SET KEY..TO settings from an array
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRESTSETKEY(<aSavedTraps>) --> lRestored
+
+ ^bArgument^b
+
+     ^b<aSavedTraps>^b  Designates an array previously created by
+     SAVESETKEY().
+
+ ^bReturns^b
+
+     RESTSETKEY() returns .T. when you can restore the <aSavedTraps> SET
+     KEY..TO settings.
+
+ ^bDescription^b
+
+     RESTORE "SET KEY..TO" SETTING
+     RESTSETKEY() restores SET KEY..TO settings previously saved to an array
+     with SAVESETKEY().
+
+     ^bImportant!^b  It is impossible to use the saved information any longer
+     that the runtime of an application.  The character string that results
+     cannot be saved to a file and reloaded later.
+
+ ^bExample^b
+
+     A key trap definition for the F1 key is changed within a nested input:
+
+     CLEAR
+        SET KEY 28 TO HELP1          // First def. for F1
+        cFirstname := SPACE(10)
+        cLastname  := SPACE(10)
+        @ 10, 10 GET cFirstname
+        @ 11, 10 GET cLastname
+     READ
+
+     PROCEDURE HELP1 ( A, B, C)
+
+        WOPEN(4, 4, 20, 76)          // Open window
+        WBOX()                       // Window borders
+        aOldKey := SAVESETKEY()      // Save SET KEY def.
+        aOldGet := SAVEGETS()        // Save GET def.
+        SET KEY 28 TO HELP2          // New def. F1
+        cHelp1 := SPACE(10)          // New GET
+     cHelp2 := SPACE(10)             // ...e.g. help index
+        @ 10, 10 GET cFirstname
+        @ 11, 10 GET cLastname
+        READ
+        RESTGETS(aOldGet)            // Recreate old GET
+        RESTSETKEY(aOldKey)          // Return .T. if OK
+        WCLOSE()                     // Close window
+        RETURN
+
+     PROCEDURE HELP2 ( A, B, C)      // 2nd help procedure
+        * e.g. a second help environment - key layout etc.
+        RETURN
+
+!seealso: "SAVESETKEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVEGETS()   Saves the GET settings of the active environment
+'------------------------------------------------------------------------------
+ ^bSAVEGETS()^b
+ Saves the GET settings of the active environment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAVEGETS() --> aSavedGets
+
+ ^bReturns^b
+
+     SAVEGETS() returns an array that contains all information necessary to
+     save the active GET environment.
+
+ ^bDescription^b
+
+     SAVEGETS() only returns the array with the current GET object.  This
+     allows you to save it to a LOCAL variable and restore it later to the
+     previous GET settings through RESTGETS().  This way, it is also possible
+     to newly open a GET mask or VALID UDF from within a KEYTRAP procedure
+     without losing the previous one.
+
+ ^bNotes^b
+
+     ^bImportant!^b  Never use the CA-Clipper CLEAR or CLEAR GETS commands
+     within the SAVEGETS()/RESTGETS() construction.
+
+     ^b^CFE^b  The array returned by SAVEGETS() is valid only during the
+        current program run.  Therefore, it is not useful to save this data
+        in the file.
+
+     ^b^CFE^b  Effective with CA-Clipper, the cursor position is always saved
+        when you leave an input field.  If you do not want to do this, place
+        the key code for Pos1 in the keyboard buffer through KEYSEND at the
+        end of the trap procedure.
+
+ ^bExample^b
+
+     F1 activates the HELP procedure from an input mask.  The active GET is
+     saved there and then newly opened.  Both GET masks use different PICTURE
+     definitions like different VALID UDF's:
+
+       CLEAR
+        SET KEY 28 TO HELP            // KEYTRAP definition
+        cFirstname  :=  SPACE(10)
+        cLastname   :=  SPACE(10)
+        @ 10, 10 GET cFirstname PICTURE "@!"
+        @ 11, 10 GET cLastname PICTURE "@!" VALID MAINFUNC()
+        READ
+     *
+     * HELP procedure opens new GET
+     *
+     PROCEDURE HELP (A, B, C)
+        LOCAL aOldGets
+        aOldGets := SAVEGETS()        // Save GETS
+     WOPEN(4, 30, 20, 76)             // Open window
+        WBOX()                        // Window border
+        cHelp1  :=  SPACE(10)
+        cHelp2  :=  SPACE(10)
+        @ 10, 10 GET cHelp1 PICTURE "@A"
+        @ 11, 10 GET cHelp2 PICTURE "@A" VALID HELPFUNC()
+        READ
+        RESTGETS(aOldGets)            // Recreate GETS
+        WCLOSE()                      // Close window
+        RETURN
+
+     FUNCTION MAINFUNC
+        SOUND(1000, 10)               // Short beep
+        RETURN(.T.)
+
+     FUNCTION HELPFUNC
+        SOUND(1000, 100)              // One long beep
+        RETURN(.T.)
+
+!seealso: "RESTGETS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVESETKEY() Saves SET KEY..TO settings in an array
+'------------------------------------------------------------------------------
+ ^bSAVESETKEY()^b
+ Saves SET KEY..TO settings in an array
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAVESETKEY() --> aSavedTraps
+
+ ^bReturns^b
+
+     SAVESETKEY() returns an array within which information for the current
+     SET KEY..TO settings are saved.
+
+ ^bDescription^b
+
+     SAVE SET KEY..TO SETTINGS
+     SAVESETKEY() saves the current SET KEY..TO settings in an array.  This
+     makes it possible to redefine function keys already assigned, and to
+     later restore the old settings with RESTSETKEY().
+
+ ^bNote^b
+
+     ^b^CFE^b  The array you create is valid only for the current program
+        run.  Therefore, is not useful to save this data in the file.
+
+ ^bExamples^b
+
+     A key trap definition for the F1 key is changed within a nested input:
+
+       CLEAR
+        SET KEY 28 TO HELP1         // First def. for F1
+        cFirstname := SPACE(10)
+        cLastname  := SPACE(10)
+        @ 10, 10 GET cFirstname
+        @ 11, 10 GET cLastname
+        READ
+
+     PROCEDURE HELP1 ( A, B, C)
+        WOPEN(4, 4, 20, 76)         // Open window^^n   WBOX()
+        // Window borders
+        aOldKey := SAVESETKEY()     // Save SET KEY def.
+        aOldGet := SAVEGETS()       // Save GET def.
+        SET KEY 28 TO HELP2         // New def. F1
+        cHelp1 := SPACE(10)         // New GET
+        cHelp2 := SPACE(10)         // ...e.g. help index
+        @ 10, 10 GET cFirstname
+        @ 11, 10 GET cLastname
+        READ
+        RESTGETS(aOldGet)            // Recreate old GET
+        RESTSETKEY(aOldKey)          // Return .T. if OK
+        WCLOSE()                     // Close window
+        RETURN
+
+     PROCEDURE HELP2 ( A, B, C)      // 2nd help procedure
+        * e.g. a second help environment - key layout etc.
+        RETURN
+
+!seealso: "RESTSETKEY()" "SAVEGETS()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,521 @@
+!short:   Chapter 9: Alternate Terminal Drivers
+'------------------------------------------------------------------------------
+ ^bChapter 9: Alternate Terminal Drivers^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     CA-Clipper supports a driver architecture that allows CA-Clipper-
+     compiled applications to use alternate terminal drivers.  This
+     architecture provides support for nonstandard video hardware and ANSI
+     output devices, allowing your applications to run in a wider variety of
+     environments.
+
+     The following terminal drivers are supplied as part of the CA-Clipper
+     Development System and are discussed in this chapter:
+
+     ^b^CFE^b  The ANSITERM driver provides ANSI terminal support for systems
+        that require it
+
+     ^b^CFE^b  The NOVTERM driver causes CA-Clipper applications to execute
+        faster when run on some nondedicated network server software
+
+     ^b^CFE^b  The PCBIOS driver provides direct BIOS calls rather than
+        direct screen writes for systems requiring this form of I/O
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:      In This Chapter
+'------------------------------------------------------------------------------
+ ^bIn This Chapter^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     This chapter discusses how Alternate Terminal Drivers fit into the
+     overall CA-Clipper architecture as well as how to install and use each
+     of the supplied terminal drivers.  The following major topics are
+     discussed:
+
+     ^b^CFE^b  The Alternate Terminal Driver Architecture
+
+     ^b^CFE^b  The ANSITERM Alternate Terminal Driver
+
+     ^b^CFE^b  The NOVTERM Alternate Terminal Driver
+
+     ^b^CFE^b  The PCBIOS Alternate Terminal Driver
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:      The Alternate Terminal Driver Architecture
+'------------------------------------------------------------------------------
+ ^bThe Alternate Terminal Driver Architecture^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     In CA-Clipper, communication with I/O devices is controlled by a
+     multilayered terminal system.  At the lowest level is the terminal
+     driver which controls screen and keyboard activity.  It consists of a
+     screen and keyboard driver that communicates directly with the I/O
+     device (operating system or hardware).  It is the device specific part
+     of the CA-Clipper  terminal system.
+
+     There is, then, a higher level system that communicates with terminal
+     drivers.  This system is known as the General Terminal (GT) system and
+     provides general services that create CA-Clipper screen and keyboard
+     commands and functions.  The following figure demonstrates:
+
+                   ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                   ³ CA-Clipper screen and keyboard commands ³
+                   ³              and functions              ³
+                   ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                   ³        General Terminal (GT.OBJ)        ³
+                   ÆÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍµ
+                   ³             Terminal Driver             ³
+                   ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                   ³          Screen   ³   Keyboard          ³
+                   ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+     The default terminal driver, designed for IBM PC and 100% compatibles,
+     is supplied as a library file (TERMINAL.LIB) installed into your
+     \CLIPPER5\LIB directory.  This driver links into each program
+     automatically if you specify no alternative terminal driver provided
+     that you do not use the /R option when you compile.  An alternate
+     terminal driver is supplied as a separate library (.LIB) file that links
+     into an application program in place of the default terminal driver if
+     you specify it on the link line.
+
+     All alternate terminal drivers work through the General Terminal layer
+     as supplied in the file GT.OBJ.  The CA-Clipper installation program
+     installs this file in the \CLIPPER5\OBJ subdirectory on the drive that
+     you specify, so you need not install the driver manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:      The ANSITERM Alternate Terminal Driver
+'------------------------------------------------------------------------------
+ ^bThe ANSITERM Alternate Terminal Driver^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The ANSITERM terminal driver supports the ANSI screen mode for all
+     screen display from CA-Clipper  programs.
+
+     This screen mode is installed by specifying ANSI.SYS in the user's
+     CONFIG.SYS.  ANSI.SYS replaces the default DOS CON device driver for
+     video display and keyboard input.  Once installed it supports ANSI
+     escape sequences to erase the screen, set the screen mode, and control
+     the cursor in a hardware-independent way.  Most modern DOS programs,
+     however, do not use it and write either directly to the video hardware
+     or use BIOS routines for enhanced screen performance.
+
+     Use the ANSI screen mode for CA-Clipper  programs that run on hardware
+     that does not support either writing to video hardware or BIOS calls for
+     screen display.  This is the case when using alternative display
+     hardware to support the blind.
+
+     ^bNote: ^b The ANSITERM terminal driver fully supports all screen and
+     keyboard functionality of the default terminal driver.  This includes
+     the ability to save and restore screens and support for all keys on the
+     standard 101-key keyboard.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Installing ANSITERM Terminal Files
+'------------------------------------------------------------------------------
+ ^bInstalling ANSITERM Terminal Files^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The ANSITERM terminal driver is supplied as the file ANSITERM.LIB.  The
+     CA-Clipper installation program installs this file in the \CLIPPER5\LIB
+     subdirectory on the drive that you specify, so you need not install it
+     manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Linking the ANSITERM Terminal Driver
+'------------------------------------------------------------------------------
+ ^bLinking the ANSITERM Terminal Driver^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     To link the ANSITERM alternate terminal driver into an application
+     program, you must specify both GT.OBJ and ANSITERM.LIB to the linker
+     along with your application object (.OBJ) modules.
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> GT,,, ANSITERM
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList>, GT LIB ANSITERM
+
+     3. To link with .RTLink using ANSITERM.PLL and freeformat syntax:
+
+        C>RTLINK FI <appObjectList> /PLL:ANSITERM
+
+     ^bNote: ^b These link commands assume you have set the LIB, OBJ, and PLL
+     environment variables to the standard locations.  They also assume that
+     the CA-Clipper programs were compiled without the /R option.
+
+     ^bImportant! ^b You cannot link the ANSITERM driver with BASE52.PLL.  An
+     application linked with both ANSITERM.LIB and BASE52.PLL may cause the
+     computer to freeze upon execution.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           The Runtime Environment
+'------------------------------------------------------------------------------
+ ^bThe Runtime Environment^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Using ANSITERM.LIB requires that ANSI.SYS be installed on the user's
+     computer.  To accomplish this, include the following statement in the
+     user's CONFIG.SYS:
+
+     DEVICE=ANSI.SYS
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Performance Concerns
+'------------------------------------------------------------------------------
+ ^bPerformance Concerns^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Because the ANSITERM terminal driver uses buffered screen writes for all
+     screen painting, some operations, especially those that scroll the
+     screen, are slow.  These include:
+
+     1. All box drawing commands and functions
+
+     2. All console commands and functions when scrolling
+
+     3. All clear screen commands and functions
+
+     4. All restore screen commands and functions
+
+     5. Standard out functions (OUTSTD() and OUTERR()) whether the screen is
+        scrolling or not
+
+     ^bNote: ^b Overall performance of CA-Clipper  programs is slower since
+     the ANSITERM terminal driver must spend more time polling for user
+     events than the standard CA-Clipper  terminal driver.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Screen Output from C and Assembly Language
+'------------------------------------------------------------------------------
+ ^bScreen Output from C and Assembly Language^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The ANSITERM terminal driver overwrites all output from C and Assembly
+     Language when it refreshes the screen from the screen buffer.  As a
+     consequence, you should perform all screen output from CA-Clipper.
+
+     The ANSITERM terminal driver also virtualizes the cursor.  This means
+     that BIOS functions that report the location of the hardware cursor will
+     not always return the correct value.  To obtain the cursor position, use
+     CA-Clipper's  ROW() and COL() functions instead.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Other Incompatibilities
+'------------------------------------------------------------------------------
+ ^bOther Incompatibilities^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1. ISCOLOR() always returns false (.F.).
+
+     2. When you load DBU, the default color mode is monochrome unless you
+        specify DBU with the /C command line option.
+
+     3. The first time you invoke the Debugger, the default color mode is
+        also monochrome unless you set the Options:Mono display off.
+
+     4. When an application linked with the ANSITERM terminal driver
+        terminates, the last color set in the application becomes the DOS
+        color.  This happens since colors set with ANSITERM are global to DOS
+        and CA-Clipper cannot query DOS for the current screen colors as the
+        application loads.
+
+     5. Nondisplaying ASCII characters are presented as a space by the
+        ANSITERM terminal driver.  These include BELL (CHR(7)), BS (CHR(8)),
+        TAB (CHR(9)), LF (CHR(10)), CR (CHR(13)), and ESC (CHR(27)).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:      The NOVTERM Alternate Terminal Driver
+'------------------------------------------------------------------------------
+ ^bThe NOVTERM Alternate Terminal Driver^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The NOVTERM terminal driver is a special-purpose driver that circumvents
+     an incompatibility between some nondedicated network server software and
+     CA-Clipper.  This incompatibility causes printers connected to the
+     server to slow to an unusable rate.
+
+     CA-Clipper applications and nondedicated servers compete for resources.
+     CA-Clipper  applications make use of the time between keystrokes to
+     perform various system tasks.  This greatly improves the application's
+     overall performance by limiting its idle time.  Certain nondedicated
+     servers only attempt to print within an application's idle time.  Since
+     a CA-Clipper application is seldom idle, this greatly slows printing.
+
+     ^bImportant! ^b The NOVTERM terminal driver corrects the incompatibility
+     by preventing the CA-Clipper application from using idle time.  Because
+     this can severely hamper performance, you should only use the NOVTERM
+     terminal driver when necessary, and then you should link it only into
+     those applications that are physically running the nondedicated server.
+
+     ^bNote: ^b The NOVTERM terminal driver fully supports all screen and
+     keyboard functionality of the default terminal driver.  This includes
+     the ability to save and restore screens and support for all keys on the
+     standard 101-key keyboard.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Installing NOVTERM Terminal Files
+'------------------------------------------------------------------------------
+ ^bInstalling NOVTERM Terminal Files^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The NOVTERM terminal driver is supplied as the file NOVTERM.LIB.  The CA-
+     Clipper installation program installs the driver file in the
+     \CLIPPER5\LIB subdirectory on the drive that you specify, so you need
+     not install it manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Linking the NOVTERM Terminal Driver
+'------------------------------------------------------------------------------
+ ^bLinking the NOVTERM Terminal Driver^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     To link the NOVTERM alternate terminal driver into an application, you
+     must specify both GT.OBJ and NOVTERM.LIB to the linker with your
+     application object (.OBJ) modules.
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> GT,,, NOVTERM
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList>, GT LIB NOVTERM
+
+     3. To link with .RTLink using NOVTERM.PLL and freeformat syntax:
+
+        C>RTLINK FI <appObjectList> /PLL:NOVTERM
+
+     ^bNote: ^b These link commands assume you have set the LIB, OBJ, and PLL
+     environment variables to the standard locations.  They also assume that
+     the CA-Clipper programs were compiled without the /R option.
+
+     ^bImportant! ^b You cannot link the NOVTERM driver with BASE52.PLL.  An
+     application linked with both NOVTERM.LIB and BASE52.PLL may cause the
+     computer to freeze upon execution.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Performance Concerns
+'------------------------------------------------------------------------------
+ ^bPerformance Concerns^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Overall performance of CA-Clipper programs is slower since the NOVTERM
+     terminal driver must spend more time polling for user events than the
+     standard CA-Clipper terminal driver and since the program will not use
+     its idle time for other tasks.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Screen Output from C and Assembly Language
+'------------------------------------------------------------------------------
+ ^bScreen Output from C and Assembly Language^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The NOVTERM terminal driver overwrites all output from C and Assembly
+     Language when it refreshes the screen from the screen buffer.
+     Therefore, you should perform all screen output from CA-Clipper.
+
+     The NOVTERM terminal driver also virtualizes the cursor.  This means
+     that BIOS functions that report the location of the hardware cursor will
+     not always return the correct value.  To obtain the cursor position, use
+     CA-Clipper's  ROW() and COL() functions.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:      The PCBIOS Alternate Terminal Driver
+'------------------------------------------------------------------------------
+ ^bThe PCBIOS Alternate Terminal Driver^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The PCBIOS terminal driver uses BIOS calls instead of direct screen
+     writes.  It is designedd for applications that trap BIOS calls to
+     redirect output over telecommunication lines or to convert output to a
+     form compatible with two-byte character sets.
+
+     ^bNote: ^b The PCBIOS terminal driver fully supports all screen and
+     keyboard functionality of the default terminal driver.  This includes
+     the ability to save and restore screens and support for all keys on the
+     standard 101-key keyboard.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Installing PCBIOS Terminal Files
+'------------------------------------------------------------------------------
+ ^bInstalling PCBIOS Terminal Files^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The PCBIOS terminal driver is supplied as the file, PCBIOS.LIB.  The
+     CA-Clipper installation program installs the driver file in the
+     \CLIPPER5\LIB subdirectory on the drive that you specify, so you need
+     not install it manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Linking the PCBIOS Terminal Driver
+'------------------------------------------------------------------------------
+ ^bLinking the PCBIOS Terminal Driver^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     To link the PCBIOS alternate terminal driver into an application
+     program, you must specify both GT.OBJ and PCBIOS.LIB to the linker in
+     addition to your application object (.OBJ) modules.
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> GT,,, PCBIOS;
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList>, GT LIB PCBIOS
+
+     3. To link with .RTLink using PCBIOS.PLL and freeformat syntax:
+
+        C>RTLINK FI <appObjectList> /PLL:PCBIOS
+
+     ^bNote: ^b These link commands assume you have set the LIB, OBJ, and PLL
+     environment variables to the standard locations.  They also assume that
+     the CA-Clipper programs were compiled without the /R option.
+
+     ^bImportant! ^b You cannot link the PCBIOS driver with BASE52.PLL.  An
+     application linked with both PCBIOS.LIB and BASE52.PLL may cause the
+     user's computer to freeze when the user executes it.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Performance Concerns
+'------------------------------------------------------------------------------
+ ^bPerformance Concerns^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Because the PCBIOS terminal driver uses buffered screen writes for all
+     screen painting, some operations, especially those that scroll the
+     screen, are slow.  These include:
+
+     1. All box drawing commands and functions
+
+     2. All console commands and functions when scrolling
+
+     3. All clear screen commands and functions
+
+     4. All restore screen commands and functions
+
+     5. Standard out functions (OUTSTD() and OUTERR()) whether the screen is
+        scrolling or not
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Screen Output from C and Assembly Language
+'------------------------------------------------------------------------------
+ ^bScreen Output from C and Assembly Language^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     The PCBIOS terminal driver also overwrites all output from C and
+     Assembly Language when it refreshes the screen from the screen buffer.
+     Therefore, you should perform all screen output from CA-Clipper.
+
+     The PCBIOS terminal driver also virtualizes the cursor.  This means that
+     BIOS functions that report the location of the hardware cursor do not
+     always return the correct value.  To obtain the cursor position, use
+     CA-Clipper's ROW() and COL() functions.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:      Summary
+'------------------------------------------------------------------------------
+ ^bSummary^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     This chapter has introduced you to the Alternate Terminal Driver
+     concept, giving you specific information on the architecture used to
+     implement them in CA-Clipper.  Each of the alternate terminal drivers
+     supplied with CA-Clipper was discussed, including how to link and use it
+     into your application and the implications of doing so.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

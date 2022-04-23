@@ -1,0 +1,27 @@
+'------------------------------------------------------------------------------
+^BSET ESCAPE^B
+
+    SET ESCAPE determines whether the user can terminate a READ with Esc.
+
+^USyntax^U
+
+    SET ESCAPE ON/off/(<expL>)
+
+^UDefaults^U
+
+    SET ESCAPE is normally ON.
+
+^UUsage^U
+
+    With SET ESCAPE ON, a user may complete a GET by pressing Esc, thereby
+    bypassing execution of any VALID clause.
+
+    With SET ESCAPE OFF, will not allow an escape to terminate a READ.
+
+    Note that SET ESCAPE OFF no longer disables program termination with
+    Alt-C.  This function is now performed by SETCANCEL().
+!seealso: clip_028.ngo:"READ" clip_065.ngo:"SET KEY" clip_136.ngo:"SETCANCEL()" 
+'------------------------------------------------------------------------------
+
+
+

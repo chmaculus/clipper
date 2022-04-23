@@ -1,0 +1,2945 @@
+!short: Introduction Point-To-Point Communication
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+ ^bPoint-To-Point Communication^b
+
+     The CA-Clipper Tools contain functions that allow direct communication
+     between workstations in Novell or NetBIOS compatible networks by
+     bypassing the file server.  This type of communication is called Point-
+     To-Point communication.
+
+     The data exchange between two workstations is interrupt controlled.
+     Incoming data is copied in the background to a receiving buffer and can
+     then be read with CA-Clipper Tools functions.  As soon as the receiving
+     buffer is full, incoming data is discarded.  Outgoing data is copied to
+     a sending buffer.  While the CA-Clipper application continues, data is
+     sent in the background from the sending buffer to the target address.
+     Interrupt controlled sending of data is necessary to avoid a long wait
+     when you send large datasets.  When you use IPX/SPX communication or one
+     of two possible NetBIOS communication variants, the data is broken up
+     into packets internally.  The packet size depends on the protocol used
+     (IPX: 546 bytes, SPX: 534 bytes, NetBIOS: 512 bytes).  The packets are
+     sent sequentially.
+
+     Normally, the packet structure of the transmitted data is transparent
+     and does not affect the handling of the data.  The receiving buffer of
+     the target workstation receives the data in the same way that the data
+     has been written to the sending buffer.  When you use IPX/SPX protocols
+     in addition to the data, a header that is included in each IPX or SPX
+     packet can be transmitted to the receiving buffer.   This header makes a
+     number of packet specific functions possible.  The tables 31.1 and 31.2
+     describe the structure of the IPX and SPX header.  The header positions
+     start with 1, corresponding to string functions.
+
+     The NetBIOS communication variants have no similar mechanism available.
+
+     ^bTable 31.1:  IPX Packet Header^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition     Length    Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1            2         Checksum
+     3            2         Packet length in bytes
+     5            1         Transmission control
+     6            1         Packet type (4=IPX)
+     7            4         Network number of target station
+     11           6         Station ID of target station
+     17           2         Target socket (High, Low format)
+     19           4         Network number of source station
+     23           6         Station ID of source station
+     29           2         Source socket (High,  Low format)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bTable 31.2:  SPX Packet Header^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bPosition  Length  Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1         2       Check sum
+     3         2       Packet length in bytes
+     5         1       Transmission control
+     6         1       Packet type (5=SPX)
+     7         4       Network number of target station
+     11        6       Station ID of target station
+     17        2       Target socket (High, Low format)
+     19        4       Network number of source station
+     23        6       Stations ID of source station
+     29        2       Source socket (High, Low format)
+     31        1       Connection control
+     32        1       Datastream type
+     33        2       Connection number on source station (High, Low format)
+     35        2       Connection number on target station (High, Low format)
+     37        2       Sequence number (High, Low format)
+     39        2       Acknowledge number (High, Low format)
+     41        2       Allocation number (High, Low format)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     When you install a communication buffer (a communication buffer can
+     contain a sending and a receiving buffer), you receive a communication
+     handle as a return value.  You should store this handle in a variable as
+     it is absolutely necessary for further operations with the communication
+     buffer.
+
+     The functions for Point-To-Point communication fall into two groups:
+     protocol specific functions and functions that can be used for any kind
+     of communication buffer.  Protocol specific functions are functions for
+     a connection setup: (IPXOPEN(), SPXESTBCON(), SPXLISTCON(), NBDOPEN(),
+     NBSCALL(), and NBSLISTCON()).  The name of a protocol specific function
+     always starts with three characters that describe the respective
+     protocol  (IPX, SPX, NBD: NetBIOS Datagram, NBS: NetBIOS Session).
+
+     Functions that write or read a buffer, or query the buffer status, are
+     not protocol specific and can be used for any kind of communication
+     buffer.  The names of these functions start with PPC (Point-To-Point
+     Communication).  For example, the function PPCWRITE() is used to write
+     data to a communication buffer.  The protocol specific process of the
+     data is regulated internally.
+
+ ^bIPX/SPX Communication^b
+
+     Novell Netware (including Netware Lite) allows the direct use of the IPX
+     and SPX communication functions.  By loading the Novell NetBIOS emulator
+     (NETBIOS.EXE), you can also use NetBIOS communication functions in
+     Novell networks.  However, the use of the emulator compared to IPX/SPX
+     reduces the performance and the available memory.  Therefore, you should
+     use the IPX/SPX communication functions for applications running only in
+     Novell networks.
+
+     IPX (Internetwork Packet Exchange Protocol) is a rudimentary protocol
+     whose main advantage is that data can be sent to all waiting
+     workstations in an internal network with only one call.  However, IPX
+     has no suitable handshake mechanism available that guarantees a
+     successful delivery and a correct process of the sent data on the
+     destination workstation.  (Related mechanisms can be implemented with
+     the IPX functions of CA-Clipper Tools.  However, these mechanisms are
+     application specific and have no general validity.)
+
+     The SPX protocol (Sequenced Packet Exchange Protocol) only allows
+     communication between two workstations within an internal network.  SPX
+     has mechanisms available that guarantee the successful delivery of sent
+     data.
+
+     Unlike SPX, which can be seen as real Point-To-Point communication
+     protocol, the IPX communication is implemented as a pseudo Point-To-
+     Point communication.  When you use IPX, data for a specific workstation
+     can be received by any workstation.  However,  a destination address is
+     defined for interrupt controlled sending.  (This address can specify all
+     workstations within an internal network.)  The destination address is
+     not defined by the protocol, so it is not necessary to specify the
+     destination address each time you access the send buffer.  When you use
+     the SPX protocol, a connection between two workstations is established.
+
+     The IPX/SPX communication between two workstations is based on two
+     sockets on each side of the connection that can be opened and closed,
+     similar to files.  Sockets are represented by numeric values between 1
+     and 65535.  Some socket numbers are reserved either by the Netware
+     operating system or by Novell for third party vendors. The sockets
+     between 16384 and 20480 (4000h - 5000h) are the dynamic sockets, meaning
+     there are no reserved sockets in this range.  A collision with socket
+     numbers reserved by Netware can be avoided by using sockets out of that
+     range.
+
+ ^bNetBIOS Communication^b
+
+     The NetBIOS communication functions can be used in all networks that are
+     based on NetBIOS specifications.  In CA-Clipper Tools, two kinds of
+     NetBIOS communication have been implemented: NetBIOS datagram and
+     NetBIOS session communication. The NetBIOS datagram communication can be
+     compared to the IPX communication; a successful delivery of sent data on
+     the destination workstation is not guaranteed by the protocol.  Like
+     IPX, the datagram connection can also be implemented as pseudo Point-To-
+     Point communication between two workstations.  Additionally, a
+     workstation can communicate with a group of workstations or with all
+     workstations in a network.
+
+     Like an SPX connection, a session connection is a fixed connection
+     between two workstations.  The dataflow between two workstations is
+     supervised internally by a protocol that guarantees the delivery of sent
+     data on the destination workstation.
+
+     For the communication with other workstations in a NetBIOS network,
+     NetBIOS names are used.  A NetBIOS name can be up to 15 characters long
+     and is case sensitive.  NetBIOS differentiates between two kinds of
+     names: station names that specify a workstation and are unique in a
+     network, and group names that can be assigned to any number of stations.
+     Each workstation contains a local name table with up to 20 NetBIOS
+     names.  A workstation can be addressed with each name in the name table.
+     Once you have defined single or group names, messages can be sent easily
+     to a station or a group of stations.
+
+     Because of the importance of NetBIOS names for the Point-To-Point
+     communication, CA-Clipper Tools not only includes functions for the
+     sending and receiving of data, but also functions for creating and
+     deleting NetBIOS names.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: CLOSESOCK()  Closes the socket and all connected IPX/SPX handles
+'------------------------------------------------------------------------------
+ ^bCLOSESOCK()^b
+ Closes the socket and all connected IPX/SPX handles
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLOSESOCK(<nSocket>) --> NIL
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nSocket>^b  Designates the number of the socket that is closed.
+
+ ^bReturns^b
+
+     CLOSESOCK() always returns NIL when closing a socket according to IPX.
+
+ ^bDescription^b
+
+     CLOSE SOCKET
+     CLOSESOCK() allows you to close a socket that is used for IPX/SPX
+     communication.  At the same time, all IPX/SPX communication buffers for
+     which <nSocket> has been specified as the source socket are closed.  The
+     related communication handles are then invalid.
+
+ ^bExample^b
+
+     Open and close the IPX receiving buffer with source socket 20000:
+
+     nHandle=IPXOPEN(20000,2000)
+     CLOSESOCKET(20000)  // nHandle is now invalid
+!seealso: "IPXOPEN()" "OPENSOCK()" "PPCCANCEL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IPXERROR()   Determines the error code of the last IPX/SPX call
+'------------------------------------------------------------------------------
+ ^bIPXERROR()^b
+ Determines the error code of the last IPX/SPX call
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bIPXERROR() --> nErrorCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     IPXERROR() returns the error code of the previous IPX/SPX call by a
+     CA-Clipper Tools function.  There is a table containing the error codes
+     in Appendix D.
+
+ ^bDescription^b
+
+     IPXERROR() allows you to locate the source of an error that occurred
+     during the execution of a CA-Clipper Tools function for IPX/SPX
+     communication (for example IPXOPEN() or SPXESTBCON()).  If the IPX/SPX
+     call has been terminated without an error, IPXERROR() returns 0.
+
+     IPXERROR() returns an error code that is the direct result of an IPX/SPX
+     call.  If the IPX/SPX call initiates the interrupt controlled receiving
+     of a packet, the error code cannot return any information about the
+     success or failure of the receiving process.  You can use the
+     PPCRECERR() and PPCSNDERR() functions to determine this information.
+
+ ^bExample^b
+
+     Open the socket.  If an error occurs, determine the reason for the
+     error:
+
+     IF OPENSOCK(20000)=0                           // Error?
+        IF IPXERROR()=254
+           ? 'Local socket table full!'
+        ENDIF
+     ENDIF
+!seealso: "PPCRECERR()" "PPCSNDERR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IPXOPEN()    Opens the IPX sending and receiving buffer
+'------------------------------------------------------------------------------
+ ^bIPXOPEN()^b
+ Opens the IPX sending and receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bIPXOPEN(<nSourceSocket>,[<nRecBuffer>],
+     ^b   [[<nSendBuffer>],[<cTargetAddr>]],
+     ^b   [<nTargetSocket>],[<nPacket>],[<lHeader>])
+     ^b    --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nSourceSocket>^b  Designates the number of the communication's source
+     socket.
+
+     ^b<nRecBuffer>^b  Designates the selected size of the receiving buffer.
+     If no value is passed for <nRecBuffer>, no receiving buffer is
+     established.  The minimum size of the receiving buffer is <nPacket>.  If
+     the value for <nRecBuffer> is too small, it is changed automatically by
+     IPXOPEN().  The maximum size of the receiving buffer is 64 KByte.
+
+     ^b<nSendBuffer>^b  Designates the selected size of the sending buffer.
+     If no value is passed for <nSendBuffer>, no sending buffer is
+     established.  The minimum size of the sending buffer is <nPacket>.  If
+     the value for <nSendBuffer> is too small, it is changed automatically by
+     IPXOPEN().  The maximum size of the sending buffer is 64 KByte.
+
+     ^b<cTargetAddr>^b  Designates the target address for the sending
+     operations.  The target address is a 20-character string that represents
+     a 10-character hexadecimal byte sequence.  The leading eight characters
+     of <cTargetAddr> specify the network number of the target.  The
+     following 12 characters contain the station ID of the target station
+     (node address).  <cTargetAddr> is mandatory to establish a sending
+     buffer.
+
+     ^b<nTargetSocket>^b  Designates the number of the communication's target
+     socket.  The default value is <nSourceSocket>.
+
+     ^b<nPacket>^b  Designates the packet size in bytes of the data that is
+     sent.  The packet size can be between 1 and 546 bytes.  Values outside
+     this range are changed automatically.  The default value is 546 Bytes.
+
+     ^b<lHeader>^b  Designates whether the data and the header (.T.), or the
+     data (.F.) alone, are transmitted to the receiving buffer.
+
+ ^bReturns^b
+
+     If an operation is successful, IPXOPEN() returns a communication handle.
+     The return value contains a numeric value that is greater than 0.  You
+     should store the handle in a variable because all further operations
+     that refer to an established buffer require a communication handle.  If
+     an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     IPXOPEN() allows you to establish a communication buffer for an IPX
+     communication with other workstations in the network.  The communication
+     buffer can contain a sending and receiving buffer through which data is
+     processed.
+
+     <nSourceSocket> is the socket address of the process that transmits the
+     data (see the Introduction to this chapter).  The socket can be opened
+     with the function OPENSOCK() before the call of IPXOPEN().  If
+     <nSourceSocket> has not been opened, it is automatically opened by
+     IPXOPEN().  If <nSourceSocket> is passed with 0, IPXOPEN() opens an
+     available socket.
+
+     The parameters <nRecBuffer> and <nSendBuffer> determine the size of the
+     receiving and sending buffers.  The buffers are automatically designed
+     for one IPX packet.  Each buffer can be up to 64 KByte.  However, the
+     size of the buffer that is allocated by IPXOPEN() depends on the
+     application and the configuration of the computer used.
+
+     The parameter <cTargetAddr> is mandatory to establish a sending buffer.
+     All following sending operations are addressed to <cTargetAddr>.
+     Remember that an IPX communication is implemented as a pseudo Point-To-
+     Point communication.  Data is received by any station addressed to the
+     current workstation but is sent only to a defined target address.  The
+     target address must be passed as a 20- character string (for example,
+     "4921750400001B025A99"), where two characters represent one byte in
+     hexadecimal code.
+
+     If the current workstation is logged in to a Netware server, the
+     destination's network address can be determined with NNETADR() , using
+     the user name.  However, the target workstation must be logged in.
+     Under Netware Lite, the leading eight characters of <cTargetAddr> must
+     be passed with 0.  A character string consisting of
+     "FFFFFFFFFFFFFFFFFFFF" specifies all stations within an internal network
+     as the target address (broadcast packages).
+
+     <nTargetSocket> allows you to determine the communication's target
+     socket.  The default value is <nSourceSocket>.
+
+     <nPacket> determines the maximum size of the data range of the IPX
+     packets that are sent or received.  The maximum value (and the default
+     value) is 564 bytes.  The value of <nPacket> is also valid for sending
+     data.
+
+     With <lHeader> you can determine if the header (30 bytes) of an IPX
+     packet is transmitted to the receiving buffer.  The header can contain
+     important information about the received packet.  For a description
+     about the header structure, see the Introduction to this chapter.
+
+     If the buffer has been established successfully, IPXOPEN() returns an
+     integer value that is greater than 0, called a communication handle.  If
+     a value has been passed for <nRecBuffer>, IPXOPEN() initiates an
+     interrupt controlled receiving mechanism that receives incoming packets
+     in the background and then copies to an receiving buffer.  The data can
+     then be read with the PPCREAD() function within a CA-Clipper
+     application.  If the receiving buffer is full, incoming data is
+     discarded without notifying the sender.  Data should be removed from the
+     receiving buffer and processed as soon as possible.  You should either
+     read the contents of the buffer periodically (polling) or supervise the
+     buffer on an event-oriented basis: for example, with the function
+     PPCKEY().
+
+ ^bNotes^b
+
+     ^b^CFE^b  IPX is a protocol that is not based on a connection.  There is
+        no guarantee or verification of a successful delivery to the target
+        workstation.  The implementation of specific protocols with the aid
+        of CA-Clipper Tools functions can be necessary.  (For your
+        information: Netware usually uses IPX communication, and Netware Lite
+        exclusively uses IPX communication, which is now available under
+        CA-Clipper with the IPXOPEN() function.)
+
+     ^b^CFE^b  Several communication buffers can be established for one
+        source socket.  However, you cannot know when you establish the
+        communication buffers how the data will be distributed to the
+        receiving buffers.
+
+     ^b^CFE^b  Network addresses can be determined under Netware with
+        "USERLIST /A", and under Netware Lite with "NET ULIST".
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open the 5 KByte IPX receiving buffer for socket 20000:
+
+        nHandle=IPXOPEN(20000,5120)
+        IF nHandle=0
+           ? 'Buffer could not be established!'
+        ENDIF
+
+     ^b^CFE^b  Open the 2 KByte IPX sending buffer for socket 20000.  The
+        target address is "4921750400001B025A99":
+
+        nHandle=IPXOPEN(20000,,2048,"4921750400001B025A99")
+
+     ^b^CFE^b  Open the 1 KByte IPX sending and receiving buffer for socket
+        20000.  The target address is the first workstation where user MIKE
+        is currently logged in:
+
+        nHandle=IPXOPEN(20000,1024,1024,NNETADR("MIKE"))
+
+     ^b^CFE^b  For this example, the current workstation must be logged into
+        a file server.  As NNETADR() is based on Netware-API, this call
+        cannot be used under Netware Lite.
+!seealso: tool_004.ngo:"NNETADR()" "PPCCANCEL()" "PPCREAD()" "PPCWRITE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISIPX()      Checks for IPX support
+'------------------------------------------------------------------------------
+ ^bISIPX()^b
+ Checks for IPX support
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISIPX() --> lInstalled
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     ISIPX() returns .T. if IPX support is available.  The IPX communication
+     functions of CA-Clipper Tools can be used.
+
+ ^bDescription^b
+
+     ISIPX() allows you to check to see if IPX support is available.  If it
+     is not, an application can be terminated.
+
+ ^bExample^b
+
+     Check to see if IPX support is available.  If it is not, terminate the
+     program:
+
+     IF ISIPX()
+        nHandle=IPXOPEN(20000,2000)
+     ELSE
+        ? 'IPX support not available, load IPX.COM!'
+        QUIT
+     ENDIF
+!seealso: "ISNETBIOS()" "ISSPX()" "IPXOPEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISNETBIOS()  Checks for NetBIOS support
+'------------------------------------------------------------------------------
+ ^bISNETBIOS()^b
+ Checks for NetBIOS support
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISNETBIOS() --> lInstalled
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     ISNETBIOS() returns .T. if NetBIOS support is available.  If the
+     function returns .T., the NetBIOS communication functions of CA-Clipper
+     Tools can be used.
+
+ ^bDescription^b
+
+     ISNETBIOS() allows you to check to see if NetBIOS support is available.
+     If it is not, an application can be terminated.
+
+ ^bExample^b
+
+     Check to see if NetBIOS support is available.  If it is not, terminate
+     the program:
+
+     IF ISNETBIOS()
+        nHandle=NBDOPEN("STAT1",2000)
+     ELSE
+        ? 'NetBIOS support not available!'
+        QUIT
+     ENDIF
+!seealso: "ISIPX()" "ISSPX()" "NBDOPEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISSPX()      Checks for SPX support
+'------------------------------------------------------------------------------
+ ^bISSPX()^b
+ Checks for SPX support
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISSPX() --> lInstalled
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     ISSPX() returns .T. if SPX support is available.  The SPX communication
+     functions of CA-Clipper Tools can be used.
+
+ ^bDescription^b
+
+     ISSPX() allows you to check to see if SPX support is available.  If it
+     is not, an application can be terminated.
+
+ ^bExample^b
+
+     Check to see if SPX support is available.  If it is not, terminate the
+     program:
+
+     IF ISSPX()
+        nHandle=SPXLISTCON(20000,2000)
+     ELSE
+        ? 'SPX support not available, load IPX.COM!'
+        QUIT
+     ENDIF
+!seealso: "ISIPX()" "ISNETBIOS()" "SPXLISTCON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBADDGROUP() Adds a NetBIOS group name to the local name table
+'------------------------------------------------------------------------------
+ ^bNBADDGROUP()^b
+ Adds a NetBIOS group name to the local name table
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBADDGROUP(<cName>) --> nNamesum
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cName>^b  Designates the group name that is added to the local name
+     table.  The name can be up to 15 characters long and is case sensitive.
+
+ ^bReturns^b
+
+     NBADDGROUP() returns the number that has been assigned to the group
+     name.  If an error occurs (for example, if the name table is full), the
+     function returns 0.
+
+ ^bDescription^b
+
+     NBADDGROUP() adds the group name <cName> to the local name table.  If
+     the name has been added successfully, the name can be passed as the
+     source name in the functions NBDOPEN(), NBSCALL(), or NBSLISTCON().  The
+     workstation can receive datagrams addressed to the group <cName> or
+     react to a connection request addressed to <cName>.
+
+     A group name can be used on any number of workstations.  However, if
+     <cName> is already used as the station name on a station, the call of
+     NBADDGROUP() fails and the function returns 0.
+
+ ^bExample^b
+
+     Add the group name ACCOUNT to the local name table:
+
+     IF NBADDGROUP('ACCOUNT')>0
+        ? 'Name has been added successfully!'
+     ELSE
+        ? 'Name could not be added!'
+     ENDIF
+!seealso: "NBADDNAME()" "NBDELNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBADDNAME()  Adds a NetBIOS station name to the local name table
+'------------------------------------------------------------------------------
+ ^bNBADDNAME()^b
+ Adds a NetBIOS station name to the local name table
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBADDNAME(<cName>) --> nNamenum
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cName>^b  Designates the station name that is added to the local name
+     table.  The name can be up to 15 characters long and is case sensitive.
+
+ ^bReturns^b
+
+     NBADDNAME() returns the number that has been assigned to
+     the station name.  If an error occurs (for example, if the name table is
+     full), the function returns 0.
+
+ ^bDescription^b
+
+     NBADDNAME() adds the station name <cName> to the local name table.  If
+     the name has been added successfully, the name can be passed as the
+     source name in the functions NBDOPEN(), NBSCALL(), or NBSLISTCON().  The
+     workstation can receive datagrams addressed to the group <cName> or
+     react to a connection request addressed to <cName>.
+
+     Unlike group names, station names must be unique.  If <cName> is already
+     in use on another station or already defined as a group name,  the call
+     of NBADDNAME() fails and the function returns 0.
+
+ ^bExample^b
+
+     Add the station name MIKE to the local name table:
+
+     IF NBADDNAME('MIKE')>0
+        ? 'Name has been added successfully!'
+     ELSE
+        ? 'Name could not be added!'
+     ENDIF
+!seealso: "NBADDGROUP()" "NBDELNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBDELNAME()  Deletes a NetBIOS name from the local name table
+'------------------------------------------------------------------------------
+ ^bNBDELNAME()^b
+ Deletes a NetBIOS name from the local name table
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBDELNAME(<cName>) -->lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cName>^b  Designates a station or group name that is deleted from a
+     local name table.  The name can be up to 15 characters long and is case
+     sensitive.
+
+ ^bReturns^b
+
+     NBDELNAME() returns .T. if <cName> has been deleted successfully from
+     the local name table.  If an error occurs (for example, if the name is
+     not in the name table), the function returns .F..
+
+ ^bDescription^b
+
+     NBDELNAME() allows you to delete a station or group name from the local
+     name table.  For example, all names added to a table within an
+     application can be deleted at the end of the program.
+
+     When a name is deleted from a name table, all NetBIOS datagram and
+     NetBIOS session communication buffers for which <cName> has been passed
+     as source name are closed.  Related communication handles are then
+     invalid.
+
+ ^bExample^b
+
+     Delete the NetBIOS name MIKE from the local name table:
+
+     IF NBDELNAME('MIKE')
+        ? 'Name has been deleted successfully!'
+     ELSE
+        ? 'Name  could not be deleted!'
+     ENDIF
+!seealso: "NBADDGROUP()" "NBADDNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBDOPEN()    Opens the NetBIOS datagram sending and receiving buffer
+'------------------------------------------------------------------------------
+ ^bNBDOPEN()^b
+ Opens the NetBIOS datagram sending and receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBDOPEN(<cSourceName>,[<nRecBuffer>],[<nSendBuffer>],
+     ^b   [<cTargetName>],[<nPacket>]) --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cSourceName>^b  Designates the NetBIOS name of the communication's
+     transmitting side.
+
+     ^b<nRecBuffer>^b  Designates the selected size of the receiving buffer.
+     If no value is passed for <nRecBuffer>, no receiving buffer is
+     established.  The minimum size of the receiving buffer is <nPacket>.  If
+     the value for <nRecBuffer> is too small, it is changed automatically by
+     NBDOPEN().  The maximum size of the receiving buffer is 64 KByte.
+
+     ^b<nSendBuffer>^b  Designates the selected size of the send buffer.  If
+     no value is passed for <nSendBuffer>, no sending buffer is established.
+     The minimum size of the sending buffer is <nPacket>.  If the value for
+     <nSendBuffer> is too small, it is changed automatically by NBDOPEN().
+     The maximum size of the sending buffer is 64 KByte.
+
+     ^b<cTargetName>^b  Designates a NetBIOS name that specifies the target
+     station(s).
+
+     ^b<nPacket>^b  Designates the packet size of the data that is sent in
+     bytes.  The packet size can be between 1 and 512 bytes.  Values outside
+     this range are changed automatically.  The default value is 512 Bytes.
+
+ ^bReturns^b
+
+     If an operation is successful, NBDOPEN() returns a communication handle.
+     The return value contains a numeric value that is greater than 0.  You
+     should store the handle in a variable because all further operations
+     that refer to an established buffer require a communication handle.  If
+     an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     NBDOPEN() allows you to establish a communication buffer for an NetBIOS
+     datagram communication with other workstations in the network.  The
+     communication buffer can contain the sending and receiving buffer
+     through which data is processed.
+
+     <nSourceName> is the NetBIOS name of the process that transmits the data
+     (see the Introduction to this chapter).  The name can be added to the
+     local name table with the functions NBADDNAME() or NBADDGROUP() before
+     the call of NBDOPEN().  If <nSourceName> has not been added to the name
+     table, it is added by NBDOPEN() automatically.  If the parameter
+     <nTargetName> is passed, only data that is addressed to <cSourceName> is
+     received.
+
+     The parameters <nRecBuffer> and <nSendBuffer> determine the size of the
+     receiving and sending buffer.  The buffers are automatically designed
+     for one NetBIOS packet.  Each buffer can be up to 64 KByte.  However,
+     the size of the buffer that is allocated by NBDOPEN() depends on the
+     application and the configuration of the computer used.
+
+     The parameter <cTargetName> is optional.  It controls the type of
+     datagrams that are sent.  If <cTargetName> has been passed, the data
+     that is sent can be received by all workstations on which the name table
+     contains <cTargetName> (see the Introduction to this chapter).  If
+     <cTargetName> is the name of a station, the data is sent to only one
+     station.  If <cTargetName> contains a group name, the data can be
+     received by any number of stations.  If <cTargetName> has not been
+     passed, NBDOPEN() transmits "broadcast datagrams".  Broadcast datagrams
+     do not contain a target address and can be received by all stations that
+     wait for broadcast datagrams.
+
+     <nPacket> determines the maximum size of the data range of the NetBIOS
+     packets that are sent or received.  The maximum value (and the default
+     value) is 512 bytes.  Smaller packets can be sent without failure, but
+     larger packets are discarded.  The value of <nPacket> is also valid for
+     use in sending data.
+
+ ^bNote^b
+
+     ^b^CFE^b  The NetBIOS datagram communication is not based on a
+        connection.  There is no guarantee or verification of a successful
+        delivery to the target workstation.  The implementation of specific
+        protocols with the aid of CA-Clipper Tools functions can be
+        necessary.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open the 5 KByte NetBIOS datagram receiving buffer for source
+        name MICK:
+
+        nHandle=NBDOPEN("MICK",5120)
+        IF nHandle=0
+           ? 'Buffer could not be established!'
+        ENDIF
+
+     ^b^CFE^b  Open the 2 KByte NetBIOS datagram sending buffer for source
+        name MICK.  The target address is the NetBIOS name KEITH:
+
+        nHandle=IPXOPEN("MICK",,2048,"KEITH")
+
+     ^b^CFE^b  Open the 1 KByte NetBIOS sending and receiving buffer.  For
+        the source and target address, see the example above:
+
+        nHandle=NBDOPEN(,1024,1024,"KEITH")
+!seealso: "PPCCANCEL()" "PPCREAD()" "PPCWRITE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBERROR()    Determines the error code of the most recent NetBIOS call
+'------------------------------------------------------------------------------
+ ^bNBERROR()^b
+ Determines the error code of the most recent NetBIOS call
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBERROR() --> nErrorCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NBERROR() returns the error code of the most recent NetBIOS call by a
+     CA-Clipper Tools function.  There is a table containing the error codes
+     in Appendix E.
+
+ ^bDescription^b
+
+     NBERROR() allows you to locate the source of an error that occurred
+     during the execution of a CA-Clipper Tools function for NetBIOS
+     communication (for example, NBDOPEN() or NBSCALL()).  If the NetBIOS
+     call was terminated without an error, NBERROR() returns 0.
+
+     NBERROR() returns an error code that is the direct result of a NetBIOS
+     call.  If the NetBIOS call initiates the interrupt controlled receiving
+     of a packet, the error code cannot return any information about the
+     success or failure of the receiving process.  You can use the
+     PPCRECERR() and PPCSNDERR() functions to determine this information.
+
+ ^bExample^b
+
+     Add a NetBIOS name to the name table.  If an error occurs, determine the
+     error source:
+
+     IF NBADDNAME('MIKE')=0                           // Error?
+        IF NBERROR()=13
+           ? 'Name already in local name table!'
+        ENDIF
+     ENDIF
+!seealso: "PPCRECERR()" "PPCSNDERR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBNAME()     Reads a NetBIOS name from the name table of a workstation
+'------------------------------------------------------------------------------
+ ^bNBNAME()^b
+ Reads a NetBIOS name from the name table of a workstation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBNAME(<nPos>,[<cStatName>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nPos>^b  Designates the position in the local name table that is
+     read.
+
+     ^b<cStatName>^b  Designates a station name of the workstation from which
+     the name table is read.  The default value specifies the local
+     workstation.
+
+ ^bReturns^b
+
+     NBNAME() returns the NetBIOS name on position <nPos> in the local name
+     table of <cStatName>.  If an error occurs (for example, if <nPos> is not
+     used or <cStatName> cannot be found), the function returns an empty
+     string.
+
+ ^bDescription^b
+
+     Each NetBIOS workstation keeps a local name table with up to 20 NetBIOS
+     names.  NBNAME() allows you to determine the names on each position of
+     the table.  The names can be determined for the local workstation or for
+     any workstation in the network, if you pass a NetBIOS station name
+     <cStatName>.
+
+     NBNAME() always returns a 15-character string.  All NetBIOS names are
+     internally padded with blanks to a length of 15 characters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read the name table of the local workstation:
+
+        FOR i = 1 TO 20
+           ? NBNAME(i)
+        NEXT i
+
+     ^b^CFE^b  Read the name table of workstation MIKE:
+
+        FOR i = 1 TO 20
+           ? NBNAME(i,"MIKE")
+        NEXT i
+!seealso: "NBADDGROUP()" "NBADDNAME()" "NBDELNAME()" "NBNAMECNT()" "NBNAMESTAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBNAMECNT()  Determines the number of NetBIOS names on a workstation
+'------------------------------------------------------------------------------
+ ^bNBNAMECNT()^b
+ Determines the number of NetBIOS names on a workstation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBNAMECNT([<cStatName>]) --> nNames
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cStatName>^b  Designates the station name of the workstation from
+     which the name table is read.  The default value is the local
+     workstation.
+
+ ^bReturns^b
+
+     NBNAMECNT() returns the number of established NetBIOS names on the
+     station <cStatName>.  If an error occurs (for example, if <cStatName>
+     has not been found), the function returns -1.
+
+ ^bDescription^b
+
+     Internally, each NetBIOS workstation keeps a local name table with up to
+     20 NetBIOS names.  NBNAMECNT() allows you to determine the number of
+     names in the table.  The number of names can be determined for the local
+     workstation or for any workstation in the network, if you pass a NetBIOS
+     station name <cStatName>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of NetBIOS names on the local
+        workstation:
+
+        ? NBNAMECNT()
+
+     ^b^CFE^b  Determine the number of NetBIOS names on workstation MIKE:
+
+        ? NBNAMECNT("MIKE")
+!seealso: "NBNAME()" "NBNAMESTAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBNAMENUM()  Determines the number of a NetBIOS name
+'------------------------------------------------------------------------------
+ ^bNBNAMENUM()^b
+ Determines the number of a NetBIOS name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBNAMENUM(<cName>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cName>^b  Designates the NetBIOS name for which the number is
+     determined.
+
+ ^bReturns^b
+
+     NBNAMENUM() returns the number of <cName>.  If an error occurs, the
+     function returns -1.
+
+ ^bDescription^b
+
+     NetBIOS assigns a number to each new station or group name.  The name's
+     number can be determined with NBNAMENUM().  If an error occurs (for
+     example, if the name does not exist), the function returns -1.
+
+ ^bExample^b
+
+     Determine the number for the NetBIOS name ACCOUNT:
+
+     nNumber=NBNAMENUM('ACCOUNT')
+     IF nNumber <> -1
+        ? 'Number for ACCOUNT:',nNumber
+     ELSE
+        ? 'Name does not exist!'
+     ENDIF
+!seealso: "NBADDGROUP()" "NBADDNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBNAMESTAT() Determines the status of a NetBIOS name
+'------------------------------------------------------------------------------
+ ^bNBNAMESTAT()^b
+ Determines the status of a NetBIOS name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBNAMESTAT(<nPos>,[<cStatName>]) --> nStatus
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nPos>^b  Designates the position in the local name table that is
+     read.
+
+     ^b<cStatName>^b  Designates a station name of the workstation from which
+     the name table is read.  The default station is the local workstation.
+
+ ^bReturns^b
+
+     NBNAMESTAT() returns a bit mask that contains the status of the
+     specified NetBIOS name.  The highest bit (bit 8) indicates if the name
+     is a station name (not set) or a group name (set).  The three lower bits
+     (bits 1 to 3) are seen as one unit.  Their value returns information
+     about the current state of the specified name.  The following table
+     contains a description of the three bits:
+
+     ^bTable 31.3:  Coding of Bits 1-3 in the NBNAMESTAT() Return Value^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Binary    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       000       Name registration not finished
+     4       100       Name registered properly
+     5       101       Name already deleted, but sessions still to come
+     6       110       Duplicate name
+     7       111       Duplicate name, deletion in process
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If an error occurs (for example, if <cStatName> has not been found), the
+     function returns -1.
+
+ ^bDescription^b
+
+     Internally, each NetBIOS workstation keeps a local name table with up to
+     20 NetBIOS names.  NBNAMESTAT() allows you to determine the status of
+     each name in the table.  The status of a name in the name table can be
+     determined for the local workstation or, by passing a NetBIOS station
+     name <cStatName>, for any workstation in the network.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check to see if the first NetBIOS name on the local
+        workstation is a station or group name:
+
+        nStat=NBNAMESTAT(1)
+        IF nStat=-1
+           ? 'Error!'
+        ELSE
+           IF ISBIT(nStat,8)
+              ? 'Group name'
+           ELSE
+              ? 'Station name'
+           ENDIF
+        ENDIF
+
+     ^b^CFE^b  Check to see if the third NetBIOS name on the local
+        workstation is registered properly:
+
+        IF NUMAND(NBNAMESTAT(3),7)=4
+           ? 'Name registered properly!'
+        ELSE
+           ? 'Name not properly registered!'
+        ENDIF
+!seealso: "NBNAME()" "NBNAMECNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBRESET()    Resets the NetBIOS adapter
+'------------------------------------------------------------------------------
+ ^bNBRESET()^b
+ Resets the NetBIOS adapter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBRESET([<nMaxSessions>],[<nMaxNCBs>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nMaxSessions>^b  Designates the maximum number of sessions possible
+     after the adapter has been reset.  The default value is 0.  The value 0
+     sets the internal default value for the number of sessions (normally 6).
+
+     ^b<nMaxNCBs>^b  Is the maximum number of simultaneously active NCBs
+     (Network Control Blocks) after the adapter has been reset.  The default
+     value is 0.  The value 0 sets the internal default value for the number
+     of NCBs (normally 12).
+
+ ^bReturns^b
+
+     NBRESET() returns .T. if the adapter has been reset successfully.
+
+ ^bDescription^b
+
+     ^bImportant!^b  This function must not be called in networks that base
+     the internal communication on the NetBIOS protocol.  The entire network
+     can be brought to a standstill!   However, on a Novell workstation,
+     where the NetBIOS emulator (NETBIOS.EXE) is loaded, the function
+     NBRESET() can be called without any problems.
+
+     When an adapter is reset, the local name table is deleted and all active
+     sessions are terminated.  At the same time, the maximum number of
+     sessions and the maximum number of NCBs (Network Control Blocks) can be
+     redefined.  CA-Clipper Tools functions for the NetBIOS communication
+     require two NCBs for each session communication buffer, and one NCB each
+     for the datagram communication buffer, and the sending and receiving
+     buffers.
+
+ ^bExample^b
+
+     Reset the NetBIOS adapter in a Novell network:
+
+     IF NNETWORK()
+        NBRESET()
+     ENDIF
+!seealso: "PPCCANCEL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBSCALL()    Attempts a NetBIOS communication session connection setup
+'------------------------------------------------------------------------------
+ ^bNBSCALL()^b
+ Opens a NetBIOS session sending and receiving buffer and attempts a
+ connection setup
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBSCALL(<cSourceName>,[<nRecBuffer>],[<nSendBuffer>],
+     ^b   <cTargetName>,[<nPacket>],[<nRecTimeout>],
+     ^b   [<nSendTimeout>]) --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cSourceName>^b  Designates the NetBIOS name of the communication's
+     transmitting side.
+
+     ^b<nRecBuffer>^b  Designates the selected size of the receiving buffer.
+     If no value is passed for <nRecBuffer>, no receiving buffer is
+     established.  The minimum size of the receiving buffer is <nPacket>.  If
+     the value for <nRecBuffer> is too small, it is changed automatically by
+     NBSCALL().  The maximum size of the receiving buffer is 64 KByte.
+
+     ^b<nSendBuffer>^b  Designates the selected size of the sending buffer.
+     If no value is passed for <nSendBuffer>, no sending buffer is
+     established.  The minimum size of the sending buffer is <nPacket>.  If
+     the value for <nSendBuffer> is too small, it is changed automatically by
+     NBSCALL().  The maximum size of the sending buffer is 64 KByte.
+
+     ^b<cTargetName>^b  Designates a NetBIOS name that specifies the target
+     station.
+
+     ^b<nPacket>^b  Designates the packet size of the data that is sent in
+     bytes.  The default value is 512 Bytes.
+
+     ^b<nRecTimeout>^b  Designates the timeout for the following receiving
+     operations in 1/2 seconds.  The default value (0) designates no timeout.
+
+     ^b<nSendTimeout>^b  Designates the timeout for the following sending
+     operations in 1/2 seconds.  The default value (0) designates no timeout.
+
+ ^bReturns^b
+
+     If an operation is successful, NBSCALL() returns a communication handle.
+     The return value contains a numeric value that is greater than 0.  You
+     should store the handle in a variable because all further operations
+     that refer to an established buffer require a communication handle.  If
+     an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     NBSCALL() allows you to establish a communication buffer for a NetBIOS
+     session communication with other workstations in the network.  The
+     communication buffer can contain the sending and receiving buffer
+     through which the interrupt controlled sending and receiving of data is
+     processed.
+
+     <nSourceName> is the NetBIOS name of the process that transmits the data
+     (see the Introduction to this chapter).  The name can be added to the
+     local name table with the functions NBADDNAME() or NBADDGROUP() before
+     the call of NBSCALL().  If <nSourceName> has not been added to the name
+     table, it is added by NBSCALL() automatically.
+
+     The parameters <nRecBuffer> and <nSendBuffer> determine the size of
+     receiving and sending buffers.  The buffers are automatically designed
+     for one NetBIOS packet.  Each buffer can be up to 64 KByte.  However,
+     the size of the buffer that is allocated by NBSCALL() depends on the
+     application and the configuration of the computer used.
+
+     The parameter <cTargetName> is mandatory.  The session is set up with
+     the station specified by <cTargetName>.
+
+     <nPacket> determines the maximum size of the data range of the NetBIOS
+     packets that are sent or received.  The maximum value (and the default
+     value) is 512 bytes.  Smaller packets can be sent without failure.
+     However, larger packets are discarded.  The value of <nPacket> is also
+     valid for use in sending data.
+
+     The seconds for the timeout are not determined individually for each
+     sending and receiving operation.  The timeout is set when the session is
+     opened by passing the parameters <nRecTimeout> and <nSendTimeout>.  The
+     parameters can contain numeric values that specify the timeout in steps
+     of 1/2 second.
+
+     If all parameters have been passed correctly and the buffers have been
+     established successfully, NBSCALL() attempts to set up a session between
+     the current workstation and the target station.  However, the target
+     station must expect the connection setup.  If a CA-Clipper application
+     is running on the target station, the function NBSLISTCON() must have
+     been called.  If no acknowledgment is returned by the target station
+     within the specified timeout, NBSCALL() releases the reserved buffers
+     and returns 0.
+
+     After a successful connection setup NBSCALL() returns a communication
+     handle  that is greater than 0.  If a value has been passed for
+     <nRecBuffer>, NBSCALL() initiates an interrupt controlled receiving
+     mechanism that receives incoming packets in the background and then
+     copies them to a receiving buffer.  The data can then be read with the
+     PPCREAD() function within a CA-Clipper application.  If the receiving
+     buffer is full, incoming data is discarded without notifying the sender.
+     Data should be removed from the receiving buffer and processed as soon
+     as possible.   You should either read the contents of the buffer
+     periodically (polling) or supervise the buffer on an event-oriented
+     basis: for example, with the function PPCKEY().
+
+ ^bNote^b
+
+     ^b^CFE^b  Unlike a NetBIOS datagram communication, a NetBIOS session
+        communication is connection-oriented.  A connection is established
+        between two stations.  As long as no error occurs, a successful
+        delivery of sent packets is guaranteed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Attempt to set up a NetBIOS session connection to workstation
+        MIKE.  If the setup is successful, a 5000 byte receiving buffer and a
+        1000 byte sending buffer are established.  The source name on the
+        local workstation is KEITH:
+
+        nHandle=NBSCALL("MICK",5000,1000,"MIKE")
+        IF nHandle=0
+           ? 'Failure!'
+        ENDIF
+
+     ^b^CFE^b  The destination side can wait for the connection with the
+        following call:
+
+        nHandle:=NBSLISTCON("MIKE",2000,2000)
+!seealso: "NBSLISTCON()" "PPCCANCEL()" "PPCKEY()" "PPCREAD()" "PPCWRITE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBSCONTARG() Determines the target name of a NetBIOS communication session
+'------------------------------------------------------------------------------
+ ^bNBSCONTARG()^b
+ Determines the target name of a NetBIOS communication session
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBSCONTARG(<nHandle>) --> cNetBIOSName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication buffer.
+
+ ^bReturns^b
+
+     NBSCONTARG() returns the destination's NetBIOS name.  If <nHandle> does
+     not specify a NetBIOS session communication buffer or the NetBIOS
+     session connection is not active, the function returns an empty string.
+
+ ^bDescription^b
+
+     NBSCONTARG() allows you to determine the destination's NetBIOS name
+     after a call of NBSLISTCON().  For example, if no target name has been
+     passed for NBSLISTCON(), the function can establish a connection to any
+     requesting station.  The name of this station can be queried with
+     NBSCONTARG().
+
+ ^bExample^b
+
+     Wait for a NetBIOS session connection in the background.  After the
+     connection has been set up, display the destination's NetBIOS name:
+
+     nHandle=NBSLISTCON("MIKE",1000,1000)
+     WHILE .NOT. PPCCONACT(nHandle)
+     ENDDO
+     ? 'Connection set up with ',NBSCONTARG(nHandle)
+!seealso: "NBSLISTCON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NBSLISTCON() Waits for a NETBIOS communication connection in the background
+'------------------------------------------------------------------------------
+ ^bNBSLISTCON()^b
+ Opens the NetBIOS session sending and receiving buffer and waits for
+ connection in the background
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNBSLISTCON(<cSourceName>,[<nRecBuffer>],
+     ^b   [<nSendBuffer>],[<cTargetName>],[<nPacket>],
+     ^b   [<nRecTimeout>],[<nSendTimeout>]) --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cSourceName>^b  Designates the NetBIOS name of the communication's
+     transmitting side.
+
+     ^b<nRecBuffer>^b  Designates the selected size of the receiving buffer.
+     If no value is passed for <nRecBuffer>, no receiving buffer is
+     established.  The minimum size of the receiving buffer is  <nPacket>.
+     If the value for <nRecBuffer> is too small, it is changed automatically
+     by NBSLISTCON().  The maximum size of the receiving buffer is 64 KByte.
+
+     ^b<nSendBuffer>^b  Designates the selected size of the sending buffer.
+     If no value is passed for <nSendBuffer>, no sending buffer is
+     established.  The minimum size of the sending buffer is <nPacket>.  If
+     the value for <nSendBuffer> is too small, it is changed automatically by
+     NBSLISTCON().  The maximum size of the sending buffer is 64 KByte.
+
+     ^b<cTargetName>^b  Designates a NetBIOS name that specifies the target
+     station.  If a value is passed for <cTargetName>, NBSLISTCON() waits for
+     a connection request for this station.  The default value does not
+     specify a target name.
+
+     ^b<nPacket>^b  Designates the packet size of the data that is sent in
+     bytes.  The default value is 512 Bytes.
+
+     ^b<nRecTimeout>^b  Designates the timeout for the following receiving
+     operations in 1/2 seconds.  The default value (0) designates no timeout.
+
+     ^b<nSendTimeout>^b  Designates the timeout for the following sending
+     operations in 1/2 seconds.  The default value (0) designates no timeout.
+
+ ^bReturns^b
+
+     If an operation is successful, NBSLISTCON() returns a communication
+     handle.  The return value contains a numeric value that is greater than
+     0.  You should store the handle in a variable because all further
+     operations that refer to an established buffer require a communication
+     handle.  If an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     NBSLISTCON() establishes a communication buffer for an NetBIOS session
+     communication with other workstations in the network, and then waits for
+     a connection setup through any other station.  The communication buffer
+     can contain sending and receiving buffers through which the interrupt
+     controlled sending and receiving of data is processed.
+
+     <nSourceName> is the NetBIOS name of the process that transmits the data
+     (see the Introduction to this chapter).  The name can be added to the
+     local name table with the functions NBADDNAME() or NBADDGROUP() before
+     the call of NBSLISTCON().  If <nSourceName> has not been added to the
+     name table, it is added by NBSLISTCON() automatically.
+
+     The parameters <nRecBuffer> and <nSendBuffer> specify the size of the
+     receiving and sending buffers.  The buffers are automatically designed
+     for one NetBIOS packet.  Each buffer can be up to 64 KByte in size.
+     However, the size of the buffer that is allocated by NBSLISTCON()
+     depends on the application and the configuration of the computer used.
+
+     The parameter <cTargetName> is optional.  When a value is passed for
+     <cTargetName>, NBSLISTCON() waits for a connection request for
+     <cTargetName>.  Without <cTargetName>, NBSLISTCON() reacts to any
+     connection request.
+
+     <nPacket> determines the maximum size of the data range of the NetBIOS
+     packets to be sent or received.  The maximum and default value is 512
+     bytes.  Smaller packets can be sent without failure.  However, larger
+     packets are discarded.  The value of <nPacket> is also valid for use in
+     sending data.
+
+     The seconds for the timeout are not determined individually for each
+     sending and receiving operation.  The timeout is set when the session is
+     opened by passing the parameters <nRecTimeout> and <nSendTimeout>.  The
+     parameters can contain numeric values that specify the timeout in steps
+     of 1/2 second.
+
+     If all parameters have been passed correctly and the buffers have been
+     established successfully, NBSLISTCON() returns a communication handle.
+     A communication handle, however, does not indicate that a NetBIOS
+     session has already been set up.  After NBSLISTCON() has been executed,
+     a handler waits for a connection request in the background.  The
+     communication handler, returned by NBSLISTCON(), cannot be used for
+     sending and receiving before a connection has been established.  The
+     current connection status after a call of NBSLISTCON() can be queried
+     with PPCCONACT().  It is also possible to trigger a key trap with
+     PPCKEY().
+
+ ^bNote^b
+
+     ^b^CFE^b  Unlike a NetBIOS datagram communication, a NetBIOS session
+        communication is connection-oriented.  A connection is established
+        between two stations.  As long as no error occurs, a successful
+        delivery of sent packets is guaranteed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Wait for the setup of a NetBIOS session:
+
+        nHandle=NBSLISTCON("MICK",1000)
+        WHILE .NOT. PPCCONACT(nHandle)
+        ENDDO
+
+     ^b^CFE^b  After a NetBIOS session has been set up successfully, send key
+        code 255 to the keyboard buffer:
+
+        #include "ctppc.ch"
+
+        nHandle=NBSLISTCON("MICK",5000,1000)
+        PPCKEY(nHandle,255,PPC_CONESTB)
+!seealso: "NBSCALL()" "PPCCANCEL()" "PPCKEY()" "PPCREAD()" "PPCWRITE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: OPENSOCK()   Opens the socket for IPX or SPX communication
+'------------------------------------------------------------------------------
+ ^bOPENSOCK()^b
+ Opens the socket for IPX or SPX communication
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bOPENSOCK(<nSocket>) --> nOpen
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nSocket>^b  Designates the number of the socket that is opened.
+
+ ^bReturns^b
+
+     OPENSOCK() returns the number of the socket if the socket has been
+     opened successfully.  If an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     An IPX or SPX communication is handled through "sockets" (see the
+     Introduction to this chapter).  OPENSOCK() allows you to explicitly open
+     a socket before a call of IPXOPEN(), SPXESTBCON(), or SPXLISTCON().  If
+     OPENSOCKET() is called with the argument 0, any available socket can be
+     opened.  The socket's number is returned by OPENSOCK().
+
+ ^bNote^b
+
+     ^b^CFE^b  The functions IPXOPEN(), SPXESTBCON(), and SPXLISTCON() open
+        the source socket automatically.  A call of OPENSOCKET() is not
+        necessary.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open socket 20000:
+
+        IF OPENSOCK(20000)=0
+           ? 'Socket could not be opened!'
+        ELSE
+           ? 'Socket has been opened successfully!'
+        ENDIF
+
+     ^b^CFE^b  Open any available socket:
+
+        ? 'Socket',OPENSOCK(0),' opened!'
+!seealso: "CLOSESOCK()" "IPXOPEN()" "SPXESTBCON()" "SPXLISTCON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCBUFTYP()  Determines the communication buffer type
+'------------------------------------------------------------------------------
+ ^bPPCBUFTYP()^b
+ Determines the communication buffer type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCBUFTYP(<nHandle>) --> nBufferType
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication buffer.
+
+ ^bReturns^b
+
+     PPCBUFTYP() returns a type code that indicates the protocol of the
+     specified communication buffer.  For all possible types (IPX, SPX,
+     NetBIOS Datagram, or NetBIOS session), the header file CTPPC.CH contains
+     symbolic constants according to the following table.
+
+     ^bTable 31.4:  Possible Return Values of PPCBUFTYP()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Sym. Con.    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PPC_IPX      IPX
+     17      PPC_SPX      SPX
+     2       PPC_NBD      NetBIOS datagram
+     18      PPC_NBS      NetBIOS session
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The numeric values might change in future versions, so you should use
+     symbolic constants.  If an error occurs (for example, if the handle is
+     invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCBUFTYP() allows you to develop procedures that can work with any
+     communication buffer.  With PPCBUFTYP(), protocol specific calls can be
+     made, depending on the buffer type.
+
+ ^bExample^b
+
+     Determine the destination's name within a session and thereby
+     differentiate between SPX and NetBIOS session buffers:
+
+     #include "ctppc.ch"
+
+     IF PPCBUFTYP(nHandle)=PPC_SPX
+        ? 'Destination name:',SPXCONTARG(nHandle)
+     ELSEIF PPCBUFTYP(nHandle)=PPC_NBS
+        ? 'Destination name:',NBSCONTARG(nHandle)
+     ELSE
+        ? 'Error: No session buffer!'
+     ENDIF
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCCANCEL()  Closes the communication handle and the connected buffers
+'------------------------------------------------------------------------------
+ ^bPPCCANCEL()^b
+ Closes the communication handle and the connected buffers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCCANCEL(<nHandle>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the handle of the communication buffer that is
+     closed.
+
+ ^bReturns^b
+
+     PPCCANCEL() returns .T. if the communication buffer has been closed
+     successfully.  If an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     PPCCANCEL() allows you to close any communication buffer, independently
+     of the protocol used (IPX, SPX, NetBIOS datagram or NetBIOS session).
+     The handle of the selected communication buffer must be passed to
+     PPCCANCEL().  PPCCANCEL() uninstalls the procedures for interrupt
+     controlled sending and receiving and releases allocated memory.  When
+     PPCCANCEL() is called, all data in the sending or receiving buffer is
+     lost.  After a call of PPCCANCEL(), <nHandle> is invalid.
+
+ ^bExample^b
+
+     Open and close the communication buffer:
+
+     nHandle=IPXOPEN(20000,546)
+     // ...
+     // Using the communication buffer ....
+     // ...
+     // Close communication buffer
+     PPCCANCEL(nHandle)
+!seealso: "CLOSESOCK()" "NBDELNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCCONACT()  Checks for an active communication connection
+'------------------------------------------------------------------------------
+ ^bPPCCONACT()^b
+ Checks for an active communication connection
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCCONACT(<nHandle>) --> lAktive
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates a communication handle that identifies the
+     communication buffer.
+
+ ^bReturns^b
+
+     PPCCONACT() returns .T. if <nHandle> specifies an active connection.  If
+     an inactive connection occurs, the function returns .F..
+
+ ^bDescription^b
+
+     PPCCONACT() is used mainly in conjunction with session- oriented
+     protocols (SPX or NetBIOS session).  PPCCONACT() allows you to determine
+     if a connection has been set up after the call of a function that waits
+     for a connection setup in the background: for example, SPXLISTCON() or
+     BSLISTCON().  You can also check to see if a connection is still active.
+     If an error occurs (for example, if a connection has been canceled), the
+     function returns .F..
+
+ ^bNote^b
+
+     ^b^CFE^b  When used for IPX or NetBIOS datagram connections, PPCCONACT()
+        always returns .T..
+
+ ^bExample^b
+
+     Wait for an SPX connection setup:
+
+     nHandle=SPXLISTCON(20000,1000)
+     WHILE .NOT. PPCCONACT(nHandle)
+     ENDDO
+!seealso: "NBSLISTCON()" "SPXLISTCON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCEVENT()   Queries the event code that most recently triggered a key trap
+'------------------------------------------------------------------------------
+ ^bPPCEVENT()^b
+ Queries the event code that most recently triggered a key trap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCEVENT(<nHandle>) --> nEventCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCEVENT() returns a numeric code that specifies the event that most
+     recently triggered a key trap for the communication buffer defined by
+     <nHandle>.  All possible event codes can be seen in the following table.
+
+     ^bTable 31.5:  Possible Return Values of PPCEVENT()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Sym. Con.           Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PPC_RECSUC          Packet received successfully
+     2       PPC_RECFAIL         Packet received with errors
+     4       PPC_RECBUFF75FULL   Receiving buffer more than 75% full
+     8       PPC_RECPACKDISCARD  Packet discarded because of a full receiving
+                                 buffer
+     16      PPC_SNDFAIL         Failure during sending of a packet
+     32      PPC_CONESTAB        Session set up successfully
+     64      PPC_CONTERM         Session terminated
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A value of 0 indicates that no event has been triggered through PPCKEY()
+     since the installation of the event handler.  If an error occurs (for
+     example, if the handle is invalid), PPCEVENT() returns -1.
+
+ ^bDescription^b
+
+     With the function PPCKEY() you can define a key code for each
+     communication buffer to be triggered when a specified  event occurs.
+     PPCEVENT() allows you to determine the last event.  Dependent on the
+     return value of PPCEVENT(), various actions can be executed in the event
+     handler.  If no event mask has been defined for the communication
+     buffer, PPCEVENT() returns 0.
+
+ ^bExample^b
+
+     Open an SPX receiving buffer and wait for a connection in the
+     background.  An event supervision is installed with PPCKEY() for the
+     communication buffer.  The event handler displays a message when a
+     connection is set up or canceled.  Additionally, the receiving buffer is
+     read as soon as it is 75% full:
+
+     #include "ctppc.ch"
+
+     PRIVATE nHandle
+
+     // Wait for connection on socket 20000
+     // open receiving buffer of 5000 bytes
+
+     nHandle:=SPXLISTCON(20000,5000)
+
+     // install event handler
+     // PPC_CONESTAB+PPC_CONTERM+PPC_RECBUFF75FULL=100
+
+     PPCKEY(nHandle,255,100)
+     SET KEY 255 TO handler
+     WAIT
+
+     PROCEDURE handler
+        LOCAL nEvent:=PPCEVENT(nHandle)
+        LOCAL cBuffer
+        DO CASE
+           CASE nEvent=PPC_CONESTB
+              ? 'Connection set up!'
+           CASE nEvent=PPC_CONTERM
+              ? 'Connection terminated!'
+           CASE nEvent=PPC_RECBUFF75FULL
+              cBuffer=PPCREAD(nHandle)
+        ENDCASE
+     RETURN
+!seealso: "PPCKEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCKEY()     Supervises the communication buffer with key traps
+'------------------------------------------------------------------------------
+ ^bPPCKEY()^b
+ Supervises the communication buffer with key traps
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCKEY(<nHandle>,[<nKeyValue>],[<nEventMask>])
+     ^b    --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+     ^b<nKeyValue>^b  Designates the key code that is triggered when specific
+     events occur.  All values of the CA-Clipper KEYBOARD command are valid.
+     Without this parameter, a previously set buffer supervision is removed.
+
+     ^b<nEventMask>^b  Designates a numeric value that determines the events
+     that trigger a key trap.  The value contains an OR operation of various
+     events according to the following table.
+
+     ^bTable 31.6:  Event Codes for PPCKEY()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Sym. Con.           Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       PPC_RECSUC          Packet received successfully
+     2       PPC_RECFAIL         Packet received with errors
+     4       PPC_RECBUFF75FULL   Receiving buffer more than 75% full
+     8       PPC_RECPACKDISCARD  Packet discarded because of a full receiving
+                                 buffer
+     16      PPC_SNDFAIL         Failure during sending of a packet
+     32      PPC_CONESTAB        Session set up successfully
+     64      PPC_CONTERM         Session terminated
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value (127) triggers a key trap on each event.  The symbolic
+     constants are defined in the header file CTPPC.CH.
+
+ ^bReturns^b
+
+     PPCKEY() returns .T. when a key code has been set or removed
+     successfully.
+
+ ^bDescription^b
+
+     PPCKEY() allows you , independently of the protocol used (IPX, SPX,
+     NetBIOS datagram, or NetBIOS session), to supervise a communication
+     buffer within a wait state without having to control specific values
+     (for example, the number of characters in buffer).  If an event that is
+     specified by <nEventMask> occurs, PPCKEY() puts the key code <nKeyValue>
+     into the keyboard buffer.  With a previously defined SET KEY procedure,
+     you can react to the event immediately .  For example, with PPCEVENT()
+     you can determine the event that triggered the key trap.
+
+     If no key code is passed for PPCKEY(), the supervision for the
+     communication handle is removed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Put key code 255 into the keyboard buffer at any event:
+
+        IF PPCKEY(nHandle,255)
+           ? 'Event handler installed successfully!'
+        ELSE
+           ? 'Event handler could not be installed!'
+        ENDIF
+
+     ^b^CFE^b  Store key code 255 to the keyboard buffer when a packet is
+        received:
+
+        #include "ctppc.ch"
+
+        PPCKEY(nHandle,255,PPC_RECSUC)
+
+     ^b^CFE^b  Store key code 255 to the keyboard buffer when a session is
+        set up or canceled (only for SPX or NetBIOS session communication):
+
+        #include "ctppc.ch"
+
+        PPCKEY(nHandle,255,NUMOR(PPC_CONESTB,PPC_CONTERM))
+
+     ^b^CFE^b  Remove the event supervision:
+
+        PPCKEY(nHandle)
+!seealso: "PPCEVENT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCREAD()    Reads data from a communication receiving buffer
+'------------------------------------------------------------------------------
+ ^bPPCREAD()^b
+ Reads data from a communication receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCREAD(<nHandle>,[<nLength>],[<lNotDelete>])
+     ^b    --> cString
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the communication buffer from which the
+     receiving buffer is read.
+
+     ^b<nLength>^b  Designates the number of characters that are read.  The
+     default value reads all characters.
+
+     ^b<lNotDelete>^b  Designates whether the characters are deleted (.F.) or
+     not (.T.) after the buffer has been read.  The default value (.F.)
+     indicates that the characters are deleted.
+
+ ^bReturns^b
+
+     PPCREAD() returns a character string that contains the characters that
+     have been read from the receiving buffer.  If an error occurs (for
+     example, if the handle is invalid or the communication buffer has no
+     receiving buffer), the function returns an empty string.
+
+ ^bDescription^b
+
+     PPCREAD() allows you to read data from the receiving buffer of any
+     communication buffer, independently of the protocol used (IPX, SPX,
+     NetBIOS datagram, or NetBIOS session).  The handle of the communication
+     buffer must be specified with <nHandle>.  If only one communication
+     handle is passed, the function returns all characters of the receiving
+     buffer.  By designating <nLength>, a defined number of characters can be
+     read.  With the parameter <lNotDelete>, you can specify if the buffer is
+     cleared (.F.) or not (.T.) after the characters have been read.
+
+     Reading only a defined number of characters can be useful if the header
+     of a data packet is also transmitted to the receiving buffer during an
+     IPX or SPX communication.  In this case, the header can be read first
+     (30 or 42 characters).  The header contains information about the length
+     of the data range that can then be read with a new call of PPCREAD()
+     (see the introduction to this chapter).  In this way, the data that is
+     read can be packet oriented.
+
+ ^bNote^b
+
+     ^b^CFE^b  Between a call of PPCRECCNT() and PPCREAD(), new data can be
+        transmitted to the receiving buffer.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read and display all the characters from a receiving buffer:
+
+        ? PPCREAD(nHandle)
+
+     ^b^CFE^b  Read the header and the data range of an IPX packet
+        separately:
+
+        // Open communication buffer
+        // Force header transfer
+
+        nHandle=IPXOPEN(20000,5000,,,,,.T.)
+
+        // Read IPX header (30 bytes)
+        cHeader=PPCREAD(nHandle,30)
+
+        // Determine data range length
+        // (Attention: high, low sequence)
+        nLen=BIN2I(CHARMIRR(SUBSTR(cHeader,3,2)))-30
+        // Read data range
+        cData=PPCREAD(nHandle,nLen)
+!seealso: "PPCRECCNT()" "PPCWRITE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECCNT()  Determines the number of characters in a receiving buffer
+'------------------------------------------------------------------------------
+ ^bPPCRECCNT()^b
+ Determines the number of characters in a communication receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECCNT(<nHandle>) --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECCNT() returns the number of characters in the specified
+     communication receiving buffer.  If an error occurs (for example, if the
+     handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCRECCNT() determines the number of characters in the receiving buffer
+     of a specified communication buffer, independently of the protocol used
+     (IPX, SPX, NetBIOS datagram or NetBIOS session).  It allows you to check
+     to see if new data has been received since the most recent readout.
+
+ ^bExample^b
+
+     Read the buffer if it contains characters:
+
+     nCharacter=PPCRECCNT(nHandle)
+     IF nCharacter>0
+        cData=PPCREAD(nHandle)
+     ENDIF
+!seealso: "PPCREAD()" "PPCSNDCNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECDISC() Determines the number of discarded packets
+'------------------------------------------------------------------------------
+ ^bPPCRECDISC()^b
+ Determines the number of discarded packets
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECDISC(<nHandle>) --> nPackets
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECDISC() returns the number of packets that have been discarded
+     because of a full buffer since the receiving buffer has been opened.  If
+     an error occurs (for example, if the handle is invalid), the function
+     returns -1.
+
+ ^bDescription^b
+
+     PPCRECDISC() determines the number of packets that have been discarded
+     due to a full buffer, independently of the protocol used (IPX, SPX,
+     NetBIOS datagram or NetBIOS session).  If more than 65535 packets have
+     been discarded, the count restarts at 0.
+
+ ^bExample^b
+
+     Check to see if packets have been discarded:
+
+     IF PPCRECDISC(nHandle)>0
+        ? 'Data integrity not guaranteed!'
+     ENDIF
+!seealso: "PPCRECFAIL()" "PPCRECTOT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECERR()  Determines the error code of the most recent receiving process
+'------------------------------------------------------------------------------
+ ^bPPCRECERR()^b
+ Determines the error code of the most recent receiving process
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECERR(<nHandle>) --> nErrorCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECERR() returns the error code of the most recent receiving process
+     for the specified receiving buffer.  If the packet has been received
+     successfully, the function returns 0.  If an error occurs (for example,
+     if the handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCRECERR() allows you to determine the error code of the most recent
+     receiving operation, independently of the protocol used (IPX, SPX,
+     NetBIOS datagram, or NetBIOS session).  The values are returned directly
+     by the IPX/SPX or NetBIOS driver.  Therefore, the return value depends
+     on the type of receiving buffer.  There is a description of the error
+     codes for the IPX/SPX communication buffer and for the NetBIOS
+     communication buffer in Appendices D and E.
+
+     Packets that have been received but have been discarded due to a full
+     buffer do not create an error code.
+
+ ^bExample^b
+
+     Check to see if the last packet has been received successfully:
+
+     IF PPCRECERR(nHandle) = 0
+        ? 'Packet has been received successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "IPXERROR()" "NBERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECFAIL() Determines the number of packets received with a failure
+'------------------------------------------------------------------------------
+ ^bPPCRECFAIL()^b
+ Determines the number of packets received with a failure
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECFAIL(<nHandle>) --> nPackets
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECFAIL() returns the number of packets received with failure since
+     the buffer has been opened.  If an error occurs (for example, if the
+     handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCRECFAIL() determines the number of packets received with failure,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram, or
+     NetBIOS session).  A faulty packet can be a packet for which the data
+     length does not match the length defined in its header, or a packet that
+     has been discarded because of a full buffer.  If a value of 65535
+     packets has been exceeded, the count starts again at 0.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check to see if packets have been received with failure:
+
+        IF PPCRECFAIL(nHandle)>0
+           ? 'Data integrity not guaranteed!'
+        ENDIF
+
+     ^b^CFE^b  Determine the number of faulty packets and the number of those
+        packets that have been discarded due to a full buffer:
+
+        ? 'Total of faulty packets:',PPCRECFAIL(nHandle)
+        ? 'Discarded thereof:      ',PPCRECDISC(nHandle)
+!seealso: "PPCRECDISC()" "PPCRECTOT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECFLSH() Clears a communication receiving buffer
+'------------------------------------------------------------------------------
+ ^bPPCRECFLSH()^b
+ Clears a communication receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECFLSH(<nHandle>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECFLSH() returns .T. if the receiving buffer has been cleared
+     successfully.
+
+ ^bDescription^b
+
+     PPCRECFLSH() allows you to delete all characters from a receiving
+     buffer, independently of the protocol used (IPX, SPX, NetBIOS datagram,
+     or NetBIOS session).
+
+ ^bExample^b
+
+     Clear the receiving buffer:
+
+     IF PPCRECFLSH(nHandle)
+        ? 'Buffer has been cleared successfully!'
+     ELSE
+        ? 'Buffer could not be cleared!'
+     ENDIF
+!seealso: "PPCSNDFLSH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECFREE() Determines the number of free characters in a receiving buffer
+'------------------------------------------------------------------------------
+ ^bPPCRECFREE()^b
+ Determines the number of free characters in a communication receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECFREE(<nHandle>) --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECFREE() returns the free memory in the specified communication
+     receiving buffer in bytes.  If an error occurs (for example, if the
+     handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCRECFREE() determines the number of characters that are still free in
+     the receiving buffer of the specified communication buffer,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram, or
+     NetBIOS session).
+
+ ^bExample^b
+
+     Read the buffer if less than 5460 characters are free:
+
+     nCharacter=PPCRECFREE(nHandle)
+     IF nCharacter<5460
+        cData=PPCREAD(nHandle)
+     ENDIF
+!seealso: "PPCREAD()" "PPCSNDFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECSIZE() Determines the size of a communication receiving buffer
+'------------------------------------------------------------------------------
+ ^bPPCRECSIZE()^b
+ Determines the size of a communication receiving buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECSIZE(<nHandle>) --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECSIZE() returns the size of the specified communication receiving
+     buffer in bytes.  If an error occurs (for example, if the handle is
+     invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCRECSIZE() determines the size of a communication receiving buffer,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram, or
+     NetBIOS session).
+
+ ^bExample^b
+
+     Determine the size of a communication receiving buffer:
+
+     ? PPCRECSIZE(nHandle)
+!seealso: "PPCSNDSIZE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCRECTOT()  Determines the total number of received packets
+'------------------------------------------------------------------------------
+ ^bPPCRECTOT()^b
+ Determines the total number of received packets
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCRECTOT(<nHandle>) --> nPackets
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication receiving buffer.
+
+ ^bReturns^b
+
+     PPCRECTOT() returns the number of packets received since the buffer has
+     been opened.  If an error occurs (for example, if the handle is
+     invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCRECTOT() determines the total number of received packets,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram or
+     NetBIOS session).  The value also contains faulty and discarded packets.
+     If a value of 65535 packets has been exceeded, the count starts again at
+     0.
+
+ ^bExample^b
+
+     Display the communication receiving buffer report:
+
+     ? 'Total of received packets  :',PPCRECTOT(nHandle)
+     ? 'Faulty thereof             :',PPCRECFAIL(nHandle)
+     ? 'Discarded thereof          :',PPCRECDISC(nHandle)
+!seealso: "PPCRECDISC()" "PPCRECFAIL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDCNT()  Determines the number of characters in a sending buffer
+'------------------------------------------------------------------------------
+ ^bPPCSNDCNT()^b
+ Determines the number of characters in a communication sending buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDCNT(<nHandle>) --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDCNT() returns the number of characters in the specified
+     communication sending buffer.  If an error occurs (for example, if the
+     handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCSNDCNT() determines the number of characters in the sending buffer of
+     a specified communication buffer, independently of the protocol used
+     (IPX, SPX, NetBIOS datagram, or NetBIOS session).  It allows you to
+     check to see if data written to the buffer has already been sent.
+
+ ^bExample^b
+
+     Write characters into the receiving buffer, and wait until the
+     characters have been sent:
+
+     PPCWRITE(nHandle,cData)
+     WHILE PPCSNDCNT(nHandle)>0
+     ENDDO
+!seealso: "PPCREAD()" "PPCRECCNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDERR()  Determines the error code of the most recent sending process
+'------------------------------------------------------------------------------
+ ^bPPCSNDERR()^b
+ Determines the error code of the most recent sending process
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDERR(<nHandle>) --> nErrorCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDERR() returns the error code of the most recent sending process
+     for the specified sending buffer.  If the packet has been sent
+     successfully, the function returns 0.  If an error occurs (for example,
+     if the handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCSNDERR() allows you to determine the error code of the most recent
+     sending operation, independently of the protocol used (IPX, SPX, NetBIOS
+     datagram, or NetBIOS session).  The values are returned directly by the
+     IPX/SPX or NetBIOS driver, so the return value depends on the type of
+     the receiving buffer.  There is a description of the error codes for the
+     IPX/SPX communication buffer and for the NetBIOS communication buffer in
+     Appendices D and E.
+
+ ^bExample^b
+
+     Check to see if the last packet has been sent successfully:
+
+     IF PPCSNDERR(<nHandle>) = 0
+        ? 'Packet has been sent successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "IPXERROR()" "NBERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDFAIL() Determines the number of packets sent with failure
+'------------------------------------------------------------------------------
+ ^bPPCSNDFAIL()^b
+ Determines the number of packets sent with failure
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDFAIL(<nHandle>) --> nPackets
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDFAIL() returns the number of packets sent with failure since the
+     buffer has been opened.  If an error occurs (for example, if the handle
+     is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCSNDFAIL() determines the number of packets sent with failure,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram, or
+     NetBIOS session).  A faulty packet at an SPX or NetBIOS session
+     connection can be a packet for which the receipt has not been
+     acknowledged by the remote station.  If a value of 65535 packets has
+     been exceeded, the count starts again at 0.
+
+ ^bExample^b
+
+     Check to see if packets have been sent with failure:
+
+     IF PPCSNDFAIL(nHandle)>0
+        ? 'Data integrity not guaranteed!'
+     ENDIF
+!seealso: "PPCSNDTOT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDFLSH() Clears a communication sending buffer
+'------------------------------------------------------------------------------
+ ^bPPCSNDFLSH()^b
+ Clears a communication sending buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDFLSH(<nHandle>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDFLSH() returns .T. if the buffer has been cleared successfully.
+
+ ^bDescription^b
+
+     PPCSNDFLSH() allows you to delete all characters from a sending buffer,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram, or
+     NetBIOS session).
+
+ ^bExample^b
+
+     Clear the sending buffer:
+
+     IF PPCSNDFLSH(nHandle)
+        ? 'Buffer has been cleared successfully!'
+     ELSE
+        ? 'Buffer could not be cleared!'
+     ENDIF
+!seealso: "PPCRECFLSH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDFREE() Determines the number of free characters in a sending buffer
+'------------------------------------------------------------------------------
+ ^bPPCSNDFREE()^b
+ Determines the number of free characters in a communication sending buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDFREE(<nHandle>) --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDFREE() returns the free memory in the specified communication
+     sending buffer in bytes.  If an error occurs (for example, if the handle
+     is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCSNDFREE() determines the number of characters that are still free in
+     the sending buffer of the specified communication buffer, independently
+     of the protocol used (IPX, SPX, NetBIOS datagram, or NetBIOS session).
+
+ ^bExample^b
+
+     Determine the free memory in a sending buffer:
+
+     ? PPCSNDFREE(nHandle)
+!seealso: "PPCRECFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDSIZE() Determines the size of a communication sending buffer
+'------------------------------------------------------------------------------
+ ^bPPCSNDSIZE()^b
+ Determines the size of a communication sending buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDSIZE(<nHandle>) --> nBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDSIZE() returns the size of the specified communication sending
+     buffer.  If an error occurs (for example, if the handle is invalid), the
+     function returns -1.
+
+ ^bDescription^b
+
+     PPCSNDSIZE() determines the size of a communication sending buffer,
+     independently of the protocol used (IPX, SPX, NetBIOS datagram, or
+     NetBIOS session).
+
+ ^bExample^b
+
+     Determine the size of a communication sending buffer:
+
+     ? PPCSNDSIZE(nHandle)
+!seealso: "PPCRECSIZE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCSNDTOT()  Determines the total number of packets that have been sent
+'------------------------------------------------------------------------------
+ ^bPPCSNDTOT()^b
+ Determines the total number of packets that have been sent
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCSNDTOT(<nHandle>) --> nPackets
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication sending buffer.
+
+ ^bReturns^b
+
+     PPCSNDTOT() returns the number of packets that have been sent since the
+     sending buffer has been open.  If an error occurs (for example, if the
+     handle is invalid), the function returns -1.
+
+ ^bDescription^b
+
+     PPCSNDTOT() determines the total number of sent packets, independently
+     of the protocol used (IPX, SPX, NetBIOS datagram, or NetBIOS session).
+     The value also contains faulty packets.  If a value of 65535 packets has
+     been exceeded, the count starts again at 0.
+
+ ^bExample^b
+
+     Display the communication sending buffer report:
+
+     ? 'Total of sent packets :',PPCSNDTOT(nHandle)
+     ? 'Faulty thereof        :',PPCSNDFAIL(nHandle)
+!seealso: "PPCSNDFAIL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PPCWRITE()   Writes data to a communication sending buffer
+'------------------------------------------------------------------------------
+ ^bPPCWRITE()^b
+ Writes data to a communication sending buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPPCWRITE(<nHandle>,<cData>) --> nLength
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nHandle>^b  Designates the communication buffer.
+
+     ^b<cData>^b  Designates a character string that contains the data that
+     is written to the sending buffer.
+
+ ^bReturns^b
+
+     PPCWRITE() returns the number of characters that could not be written to
+     the sending buffer.  Therefore, a return value larger than 0 indicates
+     an error (for example, when the sending buffer is full).
+
+ ^bDescription^b
+
+     PPCWRITE() allows you to write data into the sending buffer of a
+     communication buffer, independently of the protocol used (IPX, SPX,
+     NetBIOS datagram, or NetBIOS session).  The parameter <nHandle> contains
+     the handle of the communication buffer.  The data must be passed as a
+     character string (<cData>).  PPCWRITE() transmits the data to the
+     sending buffer.  The data is sent from the sending buffer, in an
+     interrupt controlled transmission in the background.  If the sending
+     buffer does not have enough memory to accept all the characters,
+     PPCWRITE() returns the number of characters that could not be
+     transmitted to the sending buffer.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Open the IPX sending buffer for a broadcast message, and send
+        the message "Good morning!":
+
+        nHandle=IPXOPEN(20000,,546,'FFFFFFFFFFFFFFFFFFFF')
+        PPCWRITE(nHandle,'Good morning!')
+
+     ^b^CFE^b  Send data from the character string <cData>, and take into
+        account that the sending buffer might be full:
+
+        nRest=LEN(cData)
+        WHILE nRest>0
+           nRest = PPCWRITE(nHandle,RIGHT(cData,nRest))
+        ENDDO
+!seealso: "PPCREAD()" "PPCSNDCNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPXCONTARG() Determines the target internet address of an SPX communication
+'------------------------------------------------------------------------------
+ ^bSPXCONTARG()^b
+ Determines the target internet address of an SPX communication
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPXCONTARG(<nHandle>) --> cInterNetAddr
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nHandle>^b  Designates the communication buffer.
+
+ ^bReturns^b
+
+     SPXCONTARG() returns the destination's internet address.  If <nHandle>
+     does not specify an SPX communication buffer or the SPX connection is
+     not active, the function returns an empty string.
+
+ ^bDescription^b
+
+     SPXCONTARG() allows you to determine the destination's internet address
+     after a successful call of SPXLISTCON().  The address is returned as a
+     20-character hexadecimal string that contains 10 bytes in hexadecimal
+     form.  The leading eight characters indicate the destination's network
+     number.  The following 12 characters indicate the station ID (node
+     address).
+
+ ^bExample^b
+
+     Wait for an SPX connection in the background.  After the connection has
+     been set up, display the destination's internet address:
+
+     nHandle=SPXLISTCON(20000,1000,1000)
+     WHILE .NOT. PPCCONACT(nHandle)
+     ENDDO
+     ? 'Connection set up with ',SPXCONTARG(nHandle)
+!seealso: "SPXLISTCON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPXESTBCON() Attempts an SPX communication session connection setup
+'------------------------------------------------------------------------------
+ ^bSPXESTBCON()^b
+ Opens the SPX sending and receiving buffer and tries a connection setup
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPXESTBCON(<nSourceSocket>,[<nRecBuffer>],
+     ^b   [<nSendBuffer>],<cTargetAddr>,[<nTargetSocket>],
+     ^b   [<nPacket>],[<lHeader>],[<nRepeat>],[<lWatchDog>],
+     ^b   [<nECBs>]) --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nSourceSocket>^b  Designates the socket number of the communication's
+     transmitting side.
+
+     ^b<nRecBuffer>^b  Designates the selected size of the receiving buffer.
+     If no value is passed for <nRecBuffer>, no receiving buffer is
+     established.  The minimum size of the receiving buffer is <nPacket>.  If
+     the value for <nRecBuffer> is too small, it is changed automatically by
+     SPXESTBCON().  The maximum size of the receiving buffer is 64 KByte.
+
+     ^b<nSendBuffer>^b  Designates the selected size of the sending buffer.
+     If no value is passed for <nSendBuffer>, no sending buffer is
+     established.  The minimum size of the sending buffer is <nPacket>.  If
+     the value for <nSendBuffer> is too small, it is changed automatically by
+     SPXESTBCON().  The maximum size of the sending buffer is 64 KByte.
+
+     ^b<cTargetAddr>^b  Designates the destination's internet address.  The
+     target address is a 20-character string that represents a 10-character
+     byte sequence.  The leading eight characters of <cTargetAddr> contain
+     the network number of the target station.  The remaining 12 characters
+     specify the station ID of the target station (node address).
+
+     ^b<nTargetSocket>^b  Designates the socket number of the communication's
+     remote side.  The default value is <nSourceSocket>.
+
+     ^b<nPacket>^b  Designates the packet size of the data that is sent.  The
+     packet size can be between 1 and 534 bytes.  Values outside of this
+     range are changed automatically.  The default value is 534 Bytes.
+
+     ^b<lHeader>^b  Designates whether the data range and the header of the
+     packet (.T.) or the data range alone (.F.) are transmitted to the
+     receiving buffer.
+
+     ^b<nRepeat>^b  Designates the number of repeat attempts if a faulty
+     packet transmission occurs.  The value is valid for all sending
+     operations processed during a session.  A value of 0 indicates that SPX
+     assumes the standard repeat value.
+
+     ^b<lWatchDog>^b  Designates whether the watchdog is activated (.T.) or
+     not (.F.).  This parameter allows the supervision of the connection with
+     watchdog, an SPX internal mechanism.  If the supervision is activated,
+     watchdog checks in regular intervals to see if the remote station is
+     still responding.  The default value (.T.) activates the watchdog.
+
+     ^b<nECBs>^b  Designates the number of ECBs (Event Control Blocks) that
+     are added to the listening pool for the current connection.  The default
+     value is 2.  With a higher value, the performance can be improved (for
+     example, when working with slow computers).
+
+ ^bReturns^b
+
+     If an operation is successful, SPXESTBCON() returns a communication
+     handle.  The return value contains a numeric value that is greater than
+     0.  You should store the handle in a variable because all further
+     operations that refer to an established buffer require a communication
+     handle.  If an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     SPXESTCON() allows you to establish a communication buffer for an SPX
+     communication with another station in the network.  SPXESTCON() also
+     tries to set up an SPX connection (session) to this station.  The
+     communication buffer can contain a sending and receiving buffer through
+     which the interrupt controlled sending and receiving of data is
+     processed.
+
+     <nSourceSocket> is the socket number of the communication's transmitting
+     side (see the Introduction to this chapter).  The socket can be opened
+     with the function OPENSOCK() before the call of SPXESTBCON().  If
+     <nSourceSocket> has not been opened, it is opened by SPXESTBCON()
+     automatically.  If 0 is passed for <nSourceSocket>, SPXESTBCON() opens
+     any available socket.
+
+     The parameters <nRecBuffer> and <nSendBuffer> determine the size of the
+     receiving and sending buffers.  The buffers are automatically designed
+     for one NetBIOS packet.  Each buffer can be up to 64 KByte in size.
+     However, the size of the buffer that is allocated by SPXESTBCON()
+     depends on the application and the configuration of the computer used.
+
+     The remote partner is specified by <cTargetAddr>.  The target address
+     must be passed as a 20-character string (for example,
+     "4921750400001B025A99").  Two bytes each represent one byte in
+     hexadecimal form.  For an SPX communication, the target address must be
+     unique.  It is not allowed to pass a broadcast address
+     ("FFFFFFFFFFFFFFFFFFFF").  Application specific mechanisms are required
+     to determine the stations waiting for a connection (for example, the
+     storage of the net addresses of the waiting stations in a database or in
+     the bindery).  If the current workstation is logged into a Netware
+     server, the network address of a logged in remote station can be
+     determined with the function NNETADR() by passing the user name.  Under
+     Netware Lite, the leading eight characters of <cTargetAddr> (network
+     number) must be passed with 0.
+
+     <nTargetSocket> is the destination's internet address.  The default
+     value is <nSourceSocket>.
+
+     <nPacket> determines the maximum size of the data range of the SPX
+     packets that are sent or received.  The maximum value (and the default
+     value) is 536 bytes.  Smaller packets can be sent without failure.
+     However, larger packets are discarded.  The value of <nPacket> is also
+     valid for use in sending data.
+
+     With <lHeader> you can determine if the header of an SPX packet (42
+     bytes) is transmitted to the receiving buffer.  The header can contain
+     important information about the received packet.  For a description
+     about the header structure, see the Introduction to this chapter.
+
+     The number of repeat attempts for faulty sending operations during the
+     session can be specified with <nRepeat>.  A value of 0 sets an SPX
+     internal standard value.
+
+     A session is supervised by an SPX watchdog.  If the watchdog determines
+     that the remote station is not responding, a key trap can be triggered
+     (see PPCKEY()).  The connection flag for the session is set to .F..  If
+     you want to deactivate the watchdog, the parameter <lWatchdog> can be
+     designated .F..
+
+     SPX needs Event Control Blocks (ECBs) for receiving data and for
+     administration purposes.  The ECBs are created and managed by
+     SPXESTBCON() automatically.  The default value is two ECBs for each SPX
+     session.  The value can be increased if slow computers are used.
+     However, you cannot prevent data loss that is the result of a full
+     receiving buffer.
+
+     If all parameters have been set correctly and the buffers have been
+     established successfully, SPXESTBCON() tries to set up a session between
+     the current workstation and the target station.  However, the target
+     station must expect the connection setup.  If a CA-Clipper application
+     is running on the target station, the function SPXLISTCON() must have
+     been called.  If no acknowledgment is returned by the target station
+     within a specified timeout (about 30 seconds), SPXESTBCON() releases the
+     reserved buffer and returns 0.
+
+     After a successful connection setup, SPXESTBCON() returns a
+     communication handle that is greater than 0.  If a value has been passed
+     for <nRecBuffer>, SPXESTBCON() initiates an interrupt controlled
+     receiving mechanism that receives incoming packets in the background and
+     then copies them to a receiving buffer.  The data can then be read with
+     the PPCREAD() function within a CA-Clipper application.  If the
+     receiving buffer is full, incoming data is discarded without notifying
+     the sender.  Data should be removed from the receiving buffer and
+     processed as soon as possible.  You should either read the contents of
+     the buffer periodically (polling) or supervise the buffer on an event-
+     oriented basis (for example, with the function PPCKEY()).
+
+ ^bNote^b
+
+     ^b^CFE^b  Unlike an IPX communication, an SPX communication is
+        connection-oriented.  A connection is established between two
+        stations.  As long as no error occurs, a successful delivery of sent
+        packets is guaranteed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Attempt to set up an SPX connection to the target address
+        "4921750400001B025A99".  If the connection can be set up, establish a
+        5000 byte receiving buffer and a 1000 byte sending buffer.  The
+        source and destination socket number is 20000:
+
+        nHandle=SPXESTBCON(20000,5000,1000,"4921750400001B025A99")
+        IF nHandle=0
+           ? 'Error during connection setup!'
+        ENDIF
+
+     ^b^CFE^b  The remote station can wait for the connection with the
+        following call:
+
+        nHandle:=SPXLISTCON(20000,2000,2000)
+!seealso: "PPCCANCEL()" "PPCKEY()" "PPCREAD()" "PPCWRITE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPXLISTCON() Waits for a SPX communication connection in the background
+'------------------------------------------------------------------------------
+ ^bSPXLISTCON()^b
+ Opens the SPX sending and receiving buffer and waits for a connection in the
+ background
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPXLISTCON(<nSourceSocket>,[<nRecBuffer>],
+     ^b   [<nSendBuffer>],[<nPacket>],[<lHeader>],
+     ^b   [<nRepeat>],[<lWatchDog>],[<nECBs>]) --> nHandle
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nSourceSocket>^b  Designates the socket number of the communication's
+     transmitting side.
+
+     ^b<nRecBuffer>^b  Designates the selected size of the receiving buffer.
+     If no value is passed for <nRecBuffer>, no receiving buffer is
+     established.  The minimum size of the receiving buffer is <nPacket>.  If
+     the value for <nRecBuffer> is too small, it is changed automatically by
+     SPXLISTCON().  The maximum size of the receiving buffer is 64 KByte.
+
+     ^b<nSendBuffer>^b  Designates the selected size of the sending buffer.
+     If no value is passed for <nSendBuffer>, no sending buffer is
+     established.  The minimum size of the sending buffer is <nPacket>.  If
+     the value for <nSendBuffer> is too small, it is changed automatically by
+     SPXLISTCON().  The maximum size of the sending buffer is 64 KByte.
+
+     ^b<nPacket>^b  Designates the packet size of the data that is sent.  The
+     packet size can be between 1 and 534 bytes.  Values outside of this
+     range are changed automatically.  The default value is 534 Bytes.
+
+     ^b<lHeader>^b  Specifies whether only the data range (.F.) or the data
+     range and the header of the packet (.T.) are to be transmitted to the
+     receiving buffer.
+
+     ^b<nRepeat>^b  Designates the number of repeat attempts if a faulty
+     packet transmission occurs.  The value is valid for all sending
+     operations processed during a session.  A value of 0 indicates that SPX
+     assumes the standard repeat value.
+
+     ^b<lWatchDog>^b  Designates whether the watchdog is activated (.T.) or
+     not (.F).  This parameter allows the supervision of the connection with
+     watchdog, an SPX internal mechanism.  If the supervision is activated,
+     watchdog checks in regular intervals to see if the remote station is
+     still responding.  The default value (.T.) activates the watchdog.
+
+ ^bReturns^b
+
+     SPXLISTCON() returns a communication handle if the buffer has been
+     established successfully.  If an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     SPXLISTCON() allows you to establish a communication buffer for an SPX
+     communication with another station in the network.  SPXLISTCON() also
+     installs a handler that waits for a connection setup by any other
+     station.  The communication buffer can contain a sending and receiving
+     buffer through which the interrupt controlled sending and receiving of
+     data is processed.
+
+     <nSourceSocket> is the socket number of the communication's transmitting
+     side (see the Introduction to this chapter).  The socket can be opened
+     with the function OPENSOCK() before the call of SPXLISTCON().  If
+     <nSourceSocket> has not been opened, it is opened by SPXLISTCON()
+     automatically.  If 0 is passed for <nSourceSocket>, SPXLISTCON() opens
+     any available socket.
+
+     The parameters <nRecBuffer> and <nSendBuffer> determine the size of the
+     receiving and sending buffer.  The buffers are automatically designed
+     for one NetBIOS packet.  Each buffer can be up to 64 KByte in size.
+     However, the size of the buffer that is allocated by SPXLISTCON()
+     depends on the application and the configuration of the computer used.
+
+     <nPacket> determines the maximum size of the data range of the SPX
+     packets that are sent or received.  The maximum value (and the default
+     value) is 536 bytes.  Smaller packets can be sent without failure.
+     However, larger packets are discarded.  The value of <nPacket> is also
+     valid for use in sending data.
+
+     With <lHeader> you can determine if the header of an SPX packet (42
+     bytes) is transmitted to the receiving buffer.  The header can contain
+     important information about the received packet.  For a description of
+     the header structure, see the Introduction to this chapter.
+
+     The number of repeat attempts for faulty send operations during the
+     session can be specified with <nRepeat>.  A value of 0 sets an SPX
+     internal standard value.
+
+     A session is supervised by an SPX watchdog.  If the watchdog determines
+     that the remote station is not responding, a key trap can be triggered
+     (see PPCKEY()).  The connection flag for the session is set to .F..  If
+     you want to deactivate the watchdog, the parameter <lWatchdog> can be
+     designated .F..
+
+     SPX needs Event Control Blocks (ECBs) for receiving data and for
+     administration purposes.  The ECBs are created and managed by
+     SPXLISTCON() automatically.  The default value is two ECBs for each SPX
+     session.  The value can be increased if slow computers are used.
+     However, you cannot prevent data loss that is the result of a full
+     receiving buffer.
+
+     If all parameters have been passed correctly and the buffers have been
+     established successfully, SPXLISTCON() returns a communication handle.
+     However, a communication handle does not indicate that an SPX has
+     already been set up.  After SPXLISTCON() has been executed, a handler
+     waits for a connection request in the background.  The communication
+     handler, returned by SPXLISTCON(), cannot be used for sending and
+     receiving before a connection has been established.  The current
+     connection status after a call of SPXLISTCON() can be queried with
+     PPCCONACT().  It is also possible to trigger a key trap with PPCKEY().
+
+ ^bNote^b
+
+     ^b^CFE^b  Unlike an IPX communication, an SPX communication is
+        connection-oriented.  A connection is established between two
+        stations.  As long as no error occurs, a successful delivery of sent
+        packets is guaranteed.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Wait for an SPX connection setup:
+
+        nHandle=SPXLISTCON(20000,1000)
+        WHILE .NOT. PPCCONACT(nHandle)
+        ENDDO
+
+     ^b^CFE^b  After an SPX connection has been set up successfully, put key
+        code 255 into the keyboard buffer:
+
+        #include "ctppc.ch"
+
+        nHandle=SPXLISTCON(20000,5000,1000)
+        PPCKEY(nHandle,255,PPC_CONESTB)
+!seealso: "SPXESTBCON()" "PPCCANCEL()" "PPCKEY()" "PPCREAD()" 
+'------------------------------------------------------------------------------
+
+
+

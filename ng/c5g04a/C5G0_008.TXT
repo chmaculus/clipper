@@ -1,0 +1,55 @@
+'------------------------------------------------------------------------------
+ ^bReport and Label Utility -- RL.EXE^b
+  Create and modify report (.frm) and label (.lbl) files
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bSyntax^b
+
+     ^bRL^b
+
+ ^bSystem Architecture^b
+
+     The RL system is written in Clipper.  If you installed the default
+     configuration of the development environment, the source code is
+     located in the \CLIPPER5\SOURCE\RL directory on the disk where Clipper
+     5.0 is installed.   RL.EXE is installed in \CLIPPER5\BIN and this
+     directory is included in the PATH statement in your AUTOEXEC.BAT.  You
+     should, therefore, be able to access RL from any drive and/or
+     directory.
+
+     The source files needed that make up the RL system are:
+
+     ^B^CFE^B  Rlfront.prg
+     ^B^CFE^B  Rllack.prg
+     ^B^CFE^B  Rldialg.prg
+
+     The system is provided as source code so you can modify it to suit your
+     specific needs.  You may want to make enhancements specific to your
+     development environment or simply add the RL system to your application
+     thereby giving your users the power to create their own reports and
+     labels.
+
+     To facilitate modification, the RL system is broken up into two primary
+     subsystems: front and back.  The RL front subsystem (found in
+     Rlfront.prg) is the user interface of the entire RL system.  The back
+     subsystem (found in Rlback.prg) contains all of the routines for
+     reading and writing (.frm) and (.lbl) files.  The system is organized
+     in this way so that you can create your own user interface and easily
+     access the lower-level routines to read and write the form files.
+
+     If you decide to tailor this system by making changes to the source
+     code, a make file, RL.RMK, is located in the same directory as the RL
+     source code.  Provided that your changes do not involve additional
+     source modules or changes in the existing file dependencies, issuing
+     the following command at the DOS prompt:
+
+     C>RMAKE RL
+
+     will compile and link the system to create a new RL.EXE file.  Refer to
+     the Program Maintenance--RMAKE.EXE chapter in the Programming and
+     Utilities book for more information.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

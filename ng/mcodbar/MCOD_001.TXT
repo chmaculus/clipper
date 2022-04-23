@@ -1,0 +1,927 @@
+!short: GENERATING PREPROCESSED CODE FOR PRINTING
+'------------------------------------------------------------------------------
+^b GENERATING PREPROCESSED CODE FOR PRINTING:^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+This chapter takes care of all those functions wich produces a special
+code that can be printed by the printing functions of MiniCBar. The reason
+of separating the generation of the printing is to reduce the amount of
+functions needed for printing. By example :
+
+    /*
+       This example prints a 39 barcode of "HELLO WORLD" on
+       a HP LaserJet printer (or compatible). At this point
+       we supose that the printer is activated.
+    */
+
+    ? HPCodeBar( code39( "HELLO WORLD" ) )[2]
+
+This way, we have x functions wich generates preprocessed barcodes, and
+y printing functions, so y + x functions. Suppose that instead of this
+method we have a function for each printer, by example :
+
+    ? HPcode39( "HELLO WORLD" )[2]
+
+That way we have x * y functions, wich is far too much 8-).
+
+At this point you may probably been asking yourself what is that [2]
+wich appears at the end of the examples.  It's simple, printing
+functions returns 2 values instead of one, one for the length in
+characters and another for the string to print, and this is made
+returning an ARRAY.  As you may know, graphical outputs to a printer
+are made by using special characters (that's the second element of the
+return array), and if you want to know the width of the printed code a
+len() of the string wont return the printed len, but the ammount of
+printing codes.  So that is what is returned in the first position of
+the array, the lenght of the printed barcode traduced to characters
+columns.
+!seealso: "PRINTING" "FUNCTIONS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: CODABAR              CODABAR
+'------------------------------------------------------------------------------
+^bcodabar(c<string_of_numbers>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+   String composed of numbers to be converted to CODABAR format.
+
+^bReturns:^b
+    A preprocessed string in  CODABAR.
+
+^bInformaci¢n adicional:^b
+WARNING !!! Codabar is a very simple way of codification, wich
+requires from the user to specify starting and ending characters.
+Those characters have to be choosen from the following list :
+
+                       A B C D
+
+So if you want to codify 123, you may use "A123A" as the first
+parameter of the function. T, N y E should be in that list, but they
+aren't because they are the same of A, B and D.
+
+                T = A   N = B   y   E = D
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEB                B
+'------------------------------------------------------------------------------
+^bcodeb(c<string_of_numbers>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to be converted to B.
+
+^bReturns:^b
+    A preprocessed string in  B.
+
+^bAdditional information:^b
+It's a very unusual code, wich only allows to codify numbers.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODE11               Code 11 / USD-8
+'------------------------------------------------------------------------------
+^bcode11(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to be converted to CODE 11 + checksum c.
+
+^bReturns:^b
+    A preprocessed string in  CODE 11.
+
+^bAdditional information:^b
+CODE 11 can code numerical information only. Its name reflect the fact
+that only 11 characters can be coded (10 numbers and the -), the other
+caracters are ignored.
+
+If a second check digit is needed you can include it with a "12345"
+checksum :
+
+    code11( "12345" + checksum( "12345", "0123456789-" ) )
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODE25               Code 25 / USS 2/5 / USS I 2/5
+'------------------------------------------------------------------------------
+^bcode25(c<string_of_numbers>,l<interl.>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to be converted to CODE 25.
+<entre.>
+    Logical value wich indicates if interlaced codes are to be used.
+    .F.     Code 2 of 5 / USS 2/5
+    .T.     Code 2 of 5 Interlaced / USS 2/5 I / ITF / IATA / STRAIGHT
+
+^bReturns:^b
+    A preprocessed string in  CODE 25.
+
+^bAdditional information:^b
+CODE 25 is an industrial barcode to codify numbers, and its length
+is only limited by the range of the reading device.
+
+Non interlaced version exist since 1968, and the interlaced one since
+1972. Interlaced name's is USS I 2/5, and it works by using blacks
+as well as spaces, son interlaced codes must have an even length. If
+you have to code a number with an odd number of digits you only have
+to place a '0' before the number.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODE39               Code 39 / USS-39
+'------------------------------------------------------------------------------
+^bcode39(c<string>, l<check>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to be converted to CODE 39.
+<check>
+    .T. include a check digit type mode 43
+    .F. [default] don't include the check digit.
+
+^bReturns:^b
+    A preprocessed string in  CODE 39.
+
+^bAdditional information:^b
+CODE 39 is an industrial barcode wich is used to code digits upper-
+case letters and seven special characters -. +/$%, character '*' is
+used to mark the begining and the end of the string, so it can not
+be used inside the code.
+
+This type exists was invented in 1974 by Intermec, and its complete name
+is USS-39.
+
+It's possible to code the entire ASCII table, look at the code39e for
+more information.
+!seealso: "GENERATING" "CODE39E" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODE39E              Convertion to CODE 39 FULL ASCII
+'------------------------------------------------------------------------------
+^bcode39e(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String you want to convert to 39E.
+
+^bReturns:^b
+    The string in an extended form.
+
+^bAdditional information:^b
+Code 39 cannot codify a lot of characters, lower case characters are
+an example. But there is an extension of Code 39 wich is called FULL
+ASCI wich allows it. If you want to use that mode you have to notify
+the reader device by reading :
+
+39:       İŞŞİÛŞŞ İİŞ İİŞ İŞŞŞ İÛŞİİ
+                      +$
+
+This activates FULL ASCII mode in the decoder.
+
+If you want to exit that mode, you have to read :
+
+39:       İŞŞİÛŞŞ İİÛŞİİŞ İŞŞŞ İÛŞİİ
+                      -$
+
+While you're in FULL ASCII mode you can send extended strings like you can
+see in the following example :
+
+code39( code39e( "Philippe Mingo" ) ) allows coding the name with Upper and
+lower case characters.
+
+You can include a check digit the same way that in simple code 39.
+
+This is the complete conversion table :
+
+    ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+    ³ASCII   C 39³ ASCII   C 39  ³ ASCII   C 39 ³  ASCII   C 39      ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³NULL    %U  ³ SP      Space ³ @       %V   ³  `      %W         ³
+    ³SOH     $A  ³ !       /A    ³ A       A    ³  a      +A         ³
+    ³STX     $B  ³ "       /B    ³ B       B    ³  b      +B         ³
+    ³ETX     $C  ³ #       /C    ³ C       C    ³  c      +C         ³
+    ³EOT     $D  ³ $       /D    ³ D       D    ³  d      +D         ³
+    ³ENQ     $E  ³ %       /E    ³ E       E    ³  e      +E         ³
+    ³ACK     $F  ³ &       /F    ³ F       F    ³  f      +F         ³
+    ³BEL     $G  ³ !       /G    ³ G       G    ³  g      +G         ³
+    ³BS      $H  ³ (       /H    ³ H       H    ³  h      +H         ³
+    ³HT      $I  ³ )       /I    ³ I       I    ³  i      +I         ³
+    ³LF      $J  ³ *       /J    ³ J       J    ³  j      +J         ³
+    ³VT      $K  ³ +       /K    ³ K       K    ³  k      +K         ³
+    ³FF      $L  ³ '       /L    ³ L       L    ³  l      +L         ³
+    ³CR      $M  ³ -       -     ³ M       M    ³  m      +M         ³
+    ³SO      $N  ³ .       .     ³ N       N    ³  n      +N         ³
+    ³SI      $O  ³ /       /O    ³ O       O    ³  o      +O         ³
+    ³DLE     $P  ³ 0       0     ³ P       P    ³  p      +P         ³
+    ³DC1     $Q  ³ 1       1     ³ Q       Q    ³  q      +Q         ³
+    ³DC2     $R  ³ 2       2     ³ R       R    ³  r      +R         ³
+    ³DC3     $S  ³ 3       3     ³ S       S    ³  s      +S         ³
+    ³DC4     $T  ³ 4       4     ³ T       T    ³  t      +T         ³
+    ³NAK     $U  ³ 5       5     ³ U       U    ³  u      +U         ³
+    ³SYN     $V  ³ 6       6     ³ V       V    ³  v      +V         ³
+    ³ETB     $W  ³ 7       7     ³ W       W    ³  w      +W         ³
+    ³CAN     $X  ³ 8       8     ³ X       X    ³  x      +X         ³
+    ³EM      $Y  ³ 9       9     ³ Y       Y    ³  y      +Y         ³
+    ³SUB     $Z  ³ :       /Z    ³ Z       Z    ³  z      +Z         ³
+    ³ESC     %A  ³ ;       %F    ³ [       %K   ³  {      %P         ³
+    ³FS      %B  ³ <       %G    ³ \       %L   ³  |      %Q         ³
+    ³GS      %C  ³ =       %H    ³ ]       %M   ³  }      %R         ³
+    ³RS      %D  ³ >       %I    ³ [94]    %N   ³  ~      %S         ³
+    ³US      %E  ³ ?       %J    ³ _       %O   ³  DEL    %T,%X,%Y,%Z³
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+!seealso: "GENERATING" "CODE39" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODE128              C¢digo 128
+'------------------------------------------------------------------------------
+^bcode128(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to be converted to CODE 128.
+
+^bReturns:^b
+    A preprocessed string in  CODE 128.
+
+^bAdditional information:^b
+Created in 1981 by Identics Corporation Company, 128 code is probably
+one of the most sofisticated codes in its design, however it's one of
+the safiest ones.  This, its reduced size and the possibility to
+codify any of the characters in the ASCII table makes the 128 code one
+of the most used in the industry.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEEAN13            EAN-13 / UPC-13
+'------------------------------------------------------------------------------
+^bcodeEAN13(c<string>,l<mud>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to be converted to EAN 13, debe ser de 12
+    caracteres, sin incluir el £ltimo d¡gito de verificaci¢n, que se
+    incluye autom ticamente.
+<mud>
+    .t. includes dumb zones, .f. does not.
+
+^bReturns:^b
+    A preprocessed string in  EAN 13.
+
+^bAdditional information:^b
+EAU 13 is a comercial code used worldwide except for the U.S.A. and
+Canda, where they use UPC codes. UPC codes can be readed by EAN
+devices because they're similar, except for the first character
+wich is ever 0 in UPC and may be change in EAN.
+
+This code forces the structure of the codification, the first three
+characters stands for the country, the next four the industry and
+the last five characters stands for the product itself. This means
+that EAN can code a total of 12 characters plus a checksum character
+wich depends of them.
+
+There is also a standard format for the codes, wich have to be of
+32,29 x 26,26 milimeters. This format can be magnified with the
+following values :
+
+   ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+   ³Mag.   Modulo                  EPSON   HP            ³
+   ³  %    mm      inches   DPI       Adjustment         ³
+   ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+   ³  80   0,264   0,010   96,212                        ³
+   ³  85   0,281   0,011   90,391  90                    ³
+   ³  90   0,297   0,012   85,522              600 / 7   ³
+   ³  95   0,314   0,012   80,892                        ³
+   ³ 100   0,330   0,013   76,970              75 / 1    ³
+   ³ 110   0,363   0,014   69,972  360 / 5               ³
+   ³ 120   0,396   0,016   64,141              600 / 9   ³
+   ³ 130   0,429   0,017   59,207  60          300 / 5   ³
+   ³ 140   0,462   0,018   54,978              600 / 11  ³
+   ³ 150   0,495   0,019   51,313  360 / 7     100 / 2   ³
+   ³ 160   0,528   0,021   48,106                        ³
+   ³ 170   0,561   0,022   45,276   90 / 3     600 / 13  ³
+   ³ 180   0,594   0,023   42,761              300 / 7   ³
+   ³ 190   0,627   0,025   40,510  120 / 3     600 / 15  ³
+   ³ 200   0,660   0,026   38,485  180 / 5     75 / 2    ³
+   ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+In the adjustment columns you can se some examples on how you can
+get correct aproximations to the correct sizes. 120 / 3 means that
+you have to apply 120 DPI for 3 magnification factors.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEDUN              DUN-?? / ITF-??
+'------------------------------------------------------------------------------
+^bcodeDUN(c<string>,n<tipo>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to be converted to DUN??,
+<tipo>
+    Indicates the type of DUN code to make. Valid types are 14 and 16,
+    however if you use another type it will work anyway, but you'll
+    generate a non standard code. The number of character you can
+    codify is the type less one, this is 13 for the type 14 and 15 for
+    the type 16.
+
+^bReturns:^b
+    A preprocessed string in DUN format.
+
+^bAdditional information:^b
+This kind of code is used in packs of products, or groups of CONSUMING
+UNITIES, wich is not considered unities of distribution for the end user.
+An example can be a box tetra bricks, each brick has got an EAN13 code, and
+the big box of 12 bricks has a DUN14.
+
+DUN14 has got, like the EAN13 one, a special format wich is :
+
+  * 1 digit for the units inside (9 means that it is elsewere)
+  * 3 digits for the country (same code than EAN13).
+  * 4 digits for the fabric.
+  * 5 digits for the product.
+  * 1 check digit (automatically added)
+
+This type can be also called ITF??.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEEAN8             EAN-8 / UPC-8
+'------------------------------------------------------------------------------
+^bcodeEAN8(c<string>,l<mud>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to be converted to EAN 8.
+<mud>
+    .t. includes dumb zones, .f. does not.
+
+^bReturns:^b
+    A preprocessed string in  EAN 8.
+
+^bAdditional information:^b
+EAN 8 is a reduction of the 13 one, wich can be used in reduced places.
+As the name shows, it codify only 7 characters plus a check digit.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEEAN2             Numeric suplement of 2 digits for EAN/UPC
+'------------------------------------------------------------------------------
+^bcodeEAN2(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to be converted to EAN 2, have to be 2 digits.
+
+^bReturns:^b
+    A preprocessed string in  EAN 2.
+
+^bAdditional information:^b
+This type can only be used with EAN13 and EAN8 strings, and allows
+a two digits extention. By example :
+
+    IBMCodBar( codeEan13( "001234567890" ) + codeEan2( "12" ), 38, 2 )
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEEAN5             Numeric suplement of 5 digits for EAN/UPC
+'------------------------------------------------------------------------------
+^bcodeEAN5(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to be converted to EAN 5, have to be 5 digits.
+
+^bReturns:^b
+    A preprocessed string in  EAN 5.
+
+^bAdditional information:^b
+This type can only be used with EAN13 and EAN8 strings, and allows
+a five digits extention. By example :
+
+   IBMCodBar( codeEan8( "001234567890" ) + codeEan5( "12345" ), 38, 2 )
+
+If you want to print a smaller extention, like in the magazines, you
+can do :
+
+   cstr1 := strzero( val( substr( cstring, 1, 12 ) ), 12 )
+   cstr2 := strzero( val( substr( cstring, 13, 5 ) ), 5 )
+   acod1 := IBMCodBar( codeEAN13( cstr1 ), 38, 1 )
+   acod2 := IBMCodBar( codeEAN5( cstr2 ), 38, 1 )
+
+   SET PRINT ON
+   SET DEVICE TO PRINT
+   SET CONSOLE OFF
+
+   devout( chr( 27 ) + "1" )
+   @prow() + 2, 10 SAY acod1[2] + padc( cstr2, acod2[1] )
+   @prow() + 1, 10 SAY acod1[2] + acod2[2]
+   @prow() + 1, 10 SAY acod1[2] + acod2[2]
+   devout( chr( 27 ) + "2" )
+   devout( chr( 27 ) + "g" )
+   @prow() + 1, 14 SAY left( cstr1, 1 ) +;
+                       padc( substr( cstr1, 2, 6 ) + " " + ;
+                             substr( cstr1, 8, 5 ) + ;
+                             str( 10 - val( mod10( cstr1 ) ), 1 ),;
+                             acod1[1] * 1.5 )
+   devout( chr( 27 ) + "!" + chr( 0 ) )
+
+   SET PRINT OFF
+   SET DEVICE TO SCREEN
+   SET CONSOLE ON
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CODEMSI              MSI
+'------------------------------------------------------------------------------
+^bcodeMSI(c<string_of_numbers>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to be converted to MSI.
+
+^bReturns:^b
+    A preprocessed string in  MSI.
+
+^bAdditional information:^b
+The MSI type can only code digits. It can contains one or two check digits
+in the end of the code, one MOD-10, two MOD-10, or one MOD-10 and one MOD-11.
+This code is so simple that it's dangerous not to put those check digits.
+!seealso: "GENERATING" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: PRINTING PREPROCESSED CODES :
+'------------------------------------------------------------------------------
+^bPREPROCESSED CODES PRINTING:^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+As we can read in the GENERATING chapter, to compose the code is not
+the only thing to do, you have to print it.  They are several ways to
+print graphics on printers, but they are two ways that can be called
+"standard", the EPSON/IBM way, and the HP way.  That is the reason
+I've programmed those two methods, wich should be enough for 99% of
+the printers.  Anyway, I've coded an ASCII way wich uses extended
+characters (<Û> < İ> <Ş> < >), just in case your printer don't work
+with the two other modes.
+
+I've extended the EPSON/IBM functions with some accelerated versions
+to print lines on the printer without to force it to make to passes.
+!seealso: "GENERATING" "FUNCTIONS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: IBMCODBAR            For EPSON/IBM PROPRINTER compatible printers.
+'------------------------------------------------------------------------------
+^bIBMCodBar(c<cd>,n<md>,n<mul>,n<p>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<cd>
+    Preprocesed CODExxx string.
+<md>
+    Printing mode, depends on the number of needles.
+   ÚÄÄÄÄÄÄÄÄ¿                      ÚÄÄÄÄÄÄÄÄÄ¿
+   ³8needles³                      ³24needles³
+   ÃÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄ¿ÃÄÄÄÄÄÄÄÄÂÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄ¿
+   ³modo    ³ densidad       ³ ppi³³modo    ³ densidad       ³ ppi³
+   ÃÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄ´ÃÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄ´
+   ³   0    ³ sencilla       ³  60³³  32    ³ sencilla       ³  60³
+   ³   1    ³ doble          ³ 120³³  33    ³ doble          ³ 120³
+   ³   2    ³ doble alta vel.³ 120³³  38    ³ CRT II         ³  90³
+   ³   3    ³ Cuadruple      ³ 240³³  39    ³ triple         ³ 180³
+   ³   4    ³ CRT            ³  80³³  40    ³ alta           ³ 360³
+   ³   5    ³ CRT ¨?         ³  72³ÀÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÙ
+   ³   6    ³ CRT I          ³  90³
+   ³   7    ³ CRT ¨?         ³ 144³
+   ÀÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÙ
+<mul>
+    Maginification factor, the code will be printed <mul> times bigger
+    than the factor of the printing mode.
+<p>
+    Pitch. Characters per inch used for calculating the width in
+    characters of the code. Default is 10.
+
+^bReturns:^b An Array of two elements.
+    The first element is the length of the printed code, calculated
+    for the pitch <p>. The second element is the string to be sended
+    to the printer to make the code.
+
+^bAdditional information:^b
+This function will work for most of the needles printers. It's
+important to say that if you want a bigger code than a single line
+you'll have to change distance between lines to make the codes touch
+themselves. The way to change interlining spaces may change from one
+printer to another. In NECS printers you have to use 8 lines per inch
+(send ESC 0 to the printer, and ESC 2 to restaure original state), but
+in other printers 7/72 lpi should work fine (ESC 1).
+
+^bExample:^b
+
+PROCEDURE main()
+
+   local cstring := "", acod
+
+   CLS
+
+   ACCEPT "Introduce the string : " TO cstring
+
+   SET PRINT ON
+   SET DEVICE TO PRINT
+   SET CONSOLE OFF
+
+   acod := IBMCodBar( code39( cstring ), 38, 2 )
+
+   devout( chr( 27 ) + "1" )
+
+   @prow() + 1, 10 say acod[2]
+   @prow() + 1, 10 say acod[2]
+   @prow() + 1, 10 say acod[2]
+   @prow() + 1, 10 say padc( "*" + cstring + "*", acod[1] )
+
+   devout( chr( 27 ) + "2" )
+
+   SET PRINT OFF
+   SET DEVICE TO SCREEN
+   SET CONSOLE ON
+
+RETURN
+!seealso: "PRINTING" "CHRCODBAR" "HPCODBAR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: HPCODBAR             For HP compatible printers.
+'------------------------------------------------------------------------------
+^bHPCodBar(c<cd>,n<de>,n<mul>,n<p>,l<cmp>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<cd>
+    Preprocesed CODExxx string.
+<de>
+    Printing density, allowed densities depends on the printer, but
+    75, 100, 150 and 300 should work fine.
+<mul>
+    Maginification factor, the code will be printed <mul> times bigger
+    than the factor of the printing mode.
+<p>
+    Pitch. Characters per inch used for calculating the width in
+    characters of the code. Default is 10.
+<cmp>
+    Data compression. Default value is .T.. wich compressed graphics
+    in order to faster the printing. Some printers don't have
+    compression mode, if you experience problems try to turn it off.
+
+^bReturns:^b An Array of two elements.
+    The first element is the length of the printed code, calculated
+    for the pitch <p>. The second element is the string to be sended
+    to the printer to make the code.
+!seealso: "PRINTING" "CHRCODBAR" "IBMCODBAR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHRCODBAR            Any ASCII printer.
+'------------------------------------------------------------------------------
+^bCHRCodBar(c<pcodigo>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+^bParameter:^b
+<pcodigo>
+    Preprocesed CODExxx string.
+
+^bReturns:^b An Array of two elements.
+    The first element is the length of the printed code, calculated
+    for the pitch <p>. The second element is the string to be sended
+    to the printer to make the code.
+
+^bAdditional information:^b
+This function uses graphic characters to print codes, wich allows you
+to print them in almost any printer at a great speed.  The size of the
+resulting codes are a bit bigger than wanted even with 20 cpi, but
+they can be used even in text files, emails, etc... By example, if you
+print the following code, you should be able to read MINGO with your
+reading device.
+
+             İŞŞİÛŞŞİÛŞŞ İİÛŞ ÛŞŞŞŞİİŞİİİİŞİÛŞİİÛŞ İİŞŞİÛŞ
+                             * M I N G O *
+!seealso: "PRINTING" "HPCODBAR" "IBMCODBAR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IBMBOX               Makes fast boxes in IBM/EPSON mode
+'------------------------------------------------------------------------------
+^bIBMBox(n<side>,n<mode>,n<pitch>)^B
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<side>
+    A number wich indicates wich side of the box we want to print. The
+    numeration is the same that in Clipper :
+
+                            ÚÄ¿³ÙÄÀ³
+                            123456789
+
+<mode>
+    A valid EPSON/IBM printing mode, default is 2.
+<pitch>
+    Characters per inch, default is 10.
+
+^bReturns:^b A string.
+    Sending the string to the printer will print the desired figure.
+
+^bAdditional information:^b
+    IBMBOX is the simple function wich allows to avoid graphic
+    characters wich are, normally, slowers than normal ones. This is
+    because graphics characters needs two passes, and IBMBOX only one
+    in simple modes. Quality is pouer, but sometimes it's better some
+    more speed.
+
+^bExample:^b
+
+PROCEDURE MAIN()
+
+   LOCAL i
+
+   SET DEVICE TO PRINT
+   SET PRINT ON
+   SET CONSOLE OFF
+
+   /* We activate 8 lines per inch.
+      Some printers need ESC 1 instead of ESC 0. */
+
+   ? chr(27) + "0"
+
+   ? ibmbox( 1 ) + repli( ibmbox( 2 ), 10 ) + ibmbox( 3 )
+   for i := 1 to 8
+      ? ibmbox( 4 ) + space( 10 ) + ibmbox( 8 )
+   next
+   ? ibmbox( 7 ) + repli( ibmbox( 6 ), 10 ) + ibmbox( 5 )
+
+   ? chr(27) + "2"
+
+   SET DEVICE TO SCREEN
+   SET PRINT OFF
+   SET CONSOLE ON
+
+RETURN
+!seealso: "PRINTING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IBMLINE              Makes fast lines in IBM/EPSON mode
+'------------------------------------------------------------------------------
+^bIBMLine(n<length>,n<mode>,n<pitch>)^B
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<length>
+    Length of the line to be printed.
+<mode>
+    A valid EPSON/IBM printing mode, default is 2.
+<pitch>
+    Characters per inch, default is 10.
+
+^bReturns:^b A string.
+    Sending the string to the printer will print the desired figure.
+!seealso: "PRINTING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IBMDOTPERI           Shows DPI in EPSON/IBM mode.
+'------------------------------------------------------------------------------
+^bIBMDotPerI(n<mode>)^B
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<mode>
+    Printing mode.
+
+^bReturns:^b A number.
+Returns the dots per inch of the corresponding mode.
+!seealso: "PRINTING" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: FUNCTIONS :
+'------------------------------------------------------------------------------
+^bFUNCTIONS^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+They are some functions wich are necessary in the making of the
+codebars, those functions have been documented and opened to you just
+in case you need them.
+!seealso: "GENERATING" "PRINTING" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: CHECKSUM                       Returns a type C checksum.
+'------------------------------------------------------------------------------
+^bchecksum(c<string>,c<valido>)^B
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameters:^b
+<string>
+    String to calculate the checksum.
+<valido>
+    A valid character string for the checksum, ordered by values.
+
+^bReturns:^b
+    The checksum character.
+
+^bAdditional information:^b
+This kind of checksum is used in several codebars, like 11 and 93
+ones. For the 11 one, the valid character string is "0123456789-".
+!seealso: "FUNCTIONS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DEC2LEC                        Calculates base n of a number.
+'------------------------------------------------------------------------------
+^bdec2lec(n<n£mero>, c<base>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<number>
+    This is an integer to convert. The range of that number have to
+    be between 0 and 2.147.483.647. Superior values gives absurds
+    returns.
+<base>
+    Base n string.
+
+^bReturns:^b
+    A string in n base.
+
+^bAdditional information:^b
+This function can convert a number to almost any base. By example, if
+we want to emulate the STR Clipper function we can do :
+
+    cstr := dec2lec( number, "0123456789" )
+
+Note that to convert a number, to a base 10 string, we use the string
+"0123456789" wich is an ordered string of all the allowed numbers in
+base 10. Other examples are :
+
+   cstr1 := dec2lec( numero, "01" )                 /* Binary  */
+   cstr2 := dec2lec( numero, "0123456789ABCDEF" )   /* Hexa.   */
+   cstr3 := dec2lec( numero, "01234567" )           /* Octal   */
+   cstr4 := dec2lec( numero, "aAbBcCdD" )           /* Encypt  */
+
+This function can be very usefull in compression and encripting cases.
+You can compress using very big bases (by example all the numbers and
+all the letters), wich will return small strings expressing big
+numbers. And you can encrypt using coded strings.
+cadenas codificadas.
+!seealso: "FUNCTIONS" "DEC2LEC" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INT2BIN                        Convert an integer to binary.
+'------------------------------------------------------------------------------
+^bint2bin(n<integer>,n<len>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<integer>
+    Number to convert to binary.
+<len>
+    Length of the returned string.
+
+^bReturns:^b
+    A "01010" string.
+
+^bAdditional information:^b
+The result of this function can be obtained with DEC2LEC, however this
+one is faster.
+!seealso: "FUNCTIONS" "DEC2LEC" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INVERSE                        Invert a string.
+'------------------------------------------------------------------------------
+^binverse(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to inverse.
+
+^bReturns:^b
+    Inverted string.
+!seealso: "FUNCTIONS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LEC2DEC                        Convert a base-n string to a number.
+'------------------------------------------------------------------------------
+^blec2dec(c<string>, c<base>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    A number in base-n string.
+<base>
+    Base n string.
+
+^bReturns:^b
+    Number convertion.
+
+^bAdditional information:^b
+This is the inverse function of DEC2LEC, be sure to understand DEC2LEC
+before to proceed.
+!seealso: "FUNCTIONS" "DEC2LEC" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MOD10                          Returns a mod-10 Check Digit
+'------------------------------------------------------------------------------
+^bmod10(c<string>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<string>
+    String to calculate the mod 10.
+
+^bReturns:^b
+    A MOD-10 check digit.
+!seealso: "FUNCTIONS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REGNOM                         Returns the registered name.
+'------------------------------------------------------------------------------
+^bregNom()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bReturns:^b
+    A string. The shareware version returns "VERSION NO REGISTRADA",
+    and in the registered one it returns the name of the person wich
+    registered the product.
+!seealso: "FUNCTIONS" "REGVER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REGVER                         Returns library version.
+'------------------------------------------------------------------------------
+^bregVer()^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bReturns:^b
+    A string with the version of the library.
+!seealso: "FUNCTIONS" "REGNOM" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STRINT                         Converts an integer to string.
+'------------------------------------------------------------------------------
+^bstrInt(n<num>)^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^bParameter:^b
+<num>
+    Number to convert.
+
+^bReturns:^b
+    String
+
+^bAdditional information:^b
+This function returns the same result than ALLTRIM( STR( <NUMBER> ) ),
+with the difference that it is very faster.
+!seealso: "FUNCTIONS" "DEC2LEC" 
+'------------------------------------------------------------------------------
+
+
+

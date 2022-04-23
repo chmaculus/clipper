@@ -1,0 +1,518 @@
+!short:   Chapter 8: DBPX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 8: DBPX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBPX is the Paradox 3.5 compatible RDD for CA-Clipper.  It connects to
+     the low-level database management subsystem in the CA-Clipper
+     architecture.  When you use the DBPX RDD, you add a number or features,
+     including the ability to:
+
+     ^b^CFE^b  Create access to and modify Paradox tables, records, and
+        fields
+
+     ^b^CFE^b  Create, select, and activate secondary indexes on Paradox
+        tables
+
+     ^b^CFE^b  Create and modify Paradox table structures, including primary
+        index fields
+
+     ^b^CFE^b  Use explicit record and file locks with concurrent execution
+        of other CA-Clipper applications
+
+     ^b^CFE^b  Import Paradox tables directly into CA-Clipper  arrays
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short:      In This Chapter
+'------------------------------------------------------------------------------
+ ^bIn This Chapter^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This chapter explains how to install DBPX and how to use it in your
+     applications.  The following major topics are discussed:
+
+     ^b^CFE^b  Overview of the DBPX RDD
+
+     ^b^CFE^b  Installing DBPX Driver Files
+
+     ^b^CFE^b  Linking the DBPX Driver
+
+     ^b^CFE^b  Using the DBPX Driver
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Overview of the DBPX RDD
+'------------------------------------------------------------------------------
+ ^bOverview of the DBPX RDD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBPX driver lets you create and maintain (.db), (.px), (.x??), and
+     (.y??) files with features different from those supplied with the
+     original DBFNTX driver and compatible with files created under Paradox
+     3.5. The new features are supplied in the form of several syntactical
+     additions to database and indexing commands and functions.  Specifically
+     you can:
+
+     ^b^CFE^b  Create tables that recognize the standard CA-Clipper data
+        types as well as Currency ($) and Short (S) numbers between -32,767
+        to +32,767
+
+     ^b^CFE^b  Create equally efficient keyed and unkeyed tables
+
+     ^b^CFE^b  Create, select, and activate secondary indexes on Paradox
+        tables
+
+     The DBPX driver provides simple, seamless access to the Paradox database
+     system.  The CA-Clipper application programmer who intends to access
+     Paradox tables with the "VIA" clause need only include the RDD header
+     file at compile time and make the appropriate libraries available at
+     link time.
+
+     Paradox stores data in tables (known to Xbase developers as data files
+     (.db)'s), consisting of fields and records.  Unlike Xbase databases, a
+     Paradox database refers to a group of files that are related to each
+     other in some way, rather than to one file.
+
+     Also, Paradox employs the concept of companion files, known as objects,
+     that are related to the table.  Some examples of object files are report
+     forms, indexes, and data entry forms.  A table and its accompanying
+     objects are referred to as a family.
+
+     It is easy to identify objects belonging to a particular family since
+     they all have the same base filename and are distinguished by their
+     extensions as shown in the table below.
+
+     ^bParadox File Descriptions^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bExtension      Object^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     .DB            Table
+     .PX            Primary Index
+     .X?? or Y??    Secondary Index
+     .F or F??      Data Entry Forms
+     .R or R??      Report Formats
+     .G or G??      Graph Specifications
+     .SET           Image Settings
+     .VAL           Field Validity Specifications
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBPX driver only deals with the table and index files (.db, .px,
+     .x?? and y??) so only these files are discussed here.
+
+     Though Paradox tables are limited to 8 character filenames, each table
+     can contain an unlimited number of records in files up to 256M in size.
+     Paradox records in nonkeyed tables can be up to 4000 bytes each while
+     keyed tables have a 1350 byte limitation.  Each record can contain up to
+     255 fields of up to 255 characters each.
+
+     There are some field naming restrictions you must observe.  Field names
+     may:
+
+     ^b^CFE^b  Although the Paradox file structure allows fields to be up to
+        25 characters long, since CA-Clipper symbols can only be 10
+        characters, DBPX truncates the field name to 10 characters.
+
+     ^b^CFE^b  The Paradox file structure allows embedded spaces in field
+        names.  Since this is illegal in CA-Clipper, the DBPX driver converts
+        spaces into underscores (_).
+
+     ^b^CFE^b  Not be duplicated in the same table.
+
+     Also, most Paradox data types directly match data types in standard
+     Xbase data files, with these differences:
+
+     ^b^CFE^b  Paradox tables support both the Numeric (N) data type as well
+        as a more specific Currency ($) data type.  Both the N and $ data
+        types can have 15 significant digits.  Numeric types that exceed this
+        length are rounded and stored as scientific notation.  Also, DBPX
+        supports the Short (S) data type to represent numbers between -32,767
+        and +32,767.
+
+     ^b^CFE^b  The Alphanumeric field type allows all ASCII characters except
+        embedded nulls (ASCII 0).  The Alphanumeric type is identical to the
+        Character (C) data type in Xbase.  Paradox limits this field type to
+        255 characters.
+
+     ^b^CFE^b  Paradox also supports a Date (D) field type, stored as a long
+        integer.  It can contain any value between January 1, 100 A.D. and
+        December 31, 9999.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Installing DBPX Driver Files
+'------------------------------------------------------------------------------
+ ^bInstalling DBPX Driver Files^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBPX RDD is supplied as the file, DBPX.LIB:
+
+     The CA-Clipper installation program installs this driver in the
+     \CLIPPER5\LIB subdirectory on the drive that you specify, so you need
+     not install the driver manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Linking the DBPX Database Driver
+'------------------------------------------------------------------------------
+ ^bLinking the DBPX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To link the DBPX driver, you must specify DBPX.LIB to the linker along
+     with your application object (.OBJ) modules.
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> ,,,DBPX
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList> LIB DBPX
+
+     ^bNote: ^b These link commands all assume the LIB, OBJ, and PLL
+     environment variables are set to the standard locations.  They also
+     assume that the CA-Clipper programs were compiled without the /R option.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Using the DBPX Database Driver
+'------------------------------------------------------------------------------
+ ^bUsing the DBPX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To use Paradox files in a CA-Clipper  program:
+
+     1. Place REQUEST DBPX at the top of each program file (.prg) that opens
+        a database file using the DBPX driver.
+
+     2. Specify the VIA "DBPX" clause if you open the database file with the
+        USE command.
+
+        -OR-
+
+     3. Specify "DBPX" for the <cDriver> argument if you open the database
+        file with the DBUSEAREA() function.
+
+        -OR-
+
+     4. Use RDDSETDEFAULT( "DBPX" ) to set the default driver to DBPX.
+
+        Except in the case of REQUEST, the RDD name must be a literal
+        character string or a variable.  In all cases it is important that
+        the driver name be spelled correctly using uppercase letters.
+
+     The following program fragments illustrate:
+
+     REQUEST DBPX
+     .
+     .
+     .
+     USE Customers INDEX Name, Address NEW VIA "DBPX"
+
+     -OR-
+
+     REQUEST DBPX
+     RDDSETDEFAULT( "DBPX" ).
+     .
+     .
+     .
+     USE Customers INDEX Name, Address NEW
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Index Management
+'------------------------------------------------------------------------------
+ ^bIndex Management^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The greatest variation from the standard Xbase database design in
+     Paradox tables is index management.  As in other systems, Paradox
+     indexes are an efficient method of dynamically sorting or locating
+     specific data within a table without forcing a search of all data in
+     that table.  Paradox tables take two forms: unkeyed and keyed.
+
+     An unkeyed table has no fields in its structure that have been
+     identified as specific index keys.  Therefore, records are maintained in
+     natural order.  New records are added to the end of an existing table,
+     and the unique identity for each record is a record number.
+
+     Unlike Xbase data files, unkeyed tables are not more efficient in design
+     or faster to traverse than keyed tables.  This is because Paradox tables
+     are built as linked lists rather than fixed-length, sequential tables.
+     Therefore, it is actually less efficient to SKIP through a unkeyed table
+     than it is through a keyed table.
+
+     A keyed table, on the other hand, can be lightning fast as long as the
+     data you seek is part of the key.  Otherwise, just as in an unkeyed
+     table, you are forced to do a sequential search through the table's data
+     fields.
+
+     Paradox tables support two types of keys or indexes.
+
+     ^b^CFE^b  Primary
+
+     ^b^CFE^b  Secondary
+
+ ^bPrimary Indexes^b
+
+     Primary indexes are directly tied to keyed tables because a primary
+     index indicates the table is keyed.  Simply, it is impossible to have a
+     keyed table without a primary index.  If you remove the primary index
+     from a keyed table it becomes an unkeyed table.
+
+     When you identify one or more of the table's fields as a key field (by
+     placing an asterisk (*) at the end of the field name) during table
+     creation/restructuring, these fields are used to create a primary index.
+     (Note that all key fields must be together as the first fields in a
+     table).  This invisibly rebuilds the table's structure, though in
+     operation it only seems to change or create the key index.
+
+     Once you identify this primary key, the table is automatically
+     maintained in the key field order and all new records are checked to
+     make sure that no duplicate keys are added to the table.  This type of
+     index is called a unique key index.  You may have only one primary key
+     per table, but this key can be a composite of many fields in the table.
+     You may only modify by restructuring the table.
+
+     If it is necessary to change a primary key and restructure a table, all
+     data in the table will still be bound to the unique key restriction.
+     This is important if you change the primary key by adding a new field to
+     it and there is already data in the table where this new composite key
+     would have duplicates.
+
+     DBPX handles this situation by generating a runtime error and removing
+     every record that violates this unique key and moving it to another
+     table named KEYVIOL.db which has the identical structure of the
+     offending table.
+
+     The KEYVIOL.db is automatically generated whenever this situation
+     occurs.  If there is already a KEYVIOL table, it is overwritten.
+     Because of this you should always check for the existence of a
+     KEYVIOL.db table immediately after any type of table restructuring.
+
+ ^bSecondary Indexes^b
+
+     Secondary indexes are more like common Xbase-type indexes because they
+     can be generated or modified on the fly without having any effect on the
+     data or table structure and aren't restricted to unique key data.
+
+     Unlike Xbase indexes, secondary indexes can only contain a single field
+     as their key.  As mentioned earlier, primary indexes are automatically
+     maintained so that they are always up to date.  Secondary indexes are
+     created in two different types.
+
+     ^b^CFE^b  Incremental (for keyed tables)
+
+     ^b^CFE^b  Independent (for unkeyed tables)
+
+     Independent indexes are created only for unkeyed tables and are not
+     dynamically maintained in any way.  Because of this they can only be
+     considered accurate at the time of their creation.  If data changes
+     inside the table that affects the index, the index must be completely
+     regenerated before it can be considered useful again.
+
+     Alternately, incremental indexes are created only for keyed tables and
+     are automatically maintained similarly to primary indexes except that
+     instead of a complete rebuild at every change, only the portion of the
+     index affected is updated.  Incremental indexes are preferable when you
+     are handling large tables since they take considerably less time and
+     energy to keep accurate.
+
+ ^bTemporary Indexes^b
+
+     ALL, NEXT, RECORD, and REST are all supported in the scoping
+     expressions. The syntax of these keywords is identical to that used in
+     CA-Clipper.  Note that you can only use one scope keyword at a time.  If
+     more than one of these keywords is encountered in a scoping expression,
+     then the last keyword in the expression is the option used.
+
+     The ALL keyword (default) specifies that all records in the table should
+     be included in the operation, starting at the first record.
+
+     NEXT processes the specified number of records, starting with the
+     current record.  For example, NEXT 5 would process the current record
+     and the four records following it.
+
+     The RECORD keyword identifies a specific record to process.  The desired
+     record number should follow the keyword RECORD.  To process record
+     number 3, you would include "RECORD 3" in the expression.
+
+     The REST keyword causes processing to begin with the current record,
+     instead of starting at the beginning of the table.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Sorting
+'------------------------------------------------------------------------------
+ ^bSorting^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In the event that you want to reorder a table based on field data but
+     don't need or want to have an index attached to it, you have the option
+     of sorting the table based on the current index.  This entails a simple
+     copy from a keyed table to an unkeyed table using the table sort
+     function.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Passwords and Security
+'------------------------------------------------------------------------------
+ ^bPasswords and Security^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Although the Paradox DBMS cannot be considered a data dictionary system,
+     it does have some special characteristics that make it more suitable to
+     networks than the standard Xbase tables.  One of these features is the
+     level of security available.
+
+     There are two methods to make sure that your data is secure: master
+     passwords and auxiliary passwords.  As the owner of a table, you can
+     limit access by attaching a master password to it.  Auxiliary passwords
+     can also be identified to establish access to the table and its family.
+
+     Once any type of password is identified for a table, its is encrypted.
+     This protects it not only from unauthorized Paradox users but also from
+     anyone trying to dissect it at the DOS file level.  The encryption
+     method used by Paradox is literally unbreakable and if you (or your
+     users) forget a table password, there is no way to recover that
+     information.
+
+     Auxiliary passwords allow access control at the table and field levels.
+     Access to tables can be restricted to:
+
+     ^b^CFE^b  ReadOnly:  No changes to the table can be made
+
+     ^b^CFE^b  Update:  Changes to nonkey fields are allowed, no records can
+        be added or deleted
+
+     ^b^CFE^b  Entry:  Same as update except that new records can be added
+
+     ^b^CFE^b  InsertDelete:  Same as Entry except that records can be
+        inserted and deleted
+
+     ^b^CFE^b  All:  Full access including restructuring and table deletion
+
+     Access to the fields can be identified as:
+
+     ^b^CFE^b  None:  This field data cannot be displayed to the user
+
+     ^b^CFE^b  ReadOnly:  User can see the field value, but cannot change it
+
+     ^b^CFE^b  All:  Full access
+
+     With DBPX, you may perform basic database operations on Paradox tables
+     without code changes.
+
+     Note that because Paradox tables can have primary indexes which are
+     actually part of the table structure specification, when you open a
+     Paradox table, its associated primary index (if applicable) is also
+     opened and activated.  The only exception to this rule is if you
+     indicate that you want a secondary index to be activated at the time you
+     open the table.  If no primary index is available and no secondary index
+     is specified, the table is opened in natural sequence order.
+
+     You can have up to twenty-four Paradox tables open simultaneously.
+     These may be separate tables or the same table repeatedly or any
+     variation in between.  This might be important if you want to have more
+     than one secondary index active for a single table, allowing you to move
+     from one work area to another with the only change being the index order
+     of the data in the table.  Be careful with this type of multiviewed
+     approach, however, since you will be eating up memory for each work
+     area, despite the fact that they refer to the same table.
+
+ ^bSharing Data in Networks^b
+
+     The DBPX driver supports the native CA-Clipper  single-lock locking
+     scheme.  Therefore, in a shared environment, your application and
+     Paradox will not see each other's record locks.  This may result in some
+     concurrency corruption and errors.
+
+     In a shared environment, DBPX performs no record buffering; immediately
+     writing all changes to disk.
+
+     Concurrency is an issue whenever your application is running either on a
+     network or in some other shared environment.  One example of a non-
+     network shared environment is when your application is called from
+     another program (like Paradox, Quatro Pro, etc.) that also has access to
+     the Paradox tables.  Even if you don't have any plans to use your
+     program on a network, you should design it to be smart enough not to
+     become a problem if faced with this type of shared example.
+
+     Also be aware that many networks have different rights and privilege
+     restrictions and you should know what they are and how to handle them.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Using (.px) and (.ntx) Files Concurrently
+'------------------------------------------------------------------------------
+ ^bUsing (.px) and (.ntx) Files Concurrently^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You can use both (.px), as well as (.x), (.y) and (.ntx) files
+     concurrently in a CA-Clipper program like this:
+
+     REQUEST DBPX
+
+     // (.ntx) file using default DBFNTX driver
+     USE File1 INDEX File1 NEW
+
+     // (.idx) files using DBPX driver
+     USE File2 VIA "DBPX" INDEX File2 NEW
+
+     Note, however, that you cannot use (.px) and (.ntx) files in the same
+     work area.  For example, the following does not work:
+
+     USE File1 VIA "DBFNTX" INDEX File1.ntx, File2.px
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Summary
+'------------------------------------------------------------------------------
+ ^bSummary^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In this chapter, you were given an overview of the features and benefits
+     of the DBPX RDD.  You also learned how to link this driver and how to
+     use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

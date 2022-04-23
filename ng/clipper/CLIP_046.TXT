@@ -1,0 +1,82 @@
+'------------------------------------------------------------------------------
+^BSET COLOR^B
+
+    SET COLOR allows the selection of colors for use on color monitors, or
+    screen attributes for use on monochrome monitors.
+
+^USyntax^U
+
+    SET COLOR TO [<standard> [,<enhanced>] [,<border>] [,<background>]
+    [<unselected>]}/(<expC>)
+
+^UOptions^U
+
+    ^BStandard/Enhanced^B: The "standard" and "enhanced" displays are color
+    pairs with a foreground and an optional background color.  "Standard"
+    is used by all output, such as @...SAY and ?.  "Enhanced" setting
+    affects only the display of GETs.
+
+    ^BBorder^B: Sets the border color.
+
+    ^BBackground^B: The "background" is not currently supported by any
+    machines for which Nantucket provides drivers.
+
+    ^BAttributes^B: High intensity and blinking are the attributes of
+    colors.  High intensity is denoted by "+" and blinking with "*".  Each
+    attribute specified is applied to the foreground color no matter where
+    it occurs in the setting definition.
+
+    SET COLOR TO with no argument restores the default values which are:
+    W/N,N/W,,,N/W
+
+^UUsage^U
+
+    There are number of colors supported for enhancing screen display.
+    Each color is denoted by a letter or number.  When you specify a color
+    setting, numbers and letters should not be mixed.  When numbers are
+    used, the number to the left of the slash is written to the high order
+    4 bits of the color attribute byte, and the number to the right is
+    written to the low order 4 bits.
+
+    The following table lists the colors available:
+
+         ^UColor              Letter         Number^U
+         BLACK              N              0
+         BLUE               B              1
+         GREEN              G              2
+         CYAN               BG             3
+         RED                R              4
+         MAGENTA            RB             5
+         BROWN              GR             6
+         WHITE              W              7
+         GREY               N+
+         YELLOW             GR+
+         BLANK              X
+         Underline          U
+         Inverse Video      I
+
+    On monochrome monitors, color is not supported.  Clipper, however,
+    supports the monochrome attributes reverse video (I) and underlining
+    (U).
+
+
+    ^BNote^B: SET COLOR TO using numbers is not supported if you link
+    ANSI.OBJ.
+
+    ^BColor variables^B: To make managing color easier, consider the
+    assignment of colors to memory variables.  This will allow you to
+    centralize the assignment of colors and implementation of runtime color
+    configuration for users.
+
+    To set each color configuration, assign the complete SET COLOR argument
+    as a character string to a single memory variable.  Then use macro
+    substitution or bound the color variable when you SET COLOR.
+
+    Use the ISCOLOR() function to set up different color configurations for
+    color and monochrome monitors.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

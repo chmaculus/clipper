@@ -1,0 +1,50 @@
+'------------------------------------------------------------------------------
+
+
+ ^bChanging SuperLib
+
+ If you wish to change the source code to certain
+ SUPER.Lib modules and replace them in the SUPER.LIB file,
+ you will need access to a library manager.
+
+ The most popular and accessible is LIB.EXE, from
+ Microsoft, which comes with many Microsoft compilers.
+ You will need version 3.11 or above of LIB.EXE.
+
+ To update the library, do the following:
+
+   1. Change and test the .PRG, .C  or .ASM module.
+
+      for Clipper (PRG) modules, I use:
+
+          ^bCLIPPER <file>  -n  -w
+
+      for  C  (C) modules, I use:  (MSC 5.0)
+
+          ^bCL /c  /AL  /Zl  /Oalt /FPa  /Gs  /Fo<file>.obj <file>.c
+
+      for Assembly (ASM) modules, I use: (MASM 5.10)
+
+          ^bMASM   <file>;
+
+
+
+   2. After testing, use the following to replace the module in
+      the library with the new .OBJ file:
+
+            ^bLIB SUP??? -+<objectfilename> ;
+
+              or
+
+            ^bLIB SUP???  -+<objectfilename1>+<objectfilename2>;
+
+ The semicolon is important.
+
+
+ Further documentation will be found in the LIB.EXE
+ reference manual.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

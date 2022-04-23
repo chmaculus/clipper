@@ -1,0 +1,444 @@
+!short: Overview
+'------------------------------------------------------------------------------
+
+                      ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                      ³      ^uMulti-User^u        ³Û
+                      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
+                        ßßßßßßßßßßßßßßßßßßßßßßßßß
+
+    It is time consuming to write and test a multi-user program. Now,
+    you can save some time by using Casual-Kit.
+
+    ^BCasual-Kit has a powerful function that automatically upgrades your
+    ^Bprogram to multi-user program. The outcome is similar to manual-upgrade.
+
+    Casual-Kit can make efficient multi-user programs if the single-user
+    program is written in the style of multi-user.
+
+    ^BThis function is called CK-MU in the following text.
+
+    ^BUsage^B
+
+         clipper <YourPrg> [ Options ] /Uckmu.ch
+
+         rtlink fi <YourObj...> lib ck20
+
+    CK-MU supports all commands/functions in clipper 5.2 except three
+    commands listed below. It also supports all functions provided by
+    Casual-Kit.  ( not support macro program only )
+
+    ^BThe following commands will cause "Lock Required" error in run-time:
+
+      (1)  ^B@ <x> , <y> get <field>^B
+
+         ^uSolution^u   @ <x>, <y> get <memvar>
+                    ......
+                    repl <filed> with <memvar>
+
+      (2)  ^B<alias> -> <filed> := <value>^B
+
+         ^uSolution^u   sele <alias>
+                    repl <field> with <value>
+
+      (3)  ^Breplace <alias> -> <filed> with <value>^B
+        * not supported only while this database is not used in ^Bcurrent area^B.
+
+         ^uSolution^u   sele <alias>
+                    repl <field> with <value>
+
+    If your program has not used the last three commands, CK-MU can
+    upgrade your program directly; otherwise, they must be changed to
+    the equational commands before using CK-MU.
+
+    CK-MU will make the following changes for multi-user :
+
+      always use database in share mode
+      If no operation occurs,database will keep in share mode.
+      lock database while operations occur
+      reopen database exclusive while <Reindex,Pack,Zap>
+!seealso: "Advance" "Suggestion" "How to Use" "Note1" "Note2" "Note3" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Advance of CK-MU
+'------------------------------------------------------------------------------
+
+                        ^UAdvance of CK-MU
+
+    Even though CK-MU can support all commands/functions in clipper
+    and all functions in Casual-Kit as well as upgrading your program
+    effectually,  you may still worry the following areas :
+
+     ^Bþ Can CK-MU be used to optimize uncomplete multi-user program ?
+     ^Bþ Can I use the functions provided in other tools ?
+     ^Bþ Can I lock database manually for safe purpose sometimes ?
+     ^Bþ Can I use database exclusive sometimes ?
+
+     ^BNo Problem ! you can use CK-MU in semi-automatic status.
+
+    ^Bþ In some ways, CK-MU can also be used to optimize the uncomplete
+    ^B  multi-user program or remove the bugs in multi-user program
+    ^B  automatically.
+
+    It is known that CK-MU will lock database while operation required and
+    unlock after operation. Database is kept in share mode if possible. But
+    sometimes, it is not safe enough to multi-user, and so, CK-MU allow you
+    to lock database manually :
+
+    ^B Lock Record or Lock Database
+
+            if rlock()   // or flock()
+               <commands...>
+               dbunlock()
+            endif
+
+        ^BNote: when CK-MU meets rlock()/flock() function, it will do
+        ^B      RLock()/Flock() first and retry while failure.
+        ^B      After success lock database, CK-MU turn to manual status
+        ^B      until dbunlock() is used to reactivate CK-MU.
+
+    ^B Use Database Exclusive.
+
+        As CK-MU always uses database in share mode, you can't simply
+        use the command  < USE .... EXCLUSIVE > to use database
+        exclusively. The program must be written likes this:
+
+            mu_dbusearea(<new>,<drive>,<dbf>,<alias>,.f.,<readonly>)
+            <commands...>
+            ......
+            close
+
+            // parameters of mu_dbusearea() is same as dbusearea()
+
+    ^B File functions provided by other tools.
+
+        You must make sure that the file operations provided by other tools
+        will not cause conflict to multi-user, because CK-MU can't detect
+        the file-conflict caused by other tools.
+        please see < Note3 - File Redirection > for more information.
+!seealso: "Overview" "Suggestion" "How to Use" "Note1" "Note2" "Note3" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Suggestion
+'------------------------------------------------------------------------------
+
+
+                         ^uSuggestions of Multi-Usr^u
+
+    ^BThe coding style is different between single-user program and
+    ^Bmulti-user's.  Casual-Kit cannot change program style, so there
+    ^Bare some problems if your programs are written in the style of
+    ^Bsingle-user.
+
+    For example :
+
+    (1)  We tend to use database in init-section of single-user program,
+         but for multi-user programing, the database is often used while
+         operations occur, and it will be closed when it is not needed.
+         In this case, database is held (used in share)  while the program is
+         running. This means that other users can't do <reindex> <pack> <zap>
+         if needed.  It is not effective programing for multi-user but
+         the problem is not serious.
+
+    (2)  Some programmers  like to do <pack> <reindex> frequently in
+         sigle-user program, but in multi-user program, these operations
+         can hardly be done because they require the exclusive use of
+         database.
+
+         It is serious if your program is written in this style because these
+         operations will fail while other users are using the same database.
+
+    It is suggested that you should write single-user program in multi-user
+    style. That is :
+
+    ^B close database when it is not needed
+    ^B avoid using database or file in exclusive
+!seealso: "Overview" "Advance" "How to Use" "Note1" "Note2" "Note3" 
+'------------------------------------------------------------------------------
+
+
+
+!short: How to Use CK-MU
+'------------------------------------------------------------------------------
+
+
+                        ^uHow to Use CK-MU^u
+
+    ^bCasual-Kit can upgrade single-user program to multi-user program
+    ^Bautomatically. This function is usually called CK-MU.
+
+    From single-user environment to multi-user environment, there are
+    several problems to be faced :
+
+    ^B Conflict Operation
+
+      Because of multi-user, each user must be sure that there is no
+      conflict with other users. They must hold the right of database
+      while updated database.
+      Because of multi-user, database must be opened in share mode, and
+      each user must not hold database for a long time.
+
+      CK-MU can solve these problems automatically, you needn't care
+      anything about it.
+
+    ^B Index
+
+      Sometimes, it will cause corruption if index hasn't been updated
+      while database is refreshed. This case usually happens when you
+      haven't opened all index files while opening a database.
+      No matter whether it is a single user program or a multi-user program,
+      it is a good habit to open all index files while a database is being
+      used.
+      A standard function -- STDUSE() is written for this purpose.  Please
+      refer to <Standard Function> to get more information.
+
+    ^B Unknow What Operations Occur.
+
+      When we write a single-user program, we know everything about what
+      operations have occured.
+      But in multi-user environment,we cannot be sure who makes what operations.
+      Each operation can be made by all users and each user knows few things
+      about other users.
+
+      This case usually causes bugs. CK-MU cannot know who does what operations,
+      but there are some suggestions to correct the problem:
+
+          þ Do not assume that database will not be changed  if "I" haven't
+            updated it. Database can be changed by other users without any
+            information, so you must refresh screen as soon as possible,
+            and do some checking before an operation.
+
+          þ Notice the operations which are "dangerous" to other users.
+            For example, <delete records> <appe from> <pack> <zap>.
+
+      You needn't worry too much about this case. Keep in mind that database
+      can be changed by other users and pay more attention to <delete records>
+      can avoid most bugs in multi-user environment.
+
+      ^BAfter acknowledging the problems in multi-user environment and
+      ^Bwhat CK-MU can do and cannot do, we can use CK-MU to make effective
+      ^Bprograms of multi-user.
+
+      Before upgrading a single-user program, we must make sure that you:
+
+      ^Bþ haven't broken the three rules of CK-MU  (refer to Overview)
+
+      ^Bþ haven't used the functions provided by other tools which require
+      ^B  locking the database or which may cause file-conflict.
+      ^B  (refer to Advance Section)
+
+      ^Bþ haven't used <reindex> <pack> frequently (refer to Suggestion)
+
+      ^Bþ have paid attention to <delete records> operation (refer last section)
+
+      We can use CK-MU in the following cases :
+
+      ^B Upgrade (old) program automatically
+
+        If your program is a "good" program for CK-MU, you can upgrade it
+        without any modification in source code.
+
+        Translate it into a "good" program of CK-MU if there is some conflict
+        with CK-MU rules, and then upgrade it to multi-user program.
+
+      ^B Upgrade (old) program semi-automatically
+
+        If you want to use functions provided by other tools, and they
+        require locking database or cause conflict in files, you can also
+        use CK-MU in semi-automatic status.
+
+      ^B Optimize or debug multi-user programs automatically
+
+        CK-MU can work with rlock(),flock() in program. In some way,
+        CK-MU can also be used to optimize the uncompleted multi-user
+        program or remove the bugs in multi-user program automatically.
+
+      ^B Write (new) programs under CK-MU rules
+
+        It is suggested that you should write single-user program under
+        CK-MU rules and pay some attention to multi-user environment.
+        you can create effective programs of both single-user and multi-user.
+
+      ^B Warnning 
+
+        Do not expect CK-MU to do everything for multi-user, CK-MU
+        cannot make effective program if your program is written in
+        heavy style of single user. ( refer to suggestion )
+!seealso: "Overview" "Advance" "Suggestion" "Note1" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Note1 --- Memvar
+'------------------------------------------------------------------------------
+
+
+                           ^uNote1 --- MemVar^u
+
+    When you use Casual-Kit to make multi-user programs, some public
+    variables will be declared by CK-MU automatically. It is dangerous
+    if you release them. So some commands about MemVar are re-defined.
+
+       clear memory          =>   release all
+       restore from <file>   =>   restore from <file> addi
+
+    All Variables of CK-MU are named beginning with ^B<_mu>^B.
+    Some variables are open to users, and they can be redefined by adding
+    the following commands on the first section of your program.
+
+          ^B mu_initvar()                // init system var. first
+          ^B <sysvar> := <your define>
+          ^B ......
+
+
+    ^UThese variables listed below can be re-defined :
+
+     ^B_muDirAble  := .t.
+      ^B_mud_Limit  := 30
+      ^B_mud_Date   := 3
+
+      If _muDirable is false , that means disable <file-redirection>.
+
+      < _mud_Limit := 30 > <_mud_Date := 3 > means that :
+      if more than 30 files have been generated by <file-redirection>,
+      the files created 3 days before will be deleted.
+
+     ^B_muTempPath := getenv('TEMP')
+
+      describe the path of <file-redirection>
+
+     ^B_MUNetRetry := 5                      // Retry times
+      ^B_MUNetDelay := 0.5                    // Delay seconds
+
+     ^B_muDelaySec :=  ;
+      ^B   { |s,t,x,y| t:=savescreen(24,70), x:=row(), y:=col(),    ;
+      ^B               setpos(24,72), dispout('RETRY...','w+/r'),   ;
+      ^B               inkey(s), restscreen(24,70,,,T), setpos(x,y) ;
+      ^B   }
+
+      Describe how to delay seconds in case of operation failure.
+      <s> is the argument passed by CK-MU of delay seconds.
+
+     ^BFailure Handle
+
+       _muErrMsg   := {                                            ;
+                            'Failure in Rlock()'                  ,;
+                            'Failure in Flock()'                  ,;
+                            'Failure in Use Database (Share)'     ,;
+                            'Failure in Use Database (Exclusive)' ,;
+                            'Network Operation Failure'            ;
+                        }
+       _muOptMsg   := { { 'Retry', 'Failure', 'Quit', 'Break' },          ;
+                        { 'Retry', 'Failure', 'Quit', 'Break' },          ;
+                        { 'Retry', 'Failure', 'Quit', 'Break' },          ;
+                        { 'Retry', 'Failure', 'Quit', 'Break' },          ;
+                        { 'Retry', 'Failure', 'Ignore', 'Quit', 'Break' } ;
+                      }
+       _muSayFail  :=                                                     ;
+            { |x,p| tone(600) , tone(300) , tone(600) ,                   ;
+                   p:=_muErrMsg[x]+';'+repl('-',50)+';'+left(p,50),       ;
+                   if((p:=alert(p,_muOptMsg[x]))=0,'retry',_muOptMsg[x,p]);
+            }
+
+       When operation fails after retry, ^B<_muSayFail>^B will be evaluated
+       to determine how to continue.
+
+       <ErrorCode> and <ErrorOperation> will be passed to <_muSayFail> to
+       describe error reason and error command.
+
+       <_muSayFail> returns a string or a character to describe the next
+       action of CK-MU, The leftmost character is valid. If invalid value
+       or default has been set, CK-MU will retry the operation.
+
+
+       <ErrorCode> can be the following value :
+
+                   1   =>  Failure in Rlock()
+                   2   =>  Failure in Flock()
+                   3   =>  Failure in Use Database (Share)
+                   4   =>  Failure in Use Database (Exclusive)
+                   5   =>  Others
+
+       <ErrorOperation> is the failure command.
+
+       <ReturnAction> can be the following value :
+
+           'R' or 'Retry'      =>  Retry operation
+           'F' or 'Failure'    =>  Failure, return .f.
+           'I' or 'Ignore'     =>  Ignore,  regard as success, retu .t.
+           'B' or 'Break'      =>  Break to <recoving using...> sentence
+           'Q' or 'Quit'       =>  Quit program
+!seealso: "Overview" "Suggestion" "Note2" "Note3" "How to Use" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Note2 --- Failure Handle
+'------------------------------------------------------------------------------
+
+
+                        ^uNote2 --- Failure Handle^u
+
+     When operation fails, a dialogue box will display the sources
+     of error, error operation and some options to select:
+
+      þ Retry     => Retry operation
+      þ Ignore    => Ignore, regard as success, return .t.
+      þ Failure   => Failure, return .f.
+      þ Break     => Break to < Recover using ...> sentence
+      þ Quit      => Quit Program
+
+     The Failure handle is ^Bopen to users and can be re-defined^B.
+     The default options are { 'Retry', 'Failure', 'Break', 'Quit' }
+     That means your should disable the 'Ignore' options.
+
+     If you choose <Failure>, Database will stay in share mode and
+     operations will be ignored.
+!seealso: "Overview" "Suggestion" "Note1" "Note3" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Note3 --- File Redirection
+'------------------------------------------------------------------------------
+
+
+                     ^uNote3 --- File Redirection^u
+
+     It is troublesome to process this case for multi-user :
+
+        User A wants to write to File, and at the same time User B is
+        using the same file.
+
+     for example :
+
+        Your program has the command :
+
+         ^B(1) Index to TempFile
+         ^B(2) Copy to temp.dbf
+
+        It will cause conflict when two users run here.
+
+     CK-MU can detect this case automatically and redirect them to
+     different files.
+
+     Because of file redirection , some rediretion files will be
+     generated and stay in the path of ^B%TEMP%^B (set temp=%TEMP%).
+
+     ^Bset temp=<temporary path>  is a good habit of file redirection.^B
+
+     Sometimes, too many files generated by <File-Redirection> will hold
+     many space and slow down program execution.  You can delete these
+     files at DOS.
+
+     This function can be disabled by  < _mudirable:=.f. > if you  can
+     make sure that there is no conflict in your program.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

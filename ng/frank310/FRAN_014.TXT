@@ -1,0 +1,313 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdb_list()           The engine function
+'------------------------------------------------------------------------------
+ ADdb_list( [bConfig] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Prints a database browser (ADdbview()) to either the line printer or to
+ a text file.  The output is in table format (similar to the browse).  It
+ is typically called via a hot key or a hot spot from ADdbview().  While
+ the records are being printed, the progress status is displayed using
+ default ADSBarCreate() engine.  The manner of display may be changed with
+ ADg_progress().
+
+ The printing process may be cancelled by pressing the Esc key.  An
+ ADboxmenu() is invoked to get confirmation of the request to cancel the
+ operation.  This interruption procedure may be changed with
+ ADg_reqcancel().
+
+ ADdb_list() will attempt to include all the columns of the browse, but
+ only those that will fit the page width will be actually printed.  The page
+ width may be changed with the ADdbl_psize() API.
+
+ [bConfig] - is the optional Configuration Specifier.  It is a codeblock that
+ the engine EVALuates to configure itself.  It is typically a call to one or
+ a series of configuration functions.  See the examples below and the
+ examples in the API descriptions.
+
+ Example1
+ --------
+ // Pressing F10 initiates the listing of the browse to the printer
+
+ #include "inkey.ch"
+ func main
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list()} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+
+ Example2
+ --------
+ // Sends the output to a text file
+
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_file( "myfile.txt" )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: fran_031.ngo:"ADg_progress()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADdbl_file()          Sends the output to a text file
+'------------------------------------------------------------------------------
+ ADdbl_file( <cFile> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Sends the output to a text file.  By default ADdb_list()'s output is sent
+ to the line printer.
+
+ <cFile> is the name of the text file to where the output is sent.
+
+ Example
+ --------
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_file( "myfile.txt" )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_include()       Specifies the columns to include in the list
+'------------------------------------------------------------------------------
+ ADdbl_include( <aInclude> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the columns to include in the list.  Defaults to all the columns.
+ Note that although, all columns are included by default, the page width
+ may not be wide enough to accommodate all.
+
+ <aInclude> is an array of browse column positions.
+
+ Example
+ --------
+ // includes columns 1, 7 and 5 in that order
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_include( { 1, 7, 5 } )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: "ADdbl_psize()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_line()          Returns a line
+'------------------------------------------------------------------------------
+ ADdbl_line( <cLineChar>, [nLength] ) --> <cLine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns a line.  Typically used with ADdbl_repheader()
+
+ <cLineChar> - a character that will be used to build the line.
+
+ [nLength] - the length of the line.  Defaults to the page width minus
+ the side margins.  This default value may vary depending when you call
+ the function.  If you call it before any configuration is done, [nLength]
+ will always default to 80.  To be useful, ADdbl_line() must be called
+ after calling ADdbl_psize() and ADdbl_margins(), if these other APIs are
+ called at all.
+
+ <cLine> is a line built from a replication of <cLineChar>
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_repheader( {;
+                                             alias(),;
+                                             ADdbl_line( "Í" );
+                                             "";
+                                         };
+                                       );
+                     }
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: "ADdbl_repheader()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_margins()       Specifies page margins
+'------------------------------------------------------------------------------
+ ADdbl_margins( <aMargins> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies page margins.
+
+ <aMargins> is an array of margin values.  It _must_ contain 5 elements:
+
+   1 - the top margin      // defaults to 5
+   2 - the left margin     // defaults to 10
+   3 - the bottom margin   // defaults to 5
+   4 - the right margin    // defaults to 10
+   5 - the number of spaces between columns  // defaults to 2
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_margins( { 10,20,10,20,5 } )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: "ADdbl_psize()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_psize()         Specifies the page size
+'------------------------------------------------------------------------------
+ ADdbl_psize( <aSize> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the page size.
+
+ <aSize> is the page size which defaults to 999999 rows x 80 columns.  The
+ value of 999999 rows is practically equivalent to a continuous page.
+ <aSize> _must_ contain 2 elements:
+
+   1 - the number of rows
+   2 - the number of columns
+
+ If the browse has more records than can be accommodated in <aSize>[1] rows,
+ page breaks will be inserted.  If the browse records are longer than
+ <aSize>[2], the excess will be lost from the output.
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_psize( { 50, 132 } )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: "ADdbl_margins()" "ADdbl_include()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_pstrings()      Specifies init and reset strings
+'------------------------------------------------------------------------------
+ ADdbl_pstrings( <aStrings> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the printer init and reset strings.
+
+ <aStrings> is an array of 2 elements:
+
+   1 - the string to be sent to the printer at the start of the job
+   2 - the string to be sent to the printer at the end of the job
+
+ Example
+ -------
+ local bConfig, bDBLConfig
+
+ use hotel
+ bDBLConfig := {||ADdbl_pstrings( { HP_LCOMPRESSED, HP_RESET } ),;
+                  ADdbl_psize( { HP_LCOMPRESSED_ROWS, HP_LCOMPRESSED_COLS } );
+               }
+ bConfig := {||ADdb_keys( { K_ALT_P }, {||ADdb_list( bDBLConfig )} )}
+ ADdbview( ,,,, bConfig )
+ use
+ return nil
+!seealso: "ADdbl_psize()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_repheader()     Specifies header lines for the report
+'------------------------------------------------------------------------------
+ ADdbl_repheader( <aHeader>, <nJustify> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies header lines for the report.  By default, ADdb_list() does not
+ print any report header.
+
+ <aHeader> is an array of character strings to be printed as headers.  The
+ headers are printed at the top of every page.  Among others, you can
+ include the following:
+
+      alias - alias()
+      date - dtoc( date() )
+      blank line - ""
+      page number - "&pn" - this is a special symbol used by ADdb_list()
+      a line - see ADdbl_line()
+
+ <nJustify> is a numeric flag that tells ADdb_list() how to justify the
+ header lines.  The valid values are #defined in Frankie.ch as follows:
+
+  #define DBL_CENTER      1   // default
+  #define DBL_LEFTJUST    2
+  #define DBL_RIGHTJUST   3
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_repheader( {;
+                                             alias(),;
+                                             dtoc( date() ),;
+                                             "Page &pn",;
+                                             "";
+                                         };
+                                       );
+                     }
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: "ADdbl_line()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADdbl_underline()     Specifies the underline character
+'------------------------------------------------------------------------------
+ ADdbl_underline( <cLineChar> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the character to use for underlining the report headings which
+ defaults to a minus (-) sign.
+
+ <cLineChar> is the charcater to use for underlining
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main
+ local bDBLConfig := {||ADdbl_underline( "Í" )}
+ local bConfig := {||ADdb_keys( { K_F10 }, {||ADdb_list( bDBLConfig )} )}
+
+ use mydbf
+ ADdbview( ,,,, bConfig )
+ use
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

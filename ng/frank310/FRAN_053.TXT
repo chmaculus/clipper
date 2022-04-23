@@ -1,0 +1,534 @@
+!short:  1. Implementing a basic mouseable vertical menu
+'------------------------------------------------------------------------------
+^b Implementing a basic mouseable vertical menu
+
+ Implementing a basic mouseable vertical menu is easy.  We simply supply
+ an array of menu options to ADvermenu(), like this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+  local nSel
+
+  nSel := ADvermenu( ,, aMenu )
+
+  if nSel == 0   // aborted
+     // do something
+  elseif nSel == 1   // The
+     // do something else
+  elseif nSel == 2   // Quick
+     // do something else
+  elseif nSel == 3   // Brown
+     // do something else
+  elseif nSel == 4   // Clipper
+     // do something else
+  endif
+  return NIL
+
+ The above code will display a vertical menu in the center of the screen.
+ If we want to display it elsewhere, we simply supply the top and bottom
+ coordinates of the menu box, like this:
+
+  nSel := ADvermenu( ^b0,0,^b aMenu )
+
+ The above will display the menu at the top/left corner (0,0) of the screen.
+
+ In the next sections we will discuss how to configure ADvermenu().
+!seealso: fran_008.ngo:"ADvermenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  2. Configuring the menu's colors
+'------------------------------------------------------------------------------
+^b Configuring the menu's colors
+
+ Our first configuration example will deal with colors.  Try this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+^b  local aColors := {;
+^b                     "W/R",;     // standard color
+^b                     "B/W",;     // enhanced color
+^b                     "W+/R",;    // box color
+^b                     "GR+";      // the trigger color
+^b                   }
+
+^b  local bConfig := {||ADvm_colors( aColors )}
+  local nSel
+
+  nSel := ADvermenu( ,, aMenu^b,,, bConfig^b )
+  return NIL
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  3. Adding a header
+'------------------------------------------------------------------------------
+^b Adding a header
+
+ Now let us add a header to the basic menu.
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+^b  local bConfig := {||ADvm_header( "Select" )}
+  local nSel
+
+  nSel := ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+
+ Do we want a multi-line header?  Try this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+
+  local bConfig := {||ADvm_header( ^b"Make;Your;Selection"^b )}
+  local nSel
+
+  nSel := ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+
+ Note the ^bsemi-colons^b in the header string.
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_header()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  4. How about a multiple-selection menu?
+'------------------------------------------------------------------------------
+^b How about a multiple-selection menu?
+
+ This is just as easy!  Try this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+
+^b  local bConfig := {||ADvm_taglist()}
+  local ^baSel^b
+
+  ^baSel^b := ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+
+ Now we can tag an option on/off with the space bar or with a mouse left
+ button click.  Note that the return value is no longer a single numeric
+ integer but is an array of integers.  The tag character defaults to a
+ check mark.  But we can change that very easily, like this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+
+  local bConfig := {||ADvm_taglist( ^b"*"^b )}
+  local aSel
+
+  aSel := ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+
+ Do we need to restrict the number of selections, say to 3?  All we have to
+ do is pass "123" to ADvm_taglist().  Now when we select, the selected
+ option will be tagged with either "1", "2" or "3" with no repetition.
+ Furthermore, the return value will be sorted according to the sequence
+ the options were selected.  Try this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+
+  local bConfig := {||ADvm_taglist( ^b"123"^b )}
+  local aSel
+
+  aSel := ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_taglist()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  5. Changing the default triggers
+'------------------------------------------------------------------------------
+^b Changing the default triggers
+
+ The default triggers are the first characters.  Sometimes we may need to
+ change the default, like when two options start with the same character.
+ This is easily implemented:
+
+  func main()
+  local aMenu := { "tHe", "Quick", "browN", "Clipper" }
+  local nSel
+
+  nSel := ADvermenu( ,, aMenu, ^b{2,1,5,1}^b )
+  return NIL
+!seealso: fran_008.ngo:"ADvermenu()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  6. Assigning corresponding procedures to the menu options
+'------------------------------------------------------------------------------
+^b Assigning corresponding procedures to the menu options
+
+ This is also very easy! (If you have not guessed it yet, that's my
+ favorite expression!).  Try this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper" }
+^b  local aProcess := {;
+^b                        {||ADmessage( { "Selected 'The'" } )},;
+^b                        {||ADmessage( { "Selected 'Quick'" } )},;
+^b                        {||ADmessage( { "Selected 'Brown'" } )},;
+^b                        {||ADmessage( { "Selected 'Clipper'" } )};
+^b                    }
+
+  ADvermenu( ,, aMenu,, ^baProcess^b )
+  return NIL
+
+ In an implementation like the above, the procedure that corresponds to
+ an option is immediately carried out when that option is selected.  Then,
+ program control is returned to the menu.  To exit the menu we can abort
+ by pressing Esc or by clicking the right mouse button.  Or we can add an
+ 'Exit' option that calls ADvm_abort() when selected, like this:
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper"^b, "Exit"^b }
+  local aProcess := {;
+                        {||ADmessage( { "Selected 'The'" } )},;
+                        {||ADmessage( { "Selected 'Quick'" } )},;
+                        {||ADmessage( { "Selected 'Brown'" } )},;
+                        {||ADmessage( { "Selected 'Clipper'" } )},;
+^b                        {||ADvm_abort()};
+                    }
+  ADvermenu( ,, aMenu,, aProcess )
+  return NIL
+
+ An alternate way to passing an array of codeblocks as in aProcess, is to
+ pass a single codeblock that contains an IF..ELSEIF..ELSE..ENDIF or
+ a DOCASE..CASE..OTHERWISE..ENDCASE construct.
+
+  func main()
+  local aMenu := { "The", "Quick", "Brown", "Clipper", "Exit" }
+^b  local bProcess := {|n|xProcess(n)}
+  ADvermenu( ,, aMenu,, ^bbProcess^b )
+  return NIL
+
+^b  func xProcess( nSel )
+^b  if nSel == 1
+^b    ADmessage( { "Selected 'The'" } )
+^b  elseif nSel == 2
+^b    ADmessage( { "Selected 'Quick'" } )
+^b  elseif nSel == 3
+^b    ADmessage( { "Selected 'Brown'" } )
+^b  elseif nSel == 4
+^b    ADmessage( { "Selected 'Clipper'" } )
+^b  elseif nSel == 5
+^b    ADvm_abort()
+^b  endif
+^b  return NIL
+
+ Note that ADvermenu() passes the index position of the selected option to
+ bProcess.  This parameter becomes the basis of how bProcess selects which
+ procedure to invoke in the IF..ENDIF or DOCASE..ENDCASE construct.
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_abort()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  7. Let's do cascading menus
+'------------------------------------------------------------------------------
+^b Let's do cascading menus
+
+ This is a typical cascading menu.
+
+          ีอออออออออออออออออออธ
+          ณ What Do You Know? ณ
+          ฦอออออออออออออออออออต
+          ณ Clipper           ณ
+          ณ Foxีอออออออออออออออธ
+          ณ Accณ Which Clipper ณ
+          ณ Parฦอออออออออออออออต
+          ิออออณ Summer 87     ณ
+               ณ Clipper 5.x   ณ
+               ณ Both          ณ
+               ิออออีอออออออออออออออธ
+                    ณ Know Frankie? ณ
+                    ฦอออออออออออออออต
+                    ณ Yes           ณ
+                    ณ No            ณ
+                    ิอออออออออออออออพ
+
+ It's implementation is very easy with Frankie.  Try this example:
+
+  func main()
+  local aMenu := { "Clipper", "Fox", "Access", "Paradox" }
+  local aProcess := {;
+                        {||xClipper()},;
+                        {||xCannotHire()},;
+                        {||xCannotHire()},;
+                        {||xCannotHire()};
+                    }
+  local bConfig := {||ADvm_header( "What Do You Know?" )}
+
+  ADvermenu( ,, aMenu,, aProcess, bConfig )
+  return NIL
+
+  func xCannotHire()
+  ADmessage( { "Sorry! Can't hire you!" } )
+  return NIL
+
+  func xClipper()
+  local aMenu := { "Summer 87", "Clipper 5.x", "Both" }
+  local nTop := ADvm_row()+1
+  local nLeft := ADvm_left()+5
+  local aProcess := {;
+                        {||xCannotHire()},;
+                        {||xCanHire()},;
+                        {||xCanHire()};
+                    }
+  local bConfig := {||ADvm_header( "Which Clipper" )}
+
+  ADvermenu( nTop, nLeft, aMenu,, aProcess, bConfig )
+  return NIL
+
+  func xCanHire()
+  local aMenu := { "Yes", "No" }
+  local nTop := ADvm_row()+1
+  local nLeft := ADvm_left()+5
+  local aProcess := {;
+                        {||ADmessage( { "You're hired!" } )},;
+                        {||xCannotHire()};
+                    }
+  local bConfig := {||ADvm_header( "Know Frankie?" )}
+
+  ADvermenu( nTop, nLeft, aMenu,, aProcess, bConfig )
+  return NIL
+
+ Note how all the menus are similarly structured.  Note also how the
+ location of the lower level menu is automatically determined by the two
+ APIs ADvm_row() and ADvm_left().  If we want to move our menu system so it
+ start to cascade from the top left corner of the screen, all we have to do
+ is pass 0,0 to the topmost menu - the rest will follow automatically!
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_abort()" fran_008.ngo:"ADvm_header()" fran_008.ngo:"ADvm_row()" fran_008.ngo:"ADvm_left()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  8. Defining hot keys
+'------------------------------------------------------------------------------
+^b Defining hot keys
+
+ This example defines F10 and F9 as hot keys.  When either one is pressed,
+ the key handler xHandler() is called.  When xHandler() exits, program
+ control is returned to the menu.
+
+  #include "inkey.ch"
+  func main()
+  local aMenu := { "Clipper", "Fox", "Access", "Paradox" }
+^b  local bConfig := {||ADvm_keys( { K_F10, K_F9 }, {|n,k|xHandler(k)} )}
+
+  ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+
+^b  func xHandler( nKey )
+^b  if nKey == K_F10
+^b    ADmessage( { "Pressed F10" } )
+^b  elseif nKey == K_F9
+^b    ADmessage( { "Pressed F9" } )
+^b  endif
+^b  return NIL
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_keys()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  9. Defining hot spots
+'------------------------------------------------------------------------------
+^b Defining hot spots
+
+ This is a typical vertical menu with two _icons_ [þ][?].  We want to
+ define these icons as hot spots.
+
+         ีอ[þ][?]อออออออออออธ
+         ณ Vertical Menu    ณ
+         ณ Horizontal Menu  ณ
+         ณ Get/Read         ณ
+         ณ Database Browser ณ
+         ณ Push Buttons     ณ
+         ณ Radio Buttons    ณ
+         ิออออออออออออออออออพ
+
+ Here's the way to do it.
+
+  func main()
+  local aMenu := { "Vertical Menu", "Horizontal Menu", "Get/Read",;
+                   "Database Browser", "Push Buttons", "Radio Buttons" }
+^b  local bConfig := {||ADvm_extra( , {||ADsay( 0,2, "[þ][?]", "R+/W" )} ),;
+^b                      ADvm_lbuttons( { {0,2,0,7} }, {|n,r,c|xHandler(c)} );
+^b                   }
+
+  ADvermenu( 0,0, aMenu,,, bConfig )
+  return NIL
+
+^b  func xHandler( nCol )
+^b  ADm_rwait()   // wait for button to be released
+^b
+^b  if nCol <= 4
+^b    ADmessage( { "Clicked [þ]" } )
+^b  elseif nCol <= 7
+^b    ADmessage( { "Clicked [?]" } )
+^b  endif
+^b  return NIL
+
+ If we compare the previous example on ADvm_keys() and this example on
+ ADvm_lbuttons(), we note that there are similarities in their
+ implementations.  However, there are also differences, notably the
+ use of ADvm_extra().  ADvm_extra() is needed here so we can draw the
+ icons.
+
+ Sometimes, the implementation of hot spots may become a little tricky
+ when you co not explicitly specify the location of the menu.  In the
+ above example, we passed 0,0 as the top/left corner of the menu box.  So
+ we know we can draw the icons at 0,2.  We also know that the icons' hot
+ spot will be at {0,2,0,7}.
+
+ Suppose we want to display the menu in the center of the screen.  Or
+ suppose, our menu location is calculated on the fly based on whatever else
+ is currently displayed on the screen.  In this situation we cannot simply
+ do an ADsay() to draw the icons within bConfig since we do not know what
+ to pass to ADsay().  Much less do we know what coordinates to pass
+ ADvm_lbuttons().
+
+ ADvm_top() and ADvm_left() come to the rescue.  However, these values
+ are not known until the Advermenu() has been completely configured and not
+ while it is being configured.  If we do something like this:
+
+  local bConfig := {||ADvm_extra( , {||ADsay( ^bADvm_top(),;
+                                              ^bADvm_left() + 2,;
+                                              "[þ][?]", "R+/W";
+                                            );
+                                    };
+                                ),;
+                      ADvm_lbuttons( { {^bADvm_top(),;
+                                        ^bADvm_left() +2,;
+                                        ^bADvm_top(),;
+                                        ^bADvm_left() + 7;
+                                       };
+                                     },;
+                                     {|n,r,c|xHandler(c)};
+                                   );
+                   }
+
+ it will not work because ADvm_top() and ADvm_left() are still unknown
+ during the configuration stage.  However, we can delay drawing the icons
+ and defining the hot spots until after the menu has been displayed.  At
+ that particular time, ADvm_top() and ADvm_left() are already known.  Take
+ a look at this:
+
+  func main()
+  local aMenu := { "Vertical Menu", "Horizontal Menu", "Get/Read",;
+                   "Database Browser", "Push Buttons", "Radio Buttons" }
+^b  // Note the following:
+^b  // 1. that ADvm_lbuttons() is called inside ADvm_extra()
+^b  // 2. the screen coordinates are not hardcoded but make use of the
+^b  //    ADvm_top() and ADvm_left() APIs.  This makes for generic
+^b  //    programming
+  local bConfig := {||ADvm_extra( NIL,;
+                                  {||ADsay( ^bADvm_top(),;
+                                            ^bADvm_left()+2,;
+                                            "[þ][?]",;
+                                            "R+/W";
+                                          ),;
+                                     ADvm_lbuttons( { { ^bADvm_top(),;
+                                                        ^bADvm_left() + 2,;
+                                                        ^bADvm_top(),;
+                                                        ^bADvm_left()+7;
+                                                      };
+                                                    },;
+                                                    {|n,r,c|xHandler(c)};
+                                                  );
+                                  };
+                                );
+                   }
+
+  ADvermenu( ,, aMenu,,, bConfig )
+  return NIL
+
+  func xHandler( nCol )
+  ADm_rwait()   // wait for button to be released
+
+  if nCol <= ^bADvm_left() + 4
+    ADmessage( { "Clicked [þ]" } )
+  elseif nCol <= ^bADvm_left() + 7
+    ADmessage( { "Clicked [?]" } )
+  endif
+  return NIL
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_top()" fran_008.ngo:"ADvm_left()" fran_008.ngo:"ADvm_extra()" fran_008.ngo:"ADvm_lbuttons()" fran_028.ngo:"ADmessage()" fran_028.ngo:"ADsay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10. Displaying option-sensitive messages
+'------------------------------------------------------------------------------
+^b Displaying option-sensitive messages
+
+ This is a little bit more involved as it requires the use of 2 APIs:
+ ADvm_extra() and ADvm_move().  See how they are used in the following code
+
+  func main()
+  local nCurrent            // currently highlighted option
+  local aScnMsg             // screen section overwritten by message
+  local cMsgColor := "W+/G" // message color
+^b  local bInitMsgBox  // codeblock that will save the screen that will be
+^b                     // eventually covered by the messages.  It will also
+^b                     // draw a box where the messages will be displayed.
+^b                     // This will be EVALed just before the menu is
+^b                     // displayed.
+^b  local bClrMsgBox  // codeblock that will restore the screen overwritten by
+^b                    // the messages.  This will be EVALed when the menu
+^b                    // exits.
+^b  local bDispMsg // codeblock that will display the messages inside the
+^b                 // message box
+  local aMenu := {;
+                    "ADvermenu()",;
+                    "ADhormenu()",;
+                    "ADboxmenu()",;
+                    "ADdbview()",;
+                    "ADfview()",;
+                    "ADread()";
+                 }
+  local aTriggers := { 3,3,3,3,3,3 }
+  local aMsg := {;
+                    "Vertical Menu Engine",;
+                    "Horizontal Menu Engine",;
+                    "Dialog Box Engine",;
+                    "Database Browser Engine",;
+                    "File Viewer Engine",;
+                    "Get/Read Engine";
+                }
+^b  local bConfig := {||ADvm_extra( bInitMsgBox, NIL, bClrMsgBox ),;
+^b                      ADvm_move( NIL, bDispMsg );
+^b                   }
+
+^b  bInitMsgBox := {||aScnMsg := ADbox( maxrow()-2,;
+^b                                      0,;
+^b                                      maxrow(),;
+^b                                      maxcol(),;
+^b                                      cMsgColor,;
+^b                                      NIL,;
+^b                                      .F.,;
+^b                                      .F.;
+^b                                    );
+^b                 }
+^b  bClrMsgBox := {||ADrestscn( aScnMsg )}
+^b  bDispMsg := {||nCurrent := ADvm_current(),;
+^b                 ADsay( maxrow()-1,;
+^b                        1,;
+^b                        padc( aMsg[nCurrent],;
+^b                              maxcol() - 2;
+^b                            ),;
+^b                        cMsgColor;
+^b                      );
+^b              }
+  ADvermenu( ,, aMenu, aTriggers,, bConfig )
+  return NIL
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_extra()" fran_008.ngo:"ADvm_move()" fran_028.ngo:"ADsay()" fran_028.ngo:"ADrestscn()" 
+'------------------------------------------------------------------------------
+
+
+

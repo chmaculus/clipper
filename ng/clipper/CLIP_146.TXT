@@ -1,0 +1,25 @@
+'------------------------------------------------------------------------------
+^BTRIM()/RTRIM()^B
+
+    TRIM() removes all trailing blanks from a character expression.
+
+^USyntax^U
+
+    TRIM(<expC>)  -or-  RTRIM(<expC>)
+
+^UUsage^U
+
+    TRIM() is useful when you want to delete trailing spaces from a
+    character string when concatenating with another string.  For example,
+    a typical application of TRIM() is creation of formatted strings for
+    names and addresses.
+
+    ^BTests for null strings^B: you can use TRIM() as part of an expression
+    to test for an empty character string.  For example, you can use the
+    condition, LEN(TRIM(<expC>)=0 or the more preferred method,
+    EMPTY(<expC>).
+!seealso: ???.ngo:"LTRIM" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,65 @@
+'------------------------------------------------------------------------------
+^BREPORT FORM^B
+
+    To display a tabular and optionally grouped report with page and column
+    headings from a definition held in a .frm file.
+
+^USyntax^U
+
+    REPORT FORM <file1>/(<expC1>) [<scope>] [FOR <condition>]
+    [WHILE <condition>] [TO PRINT] [TO FILE <file2>/(<expC2>)]
+    [SUMMARY] [PLAIN] [HEADING <expC3>] [NOEJECT]
+
+^UArgument^U
+
+    <file1> is the name of the (.fmt) file that contains the FORM
+    definition of the REPORT.  If the extension is not specified (.frm) is
+    assumed.
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    report.  The default is ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to report within the given scope.  The WHILE clause specifies the set
+    of records meeting the condition from the current record until the
+    condition fails.
+
+    ^BPrint^B: The TO PRINT clause echoes output to the printer.
+
+    ^BFile^B: The TO FILE clause echoes output to the specified filename,
+    <file2>, without form feed characters (ASCII 12).  If an extension is
+    not specified, (.txt) is added.
+
+    ^BSummary^B: The SUMMARY clause causes the REPORT FORM to display only
+    group, subgroup, and grand total lines.  Detail lines are suppressed.
+
+    ^BPlain^B: The PLAIN clause suppresses the display of the date, page
+    number, and pagination.  In addition, the report title and column
+    headings display only at the top of the report.
+
+    ^BHeading^B: The HEADING clause places the result of <expC3> on the
+    first line of each page.  <expC3> is evaluated only once at the
+    beginning of the report and before the record pointer is moved.
+
+    ^BNoeject^B: The NOEJECT clause suppresses the initial page eject when
+    the TO PRINT clause is used.
+
+^UUsage^U
+
+    The REPORT FORM executes a report using a definition stored in a (.frm)
+    file. The .frm file can be created using RL.EXE, which is provided with
+    the Clipper distribution diskettes.
+
+    If you want to include form feed characters when sending the REPORT
+    FORM TO FILE, add the lines of code shown below to your program:
+
+    ^RSET PRINTER TO <file>      ^R
+    ^RREPORT FORM <file> TO PRINT^R
+    ^RRSET PRINTER TO            ^R
+!seealso: clip_017.ngo:"LABEL FORM" clip_018.ngo:"LIST" 
+'------------------------------------------------------------------------------
+
+
+

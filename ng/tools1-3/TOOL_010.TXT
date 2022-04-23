@@ -1,0 +1,1338 @@
+!short: Introduction Date/Time Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This section contains functions that make many date computations easier
+     to perform.  Date-type values have been a feature of the xBASE language
+     standard, and is preserved in CA-Clipper.  In spite of this, it is
+     always necessary to develop UDFs to execute certain technical financial
+     computations.  CA-Clipper Tools offers an alternative that not only
+     spares you the work of writing a UDF, but also provides implementation
+     in Assembler to guarantee fast execution.
+
+     This chapter also contains clock time functions.  These include time
+     changes, time span computations, time control of loops, and memory-
+     resident clock display.
+
+     Please note that valid date tests are already carried out in CA-Clipper.
+     CA-Clipper internal date tests cannot be canceled, so it is impossible
+     to implement an individual UDF for error handling , if there is an
+     invalid date.
+
+     CA-Clipper always replaces an invalid date with a null date.  These
+     internal tests are carried out by keyboard input, as well as by CTOD()
+     allocation.  For this reason, there are no examples with invalid dates
+     in the date function descriptions.  Rather, the result of a function
+     with a null date is shown.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ADDMONTH()   Adds or subtracts months to/from a date
+'------------------------------------------------------------------------------
+ ^bADDMONTH()^b
+ Adds or subtracts months to/from a date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bADDMONTH([<dDate>], [<nMonth>]) --> dNewDate
+
+ ^bArguments^b
+
+     ^b<dDate>^b  Designates the date to which the <nMonth> months is added.
+     The default is the system date.
+
+     ^b<nMonth>^b  Designates the number of months to add to <dDate>.
+
+ ^bReturns^b
+
+     ADDMONTH() returns the new date after <nMonth> is added to <dDate>.
+
+ ^bDescription^b
+
+     Use this function to calculate payment due dates based on an invoice
+     date and for similar applications.  It permits you to add months to a
+     given date.  If you use a negative number, months are subtracted.
+
+ ^bNote^b
+
+     ^b^CFE^b  An empty date parameter will result in an empty date.
+
+ ^bExample^b
+
+     Show today's date, plus 36 months:
+
+     ? "The payment period ends on: ", ADDMONTH(36)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: BOM()        Determines the date of the first day of a month
+'------------------------------------------------------------------------------
+ ^bBOM()^b
+ Determines the date of the first day of a month
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBOM([<dDate>]) --> dBeginningOfMonth
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates a date for which the first day of the month that
+     contains this date, is determined.  The default is the system date.
+
+ ^bReturns^b
+
+     BOM() returns the first day of the month in which <dDate> lies.
+
+ ^bDescription^b
+
+     BOM() allows you to determine the first day of the month that contains
+     <dDate>.  This allows you to determine how many days have past since the
+     beginning of the month.
+
+ ^bNote^b
+
+     ^b^CFE^b  If no date is passed, then the function automatically uses the
+        system date.  An empty date parameter always returns an empty date.
+
+ ^bExample^b
+
+     Display the elapsed days in the current month:
+
+     ? DATE() - BOM()
+
+!seealso: "EOM()" "BOQ()" "EOQ()" "BOY()" "EOY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BOQ()        Determines the date for the beginning of a quarter
+'------------------------------------------------------------------------------
+ ^bBOQ()^b
+ Determines the date for the beginning of a quarter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBOQ([<dDate>]) --> dBeginningOfQuarter
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates a date for which the first day of the quarter in
+     which it lies is determined.  The default is the system date.
+
+ ^bReturns^b
+
+     BOQ() returns the date at the beginning of the quarter that contains
+     <dDate>.
+
+ ^bDescription^b
+
+     For example, use BOQ() to determine when the current quarter that
+     contains <dDate> began, and then compute the number of days that have
+     elapsed since the quarter began.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you do not specify a date, the function automatically uses
+        the system date.  An empty date parameter always returns an empty
+        date.
+
+ ^bExample^b
+
+     Display the date of the first day of the current quarter:
+
+     ? "The first day of the current quarter is:", BOQ()
+
+!seealso: "BOM()" "EOM()" "EOQ()" "BOY()" "EOY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BOY()        Determines the date for the beginning of a year
+'------------------------------------------------------------------------------
+ ^bBOY()^b
+ Determines the date for the beginning of a year
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBOY([<dDate>]) --> dBeginningOfYear
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates the date for which the first day of the year is
+     determined.  The default is the system date.
+
+ ^bReturns^b
+
+     BOY() returns the first of January for the year that contains <dDate>.
+
+ ^bDescription^b
+
+     BOY() determines the year without having to create a date-type variable.
+
+ ^bNote^b
+
+     ^b^CFE^b  If no date is specified, the function automatically uses the
+        system date.  An empty date parameter always returns an empty date.
+
+ ^bExample^b
+
+     The first date of the current year (1991):
+
+     ? BOY()            // 01/01/91
+
+!seealso: "BOM()" "EOM()" "BOQ()" "EOQ()" "EOY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CTODOW()     Converts the day of the week name into a corresponding number
+'------------------------------------------------------------------------------
+ ^bCTODOW()^b
+ Converts the name of the day of the week into a corresponding number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCTODOW(<cDayofWeek>) --> nDayofWeek
+
+ ^bArgument^b
+
+     ^b<cDayofWeek> ^b Designates a character string that contains the name
+     of a day of the week.
+
+ ^bReturns^b
+
+     CTODOW() returns the number of the day for the day name.
+
+ ^bDescription^b
+
+     Use CTODOW() to change the name of a day of the week to a number.
+     Sunday corresponds to 1, Monday 2, etc..  If the function returns a 0
+     value, an invalid parameter has been passed.  You can shorten the day
+     names, but these abbreviations must be explicit to return an accurate
+     value.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Uppercase and lowercase letters do not affect the name of the
+        day of the week.
+
+     ^b^CFE^b  The function's operation depends on the country-specific
+        adaptation of your CA-Clipper compiler.  With an English version of
+        CA-Clipper, only English day names are recognized.
+
+ ^bExamples^b
+
+     ^b^CFE^b  What number of the day of the week is Sunday?
+
+        ? CTODOW("Sunday")         // Result:  1
+
+     ^b^CFE^b  Show several ways to get the day of the week for Wednesday:
+
+        ? CTODOW("WEDNESDAY")      // Result:  4
+        ? CTODOW("Wednesday")      // Result:  4
+        ? CTODOW("Wed")            // Result:  4
+
+     ^b^CFE^b  What number of the day of the week is Monday?
+
+        CTODOW("M")                // Result:  2
+
+!seealso: "NTOCDOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CTOMONTH()   Converts the name of the month into a corresponding number
+'------------------------------------------------------------------------------
+ ^bCTOMONTH()^b
+ Converts the name of the month into a corresponding number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCTOMONTH(<cMonth>) --> nMonth
+
+ ^bArgument^b
+
+     ^b<cMonth> ^b Designates the name of one of the 12 months.
+
+ ^bReturns^b
+
+     CTOMONTH() returns the number for the designated month name.
+
+ ^bDescription^b
+
+     Use CTOMONTH() to change the name of a month into a number.  January
+     corresponds to 1, February 2, etc..  If the function returns a 0 value,
+     then an invalid parameter has been passed.  If you shorten the month
+     name, use explicit abbreviations to return an accurate return value.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Uppercase and lowercase letters do not affect the name of the
+        month.
+
+     ^b^CFE^b  The function's operation depends on the country-specific
+        adaptation of your CA-Clipper compiler.  With an English version of
+        CA-Clipper, only English month names are recognized.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the number for January:
+
+        ? CTOMONTH("January")      // Result: 1
+
+     ^b^CFE^b  Show several ways to determine the month number for August:
+
+        ? CTOMONTH("AUGUST")       // Result: 8
+        ? CTOMONTH("August")       // Result: 8
+        ? CTOMONTH("Au")           // Result: 8
+
+     ^b^CFE^b  The number for April:
+
+        ?CTOMONTH("A")             // Result: 4
+
+!seealso: "NTOCMONTH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DMY()        Returns a date in "DD Month YY" format
+'------------------------------------------------------------------------------
+ ^bDMY()^b
+ Returns a date in "DD Month YY" format
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDMY([<dDate>], [<lMode>]) --> cDate
+
+ ^bArguments^b
+
+     ^b<dDate>^b  Designates the date from which to create a string.  The
+     default is the system date.
+
+     ^b<lMode>^b  Designates whether to insert a period (.) after the day
+     (see Examples).  The default is no period (.F.).
+
+ ^bReturns^b
+
+     DMY() returns a character string in "DD[.] Month YY" format or "DD[.]
+     Month YYYY" format.
+
+ ^bDescription^b
+
+     Use DMY() to return the date as a character string using the day, name
+     of month, and year.  The CA-Clipper SET CENTURY ON/OFF switch determines
+     whether or not the year is displayed in two or four digits.  If the
+     <lMode> parameter is designated .T., the function builds in a "." after
+     the day designation. If no date is designated as a parameter, the
+     function automatically uses the current system date.
+
+ ^bNote^b
+
+     ^b^CFE^b  The month name returned depends on which CA-Clipper nations
+        module is in use.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the system date (1/1/89):
+
+        SET CENTURY OFF
+        ? DMY()                            // 1 January 89
+
+     ^b^CFE^b  With ".":
+
+        ? DMY(.T.)                         // 1. January 89
+
+     ^b^CFE^b  Display a different date:
+
+        SET CENTURY ON
+        ? DMY(CTOD("02/01/89"), .T.)       // 1. February 1989
+
+!seealso: "MDY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DOY()        Determines the day of the year for a specific date
+'------------------------------------------------------------------------------
+ ^bDOY()^b
+ Determines the day of the year for a specific date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDOY([<dDate>]) --> nDayOfYear
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates which date to use to calculate the day of the
+     year.  The default is the system date.
+
+ ^bReturns^b
+
+     DOY() returns a calendar day number that specifies which day of the year
+     <dDate> represents.
+
+ ^bDescription^b
+
+     If you frequently work with time periods, then this function is quite
+     useful.  DOY() lets you assign a calendar day number to a date that
+     relates to the beginning of the year.
+
+ ^bNote^b
+
+     ^b^CFE^b  When no date is specified, DOY() uses the system date.
+        January 1 is always 1, December 31 is 366 in a leap year; otherwise,
+        it is 365.  An empty date returns a 0 result.
+
+ ^bExample^b
+
+     How long is it until Christmas?
+
+     ? "There are", NTOC(DOY(CTOD("12/24/91"))- DOY())  ;
+        , " days until Christmas!"
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: EOM()        Determines the date for the last day of a month
+'------------------------------------------------------------------------------
+ ^bEOM()^b
+ Determines the date for the last day of a month
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEOM([<dDate>]) --> dEndOfMonth
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates the date for which the last day of the month it
+     lies in, is calulated.  The default is the system date.
+
+ ^bReturns^b
+
+     EOM() returns the date of the last day of the month in <dDate>.
+
+ ^bDescription^b
+
+     EOM() determines the last day of the month in which <dDate> lies.  It
+     also allows you to calculate how many days remain until the end of the
+     month.
+
+ ^bNotes^b
+
+     ^b^CFE^b  If no date is specified, the function automatically uses the
+        system date.  An empty date parameter will always return an empty
+        date.
+
+     ^b^CFE^b  Unlike LASTDAYOM(), EOM() does not return a numeric value (the
+        number of days in the month), but another date.
+
+ ^bExample^b
+
+     Display the remaining days in the current month:
+
+     ? EOM() - DATE()
+
+!seealso: "BOM()" "BOQ()" "EOQ()" "BOY()" "EOY()" "LASTDAYOM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EOQ()        Determines the date for the end of a quarter
+'------------------------------------------------------------------------------
+ ^bEOQ()^b
+ Determines the date for the end of a quarter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEOQ([<dDate>]) --> dEndOfQuarter
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates the date for the last day of the quarter in
+     which it lies, is calculated.  The default is the system date.
+
+ ^bReturns^b
+
+     EOQ() returns the last day for the quarter that contains <dDate>.
+
+ ^bDescription^b
+
+     EOQ() determines when the current quarter that contains <dDate> ends.
+     For example, it lets you calculate the number of days that remain before
+     the end of the quarter.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you do not specify a date, the function automatically uses
+        the system date.  An empty date parameter results in an empty date.
+
+ ^bExample^b
+
+     The last day of the current quarter is:
+
+     ? "The last day of the current quarter is:", EOQ()
+
+!seealso: "BOM()" "EOM()" "BOQ()" "BOY()" "EOY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EOY()        Determines the date for the end of the year
+'------------------------------------------------------------------------------
+ ^bEOY()^b
+ Determines the date for the end of the year
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEOY([<dDate>]) --> dEndOfYear
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates the date determined for the last day of the
+     year.   The default is the system date.
+
+ ^bReturns^b
+
+     The returned date is December 31 of the specified year.
+
+ ^bDescription^b
+
+     EOY() determines the date for the end of year without having to create a
+     date-type variable.
+
+ ^bNote^b
+
+     ^b^CFE^b  If no date is specified, the function automatically uses the
+        system date.  An empty date parameter always returns an empty date.
+
+ ^bExample^b
+
+     ^b^CFE^b  The last day of the current year (1991):
+
+        ? EOY()            // 12/31/91
+
+!seealso: "BOM()" "EOM()" "BOQ()" "EOQ()" "BOY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISLEAP()     Tests if a specific year is a leap year
+'------------------------------------------------------------------------------
+ ^bISLEAP()^b
+ Tests if a specific year is a leap year
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISLEAP([<dDate>]) --> lLeapYear
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates whether or not the specified date is in a leap
+     year.  The default is the system date.
+
+ ^bReturns^b
+
+     ISLEAP() returns .T. when  <dDate> lies in a leap year; otherwise, it
+     returns .F..
+
+ ^bDescription^b
+
+     A number of technical financial calculations need to know if a year has
+     365 or 366 days.  ISLEAP() determines this.
+
+ ^bNote^b
+
+     ^b^CFE^b  When parameters are missing, the function automatically uses
+        the system date.  You must adhere to all rules for leap year tests.
+        In the rare occurrence of a century change, the function also returns
+        a correct result.
+
+ ^bExample^b
+
+     Determine if the following dates are in a leap year:
+
+     ? ISLEAP(CTOD("01/01/1901"))      // .F., No leap year
+     ? ISLEAP(CTOD("09/30/1988"))      // .T., leap year
+     ? ISLEAP(CTOD("01/01/2000"))      // .T., leap year
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LASTDAYOM()  Determines the number of days in a month
+'------------------------------------------------------------------------------
+ ^bLASTDAYOM()^b
+ Determines the number of days in a month
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bLASTDAYOM([<dDate|nMonth>]) --> nDaysInMonth
+
+ ^bArgument^b
+
+     ^b<dDate|nMonth> ^b Designates either a date or the number of a month.
+     The default is the system date.
+
+ ^bReturns^b
+
+     LASTDAYOM() returns the number of days in the month specified by
+     <dDate|nMonth>.
+
+ ^bDescription^b
+
+     To administer due dates and other similar dates, it is useful to know
+     the number of days that remain in a month.  Specify either the day's
+     date or month as a parameter, and you get the length of the month in
+     days.  If you subtract the number of days until today's date, you are
+     left with the days that remain until month end.
+
+ ^bNote^b
+
+     ^b^CFE^b  Without the <dDate|nMonth> parameter, the function
+        automatically uses the system date.  If there is an invalid number of
+        months, LASTDAYOM() returns 0 as an error code.
+
+ ^bExample^b
+
+     How many days remain before the end of the month?
+
+     ? "There are " + STR(LASTDAYOM() - DAY(), 2) +;
+        " days until the end of the month"
+
+!seealso: "EOM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MDY()        Returns a date in the "Month DD, YY" format
+'------------------------------------------------------------------------------
+ ^bMDY()^b
+ Returns a date in the "Month DD, YY" format
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMDY([<dDate>]) --> cDate
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates the date from which to create a string.  The
+     default is the system date.
+
+ ^bReturns^b
+
+     MDY() returns a character string in Month DD, YY, or "Month DD, YYYY"
+     format.
+
+ ^bDescription^b
+
+     MDY() returns the date in a character string that contains the day, name
+     of month, and year.  The CA-Clipper SET CENTURY ON/OFF switch determines
+     whether or not the year is displayed in 2 or 4 digits.
+
+     If the function is called without a parameter, it automatically uses the
+     current system date.
+
+ ^bNote^b
+
+     ^b^CFE^b  The returned month name always depends on which CA-Clipper
+        nations module is in use.  A German or French version of
+        CA-Clipper returns the appropriate month names, despite its
+        characteristically American display.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display system date (1/1/89):
+
+        SET CENTURY OFF
+        ? MDY()                      //  January 1, 89
+
+     ^b^CFE^b  Display a different date:
+
+        SET CENTURY ON
+        ? MDY(CTOD("02/01/89"))      //  February 1, 1989
+
+!seealso: "DMY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NTOCDOW()    Changes the number of a weekday into a weekday name
+'------------------------------------------------------------------------------
+ ^bNTOCDOW()^b
+ Changes the number of a weekday into a weekday name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNTOCDOW(<nWeekday>) --> cWeekday
+
+ ^bArgument^b
+
+     ^b<nWeekday>^b  Designates a weekday number from 1 to 7.
+
+ ^bReturns^b
+
+     NTOCDOW() returns a name that corresponds to its weekday number.
+
+ ^bDescription^b
+
+     This function converts a weekday number into the corresponding name.
+     Sunday is 1, Monday is 2, Saturday is 7.  If you pass a number outside
+     of this range, the function returns a 0 value.
+
+ ^bNote^b
+
+     ^b^CFE^b  Function operation depends on the country-specific adaptation
+        of your CA-Clipper compiler.  With an English version of CA-Clipper,
+        only English day names are returned.
+
+ ^bExample^b
+
+     An English CA-Clipper returns:
+
+     ? NTOCDOW(1)      // "Sunday"
+     ? NTOCDOW(4)      // "Wednesday"
+     ? NTOCDOW(7)      // "Saturday"
+     ? NTOCDOW(8)      // ""
+
+!seealso: "CTODOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NTOCMONTH()  Changes the number of a month into a month name
+'------------------------------------------------------------------------------
+ ^bNTOCMONTH()^b
+ Changes the number of a month into a month name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNTOCMONTH(<nMonth>) --> cMonth
+
+ ^bArgument^b
+
+     <nMonth>  Designates a month number for which a month name is returned.
+
+ ^bReturns^b
+
+     NTOCMONTH() returns the name that corresponds to the month number.
+
+ ^bDescription^b
+
+     NTOCMONTH() determines the month name that corresponds to its month
+     number.  January is 1, February is 2, ..., December is 12.  If a number
+     outside this range is passed, the function returns a null string as a
+     value.
+
+ ^bNote^b
+
+     The function's operation depends on the country specific adaptation of
+     your CA-Clipper compiler.  With an English version of CA-Clipper, only
+     English day names are returned.
+
+ ^bExample^b
+
+     An English CA-Clipper returns:
+
+     ? NTOCMONTH(1)         //"January"
+     ? NTOCMONTH(2)         //"February"
+     ? NTOCMONTH(12)        //"December"
+     ? NTOCMONTH(14)        //""
+
+!seealso: "CTOMONTH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: QUARTER()    Determines the quarter in which a specific date lies
+'------------------------------------------------------------------------------
+ ^bQUARTER()^b
+ Determines the quarter in which a specific date lies
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bQUARTER([<dDate>]) --> nQuarter
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates in which quarter the specified date lies.  The
+     default is the system date.
+
+ ^bReturns^b
+
+     QUARTER() returns a number that identifies the quarter in which <dDate>
+     lies.
+
+ ^bDescription^b
+
+     QUARTER() determines which quarter of the year <dDate> lies.
+
+ ^bNote^b
+
+     ^b^CFE^b  When no date is specified, the function automatically uses the
+        system date.  An empty date returns 0 as a result.
+
+ ^bExample^b
+
+     Compute a delivery date:
+
+     ? "We will deliver in quarter ", QUARTER(CTOD("07/12/1991")), "1991"
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SECTOTIME()  Converts seconds into a time string
+'------------------------------------------------------------------------------
+ ^bSECTOTIME()^b
+ Converts seconds into a time string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSECTOTIME(<nSeconds>, [<lHundredth>]) --> cTime
+
+ ^bArguments^b
+
+     ^b<nSeconds>^b  Designates the number of seconds since midnight to
+     convert into a character string in time format.
+
+     ^b<lHundredth>^b  If this optional parameter is designated as .T., the
+     resulting time string contains hundredths of seconds.  The default is no
+     hundredths (.F.).
+
+ ^bReturns^b
+
+     SECTOTIME() returns a time string that corresponds to <nSeconds> in the
+     "HH:MM:SS" or "HH:MM:SS:hh" format.
+
+ ^bDescription^b
+
+     This function can be applied in two areas -- to convert numeric time
+     spans in seconds, and to convert a point in time into the "HH:MM:SS" or
+     "HH:MM:SS:hh" format.
+
+     If hundredths of seconds are also desired in the time string result,
+     then designate the second parameter as .T..  The portion of the value
+     for <nSeconds> to the right of the decimal is also converted.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Seconds since midnight are in the range of 0 to 86400.  With
+        larger values, the function internally executes the operation
+        <nSeconds>
+        % 86400 and then uses the result value.  86400 seconds corresponds to
+        an entire day.
+
+     ^b^CFE^b  There is no rounding when values like 45366.98 are converted
+        without hundredths.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Calculate the span between two times.  The result is displayed
+        in the "HH:MM:SS" format:
+
+        nBeginning  :=  170
+        nEnd         :=  3656
+        ? SECTOTIME(nEnd - nBeginning)     // "00:58:06"
+
+     ^b^CFE^b  With hundredth seconds:
+
+        ? SECTOTIME(45873.22, .T.)         // "12:44:33:22"
+
+!seealso: "TIMETOSEC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETDATE()    Sets the system date
+'------------------------------------------------------------------------------
+ ^bSETDATE()^b
+ Sets the system date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETDATE(<dDate>, [<lMode>]) --> lSet
+
+ ^bArguments^b
+
+     ^b<dDate>^b  Designates which date to use to set the system date.
+
+     ^b<lMode>^b  Designates whether the date should also be set in the CMOS-
+     RAM of an AT.  The default is do not write (.F.).
+
+ ^bReturns^b
+
+     SETDATE() returns .T. when the date is successfully set.
+
+ ^bDescription^b
+
+     When you use this function to set the system date from within your
+     CA-Clipper application, all files acquire this date with each write
+     procedure.
+
+ ^bNote^b
+
+     ^b^CFE^b  Please note that you can only implement the optional <lMode>
+        parameter for AT-compatible machines.  The correct operation of
+        SETDATE() cannot be guaranteed on machines that use a hardware clock.
+        The default value for <lMode> is .F..
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the system date in each case; but the hardware clock only
+        on an AT:
+
+        dNewDate  :=  CTOD("07/30/91")
+        IF ISAT()
+           SETDATE(dNewDate, .T.)
+        ELSE
+           SETDATE(dNewDate)
+        ENDIF
+
+     ^b^CFE^b  Or, more compactly:
+
+        SETDATE(dNewDate, ISAT())
+
+!seealso: "SETTIME()" tool_013.ngo:"ISAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETTIME()    Sets the system clock
+'------------------------------------------------------------------------------
+ ^bSETTIME()^b
+ Sets the system clock
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETTIME(<cTime>, [<lMode>]) --> lSet
+
+ ^bArguments^b
+
+     ^b<cTime>^b  Designates a character string that contains the time that
+     is to become the system time.
+
+     ^b<lMode>^b  Designates whether the time should also be set in the
+     CMOS-RAM of an AT.  The default is do not write to CMOS-RAM.
+
+ ^bReturns^b
+
+     The function returns .T. when the time is set successfully.
+
+ ^bDescription^b
+
+     When you use this function to convert the time into the system time from
+     within your CA-Clipper application, all files acquire this time with
+     each write procedure.
+
+ ^bNote^b
+
+     ^b^CFE^b  Please note that you can only implement the optional <lMode>
+        parameter in AT-compatible machines.  The correct operation of
+        SETTIME() cannot be guaranteed on machines that use a hardware clock.
+        The default value for <lMode> is .F..
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the system time in each case; but the hardware clock only
+        on an AT:
+
+        cNewTime  :=  "10:20:00"
+        IF ISAT()
+           SETTIME(cNewTime, .T.)
+        ELSE
+           SETTIME(cNewTime)
+        ENDIF
+
+     ^b^CFE^b  Or, more compactly:
+
+        SETTIME(cNewTime, ISAT())
+
+!seealso: "SETDATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SHOWTIME()   Continuously displays the time at desired screen position
+'------------------------------------------------------------------------------
+ ^bSHOWTIME()^b
+ Continuously displays the time at desired screen position
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSHOWTIME([<nRow>], [<nColumn>], [<lMode>],
+     ^b   [<cAttr|nAttr>], [<l12/24>], [<lAM/PM>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nRow>^b  Designates the row where the time is displayed.  The default
+     is the cursor row.
+
+     ^b<nColumn>^b  Designates the column where the time is displayed.  The
+     default is the cursor column.
+
+     ^b<lMode>^b  Designates whether seconds are to appear in the time
+     display (.F.), or not (.T.).  The default is display seconds (.F.).
+
+     ^b<cAttr|nAttr>^b  Designates to the screen attribute to use for the
+     time display.  Strings in the form "NN/NN" or "CC/CC" (e.g., "0/7" or
+     "B/GR") are possible.  The default is the setting for CLEARA (see
+     Introduction, Video Functions).
+
+     ^b<l12/24>^b  By designating this parameter as .T., a 12-hour display is
+     selected.  The default is a 24-hour display (.F.).
+
+     ^b<lAM/PM>^b  If you have a 24-hour display, you may want to switch on
+     an am/pm display.  When you specify this parameter as .T., an "a" or "p"
+     (as in DOS), appears to reflect the time.  The default is no display
+     (.F.).
+
+     ()  A call without parameters uninstalls the time display.
+
+ ^bReturns^b
+
+     SHOWTIME() always returns a null string.
+
+ ^bDescription^b
+
+     This function permits you to constantly display the time in any screen
+     position desired. SHOWTIME() is interrupt controlled and has the ability
+     to display the time in either "hh:mm:ss" or "hh:mm" format.  A 12- or 24-
+     hour display can be selected, with or without an am/pm display.
+
+ ^bNotes^b
+
+     ^bWarning!^b  SHOWTIME() works with the interrupt system.  Before
+     leaving your CA-Clipper application, you must uninstall SHOWTIME() , so
+     that the interrupt vectors can be restored.  Otherwise, the system will
+     be unstable and will eventually crash.  Simultaneous use of the
+     accompanying Extended Drivers Modules automatically restores the
+     interrupt vectors in use.
+
+     ^b^CFE^b  Specify the screen attribute as either a numeric or a string
+        in "NN/NN" form.  If no attribute is specified, the value for CLEARA
+        applies (see Introduction Video Functions).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display a clock in row 0, column 70, with no seconds display
+        and the standard attribute.  When a display is shown in row 0, switch
+        SCOREBOARD off!
+
+        SET SCOREBOARD OFF
+        SHOWTIME(0, 70, .T.)      //  Turn on clock
+           *...
+           *...
+        nSHOWTIME()               //  Uninstall clock
+
+     ^b^CFE^b  Show a 12-hour display with am/pm on the lowest row.  White
+        letters on a blue background:
+
+        SHOWTIME(24, 70, .T., "W/B")
+
+!seealso: tool_003.ngo:"Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STOD()       Converts an ANSI date string into CA-Clipper format
+'------------------------------------------------------------------------------
+ ^bSTOD()^b
+ Converts an ANSI date string into CA-Clipper format
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSTOD(<cAnsiDate>) --> dDate
+
+ ^bArgument^b
+
+     ^b<cAnsiDate>^b  Designates the character string that contains a date in
+     the ANSI format "YYYYMMDD" that is to be converted into the CA-Clipper
+     date format.
+
+ ^bReturns^b
+
+     STOD() returns the <cAnsiDate> character string in the corresponding CA-
+     Clipper date format.
+
+ ^bDescription^b
+
+     STOD() converts an ANSI date created by the CA-Clipper DTOS() function,
+     back into the standard date format.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the ANSI date is invalid, a null date is returned.
+
+ ^bExample^b
+
+     Display the ANSI date in default date format:
+
+     APPEND FROM OTHDATE
+     LIST STOD(cAnsiDate)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: TIMETOSEC()  Calculates the seconds since midnight
+'------------------------------------------------------------------------------
+ ^bTIMETOSEC()^b
+ Calculates the seconds since midnight
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTIMETOSEC(<cTime>) --> nSeconds
+
+ ^bArgument^b
+
+     ^b<cTime>^b  Designates a character string that contains the time in the
+     format "HH:MM:SS:hh".  The default is the system time.
+
+ ^bReturns^b
+
+     The returned value designates how many seconds have elapsed between
+     midnight and <cTime>.  Hundredths of seconds are contained as a decimal
+     value.
+
+ ^bDescription^b
+
+     When computing time periods, or when adding times, it is simpler to deal
+     with seconds since midnight instead of time designations.  These
+     calculations are simplified significantly.  The SECTOTIME() function
+     converts the result into a time designation again.  Starting from back
+     to front, you can omit the hundredths, seconds, and minutes from the
+     time string that is passed as a parameter.  These values are then
+     assumed to be "00".
+
+     If you do not specify a parameter, the function uses the current time on
+     the system clock.
+
+ ^bExamples^b
+
+     ^b^CFE^b  A simple conversion:
+
+        ? TIMETOSEC("12:44:33:22")                 // Result:  45873.22
+
+     ^b^CFE^b  The period between two times is calculated. The result is
+        displayed in seconds:
+
+        cBegin      :=  "12:55:44:33"
+        cEnd         :=  "14:56:12:22"
+        ? TIMETOSEC(cEnd) - TIMETOSEC(cBegin)      // Period in seconds
+
+     ^b^CFE^b  Possible formats:
+
+        ? TIMETOSEC("12")
+        ? TIMETOSEC("12:44)
+        ? TIMETOSEC("12:44:33)
+        ? TIMETOSEC("12:44:33:22")
+
+!seealso: "SECTOTIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TIMEVALID()  Determines whether a specified time is valid
+'------------------------------------------------------------------------------
+ ^bTIMEVALID()^b
+ Determines whether a specified time is valid
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTIMEVALID(<cTime>) --> lValid
+
+ ^bArgument^b
+
+     ^b<cTime>^b  Designates a character string that contains the time to
+     test.
+
+ ^bReturns^b
+
+     TIMEVALID() returns .T. when <cTime> is a valid time; or .F. when
+     <cTime> is an invalid time.
+
+ ^bDescription^b
+
+     With input that requires time manipulation, writing your own UDF to
+     check time inputs was unavoidable up to now.  TIMEVALID() permits
+     complete checking of a time designation.  You can use this function
+     effectively with a VALID clause within a READ mask.
+
+ ^bNote^b
+
+     ^b^CFE^b  Note the format for time designations.  There must always be
+        two digits for hours, minutes, seconds, and hundredths; otherwise,
+        the time it is regarded as invalid.  Valid examples are "12",
+        "12:59", "12:59:59", and "12:59:59:99".  By contrast, invalid
+        examples are "24", "12:60", or "12:1", and/or "12:".  If you work
+        with time strings that are not completely filled and that you need to
+        check with TIMEVALID(), then they must be TRIMmed prior to the use of
+        TIMEVALID() (see following Examples).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Using the VALID clause with TRIM, all valid times are
+        accepted, even if no seconds or minutes are specified:
+
+        cBegin  :=  SPACE(11)
+        @ 5, 10 SAY "Please input time for beginning work:";
+        GET cBegin VALID TIMEVALID(TRIM(cBegin))
+        READ
+
+     ^b^CFE^b  Using a VALID clause without TRIM, hours and minutes must be
+        specified, so that TIMEVALID() can confirm a valid time:
+
+        cBegin  :=  SPACE(5)
+        @ 5, 10 SAY "Please input time for beginning work:";
+        GET cBegin VALID TIMEVALID(cBegin)
+        READ
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: WAITPERIOD() Pauses a specified time in increments of 1/100 seconds
+'------------------------------------------------------------------------------
+ ^bWAITPERIOD()^b
+ Pauses a specified time in increments of 1/100 seconds
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWAITPERIOD([<nDelay>]) --> lNotElapsed
+
+ ^bArgument^b
+
+     ^b<nDelay>^b  Designates the waiting period at initialization in
+     1/100ths of seconds.  Values from 1 to 8, 640, 000 (one day) are
+     possible.
+
+ ^bReturns^b
+
+     WAITPERIOD() returns .T. , if the time span designated at initialization
+     has not elapsed.
+
+ ^bDescription^b
+
+     This function sets a time span for a CA-Clipper DO WHILE loop to run.
+     The function must initialize prior to the loop, since you must specify
+     the <nDelay> parameter in 1/100th seconds.  Subsequently, the function
+     can be implemented without a parameter for additional loop conditions.
+     It returns .T., as long as the designated time span has not yet run out.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function notes the status of the internal timer at
+        initialization.  From that point on, the initialization should always
+        precede the respective DO WHILE; otherwise, the time delay is
+        incorrect.  The passing of midnight (the time resets to the 0 value)
+        is taken into account.
+
+ ^bExample^b
+
+     Run a loop for 5 seconds:
+
+     WAITPERIOD(500)               // Initialization, 5 seconds
+     DO WHILE <cond1> .AND. <cond2> .AND. WAITPERIOD()
+        *...
+     ENDDO
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: WEEK()       Returns the calendar week for a date
+'------------------------------------------------------------------------------
+ ^bWEEK()^b
+ Returns the calendar week for a date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWEEK([<dDate>]) --> nWeekOfYear
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates a date for which the week it lies in, is
+     determined.  The default is the system date.
+
+ ^bReturns^b
+
+     WEEK() returns a sequential week number that designates in which week of
+     the year <dDate> lies.
+
+ ^bDescription^b
+
+     The week of the year in which a day lies is information required by a
+     number of technical financial calculations or wage accounting.  This
+     function determines this week and acknowledged all calendar rules.
+
+ ^bNote^b
+
+     ^b^CFE^b  When no date is specified, then WEEK() uses the system date.
+        An empty date leads to a 0 result.
+
+ ^bExample^b
+
+     Determine the week for a date:
+
+     dDate  :=  CTOD("03/14/92")
+
+     ? "This date is in week:  ", WEEK(dDate)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: WOM()        Returns the week within a month.
+'------------------------------------------------------------------------------
+ ^bWOM()^b
+ Returns the week within a month.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bWOM([<dDate>]) --> nWeekOfMonth
+
+ ^bArgument^b
+
+     ^b<dDate>^b  Designates a date for which you want to determine which
+     week of the month it lies in.  The default is the system date.
+
+ ^bReturns^b
+
+     WOM() returns the number that reflects the week within a month in which
+     <dDate>lies.
+
+ ^bDescription^b
+
+     The WOM() function can returns the corresponding week of the month for
+     every valid date.
+
+ ^bNote^b
+
+     ^b^CFE^b  When no date is specified, WOM() uses the system date.  An
+        empty date returns a result of 0.
+
+ ^bExample^b
+
+     Compute a delivery date:
+
+     ? "We will deliver in week" + STR(WOM(dDate)) + " in; August!"
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

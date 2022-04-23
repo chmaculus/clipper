@@ -1,0 +1,50 @@
+'------------------------------------------------------------------------------
+^BSET PRINTER^B
+
+    Selects a DOS device for printer output.
+
+^USyntax^U
+
+    SET PRINTER TO [<device>/<file>/(<expC>)]
+
+^UArgument^U
+
+    <device> sends the printed output to the network or the local device.
+    For some networks, the work station's printer should first be
+    redirected to the file server (usually by running the network spooler
+    program).
+
+    <file> sends all printer output including @...SAYs to the specified
+    filename.  If you do not specify a file extension, Clipper appends a
+    .prn extension to the filename.
+
+    SET PRINTER TO with no arguments closes the print spool file and
+    resets the default destination.
+
+    SETting the PRINTER TO a non-existent device creates a file with the
+    name of the device.
+
+^UUsage^U
+
+    The default device is PRN.
+
+    SET PRINTER directs printed output from any print-related command to
+    the specified device.  Device names include LPT1, LPT2, LPT3 (all
+    parallel ports), COM1, and COM2 (serial ports).
+
+    ^BNote:^B When specifying device names, be sure not to specify a
+    trailing colon.
+
+    This capability has several uses:
+
+    o  You can swap ports for managing multiple printers.
+
+    o  You can direct output to a file for printing later or transfer to a
+       remote computer via telecommunications.
+
+    o  You can empty the printer spooler and reset the default device.
+!seealso: ???.ngo:"@...SAY...GET" clip_055.ngo:"SET DEVICE" clip_070.ngo:"SET PRINT" 
+'------------------------------------------------------------------------------
+
+
+

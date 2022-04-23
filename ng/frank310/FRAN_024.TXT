@@ -1,0 +1,317 @@
+!short: ADacombine()        Combines two arrays together
+'------------------------------------------------------------------------------
+ ^bADacombine( <a1>, <a2> ) --> <a1>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Combines two arrays <a1> and <a2> together.  The elements of <a2> are added
+ to the end of <a1>.  Thus, <a1> actually grows.
+
+ ^bExample
+ ^b-------
+ a1 := { 1, 2, 3 }
+ a2 := { "a", "b" }
+ ADacombine( a1, a2 )   // { 1, 2, 3, "a", "b" }
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADaequal()        ^rn^r Checks if two arrays are equal
+'------------------------------------------------------------------------------
+ ^bADaequal( <a1> <a2> ) --> <lEqual>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Checks if the two arrays <a1> amd <a2> are equal.  Two arrays are
+ considered equal if all the following conditions are true:
+
+ 1.  They have the same number of elements.
+ 2.  Their corresponding elements are of the same type.
+ 3.  If the elements are arrays, they must themselves be equal.
+ 4.  If the elements are not arrays nor codeblocks, they must be equal.
+
+ Examples
+ --------
+ a1 := { 1, "1", ctod( "01/01/95" ), .f., { 1,2,3 }, {||.t.} }
+ a2 := { 1, "1", ctod( "01/01/95" ), .f., { 1,2,3 }, {||.t.} }
+ a3 := { 1, "1", ctod( "01/01/95" ), .f., { 1,2,3 }, {||NIL} }
+ a4 := { 1, "1", ctod( "01/01/95" ), .f., { 1,2,3 } }
+ a5 := { 1, "1", ctod( "01/01/95" ), .f., { 1,2,3,4,5 }, {||.t.} }
+ a6 := { 2, "1", ctod( "01/01/95" ), .f., { 1,2,3 }, {||.t.} }
+
+ ADaequal( a1, a2 )      // .T.
+ ADaequal( a1, a3 )      // .T.
+ ADaequal( a1, a4 )      // .F.
+ ADaequal( a1, a5 )      // .F.
+ ADaequal( a1, a6 )      // .F.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADamaxlen()         Returns the length of the longest element in an array
+'------------------------------------------------------------------------------
+ ^bADamaxlen( <a> ) --> <nLength>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the length of the longest element in array <a>.  All elements in <a>
+ must be strings.  A runtime error will occur if there is a non-string element.
+
+ ^bExample:
+ ^b--------
+ ? ADamaxlen( { "1", "23", "456", "78", "9" } )      // 3
+ ? ADamaxlen( { "1", 23 } )                          // error
+!seealso: "ADaxmaxlen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADamodify()         Modifies the elements in an array
+'------------------------------------------------------------------------------
+ ^bADamodify( <a>, <b> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Modifies the elements in array <a>, according to the logic of the codeblock,
+ <b>.  The function walks through the array, EVALuating the block for each
+ element, and passing the element and the element's index position for every
+ EVALuation.  The element's value changes to the result of the block
+ EVALuation.
+
+ ^bExample:
+ ^b--------
+ a := { 1,,2,,,3 }
+ ADamodify( a, {|x,n| if( x == NIL, 0, x ) } )
+ /* The array becomes { 1,0,2,0,0,3 } */
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADapack()         ^rn^r Packs an array
+'------------------------------------------------------------------------------
+ ^bADapack( <a>, <bExpn> ) --> <a>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Packs an array.
+
+ <a> is the array to pack
+
+ <bExpn> is a two-parameter codeblock that returns a logical value.  It is
+ EVALed for every element in <a>, passing the element and its index position
+ in the array to it.  If the EVALuation yields a TRUE, that element is
+ physically removed from the array.  In effect the array is shrunk in size.
+ <bExpn> defaults to {|e,x|e==NIL}, which removes all NIL elements from the
+ array.
+
+ Example:
+ a := { 1, "One", .T. }
+ ADapack( a, {|e,x|valtype(e) == "N"} )     // { "One", .T. }
+ ADapack( a, {|e,x|valtype(e) != "N"} )     // { 1 }
+ ADapack( a, {|e,x|x == 2} )                // { 1, .T. }
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADarotate()         Moves an array element to a different location
+'------------------------------------------------------------------------------
+ ^bADarotate( <a>, <nth>, <xMode> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Moves an array element to another location within the array.
+
+ <a> - name of the array to be manipulated.
+
+ <nth> - the index position of the element to be moved.
+
+ <xMode> - mode of movement.  The manner in which the element is moved
+ depends on the value of this parameter.  If it is a TRUE, the element is
+ moved to the last position.  The "passed over" elements are moved up one
+ element toward the start of the array.  The opposite takes place if <xMode>
+ is FALSE, i.e., the element is moved to the first position.  If <xMode> is
+ a numeric, the element is moved to that position.
+
+ ^bExample
+ ^b-------
+ a := { 1, 2, 3 }
+ ADarotate( a, 1, .t. )      // 2,3,1
+ ADarotate( a, 2, .f. )      // 3,2,1
+ ADarotate( a, 1, 2 )        // 2,3,1
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADarr2str()         Converts an array of strings into a delimited string
+'------------------------------------------------------------------------------
+ ^bADarr2str( <a>, <cDelimiter> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Converts an array of strings into a delimited string.
+
+ ^bExample
+ ^b-------
+ a := { "The", "Quick", "Brown" }
+ ? ADarr2str( a, "," )          // "The,Quick,Brown"
+!seealso: "ADstr2arr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADashrink()         Shrinks an array, removing trailing NIL elements
+'------------------------------------------------------------------------------
+ ^bADashrink( <a> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Shrinks an array by removing trailing NIL elements.
+
+ ^bExample
+ ^b-------
+ a := { 1,2,3,,, }
+ b := { 1,,,,2,3 }
+ ADashrink( a )  // 1,2,3
+ ADashrink( b )  // 1,,,,2,3
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADasize()           Resizes an array, optionally filling new elements
+'------------------------------------------------------------------------------
+ ^bADasize( [a], <nSize>, [xValue] ) --> <a>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Resizes an array.  Optionally fills added elements with [xValue].  If
+ [xValue] is not passed, it defaults to NIL.  If [a] is not passed, or if it
+ is not an array, it is created.  In Frankie 1, [a] was not optional.
+
+ ^bExample:
+ ^b--------
+ a := { 1, 2, 3 }
+ ADasize( a, 5, 0 )
+ /* The array becomes { 1, 2, 3, 0, 0 } */
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADaswap()           Swaps the values of two elements in an array
+'------------------------------------------------------------------------------
+ ^bADaswap( <a>, <n1>, <n2> ) --> NIL
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Swaps the values of two elements, <n1> and <n2> in an array, <a>.
+
+ ^bExample
+ ^b-------
+ a := { 1,2,3,4,5 }
+ ADaswap( a, 2, 4 )      // 1,4,3,2,5
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADaview()         ^rm^r Browses an array
+'------------------------------------------------------------------------------
+ ^bADaview( <a> ) --> <xRetVal>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Displays the elements of an array, vertically scrolling if necessary.
+
+ <a> is the array to be viewed.
+
+ <xRetval> is the return value.  It is NIL if ADaview() exited with the Esc
+ key or the right mouse button.  It is the currently highlighted element if
+ it is exited with the Enter key.
+
+ The displayed value of an element depends on its type:
+
+ Numeric - converted to a string with str()
+ Character - its face value.
+ Date - converted to a string with dtoc()
+ Logical - converted to either "T" or "F"
+ Array - as "ARRAY".
+ Block - "BLOCK"
+ Nil - "NIL"
+
+ If there are more elements than can be accommodated on the screen, the
+ viewer will scroll vertically with the Up/Down button.  You may also scroll
+ the highlighted element horizontally with the Left/Right key, or by holding
+ the left mouse button toward the left or right end of the highlighted row.
+
+ You may expand an array element by highlighting it then pressing the TAB
+ key (or clicking it with the mouse left button).
+
+ To close the window, press the Esc key, or click the right button.
+
+ ^bExample:
+ ^b--------
+ a := {;
+         date(),;
+         1,;
+         "1",;
+         .T.,;
+         NIL,;
+         {|| NIL},;
+         { 1, 2, 3 },;
+         "The Frankie Library";
+       }
+ ADaview( a )
+
+ v3.00 -> v3.10
+ --------------
+ ADaview() now exits with the Enter key, and returns the currently
+ highlighted array element.  Otherwise, it returns a NIL.
+
+ Older version -> v2.3
+ ---------------------
+ The developer's key, ALT-0 is now active within ADaview().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADaxmaxlen()        Returns the length of the longest TRANSFORMed element
+'------------------------------------------------------------------------------
+ ^bADaxmaxlen( <a>, <aPic> ) --> <nMaxLength>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ Returns the length of the longest TRANSFORMed element of an array, <a>.  The
+ elements of the array may be of any type.
+
+ <aPic> is an array of picture clauses.  These will be used to transform the
+ <a> elements into strings before string length determinations are done.
+ Thus <a>[1] will be transformed using <aPic>[1], <a>[2] with <aPic>[2], etc.
+ If no clause was supplied for any particular element, that element will be
+ transformed without the use of a picture.
+
+ <nMaxLength> is the maximum length
+
+ ^bExample
+ ^b-------
+ a := { 1, "xyz", "abc" }
+ aPic := { "9999", "XXX", "@!" }
+ ? ADaxmaxlen( a, aPic )     // 4
+ aPic := {,,}
+ ? ADaxmaxlen( a, aPic )     // 10
+!seealso: "ADamaxlen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstr2arr()         Converts a string into an array
+'------------------------------------------------------------------------------
+ ^bADstr2arr( <cString>, <cDelimiter> ) --> <a>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Converts a delimited string, <cString> into an array.
+
+ ^bExample:
+ ^b--------
+ cString := "The Frankie Library for Clipper"
+ a := ADstr2arr( cString, " " )  // {;
+                                 //        "The",;
+                                 //        "Frankie",;
+                                 //        "Library",;
+                                 //        "for",;
+                                 //        "Clipper";
+                                 //  }
+
+ a := ADstr2arr( cString, "e" )  // {;
+                                 //        "Th",;
+                                 //        " Franki",;
+                                 //        " Library for Clipp",;
+                                 //        "r";
+                                 //   }
+!seealso: "ADarr2str()" 
+'------------------------------------------------------------------------------
+
+
+

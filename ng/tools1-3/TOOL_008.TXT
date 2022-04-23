@@ -1,0 +1,3197 @@
+!short: Introduction Disk Utilities
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+ ^bFundamental to the disk functions^b
+
+ ^bFault tolerance and more^b
+
+     One of the biggest problems in stable application development is how to
+     handle errors.  Errors that occur during hard or floppy disk operations
+     are especially frustrating.  You may also encounter critical errors,
+     which disable the program or operating system.  The result, known to all
+     CA-Clipper programmers, are the DOS error choices:  (A)bort, (R)etry,
+     (I)gnore.
+
+ ^bAvoiding Errors^b
+
+     Error trap functions allow you to react to this type of error, but a
+     strategy to avoid them completely is better.  Therefore, CA-Clipper
+     Tools includes functions to make it easier to handle floppy and hard
+     disk errors.
+
+ ^bBackup Systems^b
+
+     Backup systems, another component of the CA-Clipper application, are
+     also discussed in this chapter.  The recursive FILESEEK() system, which
+     allows you to format disks with DISKFORMAT(), is particularly useful.
+     Complete directories can be scanned recursively, and queries regarding
+     detailed information for every file can be made.  The ideal time to
+     carry out this process is during source and target drive back ups,
+     because only the information that has changed is copied.
+
+     To avoid the annoying and not particularly fault-tolerant "RUN FORMAT",
+     you can format the file disks directly from the application in all
+     commonly available formats.  Since the control UDF for DISKFORMAT() uses
+     a concept similar to DBEDIT(), you can display the format procedures on
+     the screen as desired.
+
+     You can also determine a good deal of varied information about disk
+     drives, files, and other things.  This information far exceeds that of
+     the FILESEEK() system.
+
+ ^bFile Attributes^b
+
+     Following is the coding for each function where a file can be
+     designated:
+
+     ^bTable 1:^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY
+     2       FA_HIDDEN           HIDDEN
+     4       FA_SYSTEM           SYSTEM
+     8       FA_VOLUME           VOLUME
+     16      FA_DIRECTORY        DIR
+     32      FA_ARCHIVE          ARCHIVE
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If multiple attributes are implemented for a file, then the table
+     values are added accordingly.  For example, if the HIDDEN and SYSTEM
+     attributes are implemented, the function must pass a 6 (2 + 4) as the
+     attribute mask.
+
+     All file attributes do not behave the same.  To initiate a file into the
+     process, you must explicitly specify the HIDDEN, SYSTEM, VOLUME and DIR
+     attributes.  However, if either no attribute, R/O, or ARCHIVE is
+     implemented with a file, it does not matter which value is passed.
+     These rules for attribute handling are grounded in DOS, which compares
+     the specified value with the actual file attributes in this way.  Since
+     in some circumstances this may lead to problems, the FILESEEK() function
+     allows you to switch on an additional EXACT ATTRIBUTE MATCHING.
+
+ ^bShare Modes^b
+
+     For DOS version 3.0 or higher, if a function uses the DOS OPEN FILE call
+     internally, it must pass a share mode.  This way, one station determines
+     how all other stations in the network can access the open file. This is
+     valid for as long as the file remains open.  The following variations
+     exist:
+
+     ^bTable 3:  Share Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Symb. constants     Share Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       SHARE_COMPAT        Compatibility mode.  Here, DOS or the
+                                 network software itself, determines the
+                                 share mode.  In Novell networks, the
+                                 SHAREABLE attribute plays an important role
+                                 in this relationship.
+     1       SHARE_EXCLUSIVE     Both read and write by other programs are
+                                 locked out
+     2       SHARE_DENYWRITE     Write by other programs are locked out
+     3       SHARE_DENYREAD      Read by other programs are locked out
+     4       SHARE_DENYNONE      Not locked.  Read and write by other
+                                 programs is allowed
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     With the basic setting, all files are opened in the compatibility mode
+     (relating to older DOS).  As a rule, the share mode depends on file
+     attributes or the network software setting.
+
+     Also in this chapter is the SETSHARE() function, which determines the
+     share mode that enables all CA-Clipper Tools functions to open a file.
+     CA-Clipper commands or functions are not affected in any way.
+
+ ^bCSETSAFETY()^b
+
+     Use the CSETSAFETY() function as a safety switch to protect existing
+     files from unwanted overwriting during file operations with CA-Clipper
+     Tools functions.  You will find this function in the chapter on Switches
+     and Status Information, since it concerns all CA-Clipper Tools file
+     operations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: DELETEFILE() Deletes an error-tolerant file
+'------------------------------------------------------------------------------
+ ^bDELETEFILE()^b
+ Deletes an error-tolerant file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDELETEFILE(<cFileName>) --> nErrorCode
+
+ ^bArgument^b
+
+     ^b<cFileName>^b  Designates which file name to delete.
+
+ ^bReturns^b
+
+     DELETEFILE() returns a code that signifies its completion status:
+
+     ^bTable 7-1:  DELETEFILE() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      NO_DISK_ERR         No error occurs
+     -2      ER_FILE_NOT_FOUND   File not found
+     -3      ER_PATH_NOT_FOUND   Path not found
+     -5      ER_ACCESS_DENIED    Access denied (e.g., file is read-only)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     In contrast to FILEDELETE(), which permits you to specify file groups
+     with wildcards, DELETEFILE() only accepts specific file names.  However,
+     the function avoids all DOS error messages and returns an error code
+     directly to the calling program.  This makes error-tolerant erasures in
+     networks possible (see Examples).
+
+ ^bNote^b
+
+     ^b^CFE^b  You can use a drive designator and path name, but no
+        wildcards.
+
+ ^bExamples^b
+
+     ^b^CFE^b  How NOT to delete a file in a network environment:
+
+        IF FILE ("TEST.DBF")
+           * Is it actually possible to delete the file?
+           DELETE FILE TEST.DBF
+        ENDIF
+
+     ^b^CFE^b  This is a better way:
+
+        nStatus  :=  DELETEFILE("TEST.DBF")
+        IF nStatus == 0
+           ? "File deleted."
+        ELSE
+           IF nStatus == -5
+              ? "ACCESS DENIED!"
+              ? "File in use elsewhere!"
+           ENDIF
+        ENDIF
+
+!seealso: "FILEDELETE()" "RENAMEFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DIRCHANGE()  Changes the current directory
+'------------------------------------------------------------------------------
+ ^bDIRCHANGE()^b
+ Changes the current directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDIRCHANGE(<cDirectory>) --> nErrorCode
+
+ ^bArgument^b
+
+     ^b<cDirectory>^b  Designates the path of the directory that is changed.
+
+ ^bReturns^b
+
+     DIRCHANGE() returns a 0 when it successfully changes the directory;
+     otherwise, an error code is passed.  The codes are defined as follows:
+
+     ^bTable 7-2:  DIRCHANGE() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      NO_DISK_ERR         No error occurred
+     -2      ER_FILE_NOT_FOUND   File not found
+     -3      ER_PATH_NOT_FOUND   Path not found
+     -5      ER_ACCESS_DENIED    Access denied (e.g., in network)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DIRCHANGE() changes the current subdirectory or determines if a
+     directory exists.  This allows DOS error messages to be intercepted.
+     (See also DIRMAKE()).
+
+ ^bNote^b
+
+     ^b^CFE^b^b ^b <cDirectory> may contain a drive designator and a path.
+        Wildcards are not allowed.
+
+ ^bExample^b
+
+     Change to the "\DATA" directory:
+
+     IF DIRCHANGE("\DATA") == 0
+        ? "Current directory is now:  " + DIRNAME()
+     ENDIF
+
+!seealso: "DIRMAKE()" "DIRNAME()" "DIRREMOVE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DIRMAKE()    Creates a directory
+'------------------------------------------------------------------------------
+ ^bDIRMAKE()^b
+ Creates a directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDIRMAKE(<cDirectory>) --> nErrorCode
+
+ ^bArgument^b
+
+     ^b<cDirectory>^b  Designates the directory name to create.
+
+ ^bReturns^b
+
+     DIRMAKE() returns a 0 when it has successfully created the directory;
+     otherwise, an error code is passed.  The codes are defined as follows:
+
+     ^bTable 7-3:  DIRMAKE() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      NO_DISK_ERR         No error occurred
+     -2      ER_FILE_NOT_FOUND   File not found
+     -3      ER_PATH_NOT_FOUND   Path not found
+     -5      ER_ACCESS_DENIED    Access denied (e.g., in network)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     When you install the program, directories must be the first thing you
+     create.  The DIRMAKE() function allows you to create new directories
+     from within your CA-Clipper application.
+
+ ^bNote^b
+
+     ^b^CFE^b  <cDirectory> can contain a drive designator and a path,
+        wildcards are not allowed.
+
+ ^bExamples^b
+
+     Change to the "\DATA" directory:
+
+     IF DIRCHANGE("\DATA") == -3         // Path not found
+        DIRMAKE("\DATA")
+     ENDIF
+
+!seealso: "DIRCHANGE()" "DIRNAME()" "DIRREMOVE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DIRNAME()    Determines the name of the current directory
+'------------------------------------------------------------------------------
+ ^bDIRNAME()^b
+ Determines the name of the current directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDIRNAME([<cDrive>]) --> cDirectory
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive for which the current directory is
+     determined (a colon is unnecessary).  The default is the current drive.
+
+ ^bReturns^b
+
+     DIRNAME() returns the current directory name on the <cDrive>.
+
+ ^bDescription^b
+
+     DIRNAME() determines the current directory name on the selected drive.
+     You can use this function to construct complete access paths.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The maximum length of the returned value is 65 characters.  If
+        no drive designator is specified, the current drive is assumed.
+
+     ^b^CFE^b  If there is an invalid drive designation, DIRNAME() returns a
+        null string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the current directory name:
+
+        ? "Current Directory:  " + DIRNAME()
+
+     ^b^CFE^b  With a drive designator:
+
+        ? DIRNAME("A")               // Current directory on Drive A:
+
+!seealso: "DIRCHANGE()" "DIRMAKE()" "DIRREMOVE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DIRREMOVE()  Removes a directory
+'------------------------------------------------------------------------------
+ ^bDIRREMOVE()^b
+ Removes a directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDIRREMOVE(<cDirectory>) --> nErrorCode
+
+ ^bArgument^b
+
+     ^b<cDirectory> ^b Designates which directory name to remove.
+
+ ^bReturns^b
+
+     DIRREMOVE() returns a 0 when the designated directory is successfully
+     removed; otherwise, an error code is returned.  The codes are defined as
+     follows:
+
+     ^bTable 7-4:  DIRREMOVE() Error Code^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      Directory has been successfully removed.
+     -3      Access path not found or directory not empty.
+     -5      Access denied (e.g., in a network)
+     -16     Current directory (cannot be removed)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     DIRREMOVE() removes a designated directory.  This frees up the memory
+     disk that an empty subdirectory occupies.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Use a drive designator and access path with <cDirectory>,
+        wildcards are not permitted.
+
+     ^b^CFE^b  The directory must be empty before you can remove it.
+
+ ^bExamples^b
+
+     Remove the "\DATA" directory:
+
+     IF DIRREMOVE("\DATA") == 0
+        ? "Directory deleted."
+     ENDIF
+
+!seealso: "DIRCHANGE()" "DIRMAKE()" "DIRNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKCHANGE() Changes the current disk drive
+'------------------------------------------------------------------------------
+ ^bDISKCHANGE()^b
+ Changes the current disk drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKCHANGE(<cDrive>) --> lChanged
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates which disk drive that you want to use.
+
+ ^bReturns^b
+
+     DISKCHANGE() returns .T., when the designated disk drive is successfully
+     changed.
+
+ ^bDescription^b
+
+     DISKCHANGE() allows you to change from the current disk drive to
+     another.  To do this, call DISKCHANGE() with the disk drive identifier
+     (A,B,C, etc.).  The drive identifier can be specified with a colon (:).
+
+ ^bExample^b
+
+     Change to drive C:
+
+     ? DISKCHANGE("C")         // Returns .T. when successful
+
+!seealso: "DISKNAME()" "DIRCHANGE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKCHECK()  Creates a checksum for a disk
+'------------------------------------------------------------------------------
+ ^bDISKCHECK()^b
+ Creates a checksum for a disk
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKCHECK(<cDrive>, [<nStartSector>]) --> nCheckSum
+
+ ^bArguments^b
+
+     ^b<cDrive>^b   Designates which drive (A, B, C, etc.) you want to check.
+
+     ^b<nStartSector>^b  Designates a sector to serve as a starting point to
+     check the disk in the direction of the first sector.
+
+ ^bReturns^b
+
+     DISKCHECK() returns a number that corresponds to a checksum for the data
+     carrier in <cDrive>.  If read errors occur, the function returns a
+     negative number when the first bad sector is found.
+
+ ^bDescription^b
+
+     DISKCKECK() begins its check with the last sector of the designated
+     drive or with the <nStartSector> value, and works in the direction of
+     the first sector.  If a sector is found to contain errors, then it
+     returns a negative value.
+
+     If it returns a -1, continue to check for other errors (such as a
+     missing disk).  The CA-Clipper Tools function ERRORCODE() is quite
+     useful here.  Error code returns a value that symbolizes the most-recent
+     DOS error.
+
+     Since DISKCHECK() returns a checksum, it is easy to check for disk
+     changes.
+
+ ^bNote^b
+
+     ^b^CFE^b  You must specify the <cDrive> parameter.  If you omit it or
+        specify an unavailable drive, DISKCHECK() returns an error code of -
+        1.  DISKCHECK() takes more time to check a hard disk.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create a checksum for a floppy:
+
+        Checksum  :=  DISKCHECK("A")
+
+     ^b^CFE^b  Show that the disks are changed:
+
+        IF DISKCHECK("A") == Checksum
+           ? "You have not changed disks!"
+        ENDIF
+!seealso: "FILECHECK()" tool_013.ngo:"ERRORCODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKFORMAT() Formats disks, controlled through a UDF
+'------------------------------------------------------------------------------
+ ^bDISKFORMAT()^b
+ Formats disks, controlled through a UDF
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKFORMAT(<cDrive>, [<nCapacity>], [<cUDF>],
+     ^b   [<cBootText>], [<nRepetitions>]) --> nErrorCode
+
+ ^bArguments^b
+
+     ^b<cDrive>^b  Designates the disk drive to format.  Only a floppy drive
+     is permitted.  You may optionally specify a colon (:).
+
+     ^b<nCapacity>^b  Designates the appropriate disk capacity for the disk
+     you are about to format.  Possible values are 160, 180, 320, 360, and
+     1200 for 5.25"; 720 and 1440 for 3.5" disks.  The default is the maximum
+     drive capacity.
+
+     ^b<cUDF>^b  Designates the name of a user-defined function call before
+     each format step (track or head change).  The default is no UDF called.
+
+     ^b<cBootText>^b  This optional parameter designates text, with a maximum
+     of 255 characters, to display if the formatted disk is booted.  The
+     default is described in the "Notes" section on the following page.
+
+     ^b<nRepetitions>^b  Designates the number of repeat attempts you should
+     make, to format a track before the function aborts.  The default is one
+     repetition.
+
+ ^bReturns^b
+
+     The function returns 0 when the disk is successfully formatted.
+
+     ^bTable 7-5:  DISKFORMAT() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bError Codes  Symb. constants     Definition
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0           NO_DISK_ERROR       Format successful
+     -1           DF_WRONG_DRIVE      Illegal drive, only A: and B:  allowed
+     -2           DF_WRONG_DISK_SIZ   kB value not supported
+     -3           DF_INTERRUPTED      Terminated by control UDF
+     -4           DF_WRITE            Write error
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     DISKFORMAT() formats a disk under full CA-Clipper program control, so
+     there is no need for a RUN FORMAT.  You cannot create bootable disks,
+     only data disks.
+
+     Since you can call a separate function (UDF) prior to every track and
+     head change and the respective track and head number are passed, you can
+     construct the visual display of the format process constructed as
+     desired.
+
+     You can only format floppy disks, so even with unforeseen incorrect
+     parameters, your hard disk is safe.  All the standard floppy types are
+     supported -- 160kB, 180kB, 320kB, 360kB, 1.2MB, 720kB, and 1.44MB.
+
+     DISKFORMAT() is useful for formatting disks, at least when the preset
+     repetition rate is retained or decreased.  After an unsuccessful attempt
+     to format a track, the process is repeated one more time.  If this
+     repetition also fails, the entire format is aborted.  If you want to be
+     as safe as possible about the quality of the disk in used, select a
+     repetition rate of 0.
+
+ ^bThe Control UDF^b
+
+     DISKFORMAT() calls the control UDF, which is specified as the third
+     parameter, prior to each head and track change.  Both values, head and
+     track, are passed as a parameter to the function.  As soon as all tracks
+     are formatted and DISKFORMAT() has initialized the FAT and directory
+     area, a value of -1 is passed for both parameters to the UDF.  Please be
+     aware that both parameters must be passed.
+
+     The numeric value returned for UDF can further influence DISKFORMAT():
+
+     ^bTable 7-6:  Control UDF Returned Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bReturned Value    Explanation^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0                 Continue format
+     1                 Do not format this track (parameter 1)
+     2                 Abort format
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  If the defined control UDF does not exist, the function
+        uninstalls itself and triggers a runtime error.  If an error message
+        concerning a missing procedure is required during linking, you can
+        specify EXTERNAL <function> in the program.
+
+     ^b^CFE^b  If you attempt to boot with a data disk created with
+        DISKFORMAT() and did not designate any other text for the <cBootText>
+        parameter, the following text is displayed:
+
+         "No system disk.  Insert new disk, press any key to continue"
+
+     ^b^CFE^b  DISKFORMAT() begins to format a disk with the highest track
+        number.  Therefore, an existing FAT and directory label are the last
+        items deleted.
+
+     ^b^CFE^b  DISKFORMAT() always reformats a track, even if it is already
+        formatted.  Therefore, when a format is successful, all the data is
+        deleted.
+
+     ^b^CFE^b  Each track is verified again after it is formatted.
+
+     ^b^CFE^b  After the last track is formatted, the function continues to
+        work a few seconds more.  The FAT and directory must be established
+        and the boot text must be written.
+
+ ^bExamples^b
+
+     ^b^CFE^b  An example for formatting a disk in A: drive:
+
+        DISKFORMAT() first determines whether the desired capacity is
+        appropriate for the drive.  The control UDF "CONTROL" is concerned
+        with the display of the track and head that are currently being
+        formatted.  "This is a data diskette" is used as boot text for the
+        disk.  The repeat rate is highly effective at 0.  Only the highest-
+        quality disks are accepted.
+
+        To provide an additional example of the return value for the UDF,
+        only tracks 80 to 11 are formatted here, not the first 10:
+
+        CLEAR
+        cBootText  :=  "This is a data diskette"
+        @ 10, 02 SAY "Track:
+        "@ 11, 02 SAY "Head:
+        "IF FLOPPYTYPE("A:") = 2
+                                      // 1.2 MB disk
+           nErrCode := DISKFORMAT("A:", 1200", CONTROL", cBootText, 0)
+           IF nErrCode = 0
+              ? "Format successful!"
+           ENDIF
+        ENDIF
+        RETURN
+
+        FUNCTION CONTROL(nTrack, nHead)
+           LOCAL nRetval
+           IF Track >= 11
+              @ 10, 08 SAY STR(nTrack)
+              @ 11, 08 SAY STR(nHead)
+              nRetval := 0            // Continue format
+           ELSE
+              nRetval := 2            // Abort
+           ENDIF
+           RETURN(nRetval)
+
+     ^b^CFE^b  Shown below is another variation of the UDF.  Press the ESC
+        key to abort the format.  If the format is completed, then the
+        function displays the FAT initialization and root directory:
+
+        FUNCTION CONTROL(nTrack, nHead)
+           LOCAL nRetval
+           IF INKEY() = 27
+              nRetval := 2            // Abort
+           ELSE
+              nRetval := 0            // Continue format
+           ENDIF
+           IF nTrack = -1
+              @ 10, 10 SAY "Initializing FAT and Root Directory!"
+           ENDIF
+           RETURN(nRetval)
+
+!seealso: "DRIVETYPE()" "FLOPPYTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKFREE()   Determines the space available on a floppy or hard disk
+'------------------------------------------------------------------------------
+ ^bDISKFREE()^b
+ Determines the space available on a floppy or hard disk
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKFREE([<cDrive>]) --> nFreeByte
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates for which drive (A, B, C, etc.) the open
+     capacity is determined.  The default value is the current drive.
+
+ ^bReturns^b
+
+     DISKFREE() returns the available memory capacity of the selected drive.
+
+ ^bDescription^b
+
+     DISKFREE() determines if a disk has sufficient storage capacity for a
+     file.
+
+ ^bNote^b
+
+     ^b^CFE^b  When <cDrive> is not specified, the function automatically
+        uses the current drive.
+
+ ^bExample^b
+
+     Determine if there is enough space to copy a database:
+
+     Required  :=  DBFSIZE()         // Database size
+     IF DISKFREE("A") < Required
+        ? "Insufficient disk space for copying!"
+     ENDIF
+
+!seealso: "DISKTOTAL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKNAME()   Determines the drive designator for the current drive
+'------------------------------------------------------------------------------
+ ^bDISKNAME()^b
+ Determines the drive designator for the current drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKNAME() --> cDrive
+
+ ^bReturns^b
+
+     DISKNAME() returns a letter that identifies the designator as the
+     current drive.
+
+ ^bDescription^b
+
+     DISKNAME() determines the current drive designator for the construction
+     of complete path names.
+
+ ^bNote^b
+
+     ^b^CFE^b  The designator does not contain a colon.
+
+ ^bExample^b
+
+     Display the drive designator for the current drive:
+
+     ? DISKNAME()      // Returns a "C" with most hard disk systems
+
+!seealso: "DIRNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKREADY()  Tests to see if a disk drive is ready
+'------------------------------------------------------------------------------
+ ^bDISKREADY()^b
+ Tests to see if a disk drive is ready
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKREADY([<cDrive>], [<lDOS/BIOS>]) --> lDiskReady
+
+ ^bArguments^b
+
+     ^b<cDrive>^b  Designates the drive designator (A, B, C, etc.) of the
+     drive to test.  The default is the current disk drive.
+
+     ^b<lDOS/BIOS>^b  This logical parameter allows you to designate whether
+     you want the function tested through the BIOS (.F.) or DOS (.T.).  The
+     default is discussed in the Description below.
+
+ ^bReturns^b
+
+     DISKREADY() returns .T. when the drive being tested is ready to use.
+
+ ^bDescription^b
+
+     To save space, you must frequently make multiple disk copies.
+     DISKREADY() allows you to wait for a user disk change, without having to
+     confront known DOS errors, or use CA-Clipper error trap functions.  Be
+     sure to differentiate between floppy tests and "true" hard disks and
+     logical partitions.
+
+ ^bDOS or BIOS^b
+
+     In the simplest case, this function tests the respective drive through
+     DOS.  If drive B is unavailable, the message  "Please insert disk in
+     drive B:..." is output from the operating system.  When you test floppy
+     drives, drive A: and B:, the BIOS route is recommended, since no message
+     is output.  In any event, A: and/or B: can be mapped drives within a
+     network.  Use the following logical expression for all the previous
+     situations:
+
+     (NETDISK(<cDrive>) .OR. <cDrive> >= "C")
+
+     This logical expression returns .T. when the respective drive is either
+     on the network or has a drive identifier of C: or higher.
+
+ ^bExamples^b
+
+     The system waits between individual copy procedures until drive A: is
+     ready again:
+
+     DO Copy                        // Call copy procedure
+     ? "Please insert a disk in Drive A:!"
+     DO WHILE .NOT. DISKREADY("A")
+        *...
+     ENDDO
+     DO Copy                        // Call copy procedure
+
+!seealso: "DISKREADYW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKREADYW() Queries whether you can write to a drive
+'------------------------------------------------------------------------------
+ ^bDISKREADYW()^b
+ Queries whether you can write to a drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKREADYW([<cDriveId>]), [<lDOS/BIOS>]) --> lDiskReady
+
+ ^bArguments^b
+
+     ^b<cDriveId> ^b Designates which drive designator (A, B, C, etc.) to
+     query.  The default value is the current disk drive.
+
+     ^b<lDOS/BIOS>^b  This logical parameter allows you to specify whether
+     you want to query the function through the BIOS (.F.) or DOS (.T.).  The
+     default is described in the Description below.
+
+ ^bReturns^b
+
+     DISKREADYW() returns .T. when you query a drive that is operational and
+     can be written to.
+
+ ^bDescription^b
+
+     As with DISKREADY(), this function determines if a drive is ready to
+     use.  DISKREADYW() also determines if you can write to a drive.
+     DISKREADY() cannot tell if a disk has a write-protect marker on it.  In
+     this case, drive A: might be ready, but you could not write to it.  Use
+     this function to build write-protect detection for important disks into
+     the program.
+
+ ^bNetwork Drives ^b
+
+     In general, drives mapped within networks are viewed by the function as
+     accessible and return .T. as a result.  For a disk, "accessible" means
+     you can create, open, and delete files.  You can clearly differentiate
+     these rights within networks such as Novell NETWARE.  Therefore, you
+     must test for these accordingly.
+
+ ^bDOS or BIOS ^b
+
+     In the simplest case, this function always tests the respective drive
+     through DOS.  If drive B: is unavailable, the message  "Please insert
+     disk in drive B:" is output from the operating system.  When you test
+     floppy drives drive A: and B:, the BIOS route is recommended, since no
+     message is output.  In any event, A: and/or B: can be mapped drives
+     within a network.  Use the following logical expression to cover all the
+     previous situations:
+
+     (NETDISK(<cDrive>) .OR. <cDrive> >= "C")
+
+     This logical expression returns .T. when the respective drive is either
+     on the network or has a drive identifier of C: or higher.
+
+ ^bNote^b
+
+     ^b^CFE^b  Research indicates work in the OS/2 compatibility box must be
+        in the BIOS mode.
+
+ ^bExample^b
+
+     Determine if you can write a file to A: drive:
+
+     IF DISKREADY("A")
+        IF NETDISK ("A")
+           IF NNETRIGHTS ("A:\")      // complete path
+           * ...
+           ENDIF
+        ELSE
+           IF DISKREADYW("A")
+           ? "Disk is not write protected!"
+           ELSE
+           ? "Disk is write protected!"
+           ENDIF
+        ENDIF
+     ELSE
+        ? "Disk drive not ready!"
+     ENDIF
+
+!seealso: "DISKREADY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKSPEED()  Determines a comparison value for the drive speed
+'------------------------------------------------------------------------------
+ ^bDISKSPEED()^b
+ Determines a comparison value for the drive speed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKSPEED(<cDrive>) --> nDriveSpeed
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates for which physical drive identifier (A, B, C,
+     etc.) to determine the speed.  You do not need to use the colon (:).
+
+ ^bReturns^b
+
+     DISKSPEED() returns a percentage comparison value to a floppy drive of a
+     4.77 MHz PC, which corresponds to 100%.
+
+ ^bDescription^b
+
+     Use this function when you want to calculate the approximate duration of
+     such complex file operations as INDEX or SORT.  Since the total duration
+     always depends upon the remaining computer speed, you should also use
+     the SPEED() function..
+
+     If the designated drive is unavailable or cannot be checked (network
+     drive), the function returns a 0 value.
+
+ ^bNote^b
+
+     ^b^CFE^b  You can only implement DISKSPEED() for physical drives, not
+        network drives.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the speed of drive A:
+
+        ? DISKSPEED("A")            // depends on drive
+
+     ^b^CFE^b  Show the factor for your hard disk:
+
+        ? DISKSPEED("C")            // e.g. 720  Factor 7.2
+
+!seealso: tool_014.ngo:"SPEED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKSTAT()   Determines the status of a drive.
+'------------------------------------------------------------------------------
+ ^bDISKSTAT()^b
+ Determines the status of a drive.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKSTAT([<cDrive>]) --> nStatus
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive designator (A, B, C, etc.) of the
+     drive for which the status of the last operation is determined.  The
+     default is the current disk drive.
+
+ ^bReturns^b
+
+     DISKSTAT() returns the status of the floppy or hard disk operation as a
+     number.  The bits have the following meanings:
+
+     ^bTable 7-7:  Drive Status Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       DST_INVALID         Unknown command
+     2       DST_READONLY        Address marker not found
+     3       DST_SECTOR          Sector not found
+     4       DST_DMA             DMA overflow
+     5       DST_CRC             CRC error
+     6       DST_CONTROLLER      Controller error
+     7       DST_SEEK            Seek operation failure
+     8       DST_TIMEOUT         Timeout error
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     When DOS returns a "block device error" message  (See ERRORORG()) and
+     DISKSTAT() to determine a more detailed cause of the error).
+
+ ^bNote^b
+
+     ^b^CFE^b  This function passes the system status to a CA-Clipper
+        application.  The system saves a status value for all floppy and hard
+        disk operations.  When you reaccess a floppy disk drive from within
+        your program, the previous disk operation status is lost.  The same
+        applies to hard disk status.
+
+ ^bExample^b
+
+     Determine if the system was unable to find an address marker:
+
+     IF ERRORORG() == DST_READONLY
+        DiskError  :=  DISKSTAT("A")
+     ENDIF
+
+!seealso: tool_013.ngo:"ERRORBASE()" tool_013.ngo:"ERRORCODE()" tool_013.ngo:"ERRORORG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKTOTAL()  Determines the total capacity of a floppy or hard disk
+'------------------------------------------------------------------------------
+ ^bDISKTOTAL()^b
+ Determines the total capacity of a floppy or hard disk
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKTOTAL([<cDrive>]) --> nTotalSpace
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive for which memory capacity is
+     determined.  The default is the current drive.
+
+ ^bReturns^b
+
+     DISKTOTAL() returns a value that corresponds to the total capacity of
+     the data carrier in the selected drive.  The default is the current disk
+     drive.
+
+ ^bDescription^b
+
+     DISKTOTAL() determines if the capacity of the disk in use is sufficient
+     for back up.  The advantage of DISKTOTAL() over any capacity determined
+     by the system, is that it recognizes bad sectors and does not include
+     them.
+
+ ^bExample^b
+
+     Determine if disk capacity is sufficient:
+
+     nRequired  :=  DBFSIZE()
+     IF DISKTOTAL("A") < nRequired
+        ? "Error! Insufficient disk capacity!"
+     ENDIF
+
+!seealso: "DISKFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKTYPE()   Determines the type of data carrier
+'------------------------------------------------------------------------------
+ ^bDISKTYPE()^b
+ Determines the type of data carrier
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDISKTYPE([<cDrive>]) --> nDiskType
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive designator (A, B, C, etc.) for which
+     you want to determine the data carrier.  The default is the current
+     drive.
+
+ ^bReturns^b
+
+     The returned value corresponds to the FAT-ID byte of a floppy or hard
+     disk.  The following codes apply:
+
+     ^bTable 7-8:  FAT-ID Definitions^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFAT-ID  Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     255     DT_DS_SEC_8         Double sided 8 sectors
+     254     DT_SS_SEC_8         Single sided 8 sectors
+     253     DT_DS_SEC_9         Double sided 9 sectors
+     252     DT_SS_SEC_9         Single sided 9 sectors
+     249     DT_DS_SEC_15        Double sided 15 sectors (HD-Disk)
+     249     DT_35_SEC_9         Double sided 3.5" 9 sectors (ident. to 5.25"
+                                 HD)
+     240     DT_35_SEC_18        Double sided 3.5" 18 sectors
+     248     DT_HARDDISK         Hard disk
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     If a 360K floppy is written on an AT in a 1.2 MB drive, you may not be
+     able to read it on other systems, particularly on PC XTs.  This function
+     determines how the floppy you are about to use is formatted and provides
+     the corresponding warning.
+
+ ^bExample^b
+
+     Determine if an XT disk is being written to an AT:
+
+     IF ISAT() .AND. DISKTYPE("A") == DT_DS_SEC_9
+        ? "Warning!"
+        ? "Under certain circumstances this disk not"
+        ?? " readable on other systems!"
+     ENDIF
+
+!seealso: "DISKNAME()" "DRIVETYPE()" "FLOPPYTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DRIVETYPE()  Determines the drive type
+'------------------------------------------------------------------------------
+ ^bDRIVETYPE()^b
+ Determines the drive type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDRIVETYPE([<cDrive>]) --> nDriveType
+
+ ^bArgument^b
+
+     ^b<cDrive>^b   Designates the drive (A, B, C, etc.) for which the type
+     is determined.  The default is the current drive.
+
+ ^bReturns^b
+
+     DRIVETYPE() returns a numeric value for the drive type.  The following
+     codes apply:
+
+     ^bTable 7-9:  Drive Type Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       RAM Disk
+     1       Floppy Disk (disk change cannot be established by system)
+     2       Floppy Disk (disk change can be established by system)
+     3       Hard Disk
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     ^bWarning!^b  Only for AT-class computers.
+
+     This function determines if you are dealing with a floppy drive, a hard
+     disk, or a RAM disk.
+
+ ^bNote^b
+
+     ^b^CFE^b  Although DRIVETYPE() returns a 0 value for logical DOS
+        partitions, RAM floppies, and unavailable drives, you must also
+        differentiate with DISKTYPE().  Here, each hard disk partition
+        returns a 248 value.  A RAM floppy created with VDISK.SYS behaves
+        like a single-sided floppy with eight sectors, which returns a 254
+        value.  If there is an unavailable drive, the DISTYPE() returns a
+        value of 0.
+
+ ^bExample^b
+
+     Determine if the drive is a RAM floppy:
+
+     IF DRIVETYPE() == 0 .AND. DISKTYPE() == 254
+        ? "Drive " + DISKNAME() + ":  is a RAM-disk!"
+     ENDIF
+
+!seealso: "DISKTYPE()" "DISKNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILEAPPEND() Appends data to a file
+'------------------------------------------------------------------------------
+ ^bFILEAPPEND()^b
+ Appends data to a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILEAPPEND(<cSourceFile>, <cTargetFile>)
+     ^b   --> nAttachedByte
+
+ ^bArguments^b
+
+     ^b<cSourceFile>^b  Designates the file that is appended to
+     <cTargetFile>.
+
+     ^b<cTargetFile>^b  Designates the file to which <cSource> is appended.
+     Drive and path designation are permitted for both files, wildcards are
+     not.
+
+ ^bReturns^b
+
+     FILEAPPEND() returns the number of characters appended on to
+     <cTargetFile>.
+
+ ^bDescription^b
+
+     FILEAPPEND() takes fragmented files, split them up on different floppies
+     and reassemble them.  This sort of fragmented file could be created with
+     the FILECOPY() system described in this chapter.  You only need explicit
+     information, such as VOLUME labels, to recognize the different disks.
+     If the target file does not exist, it is created with FILEAPPEND().  If
+     an error occurs while appending to the target file, the file deletes
+     completely to avoid accidental and incorrect results.
+
+     Never append data to file if there is no backup copy.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Use SETFCREATE(), if FILEAPPEND() creates a new file and an
+        alternative attribute needs to be specified.
+
+     ^b^CFE^b  Use SETSHARE() to protect a target file from access, if it is
+        on a network drive.
+
+ ^bExamples^b
+
+     Shown below is a simplified program to reassemble a file that is divided
+     among several disks by a FILECOPY() backup.
+
+     A catalog contains a list of the disks used during backup in the form of
+     volume labels and backup file names.
+
+     Structure of the DISKLIST catalog:
+
+     ^bTable 7-10: DISKLIST File Structure^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bField Name     Field Content^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     VolLabel       Back up disk drive and volume label
+     BackupName     Back up file name, incl. drive and path
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The data in DISKLIST is created by a FILECOPY() backup:
+
+     USE DISKLIST                                 // Saved volume labels
+     cTargetFile  :=  "C:\TARGET.TXT"
+     DO WHILE .NOT. EOF()
+        IF .NOT. EMPTY(FILESEEK(cVolLabel, 8)     // Correct disk ?
+           FILEAPPEND(cBackupName, cTargetFile)   // Yes, append data
+           SKIP
+        ELSE
+           ? "Please insert the correct disk  !"
+        ENDIF
+     ENDDO
+
+!seealso: "FILECOPY()" "FILESEEK()" "SETSHARE()" "SETFCREATE()" tool_012.ngo:"CSETSAFETY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILEATTR()   Determines a file's attributes
+'------------------------------------------------------------------------------
+ ^bFILEATTR()^b
+ Determines a file's attributes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILEATTR([<cFile>]) --> nFileAttr
+
+ ^bArgument^b
+
+     ^b<cFile>^b  Designates the file name, including the path and drive
+     designation.
+
+ ^bReturns^b
+
+     FILEATTR() returns the attributes for the researched entry or the
+     attribute from the FILESEEK() buffer (when called without a parameter).
+
+ ^bDescription^b
+
+     FILEATTR() is implemented alone or in conjunction with FILESEEK().  If
+     the function is called with the <cFile> parameter, it returns the
+     attribute of the first entry found.  If no acceptable entry is
+     available, a value of 0 is returned.
+
+     When called without a parameter, FILEATTR() returns the attribute for
+     the most-recent file located with FILESEEK().  When used with
+     FILESEEK(), you can determine the attribute for file groups (wildcards).
+
+     When you call FILEATTR() with the <cFile> parameter, the function
+     internally passes 63 (all attributes) as a mask.  When used in
+     conjunction with FILESEEK(), you should also designate all 63 as an
+     attribute mask, if all files are to be acknowledged.
+
+     ^bTable 7-11:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     8       FA_VOLUME           VOLUME (Name of a floppy/hard disk)
+     16      FA_DIRECTORY        DIR (Directory)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If multiple attributes are implemented for a file, the value of each
+     corresponding attribute is added.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the attribute of a specific file:
+
+        ? FILEATTR("C:\TEXT\TEXT.TXT")      // 32  ARCHIVE
+
+     ^b^CFE^b  The attribute for an ARCHIVE/HIDDEN file:
+
+        ? FILEATTR("C\HIDE.TXT")            // 34  HIDDEN + ARCHIVE
+
+     ^b^CFE^b  Used in conjunction with FILESEEK():
+
+        cFile  :=  FILESEEK("C:\TEXT\TEXT.TXT")
+        DO WHILE .NOT. EMPTY (cFile)
+           ? cFile, FILEATTR()              // Name & file attribute
+           cFile  :=  FILESEEK()            // Search for next entry
+        ENDDO
+
+!seealso: "FILESEEK()" "FILEDATE()" "FILESIZE()" "FILETIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILECCLOSE() Closes a file after backup mode
+'------------------------------------------------------------------------------
+ ^bFILECCLOSE()^b
+ Closes a file after backup mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILECCLOSE() --> lClosed
+
+ ^bReturns^b
+
+     FILECCLOSE() returns .T., when the the file that was opened with
+     FILECOPY() is successfully closed.
+
+ ^bDescription^b
+
+     FILE COPY CLOSE
+     After you copy on multiple disks, this function should be routinely
+     called.  This is to prevent the source file, previously designed with
+     FILECOPY(), from remaining open.  For example, this may occur if you
+     terminate the copy procedure.
+
+ ^bNote^b
+
+     ^b^CFE^b  Regardless of the share mode, all other users are not allowed
+        access. This situation stays this way without needing a file handle.
+
+ ^bExample^b
+
+     Show a back up with FILECOPY().  After terminating, close the source
+     file:
+
+     FILECOPY(cSource, cTarget, .T.)      // Back up mode
+     DO NEXTDISK                          // When terminated   Terminated =
+     .T.
+     DO WHILE FILECOPEN() .AND. .NOT. Terminated
+        FILECCONT(cTarget)                // Next disk, new name
+        DO NEXTDISK                       // Request for disk exchange
+     ENDDO
+     IF Terminated
+        FILECCLOSE()                      // Close source file!
+     ENDIF
+
+!seealso: "FILECOPY()" "FILECCONT()" "FILECOPEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILECCONT()  Copies sections of a file in backup mode
+'------------------------------------------------------------------------------
+ ^bFILECCONT()^b
+ Copies sections of a file in backup mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILECCONT(<cFile>) --> nCopyByte
+
+ ^bArgument^b
+
+     ^b<cFile>^b  Designates the file name for the target file.
+
+ ^bReturns^b
+
+     FILECCONT() returns the number of bytes copied.
+
+ ^bDescription^b
+
+     FILE COPY CONTINUE
+     Use this function primarily after a FILECOPY().  As much as possible of
+     the remaining data is written to a new disk.  If the remaining data
+     still does not fit on the designated target disk, call this function
+     repeatedly until it writes all the remaining data.  Each time you call
+     FILECCONT(), a new name can be designated for the target file.  These
+     files are then numbered consecutively (see Examples).
+
+ ^bNotes^b
+
+     ^b^CFE^b  If a copy procedure on multiple disks terminates for any
+        reason, call FILECCLOSE().
+
+     ^b^CFE^b  Use SETFCREATE() to designate an attribute to form a new file.
+
+     ^b^CFE^b  The function acknowledges the CSETSAFETY() implementation, as
+        does FILECOPY()
+
+ ^bExample^b
+
+     Show a back up with FILECOPY().  After terminating, close the source
+     file:
+
+     FILECOPY(cSource, cTarget, .T.)   // Back up mode
+     DO NEXTDISK                       // When terminated  Terminated = .T.
+     DO WHILE FILECOPEN() .AND. .NOT. Terminated
+        FILECCONT(cTarget)             // Next disk, new name
+        DO NEXTDISK                    // Request for disk exchange
+     ENDDO
+     IF Terminated
+        FILECCLOSE()                   // Close source file!
+     ENDIF
+
+!seealso: "FILECOPY()" "FILECOPEN()" "FILECCLOSE()" "FILECDATI()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILECDATI()  Determines which date the target file contains with FILECOPY()
+'------------------------------------------------------------------------------
+ ^bFILECDATI()^b
+ Determines whether a source file's date and time stamp or the system's date
+ and time stamp, should be used to create or copy a file.  Use original or
+ system time for a copy
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILECDATI([<lNewMode>]) --> lOldMode
+
+ ^bArgument^b
+
+     ^b<lNewMode>^b  Designates the new status for FILECDATI().  When .T. is
+     designated, the target file contains the source file date; when it is
+     .F., the system date.  The default is the source file date (.T.).
+
+ ^bReturns^b
+
+     If no parameter is designated, FILECDATI() returns the current setting
+     for FILECDATI(); otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     FILE COPY DATE TIME
+     FILECDATI() determines which date the target file contains with a
+     FILECOPY().  When you partition to several disks in backup mode, this
+     concerns all target files.  The CA-Clipper Tools default is .T., where
+     the target file contains the date and time of the source file.  If you
+     call FILECDATI() with the parameter designated .F., then the target file
+     contains the system date and time.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Use this function before FILECOPY().
+
+     ^b^CFE^b  If the target file contains a unique setting such as a pseudo
+        serialization, use the SETFDATI() function.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the FILECDATI() setting:
+
+        ? FILECDATI()            // The current setting
+
+     ^b^CFE^b  The target file is to contain the system date and time:
+
+        ? FILECDATI(.F.)         // Returns the previous setting
+
+!seealso: "FILECOPY()" "SETFDATI()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILECHECK()  Calculates/computes/determines a checksum for a file
+'------------------------------------------------------------------------------
+ ^bFILECHECK()^b
+ Calculates/computes/determines a checksum for a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILECHECK(<cFile>) --> nCheckSum
+
+ ^bArgument^b
+
+     ^b<cFile>^b  Designates which file name (with path, if required), to
+     check.
+
+ ^bReturns^b
+
+     FILECHECK() returns a checksum value for <cFile>.
+
+ ^bDescription^b
+
+     FILECHECK() determines if there have been changes or read errors in a
+     file, and then takes note of data backup.  This also allows you to
+     protect your hard disk from simple viruses (see Examples).
+
+ ^bNote^b
+
+     ^b^CFE^b  You must specify the argument.  If it is omitted or an
+        unavailable file is specified, FILECHECK() returns an error code of -
+        1.  You may use a drive and access path, but no wildcards.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check database for changes:
+
+        IF FILECHECK("CUST.DBF") <> Old_ChkSum
+           ? "Warning! Data back-up required."
+        ENDIF
+
+     ^b^CFE^b  Check COMMAND.COM for changes:
+
+        IF FILECHECK("\COMMAND.COM") <> Cmd_ChkSum
+           ? "COMMAND.COM has been changed! Caution, Virus!"
+        ENDIF
+
+!seealso: "DISKCHECK()" "SETSHARE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILECOPEN()  Tests to see if the file is still open in the backup mode
+'------------------------------------------------------------------------------
+ ^bFILECOPEN()^b
+ Tests to see if the file is still open in the backup mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILECOPEN() --> lOpenFile
+
+ ^bReturns^b
+
+     FILECOPEN() returns .T. when all data is not copied during a  FILECOPY()
+     or FILECCONT().
+
+ ^bDescription^b
+
+     FILE COPY OPEN
+     FILECOPEN() determines whether all data is copied.  This concerns the
+     source file, which is specified when the FILECOPY() function is called.
+     FILECOPEN() returns .T. until all the data in the source file is read,
+     whether by FILECOPY or the follow-on function FILECCONT()
+
+ ^bNote^b
+
+     ^b^CFE^b  If you must abort the copy process, and FILECOPEN() continues
+        to returns .T., use FILECCLOSE().
+
+ ^bExamples^b
+
+     Show a back up with FILECOPY():
+
+     nCounter   := 1                   // "BIG.001" etc.
+     cTargetFile   := "BIG" + NTOC(nCounter, 10, 3, "0")
+     FILECOPY("BIG.DBF", "A:\" + cTargetFile, .T.)
+                                       // Back up mode
+     DO WHILE FILECOPEN()
+        DO NEXTDISK                    // Request disk change
+        nCounter     := nCounter + 1
+        cTargetFile  := "BIG" + NTOC(nCounter, 10, 3, "0")
+        FILECCONT(cTargetFile)         // Next disk - new name
+
+     ENDDO
+     FILECCLOSE                        // For safety
+
+!seealso: "FILECOPY()" "FILECCONT()" "FILECCLOSE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILECOPY()   Copies files normally or in backup mode
+'------------------------------------------------------------------------------
+ ^bFILECOPY()^b
+ Copies files normally or in backup mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILECOPY(<cSourceFile>, <cTargetFile>, [<lMode>])
+     ^b   --> nCopyByte
+
+ ^bArguments^b
+
+     ^b<cSourceFile>^b  Designates the source file.  Drive and path
+     designations are permitted, but not wildcards.
+
+     ^b<cTargetFile>^b  Designates the target file.  Drive and path
+     designations are permitted, but not wildcards.
+
+     ^b<lMode>^b  Designates the backup mode on when designated as .T.  The
+     default is no backup mode (.F.).
+
+ ^bReturns^b
+
+     FILECOPY() returns the number of bytes copied.
+
+ ^bDescription^b
+
+     This function has additional uses besides allowing you to quickly copy
+     files.  When you use the optional <lMode> parameter, a unique backup
+     mode is switched on.  This allows files that are larger than the target
+     disks to be copied.  This function writes the maximum possible number of
+     bytes to a disk.  FILECOPEN() allows you to determine whether all data
+     from the source file has been copied.  It then continues with the next
+     disk.  The target disks should contain unique labels and be saved to a
+     catalog.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The attribute to be used when newly creating a file can be
+        specified with SETCREATE().
+
+     ^b^CFE^b  As a minimum, the share mode recommends that you do not write
+        other program source and target files.
+
+     ^b^CFE^b  This function acknowledges the CSETSAFETY() setting, and as a
+        result, cannot overwrite a target file.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show a simple copy:
+
+        ? FILECOPY("A:\TEXT.TXT", "C:\TEST.TXT")      // Bytes copied
+
+     ^b^CFE^b  A back up using FILECOPY():
+
+        nCounter  :=  1                               // "BIG.001" etc.
+        cTargetFile  := "BIG" + NTOC(nCounter, 10, 3, "0")
+        FILECOPY("BIG.DBF", "A:\" + cTargetFile, .T.)
+                                                      // Back up mode
+        DO WHILE FILECOPEN()
+           DO NEXTDISK                                // Request disk change
+           nCounter     := nCounter + 1
+           cTargetFile  := "BIG" + NTOC(nCounter, 10, 3, "0")
+           FILECCONT(cTargetFile)                     // Next disk - new name
+        ENDDO
+        RETURN
+
+        PROCEDURE NEXTDISK
+           ? "Please insert new diskette in Drive A:!"
+           WAIT
+           RETURN
+
+!seealso: "FILECCONT()" "FILECOPEN()" "FILECCLOSE()" "FILEAPPEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILEDATE()   Determines the file date
+'------------------------------------------------------------------------------
+ ^bFILEDATE()^b
+ Determines the file date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILEDATE([<cFileMap>, [<nFileAttr>]]) --> dFileDate
+
+ ^bArguments^b
+
+     ^b<cFileMap>^b  Designates a file name, including its path and drive
+     designation.
+
+     ^b<nFileAttr>^b  Designates the file attribute explained in the table
+     below.  The default value is 0.
+
+     ()  If you call this function without parameters, it returns the file
+     date from the current FILESEEK() buffer.
+
+ ^bReturns^b
+
+     FILEDATE() returns the date of the searched for entry, the date from the
+     FILESEEK() buffer (when called without parameters), or an empty date.
+
+ ^bDescription^b
+
+     You can implement FILEDATE() alone or in conjunction with FILESEEK().
+     If you use the <cFileMap> parameter to call this function, it returns
+     the date of the first entry found.  If a suitable entry is not present,
+     an empty date is returned.
+
+     When called without parameters, FILEDATE() returns the date of the last
+     file it located with FILESEEK().  You could also determine the dates for
+     a file group (wildcards), when used it in conjunction with FILESEEK().
+
+     The attribute for the desired file can be specified in numeric form:
+
+     ^bTable 7-12:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     16      FA_DIRECTORY        DIR (Directory)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To find a file, specify only the SYSTEM, HIDDEN, VOLUME, or DIR
+     attributes.  If multiple attributes are implemented simultaneously, the
+     table values are added accordingly.  Of course, not all combinations are
+     useful.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the date of a particular file:
+
+        ? FILEDATE("C:\TEXT\TEXT.TXT")     // The date
+
+     ^b^CFE^b  The date of an ARCHIVE/HIDDEN file:
+
+        ? FILEDATE("C:\HIDE.TXT", 34)      // The date
+
+     ^b^CFE^b  Used in conjunction with FILESEEK():
+
+        cFile  :=  FILESEEK("C:\TEXT\*.TXT")
+        DO WHILE .NOT. EMPTY(cFile)
+           ? cFile, FILEDATE()             // Name & date of file
+           cFile  :=  FILESEEK()           // Search for next entry
+        ENDDO
+
+!seealso: "FILESEEK()" "FILEATTR()" "FILETIME()" "FILESIZE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILEDELETE() Deletes file(s) by name and attribute
+'------------------------------------------------------------------------------
+ ^bFILEDELETE()^b
+ Deletes file(s) by name and attribute
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILEDELETE(<cFileMask>, [<nFileAttr>]) --> lDeleted
+
+ ^bArguments^b
+
+     ^b<cFileMask>^b  Designates the file or files to delete.
+
+     ^b<nFileAttr>^b  Designates one of the following file attributes.  The
+     default value is 32.
+
+     ^bTable 7-13:  File Attribute Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue     Symb. constants   Definition
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0         FA_NORMAL
+     1         FA_READONLY       Read-only
+     2         FA_HIDDEN         HIDDEN (Concealed files)
+     4         FA_SYSTEM         SYSTEM (System files)
+     8         FA_VOLUME         VOLUME (Name of floppy/hard disk)
+     32        FA_ARCHIVE        ARCHIVE (Changed since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bReturns^b
+
+     FILEDELETE() returns .T. when at least one or more files are deleted;
+     otherwise, .F. is returned.
+
+ ^bDescription^b
+
+     Occasionally, you will need to clean up a floppy or a hard disk or
+     delete whole file groups.  This function deletes entire file groups with
+     a function call, without using the RUN command.
+
+ ^bNotes^b
+
+     ^bWarning!^b  FILEDELETE() can also delete system files.
+
+     ^b^CFE^b  The default standard attribute is archive (32).  Drive and
+        path designations, and wildcards are permitted.
+
+     ^b^CFE^b  Subdirectories must be deleted with the help of the
+        DIRREMOVE() function.
+
+ ^bExample^b
+
+     Attempt to delete all index files, then display the completion status:
+
+     IF FILEDELETE("*.NDX")
+        ? "Files deleted."
+     ELSE
+        ? "No files found."
+     ENDIF
+
+!seealso: "DELETEFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILEMOVE()   Moves files to another directory
+'------------------------------------------------------------------------------
+ ^bFILEMOVE()^b
+ Moves files to another directory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILEMOVE(<cSourceFile>, <cTargetFile>) --> nErrorCode
+
+ ^bArguments^b
+
+     ^b<cSourceFile>^b  Designates the name and the path of the source file.
+
+     ^b<cTargetFile>^b  Designates the name and the path of the target file.
+
+ ^bReturns^b
+
+     FILEMOVE() returns a value of 0 when the file can be moved; otherwise,
+     an error code is returned.  The codes are defined below:
+
+     ^bTable 7-14:  FILEMOVE() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Symb. constants        Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      NO_DISK_ERR            No errors
+     -2      ER_FILE_NOT_FOUND      File not found
+     -3      ER_PATH_NOT_FOUND      Access path not found
+     -5      ER_ACCESS_DENIED       Access denied (e.g., network)
+     -17     ER_DIFFERENT_DEVICE    Target file not on same drive
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     If a file is to be copied within a drive and then deleted it from the
+     original position, it is quicker to move the file.  FILEMOVE() makes
+     this possible.  The directory entries are also changed, which is much
+     quicker than copying and deleting.
+
+ ^bNotes^b
+
+     ^b^CFE^b  You can use drive designators and access paths in
+        <cSourceFile> and <cTargetFile> file names.  Wildcards are not
+        permitted.
+
+     ^b^CFE^b  You can only move a file within a drive.  If the target
+        directory already contains a file with the same name as the one from
+        <cSourceFile>, the move is not completed.  In this case, FILEMOVE()
+        returns a value of -5.  The only option available in this situation,
+        is to delete the file in the target directory.
+
+ ^bExample^b
+
+     Move a file from "\OLD" to "\NEW":
+
+     IF FILEMOVE("\OLD\CUST.DBF", "\NEW\CUST.DBF") = 0
+        ? "The file is now in the \NEW directory"
+     ENDIF
+
+!seealso: "FILECOPY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILESEEK()   Searches for files by name and attribute
+'------------------------------------------------------------------------------
+ ^bFILESEEK()^b
+ Searches for files by name and attribute
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILESEEK([<cFileMap>, [<nFileAttr>], [<lExact>]])
+     ^b    --> cFileName
+
+ ^bArguments^b
+
+     ^b<cFileMap>^b  Designates a file name including its path and drive
+     designation.  It may contain wildcards.
+
+     ^b<nFileAttr>^b  Designates the file attribute that corresponds to the
+     ones described in the table on the next page.  The default value is 0.
+
+     ^b<lExact>^b  If you designate .T. as the optional parameter, FILESEEK()
+     also checks for the exact agreement of the file attributes of the
+     respective file with the value passed by <nFileAttr>.
+
+     ()  If you call the function without parameters, it serves as a
+     sequential call for a FILESEEK() with file specifications, and returns
+     sequential entries as long as these are found.
+
+ ^bReturns^b
+
+     FILESEEK() returns the name of the first or next entry (when called
+     without parameter) located in the selected directory.
+
+ ^bDescription^b
+
+     FILESEEK() provides the foundation for a variety of functions.  As a
+     group, they permit access to desired information about directory
+     entries.  Implement the FILESEEK() function when you want information
+     about a file group (wildcards).  When you call it with the <cFileMap>
+     parameter, it searches for the first entry in the designated directory.
+     If you call it without parameters, it searches for the next matching
+     entry in the directory.  If no more entries are present, it returns a
+     null string.  An attribute mask can further define a file group that is
+     being searched for.  The desired file attributes are coded as follows:
+
+     ^bTable 7-15:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     8       FA_VOLUME           VOLUME (Name of a floppy/hard disk)
+     16      FA_DIRECTORY        DIR (Directory)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If you implement multiple attributes simultaneously, the table values
+     are added accordingly.  Of course, not all combinations are useful.
+
+ ^bExact File Attributes^b
+
+     DOS does not make an exact comparison with a designated attribute mask
+     and attributes actually found in a file.  Specify only the SYSTEM,
+     HIDDEN, VOLUME, or DIR attributes for an entry to be found.  Files with
+     only one other attribute bit set are always returned, regardless of the
+     value specified in the attribute mask.  This way, a function call with a
+     mask value of 16 returns not only subdirectories, but all files without
+     a set attribute (e.g., all the ARCHIVE and R/O files).
+
+     To avoid this, you can designate .T. as the third parameter.  The
+     function itself also reviews the designated attribute mask with the
+     actual file attributes, for an exact agreement.  Then, the designation
+     of a 16 mask and .T., only returns subdirectories.
+
+ ^bInternal Data Buffer^b
+
+     Every time you use FILESEEK() all the data for a directory entry is
+     saved to an internal buffer.  Individual information such as size, time,
+     or date is easily accessible.  To do this, the FILETIME(), FILEDATE(),
+     etc., functions are called without parameters; otherwise, it requires
+     another call to the disk, instead of taking the data from an internal
+     buffer.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Use the recursive sample function SCANFILES() in the
+        accompanying Tooldemo.prg file, to produce the most effective
+        programs to work with entire directory structures.
+
+     ^b^CFE^b  Display the date and size of all files with the extension .TXT
+        in a directory:
+
+        cFile  :=  FILESEEK("C:\TEXT\*.TXT")
+        DO WHILE .NOT. EMPTY(cFile)
+           ? FILESIZE()               // Size of file in buffer
+           ? FILEDATE()               // Date of file in buffer
+           cFile  :=  FILESEEK()      // Search for next entry
+        ENDDO
+
+     ^b^CFE^b  Display system files in the root directory.  Attribute: READ
+        ONLY, HIDDEN, SYSTEM, ARCHIVE --> 39, although 6(2 + 4) will
+        suffice as an attribute:
+
+        cFile  :=  FILESEEK("C:\*.*", 39)
+        DO WHILE .NOT. EMPTY(cFile)
+           ? cFile                    // File name
+           cFile := FILESEEK()        // Look for next entry
+        ENDDO
+
+     ^b^CFE^b  Only query the subdirectory:
+
+        cSubDir := FILESEEK("C:\*.*, 16, .T.)
+        DO WHILE .NOT. EMPTY(cSubDir)
+           ? cSubDir                  // Name of the directory
+           cSubDir := FILESEEK()      // Search for next directory
+        ENDDO
+
+!seealso: "FILEATTR()" "FILEDATE()" "FILESIZE()" "FILETIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILESIZE()   Determines the size of a file
+'------------------------------------------------------------------------------
+ ^bFILESIZE()^b
+ Determines the size of a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILESIZE([<cFileMap>, [<FileAttr>]]) --> nFileSize
+
+ ^bArguments^b
+
+     ^b<cFileMap>^b  Designates the file name, path, and drive designation.
+
+     ^b<FileAttr>^b  Designates the file attribute that is explained in the
+     table below.  The default value is 0.
+
+     ()  If the function is called without parameters, it returns the file
+     size from the current FILESEEK() buffer.
+
+ ^bReturns^b
+
+     FILESIZE() returns the designated file's size, the size from the
+     FILESEEK() buffer (when called without a parameter), or -1.
+
+ ^bDescription^b
+
+     Implement FILESIZE() alone or in conjunction with FILESEEK().  If the
+     function is called with the <cFileMap> parameter, it returns the size of
+     the first entry found.  If no matching entry is available, then a value
+     of -1  is returned
+
+     When called without parameters, FILESIZE() returns the size of the most
+     recent file found with FILESEEK().  Used in conjunction with FILESEEK(),
+     you can also determine the size of file groups (wildcards).
+
+     You can designate the attribute for the desired file in numeric form:
+
+     ^bTable 7-16:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup.)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Specify only the SYSTEM, HIDDEN, VOLUME, or DIR attributes for an entry
+     to be found.  If multiple attributes are implemented simul-taneously,
+     the table values are added accordingly.  Of course, not all combinations
+     are useful.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the size of a particular file:
+
+        ? FILESIZE("C:\TEXT\TEXT.TXT")      // File size or -1
+
+     ^b^CFE^b  The size of an ARCHIVE/HIDDEN file:
+
+        ? FILESIZE("C:\HIDE.TXT", 34")      // File size or -1
+
+     ^b^CFE^b  Used in conjunction with FILESEEK():
+
+        cFile  :=  FILESEEK(C:\TEXT.TXT")
+        DO WHILE .NOT. EMPTY(cFile)
+           ? cFile, FILESIZE()              // File name and size
+           cFile  := FILESEEK()             // Search for next entry
+        ENDDO
+
+!seealso: "FILESEEK()" "FILEATTR()" "FILEDATE()" "FILETIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILESTR()    Reads a portion of a file into a string
+'------------------------------------------------------------------------------
+ ^bFILESTR()^b
+ Reads a portion of a file into a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILESTR(<cFile>, [<nLength>], [<nOffset>],
+     ^b   [<lCtrl-Z>]) --> cCharacterstring
+
+ ^bArguments^b
+
+     ^b<cFile>^b  Designates the file from which a string is read.
+
+     ^b<nLength>^b  Designates how many characters you want to read from a
+     file (up to a maximum of 65520 bytes).  The default is read all
+     characters.
+
+     ^b<nOffset>^b  Designates an offset within the file from which the
+     <nLength> characters or the rest of the file, are read.  The default is
+     from the first character (0).
+
+     ^b<lCtrl-Z>^b  If this parameter is designated as .T., only data up to
+     the first Ctrl-Z is read in.  The default is read all data (.F.).
+
+ ^bReturns^b
+
+     FILESTR() returns the string read in from the designated file.
+
+ ^bDescription^b
+
+     FILESTR() also offers the capability to read files or a portion of them,
+     into a string.  This is only possible with a function call, where the
+     file name may contain a drive and path designation.  If you implement
+     the <lCtrl-Z> parameter, you can be sure the function only reads data up
+     to the first Ctrl-Z and ignores whatever might remains in of the file.
+
+     In contrast to the CA-Clipper Fxxxx() functions, a disadvantage of
+     FILESTR() is a slower access speed, since the file you want to read
+     cannot be held open.
+
+ ^bNotes^b
+
+     ^b^CFE^b  This function reads all available bytes in working memory (up
+        to 65520).  The amount of available free memory is determined by
+        calling MEMORY(1).
+
+     ^b^CFE^b  As recommended in share mode, no other programs should write
+        in the net through SETSHARE(2) for the duration of the read.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read in a file completely:
+
+        ? FILESTR("C:\TEXT\TEST.TXT")            // Displays file text
+
+     ^b^CFE^b  Read in everything to the first Ctrl-Z:
+
+        cVar  := FILESTR("C:\TEXT\TEST.TXT", .T.)
+
+     ^b^CFE^b  The file TEST.TXT contains "ABCDEFGHIJ".  Four characters,
+        beginning from position 3, are to be read:
+
+        ? FILESTR("C:\TEXT\TEST.TXT", 4, 3)      // "CDEF"
+
+     ^b^CFE^b  Read the maximum that fits into the available working memory:
+
+        cVar  := FILESTR("C:\TEXT\TEST.TXT", MEMORY(1) *1024 -100)
+
+!seealso: "STRFILE()" "SETSHARE()" tool_014.ngo:"ALLOFREE()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILETIME()   Determines a file's time
+'------------------------------------------------------------------------------
+ ^bFILETIME()^b
+ Determines a file's time
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILETIME([<cFileMap>, [<nFileAttr>]]) --> cFileClockTime
+
+ ^bArguments^b
+
+     ^b<cFileMap>^b  Designates the file name, including the path and drive
+     designation.
+
+     ^b<nFileAttr>^b  Designates the file attribute explained in the table
+     below.  The default value is 0.
+
+     ()  If the function is called without parameters, it returns the file
+     time from the current FILESEEK() buffer.
+
+ ^bReturns^b
+
+     FILETIME() returns the clock time for the "searched for" entry, the
+     clock time from the FILESEEK() buffer (when called without parameters),
+     or a null string.
+
+ ^bDescription^b
+
+     Implement FILETIME() alone or  in conjunction with FILESEEK().  If the
+     function is called with the <cFileMap> parameter, it returns the time of
+     the first entry found.  If no matching entry is available, a null string
+     is returned.
+
+     When called without parameters, FILETIME() returns the clock time of the
+     last file found with FILESEEK().  You can also determine the clock time
+     of file groups (wildcards) when the function is used in conjunction with
+     FILESEEK().
+
+     You can designate the attribute for the desired file in numeric form:
+
+     ^bTable 7-17:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     16      FA_DIRECTORY        (Subdirectory)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Only the SYSTEM, HIDDEN, VOLUME, or DIR attributes must be specified for
+     an entry to be found.  If multiple attributes are implemented
+     simultaneously, the table values are added accordingly.  Of course, not
+     all combinations are useful.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The clock time of a particular file:
+
+        ? FILETIME("C:\TEXT\TEXT.TXT")      // File clock time or ""
+
+     ^b^CFE^b  The clock time of an ARCHIVE/HIDDEN file:
+
+        ? FILETIME("C:\HIDE.TXT", 34")      // File clock time or ""
+
+     ^b^CFE^b  Used in conjunction with FILESEEK():
+
+        cFile  :=  FILESEEK(C:\TEXT.TXT")
+        DO WHILE .NOT. EMPTY(cFile)
+           ? cFile, FILETIME()              // File name and clock time
+           cFile  := FILESEEK()             // Search for next entry
+        ENDDO
+
+!seealso: "FILESEEK()" "FILEATTR()" "FILEDATE()" "FILESIZE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILEVALID()  Tests whether a string has a valid file name
+'------------------------------------------------------------------------------
+ ^bFILEVALID()^b
+ Tests whether a string has a valid file name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILEVALID(<cFileName>) --> lValid
+
+ ^bArgument^b
+
+     ^b<cFileName>^b  Designates the file name you want to test for validity.
+
+ ^bReturns^b
+
+     FILEVALID() returns .T. when the designated name is valid.
+
+ ^bDescription^b
+
+     FILEVALID() determines if a string contains a valid file name.  You
+     could also test the validity of user input in this way.  If necessary,
+     path and drive designations must be removed from the string.  The
+     tokenizer described in the string chapter is available for this purpose
+     (see Examples).
+
+ ^bExample^b
+
+     The last token in a string with drive and path designations should
+     contain the file name:
+
+     ACCEPT "Target_File  " TO cVar
+     cFileName  := TOKEN(cVar, " \:")        // Last token
+     DO WHILE .NOT. FILEVALID(cFileName)
+        * Error message ...
+        ACCEPT "Target_File  " TO cVar
+        cFileName  := TOKEN(cVar, "\:")      // Last token
+     ENDDO
+
+!seealso: tool_005.ngo:"TOKEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FLOPPYTYPE() Determines the exact type of floppy drive
+'------------------------------------------------------------------------------
+ ^bFLOPPYTYPE()^b
+ Determines the exact type of floppy drive
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFLOPPYTYPE([<cDrive>]) --> nFloppyType
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive (A, B, C, etc.) for which you want a
+     type determined.  The default is the current disk drive.
+
+ ^bReturns^b
+
+     The function returns the exact type of the designated disk drive, coded
+     as follows:
+
+     ^bTable 7-18:  Coding of Drive Types^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      No floppy drive
+      1      360-kB drive
+      2      1.2-MB drive
+      3      720-kB drive
+      4      1.44-MB drive
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     This function gives you a numeric value that specifies exact type and
+     capacity of the selected floppy drive.  Whether or not the device is a
+     floppy drive, is determined beforehand by DRIVETYPE().
+
+ ^bNote^b
+
+     ^b^CFE^b  The drive type is determined without actually accessing the
+        drive. Therefore, a disk does not have to be in the drive.
+
+ ^bExample^b
+
+     Is the current disk drive a floppy and what type?
+
+     IF DRIVETYPE() = 1 .OR. DRIVETYPE() = 2
+        DO CASE
+        CASE FLOPPYTYPE() = 0
+        ? "No floppy drive!"
+        CASE FLOPPYTYPE() = 1
+        ? "360 kB drive"
+        CASE FLOPPYTYPE() = 2
+        ? "1.2 MB drive"
+        CASE FLOPPYTYPE() = 3
+        ? "720 kB drive"
+        CASE FLOPPYTYPE() = 4
+        ? "1.44 MB drive"
+        ENDCASE
+     ENDIF
+
+!seealso: "DISKTYPE()" "DRIVETYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETSHARE()   Determines the file open (share) mode
+'------------------------------------------------------------------------------
+ ^bGETSHARE()^b
+ Determines the file open (share) mode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETSHARE() --> nShareMode
+
+ ^bReturns^b
+
+     GETSHARE() returns the current share mode setting as a value between 0
+     and 4.
+
+ ^bDescription^b
+
+     GETSHARE() determines the current share mode set with SETSHARE().  The
+     coding that is used is described in this function.
+
+ ^bExample^b
+
+     The current share mode:
+
+     IF GETSHARE() == 4
+        ? "Reading and writing permitted for other programs !"
+     ENDIF
+
+!seealso: "SETSHARE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMDISKF()   Determines the number of installed disk drives
+'------------------------------------------------------------------------------
+ ^bNUMDISKF()^b
+ Determines the number of installed disk drives
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMDISKF() --> nTotalFloppy
+
+ ^bReturns^b
+
+     NUMDISKF() returns a value that specifies how many disk drives are
+     installed in the system.
+
+ ^bDescription^b
+
+     NUMDISKF() determines the number of disk drives and allows you to choose
+     which drive you want to copy onto.
+
+ ^bExample^b
+
+     Determine if a B: drive exists:
+
+     IF NUMDISKF() == 2
+        IF DISKREADY("B")
+           ? "You can also use Drive B:!"
+        ENDIF
+     ENDIF
+
+!seealso: "NUMDISKL()" "NUMDISKH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMDISKH()   Determines the number of hard disks
+'------------------------------------------------------------------------------
+ ^bNUMDISKH()^b
+ Determines the number of hard disks
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMDISKH() --> nNumber
+
+ ^bReturns^b
+
+     NUMDISKH() returns the number of physical hard disk drives.
+
+ ^bDescription^b
+
+     This function determines the number of physical hard disk drives (one or
+     two).  These should not be confused with logical hard disk drives, that
+     can be designated with DOS 3.3.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function receives its information from the BIOS.
+
+ ^bExample^b
+
+     ^b^CFE^b  How many hard disk drives does my system have?
+
+        ? NUMDISKH()         // Result:  1
+
+!seealso: "NUMDISKF()" "NUMDISKL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMDISKL()   Determines the number of available logical drives
+'------------------------------------------------------------------------------
+ ^bNUMDISKL()^b
+ Determines the number of available logical drives
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMDISKL() --> nNumber
+
+ ^bReturns^b
+
+     The returned value gives the number of logical drives used by DOS.
+
+ ^bDescription^b
+
+     NUMDISKL() returns the number of available drives or the value specified
+     by LASTDRIVE = in CONFIG.SYS.  In a NOVELL network, you can determine
+     which is the first network drive (LASTDRIVE +1).
+
+ ^bNote^b
+
+     ^b^CFE^b  Normally, the function return value is 5, if there is no
+        deviating input in CONFIG.SYS for LASTDRIVE^b =^b.
+
+ ^bExample^b
+
+     Display which drive is the first network drive:
+
+     ? "First Network Drive:  " + CHR(NUMDISKL() + 65) + ":"
+
+!seealso: "NUMDISKF()" "NUMDISKH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RENAMEFILE() Fault tolerant renaming of a file.
+'------------------------------------------------------------------------------
+ ^bRENAMEFILE()^b
+ Fault tolerant renaming of a file.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRENAMEFILE(<cOldFileName>, <cNewFileName>) --> nErrorCode
+
+ ^bArguments^b
+
+     ^b<cOldFileName>^b   Designates the name and path of the existing file.
+
+     ^b<cNewFileName>^b   Designates the new name and path for the file.
+
+ ^bReturns^b
+
+     The function returns a 0 when the file can be renamed; otherwise, it
+     returns an error code.  The codes are defined below:
+
+     ^bTable 7-19:  RENAMEFILE() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      No error found
+     -2      File not found
+     -3      Path not found
+     -5      Access denied (e.g., in network)
+     -17     Target file not on same network
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     Currently, you may not be able to rename a file on a network drive.
+     Another user may currently have the file open.  RENAMEFILE() actually
+     says "attempt a RENAME and, should the situation arise, return an error
+     code".  This follows the basic programming philosophy:  never fall into
+     an error trap when you can avoid it.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The <cNewFileName> must always contain the complete path for
+        the designated file (see Examples).
+
+     ^b^CFE^b  Wildcard characters cannot be used.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Rename a file from OLD to NEW:
+
+        IF RENAMEFILE("OLD", "NEW") = 0
+           ? "The file can be renamed!"
+        ENDIF
+
+     ^b^CFE^b  Use the path from the old file specification for the new name:
+
+        cFSpecOld   := "C:\TEST\TEST.TXT"
+        cFileName   := TOKEN(cFSpecOld, ":\")      // last token
+        cFSpecNew   := BEFOREATNUM(cFileName, cFSpecOld) + "TEST.NEW"
+        RENAMEFILE(cFSpecOld, cFSpecNew)
+
+!seealso: "DELETEFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RESTFSEEK()  Restores the FILESEEK environment
+'------------------------------------------------------------------------------
+ ^bRESTFSEEK()^b
+ Restores the FILESEEK environment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRESTFSEEK(<cFileSeekEnvironment>) --> cNull
+
+ ^bArgument^b
+
+     ^b<cFileSeekEnvironment>^b  Designates a string that contains the
+     FILESEEK() environment, which was passed by SAVEFSEEK().
+
+ ^bReturns^b
+
+     RESTFSEEK() always returns a null string.
+
+ ^bDescription^b
+
+     RESTFSEEK() restores a saved FILESEEK() environment.  Use both of these
+     functions to run through subdirectories recursively.
+
+ ^bExample^b
+
+     The following small program shows all the files in all directories of
+     the current drive, from the root.  The GETFILES procedure can be called
+     recursively:
+
+     DO GetFiles WITH "\"                  // Starts with root directory
+     RETURN
+
+     * ----------------------------------------
+     PROCEDURE GetFiles(cSearchPath)
+     PRIVATE cSeekEnv                      // Picks up SEEK environment
+        ?                                  // Empty line for new dir.
+     * All files, all attributes
+     cFile  := FILESEEK(cSearchPath + "*.*", 63)
+
+     DO WHILE .NOT. EMPTY(cFile)
+
+        IF cFile <> "."                    // ".." and "." are dummys
+           IF ISBIT(FILEATTR(), 5)         // Subdirectory?
+              cSeekEnv := SAVEFSEEK()      // Save environment
+              * Recursive call with extended path!
+              DO GetFiles WITH cSearchPath + cFile + "\"
+              RESTFSEEK(cSeekEnv)          // Restore environment
+           ELSE
+              ? cSearchPath + cFile
+           ENDIF
+        ENDIF
+        cFile := FILESEEK()                // Next file
+     ENDDO
+
+     RETURN
+
+!seealso: "FILESEEK()" "SAVEFSEEK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVEFSEEK()  Saves the current FILESEEK environment
+'------------------------------------------------------------------------------
+ ^bSAVEFSEEK()^b
+ Saves the current FILESEEK environment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAVEFSEEK() --> cFileSeekEnvironment
+
+ ^bReturns^b
+
+     SAVESEEK() returns the current FILESEEK() environment.  The information
+     is needed for RESTFSEEK().
+
+ ^bDescription^b
+
+     The function saves the current FILESEEK() environment to a string.  For
+     example, if the sequence "First Search - Continued Search" is
+     interrupted by branching into a subdirectory, you must save these files.
+
+ ^bNote^b
+
+     ^b^CFE^b  Be sure sufficient spare memory is available when working
+        recursively at a higher level of complexity (which depends on the
+        number of subdirectories).  See Examples on the following page.
+
+ ^bExample^b
+
+     The following small program shows all the files in all directories of
+     the current drive, from the root.  The GetFiles procedure can be called
+     recursively:
+
+     DO GetFiles WITH "\"              // Starts with root directory
+     RETURN
+     * ----------------------------------------
+     PROCEDURE GetFiles(cSearchPath)
+     PRIVATE cSeekEnv                  // Picks up SEEK environment
+     ?                                 // Empty line for new dir.
+     * All files, all attributes
+     cFile  := FILESEEK(cSearchPath + "*.*", 63)
+     DO WHILE .NOT. EMPTY(cFile)
+        IF cFile <> "."                // ".." and "." are dummys
+           IF ISBIT(FILEATTR(), 5)     // Subdirectory?
+           cSeekEnv := SAVEFSEEK()     // Save environment
+           * Recursive call with extended path!
+           DO GetFiles WITH cSearchPath + cFile + "\"
+           RESTFSEEK(cSeekEnv)         // Restore environment
+           ELSE
+           ? cSearchPath + cFile
+           ENDIF
+        ENDIF
+        cFile := FILESEEK()            // Next file
+     ENDDO
+     RETURN
+
+!seealso: "RESTFSEEK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETFATTR()   Sets a file's attributes
+'------------------------------------------------------------------------------
+ ^bSETFATTR()^b
+ Sets a file's attributes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETFATTR(<cFile>, <nFileAttr>) --> nErrorCode
+
+ ^bArguments^b
+
+     ^b<cFile>^b  Designates the file that has attributes you want to change.
+     Drive and path designations are allowed, but no wildcards.
+
+     ^b<nFileAttr>^b  Designates the new attributes in numeric form.  The
+     default is 32 (ARCHIVE).
+
+ ^bReturns^b
+
+     SETFATTR() returns the attribute implemented to the designated file or a
+     negative value as an error code.  The codes are explained below:
+
+     ^bTable 7-20:  SETFATTR() Error Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      NO_DISK_ERR         No error found
+     -2      ER_FILE_NOT_FOUND   File not found
+     -3      ER_PATH_NOT_FOUND   Path not found
+     -5      ER_ACCESS_DENIED    Access denied (e.g., in network)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     This function permits you to change a file attribute.  The attributes
+     are represented as a numeric value and explained in the table below:
+
+     ^bTable 7-21:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If you implement multiple attributes for a file, you must also add the
+     individual values.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Use the VOLUME() function to create volume labels and
+        directories through the DIRMAKE() function.  Additional attributes
+        can also be set at directory level.
+
+     ^b^CFE^b  The BITTOC() and CTOBIT() functions can prove helpful in
+        conjunction with the file attributes.
+
+     ^b^CFE^b  An attempt to set (.AND...) attributes at pseudo files can
+        trigger a system crash.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set a file to HIDDEN:
+
+        ? SETFATTR("TEST.TXT", 2)       // Returns 0, if successful
+
+     ^b^CFE^b  When a file is not available:
+
+        ? SETFATTR("ABCDEFGH"), 2)      // Returns: -2
+
+     ^b^CFE^b  Influence the return value:
+
+        nAttribute  := SETFATTR("TEST.TXT", 7)
+        IF nAttribute <> 7
+           *...
+        ENDIF
+
+!seealso: "FILESEEK()" "FILEATTR()" tool_006.ngo:"BITTOC()" tool_006.ngo:"CTOBIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETFCREATE() Default attribute for creating with CA-Clipper Tools functions
+'------------------------------------------------------------------------------
+ ^bSETFCREATE()^b
+ Default attribute for creating with CA-Clipper Tools functions
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETFCREATE([<nNewFileAttr>]) --> nOldFileAttr
+
+ ^bArgument^b
+
+     ^b<nNewFileAttr> ^b Designates a file attribute for a new file.
+
+ ^bReturns^b
+
+     SETFCREATE() returns the current default attribute or the previous file
+     attribute, if the parameter is specified.
+
+ ^bDescription^b
+
+     CA-Clipper Tools functions use a value of 32 (setting the ARCHIVE bit)
+     to preset the default for file creation.  For example, use SETFCREATE()
+     when a file needs to acquire another attribute in a network environment.
+
+     ^bTable 7-22:  Coding the File Attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Assigned attribute^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY (Read-only)
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     32      FA_ARCHIVE          ARCHIVE (Changes since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  The set values only apply to files you create with CA-Clipper
+        Tools functions.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create a read-only file:
+
+        SETFCREATE(1)
+        STRFILE("Nantucket", "TEST.TXT")
+
+     ^b^CFE^b  Query the attribute set:
+
+        ? SETFCREATE()
+
+!seealso: "STRFILE()" "FILECOPY()" "FILECCONT()" "FILEAPPEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETFDATI()   Sets the date and time of a file
+'------------------------------------------------------------------------------
+ ^bSETFDATI()^b
+ Sets the date and time of a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETFDATI(<cFile>, [<dFileDate>], [<cFileTime>]) --> lAmended
+
+ ^bArguments^b
+
+     ^b<cFile>^b  Designates for which file the date and/or time is changed.
+     Drive and path designations are possible, wildcards are not.
+
+     ^b<dFileDate>^b  Designates the date for the file.  The default is the
+     system date.
+
+     ^b<cFileTime>^b  Designates the time for the file.  The default is the
+     system time.
+
+ ^bReturns^b
+
+     SETFDATI() returns .T. when the change is successfully executed.
+
+ ^bDescription^b
+
+     SETFDATI() permits you to set the clock date and time of a file.  Since
+     the date and time of a file usually change at the same time, these have
+     been brought together in one function.  It is possible to only change
+     the time or the date, when one parameter is given and the other is not.
+     The different parameter types tell the function what is to change.
+
+ ^bNote^b
+
+     ^b^CFE^b  The time is given in a 24-hour format, that is between
+        "00:00:00" and "23:59:59".
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the date and time:
+
+        SETFDATI("C:\TEXT\TEST.TXT", CTOD("01/01/91"), "01:10:00")
+
+     ^b^CFE^b  Set current date and time:
+
+        SETFDATI("TEST.TXT")                  // DATE() + TIME()
+
+     ^b^CFE^b  Only change the date:
+
+        SETFDATI("TEST.TXT", DATE() -10)      // Ten days prior to today
+
+     ^b^CFE^b  Only change the time, resetting to start time:
+
+        SETFDATI("TEST.TXT", SECTOTIME(Start))
+
+!seealso: "FILESEEK()" "FILEDATE()" "FILETIME()" tool_010.ngo:"SECTOTIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETSHARE()   Sets default opening mode for CA-Clipper Tools file functions
+'------------------------------------------------------------------------------
+ ^bSETSHARE()^b
+ Sets the default opening mode (share mode) for CA-Clipper Tools file
+ functions
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETSHARE(<nShareMode>) --> lAccepted
+
+ ^bArgument^b
+
+     ^b<nShareMode>^b  Designates the desired share mode.
+
+ ^bReturns^b
+
+     SETSHARE() returns .T. when the desired share mode is implemented (must
+     be DOS version - 3.1 or higher).
+
+ ^bDescription^b
+
+     The setting you implement here influences all CA-Clipper Tools functions
+     that open, read, or write to a file.  The share mode can be set here.
+     It determines when a program opens a file under DOS and how other
+     programs within a network may address this file.  The CA-Clipper Tools
+     default is 0, compatibility mode.  The following codes apply:
+
+     ^bTable 7-23: Share Mode Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Share Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       Compatibility mode.  Here DOS or the network software itself
+             determines the share mode.  In Novell networks, the SHAREABLE
+             attribute plays an important role in this relationship.
+     1       Both read and write by other programs are locked out.
+     2       Write by other programs are locked out.
+     3       Read by other programs are locked out.
+     4       Not locked.  Read and write by other programs is allowed
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^bImportant!^b  This function can only be used with DOS versions 3.1 or
+     higher.  Older versions return .F..
+
+ ^bExamples^b
+
+     ^b^CFE^b  Change share mode, prohibit writing by others:
+
+        ? SETSHARE(2)          // .T., when >= DOS 3.1
+
+     ^b^CFE^b  Bad parameter:
+
+        ? SETSHARE(12)         // .F.
+
+!seealso: "GETSHARE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STRFILE()    Writes a string to a file
+'------------------------------------------------------------------------------
+ ^bSTRFILE()^b
+ Writes a string to a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSTRFILE(<cCharacterstring>, <cFile>, [<lOverwrite>],
+     ^b   [<nOffset>], [<lCutOff>]) --> nRecordedByte
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates the character string to write to a
+     file.
+
+     ^b<cFile>^b  Designates a file name.  Drive and path designations are
+     permitted, but no wildcards.
+
+     ^b<lOverwrite>^b  If not designated or designated as .F., determines
+     whether or not a new file is created.  When .T., it writes to an
+     existing file.  The default is create new file (.F.).
+
+     ^b<nOffset>^b  Designates an offset within the file from which the
+     <cCharacterstring> string is to be written.  The default is End of file.
+
+     ^b<lCutOff>^b  When this optional parameter is designated as .T., the
+     function truncates the file if data written ends before the last file
+     byte.  The default is no cut off (.F.).
+
+ ^bReturns^b
+
+     STRFILE() returns the actual number of bytes written.
+
+ ^bDescription^b
+
+     This function provides another capability besides writing the contents
+     of a string to a file.  In contrast to the CA-Clipper Fxxxx() functions,
+     only one function call is necessary to write data to a file.  However,
+     it can result in some speed disadvantages, since files acted on by
+     STRFILE() cannot be held open.
+
+     If the target file is unavailable, the STRFILE() function always creates
+     it.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The attribute to create a new file, can be designated with the
+        SETFCREATE() function.
+
+     ^b^CFE^b  As recommended with the share mode, reads and writes from
+        other network programs should be locked out with SETSHARE() for this
+        period of time.
+
+     ^b^CFE^b  This function acknowledges the setting for CSETSAFETY().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add to the end of a file:
+
+        ? STRFILE("ABCDEFGH", "TEST.TXT", .T.)             // Result: 8
+
+     ^b^CFE^b  A file with drive and path designations, result: 10:
+
+        ? STRFILE("0123456789", "C:\TEXT\TEST.TXT", .T.)
+
+     ^b^CFE^b  Data in an existing file is overwritten from position 20 with
+        a designated string:
+
+        ? STRFILE("NANTUCKET", "TEST.TXT", .T., 20)        // Result: 9
+
+     ^b^CFE^b  A 5-character string is written starting at position 10 in an
+        existing file 20-characters long.  Since the final parameter is
+        specified as .T. once, and specified as .F. once, you see different
+        results:
+
+        ? STRFILE(REPLICATE("X", 20), "TEST.TXT")
+        ? STRFILE("AAAAA", "TEST.TXT", .T., 10, .F  // "XXXXXXXXXXAAAAAXXXXX"
+        ? STRFILE("AAAAA", "TEST.TXT", .T., 10, .T  // "XXXXXXXXXXAAAAA"
+
+!seealso: "FILESTR()" "SETSHARE()" "SETFCREATE()" tool_012.ngo:"CSETSAFETY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TEMPFILE()   Creates a file for temporary use
+'------------------------------------------------------------------------------
+ ^bTEMPFILE()^b
+ Creates a file for temporary use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTEMPFILE([<cDirectory>], [<cExtension>], [<nFileAttr>])
+     ^b    --> cFileName
+
+ ^bArguments^b
+
+     ^b<cDirectory>^b  Designates the drive and directory where the temporary
+     file is to be created.  The default is the current drive/directory.
+
+     ^b<cExtension>^b  Designates the file extension for the file.  The
+     default is no extension.
+
+     ^b<nFileAttr>^b Designates a file attribute for the file.  The default
+     is the SETFCREATE() setting.
+
+ ^bReturns^b
+
+     Returns the name of the temporary file.  If no file is created, the
+     function returns a null string.
+
+ ^bDescription^b
+
+     If you only need a file for a short time and want to avoid conflicts
+     with existing files, use TEMPFILE() to create a file with a unique name.
+     Names created by TEMPFILE() use the system date and system time.  You
+     can hide the file, if you specify an attribute.  Attributes are coded as
+     follows:
+
+     ^bTable 7-24:  File Attribute Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       FA_NORMAL
+     1       FA_READONLY         READ ONLY
+     2       FA_HIDDEN           HIDDEN (Hidden files)
+     4       FA_SYSTEM           SYSTEM (System files)
+     32      FA_ARCHIVE          ARCHIVE (Changed since last backup)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  The temporary file name is always 8 characters long and
+        consists exclusively of numbers with a period, if no extension has
+        been specified.  The file is created with a length of 0 bytes.
+
+     ^b^CFE^b  A designated file attribute has precedence over a setting
+        created with SETFCREATE().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create a temporary file in the current drive and directory:
+
+        cTempFile := TEMPFILE()
+
+     ^b^CFE^b  Create a temporary file in the root directory of the E: drive:
+
+        cTempFile := TEMPFILE("E:\")
+
+     ^b^CFE^b  Create a temporary file with a .TMP extension and a HIDDEN
+        attribute in the root directory of the A: drive:
+
+        cTempFile := TEMPFILE("A:\", "TMP", 2)
+
+!seealso: "SETFATTR()" "SETFCREATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TRUENAME()   Standardizes the path designation
+'------------------------------------------------------------------------------
+ ^bTRUENAME()^b
+ Standardizes the path designation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTRUENAME(<cPathDesignation>) --> cStandardizedPath
+
+ ^bArgument^b
+
+     ^b<cPathDesignation>^b  Designates a path as a standard.  It is assumed
+     that it is in accordance with DOS rules.
+
+ ^bReturns^b
+
+     TRUENAME() returns the standardized path whenever possible.
+
+ ^bDescription^b
+
+     Path designations are made for the drive as well as the path itself,
+     with regard to the current position designation.  With TRUENAME(),
+     related path designations are changed around so that they relate to the
+     root directory of a particular drive.
+
+     The function does not test to see if a path exists.  If the designated
+     path is not valid or the specified drive is unavailable, it returns a
+     null string.
+
+ ^bNote^b
+
+     ^bWarning!^b  Additional information is built into the path of network
+     drives. Under PC-LAN/MS-NET, the path contains the
+     designation:\\<ServerName>.  Under Novell, \\<ServerName>\ <VolumeName>
+     (see Examples).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Which complete path corresponds to the current disk drive?
+
+        ? TRUENAME(".")                        // e.g. "C:\TEST1"
+
+     ^b^CFE^b  Anything valid under DOS is acceptable:
+
+        ? TRUENAME("..\..\TEST1\.\TEST2")      // e.g. "C:\TEST1\TEST2"
+
+     ^b^CFE^b  In a Novell network, remove tokens 2 and 3, server name, and
+        volume name:
+
+        IF NNETWORK()
+           cPath   := TRUENAME(cOldPath)
+           cToken1   := TOKEN(cPath, ":\", 1)
+           cToken2   := TOKEN(cPath, ":\", 2)
+           cToken3   := TOKEN(cPath, ":\", 3)
+           cPath   := cToken1 + AFTERATNUM(cToken2 + cToken3, cPath)
+        ENDIF
+
+!seealso: tool_005.ngo:"TOKEN()" tool_005.ngo:"AFTERATNUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VOLSERIAL()  Determines the DOS disk serial number
+'------------------------------------------------------------------------------
+ ^bVOLSERIAL()^b
+ Determines the DOS disk serial number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVOLSERIAL([<cDrive>]) --> nVolSerial
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates the drive whose volume serial number is
+     queried.  The default is the current disk drive.
+
+ ^bReturns^b
+
+     VOLSERIAL() returns the volume serial number of the DOS  disk, hard
+     disk, or a 0, when you are not dealing with a DOS 4.0 or higher disk
+     (see Notes).  When the current drive is unavailable, it returns -1.
+
+ ^bDescription^b
+
+     VOLUME SERIAL NUMBER
+     Beginning with DOS version 4.0, every floppy or hard disk receives a
+     volume serial number during formatting.  This is a 32-bit number is
+     created by DOS using the date, clock time, and a counter.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Incompatibilities are possible.
+
+     ^b^CFE^b  The function always returns a value from the disk parameter
+        block of a floppy or hard disk.  Based on the Microsoft
+        recommendation for DOS versions prior to 4.0, a value of 0 is
+        returned.
+
+ ^bExample^b
+
+     Query the volume serial number:
+
+     ? VOLSERIAL()            // 0, when no DOS 4.x disk
+
+!seealso: tool_013.ngo:"OSVER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VOLUME()     Establishes a volume label for a floppy or hard disk
+'------------------------------------------------------------------------------
+ ^bVOLUME()^b
+ Establishes a volume label for a floppy or hard disk
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVOLUME(<cDiskName>) --> lEstablished
+
+ ^bArgument^b
+
+     ^b<cDiskName>^b  Designates a name to use on a new volume label.  A
+     drive designation is allowed; path designation and wildcards are not.
+
+ ^bReturns^b
+
+     VOLUME() returns .T. when the new volume entry is created.
+
+ ^bDescription^b
+
+     DOS provides a volume label as a disk identifier.  With the VOLUME()
+     function you can establish this label.  There is never more than one
+     label per floppy or hard disk.  A volume label can be up to 11
+     characters long, but when you use a period (.) it must always follow the
+     eighth character.
+
+     You can query the volume label with FILESEEK(), since the value 8 is
+     assigned as the volume attribute.
+
+ ^bNotes^b
+
+     ^b^CFE^b  A new volume label is always created in the root directory.
+
+     ^b^CFE^b  The function acknowledges the CSETSAFETY() setting and, if
+        necessary, does not overwrite an existing label.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Establish a volume label for A: drive:
+
+     ^b^CFE^b  Query the A: drive volume label:
+
+        ? FILESEEK("A:\*.*", 8)      // Based on example 1 "VOLO815"
+
+!seealso: "FILESEEK()" 
+'------------------------------------------------------------------------------
+
+
+

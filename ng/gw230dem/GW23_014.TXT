@@ -1,0 +1,385 @@
+!short: GWClearScreen() ^bClear the screen
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWClearScreen()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Clear the screen with a given color and characterstring.
+
+ ^bSyntax
+   ^bGWClearScreen(cColors, [cFillchars]) Ä> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWExplode()     ^bDisplay an 'exploded' box
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWExplode()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Display an 'exploded' box.
+
+ ^bSyntax
+   ^bGWExplode(nTop, nLeft, nBottom, nRight, [nSteps], [cExploMethod],
+   ^b[cColors], [cBorder]) Ä> NIL
+
+!seealso: gw23_011.ngo:"GWSpeed()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWExplosion()   ^bSet/get the explosion mode of box display                   ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWExplosion()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set/get the explosion mode of box display. This function determines if
+   boxes created with GWShadowBox() are displayed exploded. Many functions
+   use GWShadowBox() (e.g. GWPullDown(), GWBrowseDBF(), GWAsk() and so on).
+   With GWExplosion() you can define the default explosion mode of these
+   functions. It also defines the default implosion mode of GWRestScreen().
+   If explosion is set 'on' it is still possible to override the default
+   for a single function call. So if you write GWRestScreen(aScreen, .F.)
+   the screen restore will not be imploded.
+
+ ^bSyntax
+   ^bGWExplosion([lExploMode]) -> lResult
+     or
+   ^bSET EXPLOSION ON|OFF
+
+!seealso: "GWShadowBox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWMessage()     ^bShows a message in a box
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWMessage()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Shows a message in a shadowed box.
+
+ ^bSyntax
+   ^bGWMessage([cText], [cColors], [nRow], [nColumn], [cBorder]) Ä> aResult
+
+!seealso: gw23_010.ngo:"GWAsk()" gw23_011.ngo:"GWCrLf()" "GWRestScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWRestScreen()  ^bRestore a (part of a) screen
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWRestScreen()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Restore a (part of a) screen. The data of the part to restore must be
+   saved with the function GWSaveScreen() or GWShadowBox().
+
+ ^bSyntax
+   ^bGWRestScreen(aSaveScreen, [lImplode]) Ä> NIL
+
+!seealso: "GWSaveScreen()" "GWShadowBox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWSaveScreen()  ^bSave a (part of a) screen
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWSaveScreen()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Save a (part of a) screen in an array that can be restored with the
+   function GWRestScreen().
+
+ ^bSyntax
+   ^bGWSaveScreen(nTop,nLeft,nBottom,nRight) Ä> aResult
+
+!seealso: "GWRestScreen()" "GWShadowBox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWScreen2File() ^bSaves a screen to a textfile
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWScreen2File()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Saves the current screen to an ASCII textfile. The filename is uniquely
+   named SCR#####.TXT, where ##### stands for the invocation number.
+
+ ^bSyntax
+   ^bSETKEY(nKey, {||GWScreen2File()})
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWScreenSaver() ^bActivate a screensaver after x seconds                      ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWScreenSaver()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Activate a screensaver after x seconds of keyboard or mouse inactivity.
+   With this function you can specify a screensaver for your entire
+   application with 1 line of code. After this line all functions that wait
+   for an action from a user will activate a screensaver after the
+   specified number of seconds. The functions from which the screensaver
+   will be activated are : GWAsk(), GWBrowseDBF(), GWBrowseText(),
+   GWBrowseArray, GWPDown() and many more.
+
+ ^bSyntax
+   ^bGWScreenSaver([bSaver], [nSeconds]) -> NIL
+     or
+   ^bSET SCREENSAVER [TO] [bSaver] [AFTER nSeconds]
+
+!seealso: "GWScreenSavers" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWScreenSavers  ^bGhostware Screensavers                                      ^A4FM
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWScreenSavers^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   The library contains 5 screensaver :
+   GWBlockDrop() - drops parts of the screen;
+   GWMagic()     - removes and restores parts of the screen;
+   GWShuffle()   - shuffles the screen;
+   GWStars()     - displays stars on the screen.
+   GWWeave()     - weaves the screen;
+   The screensavers stay active until the user 'presses any key to
+   continue'.
+   These screensavers can be used within the functions :
+     ^bGWAction(), GWmWait(), GWPDown(), GWWaitKey()
+   The best way to activate the screensaver is using the function
+   GWScreenSaver() (or the command SET SCREENSAVER TO...).
+
+ ^bSyntax
+   ^bGWBlockDrop(bBlock, nSeconds)
+   ^bGWMagic(bBlock, nSeconds)
+   ^bGWShuffle(bBlock, nSeconds)
+   ^bGWStars(bBlock, nSeconds)
+   ^bGWWeave(bBlock, nSeconds)
+
+!seealso: "GWScreenSaver()" gw23_015.ngo:"GWUseSpecial()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWShadowBox()   ^bDisplay a box with REAL shadow                              ^A4FM
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWShadowBox()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Display a box with REAL shadow. Just try to draw several boxes over each
+   other to see the effect.
+   ^bNote : Use SETBLINK(.F.) at the beginning of your application
+   ^b       to prevent blinking of shadowed text.
+
+ ^bSyntax
+   ^bGWShadowBox(nTop, nLeft, nBottom, nRight, [cColors], [nLevels],
+     ^b[cBorder], [lExplode]) Ä> aResult
+         or
+   ^b#INCLUDE "GHOST.CH"
+   ^bGWBOX                                (or SHADOWBOX)
+     ^b[AT <nTop>, <nLeft>, <nBottom>, <nRight>]
+     ^b[COLOR <cColors>]
+     ^b[LEVEL <nLevels>]
+     ^b[BORDER <cBorder>]
+     ^b[EXPLODE]
+     ^b[TO <aResult>]
+
+!seealso: "GWRestScreen()" "GWSaveScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWShadowHeight( ^bSet/get the shadow height of box                            ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWShadowHeight(^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set/get the shadow height of box. This function determines if boxes
+   created with GWShadowBox() must have a shadow. Many functions use
+   GWShadowBox() (e.g. GWPullDown(), GWBrowseDBF(), GWAsk() and so on).
+   With GWShadowHeight() you can define the default shadow height of these
+   functions. If the height is set, it is still possible to override the
+   default for a single function call.
+   ^bNote : Use SETBLINK(.F.) at the beginning of your application to
+   ^b       prevent blinking of shadowed text.
+
+ ^bSyntax
+   ^bGWShadowHeight([nHeight]) -> nResult
+     or
+   ^bSET SHADOWHEIGHT TO [nHeight]
+
+!seealso: "GWShadowBox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWShowLogo()    ^bShow 1 or 2 (intro)screens
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWShowLogo()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Show 1 or 2 (intro)screens. On a VGA-screen 2 'normal' screens can be
+   showed underneath each other in 50*80 screenmode. The system pauses for
+   nWaitSeconds to go on.
+
+ ^bSyntax
+   ^bGWShowLogo(cScreen1,cScreen2,[nWaitseconds]) Ä> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWSpin()        ^bSpin a screenpart a number of times
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWSpin()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Spin a screenpart a number of times. The ASCII characters between 179
+   and 222 will be mirrored during the rotation too. So character ´ will be
+   mirrored to character Ã. It's a nice effect for intro-screens.
+
+ ^bSyntax
+   ^bGWSpin(nTop, nLeft, nBottom, nRight, [cColors], [nSpins],
+   [nSpeedFrom],
+     ^b[nSpeedTo], [nStep]) Ä> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWStatusBar()   ^bShow a statusbar
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWStatusBar()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Show a statusbar of the current action.
+
+ ^bSyntax
+   ^bGWStatusBar(xInput, [nRow], [cColors]) Ä> aResult of NIL
+
+!seealso: "GWRestScreen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWStatusLine()  ^bShow a centered message on the bottom line
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWStatusLine()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Show a centered message on the bottom line.
+
+ ^bSyntax
+   ^bGWStatusLine(cText, [nRow], [cColors]) Ä> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWWatch()       ^bDisplay a watch
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWWatch()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Display a watch if a user have to wait before a certain process is
+   finished.
+
+ ^bSyntax
+   ^bGWWatch([nTop],[nLeft]) Ä> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET EXPLOSION   ^bDisplay boxes exploded (or not)                             ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ESET EXPLOSION^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Display boxes exploded (or not).
+
+ ^bSyntax
+   ^bSET EXPLOSION ON|OFF
+!seealso: "GWExplosion()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET SCREENSAVER ^bActivate a screensaver after x seconds                      ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ESET SCREENSAVER^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Activate a screensaver after x seconds.
+
+ ^bSyntax
+   ^bSET SCREENSAVER [TO] [bSaver] [AFTER nSeconds]
+!seealso: "GWScreenSaver()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET SHADOWHEIGH ^bSet the height of the shadow for boxes                      ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ESET SHADOWHEIGH^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set the height of the shadow of boxes.
+
+ ^bSyntax
+   ^bSET SHADOWHEIGHT TO [nHeight]
+!seealso: "GWShadowHeight(" 
+'------------------------------------------------------------------------------
+
+
+

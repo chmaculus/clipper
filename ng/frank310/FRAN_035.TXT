@@ -1,0 +1,44 @@
+'------------------------------------------------------------------------------
+ What's New in the Horizontal Menu Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.00
+ û ADhormenu() - modified.  Added a 6th optional parameter for defining
+   Help headings. An ampersand '&' may now be embedded on a menu prompt
+   to indicate its trigger key.
+
+ û ADhm_rbuttons() - new.  API to reconfigure right mouse button behavior.
+
+ ^rOlder Versions
+ û  ADhormenu() - modified.  It can now accept an array of Help identifiers
+    to make for option-sensitive Help.  Also added support for global hot
+    keys.
+
+ û  ADhm_toggle() - new.  Toggles the active status of the menu options.
+
+ û  ADhm_color() - modified.  Expanded to accept a color specifier for the
+    inactive menu options.
+
+ û  ADhmg_color() - modified.  Expanded to accept a color specifier for the
+    inactive menu options.
+
+ û  ADhm_invkey() - new.  Defines a codeblock that handles invalid key
+    presses.
+
+ û  ADhm_sleep() - new.  Instructs menu to sleep, that is, not to process
+    events.  Optionally activates an alternate event handler while it is
+    asleep.
+
+ û  ADhm_poll() - new.  Adds an event poller, in addition to keyboard
+    presses and mouse button clicks.
+
+ û  ADhm_select() - modified.  In prior versions, a call to ADvm_select()
+    automatically closes the current menu.  In v2.2, you have an option of
+    processing the selection and then returning control to the menu instead
+    of exiting.
+
+ û  ADhm_refresh() - new.  Refreshes the menu display.
+!seealso: fran_009.ngo:"ADhormenu()" 
+'------------------------------------------------------------------------------
+
+
+

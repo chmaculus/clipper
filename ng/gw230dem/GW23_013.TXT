@@ -1,0 +1,505 @@
+!short: GWBlank()       ^bPrint a number of blanc lines
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWBlank()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Print a number of blank lines on the screen or the printer.
+
+ ^bSyntax
+   ^bGWBlank([nNumber]) Ä> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPBehavior()  ^bGet/set the behavior of the GWHP* functions
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPBehavior()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get/set the behavior of the GWHP* functions. By default these functions
+   print a printer control string directly to the printer (if GWPrintOn()
+   is used). This behavior can be turned off with this function.
+
+ ^bSyntax
+   ^bGWHPBehavior([lBehavior]) -> lResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPCopies()    ^bDefine the number of copies to print
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPCopies()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the number of copies to print.
+
+ ^bSyntax
+   ^bGWHPCopies([nCopies]) -> cResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPFont()      ^bSelect a font with all kind of specifications
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPFont()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Select a font with all kind of specifications, e.g. Spacing, Pitch,
+   Style and so on. To get a certain font out of your HP Laserjet a lot of
+   specifications must be send to the it. Also see your "HP User's
+   (Reference) Manual" or the "Font Test List" made by your printer. Also
+   look at the header-file "HP.CH" for the #DEFINEs of Spacing, Style,
+   Stroke and Typeface. This function does nothing more then calling the
+   functions GWHPSpacing(), GWHPPitch(), GWHPPointSize(), GWHPStyle(),
+   GWHPStroke() and HPTypeFace().
+
+ ^bSyntax
+   ^bGWHPFont([nTypeFace], [nSpacing], [nPitch], [nPoints], [nStyle],
+   ^b       [nStroke]) -> cResult
+
+!seealso: "HP.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPLPI()       ^bDefine the number of lines per inch
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPLPI()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the number of lines per inch.
+
+ ^bSyntax
+   ^bGWHPLPI([nLines]) -> cResult
+
+!seealso: "GWHPPortrait()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPLandscape() ^bSets landscape mode
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPLandscape()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Sets HP landscape mode.
+
+ ^bSyntax
+   ^bGWHPLandscape() -> cResult
+
+!seealso: "GWHPPortrait()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPLeftMargin( ^bDefine the left margin
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPLeftMargin(^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the left margin.
+
+ ^bSyntax
+   ^bGWHPLeftMargin([nLeftMargin]) -> cResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPPitch()     ^bDefine the number of characters per inch
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPPitch()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the number of characters per inch.
+
+ ^bSyntax
+   ^bGWHPPitch([nPitch]) -> cResult
+
+!seealso: "GWHPFont()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPPointSize() ^bDefine the height of scalable typefaces
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPPointSize()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the height of scalable typefaces (e.g. typefaces CG TIMES and
+   UNIVERS).
+
+ ^bSyntax
+   ^bGWHPPointSize([nPointSize]) -> cResult
+
+!seealso: "GWHPFont()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPPortrait()  ^bSets portrait mode
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPPortrait()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Sets HP portrait mode.
+
+ ^bSyntax
+   ^bGWHPPortrait() -> cResult
+
+!seealso: "GWHPLandscape()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPReset()     ^bReset the HP Laserjet
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPReset()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Reset the HP Laserjet and use default HP values.
+
+ ^bSyntax
+   ^bGWHPReset() -> cResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPSpacing()   ^bDefine the spacing between characters
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPSpacing()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the spacing between characters.
+
+ ^bSyntax
+   ^bGWHPSpacing([nSpacing]) -> cResult
+
+!seealso: "GWHPFont()" "HP.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPStroke()    ^bDefine the width of the characters
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPStroke()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the width of the characters.
+
+ ^bSyntax
+   ^bGWHPStroke([nStroke]) -> cResult
+
+!seealso: "GWHPFont()" "HP.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPStyle()     ^bDefine the style of the characters
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPStyle()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the style of the characters.
+
+ ^bSyntax
+   ^bGWHPStyle([nStyle]) -> cResult
+
+!seealso: "GWHPFont()" "HP.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPSymbolSet() ^bSelect the symbol set to use
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPSymbolSet()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Select the symbol set that must be used.
+   In the header file HP.CH there are several symbol set defined.
+
+ ^bSyntax
+   ^bGWHPSymbolSet([nSymbolSet]) -> cResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPTopMargin() ^bDefine the top margin
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPTopMargin()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the top margin.
+
+ ^bSyntax
+   ^bGWHPTopMargin([nTopMargin]) -> cResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWHPTypeFace()  ^bDefine the typeface
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWHPTypeFace()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Define the typeface (e.g. COURIER, PRESTIGE_ELITE).
+
+ ^bSyntax
+   ^bGWHPTypeface([nTypeface]) -> cResult
+
+!seealso: "GWHPFont()" "HP.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWKyoCode()     ^bSend printercontrol characters to a KYOCERA                 ^A5FO
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWKyoCode()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Send printercontrol characters to a KYOCERA. Use this function in
+   conjunction with Kyo_On and GWKyoOff().
+   PS. do not use the commando 'SET PRINT OFF' in the meantime.
+
+ ^bSyntax
+   ^bGWKyoCode(cPrinterChars) Ä> NIL^b
+
+!seealso: "GWKyoOn()" "GWKyoOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWKyoOff()      ^bDisable printing to a KYOCERA and clear the PRINTERSPOOLER  ^A5FO
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWKyoOff()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Disable printing to a KYOCERA and clear the PRINTERSPOOLER. Use this
+   function in conjunction with Kyo_On.
+   PS. this function executes the command 'SET PRINT OFF' too.
+
+ ^bSyntax
+   ^bGWKyoOff([lConsoleOn]) Ä> NIL^b
+
+!seealso: "GWKyoCode()" "GWKyoOn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWKyoOn()       ^bGeneral remarks with the HP Laserjet functions              ^A5FO
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWKyoOn()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Select printer-port for a KYOCERA and set printing on. Printercontrol
+   characters can be given too. Use this function in conjunction with
+   GWKyoOff().
+   PS. this function executes the command 'SET PRINT ON' too.
+
+ ^bSyntax
+   ^bGWKyoOn([cPrinterport], [cPrinterChars], [lConsoleOff]) Ä> NIL
+
+!seealso: "GWKyoCode()" "GWKyoOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWLPT1Check()   ^bCheck if the LPT1-port is ready
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWLPT1Check()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if the LPT1-port is ready to receive printcommands.
+
+ ^bSyntax
+   ^bGWLPT1Check() Ä> lResult
+
+!seealso: "GWPrintOn()" "GWPrintOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWPageFull()    ^bCheck if the lines to print fit on a page
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWPageFull()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if the lines to print fit on a page, if not an EJECT is send to
+   the printer and a number lines is skipped as a topmargin.
+
+ ^bSyntax
+   ^bGWPageFull([nPageLength], [nToPrint], [nTopMargin]) Ä> lResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWPrintOff()    ^bDisable printing and clear the PRINTERSPOOLER
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWPrintOff()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Disable printing and clear the PRINTERSPOOLER. Use this function in
+   conjunction with Kyo_On.
+   PS. this function executes the command 'SET PRINT OFF' too.
+
+ ^bSyntax
+   ^bGWPrintOff([lConsoleOn]) Ä> NIL^b
+
+!seealso: "GWPrintOn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWPrintOn()     ^bSelect printer-port and set printing on
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWPrintOn()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Select printer-port and set printing on. Use this function in
+   conjunction with GWPrintOff().
+   PS. this function executes the command 'SET PRINT ON' too.
+
+ ^bSyntax
+   ^bGWPrintOn([cPrinterport], [lConsoleOff]) Ä> lResult^b
+
+!seealso: "GWPrintOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWPrintText()   ^bPrints a string to a printer using Memoline()
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWPrintText()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Prints a string to a printer using Memoline() and wrapping text to the
+   next line if necessary. If the entire string doesn't fit on the page, it
+   will be printed on the next page.
+
+ ^bSyntax
+   ^bGWPrintText(cText, [nLen], [nPageLength], [nTop]) -> NIL
+
+!seealso: "GWPrintOn()" "GWPrintOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: HP Remarks      ^bRemarks about the HP* functions                            ^A3FX^A3F
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EHP Remarks^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: HP.CH           ^bHeader file for the HP* functions                          ^A3FX^A3F
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EHP.CH^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÙ^A10
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: LABEL ...       ^bPrint labels of any size to a printer or file               ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ELABEL ...^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Print labels of any size to a printer or file. With this function you
+   can do more than simply print labels. In fact you can use it for simple
+   reporting too (see the examples).
+   Be sure to initialize the printer before using this function. It simply
+   prints the information to the default output device, which is by default
+   the screen.
+
+ ^bSyntax
+   ^bLABEL xFields                      ;
+   ^b      [LINES nLines]               ;
+   ^b      [WIDTH nWidth]               ;
+   ^b      [HORIZONTAL [SPACE] nHSpace] ;
+   ^b      [VERTICAL [SPACE] nVSpace]   ;
+   ^b      [COLUMNS nColumns]           ;
+   ^b      [PAGELENGTH nLength]         ;
+   ^b      [LEFTMARGIN nLMargin]        ;
+   ^b      [TOPMARGIN nTMargin]         ;
+   ^b      [COPIES nCopies]             ;
+   ^b      [SAMPLES]
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

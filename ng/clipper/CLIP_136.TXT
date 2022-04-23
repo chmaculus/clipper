@@ -1,0 +1,39 @@
+'------------------------------------------------------------------------------
+^BSETCANCEL()^B
+
+    SETCANCEL() toggles program termination with Alt-C, on or off.
+
+^USyntax^U
+
+    SETCANCEL([<expL>])
+
+^UArguments^U
+
+    <expL> toggles the termination capability on or off.  Specifying true
+    (.T.) toggles termination on and false (.F.) toggles it off.  The
+    default setting when a Clipper application loads is true (.T.).
+
+^UReturns^U
+
+    A logical value.
+
+    SETCANCEL() returns the previous setting if an argument is specified;
+    the current setting if an argument is not.
+
+^UUsage^U
+
+    SETCANCEL() serves two basic purposes: toggling the state of the
+    termination key, Alt-C, and reporting the current or last state of
+    SETCANCEL().
+
+    ^BNote^B: SET KEY takes precedence over Alt-C when the termination
+    state is enabled.
+
+    ^BCaution: When SETCANCEL() has been set true (.T.), you will be unable
+    to terminate a runaway program unless you have provided an alternative
+    escape mechanism.
+!seealso: clip_056.ngo:"SET ESCAPE" ???.ngo:"ALTD" 
+'------------------------------------------------------------------------------
+
+
+

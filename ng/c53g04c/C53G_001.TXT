@@ -1,0 +1,1306 @@
+!short: Compiler                           CLIPPER.EXE    (command line)
+'------------------------------------------------------------------------------
+ ^bCA-Clipper Compiler--CLIPPER.EXE^b
+ Compiles one or more program files (.prg) containing procedures and user-
+ defined functions to form an object file (.OBJ).
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bCLIPPER [<sourceFile> | @<scriptFile> [<option list>]]
+
+ ^bArguments^b
+
+     ^b<sourceFile>^b is the name of the program file to compile to an object
+     file.  If no extension is specified, (.prg) is assumed.  The filename
+     can optionally include a drive designator and a path reference.
+
+     ^b<scriptFile>^b is the name of an ASCII text file containing a list of
+     source files to compile into a single object file.  The default
+     extension for this file is (.clp).
+
+     ^b<option list>^b is a list of one or more options to control the course
+     of the compilation, all of which are described below.  To get a list of
+     options, specify the compiler command line with no arguments.
+
+ ^bCompiler Options^b
+
+     All options are shown in uppercase preceded by a slash (/).  Note,
+     however, that options are not case-sensitive and that you can replace
+     the slash with a dash (-) if you prefer.
+
+     Some compiler options have arguments.  If an option has arguments,
+     specify them after the option, with no space between the option and
+     its first argument.
+
+     ^b/A
+
+     Declares any variable included in a PRIVATE, PUBLIC, or PARAMETERS
+     statement as MEMVAR.
+
+     ^b/B
+
+     Includes debugging information in the object file.
+
+     ^b/D<identifier>[=<text>]
+
+     Defines an identifier to the preprocessor with <text> assigned to the
+     <identifier> if specified.
+
+     ^b/ES[<severityLevel>]
+
+     Specifies the severity level of warnings.
+
+     If <severityLevel> is 0 or omitted, the compiler does not set the DOS
+     ERRORLEVEL upon exit if warnings are encountered.  This is the default
+     behavior of the compiler.
+
+     If <severityLevel> is 1, the compiler sets the DOS ERRORLEVEL upon exit
+     if warnings are encountered but still generates an .OBJ file.
+
+     If <severityLevel> is 2, the compiler sets the DOS ERRORLEVEL upon exit
+     if warnings are encountered and does not generate an .OBJ file.  This
+     effectively promotes warnings to error status.
+
+     ^b/I<pathName>
+
+     Adds the specified directory to the front of the INCLUDE path list.
+     Multiple /I options can be specified in the same compiler session to
+     specify several header file search directories.
+
+     ^b/L
+
+     Excludes the program source code line numbers from the object file.
+
+     ^b/M
+
+     Compiles only the current program file (.prg) suppressing automatic
+     search for program files (.prg) referenced in a program file with the
+     DO, SET FORMAT, and SET PROCEDURE commands.
+
+     ^b/N
+
+     Suppresses the automatic definition of a procedure with the same name as
+     the program file (.prg).
+
+     ^b/O<objFile>
+
+     Defines the name and/or location of the output object file.
+
+     ^b/P
+
+     Preprocesses the program file (.prg) and copying the result to an output
+     file with a (.ppo) extension.
+
+     ^b/Q
+
+     Prevents line numbers from displaying while compiling.
+
+     ^b/R[<libFile>]
+
+     Embeds a library search request in the object file.  If /R is specified
+     without <libFile> name, the default requests for CLIPPER.LIB,
+     EXTEND.LIB, DBFNTX.LIB, and TERMINAL.LIB are suppressed.  Multiple /R
+     options can be specified in the same compiler session to embed more
+     than one library request.
+
+     ^b/S
+
+     Checks the syntax of the current (.prg) file and no object file is
+     generated.
+
+     ^b/T<pathName>
+
+     Specifies a different directory for temporary files generated during
+     compilation.
+
+     ^b/U[<userStandardHeaderFile>]
+
+     Identifies an alternate standard header file to preprocess in place of
+     the supplied STD.CH which is used automatically.
+
+     ^b/V
+
+     Forces the compiler to assume all references to undeclared or unaliased
+     variable names are public or private variables.
+
+     ^b/W
+
+     Generates warning messages for undeclared or unaliased (ambiguous)
+     variable references.
+
+     ^b/Z
+
+     Suppresses shortcutting optimizations on the logical operators .AND. and
+     .OR.  This option is provided as an aid to isolating code that depends
+     on the behavior of older versions of CA-Clipper.
+!seealso: c53g_002.ngo:"SET CLIPPERCMD" c53g_002.ngo:"SET INCLUDE" c53g_002.ngo:"SET TMP" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Protected Mode Linker              EXOSPACE.EXE   (command line)
+'------------------------------------------------------------------------------
+ ^bCA-Clipper Protected Mode Linker--EXOSPACE.EXE^b
+ Combines objects files (.OBJ) with library files (.LIB) to form a protected-
+ mode executable file (.EXE).
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bEXOSPACE [@<lnkFile>] [<command list>]
+
+ ^bArguments^b
+
+     If you specify no arguments, CA-Clipper/Exospace displays a brief help
+     screen.
+
+     ^b<lnkFile>^b is the name of an ASCII text file called a script file
+     from which the linker takes some or all of its input.  If you specify
+     the file without an extension, .LNK is assumed.  You can optionally
+     specify a drive designator and/or a path reference for the script file.
+
+     You can use script files to automate linker sessions that you tend to
+     repeat and sessions that are too long to enter from the command line--
+     the DOS command line limit of 128 characters may be too restrictive for
+     some linker sessions, necessitating the use of a script file.
+
+     The only rule governing the format of a script file is that it contain
+     valid linker commands.  You need not place the commands one to a line.
+     The new line character, like a space or a Tab, is considered to be white
+     space.  Therefore, if a command will not fit on one line, continue it on
+     a new line by pressing Enter--no continuation character is necessary.
+
+     The # character designates a comment.  When encountered, the rest of the
+     line is ignored.
+
+     You can nest script files using the @<lnkFile> syntax within a script
+     file.  The named script file is read and executed by CA-Clipper/Exospace
+     in its entirety.  When it terminates, control returns to the current
+     script file.
+
+     ^b<command list>^b is a list of linker commands separated by spaces.
+     Linker commands on the command line either override or augment the same
+     commands in a script file.  For example, a FILE command on the command
+     line adds to any FILE commands in the script file, while an OUTPUT
+     command overrides any OUTPUT commands in the script file.  See Linker
+     Commands below for details on the syntax and behavior of specific
+     commands.
+
+     To invoke the linker, you must specify at least one FILE command to tell
+     CA-Clipper/Exospace which object files you want to link.  You can
+     specify this command either on the command line or in a script file.  If
+     you attempt to invoke CA-Clipper/Exospace with command line arguments
+     and do not specify a FILE command, the linker session will result in an
+     error.
+
+ ^bLinker Commands^b
+
+     This section provides a brief description of all the CA-Clipper/Exospace
+     commands.  You can specify commands on the CA-Clipper/Exospace command
+     line or in a script file.  The commands are not case-sensitive, and you
+     can specify them in whatever order you want.  The only command that is
+     required to link is the FILE command--all others are optional.
+
+     ^bEXOSPACE CLIPPER 501
+
+     Specifies that you are linking a CA-Clipper 5.01 or 5.01a application.
+
+     ^bEXOSPACE ENVIRONMENT CLIPPER <envName>
+
+     Specifies the environment variable to use for application runtime
+     configuration.
+
+     ^bEXOSPACE ENVIRONMENT OVERRIDE
+
+     Causes runtime configuration environment settings to override .EXE
+     defaults.
+
+     ^bEXOSPACE EXECUTABLE CLIPPER <settings>
+
+     Hard-codes default runtime configuration settings in the .EXE.  See SET
+     CLIPPER for details about available settings and syntax.  In addition to
+     the settings listed there, the following additional settings are
+     available for controlling the CA-Clipper/Exospace protected-mode VM
+     system:
+
+     LOWMEM:<nKBytes>--Sets the amount of low DOS memory to reserve for
+     allocation by third-party libraries for interrupt routines.  The default
+     is 0.  Ignore this unless your third-party library documentation
+     specifically recommends that you set it.
+
+     MAXMEM:<nKBytes>--Sets the maximum amount of physical memory to use
+     before swapping to disk.  The default is 8096 KB, which is ample for
+     most applications. In a task switching environment, you may want to
+     lower this value.
+
+     MINMEM:<nKBytes>--Sets the minimum amount of physical memory that must
+     be available to run the program.  If there is not enough memory
+     available, an error message is generated and the application returns to
+     DOS.  The default is 1024 KB, which is the recommended minimum.
+
+     VMSIZE:<nKBytes>--Sets the amount of virtual memory the VM system should
+     provide.  The default is 8096 KB, which is ample for most applications.
+
+     ^bEXOSPACE EXECUTABLE NODELETE
+
+     Creates an .EXE even if errors occur during linking.
+
+     ^bEXOSPACE PACKAGE <package list>
+
+     Causes specified protected-mode support packages to be included in the
+     .EXE.  The following packages are available--use one or more in a comma-
+     separated list:
+
+     8514--Specifies the IBM 8514 Display Adapter.  Allows direct calls from
+     protected mode, with no mode switching.
+
+     DOS25--Specifies the Absolute Disk Read/Write compatibility package.
+     Services INT 25h and 26h.
+
+     INT10--Specifies the Video BIOS compatibility package. Services INT 10h.
+
+     IPX--Specifies the IPX/SPX compatibility package for Novell Networks.
+     Services INT 7Ah.
+
+     IPXCT--Specifies the compatibility package for CA-Clipper Tools.
+
+     NET5C--Specifies the NETBIOS compatibility package.  Replaces
+     NETBIOS?.OBJ.  Services INT 5Ch.
+
+     NOVM--Disables the CA-Clipper/Exospace VM system.  The resulting
+     application will run only on systems that have sufficient RAM to contain
+     the application's entire .EXE and all its data.
+
+     ^bEXOSPACE PROCEDURE DEPTH <maxDepth>
+
+     Sets the stack size of an application in terms of maximum procedure call
+     depth.
+
+     ^bFILE <objFile list>
+
+     Specifies one or more object files to be linked in a comma-separated
+     list.
+
+     ^bLIBRARY <libFile list>
+
+     Specifies one or more library files to search during linking in a comma-
+     separated list.
+
+     ^bMAP [=<mapFile>] [<mapOption list>]
+
+     Causes a map to be generated.  By default, the map file will have the
+     same name as the resulting .EXE file.  The available map options are as
+     follows--use one or more in a comma-separated list:
+
+     A--Public symbols sorted by address
+
+     N--Public symbols sorted by name
+
+     S--Segments with assigned addresses
+
+     ^bMODULE <moduleName> FROM <libName>
+
+     Searches for named module in specified library only.
+
+     ^bNODEFLIB | NODEFAULTLIBRARYSEARCH
+
+     Does not search default libraries.
+
+     ^bOUTPUT <exeFile>
+
+     Specifies the name of the executable file to be generated.  If not
+     specified, the first filename encountered on the CA-Clipper/Exospace
+     command line (either object or script) is used, but with an .EXE
+     extension.
+
+     ^bSTACK <sizeBytes>
+
+     Sets the stack size of an application in decimal bytes.  The value you
+     specify can be any positive number up to 65,535.
+!seealso: c53g_002.ngo:"SET CLIPPER" c53g_002.ngo:"SET LIB" c53g_002.ngo:"SET OBJ" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Real Mode Linker                   BLINKER.EXE    (command line)
+'------------------------------------------------------------------------------
+ ^bCA-Clipper Real Mode Linker--BLINKER.EXE^b
+ Features high-speed linking, dynamic overlaying, caching of overlay,
+ compression of the symbol table, and "burning" the CLIPPER environment
+ variable
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bBlinker Commands
+
+     Script file(s) are specified on the command line and default to an
+     extension of .LNK.  They may be nested, and more than one may be used on
+     the command line, for example:
+
+     ^bBLINKER @Defaults @Other LIB Mylib VERBOSE
+
+     This command line instructs Blinker to read the script file DEFAULTS.LNK
+     followed by the script file OTHER.LNK.  It also instructs Blinker to use
+     the library MYLIB.LIB and to display a VERBOSE listing of the .OBJ files
+     being processed.  The full names of the commands, or any unique
+     abbreviation of the words which comprise the commands, may be used
+     although it is recommended that at least three letters be used for
+     clarity.  For example, the command BLINKER OVERLAY OPSIZE 40 can be
+     abbreviated to BLI OVE OPS 40.
+
+     Most Blinker commands may be specified in any order, at any point in the
+     link script file.  Typically the first FILE statement should specify the
+     .OBJ containing the main program procedure.
+
+     ^b# ...
+
+     Indicates text as a script file comment.  Any line in the script file
+     beginning with the character # is treated as a comment and is ignored by
+     Blinker.  If the # ... character occurs within a line, the rest of the
+     line is ignored.
+
+     ^b// ...
+
+     Indicates text as a script file comment.  Any line in the script file
+     containing the characters // is treated as a comment and is ignored by
+     Blinker.  If the // ... characters occur within a line, the rest of the
+     line is ignored.
+
+     ^b@<scriptname>
+
+     Specify the name of a script file.  Blinker supports nested script files
+     of any size to a depth of 5 levels.  The processing of nested script
+     files is similar to a program function call.
+
+     ^bBEGINAREA
+
+     Specifies the start of a dynamic overlay area to the linker.  Each
+     BEGINAREA should have a corresponding ENDAREA to indicate the end of the
+     overlay area.
+
+     ^bBLINKER CACHE EMS <nuMax[%]>
+     ^b   [, <nuMinLeave[%]>]
+
+     Specifies the amount of EMS (LIM version 4.0 and higher) memory to be
+     used for the overlay cache.  Two numeric parameters are used to specify
+     the amount of EMS memory to be allocated and the amount to be left for
+     program use.  Both parameters may be specified as either a number of KB,
+     or as a percentage of the total available EMS.
+
+     ^bBLINKER CACHE XMS <nuMax[%]>
+     ^b   [, <nuMinLeave[%]>]
+
+     Specifies the amount of XMS (version 2.0 and higher) memory to be used
+     for the overlay cache.  Two numeric parameters are used to specify the
+     amount of XMS memory to be allocated and the amount to be left for
+     program use.  Both parameters may be specified as either a number of KB,
+     or as a percentage of the total available XMS.
+
+     ^bBLINKER CLIPPER PAGE ON | OFF
+
+     Enables/Disables automatic CA-Clipper 5.3 code paging.
+
+     ^bBLINKER ENVIRONMENT CLIPPER <cName>
+
+     Changes the name of the CA-Clipper environment variable from the default
+     setting of "CLIPPER" to any string of up to 16 characters, and thus
+     avoids the remote site settings for the CLIPPER environment variable.
+
+     ^bBLINKER ENVIRONMENT NAME <cName>
+
+     Specifies the name of the environment variable for Blinker runtime
+     options.  By default, if the argument is not specified, the default
+     setting is BLINKER.
+
+     ^bBLINKER ENVIRONMENT OVERRIDE
+
+     Commands Blinker to allow the CA-Clipper environment variables set using
+     the BLINKER EXECUTABLE CLIPPER command to be overridden at application
+     run time by the settings of the CLIPPER environment variable.  When
+     doing this, you may want to consider renaming your CLIPPER environment
+     variable with the command BLINKER ENVIRONMENT CLIPPER.
+
+     ^bBLINKER EXECUTABLE CLIPPER <cEnvironmentstring>
+
+     Burns default values for the CA-Clipper runtime environment variables
+     into the executable file.  Those settings set using the BLINKER
+     EXECUTABLE CLIPPER command take precedence over those set with the SET
+     CLIPPER command.
+
+     ^bBLINKER EXECUTABLE NODELETE
+
+     Creates .EXE regardless of unresolved externals, although the resulting
+     .EXE is not guaranteed to operate correctly.
+
+     ^bBLINKER LINK EMS ON | OFF
+
+     Controls whether or not EMS memory is used at link time by the virtual
+     memory system within Blinker.
+
+     ^bBLINKER LINK PAGEFRAME ON | OFF
+
+     Controls the use of the EMS pageframe by Blinker at link time by the
+     virtual memory system within Blinker.
+
+     ^bBLINKER LINK XMS ON | OFF
+
+     Controls whether or not XMS memory is used at link time by the virtual
+     memory system within Blinker.
+
+     ^bBLINKER MESSAGE DUPLICATES
+
+     Causes Blinker to generate the 1004 link-time warning message for all
+     duplicate symbols within libraries encountered at link time.
+
+     ^bBLINKER MESSAGE NOBLINK
+
+     Disables the blinking eyes which are displayed while Blinker is running.
+
+     ^bBLINKER MESSAGE NOWARNING
+
+     Suppresses the display of Blinker link-time warning messages 1001 to
+     1100.
+
+     ^bBLINKER MESSAGE WINK [LEFT]
+
+     Enables single eye winking during linking.  If no parameter is entered,
+     the right eye will wink (from Blinker뭩 point of view, i.e., from inside
+     the screen looking out).  The parameter LEFT causes the left eye to
+     wink.
+
+     ^bBLINKER OVERLAY OPSIZE <nuSize>
+
+     Requests a size for the overlay pool at run time in KB.  It can be set
+     to any value between 12KB and 128KB.  The default operating size is
+     40KB.
+
+     ^bBLINKER OVERLAY PAGEFRAME ON | OFF
+
+     Allows the overlay manager to utilize the expanded memory pageframe for
+     the overlay pool (maximum size 64Kb), on machines equipped with LIM EMS
+     (3.2 or higher) expanded memory boards or emulators.
+
+     ^bBLINKER OVERLAY THRESHOLD <nuLimit>
+
+     Sets the threshold size below which code specified to be overlaid will
+     be moved back to the root section of the program.
+
+     ^bBLINKER OVERLAY UMB ON | OFF
+
+     Used in conjunction with a suitable XMS driver it allows the Blinker
+     overlay manager to execute overlays in upper memory blocks above 640KB.
+
+     ^bBLINKER PROCEDURE DEPTH <nuDepth>
+
+     Specifies maximum depth of CA-Clipper procedure nesting.  This depth is
+     the number of procedure calls that are executed before a procedure
+     return.
+
+     ^bDEFINE <symbol>[, <symbol> ...]
+
+     Specifies symbols to be excluded at link time and points them to a dummy
+     routine in the overlay manager.
+
+     ^bDEFLIB
+
+     Uses default library search records to locate and link libraries which
+     are specified within an object module.
+
+     ^bECHO [ON | OFF |] [<cString>]
+
+     ECHO ON <cString> turns on echoing of the script file to the screen,
+     with the first line displayed being <cString> if it is specified.  ECHO
+     OFF turns off echoing to the screen of the script file and ignores the
+     rest of the line.
+
+     ^bENDAREA
+
+     Specifies the end of an overlay area to the linker, as described in the
+     BEGINAREA section.
+
+     ^bEXTDICTIONARY
+
+     Specifies that Blinker should use the extended dictionary that is
+     appended to library files by some librarian utility programs.
+
+     ^bFILE [d:][path]<filename>
+     ^b   [, [d:][path]<filename> ...]
+
+     Specifies to the linker the names of one or more .OBJ files to be
+     included in the output file at that point.
+
+     ^bLIBRARY [d:][path]<libname>
+     ^b   [, [d:][path]<libname> ...]
+
+     Specifies one or more program libraries required by the program.
+
+     ^bMAP [=[d:][path]<filename>] [S][,A]
+
+     Requests a segment map of the executable.
+
+     ^bMIXCASE
+
+     Causes Blinker to treat all publics and externals as case sensitive at
+     link time, rather than converting them to UPPERCASE.
+
+     ^bMODULE <module> [,<module> ...]
+     ^b   [FROM <libname>]
+
+     Specifies placement of individual library modules regardless of whether
+     the originating libraries or object modules are specified within an
+     overlay area or not.
+
+     ^bMURPHY
+
+     Causes the overlay manager to attempt to force any inadvertent overlay
+     errors (programming errors) to manifest themselves during testing or
+     debugging.
+
+     ^bNOBELL
+
+     Suppresses the beep upon completion of link.
+
+     ^bNODEFLIB
+
+     Ignores default library search records which are encountered within
+     object modules.
+
+     ^bNOEXTDICTIONARY
+
+     Disables processing of extended library dictionaries.
+
+     ^bNOTABLEOFCONTENTS
+
+     Disables processing of library table of contents.
+
+     ^bOUTPUT [drive:][path]<filename>
+
+     Specifies the name of the output executable file to be created by the
+     linker.
+
+     ^bREADONLY
+
+     Specifies executable file will be set to read-only status.
+
+     ^bSEARCH [d:][path]<libname>
+     ^b   [, [d:][path]<libname> ...]
+
+     Prioritizes all symbols in the specified libraries.
+
+     ^bSECTION INTO <ovlname>
+     ^b   [FILE [d:][path]<filename>
+     ^b   [, [d:][path]<filename>...] ]
+
+     Specifies files to be placed in an external overlay.
+
+     ^bSTACK <nuSize>
+
+     Specifies to Blinker in HEXADECIMAL the stack size in bytes required by
+     the program .EXE file.
+
+     ^bUPPERCASE
+
+     Specifies to the linker that all symbols should be converted to
+     uppercase before being added to the symbol table.
+
+     ^bVERBOSE [0 | 1 | 2]
+
+     Displays status information during linking.
+
+     ^bWORKFILE [d:][path]<filename>
+
+     Specifies drive, path, and file name of the temporary WORKFILE to use at
+     link time if one is required.
+
+ ^bLinker Function
+
+     ^bnuValue := BLIVERNUM()
+
+     Returns the Blinker version number as an integer containing the version
+     number of Blinker used to link the program.
+!seealso: c53g_002.ngo:"SET CLIPPER" c53g_002.ngo:"SET LIB" c53g_002.ngo:"SET OBJ" c53g_002.ngo:"SET TMP" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Program Maintenance                RMAKE.EXE      (command line)
+'------------------------------------------------------------------------------
+ ^bProgram Maintenance--RMAKE.EXE^b
+ Automates the maintenance of multi-file program systems by keeping files up-
+ to-date by comparing the date and time stamps of files related to one
+ another and performing a series of actions if they do not match.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bRMAKE [<makeFile list>] [<macroDef list>] [<option list>]
+
+ ^bArguments^b
+
+     ^b<makeFile list>^b is a list (separated by spaces) of one or more make
+     files to process.  The default extension for make files is (.RMK).  Each
+     filename can optionally include a drive designator and a path reference.
+     You can specify a maximum of 16 files in the <makeFile list>.
+
+     ^b<macroDef list>^b is a list (separated by spaces) of one or more macro
+     definitions of the form <macroName>=[<value>].  If you specify more than
+     one macro definition, separate them with a space.  If you define a macro
+     on the command line, you cannot redefine it in the make file without
+     first undefining it.  In this way, command line macros take precedence
+     over make file macros of the same name.
+
+     ^b<option list>^b is a list of one or more options to control the course
+     of the make, all of which are described below.  To get a list of options,
+     specify the RMAKE command line with no arguments.
+
+ ^bRMAKE Options^b
+
+     All options are shown in uppercase preceded by a slash (/).  Note,
+     however, that options are not case-sensitive and that you can replace
+     the slash with a dash (-) if you prefer.
+
+     Some compiler options have arguments.  If an option has arguments,
+     specify them after the option, with no space between the option and
+     its first argument.
+
+     ^b/B
+
+     Displays debugging information.
+
+     ^b/D<macroName>[:<value>]
+
+     Defines a macro and an optional value.  If the value is not supplied,
+     the macro is defined with a null value.
+
+     ^b/F
+
+     Forces RMAKE to perform all actions defined in the make file(s) without
+     regard to the date and time stamps of the files in the dependency and
+     inference rules.  In other words, the application will be rebuilt,
+     regardless of whether any files have been updated since the last build.
+
+     ^b/I
+
+     Ignores execution errors.
+
+     ^b/N
+
+     Performs a null make displaying the commands that would be executed
+     without actually executing them.
+
+     ^b/Q
+
+     Suppresses the RMAKE copyright message.
+
+     ^b/U
+
+     Enables the # character as a comment indicator and suppresses its use as
+     a directive indicator.
+
+     ^b/W
+
+     Displays certain warning messages.
+
+     ^b/XS<numSymbols>
+
+     Sets the size of the internal symbol table.  If not specified, the
+     default is 500 symbols.
+
+     ^b/XW<numBytes>
+
+     Sets the size of the internal workspace.  If not specified, the default
+     is 2048 bytes.
+
+ ^bComments^b
+
+     Comments can be specified using C-style inline comments (e.g. /* .. */ )
+     or C-style line comments (//) or, if the /U option is used, Unix make-
+     style comments (#).  Comments cannot be nested.
+
+ ^bDependency Rules^b
+
+     A dependency rule causes certain actions to be performed if any of the
+     dependent files have a newer date and time stamp than the target file:
+
+     ^b<targetFile>: <dependentFile list>
+     ^b   [<action>]
+     ^b   [<action>]...
+
+ ^bInference Rules^b
+
+     An inference rule is used to complete a dependency rule specified with
+     no actions.  It defines the actions to take for any incomplete
+     dependency rule that satisfies certain filename extensions:
+
+     ^b.<dependentExtension>.<targetExtension>:
+     ^b   [<action>]
+     ^b   [<action>]...
+
+ ^bMacro Definitions^b
+
+     Macros are defined in make files using the following syntax:
+
+     ^b<macroName> = [<value>]
+
+     Once defined, a macro can be referred to using the following syntax:
+
+     ^b$(<macroName>)
+
+     To assign the contents of a macro to another macro, use the following
+     syntax:
+
+     ^b<macroName> := $(<macroName>)
+
+ ^bMakepath Macros^b
+
+     Makepath macros are special macros that define where RMAKE searches and
+     creates classes of files as defined by extension.  Makepath macros are
+     defined using the following syntax:
+
+     ^bmakepath[.<extension>] = <pathSpec>
+
+ ^bPredefined Macros^b
+
+     In addition to user-defined macros, there are several predefined macros
+     that can be used to access dependency and target filenames.
+
+     ^b$*
+
+     Expands to the target filename without a path or extension.
+
+     ^b$@
+
+     Expands to the target filename, including path and extension.
+
+     ^b$**
+
+     Expands to the complete list of full dependency filenames.
+
+     ^b$<
+
+     Expands to the full name of the first file in the dependent file list.
+
+     ^b$?
+
+     Expands to a list of dependencies that have a more recent date and time
+     stamp than the target file.
+
+ ^bDirectives^b
+
+     RMAKE provides directives to control the operation of the make process.
+     Directives cannot be used as action lines.  Macros encountered in a
+     directive are expanded immediately.  By default, either the # character
+     or the ! character can be used to specify a directive. If the /U option
+     is used, the # character is interpreted as a comment indicator and
+     cannot be used to specify directives.
+
+     ^b#! <action>
+
+     Executes a DOS command.
+
+     ^b#ifdef <macroName>
+     ^b   <statements>...
+     ^b#else
+     ^b   <statements>...
+     ^b#endif
+
+     Executes statements between the #ifdef directive and the corresponding
+     #else or #endif directives if the specified <macroName> exists.
+
+     ^b#ifeq <word1> <word2>
+     ^b   <statements>...
+     ^b#else
+     ^b   <statements>...
+     ^b#endif
+
+     Executes statements between the #ifeq directive and the corresponding
+     #else or #endif directives if <word1> and <word2> are identical.  A word
+     consists of one or more characters up to the next white space character.
+     To include a white space character within a word, enclose the word in
+     double quote (") marks.  Note that the comparison is not case-sensitive.
+
+     ^b#iffile <fileSpec>
+     ^b   <statements>...
+     ^b#else
+     ^b   <statements>...
+     ^b#endif
+
+     Executes statements between the #iffile directive and the corresponding
+     #else or #endif directives if any files match the specified <fileSpec>.
+
+     ^b#ifndef <macroName>
+     ^b   <statements>...
+     ^b#else
+     ^b   <statements>...
+     ^b#endif
+
+     Executes statements between the #ifndef directive and the corresponding
+     #else or #endif directives if the specified <macroName> does not exist.
+
+     ^b#include "<fileName>"
+
+     Inserts and processes the contents of <fileName> before continuing with
+     the current make file.
+
+     ^b#stderr "<text>"
+
+     Writes the <text> to the standard error file or device.
+
+     ^b#stdout "<text>"
+
+     Writes the <text> to the standard output file or device.
+
+     ^b#undef <macroName>
+
+     Removes any previous definition of the specified <macroName>.
+!seealso: c53g_002.ngo:"SET RMAKE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Debugger                           CLD.EXE        (menu)
+'------------------------------------------------------------------------------
+ ^bCA-Clipper Debugger--CLD.EXE^b
+ Allows you to debug your source code while your executable file is running.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bCLD [[/43 | /50 | /S] [@<scriptFile>]
+     ^b   <exeFile> [<argument list>]]
+
+ ^bArguments^b
+
+     If no command line arguments are specified, CLD displays a brief help
+     screen.
+
+     ^b/43 | /50 | /S^b specifies the screen mode used by the debugger.  These
+     three options are mutually exclusive and, if more than one is specified,
+     CLD.EXE uses the last one that occurs on the command line.  The default
+     screen mode is 25 lines, with the debugger using the entire screen.
+
+     ^b/43^b specifies 43-line mode and is available on EGA monitors only.
+
+     ^b/50^b specifies 50-line mode and is available on EGA and VGA monitors
+     only.
+
+     ^b/S^b is available on EGA and VGA monitors only.  This option splits
+     the screen between your application and the debugger, allowing you to
+     view the application and the debugger simultaneously.  On a VGA monitor
+     /S uses 50-line mode, and on an EGA monitor it uses 43-line mode. In
+     split screen mode, the top 25 lines of the screen are used by your
+     application, and the remaining lines are used for the debugger display.
+
+     ^b<scriptFile>^b is the name of a script file with a default extension
+     of (.cld).  CLD searches for the specified <scriptFile> in the current
+     directory then searches the DOS PATH.  A script file is simply an ASCII
+     text file containing one or more debugger commands, with each command
+     appearing on a separate line.  When the debugger is invoked with a
+     script file, each command in the file is executed automatically after
+     the <exeFile> file is loaded.
+
+     In addition to any script file called for on the CLD command line, the
+     debugger automatically searches for a script file with the name
+     Init.cld.  If a file by this name is located in the current directory or
+     anywhere in the DOS PATH, the debugger executes it as a script file.  If
+     both Init.cld and a command line script file are present, Init.cld is
+     executed first followed by the command line script file.
+
+     ^b<exeFile>^b is the name of the executable file (.EXE) you want to
+     debug.  CLD searches for the <exeFile> in the current directory only--
+     the DOS PATH is not searched.  The file must include line numbers and
+     debugging information.
+
+     ^b<argument list>^b is the argument list for <exeFile>.  There must be a
+     space between <argument list> and <exeFile>.
+
+ ^bMenu Commands^b
+
+     Listed below is a summary of debugger commands.
+
+     ^b?|?? <exp>
+
+     Displays the value of an expression.
+
+     ^bBP [[At] <lineNum> [[In] <idProgramFile>]]]
+     ^bBP [<idFunction> | <idProcedure>]
+
+     Sets or removes a breakpoint at a specified program and line number or
+     at a particular function/procedure call.
+
+     ^bCallstack [on | Off]
+
+     Toggles the display of the Callstack window.
+
+     ^bDelete All [BP | TP | WP]
+     ^bDelete BP | TP | WP <number>
+
+     Deletes breakpoints, watchpoints, and tracepoints, either individually
+     or as a whole.
+
+     ^bFile DOS
+
+     Loads a temporary copy of COMMAND.COM, allowing you to enter DOS
+     commands without leaving the current application.
+
+     ^bFile Exit
+
+     Terminates the debugger, closes all files, and returns to DOS.
+
+     ^bFile Open <idFileName>
+
+     Opens the specified file for viewing in the Code window.
+
+     ^bFile Resume
+
+     Returns from viewing a file to the program being debugged.
+
+     ^bHelp [Keys | Windows | Menus | Commands]
+
+     Activates the Help window.
+
+     ^bList BP | TP | WP
+
+     Lists watchpoints, tracepoints, and breakpoints.
+
+     ^bLocate Case
+
+     Toggles search case-sensitivity setting.
+
+     ^bLocate Find <searchString>
+
+     Searches the current file for the specified string, obeying the Locate
+     Case setting.
+
+     ^bLocate Goto <lineNum>
+
+     Moves the cursor to a specified line in the Code window.
+
+     ^bLocate Next
+
+     Locates the next occurrence of the string specified by the last Locate
+     Find command, obeying the Locate Case setting.
+
+     ^bLocate Previous
+
+     Locates the previous occurrence of the string specified by the last
+     Locate Find command, obeying the Locate Case setting.
+
+     ^bMonitor All
+
+     Toggles the display of variables of all storage classes in the Monitor
+     window.
+
+     ^bMonitor Local
+
+     Toggles the display of local variables in the Monitor window.
+
+     ^bMonitor Private
+
+     Toggles the display of private variables in the Monitor window.
+
+     ^bMonitor Public
+
+     Toggles the display of public variables in the Monitor window.
+
+     ^bMonitor Sort
+
+     Controls the order in which variables are displayed in the Monitor
+     window.
+
+     ^bMonitor Static
+
+     Toggles the display of static variables in the Monitor window.
+
+     ^bNum [On | off]
+
+     Toggles the display of line numbers at the beginning of each line in the
+     Code window.
+
+     ^bOptions Codeblock
+
+     Controls the tracing of code blocks during single step mode.
+
+     ^bOptions Color
+
+     Opens the Set Colors window.
+
+     ^bOptions Exchange
+
+     Controls the display of program output while in animate mode.
+
+     ^bOptions Line
+
+     Toggles the display of line numbers at the beginning of each line in the
+     Code window.
+
+     ^bOptions Menu
+
+     Toggles the debugger menu bar display.
+
+     ^bOptions Mono
+
+     Switches the debugger display mode between color and monochrome.
+
+     ^bOptions Path <idPathList>
+
+     Defines the search path for source files.
+
+     ^bOptions Preprocessed
+
+     Toggles the display of preprocessed code in the Code window.
+
+     ^bOptions Restore <idScriptFile>
+
+     Reads commands from a script file.
+
+     ^bOptions Save <idScriptFile>
+
+     Saves the current debugger settings to a script file.
+
+     ^bOptions Swap
+
+     Controls the display of the application screen when input is required.
+
+     ^bOptions Tab <tabSize>
+
+     Sets the tab size for the Code window.
+
+     ^bPoint Breakpoint
+
+     Sets or removes a breakpoint at the current cursor position.
+
+     ^bPoint Delete <number>
+
+     Deletes a tracepoint or watchpoint setting.
+
+     ^bPoint Tracepoint <exp>
+
+     Specifies an expression as a tracepoint.
+
+     ^bPoint Watchpoint <exp>
+
+     Specifies an expression as a watchpoint.
+
+     ^bRun Animate
+
+     Executes the application in animate mode.
+
+     ^bRun Go
+
+     Executes the application in run mode.
+
+     ^bRun Next
+
+     Executes the application until line zero of the next activation is
+     encountered.  This is equivalent to creating a tracepoint of "PROCLINE()
+     = 0".
+
+     ^bRun Restart
+
+     Reloads the current application in preparation for reexecution.
+
+     ^bRun Speed <delay>
+
+     Sets the step delay for animate mode.
+
+     ^bRun Step
+
+     Executes the current program in single step mode.
+
+     ^bRun To
+
+     Executes the current program up to the current cursor position.
+
+     ^bRun Trace
+
+     Executes the current program in trace mode.
+
+     ^bView <idFileName>
+
+     Opens the specified file for viewing in the Code window.
+
+     ^bView App
+
+     Displays program output.
+
+     ^bView Callstack
+
+     Toggles the display of the Callstack window.
+
+     ^bView Sets
+
+     Displays the View Sets window.
+
+     ^bView Workareas
+
+     Displays the View Workareas window.
+
+     ^bWindow Iconize
+
+     Toggles the active debugger window between icon and window display
+     modes.
+
+     ^bWindow Move
+
+     Moves the active debugger window.
+
+     ^bWindow Next
+
+     Selects the next debugger window.
+
+     ^bWindow Prev
+
+     Selects the previous debugger window.
+
+     ^bWindow Size
+
+     Changes the size of the active debugger window.
+
+     ^bWindow Tile
+
+     Restores the debugger windows to their default size and location.
+
+     ^bWindow Zoom
+
+     Toggles the active debugger window between window and full-screen
+     display modes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Program Editor                     PE.EXE         (menu)
+'------------------------------------------------------------------------------
+ ^bCA-Clipper Program Editor--PE.EXE^b
+ Creates and edits simple program files.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bPE [<filename>]^b
+
+ ^bArguments^b
+
+     ^B<filename>^B is the name of the text file to edit or create.  The
+     default extension is (.prg).  If a filename is not specified, PE
+     prompts you for one.
+
+ ^bSystem Architecture^b
+
+     PE is provided in source code form.  Having access to the source code
+     allows you to modify the program to suit your own needs and serves as a
+     model for programming the MEMOEDIT() function.  If you installed
+     CA-Clipper in the default configuration, the source files are located in
+     the \CLIP53\SOURCE\PE directory.
+
+     To facilitate maintenance of the PE program files, the make file,
+     PE.RMK, is also installed with the PE source files.  Assuming your
+     current DOS directory is \CLIP53\SOURCE\PE, you can easily rebuild
+     PE.EXE after you make source code changes with the following command:
+
+     RMAKE PE
+
+     If your changes involve additional source modules or changes in the
+     existing file dependencies, you will need to update PE.RMK to reflect
+     those changes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Database Utility                   DBU.EXE        (menu)
+'------------------------------------------------------------------------------
+ ^bDatabase Utility--DBU.EXE^b
+ Creates and modifies database structures; performs simple data management
+ tasks.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bDBU [/<colorString>] [<filename>] /E^b
+
+ ^bArguments^b
+
+     ^B<colorString>^B is /C for color and /M for monochrome.
+
+     ^B<filename>^B is the name of a view file (.vew) previously created in
+     DBU or a database file (.dbf).  Specifying this argument causes DBU to
+     open and browse the specified file.  Otherwise, the main screen is
+     active where you can open files and access the DBU menu bar.
+
+     ^B/E^B opens the file EXCLUSIVE.  This parameter is not case-sensitive.
+
+ ^bSystem Architecture^b
+
+     DBU is provided in source code form.  If you installed CA-Clipper in the
+     default configuration, the following source files are located in the
+     \CLIP53\SOURCE\DBU directory:
+
+     ^B^CFE^B  Dbu.prg
+     ^B^CFE^B  Dbu.hlp
+     ^B^CFE^B  Dbucopy.prg
+     ^B^CFE^B  Dbuedit.prg
+     ^B^CFE^B  Dbuhelp.prg
+     ^B^CFE^B  Dbuindx.prg
+     ^B^CFE^B  Dbunet.prg
+     ^B^CFE^B  Dbustru.prg
+     ^B^CFE^B  Dbuutil.prg
+     ^B^CFE^B  Dbuview.prg
+
+     The system is provided as source code so you can modify it to suit your
+     specific needs.  You may want to make enhancements specific to your
+     development environment or simply add the DBU system to your
+     application, thereby giving your users the power to create and modify
+     their own database file structures.
+
+     To facilitate maintenance of the DBU program files, the make file,
+     DBU.RMK, is also installed with the DBU source files.  Assuming your
+     current DOS directory is \CLIP53\SOURCE\DBU, you can easily rebuild
+     DBU.EXE after you make source code changes with the following command:
+
+     RMAKE DBU
+
+     If your changes involve additional source modules or changes in the
+     existing file dependencies, you will need to update DBU.RMK to reflect
+     those changes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Report and Label Utility           RL.EXE         (menu)
+'------------------------------------------------------------------------------
+ ^bReport and Label Utility--RL.EXE^b
+ Creates and modifies report (.frm) and label (.lbl) files.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bRL^b
+
+ ^bSystem Architecture^b
+
+     RL is provided in source code form.  If you installed CA-Clipper in the
+     default Configuration, the following source files are located in the
+     \CLIP53\SOURCE\RL directory:
+
+     ^B^CFE^B  Rlfront.prg
+     ^B^CFE^B  Rllack.prg
+     ^B^CFE^B  Rldialg.prg
+
+     The system is provided as source code so you can modify it to suit your
+     specific needs.  You may want to make enhancements specific to your
+     development environment or simply add the RL system to your application,
+     thereby giving your users the power to create their own reports and
+     labels.
+
+     The RL system is broken up into two primary subsystems: front and back.
+     The RL front subsystem (found in Rlfront.prg) is the user interface of
+     the entire RL system.  The back subsystem (found in Rlback.prg) contains
+     all of the routines for reading and writing (.frm) and (.lbl) files.
+     The system is organized in this way so that you can create your own user
+     interface and easily access the lower-level routines to read and write
+     the form files.
+
+     To facilitate maintenance of the RL program files, the make file,
+     RL.RMK, is also installed with the RL source files.  Assuming your
+     current DOS directory is \CLIP53\SOURCE\RL, you can easily rebuild
+     RL.EXE after you make source code changes with the following command:
+
+     RMAKE RL
+
+     If your changes involve additional source modules or changes in the
+     existing file dependencies, you will need to update RL.RMK to reflect
+     those changes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

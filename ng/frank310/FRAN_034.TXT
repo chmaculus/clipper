@@ -1,0 +1,80 @@
+'------------------------------------------------------------------------------
+ What's New in the Vertical Menu Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.10
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADvermenu() - modified.  Now the mouse cursor is automatically located
+ to the initially highlighted option when the menu is displayed (if the
+ AutoMoveMouse flag is set to TRUE by ADg_autommove()).
+
+ û ADvm_taglist() - modified.  Added a new parameter to specify the maximum
+ allowable tags.
+
+ û ADvm_initsel() - modified.  Modified to accommodate the effect of
+ ADvm_taglist().  The number of initially tagged options is limited by
+ the maximum allowable tags specified in ADvm_taglist().
+
+ û ADvm_tagall() - modified.  This is ignored if a maximum allowable tags
+ is specified in ADvm_taglist().
+
+ û ADvm_revtag() - modified.  This is ignored if a maximum allowable tags
+ is specified in ADvm_taglist().
+
+ û ADpl_dirs() - modified.  Added a [cHelpHeader] parameter and a [lDots]
+ parameter.  If the latter is TRUE, the picklist includes the "." and ".."
+ directories.
+
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADvermenu() - modified.  Added an 8th optional parameter for defining
+   Help headings.  An ampersand '&' may now be embedded on a menu prompt
+   to indicate its trigger key.
+
+ û ADvm_helpid() - new.  API for defining Help IDs and headings to
+   ADvermenu().
+
+ û ADvm_rbuttons() - new.  API to reconfigure right mouse button behavior.
+
+ ^rVersion 2.3
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADvm_extra() - modified.  Added an [lAdditive] parameter.
+
+ û ADvm_move() - modified.  Added an [lAdditive] parameter.
+
+ ^rVersion 2.2
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADvermenu() - modified.  In v2.1, the foreground color of an inactive
+   option was Black even though the documentation says it is Gray.  This
+   is corrected in v2.2.  Also added support for global hot keys.
+
+ û ADvm_select() - modified.  In prior versions, a call to ADvm_select()
+   automatically closes the current menu.  In v2.2, you have an option of
+   processing the selection and then returning control to the menu instead
+   of exiting.
+
+ û ADvm_create() - new.  Creates a menu engine.
+
+ û ADvm_display() - new.  Displays a menu.
+
+ û ADvm_undisplay() - new.  Undisplays a menu.
+
+ û ADvm_activate() - new.  Activates a menu.
+
+ û ADvm_kill() - new.  Kills a menu.
+
+ û ADvm_invkey() - new.  Defines a codeblock that handles invalid key
+   presses.
+
+ û ADvm_sleep() - new.  Instructs menu to sleep, that is, not to process
+   events.  Optionally activates an alternate event handler while it is
+   asleep.
+
+ û ADvm_poll() - new.  Adds an event poller, in addition to keyboard
+   presses and mouse button clicks.
+
+ û ADvm_tagcurrent() - new.  Tags the current item in a multi-picklist.
+!seealso: fran_008.ngo:"ADvermenu()" fran_008.ngo:"ADvm_taglist()" fran_008.ngo:"ADvm_tagall()" fran_008.ngo:"ADvm_revtag()" fran_008.ngo:"ADvm_initsel()" fran_008.ngo:"ADpl_dirs()" 
+'------------------------------------------------------------------------------
+
+
+

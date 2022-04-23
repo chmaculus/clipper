@@ -1,0 +1,811 @@
+!short: Introduction Broadcast Messages
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions in this chapter provide access to the Netware broadcast
+     message system.  With the utility SEND, Netware allows you to send
+     messages between workstations.  The NNETSN() functions of CA-Clipper
+     Tools make it possible to send messages from within a CA-Clipper
+     application.
+
+     Each Netware user knows the problem of getting a message during a
+     running application: the application is usually interrupted when a
+     message is received.  CA-Clipper Tools provide two possibilities to
+     solve this problem: suppressing incoming messages with the NNETBRDCST()
+     function (corresponding to the Novell utility CASTOFF) or using the
+     CA-Clipper Tools broadcast system.  The broadcast system allows you to
+     receive messages in the background and read the messages later from the
+     broadcast buffer.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETBRDCST() Determines or queries the receiving mode for broadcast messages
+'------------------------------------------------------------------------------
+ ^bNNETBRDCST()^b
+ Determines or queries the receiving mode for broadcast messages
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETBRDCST([<nMode>]) --> nPrevMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nMode>^b  Designates the new mode for receiving broadcast messages.
+     Values from 0 to 3 are accepted.
+
+     ^bTable 24.1:  Broadcast Receiving Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Sym. Con.      Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       BRD_RECALL     Receive all messages automatically
+     1       BRD_RECSERVER  Receive server messages only, discard other
+                            messages
+     2       BRD_STORESERV  Store one server message on the server, discard
+                            other messages
+     3       BRD_STOREALL   Store any message on the server
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bReturns^b
+
+     NNETBRDCST() returns a numeric value between 0 and 3.  The value
+     represents the broadcast mode at the moment of the call of NNETBRDCST(),
+     before a new mode is set (see the argument).  With NNETBRDCST(), you can
+     save the previous mode and set a new mode.  A return value of -1
+     indicates an error.
+
+ ^bDescription^b
+
+     NOVELL NET BROADCAST MODE
+     With NNETBRDCST(), you can set the mode for receiving broadcast
+     messages.  Broadcast messages can be sent by a file server (system
+     messages or the shutdown of a server) or by any workstation within the
+     network (user messages set up with the Novell SEND utility or a
+     NNETSND()).  When a message is received, the network shell usually
+     interrupts the running application, displays the message in line 24 of
+     the screen and waits for a user input (<Ctrl> <Enter>).  This behavior
+     can be modified by using the function NNETBRDCST().  Four different
+     receiving modes are available (see the argument).  Modes 0 and 1 allow
+     the interruption of an application; however, mode 1 ignores user
+     messages.  Modes 2 and 3 suppress the display of messages on the screen
+     during an application.  The file server has a message buffer available
+     for each connected workstation.  As soon as the buffer is full,
+     additional messages are ignored.  Messages can be read with the function
+     NNETGETMSG().
+
+     Alternatively, the broadcast system of CA-Clipper Tools can be activated
+     (see NNETMSGOPN()).  This system allows the interrupt controlled
+     receiving of broadcast messages in the background.  Messages can be
+     processed within an application, and the computer is not interrupted by
+     incoming messages.
+
+ ^bExample^b
+
+     Suppress incoming messages at program start, and reset to the previous
+     mode after the end of the application:
+
+     // Program start
+     #include "ctnnet.ch"
+
+     nOldMsg=NNETBRDCST(BRD_STOREALL)
+     ....
+     // End of program
+     NNETBRDCST(nOldMsg)
+     RETURN
+!seealso: "NNETGETMSG()" "NNETMSGOPN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETGETMSG() Reads the broadcast buffer on a file server
+'------------------------------------------------------------------------------
+ ^bNNETGETMSG()^b
+ Reads the broadcast buffer on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETGETMSG([<cServer>|<nConId>]) --> cMessage
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server for which the
+     message buffer is read.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETGETMSG() returns a character string that contains the broadcast
+     message of the specified file server.  If there is no message in the
+     broadcast buffer, the function returns a null string.
+
+ ^bDescription^b
+
+     NOVELL NET GET BROADCAST MESSAGE
+     If the receiving of broadcast messages is suppressed (for example, with
+     the Novell utility CASTOFF or the function NNETBRDCST()), the file
+     server stores the first message in a buffer.  This buffer can be read
+     with NNETBRDCST().  Reading the server buffer causes its deletion.  With
+     the parameters <cServer> or <nConId>, the buffer of any attached server
+     can be read.  The connection ID of a server is returned by NNETATTACH()
+     or NNETLOGIN().
+
+ ^bExample^b
+
+     Read the broadcast buffer of the default server, and display the
+     message:
+
+     cMsg=NNETGETMSG()
+     IF .NOT. EMPTY(cMsg)
+     ? cMsg
+     ENDIF
+!seealso: "NNETBRDCST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGCLO() Reads the message buffer and uninstalls the broadcast system
+'------------------------------------------------------------------------------
+ ^bNNETMSGCLO()^b
+ Reads the message buffer and uninstalls the broadcast system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGCLO() --> lClosed
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETMSGCLO() returns .T. if an installed broadcast system has been
+     uninstalled successfully.
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE BUFFER CLOSE
+     A call of NNETMSGCLO() discards all messages in the broadcast buffer and
+     uninstalls the broadcast system.  After a call of NNETMSGCLO(), future
+     messages are displayed in line 24 of the screen and must be confirmed by
+     pressing <Ctrl><Return>.
+
+ ^bExample^b
+
+     Read all the messages and close the buffer:
+
+     FOR i = 1 TO NNETMSGCNT()
+     ? NNETMSGRD()
+     NEXT i
+     NNETMSGCLO()
+!seealso: "NNETMSGOPN()" "NNETMSGRD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGCLR() Clears the broadcast buffer
+'------------------------------------------------------------------------------
+ ^bNNETMSGCLR()^b
+ Clears the broadcast buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGCLR() --> lCleared
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETMSGCLR() returns .T. if the broadcast buffer has been cleared
+     successfully.
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE BUFFER CLEAR
+     NNETMSGCLR() allows you to delete all the messages from the buffer
+     without explicit read access.
+
+ ^bExample^b
+
+     Delete the broadcast buffer:
+
+     NNETMSGCLR()
+!seealso: "NNETMSGOPN()" "NNETMSGRD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGCNT() Determines the number of messages in the broadcast buffer
+'------------------------------------------------------------------------------
+ ^bNNETMSGCNT()^b
+ Determines the number of messages in the broadcast buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGCNT() --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETMSGCNT() returns the number of messages in the broadcast buffer.  If
+     the broadcast buffer is empty, the function returns 0.
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE COUNT
+     NNETMSGCNT() allows you to determine the number of messages in the
+     broadcast buffer.  If the broadcast buffer is empty, or if the broadcast
+     system is not installed, the function returns 0.
+
+ ^bExample^b
+
+     Read and display all the messages from the broadcast buffer:
+
+     FOR i = 1 TO NNETMSGCNT()
+     ? NNETMSGRD()
+     NEXT i
+!seealso: "NNETMSGOPN()" "NNETMSGRD()" "NNETMSGSIZ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGKEY() Defines the key code for incoming broadcast messages
+'------------------------------------------------------------------------------
+ ^bNNETMSGKEY()^b
+ Defines the key code for incoming broadcast messages
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGKEY([<nKeyValue>]) --> lActive
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nKeyValue>^b  Specifies the key code that is placed in the keyboard
+     buffer by the broadcast system when a message is received.  All values
+     from the CA-Clipper KEYBOARD command are valid.  When called without
+     this parameter, the function resets a previously set key code.
+
+ ^bReturns^b
+
+     NNETMSGKEY() returns (.T.) if a key code for the broadcast system has
+     been set successfully.
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE KEY
+     NNETMSGKEY() allows you to react to incoming messages within a wait
+     state (READ, WAIT, ACHOICE() or MEMOEDIT()).  For example, a refresh can
+     be triggered within an input mask, as soon as a defined message arrives.
+!seealso: "NNETMSGOPN()" "NNETMSGRD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGOPN() Initializes the interrupt-controlled broadcast system
+'------------------------------------------------------------------------------
+ ^bNNETMSGOPN()^b
+ Initializes the interrupt-controlled broadcast system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGOPN([<nNumber>]) --> lStatus
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<nNumber>^b  Designates the maximum number of broadcast messages that
+     are accepted by the receiving buffer.  Values from 1 to 1000 are
+     allowed.  Values outside of this range are corrected automatically.  The
+     default value for <nNumber> is 1.
+
+ ^bReturns^b
+
+     NNETMSGOPEN() returns .T. if the broadcast system has been initialized
+     successfully.  If an error occurs (for example, insufficient fixed heap
+     memory to create the buffer), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE BUFFER OPEN
+     Netware allows you to send broadcast messages between workstations.  For
+     example, broadcast messages can be created with the Novell utility SEND
+     or with the CA-Clipper Tools function NNETSND().  The broadcast system
+     is also used by Netware servers to send system messages.  Incoming
+     messages are displayed on line 24 of the screen; these messages block
+     the system until they are confirmed with <Ctrl> <Return>.  These
+     incoming messages can be suppressed with CASTOFF or with the CA-Clipper
+     Tools function NNETBRDCST().  In contrast, NNETMSGOPN(), in conjunction
+     with the NNETSND() functions, allows communication between applications.
+
+     NNETMSGOPN() opens a buffer that can accept up to <nNumber> broadcast
+     messages and installs an interrupt handler.  After the message system
+     has been installed, incoming messages are no longer displayed on the
+     screen; these messages are stored in the internal message buffer.  The
+     messages can then be read from the buffer in the sequence of their
+     arrival with NNETMSGRD().
+
+     The broadcast system can simulate a key code when a message is received.
+     If the receiving buffer is full, no additional messages are accepted.
+     Do not suppress the receiving of messages when using the broadcast
+     system!  Messages are already suppressed on the file server instead of
+     the workstation.
+
+ ^bNotes^b
+
+     ^bImportant!^b  NNETMSGOPN() works with the interrupt system.  Before
+     you leave your CA-Clipper application, NNETMSGOPN() must be uninstalled
+     with the function NNETMSGCLO().  Changed interrupt vectors can, sooner
+     or later, lead to a system crash.  When working with the extended
+     drivers module, interrupt vectors are reset automatically.
+
+     ^b^CFE^b  It is not possible to use the message system with former
+        versions of the Novell shell.  The latest version is available free
+        of charge from Novell through CompuServe.
+
+ ^bExample^b
+
+     Install the broadcast system with a buffer for up to 10 messages:
+
+     IF NNETMSGOPN(10)
+     ? 'Broadcast system installed successfully!'
+     ELSE
+     ? 'Installation failed!'
+     ENDIF
+!seealso: "NNETBRDCST()" "NNETMSGCLO()" "NNETMSGKEY()" "NNETMSGRD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGRD()  Reads the message from broadcast buffer
+'------------------------------------------------------------------------------
+ ^bNNETMSGRD()^b
+ Reads the message from broadcast buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGRD([<lNotDelete>]) --> cMessage
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<lNotDelete>^b  Designates an optional parameter that allows you to
+     read a message from the buffer without changing the contents of the
+     buffer.  If <lNotDelete>  is designated .T., the message remains in the
+     buffer.  If <lNotDelete> is designated .F., the message is deleted from
+     buffer.
+
+ ^bReturns^b
+
+     NNETMSGRD() returns a character string that contains the message that
+     has been received previously in the background.
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE READ
+     NNETMSGRD() allows you to read messages from the broadcast buffer after
+     the buffer has been opened with NNETMSGOPN().  NNETMSGRD() always
+     returns the oldest message.  If the buffer is empty or if the broadcast
+     system is not installed, NNETMSGRD() returns an empty string.
+
+ ^bExample^b
+
+     Read a message from the broadcast buffer, and emulate the Novell
+     standard behavior:
+
+     #include "inkey.ch"
+
+     IF .NOT. EMPTY(cMsg:=NNETMSGRD())
+     @ 24,0 SAY cMsg
+     WHILE INKEY()!=K_CTRL_RETURN
+     ENDDO
+     ENDIF
+!seealso: "NNETMSGOPN()" "NNETMSGCNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMSGSIZ() Determines the size of the broadcast buffer
+'------------------------------------------------------------------------------
+ ^bNNETMSGSIZ()^b
+ Determines the size of the broadcast buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMSGSIZ() --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETMSGSIZ() returns the number of broadcast messages the broadcast
+     buffer can accept.
+
+ ^bDescription^b
+
+     NOVELL NET MESSAGE BUFFER SIZE
+     NNETMSGSIZ() allows you to determine the size of the broadcast buffer.
+     If the broadcast system is not installed, the function returns 0.
+
+ ^bExample^b
+
+     Calculate the number of messages that the broadcast buffer can accept:
+
+     ? NNETMSGSIZ()-NNETMSGCNT()
+!seealso: "NNETMSGCNT()" "NNETMSGOPN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSNDALL() Sends a message to all users on a file server
+'------------------------------------------------------------------------------
+ ^bNNETSNDALL()^b
+ Sends a message to all users on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSNDALL(<cMessage>,[<lNoSender>],
+     ^b   [<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cMessage>^b  Designates the message that is sent to all users.  The
+     message can be up to 55 characters long (including information about the
+     sender) and can only contain characters that have an ASCII value between
+     32 and 127.
+
+     ^b<lNoSender>^b  Designates an optional parameter that allows you to
+     suppress the sender information (from ...) when designated as (.T.).
+     When this parameter is designated as .F., the sender information is
+     generated automatically.
+
+     ^b<cServer>^b  Designates the name of the file server through which the
+     message is sent.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSNDALL() returns the number of stations to which the message has
+     been sent successfully.  The function returns 0 if no users are logged
+     in.
+
+ ^bDescription^b
+
+     NOVELL NET SEND GROUP
+     NNETSNDGRP() allows you to send a message (<cMessage>) of up to 55
+     characters to all users (<cName>) that are currently logged into a file
+     server.  The message is sent to all workstations where a user is logged
+     in and the message receipt is not disabled (castoff).  The message is
+     displayed in line 24 of the screen and must be confirmed with <Ctrl>
+     <Return>.
+
+     The message system of CA-Clipper Tools (NNETMSGOPN()) allows the
+     interrupt-controlled receipt of messages in the background.  The
+     incoming messages can be processed within the application, and the
+     computer is not interrupted in critical moments.
+
+     If the parameter <lNoSender> is set to .F. or no parameter is set, the
+     message contains information about the sender.  This information
+     consists of the word "from", the name of the sender, and the connection
+     ID.  By passing <lNoSender> with .T., the sender information can be
+     suppressed.  With the parameters <cServer> or <nConId>, the message can
+     be sent on any attached file server.  The connection ID of a server is
+     returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExample^b
+
+     Send a message to all users on the default server:
+
+     nNumber= NNETSNDALL('Backup in 5 minutes!')
+     ? 'Message has been sent to '+NTOC(nNumber)+' station(s)!'
+!seealso: "NNETMSGOPN()" "NNETSNDCON()" "NNETSNDGRP()" "NNETSNDLOG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSNDCON() Sends a message to the server console
+'------------------------------------------------------------------------------
+ ^bNNETSNDCON()^b
+ Sends a message to the server console
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSNDCON(<cMessage>,[<lNoSender>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cMessage>^b  Designates the message that is sent to the server
+     console.  The message can be up to 60 characters long (including
+     information about the sender) and can only contain characters that have
+     an ASCII value between 32 and 127.
+
+     ^b<lNoSender>^b  Designates an optional parameter that allows you to
+     suppress the sender information (from ...) when designated (.T.).  When
+     this parameter is designated .F., the sender information is generated
+     automatically.  The default value is .F..
+
+     ^b<cServer>^b  Designates the name of the file server to which the
+     message is sent.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSNDCON() returns .T. if the message has been sent successfully.  If
+     an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET SEND CONSOLE
+     NNETSNDCON() allows you to send a message (<cMessage>) of up to 60
+     characters to the console of a file server.  The message is displayed by
+     the file server on a connected screen.  If the parameter <lNoSender> is
+     set to .F. or if no parameter is set, the message contains information
+     about the sender.  The information consists of the word "from", the name
+     of the sender, and the connection ID.  By passing <lNoSender> with .T.,
+     the sender information can be suppressed.
+
+     With the parameters <cServer> or <nConId>, the message can be sent to
+     any attached file server.  The connection ID of a server is returned by
+     NNETATTACH() or NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Send a message to the default server:
+
+        IF NNETSNDCON('Start of the accounting system')
+        ? 'Message sent successfully!'
+        ELSE
+        ? 'Message could not be sent'
+        ENDIF
+
+     ^b^CFE^b  Send a message to server MAIL under the wrong sender:
+
+        NNETSNDCON('From Mick[99] : Hi, guys!',.T.,'MAIL')
+!seealso: "NNETSNDALL()" "NNETSNDGRP()" "NNETSNDLOG()" "NNETSNDUSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSNDGRP() Sends a message to all group members
+'------------------------------------------------------------------------------
+ ^bNNETSNDGRP()^b
+ Sends a message to all group members
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSNDGRP(<cName>,<cMessage>,[<lNoSender>],
+     ^b   [<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b  Designates the name of the group that has members to which
+     the message is sent.
+
+     ^b<cMessage>^b  Designates the message that is sent to the members of
+     <cName>.  The message can be up to 55 characters long (including
+     information about the sender) and can contain only characters that have
+     an ASCII value between 32 and 127.
+
+     ^b<lNoSender>^b  Designates an optional parameter that allows you to
+     suppress the sender information (from ...) when designated as (.T.).
+     When this parameter is designated .F., the sender information is
+     generated automatically.  The default value is .F..
+
+     ^b<cServer>^b  Designates the name of the file server through which the
+     message is sent.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSNDGRP() returns the number of workstations to which the message
+     <cMessage> was successfully sent.  The function returns 0 if no member
+     of <cName> is currently logged in or ready to receive messages..
+
+ ^bDescription^b
+
+     NOVELL NET SEND GROUP
+     NNETSNDGRP() allows you to send a message of up to 55 characters to all
+     the users of a group.  The function can be compared with the Novell
+     utility SEND.  The group <cName> must exist either on the default server
+     or on the server specified by <cServer>|<nConId> because the sending of
+     messages is processed through a file server.  The message is sent to all
+     workstations on which a member of <cName> is logged in and the message
+     receipt is not disabled (castoff).  The message is displayed on line 24
+     of the screen and must be confirmed with <Ctrl><Return>.  The message
+     system of CA-Clipper Tools (NNETMSGOPN()) allows the interrupt
+     controlled receipt of messages in the background.  The incoming messages
+     can be processed within the application and the computer is not
+     interrupted in critical moments.
+
+     If the parameter <lNoSender> is set to .F. or if no parameter is set,
+     the message contains information about the sender.   This information
+     consists of the word "from", the name of the sender, and the connection
+     ID.  By passing <lNoSender> with .T., the sender inforation can be
+     suppressed.  With the parameters <cServer> or <nConId>, the message can
+     be sent on any attached file server.  The connection ID of a server is
+     returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExample^b
+
+     Send a message to all members of the group TOOLS:
+
+     nNumber= NNETSNDGRP('TOOLS','Data backup in 5 minutes!')
+     ? 'Message has been sent to '+NTOC(nNumber)+' stations!'
+!seealso: "NNETMSGOPN()" "NNETSNDALL()" "NNETSNDCON()" "NNETSNDLOG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSNDLOG() Sends a message to the log file of a file server
+'------------------------------------------------------------------------------
+ ^bNNETSNDLOG()^b
+ Sends a message to the log file of a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSNDLOG(<cMessage>,[<lNoSender>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cMessage>^b  Designates the message that is written to the log file.
+     The message can be up to 80 characters long (including information about
+     the sender) and can contain only characters that have an ASCII value
+     between 32 and 127.
+
+     ^b<lNoSender>^b  Designates an optional parameter that allows you to
+     suppress the sender information (from ...) when designated as .T..  When
+     this parameter is designated .F., the sender information is generated
+     automatically.  The default value is . F..
+
+     ^b<cServer>^b  Designates the name of the file server for which the log
+     file is  used.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSNDLOG() returns .T. if the message has been sent successfully.  If
+     an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET SEND LOG
+     Under Netware 2.1x, each file server maintains a log file.  This file is
+     in the directory SYS:SYSTEM under the name NET$LOG.MSG.  NNETSNDLOG()
+     allows you to send a message of up to 80 characters to the log file.
+     The message is saved in the form:
+
+     month/day/year hours:minutes STN <lAttach>: <cMessage>
+
+     If the parameter <lNoSender> is set to .F. or if no parameter is set,
+     the message contains the sender information.  This information consist
+     of the word "from", the name of the sender, and the connection ID.  By
+     passing <lNoSender> with .T., the sender information can be suppressed.
+     With the parameters <cServer> or <nConId>, the message can be sent to
+     the log file of any attached file server.  The connection ID of a server
+     is returned by NNETATTACH() or NNETLOGIN().
+
+ ^bNote^b
+
+     ^b^CFE^b  Under Netware 3.x, NNETSNDLOG() returns .F. because file
+        servers do not maintain a log file.
+
+ ^bExample^b
+
+     Write an application start in the log file of the default server:
+
+     IF NNETSNDLOG('Start of the accounting system')
+     ? 'Message has been sent successfully!'
+     ELSE
+     ? 'Message could not be sent!'
+     ENDIF
+!seealso: "NNETSNDALL()" "NNETSNDCON()" "NNETSNDGRP()" "NNETSNDUSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSNDUSR() Sends a message to a user
+'------------------------------------------------------------------------------
+ ^bNNETSNDUSR()^b
+ Sends a message to a user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSNDUSR(<cName>,<cMessage>,[<lNoSender>],
+     ^b   [<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b  Designates the login name of the user to whom the message
+     is sent.
+
+     ^b<cMessage>^b  Designates the message that is sent to <cName>.  The
+     message can be up to 55 characters long (including information about the
+     sender) and can contain only characters that have an ASCII value between
+     32 and 127.
+
+     ^b<lNoSender>^b  Designates an optional parameter that allows you to
+     suppress the sender information (from ...) when designated as .T..  When
+     the parameter is designated .F., the sender information is generated
+     automatically.
+
+     ^b<cServer>^b  Designates the name of the file server through which the
+     message is sent.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSNDUSR() returns the number of workstations to which the message
+     <cMessage> has been sent successfully.  The function returns 0 if
+     <cName> is not logged in or not ready to receive messages.
+
+ ^bDescription^b
+
+     NOVELL NET SEND USER
+     NNETSNDUSR() allows you to send a message of up to 55 characters to a
+     user.  The function can be compared to the Novell utility SEND.  The
+     user <cName> must be logged in either on the default server or on the
+     server specified by <cServer>|<nConId> because the sending of messages
+     is processed through a file server.  The message is sent to all
+     workstations on which <cName> is logged in and the message receipt is
+     not disabled (castoff).  The message is displayed in line 24 of the
+     screen and must be confirmed with <Ctrl> <Return>.  The message system
+     of CA-Clipper Tools ( NNETMSGOPN()) allows the interrupt-controlled
+     receipt of messages in the background.  The incoming messages can be
+     processed within the application, and the computer is not interrupted in
+     critical moments.
+
+     If the parameter <lNoSender> is set to .F. or if no parameter is set,
+     the message contains the information about the sender.  This information
+     consists of the word "from", the name of the sender, and the connection
+     ID.  By passing <lNoSender> with .T., the sender information can be
+     suppressed.  With the parameters <cServer> or <nConId>, the message can
+     be sent on any attached file server.  The connection ID of a server is
+     returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Send a message to user MIKE:
+
+        nNumber= NNETSNDUSR('MIKE','Good morning')
+        ? 'Message has been sent to '+NTOC(nNumber)+' stations!'
+
+     ^b^CFE^b  Send a message to the supervisor without the sender
+        information:
+
+        NNETSNDCON('SUPERVISOR','You fool!',.T.)
+!seealso: "NNETMSGOPN()" "NNETSNDALL()" "NNETSNDCON()" "NNETSNDGRP()" 
+'------------------------------------------------------------------------------
+
+
+

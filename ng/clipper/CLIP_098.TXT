@@ -1,0 +1,45 @@
+'------------------------------------------------------------------------------
+^BINKEY()^B
+
+    INKEY() reads a character from the keyboard.
+
+^USyntax^U
+
+    INKEY([<expN>])
+
+^UArgument^U
+
+    <expN> specifies the number of seconds INKEY() waits for a key press.
+    Specifying zero halts the program until a key is pressed.  Note that
+    the time INKEY() waits is based on the operating system clock and
+    therefore is not related to the microprocessor speed.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    INKEY() returns a number from -39 to 386, identifying the ASCII code of
+    the key pressed (the same value as returned by LASTKEY()).  If the
+    keyboard buffer is empty, INKEY() returns zero.
+
+    INKEY() returns values for all function, Alt-function, Ctrl-function,
+    Alt-letter, and Ctrl-letter key combinations.
+
+^UUsage^U
+
+    INKEY() is useful for polling the keyboard or pausing program
+    execution.  As an instance, you can use INKEY() to terminate commands
+    with a record scope such as LIST, LABEL FORM, and REPORT FORM by
+    including it in a while condition as follows:
+
+    ^RREPORT FORM Report WHILE INKEY() <> 27^R
+
+    To make your key operations easier to maintain, create a series of
+    keyname memory variables using CHR().  Later in your program, you can
+    compare the result of INKEY() to the keyname variable using the
+    expression, CHR(INKEY()).
+!seealso: clip_065.ngo:"SET KEY" ???.ngo:"CHR" clip_102.ngo:"LASTKEY()" 
+'------------------------------------------------------------------------------
+
+
+

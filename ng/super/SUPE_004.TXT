@@ -1,0 +1,148 @@
+!short:CDIR()        Change Directory
+'------------------------------------------------------------------------------
+
+ CDIR() Change Directory
+
+ ^bReturns
+ <lSuccess> => Success or not
+
+ ^bSyntax
+ CDIR(<cPath>)
+
+ ^bDescription
+ Attempts to change directory to <cPath> - a valid
+ directory on the current drive.
+
+ ^bExamples
+
+  IF CDIR("\OVERTHERE")
+    MSG("We're over there now")
+  ENDIF
+
+ ^bSource: CDD.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISPRN()       Detects printer ready (or not) on LPT1, 2 or 3
+'------------------------------------------------------------------------------
+
+ ISPRN() Detects printer ready (or not) on LPT1, 2 or 3
+
+ ^bReturns
+ <lReady> => printer ready
+
+ ^bSyntax
+ ISPRN(nPort)
+
+ ^bDescription
+ <nPort> is either 0, 1 or 2, corresponding to LPT1,
+ LPT2 or LPT3
+
+ ^bExamples
+  if ISPRN(0)
+    MSG("LPT1 is ready")
+  elseif ISPRN(1)
+    MSG("LPT2 is ready")
+  elseif ISPRN(2)
+    MSG("LPT3 is ready")
+  endif
+
+ ^bWarnings:
+ Will not ALWAYS work reliably on a network
+ (redirected) printer
+
+ ^bSource: ISPRN.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SHIFTY()      Determines shift key settings
+'------------------------------------------------------------------------------
+
+ SHIFTY() Determines shift key settings
+
+ ^bReturns
+ <lOn> => indicated shift key is on/off
+
+ ^bSyntax
+ SHIFTY(nKey)
+
+ ^bDescription
+ Determines shift key settings for the keyboard shift
+ keys, based on <nKey>:
+
+    1     Right shift key
+    2     Left shift key
+    3     Ctrl key
+    4     Alt key
+    5     Scroll lock key
+    6     Number lock key
+    7     Caps lock key
+    8     Insert key
+
+ ^bExamples
+  do while .t.
+
+    if inkey()=27
+      exit
+    endif
+
+    @0,0 SAY "Rshift      "
+    ??shifty(1)
+    @1,0 SAY "Lshift      "
+    ??shifty(2)
+    @2,0 SAY "Ctrl        "
+    ??shifty(3)
+    @3,0 SAY "Alt         "
+    ??shifty(4)
+    @4,0 SAY "Scroll      "
+    ??shifty(5)
+    @5,0 SAY "Numlock     "
+    ??shifty(6)
+    @6,0 SAY "Capslock    "
+    ??shifty(7)
+    @7,0 SAY "Insert      "
+    ??shifty(8)
+  enddo
+
+ ^bSource: S_SHIFT.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:TAKEOUT()     Extract a portion of a string between delimiters
+'------------------------------------------------------------------------------
+
+ TAKEOUT() Extract a portion of a string between delimiters
+ at nth occurrance
+
+ ^bReturns
+ <cChunk> => Portion of string extracted. String of 0
+ length if none.
+
+ ^bSyntax
+ Takeout(cTarget, cDelimiter, nOccurance)
+
+ ^bDescription
+ <cTarget>        - string from which to extract
+
+ <cDelimiter>     - delimiter  (beginning and end of
+ string are          considered delimiters)
+
+ <nOccurance>     - occurance
+
+ ^bExamples
+  takeout("Next:Previous:First:Quit",":",3)
+
+    //  returns "First"
+
+ ^bSource: BETWEEN.C
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

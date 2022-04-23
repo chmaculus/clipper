@@ -1,0 +1,1082 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsbx_create()        Creates a horizontal scroll bar engine
+'------------------------------------------------------------------------------
+ ADsbx_create( <nRow>, <nCol>, <nLength>, <nTotal>, [bConfig] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a horizontal scroll bar engine.
+
+ <nRow>, <nCol> are the coordinates of the starting position of the bar.
+
+ <nLength> is the length (number of columns) of the bar.
+
+ <nTotal> is the number of actual items to be represented in the scroll bar.
+
+ [bConfig] is an optional configuration block.  You use it to call the
+ engine's Config APIs that reconfigures the engine.
+
+ <nEngine> is the numeric return value.  You use it to send messages to the
+ engine.
+
+ Example
+ -------
+ func main()
+ local nTotal := 500
+ local nHengine := ADsbx_create( 24, 10, 60, nTotal )
+ local xx
+
+ cls
+ ADsbx_display( nHengine )
+
+ for xx := 1 to nTotal
+    setpos( 12,40 )
+    dispout( xx )
+    ADsbx_put( nHEngine, ADsbx_tocell( nHEngine, xx ) )
+ next
+
+ ADsbx_kill( nHengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsbx_colors()        Configures the colors of the scroll bar.
+'------------------------------------------------------------------------------
+ ADsbx_colors( <aColors> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the colors of the scroll bar.
+
+ <aColors> is an array of two elements:
+
+    1 - the color of the scroll bar.  Defaults to "W+/B" in color monitors
+        and "W/N" in monochrome.
+
+    2 - the color of the scroll character.  Defaults to "R/B" in color
+        monitors and "W+/N" in monochrome.
+
+ Example
+ -------
+ func main()
+ local nTotal := 500
+ local nHengine := ADsbx_create( 24, 10, 60, nTotal,;
+                                 {||ADsbx_colors( { "W+/R", "B+"} )};
+                               )
+ local xx
+
+ cls
+ ADsbx_display( nHengine )
+
+ for xx := 1 to nTotal
+    setpos( 12,40 )
+    dispout( xx )
+    ADsbx_put( nHEngine, ADsbx_tocell( nHEngine, xx ) )
+ next
+
+ ADsbx_kill( nHengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_chars()         Configures the characters to be used
+'------------------------------------------------------------------------------
+ ADsbx_chars( <aChars> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the characters to be used by the scroll bar.
+
+ <aChars> is an array of two elements:
+
+    1 - the scroll bar character.  Defaults to "Û" (chr(219)).
+
+    2 - the scroll character.  Defaults to "°" (chr(176)).
+
+ Example
+ -------
+ func main()
+ local nTotal := 500
+ local nHengine := ADsbx_create( 24, 10, 60, nTotal,;
+                                 {||ADsbx_chars( { "Û", ""} )};
+                               )
+ local xx
+
+ cls
+ ADsbx_display( nHengine )
+
+ for xx := 1 to nTotal
+    setpos( 12,40 )
+    dispout( xx )
+    ADsbx_put( nHEngine, ADsbx_tocell( nHEngine, xx ) )
+ next
+
+ ADsbx_kill( nHengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_grow()          Tells the scroll character to _grow_ instead of merely
+'------------------------------------------------------------------------------
+ ADsbx_grow() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ By default, when the scroll character changes position, it moves from the
+ old cell to a new cell.  This API changes this behavior so that the
+ scroll character grows longer as it moves to the right.  Typical usage is
+ in status bars.
+
+ Example:
+ --------
+ func main()
+ local e
+
+ use mydbf
+ cls
+ e := ADsbx_create( 20, 20, 40, lastrec(), {||ADsbx_lrchar(),;
+                                              ADsbx_grow();
+                                           };
+                  )
+ ADsbx_display( e )
+ index on field->myfield to myindex eval {||xStatusBar(e)}
+ ADsbx_kill( e )
+ return nil
+
+ func xStatusBar(e)
+ ADsbx_put( e, ADsbx_tocell( e, recno() ) )
+ return .t.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:                       move when moving to the right.
+!short: ADsbx_lrchar()        Configures the left and right characters
+'------------------------------------------------------------------------------
+ ADsbx_lchar( [cChars] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the left and right characters of the scroll bar.  Default to
+ the left and right arrows (chr(27) and chr(26)).
+
+ [cChars] is either a NIL or a two-character string.  If it is a NIL, no
+ left and right characters are displayed with the scroll bar.  If it is a
+ string, the first character will be displayed at the left of the scroll
+ bar, while the second character will be displayed at the right.
+
+ Example
+ --------
+ func main()
+ local e
+
+ use mydbf
+ cls
+ e := ADsbx_create( 20, 20, 40, lastrec(), {||ADsbx_lrchar(),;
+                                              ADsbx_grow();
+                                           };
+                  )
+ ADsbx_display( e )
+ index on field->myfield to myindex eval {||xStatusBar(e)}
+ ADsbx_kill( e )
+ return nil
+
+ func xStatusBar(e)
+ ADsbx_put( e, ADsbx_tocell( e, recno() ) )
+ return .t.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsbx_display()       Displays a horizontal scroll bar
+'------------------------------------------------------------------------------
+ ADsbx_display( <nEngine>, [nPosition] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a horizontal scroll bar
+
+ <nEngine> is the engine identifier of the bar to display.
+
+ [nPosition] is the initial position of the scroll character.  Defaults to 1,
+ meaning the first position.
+
+ Example:  See ADsbx_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_put()           Moves the scroll char on the bar
+'------------------------------------------------------------------------------
+ ADsbx_put( <nEngine>, <nPosition>, [lForce] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Moves the scroll char on the bar.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nPosition> is the relative row position the scroll character is to be
+ moved to.
+
+ [lForce] is an optional logical value.  By default, ADsbx_put() is ignored
+ if <nPosition> is the same as the current position,  unless [lForce] is
+ TRUE.
+
+ Example:  See ADsbx_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_kill()          Kills a horizontal scroll bar engine.
+'------------------------------------------------------------------------------
+ ADsbx_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills a horizontal scroll bar engine, <nEngine>
+
+ Example:  See ADsbx_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADsbx_get()           Returns the current position of the scroll char
+'------------------------------------------------------------------------------
+ ADsbx_get( <nEngine> ) --> <nPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the current row position of the scroll char relative to the top of
+ the scroll bar.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nPosition> is the return value.
+
+ Example
+ -------
+ func main()
+ local nTotal := 500        // 500 items to be represented in a scroll bar
+ local nHengine := ADsbx_create( 2, 1, 10, nTotal ) // The scroll bar is
+                                                    // 10 rows long.  Its
+                                                    // top is at row #2.
+ cls
+ ADsbx_display( nHengine, 8 )    // display the bar and hilite the 8th cell
+ ? ADsbx_get( nHEngine )         // what is the currently hilited cell? = 8
+ ? ADsbx_relpos( nHEngine, 5 )   // what is the relative position of the
+                                 // absolute row position 5? = 4
+ ? ADsbx_tocell( nHEngine, 250 ) // what is the equivalent cell position of
+                                 // item #250? = 5 (halfway)
+ ? ADsbx_fromcell( nHEngine, 2 ) // what is the item corresponding to cell
+                                 // position 2? = 51
+ ADsbx_kill( nHengine )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_relpos()        Returns the equivalent bar position of a row position
+'------------------------------------------------------------------------------
+ ADsbx_relpos( <nEngine>, <nRow> ) --> <nPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the equivalent bar position of a row position.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nRow> is an absolute screen position whose equivalent bar position is to be
+ returned.
+
+ <nPosition> is the return value.
+
+ Example:  See ADsbx_get()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_tocell()        Returns the equivalent bar position of an item positin
+'------------------------------------------------------------------------------
+ ADsbx_tocell( <nEngine>, <nItem> ) --> <nPosition>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the equivalent bar position of an item position.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nItem> is the position of an item whose equivalent bar position is to be
+ determined.  If the scroll bar is that of a database browser, <nItem> might
+ be a record number or a key number.  If the browser is an array browser,
+ <nItem> is an element number.
+
+ <nPosition> is the return value.
+
+ Example:  See ADsbx_get()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_fromcell()      Returns the equivalent item position of a bar position
+'------------------------------------------------------------------------------
+ ADsbx_fromcell( <nEngine>, <nPosition> ) --> <nItem>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the equivalent item position of a bar position.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <nPosition> is the position of the scroll char whose equivalent item
+ position is to be determined.
+
+ <nItem> is the return value.  If the scroll bar is that of a database
+ browser, then <nItem> would be the equivalent record or key number.
+
+ Example:  See ADsbx_get()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADsbx_coords()        Returns the coordinates of the scroll bar.
+'------------------------------------------------------------------------------
+ ADsbx_coords( <nEngine> ) --> <aCoords>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the coordinates of the scroll bar.
+
+ <nEngine> is the numeric scroll bar engine identifier.
+
+ <aCoords> is the return value.
+
+ Example
+ -------
+ nHengine := ADsbx_create( 2, 1, 10, 500 )
+ ADaview( ADsbx_coords( nHEngine ))    // {2,1,2,10}
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADCopyDbf()           Copies current dbf with a progress bar
+'------------------------------------------------------------------------------
+ ^bADCopyDbf( <cTarget>, [bConfig], [bSBarConfig ) --> <nCopiedRecords>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Copies current database and displays a progress bar.
+
+ <cTarget> is the name of the target file.
+
+ [bConfig] is a codeblock that configures ADCopyDbf().
+
+ [bSBarConfig] is a codeblock that configures the Status Bar engine used
+ by ADCopyDBF().
+
+ <nCopiedRecords> is the number of copied records
+
+ Example
+ -------
+ func main()
+ cls
+ ? "demo 1 - Copy all records           "
+ ?? one()
+ ? "demo 2 - Copy only undeleted records"
+ ?? two()
+ ? "demo 3 - Copy only deleted records  "
+ ?? three()
+ ? "demo 4 - Copy only first 99 records "
+ ?? four()
+ ? "demo 5 - Copy only records 50 to 99 "
+ ?? five()
+ ? "demo 6 - Configure the progress bar "
+ ?? six()
+ return NIL
+
+ func one()
+ local nCopied
+ use hotel
+ dbgotop()
+ nCopied := ADCopyDbf( "Test" )
+ use
+ return nCopied
+
+ func two()
+ local nCopied
+ use hotel
+ set deleted on
+ dbgotop()
+ nCopied := ADCopyDbf( "Test" )
+ set deleted off
+ use
+ return nCopied
+
+ func three()
+ local nCopied
+ use hotel
+ set filter to deleted()
+ dbgotop()
+ nCopied := ADCopyDbf( "Test" )
+ set filter to
+ use
+ return nCopied
+
+ func four()  // introduces the use of bConfig
+ local nCopied
+ local bConfig := {||ADCDBFwhile( {||recno() < 100} ),;
+                     ADCDBFtotal( {||100 - recno()} );
+                  }
+ use hotel
+ dbgotop()
+ nCopied := ADCopyDbf( "Test", bConfig )
+ use
+ return nCopied
+
+ func five()
+ local nCopied
+ local bConfig := {||ADCDBFwhile( {||recno() < 100} ),;
+                     ADCDBFtotal( {||100 - recno()} );
+                  }
+ use hotel
+ dbgoto( 50 )
+ nCopied := ADCopyDbf( "Test", bConfig )
+ use
+ return nCopied
+
+ func six()   // introduces the use of bSBarConfig
+ local nCopied
+ local bSBarConfig := {||ADSBarHeader( "Copying Demo" ),;
+                         ADSBarColor( { "R+/W", "B+/W" } ),;
+                         ADSBarLength( 70 ),;
+                         ADSBarCorner( { 20,  } );
+                      }
+ use hotel
+ dbgotop()
+ nCopied := ADCopyDbf( "Test",, bSBarConfig )
+ use
+ return nCopied
+!seealso: "ADCDBFtotal()" "ADCDBFrecno()" "ADCDBFwhile()" "ADCDBFfor()" "ADCopyFile()" "ADSBarCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADCDBFfor()           Limits ADCopyDbf() to a scope
+'------------------------------------------------------------------------------
+ ^bADCDBFfor( <bFor> ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An unconfigured ADCopyDbf() assumes that the scope of records to be copied
+ is ALL.  ADCDBFfor() allows you to change the scope with a new FOR clause.
+
+ <bFor> is the new scope.
+
+ <bOld> is the scope before re-configuration.
+
+ Example - Copies all deleted records
+ -------
+ func main()
+ local bConfig := {||ADCDBFfor( {||deleted()} )}
+
+ use hotel
+ ADCopyDbf( "Test", bConfig )
+ use
+ return NIL
+!seealso: "ADCDBFrecno()" "ADCDBFtotal()" "ADCopyDbf()" "ADCDBFwhile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADCDBFrecno()         ADvises ADCopyDbf() how to get the logical record number
+'------------------------------------------------------------------------------
+ ^bADCDBFrecno( <bRecno> ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An unconfigured ADCopyDbf() assumes that the database being copied is not
+ indexed.  So when it updates the status bar, it uses the recno() of the
+ record currently being copied.  When the database is indexed, you may want
+ to use the logical (as opposed to the physical) record number to update the
+ status bar.  Consequently, ADCopyDbf() needs to be informed of a new method
+ of calculating the logical record number.  Third Party RDDs have such a
+ function.  Use a blockified version of the function in this API.
+
+ <bRecno> is the new method, in codeblock form, of calculating the logical
+ position.
+
+ <bOld> is the assumed method before re-configuration.
+
+ Example
+ -------
+ func main()
+ local bConfig := {||ADCDBFrecno( {||cmxKeyNo()} ),;
+                     ADCDBFtotal( {||cmxKeyCount()} );
+                  }
+ use hotel
+ ADCopyDbf( "Test", bConfig )
+ use
+ return NIL
+!seealso: "ADCDBFwhile()" "ADCDBFfor()" "ADCDBFtotal()" "ADCopyDbf()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADCDBFtotal()         Advises ADCopyDbf() the number of records to be copied
+'------------------------------------------------------------------------------
+ ^bADCDBFtotal( <nTotal> ) --> <nOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An unconfigured ADCopyDbf() assumes that the scope is ALL.  If you change
+ the scope with ADCDBFwhile() and/or ADCDBFfor(), you may need to inform
+ ADCopyDbf() the total records within the scope.  Yo do this with
+ ADCDBFtotal().  If you don't, the progress of the status bar will not be
+ smooth.
+
+ <nTotal> is the number of records to be copied.
+
+ <nOld> is the assumed total before re-configuration.
+
+ Example - Copies from current to the 99th record
+ -------
+ func main()
+ local bConfig := {||ADCDBFwhile( {||recno() < 100} ),;
+                     ADCDBFtotal( {||100 - recno()} );
+                  }
+ use hotel
+ ADCopyDbf( "Test", bConfig )
+ use
+ return NIL
+!seealso: "ADCDBFrecno()" "ADCDBFwhile()" "ADcDBFfor()" "ADCopyDbf()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADCDBFwhile()         Limits ADCopyDbf() to a scope
+'------------------------------------------------------------------------------
+ ^bADCDBFwhile( <bWhile> ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ An unconfigured ADCopyDbf() assumes that the scope of records to be copied
+ is ALL.  ADCDBFfor() allows you to change the scope with a new WHILE clause.
+
+ <bWhile> is the new scope.
+
+ <bOld> is the assumed scope before re-configuration.
+
+ Example - Copies from current to the 99th record
+ -------
+ func main()
+ local bConfig := {||ADCDBFwhile( {||recno() < 100} ),;
+                     ADCDBFtotal( {||100 - recno()} );
+                  }
+ use hotel
+ ADCopyDbf( "Test", bConfig )
+ use
+ return NIL
+!seealso: "ADCDBFrecno()" "ADCDBFtotal()" "ADCopyDbf()" "ADCDBFfor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ADCopyFile()          Copies a file with a progress bar
+'------------------------------------------------------------------------------
+ ^bADCopyFile( <cSource>, <cTarget>, [bConfig], [bSBarConfig ) --> <nCopied>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Copies a file and displays a progress bar.
+
+ <cSource> is the name of the source file
+
+ <cTarget> is the name of the target file
+
+ [bConfig] is a codeblock that configures ADCopyFile().
+
+ [bSBarConfig] is a codeblock that configures the Status Bar engine used
+ by ADCopyFile().
+
+ <nCopied> is the number of copied bytes
+
+ Example
+ -------
+ func main( cSource )
+ local cTarget := "Test.tst"
+ local nStart
+ cls
+ ADsay( 0,0, "ADCopyFile() Demos" )
+
+ ? "demo 1 - default configuration"
+ nStart := seconds()
+ one( cSource, cTarget )
+ ? padr( cSource, 16 ), ADfdate( cSource ), ADftime( cSource )
+ ? padr( cTarget, 16 ), ADfdate( cTarget ), ADftime( cTarget )
+ ? "Duration:", seconds() - nStart
+ ? ""
+
+ ? "demo 2 - bigger chunksize and do not retain date/time stamp"
+ nStart := seconds()
+ two( cSource, cTarget )
+ ? padr( cSource, 16 ), ADfdate( cSource ), ADftime( cSource )
+ ? padr( cTarget, 16 ), ADfdate( cTarget ), ADftime( cTarget )
+ ? "Duration:", seconds() - nStart
+ ? ""
+
+ ? "demo 3 - configured status bar"
+ nStart := seconds()
+ three( cSource, cTarget )
+ ? padr( cSource, 16 ), ADfdate( cSource ), ADftime( cSource )
+ ? padr( cTarget, 16 ), ADfdate( cTarget ), ADftime( cTarget )
+ ? "Duration:", seconds() - nStart
+ return NIL
+
+ func one( cSource, cTarget )
+ ADCopyFile( cSource, cTarget )
+ return NIL
+
+ func two( cSource, cTarget )
+ local bConfig := {||ADCFbufsize( 8192 ),;
+                     ADCFretainstamp( .f. );
+                  }
+ ADCopyFile( cSource, cTarget, bConfig )
+ return NIL
+
+ func three( cSource, cTarget )
+ local bSBarConfig := {||ADSBarLength( 70 ),;
+                         ADSBarCorner( { 22, } ),;
+                         ADSBarColor( { "G/W", "GR+/W" } ),;
+                         ADSBarHeader( "Copy File Demo" );
+                      }
+ ADCopyFile( cSource, cTarget,, bSBarConfig )
+ return NIL
+!seealso: "ADCFbufsize()" "ADCFretainstamp()" "ADCopyDbf()" "ADSBarCreate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADCFbufsize()         Specifies ADCopyFile's read buffer size
+'------------------------------------------------------------------------------
+ ^bADCFbufsize( [nSize]) --> <nOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the size of the read buffer to be used by ADCopyFile().  The
+ larger the size, the faster is the copy operation and the larger is the
+ memory required to perform the operation.
+
+ [nSize] is the new buffer size in bytes.  Defaults to 1024.
+
+ <nOld> is the size in use before configuring.
+
+ Example
+ -------
+ func main( cSource, cTarget )
+ local bConfig := {||ADCFbufsize( 8192 )}
+ ADCopyFile( cSource, cTarget, bConfig )
+ return NIL
+!seealso: "ADCFretainstamp()" "ADCopyFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADCFretainstamp()     Advises ADCopyFile() to (not) retain the date/time stamp
+'------------------------------------------------------------------------------
+ ^bADCFretainstamp( [lRetain]) --> <lOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Advises ADCopyFile() whether or not to retain the date/time stamp of the
+ source file in the target file.  By default, the stamp is retained.
+
+ [lRetain] is a logical value.  If it is TRUE, the date/time stamp of the
+ source file is retained in the target file.  Defaults to TRUE.
+
+ <lOld> is the value of lRetain before configuring.
+
+ Example
+ -------
+ func main( cSource, cTarget )
+ local bConfig := {||ADCFretainstamp( .F. )}
+ ADCopyFile( cSource, cTarget, bConfig )
+ return NIL
+!seealso: "ADCFbufsize()" "ADCopyFile()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ADSBarBoxAttr()       Specifies the box attributes.
+'------------------------------------------------------------------------------
+ ^bADSBarBoxAttr( <aBoxAttr> ) --> <aOldAttr>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the attributes of the box drawn around the progress bar.  This is
+ an API and must be used only within the context of [bConfig].
+
+ <aBoxAttr> is an array of three elements:
+
+    1 - the box frame. Defaults to "ÕÍ¸³¾ÍÔ³ ".
+    2 - the shadow color.  Defaults to "N+/N".  You may also pass a FALSE
+        or a "" here if you do not want a shadow.
+    3 - exploding box?  Defaults to TRUE.
+
+ <aOldAttr> is the current attributes array.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarBoxAttr( { "ÚÄ¿³ÙÄÀ³ ", "N+/R", .f. } )}
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+!seealso: "ADSBarColor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarColor()         Specifies colors for the display.
+'------------------------------------------------------------------------------
+ ^bADSBarColor( [aColor] ) --> <aOldColor>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the colors for the display.  This is an API and must be used only
+ within the context of [bConfig].
+
+ [aColor] is an array of two color specifiers:
+
+    1 - color of the box. Defaults to "W/B"
+    2 - color of the scroll bar.  Defaults to "W+/B"
+
+ <aOldColor> is the current colors array.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarColor( { "W/B", "R+/B" } )}
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+!seealso: "ADSBarBoxAttr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarCoords()        Returns the coordinates of the window.
+'------------------------------------------------------------------------------
+ ^bADSBarCoords() --> <aCoords>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the coordinates of the progress bar window.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+ local aCoor
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarPads( { 1, 1, 0, 1 } ),;
+               ADSBarLength( 33 ),;
+               ADSBarExtra( {||aCoor := ADSBarCoords(),;
+                               ADcsay( aCoor[1]+1, aCoor[2]+1, aCoor[4]-1,;
+                                       "0.............50%.............100",;
+                                       "GR+/B";
+                                     );
+                            };
+                          );
+            }
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+
+ NOTE: You can produce a wide variety of progress bar window templates
+       using a combination of ADSBarCoords(), ADSBarExtra(), ADSBarPads().
+!seealso: "ADSBarExtra()" "ADSBarPads()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarCorner()        Specifies the upper/left corner of the display.
+'------------------------------------------------------------------------------
+ ^bADSBarCorner( [aCorner] ) --> <aOldCorner>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the upper/left corner of the display.  This is an API and must be
+ used only within the context of [bConfig].
+
+ [aCorner] is an array of two numeric screen coordinates:
+
+    1 - the top corrdinate.  Defaults to the center.
+    2 - the left coordinate.  Defaults to the center.
+
+ <aOldCorner> is the current corner array.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarCorner( { 0,0 } )}
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarCreate()        Creates a status bar engine
+'------------------------------------------------------------------------------
+ ^bADSBarCreate( <nItems>, [bConfig] ) --> <nEngine>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a status bar engine.
+
+ <nItems> is the number of items to be _mirrored_ on the status bar.
+
+ [bConfig] is a configuration block.  Use the ADSBar..() APIs to modify the
+ default configuration.
+
+ <nEngine> is the numeric ID of the created engine.
+
+ Example
+ -------
+ func main()
+ cls
+ ? "Indexing demo..."
+ xOne()
+ ? "Copying demo (This one is configured)..."
+ xTwo()
+ return NIL
+
+ func xOne()
+ local nT, nL    // these will be left as NILs so the status bar will be
+                 //centered on the screen
+ local nLength   // this will left NIL so it will default to half the
+                 // screen width
+ local nTotal    // this will be set to lastrec()
+ local cHeader := " Indexing... "
+ local eSBX      // horizontal scroll bar engine
+ local aCsr      // original cursor state
+
+ use hotel
+ nTotal := lastrec()
+ aCsr := ADSaveCsr(0)    // hide cursor while indexing
+ eSBX := ADSBarCreate( nTotal )
+
+ index on field->num;
+       to number;
+       eval ADSBarUpdate( eSBX, recno() );
+       every 5
+
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )       // retore cursor
+ use
+ return NIL
+
+
+ func xTwo()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarHeader( " Copying " ),;
+               ADSBarCorner( { 22,0 } ),;
+               ADSBarLength( 70 ),;
+               ADSBarColor( { "R/W", "R+/W" } );
+            }
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+!seealso: "ADSBarUpdate()" "ADSBarKill()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarExtra()         Specifies an extra behavior
+'------------------------------------------------------------------------------
+ ^bADSBarExtra( <bExtra> ) --> <bOld>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies an extra behavior.
+
+ <bExtra> is a code block that the engine EVALuates before displaying the
+ progress bar.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+ local aCorner := { 10,10 }
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarCorner( { 1,1 } ),;
+               ADSBarLength( 33 ),;
+               ADSBarExtra( {||ADcsay( 2, 2, 36,;
+                                       "0.............50%.............100",;
+                                       "GR+/B";
+                                     );
+                            };
+                          );
+            }
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+
+ NOTE: If this API is called, the engine will not display a header.  If you
+       want to display a header and do an extra behavior at the same time,
+       you will have to include statements in <bExtra> that displays the
+       header.
+
+ NOTE: You can produce a wide variety of progress bar window templates
+       using a combination of ADSBarCoords(), ADSBarExtra(), ADSBarPads().
+!seealso: "ADSBarCoords()" "ADSBarPads()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarHeader()        Specifies a header string for the display.
+'------------------------------------------------------------------------------
+ ^bADSBarHeader( [cHeader] ) --> <cOldHeader>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies a header string for the display.  This is an API and must be
+ used only within the context [bConfig].
+
+ [cHeader] is the string to be displayed at the top of the display box.
+ The engine assumes that it fits within the width of the box.  Defaults to
+ " % Processed ".
+
+ <cOldHeader> is the current header string.
+
+ Example
+ -------
+ func xTwo()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarHeader( " Copying " )}
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarKill()          Kills a status bar engine
+'------------------------------------------------------------------------------
+ ^bADSBarKill( <nEngine> ) --> NIL
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills a Status Bar engine.
+
+ <nEngine> is the numeric ID of the engine to kill.
+
+ Example: See ADSBarCreate()
+!seealso: "ADSBarCreate()" "ADSBarKill()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarLength()        Specifies the length of the scroll bar.
+'------------------------------------------------------------------------------
+ ^bADSBarLength( [nLength] ) --> <nOldLength>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the length of the scroll bar  This is an API and must be used only
+ within the context of [bConfig].
+
+ [nLength] is the new length of the scroll bar.  Defaults to half the
+ screen width.
+
+ <cOldLength> is the current length.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarLength( 70 )}
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarPads()          Specifies space padding around the bar
+'------------------------------------------------------------------------------
+ ^bADSBarPads( <aPads> ) --> <aOldPads>
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies space padding around the bar.
+
+ <aPads> is an array of 4 elements
+
+    1 - number of blank lines between the top edge of the window and the
+        bar.  Defaults to 0.
+    2 - number of spaces between the left edge of the window and the bar.
+        Defaults to 1.
+    3 - number of blank lines between the bottom edge of the window and the
+        bar.  Defaults to 0.
+    4 - number of spaces between the right edge of the window and the bar.
+        Defaults to 1.
+
+ Example
+ -------
+ func main()
+ local eSBX, aCsr, bConfig
+
+ use hotel
+ aCsr := ADSaveCsr(0)
+ bConfig := {||ADSBarPads( { 2,4,2,4 } )}
+ eSBX := ADSBarCreate( lastrec(), bConfig )
+ copy to backup while ADSBarUpdate( eSBX, recno() )
+ ADSBarKill( eSBX )
+ ADRestCsr( aCsr )
+ use
+ return NIL
+
+ NOTE: You can produce a wide variety of progress bar window templates
+       using a combination of ADSBarCoords(), ADSBarExtra(), ADSBarPads().
+!seealso: "ADSBarCoords()" "ADSBarExtra()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADSBarUpdate()        Updates a status bar engine
+'------------------------------------------------------------------------------
+ ^bADSBarUpdate( <nEngine>, <nthItem> ) --> .T.
+ ^bÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Updates a status bar engine.
+
+ <nEngine> is the numeric ID of the engine to update.
+
+ <nthItem> is the item or iteration number of the process to be reflected
+ or updated in the status bar.
+
+ NOTE:  The return value is always TRUE.  This makes it more
+ straightforward to use with WHILE clauses, the EVAL clause of INDEX, and
+ looping constructs like DO..ENDDO and FOR..NEXT.
+
+ Example: See ADSBarCreate()
+!seealso: "ADSBarCreate()" "ADSBarKill()" 
+'------------------------------------------------------------------------------
+
+
+

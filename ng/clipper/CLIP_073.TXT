@@ -1,0 +1,61 @@
+'------------------------------------------------------------------------------
+^BSET RELATION^B
+
+    SET RELATION links two open database files according to a key
+    expression, record number, or numeric expression.
+
+^USyntax^U
+
+    SET RELATION [ADDITIVE] TO [<key exp1>/RECNO()/<expN1>
+    INTO <alias1>/<expC1>] [,TO <key exp2>/RECNO()/<expN2>
+    INTO <alias2>/<expC2>]...
+
+^UArguments^U
+
+    <key exp> is an expression used to perform a SEEK in the child work
+    area each time the record pointer moves in the parent work area.  For
+    this to work, the child work area must have an index in USE.
+
+    RECNO() relates the parent to the child work area using the parent
+    record number to perform a GOTO to the same record number in the child
+    work area each time the record pointer moves in the parent work area.
+    For this type of relation, it is recommended that the child work area
+    not have an index in USE.
+
+    <expN> is an expression used to perform a GOTO to the matching record
+    number in the child work area each time the record pointer moves in the
+    parent work area.  For this type of relation to execute correctly, the
+    child work area must not have an index in USE.
+
+    <alias> identifies the child work area.
+
+    To release all RELATIONs in a work area, specify SET RELATION TO with
+    no arguments.
+
+    Clipper supports eight relations per work area.  Note that cyclical
+    relations are not supported.  You cannot relate a database file to
+    itself, either directly or indirectly.
+
+^UOption^U
+
+    ^BAdditive^B: The ADDITIVE clause adds the specified child relations to
+    the relations already set in the current work area.  If this clause is
+    not specified, existing relations in the current work area are released
+    before the newly specified child relations are set.
+
+^UUsage^U
+
+    A relation defined by SET RELATION causes the record pointer to move in
+    the child work area in accordance with the movement of the record
+    pointer in the parent work area.  If there is not a match in the child
+    work area, the child record pointer is positioned to LASTREC() + 1,
+    EOF() returns true (.T.) and FOUND() returns false (.F.).
+
+    ^BNote^B: SET RELATION does not obey SOFTSEEK and always behaves as if
+    SOFTSEEK is OFF.  If a match is not found in the child work area, the
+    child record pointer is positioned to LASTREC() + 1.
+!seealso: clip_013.ngo:"INDEX" clip_033.ngo:"REPLACE" clip_063.ngo:"SET INDEX" clip_068.ngo:"SET ORDER" clip_087.ngo:"UPDATE" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

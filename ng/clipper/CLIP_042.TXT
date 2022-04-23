@@ -1,0 +1,52 @@
+'------------------------------------------------------------------------------
+^BSELECT^B
+
+    SELECT changes the current work area.
+
+^USyntax^U
+
+    SELECT <work area>/<alias>/(<expN>)
+
+^UArgument^U
+
+    <work area> is a number between zero and 254 inclusive.  Zero
+    designates the first available work area beginning with work area one.
+
+    <alias> is the name of an existing work area if there is a database
+    file open in that area.  The first 10 work areas can be referred to
+    with the letters A through J.  Specifying a non-existent alias produces
+    a run-time error.
+
+    (<expN>) is a numeric expression that evaluates to a number between
+    zero and 254.  The expression must be bounded by opposing parentheses
+    to be evaluated.
+
+^UUsage^U
+
+    Clipper supports 254 work areas.  SELECTing 0 selects the first unused
+    area.  Within each work area, you can open a database file and up to 15
+    index files.  Each work area has a number of attributes which include:
+
+    ^BAttribute^B                  ^BFunction^B
+    Alias name                 ALIAS()
+    Work area number           SELECT()
+    Database file              ALIAS()
+    Index file(s)              INDEXORD()/INDEXKEY()
+    Exclusivity                FLOCK()/NETERR()
+
+    Filter condition
+    Deleted filter
+    Locate condition
+    Relation(s)
+
+    Number of records          LASTREC()/RECCOUNT()
+    Number of fields           FCOUNT()
+    Record number              RECNO()
+    Beginning-of-file flag     BOF()
+    End-of-file flag           EOF()
+    Found flag                 FOUND()
+!seealso: clip_088.ngo:"USE" clip_063.ngo:"SET INDEX" clip_135.ngo:"SELECT()" 
+'------------------------------------------------------------------------------
+
+
+

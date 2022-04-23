@@ -1,0 +1,45 @@
+'------------------------------------------------------------------------------
+ What's New in the Dialog Box Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADboxmenu() - modified.  Added a 9th optional parameter for defining
+   Help headings.  An ampersand '&' may now be embedded on a menu prompt
+   to indicate its trigger key.
+
+ û ADbm_justify() - new.  Specify justification of the prompts.
+
+ û ADbm_rbuttons() - new.  API to reconfigure right mouse button behavior.
+
+ ^rOlder Versions
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û  ADboxmenu() - modified.  Added support for global hot keys.
+
+ û  ADbm_undisplay() - new.  Undisplays the menu.
+
+ û  ADbm_display() - new.  Redisplays an undisplayed menu.
+
+ û  ADbm_invkey() - new.  Defines a codeblock that handles invalid key
+    presses.
+
+ û  ADbm_sleep() - new.  Instructs menu to sleep, that is, not to process
+    events.  Optionally activates an alternate event handler while it is
+    asleep.
+
+ û  ADbm_poll() - new.  Adds an event poller, in addition to keyboard
+    presses and mouse button clicks.
+
+ û  ADbm_isprinter() - modified.  In prior versions, it checks for LPT1
+    readiness only once.  Now it checks it more than once before it reports
+    a 'Printer Not Ready' message.  Also, now supports other LPT ports.
+    May require changes in existing code.
+
+ û  ADbm_floppy() - modified.  In prior versions this function would build
+    an ADboxmenu() with the floppy disk identifiers and a 'Cancel' as the
+    menu options.  In v2.2, the 'Cancel' option is not added if [bProcess]
+    is not passed.  Also, ADbm_isescape() is set to TRUE.
+!seealso: fran_010.ngo:"ADboxmenu()" 
+'------------------------------------------------------------------------------
+
+
+

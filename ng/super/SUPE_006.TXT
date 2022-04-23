@@ -1,0 +1,427 @@
+!short:Documentation Key
+'------------------------------------------------------------------------------
+
+    ^bDocumentation Key
+
+    1. Parameter names are prefaced with their type:
+
+
+       c        character             i.e.  cString, cFileName
+       n        numeric               i.e.  nCount, nSize
+       l        logical               i.e.  lSuccess, lStarted
+       d        date                  i.e.  dToday, dTarget
+       a        array                 i.e.  aNames, aFiles
+       b        code block            i.e.  bBlock, bEvaluate
+       o        object                i.e.  oTbrowse, oGet
+       exp      any or multiple type  i.e. expWhatever
+
+    2. A parameter prefaced with @ means pass by reference
+
+    3. Parameters enclosed in:
+
+       <> or none     indicates required parameter
+       []             indicates optional parameter or set of params
+       |              indicates mutually exclusive params
+
+    4. => refers to the function return value
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Examples
+'------------------------------------------------------------------------------
+
+  ^bExamples
+
+  (in the examples.zip file)
+
+  The sample files are broken down into 1 .PRG file per
+  category.
+
+  ^bPRG Files
+
+  S3SCREEN.PRG      Fancy screen handling
+  S3META.PRG        Metafunctions
+  S3META2.PRG       Metafunctions - using new BUNGEE() menu
+  S3POPUP.PRG       Popups
+  S3MENU.PRG        Menus (including PULLDN(), BUNGEE() )
+  S3GET.PRG         Get system enhancements
+  S3MOUSE.PRG       Mouse and event function usage
+  S3LOOKUP.PRG      Lookup functions
+  S3LASER.PRG       LaserJet functions
+  S3HELP.PRG        Online help
+  S3PROG.PRG        Progress bars
+  S3FILE.PRG        File and directory functions
+  S3COLORS.PRG      SuperLib Color set handling
+  S3BROWSE.PRG      Browses (tbrowse)
+  S3OLD.PRG         OLD() on Line Doc sample
+
+  ^bData
+
+  S3SAMPLE.DBF      Sample Names type DBF file
+  S3SAMPLE.DBT      Sample Names type DBT file
+
+  S3SAMPLE.SDF      Sample Names type SDF file for
+                    S3BROWSE.PRG
+
+  S3SAMPLE.ASC      Sample Names type ASCII delim file
+                    for S3BROWSE.PRG
+
+  S3HELP.DBF        Online help samples DBF
+  S3HELP.DBT        Online help samples DBT
+  S3HELP.NTX        Online help samples NTX
+
+  S3STATES.DBF      Lookup table used in S3LOOKUP.PRG
+  S3PROD.DBF        Lookup table used in S3LOOKUP.PRG
+
+  S3COLORS.DBF      Color set file
+
+
+
+  ^bCreation
+
+  To create an executable for any of the given .PRGs, where
+  <prgfile> refers to the prg and <objfile> refers to the compiled
+  object file: (add paths to Clipper and Extend and SUPERxx
+  libraries as needed)
+
+
+
+  A. COMPILE      NOTE: the -n switch is very important!
+
+    ^bClipper <prgfile> -n -w
+
+  B. LINK
+
+    1   blinker
+
+        ^bblinker fi <objfile> alloc super35
+
+    2   rtlink (clipper 5.0 version)
+
+        ^brtlink fi <objfile> lib super35
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SuperLib Color Implementation
+'------------------------------------------------------------------------------
+
+
+ ^bSuperLib Color Implementation
+
+ This is not the perfect color scheme. It is the one
+ this library runs on. The color scheme relates to SuperLib functions,
+ and will not affect your other color usage.
+
+ Basically, when a SuperLib metafunction is called, it
+ will usually have a main screen, a menu, and a number of popups
+ and other attached screens. Rather than have a burned-in color
+ set, or use SETCOLOR() as the default, SuperLib has a dynamic
+ color scheme, which may be changed and stored by both the
+ programmer and the end-user.
+
+ Several global color settings are used by SuperLib
+ functions. The settings are accessed and set via a set of
+ functions calls, which themselves access a set of STATIC
+ variables. The functions are:
+
+
+   <cSetting> := sls_normcol([cNew])      For normal output
+   <cSetting> := sls_normmenu([cNew])     For normal 'menu to'
+   <cSetting> := sls_popcol([cNew])       For popup  box colors
+   <cSetting> := sls_popmenu([cNew])      For popup box menus
+   <cSetting> := sls_frame([cNew])        Frame string
+   <nSetting> := sls_shadatt([nNew])      Shadow color attribute
+   <nSetting> := sls_shadpos([nNew])      Shadow  position
+                 (0,1,3,7,9) to match the numeric keypad
+   <lSetting> := sls_xplode([lNew])       Logical - explode
+                                          popups
+
+ All colors are of the format "fg/bg,fg/bg,,,fg/bg"
+
+ (fg-foreground bg-background) except for shadow
+ attribute, which is numeric.
+
+ By default, a monochrome set of colors is used. You
+ may call the function SATTCOLOR() to make the 'color' colors the
+ default.
+
+ The function SETCOLORS() allows interactive setting
+ of these colors. The variables are stored in COLORS.DBF, which
+ contains multiple sets of colors.
+
+ You may override the Clipper ISCOLOR() by
+ initializing another setting accessed via the function
+ SLS_ISCOLOR(), and setting it to True or False. This is helpful
+ in instances where ISCOLOR() sees a color card with a monochrome
+ monitor, or some such combination.
+
+ If you are upgrading from 2.50 or previous, see
+ "Upgrading" in the appendix.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Color functions
+'------------------------------------------------------------------------------
+
+
+  ^bColor functions
+
+  ^b1. These are the functions that relate to entire color sets
+
+
+  SATTCOLOR()         Sets up the the color set for color monitor
+  SATTMONO()          Sets up the the color set for MONO
+  SATTDIRECT()        Sets up the the color set directly
+  SATTGET()           Sets up color set from COLORS.DBF
+  SATTPICK()          Sets up color set by selecting from stored                     definitions
+  SATTGETMEM()        Sets up color set from old colors.mem
+  SATTPUT()           Stores current color set  to colors.dbf
+  SATTPICKPUT()       Stores current SuperLib color set to
+                      colors.dbf, with picklist selection of set
+  SATTPICKDEL()       Picklist deletion of stored color sets
+  SATTPUSH()          Pushes the current SuperLib color set
+  SATTPOP()           Pops previously pushed color set
+  SETCOLORS()         Interactive color setting -
+                      save/restore/edit color sets
+  COLPIK()            10 built in color sets to select
+                      from a popup
+
+
+ ^b2. These are the functions that deal with individual color set items
+
+  SLS_NORMCOL()       Normal screen output
+  SLS_NORMMENU()      Normal MENU color
+  SLS_POPCOL()        Popup screen output
+  SLS_POPMENU()       Popup MENU color
+  SLS_FRAME()         Box frames
+  SLS_SHADATT()       Shadow attribute
+  SLS_SHADPOS()       Shadow position
+  SLS_XPLODE()        Explode/implode popups
+
+ ^b3. Other color related functions
+
+  SLS_ISCOLOR( )      Is this a color monitor
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Obsolete Functions
+'------------------------------------------------------------------------------
+
+
+ ^bObsolete Functions
+
+ The following internal C/ASM functions are no longer
+ used, and are not in the library:
+
+ ATTT()
+
+ C_GRID()
+
+ _GVIDM()
+
+ IMBOX()
+
+ CURD()
+
+ CAPSLOCK()
+
+ CAPSLOFF()
+
+ The following Clipper functions are also terminated:
+
+ OREPORTER()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Printer Issues
+'------------------------------------------------------------------------------
+
+
+ ^bPrinter Issues
+
+ This is how printing is handled by the library
+ functions. You need not follow this method except where it is
+ imbedded in SuperLib metafunctions.
+
+ The function SLS_PRN() is a SET/RETRIEVE function
+ which sets and retrieves the default printer port as a string
+ with the default as "LPT1". This function may be called with any
+ valid printer port name as a parameter to set a new printer port
+ for SuperLib usage.
+
+ Valid values are "LPT1", "LPT2", "LPT3", "COM1",
+ "COM2" - anything you could issue a SET PRINTER TO
+ <cPort> with.
+
+ Another SET/RETRIEVE function - SLS_PRNC() - points
+ to the setting which determines if the printer port will be
+ checked for readiness before printing. Passing it a False causes
+ it to not check the printer before printing - handy in some
+ network situations.
+
+ At print time, LPT* ports are checked for readiness
+ via the P_READY() function. (COM ports are not checked for
+ readiness.) However, if SLS_PRNC() has been passed a .f., no
+ check for readiness is done.
+
+ P_READY() uses the .ASM function ISPRN() to check for
+ readiness.
+
+ If the port is not ready, the user is given
+ the option to:       Try Again
+                      Ignore the Warning
+                      Select a Different Printer Port
+                      Abort the print request
+
+ If Abort is selected, P_READY() returns false.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Mice and SuperLib
+'------------------------------------------------------------------------------
+
+
+ ^bMice and SuperLib
+
+ SuperLib contains a set of mouse and event functions.
+ These functions are MOSTLY prefaced with 'RAT' for uniqueness.
+
+ The basic functions are written in assembler (MASM
+ 5.10) and are in s_mouse.asm. These provide such things as
+ testing for a mouse, turning the mouse cursor on, turning it off,
+ positioning it.
+
+ Also provided are two approaches to knowing where the
+ mouse is and what it is doing. The first is a direct query of
+ the mouse's status and position. This is basically, "where is the
+ mouse right now, is the right button depressed right now, is the
+ left button depressed right now". These are accomplished through
+ service 3 of interrupt 33h.
+
+ The second approach is to use service 5 of interrupt
+ 33h, which 'records' right and left mouse button depresses and
+ where the mouse was when these occurred.
+
+ These Clipper functions, contained in s_moose.prg,
+ are included to provide a simple event manager to trap both keys
+ and mouse events and store them for reference.
+
+ The event manager RAT_EVENT() can be used in place of
+ inkey(), and will detect a keypress, a mouse left button press,
+ a mouse right button press, or a timeout. The 'event' returns a
+ value similiar to inkey(), but adds values of 400 and 500 for
+ mouse right and left presses. Functions are provided to find out
+ the mouse row and column when the event occurred.
+
+ Two additional functions RAT_READ() and RAT_MENU2()
+ are provided which use the mouse and event functions to perform
+ a read and a menu to emulation. These are also good examples for
+ usage of the mouse and event functions.
+
+ All SuperLib functions are mouse aware, as of version 3.5.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Internal DBFs
+'------------------------------------------------------------------------------
+
+
+ ^bInternal Datafiles
+
+ SuperLib uses a number of internal datafiles to store
+ such things as queries, reports and colors.
+
+ All of these files have default names - for instance
+ queries are stored in QUERIES.DBF by default. SuperLib 3.x
+ provides a series of functions to determine internal file names
+ and locations.
+
+ All of these functions start with SLSF_ (Super Lib System File )
+
+ ^bFunction                 Purpose                Default
+
+ SLSF_REPORT([cNew])      Stored reports         SFREPORT
+ SLSF_QUERY([cNew])       Stored queries         QUERIES
+ SLSF_FORM([cNew])        FORMLETR() forms       FORM
+ SLSF_HELP([cNew])        Help records           HELP
+ SLSF_LIST([cNew])        LISTER() definitions   PLIST
+ SLSF_SCROLL([cNew])      Lookup definitions     SCROLLER
+ SLSF_COLOR([cNew])       Color sets             COLORS
+ SLSF_TODO([cNew])        TODOLIST() dbf         TODO
+ SLSF_TDN1([cNew])        TODOLIST 1st index     TODO
+ SLSF_TDN2([cNew])        TODOLIST 2nd  index    TODOP
+ SLSF_TDN3([cNew])        TODOLIST 3rd  index    TODOD
+ SLSF_APPT([cNew])        Appointments           APPOINT
+ SLSF_LABEL([cNew])       Labels database        CLABELS
+ SLSF_OLD([cNew])         O.L.D. doc database    SLOLDS
+
+
+ Where [cNew] optionally sets the path and/or filename.
+ If [cNew] is passed, this is the value returned as
+ well.
+
+ For example, to change the default file and place
+ where reports are stored when using REPORTER(),
+
+   SLSF_REPORT("c:\hidden\MYREPORT")
+              // sets the report file
+              // to MYREPORT.DBF in
+              // c:\HIDDEN
+
+
+ These take the place of the following public
+ variables in earlier versions of SuperLib:
+
+     _REPORTS   = "SFREPORT"   (for reports)
+     _FORMS     = "FORM"       (for form letters)
+     _QUERIES   = "QUERIES"    (for queries)
+     _LISTER    = "PLIST"      (for lister)
+     _TODODBF   = "TODO"       (for todo list)
+      _TODONTX1 = "TODO"       (TODO category INDEX)
+      _TODONTX2 = "TODOP"      (TODO priority INDEX)
+      _TODONTX3 = "TODOD"      (TODO do by INDEX)
+     _HELP      = "HELP"       (for help)
+     _SCROLLER  = "SCROLLER"   (for scroller)
+     _COLORS    = "COLORS"     (for colors)
+
+ COLORS are now stored in a DBF file, rather than a
+ .MEM file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:Internal DBF Structures
+!file: supe_007.ngo
+!short:Changing SuperLib
+!file: supe_008.ngo
+!short:Linking with SuperLib
+!file: supe_009.ngo
+!short:Support
+!file: supe_010.ngo
+!short:Conflicts with other LIBs
+!file: supe_011.ngo
+!short:Color chart
+!file: supe_012.ngo
+!short:Whats new in 3.5
+!file: supe_013.ngo
+!short:Whats changed in 3.5
+!file: supe_014.ngo
+!short:Upgrading from a previous SuperLib
+!file: supe_015.ngo
+!short:Old style PUBLICs vs. new functions
+!file: supe_016.ngo

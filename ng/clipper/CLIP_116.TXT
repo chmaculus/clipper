@@ -1,0 +1,38 @@
+'------------------------------------------------------------------------------
+^BMLPOS()^B
+
+    MLPOS() determines the position of a specified line number in a
+    character string or memo field.
+
+^USyntax^U
+
+    MLPOS(<expC>,<expN1>,<expN2>)
+
+^UArguments^U
+
+    <expC> is the character string or memo field in which to count lines.
+
+    <expN1> is the number of characters per line.
+
+    <expN2> is the line number.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    MLPOS() returns the position in <expC> of the specified line number.
+    If <expN2> is greater than the number of lines in <expC>, MLPOS()
+    returns LEN(<expC>).
+
+^UExample^U
+
+    This example loads a text file from disk and then finds the position of
+    the fifth line of text given a line length of 40 characters:
+
+    ^Rstring = MEMOREAD("Temp.txt")^R
+    ^Rloc = MLPOS(string, 40, 5)   ^R
+!seealso: clip_093.ngo:"HARDCR" clip_115.ngo:"MLCOUNT" clip_108.ngo:"MEMOEDIT" clip_110.ngo:"MEMOREAD" clip_112.ngo:"MEMOTRAN" clip_113.ngo:"MEMOWRIT" 
+'------------------------------------------------------------------------------
+
+
+

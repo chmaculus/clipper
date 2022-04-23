@@ -1,0 +1,57 @@
+'------------------------------------------------------------------------------
+^BMLCOUNT()^B
+
+    MLCOUNT() counts the number of word-wrapped lines in a character string
+    or a memo field.
+
+^USyntax^U
+
+    MLCOUNT(<expC>[,<expN1>][,<expN2>][,<expL>])
+
+^UArguments^U
+
+    <expC> is the character string or memo field in which to count lines.
+
+    <expN1> is the number of characters per line.  The default is 79, the
+    maximum is 254, and the minimum is four.
+
+    <expN2> is the tab size.  The default is four.  If <expN3> is greater
+    than or equal to <expN1>, then the tab size if <expN1>-1.
+
+    <expL> toggles word wrap on and off.  Specifying true (.T.) toggles
+    word wrap on; false (.F.) toggles it off.  The default is true (.T.).
+
+    Note that most arguments are optional.  To skip an argument and specify
+    further arguments, pass a dummy argument for the argument you wish to
+    skip.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    MLCOUNT() returns the number of lines in <expC> based on the number of
+    characters per line (<expN1>), the tab size (<expN2>), and wrapping
+    behavior (<expL>).
+
+    If <expL> is true (.T.) and an end-of-line position breaks a word, it
+    is word-wrapped to the next line and the next line then begins with the
+    next non-blank character.  If <expL> is false (.F.), MLCOUNT() counts
+    the number of characters specified by the line width (<expN1>) as the
+    current line.  The next line begins with the character following the
+    next hard carriage return.  This means that the intervening characters
+    are ignored.
+
+^UUsage^U
+
+    MLCOUNT() is primarily used with MEMOLINE() to format memo fields or
+    long character strings for printing.  To do this, first use MLCOUNT()
+    to return the number of word-wrapped lines.  Then, using MEMOLINE() to
+    extract each line, loop through the memo field one line at a time until
+    there are no lines left.
+
+    See MEMOLINE() for an expanded discussion.
+!seealso: clip_093.ngo:"HARDCR" clip_116.ngo:"MLPOS" clip_108.ngo:"MEMOEDIT" clip_110.ngo:"MEMOREAD" clip_112.ngo:"MEMOTRAN" clip_113.ngo:"MEMOWRIT" 
+'------------------------------------------------------------------------------
+
+
+

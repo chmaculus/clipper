@@ -1,0 +1,522 @@
+!short: A. Overview     ^b
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EA. Overview^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   ^bWhat does the library contain?
+
+   The library contains functions for Clipper 5.2 or higher :
+   ^b^C07 Color maintenance
+   ^b^C07 Conversions
+   ^b^C07 Database management
+   ^b^C07 DOS operations
+   ^b^C07 GetList usage
+   ^b^C07 Hotspots
+   ^b^C07 Logging of users and errors
+   ^b^C07 Mousing
+   ^b^C07 Printer management
+   ^b^C07 Screen building
+   ^b^C07 Video
+   ^b^C07 Character redefinition
+   ^b^C07 Color redefinition
+   ^b^C07 and so on
+
+   The library consists of 3 .LIB files :
+   ^b^C07 GHOST.LIB    - contains language INdependent functions
+   ^b^C07 GHOSTHOL.LIB - contains functions with Dutch messages
+   ^b^C07 GHOSTUSA.LIB - contains functions with American messages
+   The last 2 .LIB files contain the same functions, so when you link the
+   library you must specify GHOST.LIB and GHOSTHOL.LIB if you want Dutch
+   messages, otherwise specify GHOST.LIB and GHOSTUSA.LIB.
+
+   The entire library is compiled with Clipper 5.2d.
+
+   If you want a translation of the library in your own language then I
+   have a file available with all the American text lines. I can send it to
+   you for a translation by you. I can then place the translated lines in
+   my source code and create a library for your language. You will receive
+   this library for free (of course) as well as the next version of the
+   library.
+
+   Furthermore the library GHOSTHOL.LIB contains the OBJect-file
+   ^bDUTCH.OBJ^b (for Dutch day and month names)
+   The libraries GHOSTHOL.LIB and GHOSTUSA.LIB contain the OBJect-file ^b
+   ERRORSYS.OBJ^b (replacement of CA-Clipper's Errorsys).
+!seealso: "B. The author" "C. Registering" "D. Errorsys" 
+'------------------------------------------------------------------------------
+
+
+
+!short: B. The author   ^bSomething to please the authors ego
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EB. The author^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   ^bWho is the author?
+
+   The libraries GHOST.LIB, GHOSTHOL.LIB and GHOSTUSA.LIB are developed by:
+
+      ^A20                                                       ^A20
+      ^A20                                                       ÛÛ^A20
+      ^A20             GhostWare                                 ÛÛ^A20
+      ^A20             Ren‚ van Geest                            ÛÛ^A20
+      ^A20             Edelsteenweg 57                           ÛÛ^A20
+      ^A20             2651 SP Berkel & Rodenrijs                ÛÛ^A20
+      ^A20             Holland                                   ÛÛ^A20
+      ^A20                                                       ÛÛ^A20
+      ^A20          Phone (only from 20:00 to 22:00) :           ÛÛ^A20
+      ^A20          Holland       : 01891-17944                  ÛÛ^A20
+      ^A20          International : countrycode-1891-17944       ÛÛ^A20
+      ^A20                                                       ÛÛ^A20
+      ^A20                                                       ÛÛ^A20
+        ^A20ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ^A20
+
+   For question, remarks, complaints, compliments, comments, suggestions,
+   wishes, updates and contributions and so on, you can always contact me.
+!seealso: "A. Overview" "C. Registering" 
+'------------------------------------------------------------------------------
+
+
+
+!short: C. Registering  ^bIt's simple and does not cost a lot (like many others)
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EC. Registering^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   ^bHow to register?
+
+   It's easy, simply fill out the registration form and send it to :
+
+       ^bGhostWare
+       ^bR. van Geest
+       ^bEdelsteenweg 57
+       ^b2651 SP Berkel & Rodenrijs
+       ^bHolland
+
+   And don't forget to enclose the registration and shipping and handling
+   fee too.
+
+   By the way, the fee is :
+                           HOLLAND    ELSEWHERE
+   registration             Ÿ 35,-      $ 30,-
+   shipping and handling    Ÿ  5,-      $ 10,-
+
+   If you are from 'ELSEWHERE' and want to pay by cheque you have to make
+   the cheque payable to R. van Geest. Since the bank charges me 15
+   guilders for a foreign cheque you have to add $10,- for this too. Paying
+   in cash is the easiest for both of use. Up to now I never had any
+   problems with this. Just make sure the money is not visible from
+   outside.
+
+   For more details see REGFORM.NL (for Dutch users) or REGFORM.INT (for
+   International users).
+
+   After registration you will :
+   ^b- receive the latest version;
+   ^b- receive Dutch and American GhostWare Libraries;
+   ^b- receive complete Norton Guide (over 450K);
+   ^b- get support;
+   ^b- be legalized.
+!seealso: "A. Overview" "B. The author" 
+'------------------------------------------------------------------------------
+
+
+
+!short: D. Errorsys     ^bNotes about the GhostWare Errorsys
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ED. Errorsys^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   The library contains a replacement for CA-Clippers Errorsys. If a
+   runtime error occurs (mine always do!) then this errorhandler is called.
+
+   ^uIMPORTANT :
+   ^bIf you are using BLINKER (and who isn't?) and you want to use this
+   ^breplacement for Errorsys, be sure that you call the library in your
+   ^blink-file via the Blinker SEARCH command. So use 'SEARCH GHOSTHOL'
+   ^b(or 'SEARCH GHOSTUSA' ) instead of 'LIBRARY GHOSTHOL'.
+   ^bIf you are patient and still use RTLINK you have to call ERRORSYS()
+   ^bsomewhere in the beginning of your application and then link with
+   ^bRTLINK FILE <YourApp> LIB GHOST,GHOSTHOL
+
+   ^bWhat does this Errorsys do?
+
+   If a runtime error occurs, then a window with the error is displayed in
+   the upper left corner of the screen. In the lower right corner a window
+   is displayed with a couple of actions the user can take :
+    ^b^C07 Retry the action
+    ^b^C07 Ignore the error
+    ^b^C07 Display the last screen
+    ^b^C07 Abort the program
+
+   For every runtime error records with relevant data are written to the
+   files : ^bERRORLOG.DBF^b and ^bTRACE.DBF^b. ERRORLOG.DBF contains the
+   runtime error data and TRACE.DBF all the function calls and linenumbers
+   associated with the error.
+   PS. both files are created if they doesn't exist in the current
+   directory.
+
+   With the function ^bGWErrorLog()^b the files ERRORLOG.DBF and TRACE.DBF
+   can be browsed.
+!seealso: gw23_009.ngo:"GWErrorLog()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: E. Used codes   ^bExplanation about the used codes
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EE. Used codes^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+!seealso: gw23_009.ngo:"GWErrorLog()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: F. History      ^bChange history since version 2.0
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EF. History^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+^bModifications made in version 2.3 :
+
+^A1FAugust 1994 / v2.3
+ - Mainly additions and corrections in the Norton Guide were made.
+ - This version went Beta.
+ - I had two weeks vacation.
+
+^A1FJuly 1994 / v2.3 (Due to the World Championship, Wimbledon and the
+^A1FTour de France not many things were added in June and July!)
+ - ^bbBlock^b and ^bnSeconds^b are added to the screensaver functions
+ - cDriver is added to ^bGWNetUse()^b
+ - ^bGWArray2DBF()^b added
+
+^A1FJune 1994 / v2.3
+ - ^bLABEL ...^b command added
+ - ^bSTATISTIC ...^b command added
+ - ^bLOG ERRORS ...^b command added
+
+^A1FMay 1994 / v2.3
+ - ^bCOOL HOTSPOT^b command added
+ - ^bCOOL ALL HOTSPOTS^b command added
+ - ^bDEFINE HOTSPOT^b command added
+ - ^bDELETE ALL HOTSPOTS^b command added
+ - ^bDELETE HOTSPOT^b command added
+ - ^bPAINT HOTSPOTS^b command added
+ - ^bRESTORE HOTSPOTS FROM^b command added
+ - ^bSAVE HOTSPOTS TO^b command added
+ - ^bWARM HOTSPOT^b command added
+ - ^bWARM ALL HOTSPOTS^b command added
+ - Bug (so sorry) in ^bGWWeek2Date()^b fixed
+
+^A1FApril 1994 / v2.3
+ - the replacement of ^bGETSYS.PRG^b is made mouse sensitive
+ - ^bGET BUTTON^b made mouse sensitive
+ - ^bGET CALENDER^b made mouse sensitive
+ - ^bGET CALCULATOR^b made mouse sensitive
+ - ^bGET CHECKBOX^b made mouse sensitive
+ - ^bGET HISTORY^b made mouse sensitive
+ - ^bGET INITIALS^b made mouse sensitive
+ - ^bGET MEMO^b made mouse sensitive
+ - ^bGET PASSWORD^b made mouse sensitive
+ - ^bGET RADIO^b made mouse sensitive
+ - ^bREAD VALIDATE^b command added
+ - ^bGET PICK^b command added
+ - aValues is added to ^bGWAction()^b
+ - ^bMENU^b commands added
+ - ^bGWLastKey()^b added
+ - ^bGWSaveEnv()^b modified
+
+^A1FMarch 1994 / v2.3
+ - ^bGET ... BUTTON^b command added
+ - ^bGET ... CALCULATOR^b command added
+ - ^bSET EXPLOSION ...^b command added
+ - ^bGWExplosion()^b added
+ - ^bSET SHADOWHEIGHT TO ...^b command added
+ - ^bGWShadowHeight()^b added
+ - cText argument of ^bGWaSearch()^b is changed to xVar.
+ - The limitation of the number of redefinable keys (5) of
+   ^bGWBrowseDBF()^b is removed.
+ - Number of elements of argument aKeys of ^bGWBrowseDBF()^b is expanded.
+ - aKeys is added to ^bGWBrowseArray()^b
+ - lSave is added to ^bGWMemoDisplay()^b
+
+^A1FFebruari 1994 / v2.3
+ - ^bGET ... CALENDER^b command added
+ - ^bGET ... INITIALS^b command added
+ - ^bGET ... PASSWORD^b command added
+
+^A1FJanuari 1994 / v2.3
+ - ^bGWScreenSaver()^b added
+ - ^bSET SCREENSAVER TO ...^b command added
+ - ^bSET MOUSE ...^b command added
+ - ^bSET GRAPH ...^b command added
+
+^A1FÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+
+^bModifications made in version 2.2 :
+
+^A1FDecember 1993 / v2.2
+ - ^bGWHPBehavior()^b added
+ - ^bGWHPSymbolSet()^b added
+ - ^bGWHPTopMargin()^b added
+ - The GWHP* functions now return the printer control string
+
+^A1FNovember 1993 / v2.2
+ - ^bGWASKTHIS^b command added (UDC for GWAsk())
+ - ^bGWBOX^b command added (UDC for GWShadowBox())
+ - ^bGWAllVGAColors()^b added
+ - ^bGWDisableColor()^b added
+ - ^bGWEnableColor()^b added
+ - ^bGWEnabled()^b added
+ - ^bGWModColor()^b added
+ - ^bGWVGAColor()^b added
+
+^A1FOctober 1993 / v2.2
+ - Some minor flaws in ^bGET HISTORY^b corrected (eg. cursor position)
+ - The usage of the GhostWare special character set is added to the user
+   interface functions like GWBrowseDBF(), GWAsk() and so on.
+ - aRows is added to ^bGWPDown()^b
+ - ^bGWReadFont()^b added
+ - ^bGWUseSpecial()^b added
+ - ^bGWUseFonts()^b added
+ - ^bGWTrace()^b added
+
+^A1FSeptember 1993 / v2.2
+ - ^bGWIsCGA()^b added
+ - ^bGWIsEGA()^b added
+ - ^bGWIsMono()^b added
+ - ^bGWIsVGA()^b added
+ - ^bGWLoadFont()^b added
+ - ^bGWMakeChar()^b added
+ - ^bGWScanLines()^b added
+ - ^bGWVideo()^b added
+ - ^bGWDrive()^b added
+ - ^bGWChDir()^b added
+ - ^bGWMkDir()^b added
+ - ^bGWRmDir()^b added
+ - NOCONFIRM is added to the command ^bGWDBFBROWSE^b
+ - ^bGWDec2Base()^b added
+ - ^bGWUnique()^b added
+
+^A1FAugust 1993 / v2.2
+ - STABLEBLOCK is added to the command ^bGWARRBROWSE^b
+ - STABLEBLOCK is added to the command ^bGWDBFBROWSE^b
+ - HELPLINE is added to the command ^bGWARRBROWSE^b
+ - HELPLINE is added to the command ^bGWDBFBROWSE^b
+ - SEPARATORS is added to the command ^bGWARRBROWSE^b
+ - SEPARATORS is added to the command ^bGWDBFBROWSE^b
+ - ^bGWIsRAMDisk()^b added
+ - ^bGWRAMDisk()^b added
+ - lStatus is added to the function ^bGWGetDir()^b
+ - Speed of function ^bGWClearScreen()^b improved significantly
+ - Bug (so sorry) in function ^bGWChangeColor()^b fixed
+
+^A1FJuly 1993 / v2.2
+ - ^bGWDBF2Array()^b added
+ - ^bGWDBStruct()^b added
+ - lBrowse is added to the function ^bGWOpenDBF()^b
+ - cAlias is added to the function ^bGWNetUse()^b
+ - lForce is added to the function ^bGWmPresent()^b
+ - ^bGWmUse()^b added
+ - ^bGWWeave()^b added
+ - ^bGWGetTree()^b added
+
+^A1FÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+
+^Modifications made in version 2.1 :
+
+^A1FJune 1993 / v2.1
+ - ^bGWSpeed()^b added
+ - ^bGWExplode()^b changed
+ - ^bGWImplode()^b changed
+ - ^bGWOpenDBF()^b added
+ - RESTORE is added to the command ^bGWDBFBROWSE^b
+ - BLOCK is added to the command ^b@..GET MEMO^b
+ - ^bGWMemoDisplay()^b added
+
+^A1FMay 1993 / v2.1
+ - ^b@..GET..HISTORY^b added
+ - ^bGWAction()^b added
+ - ^bGWaSearch()^b added
+ - ^bGWRestEnv()^b added
+ - ^bGWSaveEnv()^b added
+ - lRestoreScrn is added to the function ^bGWBrowseArray()^b
+ - RESTORE is added to the command ^bGWARRBROWSE^b
+ - Bug in function ^bGWHelp()^b fixed
+
+^A1FApril 1993 / v2.1
+ - ^bGWcActive()^b added
+ - ^bGWcArray()^b added
+ - ^bGWcChange()^b added
+ - ^bGWcDefine()^b added
+ - ^bGWcDelete()^b added
+ - ^bGWcExist()^b added
+ - ^bGWcInit()^b added
+ - ^bGWcKill()^b added
+ - ^bGWcSetColor()^b added
+ - ^bGWcString()^b added
+
+ - ^bGWBorder()^b added
+ - ^bGWChangeColor()^b added
+ - ^bGWColor2Num()^b added
+ - ^bGWEnhanced()^b added
+ - ^bGWNum2Color()^b added
+ - ^bGWSplitColor()^b added
+ - ^bGWStandard()^b added
+ - ^bGWUnselected()^b added
+ - ^bGWVarExist()^b added
+ - Parameters bFunc and nSeconds added to ^bGWmWait()
+ - Parameter bFunc added to ^bGWPDown()^b (for screensavers)
+ - ^bGWMemory()^b added
+
+^A1FMarch 1993 / v2.1
+ - ^bGWMemoEdit()^b added
+ - ^bGWAsciiTable()^b added to GETSYS
+ - Screensaver ^bGWMagic()^b added
+ - ^b@..GET MEMO^b added
+
+^A1FFebruary 1993 / v2.1
+ - the password recorded in the USERS.DBF is now encrypted.
+ - password in USERS.DBF can be changed with the function ^bGWChangePassword()^b
+ - ^bGWDecrypt()^b added
+ - ^bGWEncrypt()^b added
+ - VAR-parameter added to the command ^bGWARRBROWSE^b
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: G. License      ^bOnly because it's necessary
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EG. License^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   The library files (GHOST.LIB, GHOSTHOL.LIB and GHOSTUSA.LIB), include
+   files, demo programs, documentation and so on are copyright (c)1991-1994
+   from GhostWare.
+
+   The library may be used on one machine at a time. You may install the
+   library on more than one machine as long as you do not use it
+   simultaneously. So copying the library to a RAMDisk or portable is
+   permitted.
+
+   Applications that uses functions of this library can be distributed
+   royalty free.
+
+   You may not change anything to the library and other files.
+
+   GhostWare is not liable for any damage resulting from the usage of this
+   library.
+
+   Using this library means that you agree with the above paragraphs.
+
+   Clipper is a trademark of Computer Associates.
+   Blinker is a trademark of Assembler Software Manufacturers Inc.
+   RTLINK is a trademark of Pocket Soft Inc.
+   Font Mania is a trademark of Rexxcom Systems
+   Multi-Edit is a trademark of American Cybernetics
+   HP Laserjet, HP Deskjet and PCL Printer language are trademark of
+   Hewlett-Packard Company
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: H. RTLINK       ^bRemarks about using RTLINK
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EH. RTLINK^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   ^bRemarks about using RTLINK with the GhostWare library :
+
+   ^b1.^b Call RTLINK with this command (or use a link script) :
+      ^bRTLINK FILE <YourApp> LIB GHOST,GHOSTxxx (xxx = HOL or USA)
+
+   ^b2.^b If you want to use the GhostWare replacement for Errorsys you
+   have to call ERRORSYS() somewhere in the beginning of your application.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: I. Blinker      ^bRemarks about using Blinker
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EI. Blinker^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   ^bRemarks about using Blinker with the GhostWare library :
+
+   ^b1.^b If you want to use the GhostWare replacement for Errorsys, be
+   sure that you call the library in your link-file via the Blinker SEARCH
+   command. So use 'SEARCH GHOSTHOL' (or 'SEARCH GHOSTUSA') instead of
+   'LIBRARY GHOSTHOL'.
+
+   ^b2.^b To make life more easy, 2 small Blinker link scripts are supplied
+   for linking the GhostWare library in application :
+   - GHOSTHOL.LNK if you want to use the Dutch version;
+   - GHOSTUSA.LNK if you want to use the USA version.
+   Simply place the command ^b@GHOSTxxx.LNK^b in your own link script.
+
+   ^b3.^b The command lines for the GhostWare library in your link script
+   must be placed before the command lines for the Clipper libraries. See
+   also the sample link script GW_DEMOB.LNK.
+
+   ^b4.^b I have tested the library with the DOS EXTENDED and DUAL mode of
+   Blinker 3.01. The functions that does work in these modes are denoted
+   with 'X' in the alpabetic lists.
+   Since I don't have ExoSpace I haven't tested the library with ExoSpace.
+   But it should work (excepts for the 'X' denoted functions).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: J. Multi-Edit   ^bBonus : GhostLib Assistant for Multi-Edit                   ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EJ. Multi-Edit^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+
+   ^bImportant notice for users of Multi-Edit :
+
+   If you own Multi-Edit you are lucky in 2 ways :
+    - you got the best editor around;
+    - programming (with GhostLib) is made easier then ever.
+
+   What a bunch of sales crap! (I hear you thinking)
+
+   But it's not mentioned this way. The combination of Multi-Edit and
+   GhostLib can boost your production considerable. Why? Because you can
+   program with only 1 finger! Using the GhostLib Assistant all you have to
+   do is push on a self defined function key (default F2) and chose a
+   GhostLib function from a menu. The complete GhostLib function call (or
+   command) is then inserted in your source code, including
+   comments!Furthermore 4 screensaver and a few other funny things were
+   added.
+   This GhostLib Assistant can be found on many BBS's around the world FOR
+   FREE! Look for a file called GWASS230.ARJ (or .ZIP) or something like
+   that. Registered users of GhostLib will receive this file automaticly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,1168 @@
+!short: Introduction Set Status
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     In this chapter, the group of functions determine the switch status and
+     were implemented in the CA-Clipper Tools (CA-Clipper Summer 1987
+     release).  CA-Clipper implemented the SET() function, so that these
+     settings can be determined, set, and saved with this version.
+     Therefore, some functions in this chapter only exist to enable
+     compatibility with existing programs.  All the affected functions are
+     flagged with an "*".
+
+     If the functions relate to the CA-Clipper switches (SET's), the function
+     name is represented as follows:  CSET + the first four characters of the
+     switch name.  For example, if the switch is named CONFIRM, then the
+     function that corresponds is CSETCONF().  If the parameter is optional
+     and unspecified, the function returns the current setting for its
+     switch, without a status change.  When called with parameters, the
+     function sets the switch to the passed value and returns the prior
+     status as a value.  In this way, a function call can both change a
+     switch and save the old status.  The logical value .T. corresponds to
+     the ON setting of a switch; .F. corresponds to OFF.
+
+ ^bExample^b
+
+     In the following example, the CONFIRM switch was set to .F.:
+
+     lOldValue:= CSETCONF(.T.)
+
+     After execution, the old variable lOldValue has a value of .F.; while
+     the CONFIRM switch is ON (.T.).
+
+     In addition to their usefulness with CA-Clipper switches, these
+     functions determine an assortment of other status information.  For
+     example, you can determine the current status of the debugger, set
+     LASTKEY, and differentiate key traps.  You can also determine the status
+     of CAPS-LOCK, NUM-LOCK, INSERT, and SCROLL-LOCK.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: CSETALL()    Saves all ON/OFF switch settings
+'------------------------------------------------------------------------------
+ ^bCSETALL()^b
+ Saves all ON/OFF switch settings
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETALL([<cNewSwitchList>]) --> cOldSwitchList
+
+ ^bArgument^b
+
+     ^b<cNewSwitchList>^b  Designates in a specific format (shown in the
+     tables on the next page), which switches are to be on or off.
+
+ ^bReturns^b
+
+     CSETALL() returns the current setting of all ON/OFF switches when no
+     parameter is specified.  When the parameter is specified, the function
+     returns the previous setting.
+
+ ^bDescription^b
+
+     This function allows you to query the current setting for all CA-Clipper
+     ON/OFF switches and change them.  Since you can save 21 different
+     switches, the function returns a 21-character string made with 0's and
+     1's, rather than logical values.  This function makes it easy to save
+     all the ON/OFF switches in a CA-Clipper error trap, and reset them when
+     you exit.  The following switches are contained in the character string
+     (in the order they occur in the returned string):
+
+     ^bTable 11-1: Clipper Switch Status^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bByte    Function      Clipper Switch^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       CSETALTE()     SET ALTERNATE
+     2       CSETBELL()     SET BELL
+     3       CSETCARR()     SET CARRY
+     4       CSETCENT()     SET CENTURY
+     5       CSETCONF()     SET CONFIRM
+     6       CSETCONS()     SET CONSOLE
+     7       CSETCURS()     SET CURSOR
+     8       CSETDELE()     SET DELETED
+     9       CSETDELI()     SET DELIMITERS
+     10      CSETDEVI()     SET DEVICE
+     11      CSETESCA()     SET ESCAPE
+     12      CSETEXAC()     SET EXACT
+     13      CSETEXCL()     SET EXCLUSIVE
+     14      CSETFIXE()     SET FIXED
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bTable 11-2: Clipper Switch Status^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bByte    Function       Clipper Switch^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     15      READINSERT()   INSERT Mode
+     16      CSETINTE()     SET INTENSITY
+     17      CSETPRIN()     SET PRINT
+     18      CSETSCOR()     SET SCOREBOARD
+     19      CSETSOFT()     SET SOFTSEEK
+     20      CSETUNIQ()     SET UNIQUE
+     21      CSETWRAP()     SET WRAP
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  If you specify an invalid parameter, the function returns a
+        null string and does not reset any switch.
+
+ ^bExample^b
+
+     Display the current bell status:
+
+     cSwitches  :=  CSETALL()         // 010000000000000000000
+
+     IF SUBSTR(cSwitches, 2, 1) == "1"
+        ? " BELL is on!"
+     ENDIF
+
+!seealso: "CSETxxxx()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETCLIP()   Determines the content of CA-Clipper environmental variables
+'------------------------------------------------------------------------------
+ ^bCSETCLIP()^b
+ Determines the content of CA-Clipper environmental variables
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETCLIP(<cEnvParameter>) --> nEnvParameterValue
+
+     ^bImportant!^b  CA-Clipper no longer supports all possible settings for
+     environmental variables in the CA-Clipper Summer 1987 release.
+     Therefore, CSETCLIP() is modified to reflect these changes.
+
+ ^bArgument^b
+
+     ^b<cEnvArguments>^b  Designates which SET CA-Clipper setting to return.
+
+ ^bReturns^b
+
+     SETCLIP() returns the setting of the requested SET CLIPPER= option.
+
+ ^bDescription^b
+
+     The CA-Clipper environmental variable contains settings for a
+     CA-Clipper application.  Use CSETCLIP() to query these values from
+     within the application.  The letter you use for the respective SET
+     CLIPPER= option is given as a parameter. This value cannot be set from a
+     running program since memory allocation is already determined.  (You
+     must determine memory allocation before you start an application.)
+
+ ^bNote^b
+
+     ^b^CFE^b  Uppercase or lowercase letters have no impact on the
+        parameter.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Uppercase or lowercase letters do not impact the parameter:
+
+        ? CSETCLIP("F")       // SET CLIPPER= Fnnn
+        ? CSETCLIP("e")       // SET CLIPPER= Ennn
+        ? CSETCLIP("X")       // SET CLIPPER= Xnnn
+        ? CSETCLIP("SWAPK")   // SET CLIPPER= SWAPK:nnn
+
+     ^b^CFE^b  With an invalid parameter:
+
+        ? CSETCLIP("z")       // -1
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETDATE()*  Queries the SET DATE setting
+'------------------------------------------------------------------------------
+ ^bCSETDATE()*^b
+ Queries the SET DATE setting
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETDATE() --> nDateFormat
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     The returned numeric code signifies the current setting for SET DATE.
+
+ ^bDescription^b
+
+     This function allows you to query the current setting for SET DATE.  The
+     table below describes the numeric codes that are returned:
+
+     ^bTable 11-3: Coding for country specific date formats^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       AMERICAN
+     2       ANSI
+     3       BRITISH
+     4       FRENCH
+     5       GERMAN
+     6       ITALIAN
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot alter the status of SET DATE.
+
+ ^bExample^b
+
+     For SET DATE AMERICAN, CSETDATE() returns a value of 1.
+
+     SET DATE AMERICAN ? CSETDATE()      // 1
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETDECI()*  Queries the setting for SET DECIMALS TO
+'------------------------------------------------------------------------------
+ ^bCSETDECI()*^b
+ Queries the setting for SET DECIMALS TO
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETDECI() --> nDecimalPlaces
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     CSETDECI() returns the value of the current number of decimal places
+     that are displayed.
+
+ ^bDescription^b
+
+     This function queries the current setting for SET DECIMALS TO.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot change the number of decimal places.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set decimal places with CA-Clipper:
+
+        SET DECIMALS TO 2
+
+     ^b^CFE^b  Returns the number of decimal places previously set:
+
+        ? CSETDECI()      // 2
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETDEFA()*  Queries the setting for SET DEFAULT
+'------------------------------------------------------------------------------
+ ^bCSETDEFA()*^b
+ Queries the setting for SET DEFAULT
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETDEFA() --> cDefaultPath
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     CSETDEFA() returns the current DEFAULT path setting.
+
+ ^bDescription^b
+
+     This function queries the current SET DEFAULT TO setting.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot change the DEFAULT path.
+
+ ^bExamples^b
+
+     ^b^CFE^b  A path set under CA-Clipper:
+
+        SET DEFAULT TO C:\DATA
+
+     ^b^CFE^b  Query the previously set DEFAULT path:
+
+        ? CSETDEFA()      // "C:\DATA"
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETFUNC()*  Queries the setting for SET FUNCTION TO
+'------------------------------------------------------------------------------
+ ^bCSETFUNC()*^b
+ Queries the setting for SET FUNCTION TO
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETFUNC(<nFunctionKey>) --> cCharacterString
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bArgument^b
+
+     ^b<nFunctionKey>^b  Designates the function key for which the associated
+     character string is determined.
+
+ ^bReturns^b
+
+     CSETFUNC() returns the character string associated with <nFunctionKey>.
+
+ ^bDescription^b
+
+     This function queries the setting for SET FUNCTION TO.
+
+ ^bNote^b
+
+     ^b^CFE^b  To use this function, you must include the CT.CH file at the
+        beginning of your program with the command:
+
+        #include "CT.CH"
+
+        Find more information on this function in CT.CH.
+
+ ^bExample^b
+
+     The F10 key is assigned to Ctrl-C.  The setting changes in a function
+     Test().  Since it is saved, you can restore it upon return:
+
+     SET FUNCTION 10 TO CHR(3)
+     cOldFunc  := CSETFUNC(10)      // Save assignment
+     Test()                         // Call UDF
+     SET FUNCTION 10 TO cOldFunc
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETKEY()*   Queries the setting for SET KEY TO
+'------------------------------------------------------------------------------
+ ^bCSETKEY()*^b
+ Queries the setting for SET KEY TO
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETKEY(<nKeyValue>) --> cProcedureName
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bArgument^b
+
+     ^b<nKeyValue>^b  Designates the INKEY() for which the associated
+     procedure name is determined.
+
+ ^bReturns^b
+
+     CSETKEY() returns a character string that names the procedure associated
+     with <nKeyValue>.
+
+ ^bDescription^b
+
+     This function queries the setting for SET KEY..TO.
+
+ ^bNote^b
+
+     ^b^CFE^b  To use this function, you must include the CT.CH file at the
+        beginning of your program with the command:
+
+        #include "CT.CH"
+
+        Find more information on this function in CH.CH.
+
+ ^bExample^b
+
+     Save the assignment for the function key F2:
+
+     cOldF2Proc  :=  CSETKEY(-1)
+
+!seealso: "CSETALL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETLDEL()*  Queries the setting for the left delimiters
+'------------------------------------------------------------------------------
+ ^bCSETLDEL()*^b
+ Queries the setting for the left delimiters
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETLDEL() --> cLeftDelimiter
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     CSETLDEL() returns the character established as the left delimiter.
+
+ ^bDescription^b
+
+     This function queries the current character used in GET fields as a left
+     delimiter.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot change the delimiter.
+
+ ^bExample^b
+
+     Query the character for the left delimiter:
+
+     cLeftDelim:= CSETLDEL()
+
+!seealso: "CSETRDEL()*" "CSETxxxx()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETMARG()*  Queries the setting for SET MARGIN TO
+'------------------------------------------------------------------------------
+ ^bCSETMARG()*^b
+ Queries the setting for SET MARGIN TO
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETMARG() -->    nLMargin
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     CSETMARG() returns a value that corresponds to the value SET MARGIN
+     determined for the left print border.
+
+ ^bDescription^b
+
+     This function determines the current setting for the left print border.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot change the value set for the margin.
+
+ ^bExample^b
+
+     Save the value for SET MARGIN:
+
+     nPrintBound:=  CSETMARG()
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETPATH()*  Queries the setting for SET PATH TO
+'------------------------------------------------------------------------------
+ ^bCSETPATH()*^b
+ Queries the setting for SET PATH TO
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETPATH() --> cSearchPath
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     CSETPATH() returns a value that corresponds to the current
+     CA-Clipper file search path.
+
+ ^bDescription^b
+
+     This function returns the file search path set by SET PATH TO.
+
+ ^bExample^b
+
+     Save the path set with SET PATH TO:
+
+     cSearchPath:=  CSETPATH()
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETRDEL()*  Queries the setting for the right delimiter
+'------------------------------------------------------------------------------
+ ^bCSETRDEL()*^b
+ Queries the setting for the right delimiter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETRDEL() --> cRightDelimiter
+
+     ^b*  This function is retained for compatibility purposes.  Use the^b
+     ^b   CA-Clipper SET() function to develop future applications.^b
+
+ ^bReturns^b
+
+     CSETRDEL() returns the character established as the right delimiter.
+
+ ^bDescription^b
+
+     This function queries the current character used as a right delimiter in
+     GET fields.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot change the delimiter.
+
+ ^bExample^b
+
+     Query the character for the right delimiter:
+
+     cRightDelim:= CSETRDEL()
+
+!seealso: "CSETLDEL()*" "CSETxxxx()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETRDONLY()*Queries/sets the read-only mode switch
+'------------------------------------------------------------------------------
+ ^bCSETRDONLY()*^b
+ Queries/sets the read-only mode switch
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETRDONLY([<lR/O-NewMode>]) --> lR/O-OldMode
+
+     ^b*  This function is retained in CA-Clipper Tools II/5.0 for^b
+     ^b   compatibility purposes.  Use the READ-ONLY clause of the^b
+     ^b   CA-Clipper  USE command to develop future applications.^b
+
+ ^bArgument^b
+
+     ^b<lR/O-NewMode>^b  Designates the new switch status.  .T. turns the
+     read-only mode on; .F. turns it off.  The default value is off.
+
+ ^bReturns^b
+
+     If no parameter is passed, the function returns to the current switch
+     setting; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     ^bImportant! ^b Please note the changes in the CA-Clipper USE command!
+
+     This function was implemented in the CA-Clipper Summer 1987 release to
+     allow you to open files in read-only mode.  This function was also
+     useful for CD-ROM access and the enabled you to open a network database
+     if you lacked write permission.
+
+     However, in CA-Clipper READONLY you can append to the USE command and do
+     not have to implement CSETRONLY().  The switch has been retained in this
+     release to insure compatibility with previous versions of CA-Clipper
+     Tools.  You can still use it to query, but it no longer has direct
+     impact on the open mode.
+
+     This switch functions in the enclosed CA-Clipper Tools CT.CH definition
+     file.
+
+ ^bNote^b
+
+     ^b^CFE^b  For new applications, use the read-only key word in
+        conjunction with the USE command.
+
+ ^bExample^b
+
+     Set the read-only mode switch (it only functions when you use the CT.CH
+     header file):
+
+     ? CSETRDONLY(.T.)         // Returns old setting
+     USE ....                  // Open with READ ONLY access
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETSAFETY() Queries/sets the safety mode switch
+'------------------------------------------------------------------------------
+ ^bCSETSAFETY()^b
+ Queries/sets the safety mode switch
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETSAFETY([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates whether existing files should not be
+     overwritten during CA-Clipper Tools file operations.  Designates .F. for
+     yes; .T. for no.
+
+ ^bReturns^b
+
+     CSETSAFETY() returns the current setting for the CA-Clipper Tools safety
+     mode switch; or if <lNewSwitch> is passed, the previous setting.
+
+ ^bDescription^b
+
+     CSETSAFETY() returns a logical value for the current setting of the
+     CA-Clipper Tools internal safety mode switch.  If you designate
+     CSETSAFETY() as .T., the CA-Clipper Tools functions do not overwrite
+     existing files.
+
+ ^bNote^b
+
+     ^bWarning! ^b CSETSAFETY() only works with CA-Clipper Tools functions..
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the SAFETY function:
+
+        lSafety:=  CSETSAFETY()
+
+     ^b^CFE^b  Turn safety mode on and save the previous status:
+
+        lOldSafety:= CSETSAFETY(.T.)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETSNOW()   Helps prevent snow on the screen
+'------------------------------------------------------------------------------
+ ^bCSETSNOW()^b
+ Helps prevent snow on the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETSNOW([<lNewSwitch>]) --> lOldSwitch
+
+     ^b*  This function is retained in CA-Clipper Tools for compatibility^b
+     ^b   purposes.  Use the CA-Clipper NOSNOW() function to develop future^b
+     ^b   applications.^b
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>  ^b Designates the new status for "Snow Prevent".  A .T.
+     signifies on; .F. means off.  The default value for Snow Prevent is off
+     (.F.).
+
+ ^bReturns^b
+
+     CSETSNOW() returns the current setting, when no parameter is designated;
+     otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     Snow tends be is especially bad in CGA card screen output.  To prevent
+     it, set the CSETSNOW switch.
+
+     Use the CA-Clipper NOSNOW() function for new applications.
+
+ ^bNote^b
+
+     ^b^CFE^b  CSETALL() does not acknowledge the CSETSNOW() setting.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Output with Snow Prevent on:
+
+        CSETSNOW(.T.)                   // Returns old setting
+
+     ^b^CFE^b  Acknowledge existing hardware:
+
+        CSETSNOW(ISCGA())               //  Snow prevent if CGA card
+
+!seealso: tool_007.ngo:"ISCGA()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CSETxxxx()*  Queries SET position of an ON/OFF switch and optionally sets it
+'------------------------------------------------------------------------------
+ ^bCSETxxxx()*^b
+ Queries the SET position of a particular ON/OFF switch and provides the
+ option to set it
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCSETxxxx([<lNewSwitch>]) --> lOldSwitch
+
+     ^b*  This function is retained in CA-Clipper Tools for compatibility^b
+     ^b   purposes.  Use the CA-Clipper SET() function to develop future^b
+     ^b   applications.^b
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates the new status for the SET xxxx command.
+     .T. corresponds to on; .F. signifies off.
+
+ ^bReturns^b
+
+     If no parameter is passed, the function returns the current setting;
+     otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     This is a group of 20 functions.  If you call all these functions the
+     same way, they return the same value.  Each function name consists of
+     "CSET", and the first four characters of the respective CA-Clipper set
+     condition:
+
+     ^bTable 11-4:  Functions to Query Clipper Set Conditions^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFunction       Set Condition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     CSETALTE()     SET ALTERNATE ON/OFF
+     CSETBELL()     SET BELL ON/OFF
+     CSETCARR()     SET CARRY ON/OFF (See note)
+     CSETCENT()     SET CENTURY ON/OFF
+     CSETCONF()     SET CONFIRM ON/OFF
+     CSETCONS()     SET CONSOLE ON/OFF
+     CSETCURS()     SET CURSOR ON/OFF
+     CSETDELE()     SET DELETED ON/OFF
+     CSETDELI()     SET DELIMITERS ON/OFF
+     CSETDEVI()     SET DEVICE TO PRINT (.T.)/SCREEN (.F.)
+     CSETESCA()     SET ESCAPE ON/OFF
+     CSETEXAC()     SET EXACT ON/OFF
+     CSETEXCL()     SET EXCLUSIVE ON/OFF
+     CSETFIXE()     SET FIXED ON/OFF
+     CSETTINTE()    SET INTENSITY ON/OFF
+     CSETPRIN()     SET PRINT ON/OFF
+     CSETSCOR()     SET SCOREBOARD ON/OFF
+     CSETSOFT()     SET SOFTSEEK ON/OFF
+     CSETUNIQ()     SET UNIQUE ON/OFF
+     CSETWRAP()     SET WRAP ON/OFF
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  CSETCARR() is not useful in CA-Clipper.  Since this function
+        was in CA-Clipper Tools and also occupies a position in CSETALL(), it
+        is retained for compatibility purposes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Switch SET UNIQUE on:
+
+        ? CSETUNIQ(.T.)         // Returns previous setting
+
+     ^b^CFE^b  Save a setting:
+
+        lOldWRAP:= CSETWRAP()
+
+!seealso: "CSETALL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISDEBUG()    Determines if the debugger is available in the application
+'------------------------------------------------------------------------------
+ ^bISDEBUG()^b
+ Determines if the debugger is available in the application
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISDEBUG() --> lDebugger
+
+ ^bReturns^b
+
+     ISDEBUG() returns a value that signifies if the CA-Clipper debugger is
+     available.
+
+ ^bDescription^b
+
+     This function determines if the debugger is available in an application.
+     This enables a program to acknowledge this special situation and then
+     conditionally execute or ignore portions of the program.
+
+ ^bNote^b
+
+     ^b^CFE^b  This is not a CA-Clipper switch.  This information is provided
+        by CA-Clipper Tools.
+
+ ^bExample^b
+
+     Indicate if the debugger is active:
+
+     IF ISDEBUG()
+        ? "The debugger is being used!"
+     ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: KSETCAPS()   Queries/sets the system setting for CAPS LOCK
+'------------------------------------------------------------------------------
+ ^bKSETCAPS()^b
+ Queries/sets the system setting for CAPS LOCK
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKSETCAPS([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates "CAPS LOCK" as on (.T.) or off (.F.).  The
+     default value is the system setting.
+
+ ^bReturns^b
+
+     KSETCAPS() returns the current setting for CAPS LOCK when no parameter
+     is specified; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     KSETCAPS() returns the current system setting for CAPS LOCK.  If the
+     <lNewSwitch> is specified, CAPS LOCK is set accordingly.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the CAPSLOCK function:
+
+        lCaps:= KSETCAPS()
+
+     ^b^CFE^b  Switch on CAPSLOCK and save the previous status:
+
+        lOldCaps:= KSETCAPS(.T.)
+
+!seealso: "KSETINS()" "KSETNUM()" "KSETSCROLL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KSETINS()    Queries/sets the system setting for "INSERT"
+'------------------------------------------------------------------------------
+ ^bKSETINS()^b
+ Queries/sets the system setting for "INSERT"
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKSETINS([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates whether INSERT is on (.T.) or off (.F.).
+     The default value is the system setting.
+
+ ^bReturns^b
+
+     KSETINS() returns the current setting for INSERT when no parameter is
+     specified; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     KSETINS() returns the current system setting for INSERT.  If the
+     <lNewSwitch> is specified; INSERT is set accordingly.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the INSERT function:
+
+        lInsert: = KSETINS()
+
+     ^b^CFE^b  Switch on INSERT and save the previous status:
+
+        lOldInsert: = KSETINS(.T.)
+
+!seealso: "KSETCAPS()" "KSETNUM()" "KSETSCROLL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KSETNUM()    Queries/sets the system setting for NUMLOCK
+'------------------------------------------------------------------------------
+ ^bKSETNUM()^b
+ Queries/sets the system setting for NUMLOCK
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKSETNUM([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates whether "NUM LOCK" is on (.T.) or off
+     (.F.).  The default value is the system setting.
+
+ ^bReturns^b
+
+     KSETNUM() returns the current setting for NUM LOCK when no parameter is
+     specified; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     KSETNUM() returns the current system setting for NUM LOCK.  If the
+     <lNewSwitch> is specified, NUM LOCK is set accordingly.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the NUMLOCK function:
+
+        lNumLock: = KSETNUM()
+
+     ^b^CFE^b  Switch on NUMLOCK and save the previous status:
+
+        lOldNumLock: = KSETNUM(.T.)
+
+!seealso: "KSETINS()" "KSETCAPS()" "KSETSCROLL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KSETSCROLL() Queries/sets the system setting for SCROLL LOCK
+'------------------------------------------------------------------------------
+ ^bKSETSCROLL()^b
+ Queries/sets the system setting for SCROLL LOCK
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKSETSCROLL([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates whether "SCROLL LOCK" is on (.T.) or off
+     (.F.).  The default value is the system setting.
+
+ ^bReturns^b
+
+     KSETSCROLL() returns the current setting for SCROLL LOCK when no
+     parameter is specified; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     KSETSCROLL() returns the current system setting for SCROLL LOCK.  If the
+     <lNewSwitch> is specified, SCROLL LOCK is set accordingly.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function turns the interactive movement mode for windows
+        on or off.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the SCROLL LOCK function:
+
+        Scroll: = KSETSCROLL()
+
+     ^b^CFE^b  Switch on SCROLL LOCK and save the previous status:
+
+        OldScroll: = KSETSCROLL(.T.)
+
+!seealso: "KSETINS()" "KSETCAPS()" "KSETNUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LASTKFUNC()  Returns the function name that created the most-recent key trap
+'------------------------------------------------------------------------------
+ ^bLASTKFUNC()^b
+ Returns the function name that created the most-recent key trap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bLASTKFUNC() --> cFunctionName
+
+ ^bReturns^b
+
+     LASTKFUNC() returns the function name (KEYTIME(), KEYSEC(), or
+     COM_KEY()) that placed the character in the keyboard buffer.
+
+ ^bDescription^b
+
+     This function determines if a key code was placed in the keyboard buffer
+     by KEYTIME(), KEYSEC(), or COM_KEY().
+
+ ^bNote^b
+
+     ^b^CFE^b  If a trap is created by COM_KEY(), the last character of the
+        function name that is returned, is a number that corresponds to the
+        port that triggered an interrupt.
+
+ ^bExample^b
+
+     Name the function that created the last error:
+
+     cTrapFunc: = LASTKFUNC()
+     IF cTrapFunc = "COM_KEY"
+        ? "Interrupt via port", RIGHT(cTrapFunc, 1)
+     ENDIF
+
+!seealso: "LASTKLINE()" "LASTKPROC()" tool_014.ngo:"KEYTIME()" tool_014.ngo:"KEYSEC()" tool_004.ngo:"COM_KEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LASTKLINE()  Returns the line number of the most-recent key trap
+'------------------------------------------------------------------------------
+ ^bLASTKLINE()^b
+ Returns the line number of the most-recent key trap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bLASTKLINE() --> nLineNumber
+
+ ^bReturns^b
+
+     LASTKLINE() returns a source code line number.
+
+ ^bDescription^b
+
+     This function notes the program lines where KEYTIME(), KEYSEC(),
+     COM_KEY(), or COM_SKEY() placed a key code in the keyboard buffer.  With
+     CA-Clipper, key traps only become active when a wait state is triggered.
+     This function differs from the CA-Clipper PROCLINE() function because it
+     returns the line number where the respective result occurs, rather than
+     the line of the input command that triggered the trap.
+
+ ^bNotes^b
+
+     ^b^CFE^b  LASTKLINE() returns a value, only if the program compiles
+        without the compiler switch value of -l (suppress line number
+        information).
+
+     ^b^CFE^b  The function returns a value of 0 when the executed line is in
+        CA-Clipper Tools, the external function, or -1 option.
+
+ ^bExample^b
+
+     Return the line number of the last key trap:
+
+     ? "Trap by", LASTKFUNC(), "in line", LASTKLINE()
+
+!seealso: "LASTKFUNC()" "LASTKPROC()" tool_014.ngo:"KEYTIME()" tool_014.ngo:"KEYSEC()" tool_004.ngo:"COM_KEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LASTKPROC()  Returns the procedure name that was interrupted
+'------------------------------------------------------------------------------
+ ^bLASTKPROC()^b
+ Returns the procedure name that was interrupted
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bLASTKPROC() --> cProcedureName
+
+ ^bReturns^b
+
+     LASTKPROC() returns the name of the procedure or function (KEYTIME(),
+     KEYSEC(), COM_KEY(), or COM_SKEY()) that places a character in the
+     keyboard buffer when executed.
+
+ ^bDescription^b
+
+     CA-Clipper Tools notices when other procedures or functions encounter an
+     interrupt.  LASTKPROC() does not return the procedure name triggered by
+     an input field key trap (as with GET..READ); instead, it returns the
+     procedure name that was interrupted.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function also returns the names of user-defined functions
+        (UDFs).
+
+ ^bExample^b
+
+     Return the procedure name that was interrupted:
+
+     IF LASTKPROC() = "INPUT"
+        * Note to user
+        @ 24, 30 SAY "One moment please!"
+     ENDIF
+
+!seealso: "LASTKFUNC()" "LASTKLINE()" tool_014.ngo:"KEYTIME()" tool_014.ngo:"KEYSEC()" tool_004.ngo:"COM_KEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMFKEY()    Determines the number of function keys
+'------------------------------------------------------------------------------
+ ^bNUMFKEY()^b
+ Determines the number of function keys
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMFKEY() --> nTotalKeys
+
+ ^bReturns^b
+
+     NUMFKEY() returns a value that corresponds to the number of available
+     function keys.
+
+ ^bDescription^b
+
+     NUMFKEY() returns the number of function keys to use with SET FUNCTION
+     nn TO.
+
+ ^bNote^b
+
+     ^b^CFE^b  A value returned by NUMFKEY() is set to 40, both in CA-Clipper
+        IBM driver and the CA-Clipper Tools Extended Drivers.  This does not
+        change when you have an extended keyboard with 12 function keys.
+
+ ^bExample^b
+
+     Display all the function key assignments:
+
+     FOR nI = 1 TO NUMFKEY()
+        ? CSETFUNC(nI)
+     NEXT
+
+!seealso: "CSETFUNC()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETLASTKEY() Sets the value for LASTKEY()
+'------------------------------------------------------------------------------
+ ^bSETLASTKEY()^b
+ Sets the value for LASTKEY()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETLASTKEY(<nKeyValue>) --> cNull
+
+ ^bArgument^b
+
+     ^b<nKeyValue>^b Designates the character code passed to LASTKEY().
+
+ ^bReturns^b
+
+     SETLASTKEY() always returns a null string.
+
+ ^bDescription^b
+
+     SETLASTKEY() changes the contents of the memory area used by LASTKEY().
+     This allows you to save the current contents of the LASTKEY() buffer in
+     an error trap and restore it when you return to the program.
+
+ ^bExample^b
+
+     Save the last key value so it can be changed and restored later:
+
+     nCharacter: = LASTKEY()        // Save character code   *...   *...
+     SETLASTKEY(nCharacter)         //  Reset LASTKEY
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

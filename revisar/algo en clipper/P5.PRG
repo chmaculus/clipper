@@ -1,0 +1,14 @@
+use pepe1
+go top
+do while .t.
+    b=val(N14)
+    d=val(cant_entra)
+    replace entrada with d
+    replace n14_2 with b
+    if eof()
+        exit
+    endif
+    skip
+    loop
+enddoç
+

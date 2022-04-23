@@ -1,0 +1,41 @@
+'------------------------------------------------------------------------------
+^BROUND()^B
+
+    ROUND() rounds off numbers to a specified number of decimal places.
+
+^USyntax^U
+
+    ROUND(<exp N1>,<exp N2>)
+
+^UArguments^U
+
+    <exp N1> is a numeric expression to be rounded.
+
+    <exp N2> is the number of decimal places you want to retain.
+
+^UReturns^U
+
+    A numeric value.
+
+    ROUND() roudns <exp N1> to the number of places specified by <exp N2>.
+    Specifying a zero or negative value for <exp N2> allows rounding of
+    whole numbers.  A negative <exp N2> indicates the number of places to
+    the left of the decimal point to round.
+
+    The display of the return value does not obey DECIMALS SETting unless
+    SET FIXED is ON.  With FIXED OFF, the display of the return value
+    contains as many decimal digits as you specify for <exp N2> or zero if
+    <exp N2> is less than one.
+
+    Note that Clipper rounds up in all instances.  There is no "odd/even"
+    rule.
+
+^UUsage^U
+
+    The ROUND() function is useful when you want to use a number with less
+    precision than it currently has.
+!seealso: clip_099.ngo:"INT" 
+'------------------------------------------------------------------------------
+
+
+

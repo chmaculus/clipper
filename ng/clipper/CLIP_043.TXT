@@ -1,0 +1,36 @@
+'------------------------------------------------------------------------------
+^BSET ALTERNATE^B
+
+    SET ALTERNATE directs output from commands other than @...SAY...GET to
+    a text file.
+
+^USyntax^U
+
+    SET ALTERNATE TO [<file>/(<expC>)]
+
+    SET ALTERNATE ON/OFF
+
+^UOption^U
+
+    ^BTo^B: Specifying a <file> as the argument of the TO clause opens a
+    standard ASCII text file with a default extension of .txt.  The
+    filename can optionally include an extension, drive letter, and/or
+    path.  If a file with the same name exists, subsequent ouput will
+    overwrite the current contents of that file.
+
+    ^BToggle^B: SET ALTERNATE on/OFF toggles the echo of output to the
+    current alternate file.  Note that when you SET ALTERNATE OFF, the
+    alternate file is not closed.
+
+^UUsage^U
+
+    Alternate files are not related to work areas and only one may be open
+    at a time.  To close an alternate file, use CLOSE ALTERNATE, CLOSE ALL,
+    or SET ALTERNATE TO with no argument.  Note that @...SAYs cannot be
+    echoed to a disk file using SET ALTERNATE, but SET PRINTER TO
+    <filename> does support this feature.
+!seealso: ???.ngo:"CLOSE" ???.ngo:"DISPLAY" clip_017.ngo:"LABEL FORM" clip_034.ngo:"REPORT FORM" clip_071.ngo:"SET PRINTER TO" clip_083.ngo:"TEXT" 
+'------------------------------------------------------------------------------
+
+
+

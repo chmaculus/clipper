@@ -1,0 +1,695 @@
+!short: Introduction Printer Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This chapter discusses printer output.  Although CA-Clipper handles
+     printer errors with an error trap, it is always better to avoid them
+     completely.  As a result, error traps for printer output will not become
+     superfluous, since errors also occur during output.  You can also
+     determine a wide variety of information, such as the number of available
+     printers or the printer status.
+
+     This chapter also describes functions that support DOS print spoolers.
+     To implement these functions, prior to starting the respective
+     application, you must run the DOS PRINT program to make the print
+     spooler memory resident.  Files can then be exclusively passed from a
+     program to the spooler.  However, you must first reroute your print
+     output to a file (SET PRINTER TO <file>), before you can output it in
+     the background.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NUMPRINTER() Returns the number of parallel ports
+'------------------------------------------------------------------------------
+ ^bNUMPRINTER()^b
+ Returns the number of parallel ports
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMPRINTER() --> 1.04nNumber
+
+ ^bReturns^b
+
+     NUMPRINTER() returns the number of parallel printer interfaces installed
+     on the machine.
+
+ ^bDescription^b
+
+     Once you establish that multiple printer ports are installed, choose
+     which printer wants to use (e.g., dot-matrix or laser printer).
+     NUMPRINTER() also detects if a printer is not installed over the usual
+     printer interface, because there is no port available.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function cannot determine if a printer is connected and
+        ready to operate.
+
+ ^bExample^b
+
+     Determine if a printer interface is available:
+
+     ?  "There are " + STR(NUMPRINTER(), 2) + " Printer ports"
+     ?? "available"
+
+!seealso: "PRINTREADY()" "PRINTINIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTFILE()  Prints out ASCII files; clears high bits
+'------------------------------------------------------------------------------
+ ^bPRINTFILE()^b
+ Prints out ASCII files; clears high bits
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTFILE(<cFile>, [<lIgnoreHighBit>]) --> lSuccess
+
+ ^bArguments^b
+
+     ^b<cFile>^b Designates the file name to print.
+
+     ^b<lIgnoreHighBit>^b  When designated as .T., the high bits are not
+     cleared.  The default is clears high bits (.F.).
+
+ ^bReturns^b
+
+     The returned value specifies if a file is successfully printed.  A .T.
+     corresponds to a successful execution.
+
+ ^bDescription^b
+
+     PRINTFILE() sends the <cFile>ASCII file to the printer while it clears
+     each high bit that is set (MSB -- Most Significant Bit) with each
+     carriage return and line feed.  This allows files created with
+     MEMOWRITE() to print without any special preparation.  If you do not
+     want to suppress the high bit (e.g., when printing a character such as
+     <130>, designate the second parameter as .T. to turn it off).
+
+ ^bNotes^b
+
+     ^b^CFE^b  Due to known name conflicts with other add on libraries (e.g.,
+        dGE, use the name FILEPRINT()on an alternate basis.
+
+     ^b^CFE^b  The settings for SET PRINTER TO and other printer-related
+        functions such as  SETPXLAT() are acknowledged.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Print the Memofile.txt file:
+
+        PRINTFILE("Memofile.txt")
+
+     ^b^CFE^b  Use the function name FILEPRINT() on an alternate basis:
+
+        FILEPRINT("Memofile.txt")
+
+     ^b^CFE^b  Without high-bit suppression:
+
+        FILEPRINT("Memofile.txt", .T.)
+
+!seealso: "PRINTREADY()" tool_008.ngo:"SETSHARE()" tool_003.ngo:"SETPXLAT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTINIT()  Initializes one of the printers
+'------------------------------------------------------------------------------
+ ^bPRINTINIT()^b
+ Initializes one of the printers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTINIT([<nPrinter>, [<lMode>]]) --> nStatus
+
+ ^bArguments^b
+
+     ^b<nPrinter>^b  Designates the number the printer to initialize.  Values
+     can be from 1 to 3 and correspond to the devices LPT1 to LPT3.  The
+     default value is LPT1(1).
+
+     ^b<lMode>^b  When designated as .T., CA-Clipper is set internally to the
+     top of form.  The default for CA-Clipper is not at the top of form
+     (.F.).
+
+ ^bReturns^b
+
+     The returned value corresponds to the status of the <nPrinter> selected
+     printer.  The individual bits are defined as follows:
+
+     ^bTable 8-1:  Printer Bit Status^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Timeout error
+     2       Not used
+     3       Not used
+     4       Transmission error
+     5       Printer online
+     6       Out of paper
+     7       Printer acknowledged
+     8       Printer not available
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     Use PRINTINIT() to reset a printer to its original state or to redefine
+     the top of form.  When <lMode> is designated as .T., the CA-Clipper
+     internal setting is top of form.  This corresponds to a call of SETPRC
+     (0, 0).
+
+ ^bExample^b
+
+     Reset output to LPT1:
+
+     PRINTINIT(1)
+
+!seealso: "PRINTSTAT()" "TOF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTREADY() Determines if a particular printer is ready
+'------------------------------------------------------------------------------
+ ^bPRINTREADY()^b
+ Determines if a particular printer is ready
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTREADY([<nPrinter>]) --> lReady
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates which LPT device to test.  A 1 corresponds to
+     LPT1, 2 is LPT2, and a 3 is LPT3.  The default is LPT1(1).
+
+ ^bReturns^b
+
+     PRINTREADY() returns a value of .T. when the printer is ready.  In any
+     other case, PRINTREADY() returns .F..
+
+ ^bDescription^b
+
+     This function tests whether the printer is ready before you attempt to
+     print.  This could help you avoid printer errors.
+
+ ^bExample^b
+
+     In the following example, printing only occurs when the printer is
+     ready:
+
+     IF PRINTREADY(1)
+        *...               // Print
+     ELSE
+        *...               // Error message
+     ENDIF
+
+!seealso: "NUMPRINTER()" "PRINTINIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTSCR()   Prints screen contents
+'------------------------------------------------------------------------------
+ ^bPRINTSCR()^b
+ Prints screen contents
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTSCR() --> cNull
+
+ ^bReturns^b
+
+     PRINTSCR() always returns a null string.
+
+ ^bDescription^b
+
+     A call to PRINTSCR() has the same effect as when you press the PRINT
+     SCREEN key.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Due to known name conflicts with other add on libraries (e.g.,
+        dGE, use the name PRTSCREEN() as an alternate.
+
+     ^b^CFE^b  The Print Screen output, whether executed by this function or
+        manually, may be further influenced by PRINTSCRX().
+
+ ^bExample^b
+
+     Print screen contents:
+
+     PRINTSCR()
+
+!seealso: "PRINTSCRX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTSCRX()  Prints screen contents while it exchanges specific characters
+'------------------------------------------------------------------------------
+ ^bPRINTSCRX()^b
+ Prints screen contents while it exchanges specific characters
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTSCRX([<nPrinter>, [<cCharacter|nCharacter>]])
+     ^b    --> lInstalled
+
+ ^bArguments^b
+
+     ^b<nPrinter>^b  Designates the number of the printer where output is
+     directed.  LPT(1) to LPT(3) are possible.
+
+     ^b<cCharacter|nCharacter>^b  Designates a character that replaces all
+     non-printable characters during a "'Print-Screen".  The character can be
+     numeric in the range of 0 to 255 or the character string type.
+
+     ()  A call without parameters uninstalls the function.
+
+ ^bReturns^b
+
+     PRINTSCRX() returns .T. when the extended Print Screen output is
+     successfully installed.
+
+ ^bDescription^b
+
+     The PRINTSCRX() replaces the non-printable characters (code <32) in an
+     output with other characters, but you can also select another printer.
+     This way, Print Screen output is no longer forced to LPT1(PRN).  Not
+     only does it influence PRINTSCR(), but also the use of SHIFT-PRINT-
+     SCREEN.
+
+ ^bNote^b
+
+     ^bWarning!^b  The PRINTSCRX() function changes one of the system
+     interrupts.  Therefore, prior to ending the program, uninstall this
+     function by calling it without parameters.  You can use the CTUS.LIB
+     Extended Drivers or the INTSAVE utility program.  The Extended Drivers
+     automatically restores all interrupts to the same status they had at the
+     beginning of the CA-Clipper application.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Print-Screen output to LPT3:
+
+        PRINTSCRX(3)
+
+     ^b^CFE^b  Exchange non-printing characters for spaces.  Output to LPT2:
+
+        PRINTSCRX(2, " ")
+
+     ^b^CFE^b  Same as on previous page, second parameter numeric:
+
+        PRINTSCRX(2, 32)
+
+!seealso: "PRINTSCR()" tool_003.ngo:"Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTSEND()  Sends characters directly to a printer
+'------------------------------------------------------------------------------
+ ^bPRINTSEND()^b
+ Sends characters directly to a printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTSEND(<cCharacter|nCharacter>, <nPrinter>)
+     ^b   --> nNumber
+
+ ^bArguments^b
+
+     ^b<cCharacter|nCharacter>^b  Designates as a code for an individual
+     character in the range of 0 to 255, or as a string.
+
+     ^b<nPrinter>^b  Designates the printer where output occurs.  The values
+     1 to 3 correspond to devices LPT1 to LPT3.
+
+ ^bReturns^b
+
+     PRINTSEND() returns a value that corresponds to the number of characters
+     that could not be sent to the printer.  If 0 is returned, all characters
+     were sent to the printer.
+
+ ^bDescription^b
+
+     Use PRINTSEND() when you want to send one or more characters to a
+     printer, and switching from SET PRINTER and SET CONSOLE is undesirable
+     and costly as an option.  This function allows you to send characters
+     (and special characters) to a printer at any time.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Send formfeed characters to the printer, when the printer is
+        not at top of form:
+
+        IF .NOT. TOF()
+           PRINTSEND(12)         //  Output CHR(12)
+        ENDIF
+
+     ^b^CFE^b  Send a character string:
+
+        PRINTSEND("Hello")
+
+!seealso: "TOF()" "PRINTFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PRINTSTAT()  Determines the status of a parallel port
+'------------------------------------------------------------------------------
+ ^bPRINTSTAT()^b
+ Determines the status of a parallel port
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPRINTSTAT([<nPrinter>]) --> nStatus
+
+ ^bArgument^b
+
+     ^b<nPrinter>^b  Designates the printer whose status is determined.  The
+     allowed values of 1 to 3 correspond to devices LPT1 to LPT3.  The
+     default is LPT1(1).
+
+ ^bReturns^b
+
+     The returned value corresponds to the status of the <nPrinter> selected
+     printer.  The individual bits are defined as follows:
+
+     ^bTable 8-2:  Printer Bit Status^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Time out error
+     2       Not used
+     3       Not used
+     4       Transmission error
+     5       Printer online
+     6       Out of paper
+     7       Printer acknowledged
+     8       Printer not available
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     If a printer error occurs, PRINTSTAT() allows you to isolate the error
+     more precisely.  PRINTSTAT() returns information about why an error
+     occurs.
+
+ ^bExample^b
+
+     In this example, the printer status is only queried when the printer is
+     not ready:
+
+     IF .NOT. PRINTREADY(1)
+        nStatus  :=  PRINTSTAT(1)
+        IF ISBIT(nStatus, 6)         //  Test bit 6
+        ? "Paper out!"
+        ENDIF
+     ENDIF
+
+!seealso: "PRINTREADY()" "PRINTINIT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPOOLACTIV() Determines if the DOS PRINT program is installed
+'------------------------------------------------------------------------------
+ ^bSPOOLACTIV()^b
+ Determines if the DOS PRINT program is installed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPOOLACTIV() --> lSpoolActive
+
+ ^bReturns^b
+
+     SPOOLACTIV() returns .T. when the DOS memory-resident print spooler is
+     installed.
+
+ ^bDescription^b
+
+     Before you implement any print spool functions, use SPOOLACTIV() to test
+     if the DOS PRINT program is installed.  If inactive, then you must leave
+     the application because memory-resident programs cannot load from within
+     CA-Clipper applications.
+
+ ^bNote^b
+
+     ^b^CFE^b  Use SPOOLACTIV() to continue output stopped with SPOOLENTRY().
+
+ ^bExample^b
+
+     Test if PRINT is loaded:
+
+     IF SPOOLACTIVE()
+        SPOOLADD("C:\TEST\PRINT.DAT")
+     ELSE
+        ? "Spooling not possible !"
+     ENDIF
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPOOLADD()   Appends a file to the print queue.
+'------------------------------------------------------------------------------
+ ^bSPOOLADD()^b
+ Appends a file to the print queue.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPOOLADD(<nFile>) --> lAppended
+
+ ^bArgument^b
+
+     ^b<nFile>^b  Designates a file to add to the print spool queue.
+
+ ^bReturns^b
+
+     SPOOLADD() returns .T. when the file is successfully added to the spool
+     queue.
+
+ ^bDescription^b
+
+     SPOOLLADD() passes a new file to the spooler where data is printed in
+     the background.  If no data can be added because the file does not exist
+     or because the queue is full, the function returns to .F..
+
+ ^bExample^b
+
+     Print to a file, then print it in the background:
+
+     SET PRINTER TO C:\TEST\PRINT.DAT         // Redirect print
+     SET DEVICE TO PRINT                      // Print Output
+     @....SAY....
+     @....SAY....
+     SET DEVICE TO SCREEN
+     SET PRINTER TO                           // Close output file
+
+     IF SPOOLACTIV()
+        SPOOLADD("C:\TEST\PRINT.DAT")         // .T., if correct
+     ELSE
+        *'normal' print
+     ENDIF
+
+!seealso: "SPOOLACTIV()" "SPOOLDEL()" "SPOOLFLUSH()" "SPOOLCOUNT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPOOLCOUNT() Determines the number of entries in the print spool queue
+'------------------------------------------------------------------------------
+ ^bSPOOLCOUNT()^b
+ Determines the number of entries in the print spool queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bDescription^b
+
+     The function allows you to determines the number of entries in the print
+     spool queue.  This value can be useful in a loop in conjunction with
+     SPOOLENTRY().  A file currently being printed is not counted.
+
+ ^bNote^b
+
+     ^b^CFE^b  When using SPOOLENTRY() in conjunction with SPOOLCOUNT(),
+        SPOOLENTRY() stops print output.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display entries (stops output):
+
+        FOR I = 1 TO SPOOLCOUNT()
+           ? SPOOLENTRY (I)                     // Path and file name
+        NEXT I
+        SPOOLACTIV()                            // Continue printing
+
+     ^b^CFE^b  Delete the next-to-last entry:
+
+        ? SPOOLDEL(SPOOLENTRY9SPOOLCOUNT() -1   //.T., when done
+
+!seealso: "SPOOLENTRY()" "SPOOLDEL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPOOLDEL()   Deletes files from the print queue
+'------------------------------------------------------------------------------
+ ^bSPOOLDEL()^b
+ Deletes files from the print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPOOLDEL (<cFile>) --> 1Deleted
+
+ ^bArgument^b
+
+     ^b<cFile>^b  Designates which file to remove from the print spool queue.
+
+ ^bReturns^b
+
+     SPOOLDEL() returns .T. when the designated file is successfully removed
+     from the print spool queue.
+
+ ^bDescription^b
+
+     If the wrong file is put in the print spool queue, and is not yet
+     printed, you can delete it from the internal list.  SPOOLCOUNT() and
+     SPOOLENTRY() return information about files currently in the queue.
+
+ ^bExample^b
+
+     Delete all files with the extension .SYS form the print queue:
+
+     FOR I = 1 TO SPOOLCOUNT
+        cFile:=   SPOOLCOUNT(0)
+
+        IF RIGHT (cFile)
+        ENDIF
+     NEXT I
+     SPOOLACTIV()      // Continue
+
+!seealso: "SPOOLACTIV()" "SPOOLCOUNT()" "SPOOLENTRY()" "SPOOLFLUSH()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPOOLENTRY() Determines the name and path of a print job
+'------------------------------------------------------------------------------
+ ^bSPOOLENTRY()^b
+ Determines the name and path of a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPOOLENTRY([<nEntryNumber>]) --> cFileName
+
+ ^bArgument^b
+
+     ^b<nEntryNumber>^b  Designates to which queue entry to return the file
+     name. The default is the last entry.
+
+ ^bReturns^b
+
+     SPOOLENTRY() returns the complete file specification for the designated
+     queue entry or a null string for an invalid parameter.
+
+ ^bDescription^b
+
+     SPOOLENTRY() determines the file path and name for a particular entry in
+     a print spool queue.  If the optional parameter is not specified, the
+     function returns the last entry.  If no matching entry is available,
+     then a null string is returned.
+
+     Call SPOOLENTRY() to stop the current print output.  Call SPOOLACTIV()
+     to continue the function.
+
+ ^bExample^b
+
+     ^b^CFE^b  The last entry:
+
+        ? SPOOLENTRY()                     // File name incl.path
+        SPOOLACTIV()                       // Continue output
+
+     ^b^CFE^b  The next to last entry:
+
+        ? SPOOLENTRY(SPOOLCOUNT() -1)      // "" if not available
+        SPOOLACTIV()                       // Continue output
+
+!seealso: "SPOOLCOUNT()" "SPOOLDEL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPOOLFLUSH() Completely empty the print queue
+'------------------------------------------------------------------------------
+ ^bSPOOLFLUSH()^b
+ Completely empty the print queue
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPOOLFLUSH() --> lDeleteAll
+
+ ^bReturns^b
+
+     SPOOLFLUSH() returns .T. when you can remove all entries.
+
+ ^bDescription^b
+
+     SPOOLFLUSH() allows you to remove all entries from the print spool
+     queue.  An entry currently being printed, is not taken into account,
+     (just as with SPOOLCOUNT()).
+
+ ^bExample^b
+
+     Delete the spool queue:
+
+     IF SPOOLFLUSH()               // All deleted ?
+        ? "Print spool queue is empty !"
+     ENDIF
+
+!seealso: "SPOOLCOUNT()" "SPOOLENTRY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOF()        Determines if CA-Clipper is at top of form (TOF)
+'------------------------------------------------------------------------------
+ ^bTOF()^b
+ Determines if CA-Clipper is at top of form (TOF)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTOF() --> lTopOfForm
+
+ ^bReturns^b
+
+     Returns the logical value .T. to designate if a printer is at TOF.
+
+ ^bDescription^b
+
+     TOF() determines if the printer should execute a formfeed or not.
+
+ ^bNote^b
+
+     ^b^CFE^b  TOF() acknowledges the values that CA-Clipper maintains
+        internally. TOF() cannot determine if the printer is actually at
+        TOF()
+
+ ^bExample^b
+
+     When the printer is not at top of form, execute an EJECT:
+
+     IF .NOT. TOF()
+        EJECT
+     ENDIF
+
+!seealso: "PRINTINIT()" "PRINTSEND()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,38 @@
+'------------------------------------------------------------------------------
+^BLASTKEY()^B
+
+    LASTKEY() determines the last key fetched from the keyboard buffer.
+
+^USyntax^U
+
+    LASTKEY()
+
+^UReturns^U
+
+    An integer value.
+
+    LASTKEY() returns a number from -39 to 386 identifying the ASCII value
+    of the last key fetched.  There are two classes of commands and
+    functions that fetch keys: wait states and interface functions.  Wait
+    state commands and functions include ACCEPT, INPUT, MENU TO,
+    MEMOEDIT(), READ, and WAIT.  Interface functions include ACHOICE(),
+    DBEDIT(), and INKEY().
+
+^UUsage^U
+
+    LASTKEY() is useful in a number of situations:
+
+    -  To determine the key used to terminate a READ.
+    -  To determine the key used to exit the current GET when within a
+       user-defined function executed from a VALID clause.
+    -  To identify the exception key pressed in the user function of
+       ACHOICE(), DBEDIT(), or MEMOEDIT().
+
+    If you need to know whether the user has changed the contents of any
+    GETs, use UPDATED().  If you need to know the key pending in the
+    keyboard buffer, use NEXTKEY().
+!seealso: clip_016.ngo:"KEYBOARD" ???.ngo:"CHR" clip_098.ngo:"INKEY" clip_120.ngo:"NEXTKEY" 
+'------------------------------------------------------------------------------
+
+
+

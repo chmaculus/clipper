@@ -1,0 +1,90 @@
+'------------------------------------------------------------------------------
+^BINDEX^B
+
+    The INDEX command creates a file that contains an index to records in
+    the current database file.
+
+^USyntax^U
+
+    INDEX ON <key exp> TO <file>/(<expC>)
+
+^UArguments^U
+
+    <key exp> is an expression that returns the key value to place in the
+    index for each record in the current database file.  The maximum length
+    of the index key expression is 250 characters.
+
+    <file> is the name of the index file to create.  The default extension
+    is .ntx.  If, however, you have linked NDX.OBJ in order to use dBASE
+    III PLUS compatible index files, the extension is .ndx.
+
+^UUsage^U
+
+    When an index file is used, the database records appear in key
+    expression order although the index does not alter the physical order
+    of records in the database file.  This allows you to create and
+    maintain many logical orders of records automatically.
+
+    Clipper uses a variation of the b-tree indexing scheme with an index
+    page size of 1024 bytes.  The (.ntx) has a header for the index to tell
+    the system what the index key is, where the "top" of the three is, etc.
+    In addition, Clipper keeps a pointer to the place in the file where the
+    most recently discarded page is kept.  As you modify keys in an index,
+    the original key is removed from its location and the new key is
+    inserted elsewhere.  There are times when this will cause a page to
+    become empty.  When this happens, Clipper saves the position in its
+    header so that it can re-use this space when it needs to create a new
+    page later on.
+
+    ^BDeleted and filtered record^B: Records that are filtered or marked
+    for deletion are included in the index.
+
+    ^BDate indexes^B: Clipper supports date indexes for both (.ntx) and
+    (.ndx) index types.  For a key expression that includes a date as a
+    subset of the key, create the expression as character type and use
+    DTOS() to convert the date to character.
+
+    ^BDescending order indexes^B: To create descending order indexes or
+    descending suborders, use DESCEND().  This function accepts any data
+    type as its argument and returns the inverse.
+
+    ^BCompatible index files^B: Clipper supports dBASE III PLUS compatible
+    index files by linking NDX.OBJ.
+
+    ^BUnique indexes^B: When you INDEX with UNIQUE ON, Clipper creates an
+    index with uniqueness as an attribute.  As indexing proceeds and two
+    or more records have the same key value, Clipper includes only the
+    first record in the index.  Whenever the unique index is updated,
+    REINDEXed, or PACKed, only unique records are added.  This happens
+    without regard to the current UNIQUE SETting.
+
+    Note that this differs from pre-Summer '87 versions of Clipper where
+    UNIQUE was a global SETting and applied to the creation and updating of
+    all open indexes.
+
+    ^BTRIM() in key expressions^B: Index key sizes under Clipper are
+    calculated by evaluating the key expression on a blank record.  The
+    TRIM() of any part of a key expression that includes a field,
+    therefore, always evaluates to a null string.  This can lead to a size
+    mismatch between the target and the defined key length.  You can,
+    however, build an index key on the TRIM() of a field as long as you pad
+    the key with the number of spaces equal to the length of all the
+    trimmed fields.  For example, suppose you have two fields, First and
+    Last, each 20 characters in length.  You want to INDEX on the following
+    expression:
+
+    ^RTRIM(Last) + First^R
+
+    The actual expression you INDEX ON is this:
+
+    ^RSUBSTR(TRIM(Last) + First + SPACE(20), 1, 40)^R
+
+    Note that using TRIM() to save space in the index file does not work.
+    Clipper allocates space for keys in fixed increments and using TRIM()
+    only confuses the issue.  To create smaller index files, create smaller
+    fixed length keys using SUBSTR() instead.
+!seealso: ???.ngo:"CLOSE" clip_008.ngo:"FIND" clip_030.ngo:"REINDEX" clip_041.ngo:"SEEK" clip_063.ngo:"SET INDEX" clip_068.ngo:"SET ORDER" clip_077.ngo:"SET UNIQUE" clip_088.ngo:"USE" clip_095.ngo:"INDEXEXT()" clip_096.ngo:"INDEXKEY()" 
+'------------------------------------------------------------------------------
+
+
+

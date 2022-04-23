@@ -1,0 +1,1056 @@
+!short: Introduction System Information
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions in this chapter provide system information about the
+     operating system (MS-DOS), the BIOS, and hardware.  It determines a
+     large number of system facts and settings -- from the DOS-COUNTRY
+     setting to the mathematical coprocessor.  It is even possible to warm or
+     cold boot a computer from within a program.  In addition, you can query
+     and set  DOS VERIFY and BREAK.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: BIOSDATE()   Determines the system BIOS date
+'------------------------------------------------------------------------------
+ ^bBIOSDATE()^b
+ Determines the system BIOS date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBIOSDATE() --> dBIOSdate
+
+ ^bReturns^b
+
+     BIOSDATE() returns the ROM BIOS date.
+
+ ^bDescription^b
+
+     As a rule, all industry-standard PC's insert a generated date at a
+     particular memory location in the BIOS.  Based on this date,
+     incompatibilities known to exist up to a particular release can be
+     acknowledged.  The function returns a date-type value and spares you an
+     elaborate PEEK.
+
+ ^bNote^b
+
+     ^b^CFE^b  Although unlikely, you may not find a date at this BIOS
+        position.  Therefore, you should test to see if a date is returned.
+
+ ^bExample^b
+
+     Is this an older computer?
+
+     IF BIOSDATE() < CTOD("01/01/85")
+        ? "Older version ...!"
+     ENDIF
+
+!seealso: "PCTYPE()" "CPUTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BOOTCOLD()   Triggers a cold boot
+'------------------------------------------------------------------------------
+ ^bBOOTCOLD()^b
+ Triggers a cold boot
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBOOTCOLD()
+
+ ^bDescription^b
+
+     BOOTCOLD() allows you to restart the system after a critical error
+     (assuming anything is still working), or to allow any program changes
+     you have made in CONFIG.SYS or AUTOEXEC.BAT to take effect.  The
+     function calls for a cold start.  This means a RAM check and POST (power
+     on self test) are carried out.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Close all files prior to a boot.  You can use CLOSE DATABASES.
+
+     ^b^CFE^b  If there is a large system memory, a RAM check takes a long
+        time.  To avoid this lengthy procedure, you might consider using the
+        BOOTWARM() function for a restart after changing CONFIG.SYS.
+
+ ^bExample^b
+
+     An error in an error trap can no longer be changed:
+
+     CLOSE DATABASES
+     BOOTCOLD()
+
+!seealso: "BOOTWARM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BOOTWARM()   Triggers a warm start of the system
+'------------------------------------------------------------------------------
+ ^bBOOTWARM()^b
+ Triggers a warm start of the system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBOOTWARM()
+
+ ^bDescription^b
+
+     This function allows changes in CONFIG.SYS or AUTOEXEC.BAT to become
+     effective.  This function restarts the system just like BOOTCOLD(), but
+     no RAM check or POST (power on self test) are carried out.
+
+ ^bNotes^b
+
+     ^b^CFE^b  Close all files before you boot.  You can use CLOSE DATABASES
+        to do this.
+
+     ^b^CFE^b  BOOTWARM() is the same as pressing the Ctrl-Alt-Del keys.
+
+ ^bExample^b
+
+     A new CONFIG.SYS is created within the program and the system reboots:
+
+     COPY TO CONFIG.SYS SDF
+     CLOSE DATABASES
+     BOOTWARM()
+
+!seealso: "BOOTCOLD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CPUTYPE()    Determines what type of microprocessor in use
+'------------------------------------------------------------------------------
+ ^bCPUTYPE()^b
+ Determines what type of microprocessor in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCPUTYPE() --> nCPUType
+
+ ^bReturns^b
+
+     CPUTYPE() returns a numeric code that identifies the microprocessor in
+     use.
+
+ ^bDescription^b
+
+     This function determines which microprocessor is in use.  For instance,
+     a PC may use a Vnn microprocessor or an AT may use a 386 microprocessor.
+     The microprocessors have the following codes:
+
+     ^bTable 12-1: Microprocessor Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constant    Processor^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       CPU_8088          8088
+     1       CPU_8086          8086
+     2       CPU_V20           V20
+     3       CPU_V30           V30
+     4       CPU_80188         80188
+     5       CPU_80186         80186
+     6       CPU_80286         80286
+     7       CPU_80386         80386
+     8       CPU_80486         80486
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExample^b
+
+     What type of microprocessor is on the AT?
+
+     IF CPUTYPE() == CPU_80386
+        ? "A 386 ..."
+     ENDIF
+
+!seealso: "PCTYPE()" tool_014.ngo:"SPEED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DOSPARAM()   Retrieves the DOS command line as a string
+'------------------------------------------------------------------------------
+ ^bDOSPARAM()^b
+ Retrieves the DOS command line as a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDOSPARAM() --> cDOSCommandLine
+
+ ^bReturns^b
+
+     DOSPARAM() returns the parameters from the DOS command line.
+
+ ^bDescription^b
+
+     DOSPARAM() returns all the parameters passed from the DOS command when
+     you run the application.  Use DOSPARAM() when you do not want the
+     parameters to be separated.  With this function, it is no longer
+     necessary to check each individual parameter in a loop.
+
+ ^bNote^b
+
+     ^b^CFE^b  With the TOKEN() function, it is easy to break down the
+        returned character string.  It can also use your own rules.
+
+ ^bExample^b
+
+     Given the DOS command line C>MyApp A: C: /a ,
+     the following is true:
+
+     DOSPARAM()                // "A: C: /a"
+     TOKEN(DOSPARAM())         // "A"
+
+     This way, it is easy to break down parameter lines according to your own
+     rules.
+
+!seealso: tool_005.ngo:"TOKEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ENVPARAM()   Reads the entire DOS environment table into a string
+'------------------------------------------------------------------------------
+ ^bENVPARAM()^b
+ Reads the entire DOS environment table into a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bENVPARAM() --> cEnvironment
+
+ ^bReturns^b
+
+     ENVPARAM() returns a string that corresponds to the complete environment
+     table.
+
+ ^bDescription^b
+
+     This function returns the entire DOS environment table.  The DOS CHR(0)
+     delimiter, which follows each variable and its setting, is replaced with
+     CR/LF.  This allows the returned string to work well with the CA-Clipper
+     Tools string functions (especially the tokenizer).
+
+ ^bNote^b
+
+     ^b^CFE^b  With the CA-Clipper function GETENV(), you can query
+        individual parameters from the environment.  Initially, this may seem
+        convenient, but there is a problem because no blanks are allowed
+        before and after the '='.
+
+ ^bExample^b
+
+     Read in the environment and analyze it:
+
+     cVar  :=  ENVPARAM()                           // CR/LF as delimiter
+     TOKENINIT (@cVar, CHR(13) + CHR(10),2)         // CR/LF as delimiter,
+     skip 2
+     DO WHILE .NOT. TOKENEND()
+        Env  :=  TOKENNEXT(cVar)
+        ? Env
+     ENDDO
+
+!seealso: tool_005.ngo:"TOKENINIT()" tool_005.ngo:"TOKENNEXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ERRORACT()   Recommends action for a DOS error that has occurred previously
+'------------------------------------------------------------------------------
+ ^bERRORACT()^b
+ Recommends an action for a DOS error that has occurred previously
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bERRORACT() --> nActionCode
+
+     ^bWarning!^b  This function requires DOS 3.1 or higher.
+
+ ^bReturns^b
+
+     ERRORACT() returns a numeric code that provides more information on how
+     to react to the last DOS error.  Coding is as follows:
+
+     ^bTable 12-2: DOS Error Action Codes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Try several times, then ask user
+     2       Try several times with pauses, then ask user
+     3       Ask user for data
+     4       Leave program normally
+     5       Leave program as soon as possible
+     6       Ignore
+     7       User should correct error and try again
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     DOS reacts to errors in several ways.  One of the best known and least
+     preferred by programmers is the question:  "(A)bort, (R)etry, (I)gnore".
+     ERRORACT() tells you how the application should react to the last DOS
+     error that occurred.
+
+ ^bExample^b
+
+     Show an error that requires the program to terminate:
+
+     nAction  :=  ERRORACT()
+     IF nAction = 4
+        ? "Unfortunately, the program must be terminated!"
+        QUIT
+     ENDIF
+
+!seealso: "ERRORBASE()" "ERRORCODE()" "ERRORORG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ERRORBASE()  Source of the most-recent DOS error
+'------------------------------------------------------------------------------
+ ^bERRORBASE()^b
+ Source of the most-recent DOS error
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bERRORBASE() --> nErrorCode
+
+     ^bWarning!^b  This function requires DOS 3.1 or higher.
+
+ ^bReturns^b
+
+     ERRORBASE() returns a numeric code that provides additional information
+     about the cause of the error.  These codes and their definitions are in
+     the table below:
+
+     ^bTable 12-3: Causes for DOS Errors^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode      Definition
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1         Insufficient memory
+     2         Access temporarily denied
+     3         No access for this user
+     4         Internal error, system software
+     5         Hardware error
+     6         Error in system software
+     7         Error in applications program
+     8         File not found
+     9         Wrong file format or type
+     10        File is protected
+     11        Incorrect medium in drive
+     12        Other error
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     If an error is detected with ERRORCODE(), use ERRORBASE() for more
+     information about the cause of the error, from within the data returned
+     by DOS.
+
+ ^bExample^b
+
+     Determine the cause for an error:
+
+     nCause  :=  ERRORBASE()
+     IF nCause = 3
+        ? "Access denied!"
+     ENDIF
+
+!seealso: "ERRORACT()" "ERRORCODE()" "ERRORORG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ERRORCODE()  Identifies a DOS error that has occurred previously
+'------------------------------------------------------------------------------
+ ^bERRORCODE()^b
+ Identifies a DOS error that has occurred previously
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bERRORCODE([<lKeep>]) --> nDosErrorCode
+
+     ^bWarning! ^b This function requires DOS 3.1 or higher.
+
+ ^bArgument^b
+
+     ^b<lKeep>^b  When this parameter is designated as .T., the function
+     returns the internal error code memory value.
+
+ ^bReturns^b
+
+     ERRORCODE() returns a value that represents the error code that occurred
+     during the most-recently executed DOS function.
+
+ ^bDescription^b
+
+     If you do not specify a parameter or if the parameter is .F., then
+     ERRORCODE() calls the DOS error function (INT 21h, 59h) and returns the
+     code value stored for the most-recent error.  DOS stores the most-recent
+     error code until a new error occurs.  If your operation is error free,
+     this value is not  reset.
+
+     To take this situation into account, ERRORCODE() can alternatively be
+     called with <lkeep> set to .T..  If called like this, the error code
+     always relates to the last CA-Clipper Tools function that was executed.
+     Since the respective CA-Clipper Tools function behavior is stored at an
+     internal memory location, it is impossible to implement this option with
+     regular CA-Clipper functions.
+
+ ^bNote^b
+
+     ^b^CFE^b  You can find a table that contains all the error codes in
+        Appendix B:  Error Codes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example attempts to copy a file.  If an error occurs,
+        FILECOPY() returns a value of 0 which offers no specific error
+        information:
+
+        nBytes  :=  FILECOPY("TEST\TEST.PRG", "NEW.PRG")
+        IF nBytes = 0 .AND. ERRORCODE() = 3
+           ? "File path not found!"
+        ENDIF
+
+     ^b^CFE^b  An example of two file copies is illustrated below:
+
+       The first file is unsuccessful, but the second file is not:
+
+        FILECOPY("XXXXX.TXT", "YYYY.TXT")
+        ? ERRORCODE(.T.)                  // 2 - File not found
+        ? ERRORCODE()                     // 2 - File not found
+        FILECOPY("SOURCE.TXT", "TARGET.TXT")
+        ? ERRORCODE(.T.)                  // 0 - Last Tools
+                                          // function was successful
+        ? ERRORCODE()                     // 2 - File not found
+
+     ^bWarning! ^b Any CA-Clipper Tools function that contains a DOS call
+     resets the internal variable retrieved by setting <lKeep> .  The
+     following call series never returns the desired result, because the
+     first call of ERRORCODE() contains a DOS call:
+
+     ? ERRORCODE(), ERRORCODE(.T.)        // Result: x, 0
+
+!seealso: "ERRORACT()" "ERRORBASE()" "ERRORORG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ERRORORG()   Origin of the most-recent DOS error
+'------------------------------------------------------------------------------
+ ^bERRORORG()^b
+ Origin of the most-recent DOS error
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bERRORORG() --> nError
+
+     ^bWarning!^b  This function requires DOS 3.1 or higher.
+
+ ^bReturns^b
+
+     ERRORORG() returns a numeric code that provides more information about
+     the device on which the error occurred.  The table below details this
+     information:
+
+     ^bTable 12-4: Origin of DOS Errors^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Unknown
+     2       Block device (floppy, hard disk, etc.)
+     3       Network
+     4       Character device (COM, SCRN, etc.)
+     5       RAM
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     ERRORORG() tells what type of device generated the most-recent DOS
+     error.  This essential information allows you to handle the error in an
+     appropriate way.
+
+ ^bExample^b
+
+     Determine the source of an error:
+
+     nSource  :=  ERRORORG()
+     IF nSource = 3
+        ? "Error is on the network!"
+     ENDIF
+
+!seealso: "ERRORACT()" "ERRORCODE()" "ERRORBASE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EXENAME()    Returns name and directory of the current CA-Clipper program
+'------------------------------------------------------------------------------
+ ^bEXENAME()^b
+ Returns name and directory of the current CA-Clipper program
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEXENAME() --> cProgram
+
+ ^bReturns^b
+
+     EXENAME() returns the name and path of the current .EXE program.
+
+ ^bDescription^b
+
+     This function determines the name and path of the CA-Clipper application
+     in use.
+
+ ^bNote^b
+
+     ^b^CFE^b  Use the TOKEN() function to determine the name portion of a
+        program within a path.
+
+ ^bExample^b
+
+     Determine if the name or path of an EXE file has changed:
+
+     cOrigPath  :=  "C:\DATA\ADDRESS.EXE"
+     IF EXECNAME() <> cOrigPath
+        ? "Program name or directory have been changed!"
+        QUIT
+     ENDIF
+
+!seealso: tool_005.ngo:"TOKEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILESFREE()  Specifies the number of files you can open
+'------------------------------------------------------------------------------
+ ^bFILESFREE()^b
+ Specifies the number of files you can open
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILESFREE() --> nFreeHandles
+
+ ^bReturns^b
+
+     FILESFREE() returns the number of available handles.
+
+ ^bDescription^b
+
+     This function returns the number of available handles that correspond to
+     the number of files you can open.  This enables you to avoid DOS error
+     4.
+
+ ^bNote^b
+
+     ^b^CFE^b  Immediately after you start a CA-Clipper application, a value
+        -- smaller than that of FILESMAX() -- is returned.  This happens
+        because the operating system and application itself is already using
+        handles.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Can I still open a file?
+
+        IF FILESFREE() > 0                // At least 1 handle free?
+           USE CUSTOMER                   // Open a file
+        ENDIF
+
+     ^b^CFE^b  Be careful when you open multiple indexes at the same time!
+
+        IF FILESFREE() > 1                // At least 2 handles free?
+           USE CUSTOMER INDEX CUSTNR      // Open 2 files
+        ENDIF
+
+!seealso: "FILESMAX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILESMAX()   Specifies maximum number of files that can be open at one time
+'------------------------------------------------------------------------------
+ ^bFILESMAX()^b
+ Specifies the maximum number of files that can be open at one time
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILESMAX() --> nMaxHandles
+
+ ^bReturns^b
+
+     FILESMAX() returns the maximum number of files that can be open at once.
+
+ ^bDescription^b
+
+     The value set for FILES= within the CONFIG.SYS, and the number of
+     available handles, influences the maximum number of files that can be
+     open simultaneously.  The maximum number is determined by the smaller of
+     the two values respectively.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The returned value is subtracted from the handles already
+        occupied by the operating system.  This value is usually 5.
+
+     ^b^CFE^b  This function cannot determine if an additional operating
+        system adaptation (Novell's SHELL.CFG) has been made under a Novell
+        network.  These adaptations are only used for the current network
+        drive under Novell.
+
+ ^bExample^b
+
+     How many files can be opened in the system?
+
+     ? FILESMAX()            // e.g. 100
+
+!seealso: "FILESFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETCOUNTRY() Queries country setting for the operating system
+'------------------------------------------------------------------------------
+ ^bGETCOUNTRY()^b
+ Queries country setting for the operating system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETCOUNTRY() --> nDosCountryCode
+
+     ^bWarning!^b  This function requires DOS 3.1 or higher.
+
+ ^bReturns^b
+
+     GETCOUNTRY() returns the current DOS country code setting.
+
+ ^bDescription^b
+
+     GETCOUNTRY() returns an integer that gives the current
+     DOS COUNTRY code setting.  Returns a number that corresponds to the
+     value set within CONFIG.SYS.
+
+ ^bNote^b
+
+     ^b^CFE^b  You can find a table of country codes in the section of the
+        DOS manual that describes CONFIG.SYS construction.
+
+ ^bExample^b
+
+     Query the country code:
+
+     CountryCode  :=  GETCOUNTRY()
+     IF CountryCode = 49
+        ? "The country code for Germany has been set!"
+     ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISANSI()     Tests to see if the ANSI screen driver is installed
+'------------------------------------------------------------------------------
+ ^bISANSI()^b
+ Tests to see if the ANSI screen driver is installed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISANSI() --> lInstalledDriver
+
+ ^bReturns^b
+
+     ISANSI() returns .T. when ANSI.SYS or a comparable driver has been
+     loaded from CONFIG.SYS.
+
+ ^bDescription^b
+
+     ISANSI() determines if ANSI.SYS or another comparable driver has been
+     loaded from CONFIG.SYS.  Some full-page displays require the ANSI
+     driver.  If the driver is present, the display is fully operational.
+
+ ^bNote^b
+
+     ^bWarning!^b  You must implement DSETWINDOW(.F.) for ISANSI() to return
+     a correct result.
+
+ ^bExample^b
+
+     If ANSI.SYS is present, output through DOS.  This allows a simple
+     terminal emulation:
+
+     IF ISANSI()                  // ANSI driver present?
+        COM_DOSCON(dDate)         // Output via DOS
+     ELSE
+        *...                      // Individual ANSI handling
+     ENDIF
+
+!seealso: tool_004.ngo:"COM_DOSCON()" tool_003.ngo:"DSETWINDOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISAT()       Determines if a program is running on an AT
+'------------------------------------------------------------------------------
+ ^bISAT()^b
+ Determines if a program is running on an AT
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISAT() --> AT
+
+ ^bReturns^b
+
+     ISAT() returns .T. value when the program is running on an
+     AT-compatible system.
+
+ ^bDescription^b
+
+     ISAT() determines if your CA-Clipper application is running on an
+     AT-class system.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function also returns .T. for systems with an 80386 or
+        80486 processor.
+
+ ^bExample^b
+
+     Since you can set the hardware clock on an AT (in contrast to an XT),
+     use ISAT() to determine if SETDATE() and SETTIME() function properly:
+
+     IF ISAT()
+        ? "The internal clock can be changed."
+     ELSE
+        ? "Time and date will be lost after booting!"
+     ENDIF
+
+!seealso: tool_010.ngo:"SETDATE()" tool_010.ngo:"SETTIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISMATH()     Determines if a math coprocessor is installed
+'------------------------------------------------------------------------------
+ ^bISMATH()^b
+ Determines if a math coprocessor is installed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISMATH() --> lCoprocessor
+
+ ^bReturns^b
+
+     ISMATH() returns .T. value when a math coprocessor is installed in the
+     system.
+
+ ^bDescription^b
+
+     ISMATH() determines if a math coprocessor is available to your CA-
+     Clipper application.
+
+ ^bExample^b
+
+     Determine if a math coprocessor is available to the application:
+
+     IF ISMATH()
+        ? "Coprocessor available."
+     ENDIF
+
+!seealso: "CPUTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MEMSIZE()    Determines size of conventional or extended memory
+'------------------------------------------------------------------------------
+ ^bMEMSIZE()^b
+ Determines size of conventional or extended memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMEMSIZE([<lMode>]) --> nMemSize
+
+ ^bArgument^b
+
+     ^b<lMode>^b  Designates whether you want to determine the size of the
+     conventional memory (.F.) or extended memory (.T.).  The default value
+     is conventional memory (.F.).
+
+ ^bReturns^b
+
+     MEMSIZE() returns the size (in kBytes) of the designated memory type.
+
+ ^bDescription^b
+
+     MEMSIZE() determines how much working memory is available on your
+     system.  It determines either the size of the conventional memory
+     (0 to 640k) or extended memory (above 1 MB).
+
+ ^bNote^b
+
+     ^b^CFE^b  This function returns a value determined through the BIOS
+        (which assumes compatibility).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show size of conventional memory:
+
+        ? MEMSIZE()            // e.g. 512
+        ? MEMSIZE(.F.)
+
+     ^b^CFE^b  Show size of extended memory:
+
+        ? MEMSIZE()            // e.g. 384
+
+!seealso: tool_014.ngo:"ALLOFREE()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMBUFFERS() Determines the BUFFERS= setting
+'------------------------------------------------------------------------------
+ ^bNUMBUFFERS()^b
+ Determines the BUFFERS= setting
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMBUFFERS() --> nNumberBuffers
+
+ ^bReturns^b
+
+     NUMBUFFERS() returns the number of buffers that are set in CONFIG.SYS
+     (BUFFERS=nn).
+
+ ^bDescription^b
+
+     NUMBUFFERS() determines the BUFFERS setting in the CONFIG.SYS file.
+
+ ^bNote^b
+
+     ^b^CFE^b  The information is not read from the CONFIG.SYS file, but
+        determined from an internal DOS table.  Therefore, the buffers
+        setting in CONFIG.SYS may not contain the same value as numbuffers,
+        if it has been changed since that most-recent system boot.
+
+ ^bExample^b
+
+     Query the BUFFERS setting:
+
+     ? NUMBUFFERS()
+
+!seealso: "GETCOUNTRY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMFILES()   Determines maximum number of files you can open simultaneously
+'------------------------------------------------------------------------------
+ ^bNUMFILES()^b
+ Determines the maximum number of files you can open simultaneously
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMFILES() --> nNumber
+
+ ^bReturns^b
+
+     NUMFILES() returns the maximum number of files you can open
+     simultaneously in all active programs.
+
+ ^bDescription^b
+
+     NUMFILES() determines the number of files that can be open
+     simultaneously under DOS.  This information corresponds to the FILES=
+     setting in the CONFIG.SYS file.  However, it is read from an internal
+     DOS table, not this file.  Therefore, the function operates with or
+     without CONFIG.SYS, and returns more accurate system information.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function cannot determine if an additional operating
+        system adaptation (Novell's SHELL.CFG) has been made under a Novell.
+        network.  These adaptations are only used for the current network
+        drive under Novell.
+
+ ^bExample^b
+
+     Display the maximum number of files you can open:
+
+     ? NUMFILES()         // e.g. 30
+
+!seealso: "NUMBUFFERS()" "FILESMAX()" "FILESFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: OSVER()      Returns the DOS version number
+'------------------------------------------------------------------------------
+ ^bOSVER()^b
+ Returns the DOS version number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bOSVER() --> cDosVersion
+
+ ^bReturns^b
+
+     OSVER() returns a character string that contains the version number of
+     the operating system in use.
+
+ ^bDescription^b
+
+     OSVER() returns the version number of the operating system in use.  The
+     format picture clause is always "'9.99".  Use OSVER() to determine the
+     DOS version your application uses.
+
+ ^bExample^b
+
+     Certain operations require particular DOS versions:
+
+     IF OSVER() < "3.30"
+        ? "COMMIT can not be used!"
+     ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: PCTYPE()     Returns the type of computer in use
+'------------------------------------------------------------------------------
+ ^bPCTYPE()^b
+ Returns the type of computer in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPCTYPE() --> nPCType
+
+ ^bReturns^b
+
+     PCTYPE() returns a numeric code to identify the type of computer.
+
+ ^bDescription^b
+
+     This function differentiates between the different types of PC's.  The
+     function determines the type of computer installed in the application
+     The following codes apply:
+
+     ^bTable 12-5: Computer Type Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue     Symb. constants   PC-Type
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     255       PC_NORMAL         Normal PC
+     254       PC_XT             PC-XT (w/hard disk)
+     253       PC_JUNIOR         PC jr
+     240       PC_MODEL30        Model 30
+     251       PC_XT_2           XT/2
+     249       PC_LAPTOP         Laptop
+     252       PC_AT             AT/XT-286/Model 50/Model  60
+     248       PC_MODEL80        Model 80
+     45        PC_COMPAQP        COMPAQ Portable
+     154       PC_COMPAQ         COMPAQ Portable Plus
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNotes^b
+
+     ^b^CFE^b  386 and 486 computers are often coded as AT's.
+
+     ^b^CFE^b  The values correspond to IBM BIOS codes.  An incompatible BIOS
+        might return a different value.
+
+ ^bExample^b
+
+     What type of computer is installed?
+
+     ? PCTYPE()         // 252  an AT!
+
+!seealso: "CPUTYPE()" tool_014.ngo:"SPEED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SSETBREAK()  Sets and checks the DOS BREAK switch
+'------------------------------------------------------------------------------
+ ^bSSETBREAK()^b
+ Sets and checks the DOS BREAK switch
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSSETBREAK([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates the new setting for the DOS BREAK switch.
+
+ ^bReturns^b
+
+     SSETBREAK() returns the current BREAK setting when no parameter is
+     specified; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     Normally, DOS only checks screen and keyboard functions for the
+     Ctrl-Break key combination.  If you want to check more frequently
+     (i.e., during disk operations), use SSETBREAK() to turn on the BREAK
+     switch.
+
+ ^bNote^b
+
+     ^b^CFE^b  You can also use BREAK= <ON|OFF> to set BREAK in DOS
+
+ ^bExample^b
+
+     Activate BREAK and save the old status:
+
+     lOld_Break  :=  SSETBREAK(.T.)
+
+!seealso: "ENVPARAM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SSETVERIFY() Sets and checks the DOS VERIFY switch
+'------------------------------------------------------------------------------
+ ^bSSETVERIFY()^b
+ Sets and checks the DOS VERIFY switch
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSSETVERIFY([<lNewSwitch>]) --> lOldSwitch
+
+ ^bArgument^b
+
+     ^b<lNewSwitch>^b  Designates the new setting for the DOS VERIFY switch.
+
+ ^bReturns^b
+
+     SSETVERIFY() returns the current VERIFY setting when no parameter is
+     specified; otherwise, it returns the previous setting.
+
+ ^bDescription^b
+
+     Normally, DOS does not check to see if copied data arrives at the target
+     error free.  The DOS VERIFY switch determines whether to check written
+     data.  Of course, verification takes time.  To be safe, make critical
+     copies with the switch set to on (.T.).
+
+ ^bNote^b
+
+     ^b^CFE^b  You can also use VERIFY= <ON|OFF> to set VERIFY in DOS.
+
+ ^bExample^b
+
+     Activate VERIFY and save old status:
+
+     lOld_Verify:= SSETVERIFY(.T.)
+
+!seealso: "ENVPARAM()" 
+'------------------------------------------------------------------------------
+
+
+

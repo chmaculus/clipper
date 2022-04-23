@@ -1,0 +1,96 @@
+'------------------------------------------------------------------------------
+ ^bClipper Compiler -- CLIPPER.EXE^b                                                ^R^CE4^R
+ Compile one or more program (.prg) files containing procedures and
+ user-defined functions to form an object (.OBJ) file.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bSyntax^b
+
+     ^bCLIPPER [<sourceFile>  |  @<scriptFile> [<option list>]]^b
+
+ ^bCommand-line Arguments^b
+
+     This is the command-line syntax to invoke the Clipper compiler.  If
+     issued without any arguments, a help screen is displayed.
+
+     ^B<sourceFile>^B is the name of the program (.prg) file to compile to
+     an object file.
+
+     ^B<scriptFile>^B is the name of an ASCII text file containing a list of
+     source files to compile into a single object file.
+
+     ^B<option list>^B is a list of one or more options to control the
+     course of the compilation, all of which are described below.
+
+ ^bCompiler Options^b
+
+     ^b/A^b declares any variable included in a PRIVATE, PUBLIC, or
+     PARAMETERS statement as MEMVAR.
+
+     ^b/B^b includes debugging information in the object file.
+
+     ^b/CREDIT^b displays the Clipper 5.0 credits to the console.
+
+     ^b/D<identifier>[=<text>]^b defines an identifier to the pre-processor
+     with <text> assigned to the <identifier> if specified.
+
+     ^b/I<pathName>^b adds the specified directory to the front of the
+     INCLUDE path list.  Multiple /I options may be specified in the same
+     compiler session to specify several header file search directories.
+
+     ^b/L^b excludes the program source code line numbers from the object
+     file.
+
+     ^b/M^b compiles only the current program (.prg) file suppressing
+     automatic search for program (.prg) files referenced in a program file
+     with the DO, SET FORMAT, and SET PROCEDURE commands.
+
+     ^b/N^b suppresses the automatic definition of a procedure with the same
+     name as the program (.prg) file.
+
+     ^b/O<objFile>^b defines the name and/or location of the output object
+     file.
+
+     ^b/P^b pre-processes the program (.prg) file and copys the result to an
+     output file with a (.ppo) extension.
+
+     ^b/Q^b suppresses line numbers from displaying while compiling.
+
+     ^b/R[<libFile>]^b embeds a library search request in the object file.
+     If /R is specified without <libFile> name, the default requests for
+     CLIPPER.LIB, EXTEND.LIB, and DBFNTX.LIB are suppressed.  Multiple /R
+     options may be specified in the same compiler session to embed more
+     than one library request.
+
+     ^b/S^b checks the syntax of the current (.prg) file and no object file
+     is generated.
+
+     ^b/T<pathName>^b specifies a different directory for temporary files
+     generated during compilation.
+
+     ^b/U[<userStandardHeaderFile>]^b identifies an alternate standard
+     header file to pre-process in place of the supplied STD.CH which is
+     used automatically.
+
+     ^b/V^b forces the compiler to assume all references to undeclared or
+     unaliased variable names are public or private variables.
+
+     ^b/W^b generates warning messages for undeclared or unaliased
+     (ambiguous) variable references.
+
+     ^b/Z^b suppresses shortcutting optimizations on the logical operators
+     .AND. and .OR.  This option is provided as an aid to isolating code
+     that depends on the behavior of older versions of Clipper.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     Code executed using the runtime macro operator (&) is always optimized
+     with shortcutting.  This optimization cannot be disabled in the macro
+     system.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: c5g0_002.ngo:"SET CLIPPERCMD" c5g0_002.ngo:"SET INCLUDE" c5g0_002.ngo:"SET TMP" 
+'------------------------------------------------------------------------------
+
+
+

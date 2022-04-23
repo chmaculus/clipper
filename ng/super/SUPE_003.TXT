@@ -1,0 +1,658 @@
+!short:    List of Low Level Mouse Functions
+!short:
+!short: note: These functions may change in later version of
+!short: SuperLib. They are documented here for your convenience.
+!short:
+!short:
+!short:RAT_AREA()    Limits the mouse to a rectangular area of the screen
+'------------------------------------------------------------------------------
+
+ RAT_AREA() Limits the mouse to a rectangular area of the
+ screen
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_AREA(nTop,nLeft,nBottom,nRight)
+
+ ^bDescription
+ Limits the mouse to a rectangular area of the screen
+ determined by <nTop,nLeft,nBottom,nRight>. Mouse cannot move
+ outside of these boundaries.
+
+ ^bExamples
+  RAT_AREA(10,10,20,20) // limits the mouse to 10,10,20,20
+ area
+
+ ^bNotes:
+ Be sure to set the mouse area back to fullscreen when
+ you're done.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_COL()     Current mouse column
+'------------------------------------------------------------------------------
+
+ RAT_COL() Current mouse column
+
+ ^bReturns
+ <nRow> => mouse column right now
+
+ ^bSyntax
+ RAT_COL()
+
+ ^bDescription
+ This gives the CURRENT mouse column
+
+ ^bExamples
+  ?"Mouse is at column :",rat_col()
+
+ ^bNotes:
+ This is different from RAT_COLL() or RAT_COLR() in
+ that these two functions return the recorded column when the
+ mouse button was last pressed, (RAT_COLL() for left or
+ RAT_COLR() for right).
+
+ This function tells where the mouse is right now.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_COLL()    Returns mouse column at the last left button press
+'------------------------------------------------------------------------------
+
+ RAT_COLL() Returns mouse column at the last left button press
+
+ ^bReturns
+ <nColumn> => mouse column at last left button press
+
+ ^bSyntax
+ RAT_COLL()
+
+ ^bDescription
+ Returns mouse column at the last left button press
+
+ (as recorded by a call to rat_leftb() )
+
+ ^bExamples
+  if rat_leftb()
+
+    ?"While you were out:"
+
+    ?"Left button was depressed at"
+
+    ??rat_rowl(),rat_coll()
+
+  endif
+
+ ^bNotes:
+ This is different from RAT_COL() in that RAT_COL()
+ tells the mouse row NOW whereas RAT_COLL() tells where the mouse
+ was at the last recorded left button press (as recorded by a
+ call to rat_leftb() )
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_COLR()    Returns mouse column at the last right button press
+'------------------------------------------------------------------------------
+
+ RAT_COLR() Returns mouse column at the last right button
+ press
+
+ ^bReturns
+ <nColumn> => mouse column at last right button press
+
+ ^bSyntax
+ RAT_COLR()
+
+ ^bDescription
+ Returns mouse column at the last right button press
+
+ (as recorded by a call to rat_rightb() )
+
+ ^bExamples
+  if rat_rightb()
+
+    ?"While you were out:"
+
+    ?"Right button was depressed at"
+
+    ??rat_rowr(),rat_colr()
+
+  endif
+
+ ^bNotes:
+ This is different from RAT_COL() in that RAT_COL()
+ tells the mouse row NOW whereas RAT_COLR() tells where the mouse
+ was at the last recorded right button press (as recorded by a
+ call to rat_rightb() )
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_EXIST()   Determines if a mouse is available
+'------------------------------------------------------------------------------
+
+ RAT_EXIST() Determines if a mouse is available
+
+ ^bReturns
+ <lExists> => mouse is available
+
+ ^bSyntax
+ RAT_EXIST()
+
+ ^bDescription
+ This tells if a mouse is present, and mouse driver
+ software is loaded. The mouse state is not changed.
+
+ ^bExamples
+  if rat_exist()
+    * do some mouse stuff
+  else
+    * don't do some mouse stuff
+  endif
+
+ ^bNotes:
+ Many mouse libraries use a call to Interrupt 33,
+ service 0 to determine if a mouse is present. This has the
+ unpleasant effect of  resetting the mouse to its defaults. This blows away
+ mouse position,  cursor and other nifty things that may have been set.
+
+ This function uses another means to determine if a
+ mouse is present,  and does not reset the mouse or damage any mouse
+ settings, thus you can use it with other mouse-oriented libraries
+ without dire consequences.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_FORCE()   This forces a mouse present status, regardless
+'------------------------------------------------------------------------------
+
+ RAT_FORCE() Sets the mouse flag to True, regardless of if
+ there is a mouse and driver or not
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_FORCE()
+
+ ^bDescription
+ RAT_FORCE() Sets the mouse flag to True, regardless of if
+ there is a mouse and driver or not
+
+ ^bExamples
+  RAT_FORCE()
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_LBHD()    Determines if the mouse left button is currently depressed
+'------------------------------------------------------------------------------
+
+ RAT_LBHD() Determines if the mouse left button is currently
+ depressed
+
+ ^bReturns
+ <lDepressed> => mouse left button is currently
+ depressed
+
+ ^bSyntax
+ RAT_LBHD()
+
+ ^bDescription
+ Determines if the mouse left button is currently
+ depressed
+
+ ^bExamples
+  if RAT_LBHD()
+    ?"Mouse left button depressed NOW"
+  endif
+
+ ^bNotes:
+ This is different from the event function
+ RAT_ELBHD(). RAT_ELBHD(<n>) watches the mouse for <n> seconds,
+ and if the mouse remains depressed for the full time, then it is
+ considered to be HELD DOWN. RAT_LBHD() on the other hand, only
+ checks for the mouse button being depressed RIGHT NOW.
+ RAT_ELBHD() calls RAT_LBHD() repetitively.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_LEFTB()   Determines if the left mouse button has been pressed
+'------------------------------------------------------------------------------
+
+ RAT_LEFTB() Determines if the left mouse button has been
+ pressed
+
+ ^bReturns
+ <lHasBeenPressed> => left mouse button has been
+ pressed
+
+ ^bSyntax
+ RAT_LEFTB()
+
+ ^bDescription
+ This returns .t. if the left button has been pressed
+ since last call to this function. Row and column are recorded
+ for reference by rat_rowl() and rat_coll().
+
+ ^bExamples
+  if rat_leftb()
+
+    ?"While you were out:"
+
+    ?"Left button was depressed at"
+
+    ??rat_rowl(),rat_coll()
+
+  endif
+
+ ^bNotes:
+ This is different from RAT_LBHD() in that RAT_LBHD()
+ is a 'right now' function - determining if the button IS
+ depressed, whereas this function determines if the button HAS
+ been depressed.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_NOMOUSE() This forces a no mouse status, regardless
+'------------------------------------------------------------------------------
+
+ RAT_NOMOUSE() Sets the mouse flag to false, regardless of if
+ there is a mouse and driver or not
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_NOMOUSE()
+
+ ^bDescription
+ RAT_NOMOUSE() Sets the mouse flag to false, regardless of if
+ there is a mouse and driver or not
+
+ ^bExamples
+  RAT_NOMOUSE()
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_OFF()     Sets the mouse cursor off
+'------------------------------------------------------------------------------
+
+ RAT_OFF() Sets the mouse cursor off
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_OFF()
+
+ ^bDescription
+ Turns the mouse cursor off
+
+ ^bExamples
+  if rat_exist()
+    rat_on()
+    * do something, or wait for something...
+    rat_off()
+  endif
+
+ ^bNotes:
+ There must be a rat_on() call for each rat_off() call
+ in succession.
+
+ In other words, if you do:
+          rat_off()
+          rat_off()
+
+ you must then do:
+          rat_on()
+          rat_on()
+
+ to turn on the mouse cursor, as it is stacked.
+
+ e.g.
+
+        if rat_exist()
+          rat_on()
+          * do something, or wait for something...
+          rat_off()
+        endif
+
+ RAT_EVENT() takes care of the mouse on/off settings,
+ so if you use RAT_EVENT(), you need not use RAT_ON()/RAT_OFF()
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_ON()      Sets the mouse cursor on
+'------------------------------------------------------------------------------
+
+ RAT_ON() Sets the mouse cursor on
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_ON()
+
+ ^bDescription
+ Turns the mouse cursor on
+
+ ^bExamples
+  if rat_exist()
+    rat_on()
+    * do something, or wait for something...
+    rat_off()
+
+  endif
+
+ ^bNotes:
+ There must be a rat_on() call for each rat_off() call
+ in succession.
+
+ In other words, if you do:
+          rat_off()
+          rat_off()
+
+ you must then do:
+          rat_on()
+          rat_on()
+
+ to turn on the mouse cursor, as it is stacked.
+
+ e.g.
+
+        if rat_exist()
+          rat_on()
+          * do something, or wait for something...
+          rat_off()
+        endif
+
+ RAT_EVENT() takes care of the mouse on/off settings,
+ so if you use RAT_EVENT(), you need not use RAT_ON()/RAT_OFF()
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_POSIT()   Positions the mouse cursor at row,column
+'------------------------------------------------------------------------------
+
+ RAT_POSIT() Positions the mouse cursor at row,column
+ coordinates
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_POSIT(nRow,nColumn)
+
+ ^bDescription
+ Move the mouse cursor to nRow,nColumn.
+
+ ^bExamples
+  RAT_OFF()
+
+  RAT_POSIT(0,0)  // upper left hand corner
+
+  RAT_ON()
+
+ ^bNotes:
+ Be sure to RAT_OFF() before doing this.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_RBHD()    Determines if the mouse right button is currently depressed
+'------------------------------------------------------------------------------
+
+ RAT_RBHD() Determines if the mouse right button is currently
+ depressed
+
+ ^bReturns
+ <lDepressed> => mouse right button is currently
+ depressed
+
+ ^bSyntax
+ RAT_RBHD()
+
+ ^bDescription
+ Determines if the mouse right button is currently
+ depressed
+
+ ^bExamples
+  if RAT_RBHD()
+
+    ?"Mouse right button depressed NOW"
+
+  endif
+
+ ^bNotes:
+ This is different from the event function
+ RAT_ERBHD(). RAT_ERBHD(<n>) watches the mouse for <n> seconds,
+ and if the mouse remains depressed for the full time, then it is
+ considered to be HELD DOWN. RAT_RBHD() on the other hand, only
+ checks for the mouse button being depressed RIGHT NOW.
+ RAT_ERBHD() calls RAT_RBHD() repetitively.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_RESET()   Resets the mouse to its default values
+'------------------------------------------------------------------------------
+
+ RAT_RESET() Resets the mouse to its default values
+
+ ^bReturns
+ None
+
+ ^bSyntax
+ RAT_RESET()
+
+ ^bDescription
+ Resets the mouse to its default values.
+
+ ^bExamples
+  RAT_RESET()
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_RIGHTB()  Determines if the right mouse button has been pressed
+'------------------------------------------------------------------------------
+
+ RAT_RIGHTB() Determines if the right mouse button has been
+ pressed
+
+ ^bReturns
+ <lHasBeenPressed> => right mouse button has been
+ pressed
+
+ ^bSyntax
+ RAT_RIGHTB()
+
+ ^bDescription
+ This returns .t. if the right button has been pressed
+ since last call to this function. Row and column are recorded
+ for reference by rat_rowr() and rat_colr().
+
+ ^bExamples
+  if rat_rightb()
+
+    ?"While you were out:"
+
+    ?"Left button was depressed at"
+
+    ??rat_rowr(),rat_colr()
+
+  endif
+
+ ^bNotes:
+ This is different from RAT_RBHD() in that RAT_RBHD()
+ is a 'right now' function - determining if the button IS
+ depressed, whereas this function determines if the button HAS
+ been depressed.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_ROW()     Current mouse row
+'------------------------------------------------------------------------------
+
+ RAT_ROW() Current mouse row
+
+ ^bReturns
+ <nRow> => mouse row right now
+
+ ^bSyntax
+ RAT_ROW()
+
+ ^bDescription
+ This gives the CURRENT mouse row
+
+ ^bExamples
+  ?"Mouse is at row :",rat_row()
+
+ ^bNotes:
+ This is different from RAT_ROWL() or RAT_ROWR() in
+ that these two functions return the recorded row when the mouse
+ button was last pressed, RAT_ROWL() for left or RAT_ROWR() for
+ right.
+
+ This function tells where the mouse is right now.
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_ROWL()    Returns mouse row at the last left button press
+'------------------------------------------------------------------------------
+
+ RAT_ROWL() Returns mouse row at the last left button press
+
+ ^bReturns
+ <nRow> => mouse row at last left button press
+
+ ^bSyntax
+ RAT_ROWL()
+
+ ^bDescription
+ Returns mouse row at the last left button press (as
+ recorded by a call to rat_leftb() )
+
+ ^bExamples
+  if rat_leftb()
+
+    ?"While you were out:"
+
+    ?"Left button was depressed at"
+
+    ??rat_rowl(),rat_coll()
+
+  endif
+
+ ^bNotes:
+ This is different from RAT_ROW() in that RAT_ROW()
+ tells the mouse row NOW wherease RAT_ROWL() tells where the
+ mouse was at the last recorded left button press (as recorded by
+ a call to rat_leftb() )
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_ROWR()    Returns mouse row at the last right button press
+'------------------------------------------------------------------------------
+
+ RAT_ROWR() Returns mouse row at the last right button press
+
+ ^bReturns
+ <nRow> => mouse row at last right button press
+
+ ^bSyntax
+ RAT_ROWR()
+
+ ^bDescription
+ Returns mouse row at the last right button press (as
+ recorded by a call to rat_rightb() )
+
+ ^bExamples
+  if rat_rightb()
+
+    ?"While you were out:"
+
+    ?"Right button was depressed at"
+
+    ??rat_rowr(),rat_colr()
+
+  endif
+
+ ^bNotes:
+ This is different from RAT_ROW() in that RAT_ROW()
+ tells the mouse row NOW wherease RAT_ROWR() tells where the
+ mouse was at the last recorded right button press (as recorded
+ by a call to rat_rightb() )
+
+ ^bSource: S_MOUSE.ASM
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,898 @@
+!short:^b       What's changed?
+!short: 1.Asterix * indicates parameter or return value change
+!short: 2.These are outward changes that may concern you, the
+!short:   programmer. Changes to internal code or algorithms are
+!short:   not documented.
+!short: 3.For a list of ^bnew^n functions, see the ^bWhats New^n entry
+!short:
+!short:^bChanges in SuperLib 3.5
+!short:
+!short:General Changes
+'------------------------------------------------------------------------------
+
+ ^bGeneral Changes
+
+ -Completely mouse aware
+ -Mouse 'hot' buttons such as [ENTER=done] [ESC=cancel] where
+  needed for mouse interaction
+ -OREPORTER() is no longer supported
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:BUILDEX()
+'------------------------------------------------------------------------------
+
+ ^bBUILDEX()
+
+ -Now allows direct editing of the expression
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CLABEL()
+'------------------------------------------------------------------------------
+
+ ^bCLABEL()
+
+ -Now allows direct editing of the label contents
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITDB()            *
+'------------------------------------------------------------------------------
+
+ ^bEDITDB()
+
+  Two new parameters:
+
+  -[lByPassLeave] allows bypass of "Quit?" dialog. Just quits
+
+  -[nLock] number of columns to lock (default is 0)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITMEMO()          *
+'------------------------------------------------------------------------------
+
+ ^bEDITMEMO()
+
+ - Title parameter added
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITMEMOV()         *
+'------------------------------------------------------------------------------
+
+ ^bEDITMEMOV()
+
+ - Title parameter added
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FORMLETR()
+'------------------------------------------------------------------------------
+
+ ^bFORMLETR()
+
+ - Now allows freeform formula building in addition to field
+   picklist.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FREQANAL()
+'------------------------------------------------------------------------------
+
+ ^bFREQANAL()
+
+ -New to 3.5 - now allows fields of type C D and N to be added
+  to the frequency string. Additional Summary fields are now named
+  SUM_1, SUM_2...etc in the output results. (previously they retained
+  their original name)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GENED()
+'------------------------------------------------------------------------------
+
+ ^bGENED()
+
+ -New to 3.5: memo editing is done to a memvar. Changes aren't
+  saved unless the whole record is saved. A global [F3=Memo] key
+  lets you pick which memo to edit.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GETCALC()
+'------------------------------------------------------------------------------
+
+ ^bGETCALC()
+
+ -Now supports percentage (%) operator
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GLOBREP()
+'------------------------------------------------------------------------------
+
+ ^bGLOBREP()
+
+  New to 3.5:
+  -Preview (view changes before they happen)
+  -'Build Formula' replacement option type. Lets user build a
+  formula for replacing the target field.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:QUERY()
+'------------------------------------------------------------------------------
+
+ ^bQUERY()
+
+ -Free form formula building for both the target
+  and value part of each locical expression.
+  Build queries like:
+     "right(idcode,4)==right(oldcode,4)"
+     "iif(iscustomer,isbuyer,.f.)"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_MENU2()          *
+'------------------------------------------------------------------------------
+
+ ^bRAT_MENU2()
+
+ -[bMouse] is an optional codeblock for mouse clicks. If the
+  mouse click does not satisfy RAT_MENU2(), and there is a
+  [bMouse] codeblock, it will be evaluated as follows:
+               eval(bMouse,mouserow, mousecol)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:RAT_READ()           *
+'------------------------------------------------------------------------------
+
+ ^bRAT_READ()
+
+ RAT_READ() has been completely rewritten in 3.5, to more closely
+ match GETSYS.PRG.
+
+ -[bLmouse] (new in 3.5) is a codeblock that is evaluated when there
+  is a mouse click and it is not meaningful to RAT_READ().
+  It is evaluated as :  eval(bLMouse,mouserow, mousecolumn)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SACHOICE()           *
+'------------------------------------------------------------------------------
+
+ ^bSACHOICE()
+
+ -[nMRow, nMCol]  (new in 3.5) Directs sachoice() to draw
+  the "[][]" for mouse up/down at nMrow, nMCol, and to be aware of mouse
+  clicks on these buttons. (the screen under the arrows is saved/restored)
+
+ -[bMouse] is a codeblock to evaluate mouse clicks other than those
+  meaningful to sachoice(). The codeblock is evaluated as follows:
+            eval(bMouse,mouserow, mousecolumn)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SAPPOINT()
+'------------------------------------------------------------------------------
+
+ ^bSAPPOINT()
+
+ - improved look and feel
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SGETMANY()           *
+'------------------------------------------------------------------------------
+
+ ^bSGETMANY()
+
+ -[cFoot] is now ignored. This parameter used to be the footer. It
+  is now just a placeholder for downward compatibility.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:TODOLIST()
+'------------------------------------------------------------------------------
+
+ ^bTODOLIST()
+
+ -Improved look and feel
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:VIEWMEMOS()          *
+'------------------------------------------------------------------------------
+
+ ^bVIEWMEMOS()
+
+ -[cMemoName] (new to 3.5) allows you to pass in a memo name and
+  bypass the "Which memo?" screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^bChanges in SuperLib 3.0
+!short:
+!short:General changes
+'------------------------------------------------------------------------------
+
+ ^General
+
+ (other than overall 5.01 optimization, conversion of privates and
+  publics to locals and statics, use of hungarian notation, use
+  of Tbrowse where indicated, use of codeblocks for speed... )
+
+ - No direct screen writing - all goes through Clipper now
+
+ - All internal procs and variables are now STATIC
+
+ - In most cases, deleted records for internal files are recycled
+   so that packing isn't needed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:ALENG()
+'------------------------------------------------------------------------------
+
+ ^bALENG()
+
+ - Was a C function previously, now a Clipper function
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:APPENDIT()
+'------------------------------------------------------------------------------
+
+ ^bAPPENDIT()
+
+ -Now allows type-in of import DBF name
+
+ -Now checks for import dbf already in use
+
+ -Different (smoother) interface for field matching. Allows
+  'type-in' for field value
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ATT()               *
+'------------------------------------------------------------------------------
+
+ ^bATT()
+
+ -No longer supports the 6th parameter (character). This can
+  easily be done with DISPBOX() in Clipper 5.xx.
+
+ -This was previously a C file, now written in Clipper.
+
+ -Now returns the saved screen section before the change, so
+  you can restore it later with restscreen(t,l,b,r,screen)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BIGELEM()
+'------------------------------------------------------------------------------
+
+ ^bBIGELEM()
+
+ -Was a C function previously
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLDARR()            *
+'------------------------------------------------------------------------------
+
+ ^bBLDARR()
+
+ -First param MUST be an array
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLDDBF()
+'------------------------------------------------------------------------------
+
+ ^bBLDDBF()
+
+ -Now uses DBCREATE() to create the DBF file
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BLDNDX()            *
+'------------------------------------------------------------------------------
+
+ ^bBLDNDX()
+
+ -Fourth parameter determines if BUILDEX() is called or not. In previous
+  versions, it was called if it was in memory.
+
+ -Added a progress bar
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:BXX()
+'------------------------------------------------------------------------------
+
+ ^bBXX()
+
+ This was previously a C function.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CLABEL()            *
+'------------------------------------------------------------------------------
+
+ ^bCLABEL()
+
+ -This one was practically a rewrite
+
+ -More/different menu structure
+
+ -There are now switches for compressing blank lines and compressing
+  blank spaces when printing. Previously blank lines were shifted out,
+  and blank spaces were compressed to one.
+
+ -Storage is now done to a DBF. CLABELS.DBF by default. See SLSF_*().
+
+ -Expression builder is now an option
+
+ -Editing label contents has been completely redone, and now had options
+  for FIELD, TEXT, SPACES, EXPRESSION (optional). On character field, has
+  options for TRIM(), UPPER(), LOWER(), PROPER().
+
+ -Now supports Avery Laser labels directly
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:COPYITOUT()
+'------------------------------------------------------------------------------
+
+ ^bCOPYITOUT()
+
+ -Now has the standard SuperLib look and feel (full screen, menu)
+
+ -Added progress bar when copying
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:DUPLOOK()
+'------------------------------------------------------------------------------
+
+ ^bDUPLOOK()
+
+ -Now skips blanks
+
+ -Now had progress bar for indexing
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITDB()
+'------------------------------------------------------------------------------
+
+  ^bEDITDB()
+
+  -Changed (L)ocate to (S)earch
+  -Added (L)ock      - lock columns
+  -Added (F)ields    - select browse fields
+  -Added (K)eysearch - seek search
+  -Added (O)rder     - index order selection
+  -Added (R)ecall    - as companion to (D)elete
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:EDITMEMO()          *
+'------------------------------------------------------------------------------
+
+ -Returns <lChanged> based on memo field changed or not. THIS
+  DIFFERS FROM THE DOCUMENTATION.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FILEREAD()
+'------------------------------------------------------------------------------
+
+ ^bFILEREAD()               *
+
+ -Optional parameter for title which overrides the default file name.
+
+ -Now uses TBROWSE to browse the file.
+
+ -Two additional params for Search and Mark
+
+ -Now accepts wildcard as 5th param (filespec)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FORMLETR()
+'------------------------------------------------------------------------------
+
+  ^bFORMLETR()
+
+   -Now attempts to re-use deleted records. Deleted records are
+    hidden from view, and re-used at the next ADD.
+
+   -Added single letter option to filter options
+
+   -Now allows TRIM(), UPPER(), LOWER() , PROPER() of character fields
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FREQANAL()
+'------------------------------------------------------------------------------
+
+ ^bFREQANAL()
+
+  -Now does analysis on character fields only
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GENED()
+'------------------------------------------------------------------------------
+
+ ^bGENED()
+
+  -Now has a 'Clone' option when adding. This copies the values
+   from the current record
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FULLDIR()
+'------------------------------------------------------------------------------
+
+ ^bFULLDIR()
+
+ -Completely new look and feel. More 'Windows' like.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GENVAL()            *
+'------------------------------------------------------------------------------
+
+ ^bGENVAL()
+
+ -Now allows a codeblock as first param
+
+ -Now allows an array of messages as 2nd param
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:GLOBREP()
+'------------------------------------------------------------------------------
+
+ ^bGLOBREP()                *
+
+ -Added optional field params
+
+ -removed 'replace with other field' -
+  nobody uses it, and it takes too much space
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:^bINITSUP()           *
+'------------------------------------------------------------------------------
+
+ ^bINITSUP()
+
+ -The INITSUP() duties have been replaced by the functions:
+   SLSF_*()
+   SLS_*()
+   SATT*()
+
+ -To suppress public variable declaration, either do not call
+  initsup(), or call it with (.f.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISPART()            *
+'------------------------------------------------------------------------------
+
+ ^bISPART()
+
+ -Now works with any type
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ISPRN()
+'------------------------------------------------------------------------------
+
+ ^bISPRN()
+
+ -rewrote this ASM function, was having troubles with
+  a previous version
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:LISTER()
+'------------------------------------------------------------------------------
+
+ ^bLISTER()
+
+ -LISTER now attempts to re-use deleted records when storing to disk.
+   Deleted records are hidden from view
+
+ -completely new Field List Builder - uses Tbrowse, more WYSIWYG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MCHOICE()           *
+'------------------------------------------------------------------------------
+
+ ^bMCHOICE()
+
+ -First param is now an array. Cannot be a string containing an array
+  name. Dimension params are now optional.
+
+ -Now uses Tbrowse() instead of Achoice()
+
+ -now accepts a starting element and starting row parameter
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:MODIFY()
+'------------------------------------------------------------------------------
+
+ ^bMODIFY()
+
+ -some change in screen appearance
+
+ -now uses a Tbrowse() engine
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:PICKNDX()           *
+'------------------------------------------------------------------------------
+
+ ^bPICKNDX()
+
+ -The array returned is now sized to reflect the number of
+  indexes selected. If 2 selected, it is 2 elements long, etc.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:PLSWAIT()
+'------------------------------------------------------------------------------
+
+ -Does not use PUBLICs, uses internal statics to determine
+  continue/not.
+
+ -Uses codeblocks for better speed
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:PULLDN()
+'------------------------------------------------------------------------------
+
+ ^bPULLDN()
+
+ -Menu boxes now have a 1 char width padding on either side.
+
+ -Now handles hotkeys - keys set up with SET KEY xxx TO or
+  with SETKEY() - by passing the attached codeblock the
+  following params: "PULLDN",nil,"current option text"
+  Now works with SuperLib HELP, however note that the third
+  param (option text) is only significant to the 10th character.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:QUERY()             *
+'------------------------------------------------------------------------------
+
+ ^bQUERY()
+
+ -5th param - <expL> - use BUILDEX() or not
+
+ -Query now attempts to re-use deleted records when storing to disk.
+
+  Deleted records are hidden from view
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:REPORTER()
+'------------------------------------------------------------------------------
+
+ ^bREPORTER()
+
+ -New printer codes option allows use of actual printer codes
+
+ -Allow complete suppression of Major and Minor Group Headers by
+  entering NONE.
+
+ -Now sports the standard SuperLib look and feel - old look and
+  feel still available as OREPORTER().
+
+ -Reporter now attempts to re-use deleted records when storing to disk.
+  Deleted records are hidden from view
+
+ -Made Eject After Printing default to True
+
+ -Considerably faster
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SCMOD()
+'------------------------------------------------------------------------------
+
+  ^bSCMOD()
+
+ -SCMOD now attempts to re-use deleted records when storing to disk.
+  Deleted records are hidden from view
+
+ -Slightly better interface
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SEARCHME()          *
+'------------------------------------------------------------------------------
+
+ ^bSEARCHME()
+
+ -Returns a search codeblock instead of "". THIS DIFFERS FROM THE
+  PRINTED DOCUMENTATION
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SETCOLORS()
+'------------------------------------------------------------------------------
+
+ ^bSETCOLORS()
+
+ -Allows save/restore of color sets
+
+ -Now supports high intensity backgrounds if SETBLINK() == .f.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SMALLS()            *
+'------------------------------------------------------------------------------
+
+ ^bSMALLS()
+
+ -Old params will work. Some params now take an optional codeblock.
+
+ -Added new exception key param - will call a block on exception key.
+
+ -Now uses Tbrowse engine.
+
+ -Added new FORCE CAPS param for type-in.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:TAGIT()             *
+'------------------------------------------------------------------------------
+
+ ^bTAGIT()
+
+ -There are slight differences in behavior from previous versions.
+  Previous versions required an array of fixed length, and only allowed
+  tagging up to that length. This version grows or shrinks the array
+  as needed. This version will also shrink an empty array down to
+  zero on startup.
+
+ -Allows TAG ALL MATCHING now after a search. Uses the #define MAXTAG
+  which is at the top of the .PRG and which is set at 1000. You can
+  change this for anything up to 4096 - max array elements.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:TODOLIST()
+'------------------------------------------------------------------------------
+
+ ^bTODOLIST()
+ -TODOLIST now attempts to re-use deleted records when storing
+  to disk. Deleted records are hidden from view
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:UNBOX()             *
+'------------------------------------------------------------------------------
+
+ ^bUNBOX()
+
+  -Added optional param to change the default restore screen method.
+   So, UNBOX() can use all of the SS_*() functions as restscreens...
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:UNIQFNAME()         *
+'------------------------------------------------------------------------------
+
+ ^bUNIQFNAME()
+
+ -Changed "$" in temp file name to "_" - as SELECT() has problems
+  with a filename containing "$"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:VAR2CHAR()          *
+'------------------------------------------------------------------------------
+
+ ^bVAR2CHAR()
+
+ -Value is now passed in directly - NOT by name.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:VIEWPORT()          *
+'------------------------------------------------------------------------------
+
+ ^bVIEWPORT()
+
+ -There is an additional <cTitle> parameter
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:WRITEFILE()         *
+'------------------------------------------------------------------------------
+
+
+ ^bWRITEFILE()
+
+ -Now accepts only an array or a string as the 2nd parameter.
+  Array NAME is no longer valid.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:XBXX()
+'------------------------------------------------------------------------------
+
+ ^bXBXX()
+
+ -This was previously a C function.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:_WILDCARD()
+'------------------------------------------------------------------------------
+
+ ^b_WILDCARD()
+
+ -This was previously a C function, now Clipper code, and more
+  reliable
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:SUPER.PRG
+'------------------------------------------------------------------------------
+
+ ^bSUPER.PRG
+
+ -This is now packaged as a function SUPERSUPER() and is in the
+  file S_SUPER.PRG
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

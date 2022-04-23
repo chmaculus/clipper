@@ -1,0 +1,838 @@
+!short: TBrowse -- Overview
+'------------------------------------------------------------------------------
+ ^bTBrowse^b
+ Provides objects for browsing table-oriented data
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bDescription^b
+
+     A TBrowse object is a general purpose browsing mechanism for
+     table-oriented data.  TBrowse objects provide a sophisticated architecture
+     for acquiring, formatting, and displaying data.  Data retrieval and file
+     positioning are performed via user-supplied code blocks, allowing a high
+     degree of flexibility and interaction between the browsing mechanism and
+     the underlying data source.  The format of individual data items can be
+     precisely controlled via the TBColumn data retrieval code blocks;
+     overall display formatting and attributes can be controlled by sending
+     appropriate messages to the TBrowse object.
+
+     A TBrowse object relies on one or more TBColumn objects.  A TBColumn
+     object contains the information necessary to define a single column of
+     the browse table (see TBColumn class in this chapter).
+
+     During operation, a TBrowse object retrieves data by evaluating code
+     blocks.  The data is organized into rows and columns and displayed
+     within a specified rectangular region of the screen.  The TBrowse object
+     maintains an internal browse cursor.  The data item on which the browse
+     cursor rests is displayed in a highlighted color.  (The actual screen
+     cursor is also positioned to the first character of this data item.)
+
+     Initially, the browse cursor is placed on the data item at the top left
+     of the browse display.  Messages can then be sent to the TBrowse object
+     to navigate the displayed data, causing the browse cursor to move.
+     These messages are normally sent in response to user keystrokes.
+
+     New data is automatically retrieved as required by navigation requests.
+     When navigation proceeds past the edge of the visible rectangle, rows or
+     columns beyond that edge are automatically brought into view.  When new
+     rows are brought into view, the underlying data source is repositioned
+     by evaluating a code block.
+
+     ^bNote: ^b TBrowse objects do not clear the entire window before output
+     during redisplay operations.  Part of the window may still be cleared
+     when data from the existing display is scrolled.
+
+ ^bExamples^b
+
+     For fully operational examples of a TBrowse object, refer to the TBrowse
+     introduction chapter in the Programming and Utilities guide and to
+     TbDemo.prg located in \CLIPPER5\SOURCE\SAMPLE.
+!seealso: c52g_001.ngo:"BROWSE()*" c52g_001.ngo:"DBEDIT()*" c52g_001.ngo:"SETCOLOR()" c52g_023.ngo:"TBColumn" 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^BClass Functions^B
+!short:
+!short: TBrowseNew()      Create a new TBrowse object
+'------------------------------------------------------------------------------
+
+     ^bTBrowseNew(<nTop>, <nLeft>, <nBottom>, <nRight>)
+     ^b   --> objTBrowse
+
+        Returns a new TBrowse object with the specified coordinate settings.
+        The TBrowse object is created with no columns and no code blocks for
+        data positioning.  These must be provided before the TBrowse object
+        can be used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: TBrowseDB()       Create a new TBrowse object for browsing a database file
+'------------------------------------------------------------------------------
+
+     ^bTBrowseDB(<nTop>, <nLeft>, <nBottom>, <nRight>)
+     ^b   --> objTBrowse
+
+        Returns a new TBrowse object with the specified coordinate settings
+        and default code blocks for data source positioning within database
+        files.  The default code blocks execute the GO TOP, GO BOTTOM, and
+        SKIP operations.
+
+        Note that TBrowseDB() creates an object with no column objects.  To
+        make the TBrowse object usable, you must add a column for each field
+        to be displayed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExported Instance Variables^b
+!short:
+!short: autoLite          Logical value to control highlighting
+'------------------------------------------------------------------------------
+
+     ^bautoLite                                       (Assignable)
+
+        Contains a logical value.  When autoLite is set to true (.T.), the
+        stabilize method automatically highlights the current cell as part of
+        stabilization.  The default for autoLite is true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: cargo             User-definable variable
+'------------------------------------------------------------------------------
+
+     ^bcargo                                             (Assignable)
+
+        Contains a value of any data type provided as a user-definable slot.
+        TBrowse:cargo allows arbitrary information to be attached to a
+        TBrowse object and retrieved later.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colCount          Number of browse columns
+'------------------------------------------------------------------------------
+
+     ^bcolCount
+
+        Contains a numeric value indicating the total number of data columns
+        in the browse.  For each column, there is an associated TBColumn
+        object.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colorSpec         Color table for the TBrowse display
+'------------------------------------------------------------------------------
+
+     ^bcolorSpec                                       (Assignable)
+
+        Contains a character string defining a color table for the TBrowse
+        display.  As a default, the current SETCOLOR() value is copied into
+        this variable when the TBrowse object is created (see the SETCOLOR()
+        reference in this chapter).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colPos            Current cursor column position
+'------------------------------------------------------------------------------
+
+     ^bcolPos                                          (Assignable)
+
+        Contains a numeric value indicating the data column where the browse
+        cursor is currently located.  Columns are numbered from one, starting
+        with the leftmost column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colSep            Column separator character
+'------------------------------------------------------------------------------
+
+     ^bcolSep                                          (Assignable)
+
+        Contains a character value that defines a column separator for
+        TBColumns that do not contain a column separator of their own (see
+        TBColumn class in this chapter for more information).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: footSep           Footing separator character
+'------------------------------------------------------------------------------
+
+     ^bfootSep                                          (Assignable)
+
+        Contains a character value that defines a footing separator for
+        TBColumns not containing a footing separator of their own (see
+        TBColumn class in this chapter).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: freeze            Number of columns to freeze
+'------------------------------------------------------------------------------
+
+     ^bfreeze                                          (Assignable)
+
+        Contains a numeric value that defines the number of data columns
+        frozen on the left side of the display.  Frozen columns are always
+        visible, even when other columns are panned off the display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: goBottomBlock     Code block executed by TBrowse:goBottom()
+'------------------------------------------------------------------------------
+
+     ^bgoBottomBlock                                 (Assignable)
+
+        Contains a code block executed in response to the TBrowse:goBottom()
+        message.  This block is responsible for repositioning the data source
+        to the last record displayable in the browse.  Typically the data
+        source is a database file, and this block contains a call to a
+        user-defined function that executes a GO BOTTOM command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: goTopBlock        Code block executed by TBrowse:goTop()
+'------------------------------------------------------------------------------
+
+     ^bgoTopBlock                                       (Assignable)
+
+        Contains a code block that is executed in response to the
+        TBrowse:goTop() message.  This block is responsible for repositioning
+        the data source to the first record displayable in the browse.
+        Typically the data source is a database file, and this block contains
+        a call to a user-defined function that executes a GO TOP command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: headSep           Heading separator character
+'------------------------------------------------------------------------------
+
+     ^bheadSep                                          (Assignable)
+
+        Contains a character value that defines a heading separator for
+        TBColumns not containing a heading separator of their own (see
+        TBColumn class in this chapter).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: hitBottom         Indicates the end of available data
+'------------------------------------------------------------------------------
+
+     ^bhitBottom                                       (Assignable)
+
+        Contains a logical value indicating whether an attempt was made to
+        navigate beyond the end of the available data.  TBrowse:hitBottom
+        contains true (.T.) if an attempt was made; otherwise it contains
+        false (.F.).  During stabilization, the TBrowse object sets this
+        variable if TBrowse:skipBlock indicates it was unable to skip forward
+        as many records as requested.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: hitTop            Indicates the beginning of available data
+'------------------------------------------------------------------------------
+
+     ^bhitTop                                          (Assignable)
+
+        Contains a logical value indicating whether an attempt was made to
+        navigate past the beginning of the available data.  TBrowse:hitTop
+        contains true (.T.) if an attempt was made; otherwise it contains
+        false (.F.).  During stabilization, the TBrowse object sets this
+        variable if TBrowse:skipBlock indicates that it was unable to skip
+        backward as many records as requested.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: leftVisible       Indicates position of leftmost unfrozen column in display
+'------------------------------------------------------------------------------
+
+     ^bleftVisible
+
+        Contains a numeric value indicating the position of the leftmost
+        unfrozen column visible in the browse display.  If every column is
+        frozen in the display, TBrowse:leftVisible contains zero.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: nBottom           Bottom row number for the TBrowse display
+'------------------------------------------------------------------------------
+
+     ^bnBottom                                          (Assignable)
+
+        Contains a numeric value defining the bottom screen row used for the
+        TBrowse display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: nLeft             Leftmost column for the TBrowse display
+'------------------------------------------------------------------------------
+
+     ^bnLeft                                             (Assignable)
+
+        Contains a numeric value defining the leftmost screen column used for
+        the TBrowse display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: nRight            Rightmost column for the TBrowse display
+'------------------------------------------------------------------------------
+
+     ^bnRight                                          (Assignable)
+
+        Contains a numeric value defining the rightmost screen column used
+        for the TBrowse display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: nTop              Top row number for the TBrowse display
+'------------------------------------------------------------------------------
+
+     ^bnTop                                             (Assignable)
+
+        Contains a numeric value defining the top screen row used for the
+        TBrowse display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: rightVisible      Indicates position of rightmost unfrozen column in display
+'------------------------------------------------------------------------------
+
+     ^brightVisible
+
+        Contains a numeric value indicating the position of the rightmost
+        unfrozen column visible in the browse display.  If all columns
+        visible in the display are frozen, TBrowse:rightVisible contains
+        zero.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: rowCount          Number of visible data rows in the TBrowse display
+'------------------------------------------------------------------------------
+
+     ^browCount
+
+        Contains a numeric value indicating the number of data rows visible
+        in the browse display.  Only data rows are included in the count.
+        Rows occupied by headings, footings, or separators are not included.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: rowPos            Current cursor row position
+'------------------------------------------------------------------------------
+
+     ^browPos                                          (Assignable)
+
+        Contains a numeric value indicating the data row where the browse cursor
+        is currently located.  Data rows are numbered from one, starting with
+        the topmost data row.  Screen rows containing headings, footings or
+        separators are not considered data rows.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: skipBlock         Code block used to reposition data source
+'------------------------------------------------------------------------------
+
+     ^bskipBlock                                       (Assignable)
+
+        Contains a code block that repositions the data source.  During
+        stabilization, this code block is executed with a numeric argument
+        when the TBrowse object needs to reposition the data source.  The
+        numeric argument passed to the block represents the number of records
+        to be skipped.  A positive value means skip forward, and a negative
+        value means skip backward.  A value of zero indicates that the data
+        source does not need to be repositioned, but the current record may
+        need to be refreshed.  Typically the data source is a database file,
+        and this block calls a user-defined function that executes a SKIP
+        command to reposition the record pointer.
+
+        The block must return the number of rows (positive, negative, or
+        zero) actually skipped.  If the value returned is not the same as the
+        value requested, the TBrowse object assumes that the skip operation
+        encountered the beginning or end of file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: stable            Indicates if the TBrowse object is stable
+'------------------------------------------------------------------------------
+
+     ^bstable                                          (Assignable)
+
+        Contains a logical value indicating whether the TBrowse object is
+        stable.  It contains true (.T.) if the TBrowse object is stable;
+        otherwise, it contains false (.F.).  The browse is considered stable
+        when all data has been retrieved and displayed, the data source has
+        been repositioned to the record corresponding to the browse cursor,
+        and the current cell has been highlighted.  When navigation messages
+        are sent to the TBrowse object, TBrowse:stable is set to false (.F.).
+        After stabilization is performed using the TBrowse:stabilize()
+        message, TBrowse:stable is set to true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExported Methods^b
+!short:
+!short: ^bCursor Movement Methods^b
+!short: down()            Moves the cursor down one row
+'------------------------------------------------------------------------------
+
+     ^bdown() --> self
+
+        Moves the browse cursor down one row.  If the cursor is already on
+        the bottom row, the display is scrolled up and a new row is brought
+        into view.  If the data source is already at the logical end of file
+        and the browse cursor is already on the bottom row, TBrowse:hitBottom
+        is set true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: end()             Moves the cursor to the rightmost visible data column
+'------------------------------------------------------------------------------
+
+     ^bend() --> self
+
+        Moves the browse cursor to the rightmost data column currently
+        visible.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: goBottom()        Repositions the data source to the bottom of file
+'------------------------------------------------------------------------------
+
+     ^bgoBottom() --> self
+
+        Repositions the data source to logical bottom of file (by evaluating
+        the TBrowse:goBottomBlock), refills the display with the bottommost
+        available data, and moves the browse cursor to the lowermost data row
+        for which data is available.  The pan position of the window is not
+        changed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: goTop()           Repositions the data source to the top of file
+'------------------------------------------------------------------------------
+
+     ^bgoTop() --> self
+
+        Repositions the data source to the logical beginning of file (by
+        evaluating the TBrowse:goTopBlock), refills the display with the
+        topmost available data, and moves the browse cursor to the uppermost
+        data row for which data is available.  The pan position of the window
+        is not changed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: home()            Moves the cursor to the leftmost visible data column
+'------------------------------------------------------------------------------
+
+     ^bhome() --> self
+
+        Moves the browse cursor to the leftmost unfrozen column on the
+        display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: left()            Moves the cursor left one column
+'------------------------------------------------------------------------------
+
+     ^bleft() --> self
+
+        Moves the browse cursor left one data column.  If the cursor is
+        already on the leftmost displayed column, the display is panned and
+        the previous data column (if there is one) is brought into view.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: pageDown()        Repositions the data source downward
+'------------------------------------------------------------------------------
+
+     ^bpageDown() --> self
+
+        Repositions the data source downward and refills the display.  If the
+        data source is already at the logical end of file (i.e., the
+        bottommost available record is already shown), the browse cursor is
+        simply moved to the lowermost row containing data.  If the data
+        source is already at the logical end of file and the browse cursor is
+        already on the bottom row, TBrowse:hitBottom is set true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: pageUp()          Repositions the data source upward
+'------------------------------------------------------------------------------
+
+     ^bpageUp() --> self
+
+        Repositions the data source upward and refills the display.  If the
+        data source is already at logical beginning of file (i.e., the
+        topmost available record is already shown), the browse cursor is
+        simply moved to the top data row.  If the data source is already at
+        logical beginning of file and the browse cursor is already on the
+        first data row, TBrowse:hitTop is set true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: panEnd()          Moves the cursor to the rightmost data column
+'------------------------------------------------------------------------------
+
+     ^bpanEnd() --> self
+
+        Moves the browse cursor to the rightmost data column, causing the
+        display to be panned completely to the right.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: panHome()         Moves the cursor to the leftmost visible data column
+'------------------------------------------------------------------------------
+
+     ^bpanHome() --> self
+
+        Moves the browse cursor to the leftmost data column, causing the
+        display to be panned all the way to the left.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: panLeft()         Pans left without changing the cursor position
+'------------------------------------------------------------------------------
+
+     ^bpanLeft() --> self
+
+        Pans the display without changing the browse cursor, if possible.
+        When the screen is panned with TBrowse:panLeft(), at least one data
+        column out of view to the left is brought into view, while one or
+        more columns are panned off screen to the right.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: panRight()        Pans right without changing the cursor position
+'------------------------------------------------------------------------------
+
+     ^bpanRight() --> self
+
+        Pans the display without changing the browse cursor, if possible.
+        When the screen is panned with TBrowse:panRight(), at least one data
+        column out of view to the right is brought into view, while one or
+        more columns are panned off the screen to the left.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: right()           Moves the cursor right one column
+'------------------------------------------------------------------------------
+
+     ^bright() --> self
+
+        Moves the browse cursor right one data column.  If the cursor is
+        already at the right edge, the display is panned and the next data
+        column (if there is one) is brought into view.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: up()              Moves the cursor up one row
+'------------------------------------------------------------------------------
+
+     ^bup() --> self
+
+        Moves the browse cursor up one row.  If the cursor is already on the
+        top data row, the display is scrolled down and a new row is brought
+        into view.  If the data source is already at the logical beginning of
+        file and the browse cursor is already on the top data row,
+        TBrowse:hitTop is set true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short: ^bMiscellaneous Methods^b
+!short: addColumn()       Adds a TBColumn object to the TBrowse object
+'------------------------------------------------------------------------------
+
+     ^baddColumn(<objColumn>) --> self
+
+        Adds a new TBColumn object to the TBrowse object and TBrowse:colCount
+        is increased by one.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colorRect()       Alters the color of a rectangular group of cells
+'------------------------------------------------------------------------------
+
+     ^bcolorRect(<aRect>, <aColors>) --> self
+
+        Directly alters the color of a rectangular group of cells.  <aRect>
+        is an array of four numbers (top, left, bottom, and right).  The
+        numbers refer to cells within the data area of the browse display,
+        not to screen coordinates.  <aColors> is an array of two numbers.
+        The numbers are used as indexes into the color table for the browse.
+        These colors will become the normal and highlighted colors for the
+        cells within the specified rectangle.
+
+        Cells that are colored using colorRect retain their color until they
+        are scrolled off the screen up or down.  Horizontal panning has no
+        affect on these colors and, in fact, cells that are currently off
+        screen left or right can be colored even if they are not visible.
+
+        This example colors the entire virtual window (on and off screen):
+
+        aRect := {1, 1, browse:rowCount, browse:colCount}
+        browse:colorRect( aRect, {2, 1} )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: colWidth()        Returns the display width of a particular column
+'------------------------------------------------------------------------------
+
+     ^bcolWidth(<nColumn>) --> nWidth
+
+        Returns the display width of column number <nColumn> as known to the
+        browse.  If <nColumn> is out of bounds or not supplied or not a
+        number, the method returns zero.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: configure()       Reconfigures the internal settings of the TBrowse object
+'------------------------------------------------------------------------------
+
+     ^bconfigure() --> self
+
+        Causes the TBrowse object to reexamine all instance variables and
+        TBColumn objects, reconfiguring its internal settings as required.
+        This message can force reconfiguration when a TBColumn object is
+        modified directly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: deHilite()        Dehighlights the current cell
+'------------------------------------------------------------------------------
+
+     ^bdeHilite() --> self
+
+        Causes the current cell (the cell to which the browse cursor is
+        positioned) to be dehighlighted.  This method is designed for use
+        when TBrowse:autoLite is set to false (.F.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: delColumn()       Delete a column object from a browse
+'------------------------------------------------------------------------------
+
+     ^bdelColumn(<nPos>) --> objColumn
+
+        This new method allows a column to be deleted from a browse.  The
+        return value is a reference to the column object being deleted so
+        that the column object may be preserved.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: forceStable()     Performs a full stabilization                             ^r^CEA^r
+'------------------------------------------------------------------------------
+
+     ^bforceStable()
+
+        Performs a full stabilization of the TBrowse.  It is analogous to the
+        following code, only slightly faster:
+
+        DO WHILE .NOT. oBrowse:stabilize()
+        ENDDO
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: getColumn()       Gets a specific TBColumn object
+'------------------------------------------------------------------------------
+
+     ^bgetColumn(<nColumn>) --> objColumn
+
+        Returns the TBColumn object specified by <nColumn>.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: hilite()          Highlights the current cell
+'------------------------------------------------------------------------------
+
+     ^bhilite() --> self
+
+        Causes the current cell (the cell to which the browse cursor is
+        positioned) to be highlighted.  This method is designed for use when
+        TBrowse:autoLite is set to false (.F.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: insColumn()       Insert a column object in a browse
+'------------------------------------------------------------------------------
+
+     ^binsColumn(<nPos>, <objColumn>) --> objColumn
+
+        This method allows a column object to be inserted into the middle of
+        a browse.  The return value is a reference to the column object being
+        inserted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: invalidate()      Forces redraw during next stabilization
+'------------------------------------------------------------------------------
+
+     ^binvalidate() --> self
+
+        TBrowse:invalidate() causes the next stabilization of the TBrowse
+        object to redraw the entire TBrowse display, including headings,
+        footings, and all data rows.  Note that sending this message has no
+        effect on the values in the data rows; it simply forces the display to be
+        updated during the next stabilization.  To force the data to be
+        refreshed from the underlying data source, send the
+        TBrowse:refreshAll() message.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: refreshAll()      Causes all data to be refreshed during the next stabilize
+'------------------------------------------------------------------------------
+
+     ^brefreshAll() --> self
+
+        Internally marks all data rows as invalid, causing them to be
+        refilled and redisplayed during the next stabilize loop.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: refreshCurrent()  Causes the current row to be refreshed on next stabilize
+'------------------------------------------------------------------------------
+
+     ^brefreshCurrent() --> self
+
+        Internally marks the current data row as invalid, causing it to be
+        refilled and redisplayed during the next stabilize loop.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: setColumn()       Replaces one TBColumn object with another
+'------------------------------------------------------------------------------
+
+     ^bsetColumn(<nColumn>, <oColumnNew>) --> oColumnCurrent
+
+        Replaces the TBColumn object indicated by <nColumn> with the TBColumn
+        object specified by <oColumnNew>.  The value returned is the current
+        TBColumn object.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: stabilize()       Performs incremental stabilization
+'------------------------------------------------------------------------------
+
+     ^bstabilize() --> lStable
+
+        Performs incremental stabilization.  Each time this message is sent,
+        some part of the stabilization process is performed.  Stabilization
+        is performed in increments so that it can be interrupted by a
+        keystroke or other asynchronous event.
+
+        If the TBrowse object is already stable, a value of true (.T.) is
+        returned.  Otherwise, a value of false (.F.) is returned indicating
+        that further stabilize messages should be sent.  The browse is
+        considered stable when all data has been retrieved and displayed, the
+        data source has been repositioned to the record corresponding to the
+        browse cursor, and the current cell has been highlighted.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

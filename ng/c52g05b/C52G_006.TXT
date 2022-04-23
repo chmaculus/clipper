@@ -1,0 +1,234 @@
+!short: ^bRelease Note #3 -- Common Questions about Clipper 5.01^b
+'------------------------------------------------------------------------------
+ Document:    ^bRelease Note #3^b
+              ^bCommon Questions about Clipper 5.01^b
+
+              Copyright (c) 1991, Nantucket Corporation
+
+ Version:     5.01a  (April 19, 1991)
+ Supersedes:  Clipper 5.0 Support Bulletin #4  (November 2, 1991)
+
+ Summary:     This document provides answers to Common Questions known
+              at the time Clipper 5.01 was released.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: 1   Why are my 5.0 .EXEs larger than Summer '87?
+'------------------------------------------------------------------------------
+ ^b1   Why are my 5.0 .EXEs larger than Summer '87?^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper 5.0 executable (.EXE) files are often (though not always)
+     larger than equivalent Summer '87 executables.  Generally, this is
+     because of the increased size of the Clipper runtime support system
+     (the support code is larger because of the larger feature set in
+     Clipper 5.0 and because the runtime system is more modular than in
+     previous releases).
+
+     ^bNote:^b  The amount of memory needed to successfully run a Clipper
+     5.0 application is only indirectly related to the size of the
+     executable file.  In particular, increasing the amount of compiled
+     Clipper (.prg) code in an application has very little effect on the
+     amount of memory required to run the application.  This is because all
+     compiled Clipper code is automatically placed into dynamic overlays by
+     .RTLink.  Dynamically overlayed code is paged in and out of memory as
+     needed during execution; the amount of compiled Clipper code affects
+     the .EXE size but not the amount of memory required to run the
+     application.
+
+     In some cases the physical size of the .EXE file (as opposed to the
+     amount of memory needed for execution) is a concern.  An example would
+     be a large application that you wish to distribute on floppy disks.
+     Clipper 5.0 offers several options for breaking an application into
+     multiple files.  For more information, refer to Chapter 4 of your
+     Programming and Utilities Guide.
+
+     Compiling with the debugging option (/B) increases the size of the .EXE
+     file.  When you are through debugging your application, you should
+     recompile it without the debugging option.  Compiling with the /L
+     option (omit line number information) reduces the size of your .EXE
+     file.  For information on these options, refer to Chapter 3 of your
+     Programming and Utilities Guide.
+
+     For information about how .RTLink creates dynamic overlays (and how to
+     statically overlay non-Clipper code), refer to Chapter 4 of your
+     Programming and Utilities Guide.
+
+     For information about how dynamic overlays are handled during execution
+     (and other runtime memory management issues), refer to Release Note #6.
+
+     For information about determining how much memory is required to run
+     5.0 applications, see below.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2   How much memory do 5.0 applications require?
+'------------------------------------------------------------------------------
+ ^b2   How much memory do 5.0 applications require?^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The size of the executable (.EXE) file is only ^bindirectly^b related
+     to the amount of free memory required to successfully run the
+     application.
+
+     The amount of memory needed to successfully run a particular
+     application depends primarily on its load size and fixed-memory
+     requirements.  A general rule of thumb is that an application will
+     require from 100K to 200K in addition to the load size reported by
+     .RTLink.  For large applications that use most of the features of
+     Clipper, the 100K figure is usually a bare minimum; execution may be
+     slow due to heavy swapping activity by the VMM unless Expanded Memory
+     is available.
+
+     The memory requirements of a Clipper 5.0 application can be roughly
+     divided into three categories:
+
+     ^B^CFE  Load Size^b
+
+        This is the memory needed to initially read the application's
+        executable image into memory.  The load size is determined at link
+        time; it is always the same for a given .EXE.  .RTLink displays the
+        load size in parentheses at the end of every link.  Example:
+        (203K).  Load size is affected only slightly by the amount of
+        compiled Clipper code in the application (this is because, by
+        default, all compiled Clipper code is dynamically overlayed, see
+        above).
+
+        However, load size is significantly affected by the amount of
+        non-Clipper (C and Assembler) code being used.  This includes
+        Clipper support code and third party library code.  Linking with a
+        pre-linked library (.PLL) can unnecessarily increase load size if
+        your application is not actually using all of the code in the .PLL.
+
+        For information on statically overlaying C and assembler code and
+        building various configurations of pre-linked libraries refer to
+        Chapter 4 of your Programming and Utilities Guide.
+
+     ^b^CFE  Fixed-Memory Allocations^b
+
+        Fixed-memory is the memory allocated for system tables and other
+        non-virtualized data.  Memory allocated by C or Assembler functions
+        (for example, Summer '87 versions of third party libraries or
+        overlay managers) is usually fixed memory.  The fixed-memory
+        requirement depends on which features of the system are being used.
+        For most Clipper applications it ranges from 16K to 64K.  Third
+        party libraries or overlay managers which allocate fixed memory may
+        increase this requirement, as may certain Clipper programming
+        practices.
+
+     ^b^cFE  Swap Space^b
+
+        Swap space is the memory used by the Virtual Memory Manager (VMM) to
+        ^bswap^b virtualized data in and out of main memory.  By default,
+        the VMM uses all available memory as swap space; fixed allocations
+        decrease the amount of swap space available.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 3   What does "swap space exhausted" mean?
+'------------------------------------------------------------------------------
+ ^b3   What does "swap space exhausted" mean?^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This indicates that the Clipper 5.0 Virtual Memory Manager no longer
+     has enough main memory to work with.  For more information, refer to
+     the sections above.  Refer also to Release Note #6.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4   What is .RTLink error "eut0032"?
+'------------------------------------------------------------------------------
+ ^b4   What is .RTLink error "eut0032"?^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This message appears to have three possible causes:
+
+     1.  There are Summer '87 compiled .OBJs or .LIBs in the current
+         directory, or they appear in directories referenced in the LIB or
+         OBJ environment variables, or Summer '87 .OBJs or .LIBs are
+         referenced via a DOS APPEND command.  The Clipper version of
+         .RTLink is not compatible with Summer '87 compiled programs.
+
+     2.  A function or procedure has been defined twice.  Removal of the
+         duplicate declaration will solve the problem.
+
+     3.  Some reports indicate this error may occur because a single object
+         module was very large.  If neither of the above solutions
+         eliminates this error message, and you have one or more .OBJ files
+         larger than 64K, try compiling your (.prg) files individually using
+         the /M compiler option.  Make sure to supply all of the resultant
+         .OBJ files to .RTLink for linking.  For more information on
+         compiler options and linking multiple .OBJ files, refer to Chapters
+         3 and 4 of your Programming and Utilities Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 5   Why do I get "memory overbooked" when compiling a large (.prg)?
+'------------------------------------------------------------------------------
+ ^b5   Why do I get "memory overbooked" when compiling a large (.prg)?^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This message is generated because the program (.prg) files the Clipper
+     compiler was attempting to process required more memory than the
+     compiler had available.
+
+     This error can occur on programs which contain very large functions or
+     procedures (greater than 60K), especially when the compiler is running
+     with very little free memory available (for example, when using many
+     TSR utilities or executing the compiler from within a text editor).
+
+     The problem can also occur when attempting to compile a monolithic
+     application that cascades through many multiple (.prg) files through
+     the use of "DO <prgFile>," or when compiling many modules into the same
+     .OBJ using a .CLP list.
+
+     In all cases, either the program must be reorganized into smaller units
+     or the compiler must be given more memory to run in.
+
+     The preferred solution is to limit individual functions and procedures
+     to a reasonable size, group them into reasonably sized source files,
+     and compile the files individually using the /M compiler option.  The
+     resultant .OBJ files are then presented as a list to .RTLink.  This
+     results in better program structure and also gives you the option of
+     using the RMAKE utility to avoid unnecessary compilation.  For
+     information on compiling, linking, and using RMAKE, refer to your
+     Programming and Utilities Guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 6   Why does my Summer '87 Errorsys.prg not work with 5.0?
+'------------------------------------------------------------------------------
+ ^b6   Why does my Summer '87 Errorsys.prg not work with 5.0?^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Error System has been changed between versions and you must rework
+     your old Errorsys.prg to conform to the new methods and recompile with
+     5.0.
+
+     Should an unchanged Summer '87 compiled version of Errorsys.prg be
+     presented to the linker, it might create an eut0032 error.  If the
+     Summer '87 Errorsys.prg is recompiled, then the application will
+     successfully link.
+
+     See the Clipper 5.0 version of Errorsys.prg (located by default in your
+     \CLIPPER5\SOURCE\SYS directory) for an example of a Clipper 5.0 error
+     handler.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

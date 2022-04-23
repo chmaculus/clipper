@@ -1,0 +1,26 @@
+'------------------------------------------------------------------------------
+^BROW()^B
+
+    ROW() returns the row number of the current cursor position.
+
+^USyntax^U
+
+    ROW()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    ROW() returns a number in the range of zero to 24 with zero being the
+    first (top) row on the screen.  When you CLEAR the screen, ROW()
+    returns zero.  After a READ terminates, ROW() returns 23.
+
+^UUsage^U
+
+    ROW() is useful in programs to keep track of rows used for relative
+    addressing of screen locations.
+!seealso: ???.ngo:"COL" clip_121.ngo:"PCOL" clip_125.ngo:"PROW" 
+'------------------------------------------------------------------------------
+
+
+

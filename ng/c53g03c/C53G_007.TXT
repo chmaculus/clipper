@@ -1,0 +1,2069 @@
+!short: _gtBox()           Draw a box on the screen
+'------------------------------------------------------------------------------
+ ^b_gtBox()^b
+ Draw a box on the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtBox(
+     ^b                USHORT uiTop,
+     ^b                USHORT uiLeft,
+     ^b                USHORT uiBottom,
+     ^b                USHORT uiRight,
+     ^b                BYTEP fpBoxString
+     ^b              )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the coordinates
+     of the box.  Allowable row values are from zero to _gtMaxRow() and
+     allowable column values are from zero to _gtMaxCol().  Specifying
+     coordinates that are not within this range will result in that area
+     being drawn off the screen.
+
+     ^bfpBoxString^b defines a string of eight border characters and a fill
+     character to be used in drawing the box.
+
+ ^bReturns^b
+
+     _gtBox() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtBox() draws a box at the specified display coordinates.  _gtBox()
+     draws the box using the characters in fpBoxString starting from the
+     upper left-hand corner, proceeding clockwise and filling the screen
+     region with the ninth character.  If the ninth character is not
+     specified, the screen region within the box is not painted.  Existing
+     text and color remain unchanged.
+
+     After _gtBox() executes, the cursor is located in the upper corner of
+     the boxed region (uiTop + 1 and uiLeft + 1).  The internal row and
+     column coordinates are updated so the CA-Clipper functions, ROW() and
+     COL(), will reflect the new cursor position.
+
+     The following table shows the manifest constants defined in Gt.api that
+     you can use with this function to facilitate its use:
+
+     ^bManifest Constants for Box Drawing^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bGt.api              Description^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     _B_SINGLE           Single-line box
+     _B_DOUBLE           Double-line box
+     _B_SINGLE_DOUBLE    Single horizontal lines, double vertical lines
+     _B_DOUBLE_SINGLE    Double horizontal lines, single vertical lines
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example draws framed text at a specified screen row and
+        column.  The frame is made up of single horizontal lines and double
+        vertical lines:
+
+        #include "gt.api"
+
+        void boxText( USHORT uiRow, USHORT uiCol, BYTEP fpStr );
+
+        void boxText( USHORT uiRow, USHORT uiCol, BYTEP fpStr )
+        {
+           _gtBox( uiRow, uiCol, uiRow + 2, uiCol + strlen( fpStr ) + 2,
+                   _B_SINGLE_DOUBLE );
+           _gtWrite( fpStr, strlen( fpStr ) );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtBoxD()" "_gtBoxS()" "_gtMaxCol()" "_gtMaxRow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtBoxD()          Draw a double-line box on the screen
+'------------------------------------------------------------------------------
+ ^b_gtBoxD()^b
+ Draw a double-line box on the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtBoxD(
+     ^b                 USHORT uiTop,
+     ^b                 USHORT uiLeft,
+     ^b                 USHORT uiBottom,
+     ^b                 USHORT uiRight
+     ^b               )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the coordinates
+     of the box.  Allowable row values are from zero to _gtMaxRow() and
+     allowable column values are from zero to _gtMaxCol().  Specifying
+     coordinates that are not within this range will result in that area
+     being drawn off the screen.
+
+ ^bReturns^b
+
+     _gtBoxD() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtBoxD() draws a double-line box at the specified coordinates on the
+     screen.  Existing text and color remain unchanged.
+
+     After _gtBoxD() executes, the cursor is located in the upper corner of
+     the boxed region (uiTop + 1 and uiLeft + 1).  The internal row and
+     column coordinates are updated so the CA-Clipper functions, ROW() and
+     COL(), will reflect the new cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example draws text framed by a double-line box on the
+        screen:
+
+        #include "gt.api"
+
+        void boxTextD( USHORT uiRow, USHORT uiCol, BYTEP fpStr );
+
+        void boxTextD( USHORT uiRow, USHORT uiCol, BYTEP fpStr )
+        {
+           _gtBoxD( uiRow, uiCol, uiRow + 2,
+                    uiCol + strlen( fpStr ) + 2 );
+           _gtWrite( fpStr, strlen( fpStr ) );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtBox()" "_gtBoxS()" "_gtMaxCol()" "_gtMaxRow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtBoxS()          Draw a single-line box on the screen
+'------------------------------------------------------------------------------
+ ^b_gtBoxS()^b
+ Draw a single-line box on the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtBoxS(
+     ^b                 USHORT uiTop,
+     ^b                 USHORT uiLeft,
+     ^b                 USHORT uiBottom,
+     ^b                 USHORT uiRight
+     ^b               )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the coordinates
+     of the box.  Allowable row values are from zero to _gtMaxRow() and
+     allowable column values are from zero to _gtMaxCol().  Specifying
+     coordinates that are not within this range will result in that area
+     being drawn off the screen.
+
+ ^bReturns^b
+
+     _gtBoxS() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtBoxS() draws a single-line box at the specified coordinates on the
+     screen.  Existing text and color remain unchanged.
+
+     After _gtBoxS() executes, the cursor is located in the upper corner of
+     the boxed region (uiTop + 1 and uiLeft + 1).  The internal row and
+     column coordinates are updated so the CA-Clipper functions, ROW() and
+     COL(), will reflect the new cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example draws text framed by a single-line box on the
+        screen:
+
+        #include "gt.api"
+
+        void boxTextS( USHORT uiRow, USHORT uiCol, BYTEP fpStr );
+
+        void boxTextS( USHORT uiRow, USHORT uiCol, BYTEP fpStr )
+        {
+           _gtBoxS( uiRow, uiCol, uiRow + 2,
+                    uiCol + strlen( fpStr ) + 2 );
+           _gtWrite( fpStr, strlen( fpStr ) );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtBox()" "_gtBoxD()" "_gtMaxCol()" "_gtMaxRow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtColorSelect()   Activate an attribute in current CA-Clipper color setting
+'------------------------------------------------------------------------------
+ ^b_gtColorSelect()^b
+ Activate an attribute in the current CA-Clipper color setting
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtColorSelect(
+     ^b                        USHORT uiColorIndex
+     ^b                      )
+
+ ^bArguments^b
+
+     ^buiColorIndex^b is the zero-based ordinal position in the current list
+     of CA-Clipper color attributes.
+
+ ^bReturns^b
+
+     _gtColorSelect() returns zero if successful.  Any other value indicates
+     an error.
+
+ ^bDescription^b
+
+     _gtColorSelect() sets the color with which writes are displayed.  The
+     specified color pair is obtained from the current list of color
+     attributes.  Manifest constants for specifying uiColorIndex values,
+     defined in the header file Color.ch, are shown in the table below:
+
+     ^bColor.ch Manifest Constants^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant Name     Value     Color Setting^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     CLR_STANDARD      0         Standard
+     CLR_ENHANCED      1         Enhanced
+     CLR_BORDER        2         Border
+     CLR_BACKGROUND    3         Background
+     CLR_UNSELECTED    4         Unselected
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates two functions that change the active
+        color:
+
+        #include "gt.api"
+
+        void colorStandard( void );
+        void colorEnhanced( void );
+
+        void colorStandard( )
+        {
+           _gtColorSelect( CLR_STANDARD );
+        }
+
+        void colorEnhanced( )
+        {
+           _gtColorSelect( CLR_ENHANCED );
+        }
+        .
+        .
+        .
+           _gtSetColorStr( "W+/B, B/W" );
+
+           colorEnhanced( );
+           _gtWrite( "Enhanced color (B/W)", 20 );
+
+           colorStandard( );
+           _gtWrite( "Standard Color (W+/B)", 21 );
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtGetColorStr()" "_gtIsColor()" "_gtSetColorStr()" "_gtWrite()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtDispBegin()     Begin buffering screen output
+'------------------------------------------------------------------------------
+ ^b_gtDispBegin()^b
+ Begin buffering screen output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtDispBegin(void)
+
+ ^bReturns^b
+
+     _gtDispBegin() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtDispBegin() informs the CA-Clipper display system of the start of a
+     series of display operations that are to be buffered.  Display output
+     that occurs after _gtDispBegin(), but before _gtDispEnd(), accumulates
+     in internal buffers.  All screen updates are performed after
+     _gtDispEnd().  This can enhance the performance of applications with
+     complex screen displays.
+
+     _gtDispBegin() and _gtDispEnd() calls are optional.
+
+ ^bNotes^b
+
+     ^b^CFE  Nested calls:^b  _gtDispBegin() calls are nested internally.  If
+        you issue several _gtDispBegin() calls, buffering occurs until you
+        issue a corresponding number of _gtDispEnd() calls.
+
+     ^b^CFE  Guaranteed operations:^b  Display updates performed between
+        _gtDispBegin() and _gtDispEnd() are not guaranteed to be buffered.
+        Some updates may become visible before _gtDispEnd() is called.
+        However, all updates are guaranteed to be visible after the closing
+        call to _gtDispEnd().
+
+     ^b^CFE  Terminal operations:^b  CA-Clipper terminal input operations
+        such as INKEY() and READ should not be performed between
+        _gtDispBegin() and _gtDispEnd().  Doing this may cause input or
+        display output to be lost.
+
+     ^b^CFE  Incompatible operations:^b  Display output other than by the
+        CA-Clipper display functions (e.g., by add-on libraries or by DOS via
+        the OUTSTD() function) may not be compatible with _gtDispBegin() and
+        _gtDispEnd().  Output may be lost.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example buffers screen output, updates the screen, then
+        displays the buffered screen output:
+
+        #include "gt.api"
+        .
+        .
+        .
+           _gtDispBegin();      // Start screen buffering
+
+           _gtSetPos(10, 10);
+           _gtWrite( "A display update", 17 );
+
+           _gtSetPos(11, 10)
+           _gtWrite( "Another display update", 22 )
+
+           _gtDispEnd()         // Display buffered screen data
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtDispCount()" "_gtDispEnd()" "_gtGetPos()" "_gtSetPos()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtDispCount()     Return the number of pending _gtDispEnd() requests
+'------------------------------------------------------------------------------
+ ^b_gtDispCount()^b
+ Return the number of pending _gtDispEnd() requests
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bUSHORT _gtDispCount(void)
+
+ ^bReturns^b
+
+     _gtDispCount() returns the number of pending _gtDispEnd() requests as an
+     unsigned short integer value.
+
+ ^bDescription^b
+
+     _gtDispCount() determines the number of nested gtDispBegin() calls that
+     have been made.  Since you may nest _gtDispBegin(), ... , _gtDispEnd()
+     calls, use _gtDispCount() to determine whether there are pending screen
+     refresh requests.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example releases all pending display contexts:
+
+        #include "gt.api"
+
+        void ForceDisplay( void );
+
+        void ForceDisplay( void )
+        {
+           // Display all pending buffers
+           while ( _gtDispCount() > 0 )
+              _gtDispEnd();
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtDispBegin()" "_gtDispEnd()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtDispEnd()       Release the display buffer
+'------------------------------------------------------------------------------
+ ^b_gtDispEnd()^b
+ Release the display buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtDispEnd(void)
+
+ ^bReturns^b
+
+     _gtDispEnd() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtDispEnd() informs the CA-Clipper display system of the end of a
+     series of display operations that have been buffered.  Any pending
+     screen updates are performed after _gtDispEnd().
+
+     _gtDispBegin() and _gtDispEnd() calls are optional.  For more
+     information, refer to _gtDispBegin().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example buffers screen output, updates the screen, then
+        displays the buffered screen output:
+
+        #include "gt.api"
+        .
+        .
+        .
+           _gtDispBegin();      // Start screen buffering
+
+           _gtSetPos(10, 10);
+           _gtWrite( "A display update", 17 );
+           _gtSetPos(11, 10)
+           _gtWrite( "Another display update", 22 )
+
+           _gtDispEnd()         // Display buffered screen data
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtDispBegin()" "_gtDispCount()" "_gtGetPos()" "_gtSetPos()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtGetColorStr()   Get the CA-Clipper color attributes setting
+'------------------------------------------------------------------------------
+ ^b_gtGetColorStr()^b
+ Get the CA-Clipper color attributes setting
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtGetColorStr(
+     ^b                        BYTEP fpColorString
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bfpColorString^b is a null-terminated character string of at least 64
+     bytes that receives the current CA-Clipper color attributes setting.
+     The constant CLR_STRLEN can be used to allocate a string of correct
+     size.
+
+ ^bReturns^b
+
+     _gtGetColorStr() returns zero if successful.  Any other value indicates
+     an error.
+
+ ^bDescription^b
+
+     _gtGetColorStr() saves the current CA-Clipper color attributes setting
+     as a null-terminated character string, fpColorString.  You can later use
+     fpColorString with _gtSetColorStr() to return the color setting to its
+     prior value.  For information on how fpColorString is formatted and the
+     meanings of the various color codes, see the _gtSetColorStr() entry in
+     this chapter.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example saves the current color setting before changing
+        it, displays a string using the new color setting, and restores the
+        original color setting:
+
+        #include "gt.api"
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr,
+                       BYTEP fpColor );
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr,
+                       BYTEP fpColor )
+        {
+           BYTE cSavColor[ CLR_STRLEN ];
+           USHORT uiSavRow;
+           USHORT uiSavCol;
+
+           _gtGetPos( &uiSavRow, &uiSavCol );    // Save coordinates
+           _gtGetColorStr( cSavColor );          // Save color setting
+
+           _gtSetColorStr( fpColor );
+           _gtSetPos( uiRow, uiCol );
+           _gtWrite( fpStr, strlen( fpStr ) );
+
+           _gtSetColorStr( cSavColor );          // Restore color setting
+           _gtSetPos( uiSavRow, uiSavCol );      // Restore coordinates
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtColorSelect()" "_gtGetPos()" "_gtIsColor()" "_gtSetColorStr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtGetCursor()     Get the current cursor shape
+'------------------------------------------------------------------------------
+ ^b_gtGetCursor()^b
+ Get the current cursor shape
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtGetCursor(
+     ^b                      USHORTP uipCursorShape
+     ^b                    )
+
+ ^bArguments^b
+
+     ^buipCursorShape^b receives a number indicating the shape of the cursor.
+
+ ^bReturns^b
+
+     _gtGetCursor() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtGetCursor() saves the current cursor shape as a numeric value,
+     uipCursorShape.  You can later use the value referenced by
+     uipCursorShape with _gtSetCursor() to return the cursor to its prior
+     shape.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example illustrates how to use _gtGetCursor() and
+        _gtSetCursor() to save the current cursor shape, change it, and
+        restore it to its original shape:
+
+        #include "gt.api"
+        .
+        .
+        .
+
+           USHORT uiSavCursor;
+
+           _gtGetCursor( &uiSavCursor );     // Save cursor shape
+           _gtSetCursor( SC_SPECIAL1 );      // Change cursor to a block
+        .
+        .
+        .
+           _gtSetCursor( uiSavCursor );      // Restore cursor shape
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtGetPos()" "_gtSetCursor()" "_gtSetPos()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtGetPos()        Get the cursor location
+'------------------------------------------------------------------------------
+ ^b_gtGetPos()^b
+ Get the cursor location
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtGetPos(
+     ^b                   USHORTP uipRow,
+     ^b                   USHORTP uipCol
+     ^b                 )
+
+ ^bArguments^b
+
+     ^buipRow^b receives the row position of the cursor.  The value received
+     may range from zero to _gtMaxRow().
+
+     ^buipCol^b receives the column position of the cursor.  The value
+     received may range from zero to _gtMaxCol().
+
+ ^bReturns^b
+
+     _gtGetPos() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtGetPos() saves the current cursor position as a pair of numeric
+     coordinates, uipRow and uipCol.  You can later use the coordinates with
+     _gtSetPos() to return the cursor to its prior location.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example saves the current cursor location before
+        displaying output at a specified location.  The cursor is then
+        restored to its original position:
+
+        #include "gt.api"
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr );
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr )
+        {
+           USHORT uiSavRow;
+           USHORT uiSavCol;
+
+           _gtGetPos( &uiSavRow, &uiSavCol );      // Save position
+           _gtSetPos( uiRow, uiCol );              // Set new position
+           _gtWrite( fpStr, strlen( fpStr ) );
+           _gtSetPos( uiSavRow, uiSavCol );        // Restore position
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtGetCursor()" "_gtMaxCol()" "_gtMaxRow()" "_gtSetCursor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtIsColor()       Determine if current screen display has color capability
+'------------------------------------------------------------------------------
+ ^b_gtIsColor()^b
+ Determine if the current screen display has color capability
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bBOOL _gtIsColor(void)
+
+ ^bReturns^b
+
+     _gtIsColor() returns TRUE (1) if a color screen display
+     is detected; otherwise, the function returns FALSE (0).
+
+ ^bDescription^b
+
+     _gtIsColor() lets you make decisions about the type of screen attributes
+     to assign (color or monochrome) by giving you information about the type
+     of screen display being used.  Note that some monochrome adapters with
+     graphics capability return TRUE (1).
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtIsColor() in an if decision block to
+        display the statement "Color system" on color screens only:
+
+        #include "gt.api"
+        .
+        .
+        .
+           if ( _gtIsColor() )
+           {
+              _gtWriteAt( 0, 0, "Color screen",  12 );
+           }
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtColorSelect()" "_gtGetColorStr()" "_gtSetColorStr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtMaxCol()        Determine the maximum screen column
+'------------------------------------------------------------------------------
+ ^b_gtMaxCol()^b
+ Determine the maximum screen column
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bUSHORT _gtMaxCol(void)
+
+ ^bReturns^b
+
+     _gtMaxCol() returns an unsigned integer representing the maximum column
+     of the display screen.
+
+ ^bDescription^b
+
+     _gtMaxCol() determines the maximum visible column of the screen.  Row
+     and column numbers start at zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtMaxCol() to display the string "Right" on
+        the right-hand side of the screen:
+
+        #include "gt.api"
+        .
+        .
+        .
+           _gtWriteAt( 1 , _gtMaxCol() - 5, "Right", 5 );
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxRow()" "_gtWriteAt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtMaxRow()        Determine the maximum screen row
+'------------------------------------------------------------------------------
+ ^b_gtMaxRow()^b
+ Determine the maximum screen row
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bUSHORT _gtMaxRow(void)
+
+ ^bReturns^b
+
+     _gtMaxRow() returns an unsigned integer representing the maximum
+     row of the display screen.
+
+ ^bDescription^b
+
+     _gtMaxRow() determines the maximum visible row of the screen.  Row and
+     column numbers start at zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtMaxRow() to display the string "Bottom"
+        on the last row of the screen:
+
+        #include "gt.api"
+        .
+        .
+        .
+           _gtWriteAt( _gtMaxRow() , 1, "Bottom", 6 );
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxCol()" "_gtWriteAt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtPostExt()       Return control to the General Terminal system
+'------------------------------------------------------------------------------
+ ^b_gtPostExt()^b
+ Return control to the General Terminal system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtPostExt(void)
+
+ ^bReturns^b
+
+     _gtPostExt() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtPostExt() returns control to the General Terminal system after direct
+     video access.
+
+     ^bWarning! ^b Always call _gtPostExt() after direct video access.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtPostExt() to re-engage the General
+        Terminal system after attempting to reverse the screen attribute of a
+        passed coordinate using direct video access:
+
+        /***
+        *
+        *   Reverse text Attribute for passed coordinates
+        *
+        */
+
+        #include "extend.api"
+        #include "gt.api"
+
+        #define VIDSEG  (_gtIsColor() ? 0xB800 : 0xB000 )
+        #define MK_FP( seg, off ) \
+                       ((FARP) ( ((ULONG)(seg)<<16) | (USHORT)(off) ));
+
+
+        CLIPPER ReverseAttribute()
+        {
+
+           USHORT uiRow       = _parni(1);
+           USHORT uiCol       = _parni(2)
+           USHORT uiNumCols   = _gtMaxCol() + 1;
+
+           BYTEP *scrPtr;
+
+           _gtPreExt();               // Release display context!
+
+           // Make a far pointer to row/col in video memory
+           scrPtr = MK_FP( VIDSEG, ( ( uiRow * uiNumCols ) +
+                             uiCol ) * 2 );
+
+           // Skip one to the attribute
+           scrPtr++;
+
+           // Reverse the attribute
+           *scrPtr = (*scrPtr >> 4) | ((*scrPtr & 0x07) << 4) |
+                     (*scrPtr & 0x08) | (*scrPtr & 128);
+
+           _gtPostExt();              // Signal end of external code.
+
+           _ret();                    // Post a NIL return value
+
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtPreExt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtPreExt()        Prepare the area manager for manipulation of the terminal
+'------------------------------------------------------------------------------
+ ^b_gtPreExt()^b
+ Prepare the area manager for external manipulation of the terminal
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtPreExt(void)
+
+ ^bReturns^b
+
+     _gtPreExt() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtPreExt() readies the General Terminal system for external access.
+     All pending writes (i.e., display buffers called from C or CA-Clipper)
+     are written to the physical screen.
+
+     ^bWarning! ^b Always call _gtPreExt() before attempting direct video
+     access.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtPreExt() to flush any pending screen
+        writes from the display buffers before attempting to reverse the
+        screen attribute of a passed coordinate using direct video access:
+
+        /***
+        *
+        *   Reverse text Attribute for passed coordinates
+        *
+        */
+
+        #include "extend.api"
+        #include "gt.api"
+
+
+        #define VIDSEG  (_gtIsColor() ? 0xB800 : 0xB000 )
+        #define MK_FP( seg, off ) \
+                       ((FARP) ( ((ULONG)(seg)<<16) | (USHORT)(off) ));
+
+
+        CLIPPER ReverseAttribute()
+        {
+
+           USHORT uiRow       = _parni(1);
+           USHORT uiCol       = _parni(2)
+           USHORT uiNumCols   = _gtMaxCol() + 1;
+           BYTEP *scrPtr;
+
+           _gtPreExt();               // Release display context!
+
+           // Make a far pointer to row/col in video memory
+           scrPtr = MK_FP( VIDSEG, ( ( uiRow * uiNumCols ) +
+                             uiCol ) * 2 );
+
+           // Skip one to the attribute
+           scrPtr++;
+
+           // Reverse the attribute
+           *scrPtr = (*scrPtr >> 4) | ((*scrPtr & 0x07) << 4) |
+                     (*scrPtr & 0x08) | (*scrPtr & 128);
+
+           _gtPostExt();              // Signal end of external code.
+
+           _ret();                    // Post a NIL return value
+
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtPostExt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtRectSize()      Determine the buffer size needed to save a screen region
+'------------------------------------------------------------------------------
+ ^b_gtRectSize()^b
+ Determine the buffer size needed to save a specified screen region
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtRectSize(
+     ^b                     USHORT  uiTop,
+     ^b                     USHORT  uiLeft,
+     ^b                     USHORT  uiBottom,
+     ^b                     USHORT  uiRight,
+     ^b                     USHORTP uipBuffSize
+     ^b                   )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the coordinates
+     of the rectangular region to be calculated.  If all coordinates are
+     NULL, the entire display region is used.
+
+     ^buipBuffSize^b is the size of the buffer needed to contain the
+     specified region.
+
+ ^bReturns^b
+
+     _gtRectSize() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtRectSize() analyzes the specified screen region, determines the
+     buffer size needed to save it, and saves the buffer size as a numeric
+     value.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtRectSize() to calculate the memory needed
+        by _xvalloc() (see the "Virtual Memory API Reference" chapter of this
+        guide) to properly save the screen buffer:
+
+        #include "gt.api"
+        #include "vm.api"
+        .
+        .
+        .
+           BYTEP    psBuff;
+           USHORT   uiBuffSize;
+           HANDLE   hVM;
+
+           _gtRectSize( 1, 1, 10, 25, &uiBuffSize );
+
+           hVM      = _xvalloc( uiBuffSize, 0 );
+           scrBuff  = _xvlock( hVM );
+           _gtSave( 1, 1, 10, 25, fpBuff );   // Save area under rect
+           .
+           . <manipulate screen>
+           .
+           _gtRest( 1, 1, 10, 25, fpBuff );   // Restore screen
+
+           _xvunlock( hVM );
+
+           _xvfree( hVM );
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtRest()" "_gtSave()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtRepChar()       Replicate a character to the screen
+'------------------------------------------------------------------------------
+ ^b_gtRepChar()^b
+ Replicate a character to the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtRepChar(
+     ^b                    USHORT uiRow,
+     ^b                    USHORT uiCol,
+     ^b                    USHORT uiChar,
+     ^b                    USHORT uiCount
+     ^b                  )
+
+ ^bArguments^b
+
+     ^buiRow^b and ^buiCol^b are the screen coordinates at which to replicate the
+     character.  uiRow may be in the range of zero to _gtMaxRow().  uiCol may
+     be in the range of zero to  _gtMaxCol().
+
+     ^buiChar^b is the ASCII value of the character to replicate.
+
+     ^buiCount^b is the number of times to replicate the character.
+
+ ^bReturns^b
+
+     _gtRepChar() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtRepChar() lets you replicate a single character to the screen a
+     specified number of times.  The row that you specify stays the same
+     while the column position is incremented by one for each replication of
+     the character.  The internal row and column coordinates are updated so
+     the CA-Clipper functions, ROW() and COL(), will reflect the new cursor
+     position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, _gtRepChar() draws a single-line horizontal
+        divider:
+
+        #include "gt.api"
+
+        #define HBAR_LEFT    195
+        #define HBAR_MIDDLE  196
+        #define HBAR_RIGHT   180
+
+        void drawHBarS( USHORT uiR, USHORT uiL, USHORT uiW );
+
+        void drawHBarS( USHORT uiR, USHORT uiL, USHORT uiW )
+        {
+           _gtWriteAt( uiR, uiL, HBAR_LEFT );
+           _gtRepChar( uiR, uiL + 1, HBAR_MIDDLE, uiW - 2 );
+           _gtWrite( HBAR_RIGHT );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxCol()" "_gtMaxRow()" "_gtRest()" "_gtSave()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtRest()          Display a saved screen region at a specified location
+'------------------------------------------------------------------------------
+ ^b_gtRest()^b
+ Display a saved screen region at a specified location
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtRest(
+     ^b                 USHORT uiTop,
+     ^b                 USHORT uiLeft,
+     ^b                 USHORT uiBottom,
+     ^b                 USHORT uiRight,
+     ^b                 FARP vlpScrBuff
+     ^b               )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the coordinates
+     where the saved screen region will be restored.  If uiBottom is greater
+     than _gMaxRow() or uiRight is greater than _gtMaxCol(), the screen is
+     clipped.
+
+     ^bvlpScrBuff^b is a far pointer to a character that, in most cases, is a
+     value returned from _gtSave().
+
+ ^bReturns^b
+
+     _gtRest() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtRest() restores a screen region previously saved with _gtSave().  The
+     target screen location may be the same as or different than the original
+     location when the screen region was saved.  If you specify a new screen
+     location, the new screen region must be the same size or you will get
+     ambiguous results.
+
+     Some examples of when you might use _gtSave() and _gtRest() are to
+     display a pop-up menu or to drag a screen object.
+
+     ^bWarning! ^b Like SAVE SCREEN, RESTORE SCREEN, SAVESCREEN(), and
+     RESTSCREEN(), _gtRest() and _gtSave() are supported when using the
+     default (IBM PC memory mapped) terminal driver.  Other terminal drivers
+     may not support saving and restoring screens.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, _gtRest() and _gtSave() create a see through
+        shadow on the screen.  By not manipulating the video memory directly,
+        the subroutine RevForeAttr() ensures the integrity of the General
+        Terminal system and does not destroy any screen buffers that may be
+        in use.  To insure proper memory usage, RevForeAttr() uses the
+        Virtual Memory API for screen saves (see the "Virtual Memory API
+        Reference" chapter of this guide):
+
+        #include "vm.api"
+        #include "gt.api"
+
+        void near Shadow( USHORT uiTRow, USHORT uiLCol,
+                          USHORT uiBRow, USHORT uiRCol );
+
+        HIDE void near RevForeAttr( USHORT uiTRow,
+                                    USHORT uiLCol,
+                                    USHORT uiBRow,
+                                    USHORT uiRCol );
+
+        void near Shadow( USHORT uiTRow, USHORT uiLCol,
+                          USHORT uiBRow, USHORT uiRCol )
+        {
+           /* Draw shadow on right side */
+           RevForeAttr( uiTRow+1, uiRCol+1, uiBRow+1, uiRCol+2 );
+
+           /* Draw shadow on bottom */
+           RevForeAttr( uiBRow+1, uiLCol+2, uiBRow+1, uiRCol );
+
+        }
+
+
+        /***
+        *   Reverse text Attribute for
+        *   passed coordinates
+        */
+
+        HIDE void near RevForeAttr( USHORT uiTRow,
+                                    USHORT uiLCol,
+                                    USHORT uiBRow,
+                                    USHORT uiRCol )
+        {
+           FARP vlpScreen;
+           HANDLE hVM;
+
+           USHORT uiBuffSize;
+
+           USHORT uiRow;
+           USHORT uiCol;
+           USHORT i;
+
+           _gtRectSize( uiTRow, uiLCol, uiBRow, uiRCol, &uiBuffSize );
+
+           if !( hVM = _xvalloc( uiBuffSize ) )
+              return;
+
+           vlpScreen = _xvlock( hVM );
+
+           _gtSave( uiTRow, uiLCol, uiBRow, uiRCol, vlpScreen );
+
+           for ( uiRow = uiTRow; uiRow <= uiBRow; ++uiRow )
+           {
+              i = ( (uiRow - uiTRow) * (uiRCol - uiLCol + 1)
+                    * 2 ) + 1;
+              for ( uiCol = uiLCol; uiCol <= uiRCol; ++uiCol, i += 2 )
+              {
+                 vlpScreen[i] &= 0x0007;
+                 if( !vlpScreen[i] ) vlpScreen[i] = 0x0008;
+              }
+           }
+           _gtRest( uiTRow, uiLCol, uiBRow, uiRCol, vlpScreen );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxCol()" "_gtMaxRow()" "_gtRectSize()" "_gtSave()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSave()          Save a screen region for later display
+'------------------------------------------------------------------------------
+ ^b_gtSave()^b
+ Save a screen region for later display
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSave(
+     ^b                 USHORT uiTop,
+     ^b                 USHORT uiLeft,
+     ^b                 USHORT uiBottom,
+     ^b                 USHORT uiRight,
+     ^b                 FARP vlpScrBuff
+     ^b               )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the coordinates
+     of the screen region to save.  If uiBottom is greater than _gMaxRow() or
+     uiTop is greater than _gtMaxCol(), the screen is clipped.
+
+     ^bvlpScrBuff^b is a far pointer to a character string.  To make sure the
+     string is large enough to hold the screen region, use _gtRectSize().
+
+ ^bReturns^b
+
+     _gtSave() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtSave() saves a screen region to a character string.  Later, you can
+     redisplay the saved screen image to the same location, or to a new
+     location using _gtRest().
+
+     Some examples of when you might use _gtSave() and _gtRest() are to
+     display a pop-up menu or to drag a screen object.
+
+     ^bWarning! ^b Like SAVE SCREEN, RESTORE SCREEN, SAVESCREEN(), and
+     RESTSCREEN(), _gtRest() and _gtSave() are supported when using the
+     default (IBM PC memory mapped) terminal driver.  Other terminal drivers
+     may not support saving and restoring screens.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, _gtRest() and _gtSave() create a see through
+        shadow on the screen.  By not manipulating the video memory directly,
+        the subroutine RevForeAttr() ensures the integrity of the General
+        Terminal system and does not destroy any screen buffers that may be
+        in use.  To insure proper memory usage, RevForeAttr() uses the
+        Virtual Memory API for screen saves (see the "Virtual Memory API
+        Reference" chapter of this guide):
+
+        #include "vm.api"
+        #include "gt.api"
+
+        void near Shadow( USHORT uiTRow, USHORT uiLCol,
+                          USHORT uiBRow, USHORT uiRCol );
+
+        HIDE void near RevForeAttr( USHORT uiTRow,
+                                    USHORT uiLCol,
+                                    USHORT uiBRow,
+                                    USHORT uiRCol );
+
+        void near Shadow( USHORT uiTRow, USHORT uiLCol,
+                          USHORT uiBRow, USHORT uiRCol )
+        {
+           /* Draw shadow on right side */
+           RevForeAttr( uiTRow+1, uiRCol+1, uiBRow+1, uiRCol+2 );
+
+           /* Draw shadow on bottom */
+           RevForeAttr( uiBRow+1, uiLCol+2, uiBRow+1, uiRCol );
+
+        }
+
+
+
+
+        /***
+        *   Reverse text Attribute for
+        *   passed coordinates
+        */
+
+        HIDE void near RevForeAttr( USHORT uiTRow,
+                                    USHORT uiLCol,
+                                    USHORT uiBRow,
+                                    USHORT uiRCol )
+        {
+           FARP vlpScreen;
+           HANDLE hVM;
+           USHORT uiBuffSize;
+
+           USHORT uiRow;
+           USHORT uiCol;
+           USHORT i;
+
+           _gtRectSize( uiTRow, uiLCol, uiBRow, uiRCol, &uiBuffSize );
+
+           if !( hVM = _xvalloc( uiBuffSize ) )
+              return;
+
+           vlpScreen = _xvlock( hVM );
+
+           _gtSave( uiTRow, uiLCol, uiBRow, uiRCol, vlpScreen );
+
+           for ( uiRow = uiTRow; uiRow <= uiBRow; ++uiRow )
+           {
+              i = ( (uiRow - uiTRow) * (uiRCol - uiLCol + 1)
+                    * 2 ) + 1;
+              for ( uiCol = uiLCol; uiCol <= uiRCol; ++uiCol, i += 2 )
+              {
+                 vlpScreen[i] &= 0x0007;
+                 if( !vlpScreen[i] ) vlpScreen[i] = 0x0008;
+              }
+           }
+           _gtRest( uiTRow, uiLCol, uiBRow, uiRCol, vlpScreen );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxCol()" "_gtMaxRow()" "_gtRectSize()" "_gtRest()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtScrDim()        Get the current screen dimensions
+'------------------------------------------------------------------------------
+ ^b_gtScrDim()^b
+ Get the current screen dimensions
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtScrDim(
+     ^b                   USHORTP uipHeight,
+     ^b                   USHORTP uipWidth
+     ^b                 )
+
+ ^bArguments^b
+
+     ^buipHeight^b receives the screen height.
+
+     ^buipWidth^b receives the screen width.
+
+ ^bReturns^b
+
+     _gtScrDim() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtScrDim() saves the current screen dimensions in uipWidth and
+     uipHeight.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, a function uses _gtScrDim() to get the screen
+        dimensions then returns the height:
+
+        #include "gt.api"
+
+        USHORT scrGetHeight( void );
+
+        USHORT scrGetHeight( )
+
+        {
+           USHORT uiHeight;
+           USHORT uiWidth;
+
+           _gtScrDim( &uiHeight, &uiWidth );
+
+           return (uiHeight);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtSetMode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtScroll()        Scroll a region of the screen
+'------------------------------------------------------------------------------
+ ^b_gtScroll()^b
+ Scroll a region of the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtScroll(
+     ^b                   USHORT uiTop
+     ^b                   USHORT uiLeft,
+     ^b                   USHORT uiBottom,
+     ^b                   USHORT uiRight,
+     ^b                   SHORT iRows,
+     ^b                   SHORT iCols
+     ^b                 )
+
+ ^bArguments^b
+
+     ^buiTop^b, ^buiLeft^b, ^buiBottom^b, and ^buiRight^b define the scroll region
+     coordinates.  Row and columns values may range from (0,0) to (_gtMaxRow(),
+     _gtMaxCol()).
+
+     ^biRows^b defines the number of rows to scroll.  A value greater than
+     zero scrolls the specified screen area up by the specified number of
+     rows.  A value less than zero scrolls the specified screen area down by
+     the specified number of rows.
+
+     ^biCols^b defines the number columns to scroll. A value greater than
+     zero scrolls the specified screen area left by the specified number of
+     columns.  A value less than zero scrolls the specified screen area right
+     by the specified number of columns.
+
+     If only one of the parameters iRows or iCols is supplied a zero value,
+     the specified screen area will not be scrolled in that direction.  If
+     both iRows and iCols are supplied zero values, the specified screen
+     region will be blanked (cleared).
+
+ ^bReturns^b
+
+     _gtScroll() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtScroll() scrolls a screen region up, down , left, or right.
+
+     When a screen region scrolls up the first line of the region is erased,
+     all other lines are moved up, and a blank line is displayed in the
+     current standard color on the bottom line of specified region.  When a
+     screen region scrolls down, the orientation is reversed.  If the screen
+     region is scrolled more than one line, this process is repeated.
+
+     When a screen region scrolls right the first column of the region is
+     erased, all other columns are moved right, and a blank column is
+     displayed in the current standard color on the left of specified region.
+     When a screen region scrolls left, the orientation is reversed.  If the
+     screen region is scrolled more than one column, this process is
+     repeated.
+
+     The screen can be scrolled vertically or horizontally.  Additionally,
+     the screen can be scrolled both directions at once causing the screen to
+     be scrolled diagonally.  Also, the screen region can be blanked
+     (cleared).
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following examples demonstrate the effects of the
+        different parameter  combinations.
+
+        #include "gt.api"
+
+        .
+        .
+        .
+           /*
+              Demonstrate how to scroll the contents of a screen area
+              (5, 5 to 20, 50) in different ways
+           */
+
+           _gtScroll( 5, 5, 20, 50,  1,  0 );       // up
+           _gtScroll( 5, 5, 20, 50, -1,  0 );       // down
+           _gtScroll( 5, 5, 20, 50,  0,  1 );       // left
+           _gtScroll( 5, 5, 20, 50,  1, -1 );       // right
+           _gtScroll( 5, 5, 20, 50,  1,  1 );       // up and left
+           _gtScroll( 5, 5, 20, 50, -1, -1 );       // down and right
+           _gtScroll( 5, 5, 20, 50,  0,  0 );       // clears screen area
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxCol()" "_gtMaxRow()" "_gtWriteAt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSetBlink()      Toggle asterisk (*) interpretation in color strings
+'------------------------------------------------------------------------------
+ ^b_gtSetBlink()^b
+ Toggle asterisk (*) interpretation in color strings between blinking and
+ background intensity
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSetBlink(
+     ^b                     BOOL bBlink
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bbBlink^b toggles the meaning of the asterisk (*) character in a color
+     string.  Specifying TRUE causes the asterisk to mean blinking and FALSE
+     causes it to mean high intensity background.  The default is TRUE.
+
+ ^bReturns^b
+
+     _gtSetBlink() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtSetBlink() toggles the blinking/background intensity attribute.  When
+     you call _gtSetBlink() with bBlink equal to TRUE, you can make
+     characters written to the screen blink by including an asterisk (*) in
+     the color string passed to _gtSetColorStr().  When you call
+     _gtSetBlink() with bBlink equal to FALSE, the asterisk (*) causes the
+     background color to be intensified instead.  Thus, blinking and
+     background intensity attributes are not available at the same time.
+
+     ^bNote: ^b This function is meaningful only on IBM PC or compatible
+     computers with CGA, EGA, or VGA display hardware.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example enables high intensity backgrounds:
+
+        #include "gt.api"
+
+        .
+        .
+        .
+           _gtSetBlink( FALSE )
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtSetColorStr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSetColorStr()   Change the CA-Clipper color attributes setting
+'------------------------------------------------------------------------------
+ ^b_gtSetColorStr()^b
+ Change the CA-Clipper color attributes setting
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSetColorStr(
+     ^b                        BYTEP fpColorString
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bfpColorString^b is a null-terminated character string containing a
+     list of color attribute settings.  The following table shows each color
+     setting with its scope:
+
+     ^bColor Settings^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bSetting        Scope^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Standard       All screen output commands and functions
+     Enhanced       GETs and selection highlights
+     Border         Border around screen, not supported on EGA and VGA
+     Background     Not supported
+     Unselected     Unselected GETs
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The order of the settings in the table is the order in which they must
+     be specified in fpColorString.  Each setting is a foreground and
+     background color separated by a slash (/) character and followed by a
+     comma.
+
+     All settings are optional.  If a setting is skipped, its previous value
+     is retained with only new values set.  Settings may be skipped within
+     the list or left off the end as illustrated in the example below.
+
+ ^bReturns^b
+
+     _gtSetColorStr() returns zero if successful.  Any other value indicates
+     an error.
+
+ ^bDescription^b
+
+     _gtSetColorStr() changes the current CA-Clipper color attributes to
+     those specified in fpColorString.  Before using this function, you may
+     want to save the current color setting with _gtGetColorStr() so that you
+     can restore the prior color setting.
+
+     fpColorString is made up of several color settings, each color
+     corresponding to a different region of the screen.  As stated above,
+     each setting is made up of a foreground and background color pair.
+     Foreground defines the color of characters displayed on the screen.
+     Background defines the color displayed behind the character.  Spaces and
+     nondisplayable characters display as background only.
+
+     ^bStandard:^b The standard setting governs all console, full-screen, and
+     interface commands and functions when displaying to the screen.  This
+     includes commands such as @...PROMPT, @...SAY, and ?, and functions such
+     as ACHOICE(), DBEDIT(), and MEMOEDIT().
+
+     ^bEnhanced:^b The enhanced setting governs highlighted displays.  This
+     includes GETs with INTENSITY ON, and the MENU TO, DBEDIT(), and
+     ACHOICE() selection highlights.
+
+     ^bBorder:^b The border is an area around the outside of the screen to
+     which you cannot write.
+
+     ^bBackground:^b The background is not supported at this time.
+
+     ^bUnselected:^b The unselected setting indicates that a GET no longer
+     has input focus.  The current GET (the GET with input focus) is
+     displayed in the enhanced color while all other GETs are displayed in
+     the unselected color.
+
+     In addition to colors, foreground settings can have high intensity
+     and/or blinking attributes.  With a monochrome display, high intensity
+     enhances brightness of painted text.  With a color display, high
+     intensity changes the hue of the specified color.  For example, "N"
+     displays foreground text as black where "N+" displays the same text as
+     gray.  High intensity is denoted by "+".
+
+     The blinking attribute (controlled by _gtSetBlink()) causes the
+     foreground text to flash on and off at rapid intervals.  Blinking is
+     denoted with "*".  The attribute character can occur anywhere in the
+     setting string but is always applied to the foreground color regardless
+     of where it occurs.
+
+     The following colors are supported:
+
+     ^bList of Colors^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bColor          Letter    Monochrome^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Black          N, Space  Black
+     Blue           B         Underline
+     Green          G         White
+     Cyan           BG        White
+     Red            R         White
+     Magenta        RB        White
+     Brown          GR        White
+     White          W         White
+     Gray           N+        White
+     Bright Blue    B+        Bright Underline
+     Bright Green   G+        Bright White
+     Bright Cyan    BG+       Bright White
+     Bright Red     R+        Bright White
+     Bright Magenta RB+       Bright White
+     Yellow         GR+       Bright White
+     Bright White   W+        Bright White
+     Black          U         Underline
+     Inverse Video  I         Inverse Video
+     Blank          X         Blank
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  These two examples demonstrate specifying _gtSetColorStr()
+        with missing settings:
+
+        #include "gt.api"
+        .
+        .
+        .
+           // Settings left off the end
+           _gtSetColorStr( "W/N, BG+/B" );
+           //
+           // Settings skipped within the list
+           _gtSetColorStr("W/N, BG+/B,,,W/N");
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtColorSelect()" "_gtGetColorStr()" "_gtSetBlink()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSetCursor()     Set the cursor shape
+'------------------------------------------------------------------------------
+ ^b_gtSetCursor()^b
+ Set the cursor shape
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSetCursor(
+     ^b                      USHORT uiCursorShape
+     ^b                    )
+
+ ^bArguments^b
+
+     ^buiCursorShape^b is a number indicating the shape of the cursor.
+
+ ^bReturns^b
+
+     _gtSetCursor() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtSetCursor() changes the current cursor shape.  Before using this
+     function, you may want to save the current cursor shape with
+     _gtGetCursor(), so that you can restore the cursor to its prior shape.
+
+     CA-Clipper supplies constants in the Setcurs.ch header file (shown in
+     the table below) that assign descriptive names to various cursor shapes.
+     Using the constants in Setcurs.ch will simplify setting the cursor shape
+     in your programs.
+
+     ^bCursor Shapes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bShape               Value     Setcurs.ch^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     None                0         SC_NONE
+     Underline           1         SC_NORMAL
+     Lower half block    2         SC_INSERT
+     Full block          3         SC_SPECIAL1
+     Upper half block    4         SC_SPECIAL2
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example uses _gtGetCursor() and _gtSetCursor() to save
+        the current cursor shape, change it, and restore it to its original
+        shape:
+
+        #include "gt.api"
+        .
+        .
+        .
+
+           USHORT uiSavCursor;
+
+           _gtGetCursor( &uiSavCursor );     // Save cursor shape
+           _gtSetCursor( SC_SPECIAL1 );      // Change cursor to a block
+           .
+           .
+           .
+           _gtSetCursor( uiSavCursor );      // Restore cursor shape
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is are Gt.api.
+
+!seealso: "_gtGetCursor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSetMode()       Change display mode to specified number of rows & columns
+'------------------------------------------------------------------------------
+ ^b_gtSetMode()^b
+ Change display mode to a specified number of rows and columns
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSetMode(
+     ^b                    USHORT uiRows,
+     ^b                    USHORT uiCols
+     ^b                  )
+
+ ^bArguments^b
+
+     ^buiRows^b is the number of rows in the desired display mode.
+
+     ^buiCols^b is the number of columns in the desired display mode.
+
+ ^bReturns^b
+
+     _gtSetMode() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtSetMode() attempts to change the mode of the display hardware to
+     match the number of rows and columns specified.  The change in screen
+     size is reflected in the values returned by _gtMaxRow() and _gtMaxCol().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example displays a message after successfully selecting
+        43-line mode:
+
+        #include "gt.api"
+        .
+        .
+        .
+           if ( _gtSetMode(43, 80) = 0 )
+              _gtWriteAt( 0, 0, "43-line mode set", 16 );
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtMaxCol()" "_gtMaxRow()" "_gtScrDim()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSetPos()        Move the cursor to a new position
+'------------------------------------------------------------------------------
+ ^b_gtSetPos()^b
+ Move the cursor to a new position
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSetPos(
+     ^b                   USHORT uiRow,
+     ^b                   USHORT uiCol
+     ^b                 )
+
+ ^bArguments^b
+
+     ^buiRow^b represents the horizontal position of the cursor.  The value
+     may range from zero to _gtMaxRow().
+
+     ^buiCol^b represents the vertical position of the cursor.  The value may
+     range from zero to _gtMaxCol().
+
+ ^bReturns^b
+
+     _gtSetPos() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtSetPos() moves the cursor to a new position on the screen.  After the
+     cursor is positioned, the CA-Clipper functions ROW() and COL() are
+     updated accordingly.  Before using this function, you may want to save
+     the current cursor position with _gtGetPos() so that you can restore the
+     cursor to its original position.
+
+     To control the shape and visibility of the cursor, use _gtSetCursor().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a simple function that displays a string
+        at a specific screen location:
+
+        #include "gt.api"
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr );
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr )
+        {
+           _gtSetPos( uiRow, uiCol );               // Set new position
+           _gtWrite( fpStr, strlen( fpStr ) );      // Write string
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtGetCursor()" "_gtGetPos()" "_gtSetCursor()" "_gtWrite()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtSetSnowFlag()   Toggle snow suppression
+'------------------------------------------------------------------------------
+ ^b_gtSetSnowFlag()^b
+ Toggle snow suppression
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtSetSnowFlag(
+     ^b                        BOOL bNoSnow
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bbNoSnow^b toggles the current state of snow suppression.  A value of
+     TRUE enables snow suppression, while a value of FALSE disables snow
+     suppression.  The default is FALSE.
+
+ ^bReturns^b
+
+     _gtSetSnowFlag() returns zero if successful.  Any other value indicates
+     an error.
+
+ ^bDescription^b
+
+     Use _gtSetSnowFlag() to suppress snow in applications that will be run
+     using a CGA monitor.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This simple example turns enables snow suppression:
+
+        #include "gt.api"
+        .
+        .
+        .
+           _gtSetSnowFlag( TRUE );
+        .
+        .
+        .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtIsColor()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtWrite()         Write a string to the current screen location
+'------------------------------------------------------------------------------
+ ^b_gtWrite()^b
+ Write a string to the current screen location
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtWrite(
+     ^b                  BYTEP fpStr,
+     ^b                  USHORT uiLen
+     ^b                )
+
+ ^bArguments^b
+
+     ^bfpStr^b is the string to write.
+
+     ^buiLen^b is the length of the string.
+
+ ^bReturns^b
+
+     _gtWrite() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtWrite() displays a string to the screen at the current cursor
+     location.  The internal row and column coordinates are updated so the
+     CA-Clipper functions, ROW() and COL() will reflect the new cursor
+     position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a simple function that displays a
+        null-terminated string at a specific screen location:
+
+        #include "gt.api"
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr );
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr )
+        {
+           _gtSetPos( uiRow, uiCol );               // Set new position
+           _gtWrite( fpStr, strlen( fpStr ) );      // Write string
+           return;
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtGetPos()" "_gtSetPos()" "_gtWriteAt()" "_gtWriteCon()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtWriteAt()       Write a string at the specified screen location
+'------------------------------------------------------------------------------
+ ^b_gtWriteAt()^b
+ Write a string at the specified screen location
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtWriteAt(
+     ^b                    USHORT uiRow,
+     ^b                    USHORT uiCol,
+     ^b                    BYTEP fpStr,
+     ^b                    USHORT uiLen
+     ^b                  )
+
+ ^bArguments^b
+
+     ^buiRow^b and ^buiCol^b are the screen coordinates at which to write the string.
+     uiRow may be in the range of zero to _gtMaxRow().  uiCol may be in the
+     range of zero to _gtMaxCol().
+
+     ^bfpStr^b is the string to write.
+
+     ^buiLen^b is the length of the string.
+
+ ^bReturns^b
+
+     _gtWriteAt() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtWriteAt() writes a string to the screen at the specified coordinates.
+     After the string is written, the internal row and column coordinates are
+     updated so the CA-Clipper functions, ROW() and COL(), will reflect the
+     new cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this example, the function PrintStr() uses _gtWriteAt() to
+        display a null-terminated string in a specified color:
+
+        #include "gt.api"
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr,
+                       BYTEP fpColor );
+
+        void PrintStr( USHORT uiRow, USHORT uiCol, BYTEP fpStr,
+                       BYTEP fpColor )
+        {
+           _gtSetColorStr( fpColor );
+           _gtWriteAt( uiRow, uiCol, fpStr, strlen( fpStr ) );
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtGetPos()" "_gtSetPos()" "_gtWrite()" "_gtWriteCon()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _gtWriteCon()      Perform a console style write to the screen
+'------------------------------------------------------------------------------
+ ^b_gtWriteCon()^b
+ Perform a console style write to the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "gt.api"
+     ^bERRCODE _gtWriteCon(
+     ^b                     BYTEP fpStr,
+     ^b                     USHORT uiLen
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bfpStr^b is the string to write.
+
+     ^buiLen^b is the length of the string.
+
+ ^bReturns^b
+
+     _gtWriteCon() returns zero if successful.  Any other value indicates an
+     error.
+
+ ^bDescription^b
+
+     _gtWriteCon() writes a character string at the current cursor position
+     using "console" style output.  This includes processing control
+     characters, wrapping lines at the last column, and scrolling the screen
+     at the last row.  This is similar to the CA-Clipper QQOUT() console
+     function except that the output is always sent to the console.  The
+     internal row and column coordinates are updated so the CA-Clipper
+     functions, ROW() and COL(), will reflect the new cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In this simple example, _gtWriteCon() displays the string
+        "Hello" on the screen:
+
+        _gtWriteCon( "Hello", 5 )
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Gt.api.
+
+!seealso: "_gtRepChar()" "_gtWrite()" "_gtWriteAt()" 
+'------------------------------------------------------------------------------
+
+
+

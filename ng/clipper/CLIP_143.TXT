@@ -1,0 +1,40 @@
+'------------------------------------------------------------------------------
+^BSUBSTR()^B
+
+    SUBSTR() extracts a specified number of characters from a character
+    string.
+
+^USyntax^U
+
+    SUBSTR(<expC>,<expN1> [,<expN2>]
+
+^UArguments^U
+
+    <expC> is the source character string.  The maximum character string
+    that you can take a substring of is 65,535 (64K) bytes, the maximum
+    character string size in Clipper.
+
+    <expN1> is the starting position in the source string to begin the
+    substring.  If the starting position is positive, it is relative to the
+    leftmost character in the string.  If the starting position is
+    negative, the starting position is relative to the rightmost character
+    in the string.
+
+    <expN2> is the number of characters to return.  If this argument is
+    omitted, the substring begins the starting position and continues to
+    the end of the string.  If it is larger than the number of characters
+    from the starting position to the end of the string, it is ingored.
+
+^UReturns^U
+
+    A character string.
+
+^UUsage^U
+
+    SUBSTR() is useful when you want to display or print only a portion of
+    a character string.
+!seealso: ???.ngo:"AT" clip_126.ngo:"RAT" 
+'------------------------------------------------------------------------------
+
+
+

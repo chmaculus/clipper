@@ -1,0 +1,1087 @@
+!short: ^bOverview -- .RTLINK Error Messages
+'------------------------------------------------------------------------------
+     This section is a summary of error messages possible when linking with
+     .RTLink.  The messages are divided into categories according to severity
+     and the point in the linking process where the error occurs.  Each
+     category is described below, followed by a list of all messages in each
+     category.  For specific information on the syntax and operation of the
+     linker, see The CA-Clipper Linker--RTLINK.EXE chapter in the Programming
+     and Utilities guide.
+
+     The listed linker error and warning messages are a subset of all the
+     possible messages the linker can display and represent the most likely
+     problems that will be encountered during linking.
+
+ ^b.RTLink Warning Messages^b
+
+     As a category, .RTLink warnings are less severe than errors. They
+     indicate potential errors when the program is executed but do not
+     prevent the generation of the executable file (.EXE).  The DOS return
+     code is set to 1 by the unresolved symbol warning (wrt0022) when
+     generating an .EXE file; otherwise, the return code is unaffected by
+     warnings.
+
+     The general format of an .RTLink warning message is as follows:
+
+     ^bwarning wrtxxxx: messagetext
+
+ ^b.RTLink Error Messages^b
+
+     .RTLink error messages identify problems such as the inability to find a
+     file needed by the linker, a syntax error on the RTLINK.EXE command
+     line, or an .OBJ or .LIB file error.  The linker usually cannot continue
+     until the error is corrected, and no executable file is generated.  When
+     this happens, the DOS return code is set to 1.
+
+     The general format of an .RTLink error message is as follows:
+
+     ^berror ertxxxx: messagetext
+
+ ^b.RTLink Miscellaneous Error Messages^b
+
+     Miscellaneous errors are just like other .RTLink errors.  The linker
+     usually cannot continue until the error is corrected, and no executable
+     file (.EXE) is generated.  The DOS return code is set to 1.
+
+     The general format of an .RTLink miscellaneous error message is as
+     follows:
+
+     ^berror eutxxxx: messagetext
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^b.RTLink Warning Messages
+!short:
+!short: wrt0003      memory model mismatch in COMENT record...
+'------------------------------------------------------------------------------
+ ^bwrt0003 memory model mismatch in COMENT record ('<model known before>' !=
+         ^b'<model encountered>', COMENT record at 0x<offset, file '<file>'^b
+
+     ^bExplanation:^b  There are many types of COMENT records which provide
+     descriptive information about the object but do not usually affect the
+     output of a linker.  These records are similar to a comment which you
+     might place in a source file.  One type of COMENT record is a memory
+     model specification that does not affect the running of .RTLink.
+
+     The message indicates that the data portion of this COMENT record did
+     not match the data in these records which the linker encountered
+     previously.  Since the format of this particular COMENT record is
+     unpublished, and since many compiler manufacturers embed more
+     information than just the memory model in this record (compiler version
+     numbers seem to affect the data also), the condition is not normally an
+     error.  The message is displayed only to let you know that the data in
+     these records differ.
+
+     ^bAction:^b  Make sure that the objects and libraries which you are
+     linking together are of the same memory model.  If you are sure that
+     they are, ignore the warning.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0004      Duplicate start address (using the first one we saw...
+'------------------------------------------------------------------------------
+ ^bwrt0004 Duplicate start address (using the first one we saw on this level)^b
+
+     ^bExplanation:^b  Some languages specify a start address for the program
+     in each object module that makes up the program.  The start address
+     associated with the first object encountered is used as the start
+     address of the program.  This message lets you know that multiple
+     definitions of a start address were encountered and that the start
+     address specified by the module which is currently being processed will
+     be ignored.
+
+     ^bAction:^b  If a start address was defined in a referenced .PLL and the
+     linker encounters a start address in the object code, the start address
+     in the object code will override the start address associated with the
+     .PLL.  You can use the VERBOSE option to see just which file .RTLink was
+     processing when the warning occurred.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0005      No Stack Segment
+'------------------------------------------------------------------------------
+ ^bwrt0005 No Stack Segment^b
+
+     ^bExplanation:^b  This message warns you that your program has no stack
+     segment defined.  Whether this warning can be ignored or not depends on
+     your application.  Normally, only files created by an assembler would
+     not have a stack segment.  In advanced languages, this message would
+     probably indicate a more serious error.
+
+     ^bAction:^b  As a general rule, if you are intending to run EXE2BIN with
+     the executable file (.EXE), it is normal to see this message.  If,
+     however, you plan to run the program as an .EXE, it needs to define a
+     stack.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0009      Unrecognized map type '<char>' .... ignored
+'------------------------------------------------------------------------------
+ ^bwrt0009 Unrecognized map type '<char>' .... ignored^b
+
+     ^bExplanation:^b  One of the map specifications entered just after the
+     MAP option is not valid.
+
+     ^bAction:^b  The only valid map specifications are the letters A, N, and
+     S, which can be specified in either upper or lowercase.  Explanations
+     can be found in The CA-Clipper Linker--RTLINK.EXE chapter of the
+     Programming and Utilities guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0011      Public symbol '<symbol>' redefined
+'------------------------------------------------------------------------------
+ ^bwrt0011 Public symbol '<symbol>' redefined^b
+
+     ^bExplanation:^b  Redefinition messages are especially important when a
+     .PLL is involved.  Often programmers will rewrite a routine in a
+     referenced library and not include the new module until they create the
+     .EXE.  When a .PLL is built referring to the library and .RTLink needs
+     to resolve the name of the routine, it has not seen the new definition
+     but needs to find a definition for the symbol.  It would therefore pull
+     in the module from the library into the .PLL.  When you later linked the
+     .EXE which referenced the .PLL, you would get redefinition messages.
+     The addresses in the .PLL have been bound so that they call the library
+     function, while the addresses in the .EXE have been bound to reference
+     your function.
+
+     ^bAction:^b  The redefinition of symbols in .RTLink is normally a
+     serious error; however, in some instances a knowledgeable programmer may
+     ignore this warning if the symbol will never be referenced.  Do this at
+     your own risk, however, because in most cases this warning is
+     catastrophic.  It implies that occurrences of the symbol may be replaced
+     by different addresses in different parts of the program.  Use of the
+     EXCLUDE option can often help out with symbol redefinition messages
+     (especially when you wish to delay the definition of some symbol in a
+     .PLL since the linker will not see the correct definition until .EXE
+     link time).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0012      Prelinked Library symbol '<symbol>' redefined
+'------------------------------------------------------------------------------
+ ^bwrt0012 Prelinked Library symbol '<symbol>' redefined^b
+
+     ^bExplanation:^b  Redefinition messages are especially important when a
+     .PLL is involved.  Often programmers will rewrite a routine in a
+     referenced library and not include the new module until they create the
+     .EXE.  When a .PLL is built referring to the library and .RTLink needs
+     to resolve the name of the routine, it has not seen the new definition
+     but needs to find a definition for the symbol.  It would therefore pull
+     in the module from the library into the .PLL.  When you later linked the
+     .EXE which referenced the .PLL, you would get redefinition messages.
+     The addresses in the .PLL have been bound so that they call the library
+     function, while the addresses in the .EXE have been bound to reference
+     your function.
+
+     ^bAction:^b  The redefinition of symbols in .RTLink is normally a
+     serious error; however, in some instances a knowledgeable programmer may
+     ignore this warning if the symbol will never be referenced.  Do this at
+     your own risk, however, because in most cases this warning is
+     catastrophic.  It implies that occurrences of the symbol may be replaced
+     by different addresses in different parts of the program.  Use of the
+     EXCLUDE option can often help out with symbol redefinition messages
+     (especially when you wish to delay the definition of some symbol in a
+     .PLL since the linker will not see the correct definition until .EXE
+     link time).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0014      Cannot define linker reserved symbol '<symbol>'...
+'------------------------------------------------------------------------------
+ ^bwrt0014 Cannot define linker reserved symbol '<symbol>' because it is in the
+         ^bdon't define list^b
+
+     ^bExplanation:^b  A linker symbol which the linker needs to define in
+     order to bind addresses appropriately has been specified using the
+     EXCLUDE option.  You will be unable to EXCLUDE the symbol.
+
+     ^bAction:^b  The symbols which could possibly be reserved (depending on
+     your program structure) are: _end, _edata, $$OVLBASE, $$MAIN, $$CGSN,
+     $$COVL, $$MPGSNBASE, $$MPGSNOVL, $$MPOVLLFA, $$EXENAM, and $$INTNO.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0022      .EXE may not execute properly -- undefined symbols
+'------------------------------------------------------------------------------
+ ^bwrt0022 .EXE may not execute properly -- undefined symbols^b
+
+     ^bExplanation:^b  .RTLink warns you if there are any undefined symbols
+     remaining at the end of a run which is generating an executable file
+     (.EXE).  This warning message sets the DOS return code to 1.
+
+     ^bAction:^b  Undefined symbols at the end of a .PLL generation run are
+     generally not a problem, but if they are not resolved when an executable
+     file (.EXE) is generated, the .EXE file is usually not correct.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: wrt0031      RTLUTILS.LIB is an automatically loaded reserved library
+'------------------------------------------------------------------------------
+ ^bwrt0031 RTLUTILS.LIB is an automatically loaded reserved library^b
+
+     ^bExplanation:^b  You have specified RTLUTILS.LIB as a library to be
+     searched.
+
+     ^bAction:^b  This library will automatically be searched and need not be
+     included in your library list.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^b.RTLink Error Messages
+!short:
+!short: ert0004      Duplicate stacks
+'------------------------------------------------------------------------------
+ ^bert0004 Duplicate stacks^b
+
+     ^bExplanation:^b  Two different stacks are requested by a program.  The
+     most probable cause is that you have written a program in assembly
+     language that has direct control over allocation of stack segments.
+
+     ^bAction:^b  The solution is to eliminate the allocation of one of the
+     stack segments.  The SS and SP registers can be moved once your program
+     begins execution, but the linker needs to identify a single stack
+     segment so that it can know how to initialize the registers in the .EXE
+     header.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0005      filename portion of output file '<filename>' too long...
+'------------------------------------------------------------------------------
+ ^bert0005 filename portion of output file '<filename>' too long (max length
+         ^b<maximum length of output filename>)^b
+
+     ^bExplanation:^b  You entered an output filename that is too long for
+     the linker to handle.  The number displayed as the maximum length is the
+     number of characters (in decimal) which can be given.
+
+     ^bAction:^b  Reduce the length of the filename as indicated. Keep in
+     mind that only the first eight characters are meaningful as a DOS
+     filename.  The linker is not restricting how you name your files, but
+     there is a limit on how many extra characters it will carry along for
+     displaying in error messages.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0010      Overlay Area Nesting Area
+'------------------------------------------------------------------------------
+ ^bert0010 Overlay Area Nesting Area^b
+
+     ^bExplanation:^b  You are using the FREEFORMAT interface and have an
+     ENDAREA statement without a matching BEGINAREA statement.
+
+     ^bAction:^b  Check your input to ensure that no ENDAREA occurs without a
+     matching BEGINAREA.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0011      PRELOAD command must have active section
+'------------------------------------------------------------------------------
+ ^bert0011 PRELOAD command must have active section^b
+
+     ^bExplanation:^b  The FREEFORMAT PRELOAD command specifies that an
+     overlay section should be loaded into its overlay area during program
+     startup, and the command must occur after the SECTION specification for
+     the section which is to be preloaded.  This error indicates that the
+     current section is the root section which is, in effect, always
+     preloaded, but never handled by the overlay manager.  It is, therefore,
+     an error to mark the root section as preloaded.
+
+     ^bAction:^b  Move the PRELOAD command to somewhere after the SECTION
+     specification for the overlay section you want to preload.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0013      Input Terminated with area left open
+'------------------------------------------------------------------------------
+ ^bert0013 Input Terminated with area left open^b
+
+     ^bExplanation:^b  You are using the FREEFORMAT interface and have a
+     BEGINAREA statement without a matching ENDAREA statement.
+
+     ^bAction:^b  Check your input to ensure that no BEGINAREA occurs without
+     a matching ENDAREA.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0014      Overlays not supported in Prelinked Library
+'------------------------------------------------------------------------------
+ ^bert0014 Overlays not supported in Prelinked Library^b
+
+     ^bExplanation:^b  It is an error to have any sections other than the
+     root section when building a .PLL.  Any code in a .PLL must be a part of
+     the root section of the program and cannot be overlaid in any way.
+
+     ^bAction:^b  In the FREEFORMAT interface, there can be no BEGINAREA,
+     ENDAREA, or SECTION options if you use the PRELINK option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0015      Bad format binary number '<number>'
+'------------------------------------------------------------------------------
+ ^bert0015 Bad format binary number '<number>'^b
+
+     ^bExplanation:^b  You have entered an invalid number in response to an
+     option or command that expects a binary number.
+
+     ^bAction:^b  Use zero or one for binary input.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0016      Bad format octal number '<number>'
+'------------------------------------------------------------------------------
+ ^bert0016 Bad format octal number '<number>'^b
+
+     ^bExplanation:^b  You have entered an invalid number in response to an
+     option or command that expects an octal number.
+
+     ^bAction:^b  Use digits zero through seven for octal input.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0017      Bad format decimal number '<number>'
+'------------------------------------------------------------------------------
+ ^bert0017 Bad format decimal number '<number>'^b
+
+     ^bExplanation:^b  You have entered an invalid number in response to an
+     option or command that expects a decimal number.
+
+     ^bAction:^b  Use digits zero through nine for decimal input.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0018      Bad format hexadecimal number '<number>'
+'------------------------------------------------------------------------------
+ ^bert0018 Bad format hexadecimal number '<number>'^b
+
+     ^bExplanation:^b  You have entered an invalid number in response to an
+     option or command that expects a hexadecimal number.
+
+     ^bAction:^b  Use digits zero through nine and the letters A through F
+     for hexadecimal input.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0024      Cannot open .RTLink configuration file '<filename>'
+'------------------------------------------------------------------------------
+ ^bert0024 Cannot open .RTLink configuration file '<filename>'^b
+
+     ^bExplanation:^b  The linker found the indicated file but could not open
+     it, perhaps because of file or disk corruption.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0025      Cannot open script file '<filename>'
+'------------------------------------------------------------------------------
+ ^bert0025 Cannot open script file '<filename>'^b
+
+     ^bExplanation:^b  The linker cannot find the indicated script file
+     (specified following an '@' character on the command line).
+
+     ^bAction:^b  .RTLink does not utilize any environment variables when
+     searching for script files, so the name you specify must include the
+     exact path, filename, and extension.  Correct the indicated filename on
+     the command line.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0026      Output Name not specified or implied
+'------------------------------------------------------------------------------
+ ^bert0026 Output Name not specified or implied^b
+
+     ^bExplanation:^b  This error indicates that the linker does not know
+     where to place its output.
+
+     ^bAction:^b  Explicitly specify an output name.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0028      Cannot find transfer file '<filename>'
+'------------------------------------------------------------------------------
+ ^bert0028 Cannot find transfer file '<filename>'^b
+
+     ^bExplanation:^b  A .PLT was specified using the PLL option and the
+     transfer file (.PLT) associated with that filename cannot be found.  If
+     the indicated filename is a full or relative path name, the file could
+     not be opened; otherwise, the file was searched for in the current
+     directory and in all directories along the PLL and LIB environment
+     variables.
+
+     ^bAction:^b  Verify that the transfer file (.PLT) is present and that
+     the name of the prelinked library is specified correctly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0029      Cannot Open Transfer File '<filename>'
+'------------------------------------------------------------------------------
+ ^bert0029 Cannot Open Transfer File '<filename>'^b
+
+     ^bExplanation:^b  The linker found the indicated .PLT file but could not
+     open it, perhaps because of file or disk corruption.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0030      Disallowed symbol '<symbol>' already loaded in .PLL...
+'------------------------------------------------------------------------------
+ ^bert0030 Disallowed symbol '<symbol>' already loaded in .PLL '<prelinked
+         ^blibrary>'^b
+
+     ^bExplanation:^b  A symbol specified using the EXCLUDE option has
+     already been loaded into a referenced .PLL.  The linker, therefore,
+     could not avoid pulling in the module that defines the given symbol as
+     intended.
+
+     ^bAction:^b  Use the EXCLUDE option for the symbol when building .PLLs.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0032      User-level PLL transferred to .RTLink producing PLL
+'------------------------------------------------------------------------------
+ ^bert0032 User-level PLL transferred to .RTLink producing PLL^b
+
+     ^bExplanation:^b  In prelink mode, if you specify a .PLL file that is
+     dependent on another .PLL file (i.e., a user-level PLL), this message
+     will be generated.
+
+     ^bAction:^b  It is possible to create a .PLL file that depends on
+     another .PLL file by specifying both the /PRELINK and /PLL linker
+     options.  This nesting of .PLL files, however, can be only one level
+     deep.  Thus, if B.PLL was created to depend on A.PLL, you cannot
+     generate a C.PLL that depends on B.PLL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0033      Invalid format in transfer (.PLT) file '<filename>'...
+'------------------------------------------------------------------------------
+ ^bert0033 Invalid format in transfer (.PLT) file '<filename>' (possibly caused
+         ^bby a bad .PLL/.PLT name)^b
+
+     ^bExplanation:^b  Either the .PLT file is not valid or it has somehow
+     been corrupted.
+
+     ^bAction:^b  Check the name of the file first.  If it is incorrect,
+     correct the name specified with the PLL option.  If the name of the .PLT
+     is correct, regenerate the file by regenerating its associated .PLL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0035      Cannot find object file '<filename>'
+'------------------------------------------------------------------------------
+ ^bert0035 Cannot find object file '<filename>'^b
+
+     ^bExplanation:^b  The specified object file (.OBJ) cannot be found.  If
+     the indicated filename is a full or relative path name, the file could
+     not be opened; otherwise, the file was searched for in the current
+     directory and in all directories specified in the LIB and OBJ
+     environment variables.
+
+     ^bAction:^b  Verify that the object file is present and that its name is
+     specified correctly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0041      Unrecognized option '<option>'
+'------------------------------------------------------------------------------
+ ^bert0041 Unrecognized option '<option>'^b
+
+     ^bExplanation:^b  An invalid POSITIONAL option has been specified.
+
+     ^bAction:^b  Change the option you specify to be a valid POSITIONAL
+     option.  See The CA-Clipper Linker--RTLINK.EXE chapter in the
+     Programming and Utilities guide for the correct POSITIONAL syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0044      Illegal STACK size
+'------------------------------------------------------------------------------
+ ^bert0044 Illegal STACK size^b
+
+     ^bExplanation:^b  The STACK option parameter was improperly specified.
+
+     ^bAction:^b  Specify the stack size parameter needed for this option.
+     See The CA-Clipper Linker--RTLINK.EXE chapter in the Programming and
+     Utilities guide for the correct syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0045      Cannot create transfer file '<filename>'
+'------------------------------------------------------------------------------
+ ^bert0045 Cannot create transfer file '<filename>'^b
+
+     ^bExplanation:^b  An open error occurred while attempting to create the
+     indicated file.  Normally, an open error would be caused by a lack of
+     permission to open a file or by a directory on the path not existing.
+
+     ^bAction:^b  Change the name of the .PLL you are generating by using the
+     PRELINK option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0048      Only one Output Name should be specified
+'------------------------------------------------------------------------------
+ ^bert0048 Only one Output Name should be specified^b
+
+     ^bExplanation:^b  More than one output name is specified at the
+     POSITIONAL "Output Name" prompt.
+
+     ^bAction:^b  You may only specify one output name.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0049      Cannot create map file '<map>'
+'------------------------------------------------------------------------------
+ ^bert0049 Cannot create map file '<map>'^b
+
+     ^bExplanation:^b  The linker cannot create the specified map file.
+     Normally this is caused by an invalid map filename, a protection on the
+     map file, or a nonexistent directory as part of the map name.
+
+     ^bAction:^b  If you get this message check to ensure that the indicated
+     map name is valid.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0052      Attempt to load module defining symbol '<symbol>'
+'------------------------------------------------------------------------------
+ ^bert0052 Attempt to load module defining symbol '<symbol>'^b
+
+     ^bExplanation:^b  The linker has attempted to load a module that defines
+     the indicated symbol with the EXCLUDE option.
+
+     ^bAction:^b  This message will occur if you EXCLUDE a symbol that is
+     defined in one of the object files that you are linking. This is not
+     allowed, and is probably an inadvertent mistake. Either one of the
+     object files listed does not belong to this link, or the symbol does not
+     belong in the EXCLUDE list.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0054      Cannot find library file '<library>'
+'------------------------------------------------------------------------------
+ ^bert0054 Cannot find library file '<library>'^b
+
+     ^bExplanation:^b  The linker cannot find the specified library file. If
+     the indicated filename is a full or relative path name, the file could
+     not be opened; otherwise, the file was searched for in the current
+     directory and in all directories along the LIB environment variable.
+
+     ^bAction:^b  Verify that the library file is present and that its name
+     is specified correctly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0055      Cannot seek within library dictionary
+'------------------------------------------------------------------------------
+ ^bert0055 Cannot seek within library dictionary^b
+
+     ^bExplanation:^b  The linker has encountered an error in processing the
+     current library.  The library is supposed to have an extended dictionary
+     at the end, but a disk seek to the position of the dictionary failed.
+     Normally, this indicates a corrupted library.
+
+     ^bAction:^b  Try running the DOS CHKDSK /F utility to see if your disk
+     is corrupted.  If the disk is not corrupted, try regenerating or
+     reinstalling the library in question--use the VERBOSE option to see
+     which library caused the problem.  If the problem still persists, you
+     can work around it by using the NOEXTDICTIONARY option to ignore the
+     extended dictionary.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0056      Read of random library table failed
+'------------------------------------------------------------------------------
+ ^bert0056 Read of random library table failed^b
+
+     ^bAction:^b  Try running the DOS CHKDSK /F utility to see if your disk
+     is corrupted.  If the disk is not corrupted, try regenerating or
+     reinstalling the library in question.  To determine which library caused
+     the problem, link with the VERBOSE option.  If the problem persists,
+     link with the NOEXTDICTIONARY option in order to ignore the extended
+     dictionary.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0061      Input/output error on output file <filename>
+'------------------------------------------------------------------------------
+ ^bert0061 Input/output error on output file <filename>^b
+
+     ^bExplanation:^b  The linker cannot read from and/or write to the named
+     output file.
+
+     ^bAction:^b  Since this error message normally indicates a corrupted
+     file or disk, try running the DOS CHKDSK /F utility to see if your disk
+     is corrupted and correct the problem.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0066      Write to map file <filename> failed
+'------------------------------------------------------------------------------
+ ^bert0066 Write to map file <filename> failed^b
+
+     ^bExplanation:^b  A write to the map file failed, probably because the
+     disk is full.  If you get this message, the .EXE or .PLL that the link
+     produces has already been written, but the map will be truncated since
+     it could not all be written to disk.
+
+     ^bAction:^b  Free up more disk space and rerun .RTLink if you need a
+     map.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0067      Not enough characters in command '<option>' to guarantee...
+'------------------------------------------------------------------------------
+ ^bert0067 Not enough characters in command '<option>' to guarantee
+         ^buniqueness^b
+
+     ^bExplanation:^b  A sequence of characters which was accepted as an
+     option in a past version of .RTLink is not long enough to guarantee that
+     the correct option is selected.
+
+     ^bAction:^b  The minimum abbreviation for each linker option is
+     documented in The CA-Clipper Linker--RTLINK.EXE chapter in the
+     Programming and Utilities guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0077      Cannot find startup code 'RTLINKST.COM'
+'------------------------------------------------------------------------------
+ ^bert0077 Cannot find startup code 'RTLINKST.COM'^b
+
+     ^bExplanation:^b  When generating a .PLL with the PRELINK option,
+     .RTLink could not locate RTLINKST.COM.
+
+     ^bAction:^b  RTLINKST.COM contains the necessary startup code that must
+     be written to the .PLL.  When this file is needed, only the directory in
+     which RTLINK.EXE was originally found is searched--no other path
+     settings are used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0078      Error reading RTLINKST.COM
+'------------------------------------------------------------------------------
+ ^bert0078 Error reading RTLINKST.COM^b
+
+     ^bExplanation:^b  .RTLink was able to locate RTLINKST.COM, but an error
+     occurred while reading the file.
+
+     ^bAction:^b  RTLINKST.COM is probably corrupted, and you will need to
+     reinstall it from your distribution disks.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0083      Cannot find RTLINK.DAT (freeformat parser data)
+'------------------------------------------------------------------------------
+ ^bert0083 Cannot find RTLINK.DAT (freeformat parser data)^b
+
+     ^bExplanation:^b  .RTLink was unable to locate the RTLINK.DAT file.
+
+     ^bAction:^b  RTLINK.DAT is needed each time you execute RTLINK.EXE.
+     Only the directory in which RTLINK.EXE was originally found is searched
+     for this file--no other path settings are used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0084      Cannot read RTLINK.DAT header (freeformat parser data)
+'------------------------------------------------------------------------------
+ ^bert0084 Cannot read RTLINK.DAT header (freeformat parser data)^b
+
+     ^bExplanation:^b  .RTLink was able to locate RTLINK.DAT, but an error
+     occurred while reading the file header.
+
+     ^bAction:^b  RTLINK.DAT is probably corrupted, and you will need to
+     reinstall it from your distribution disks.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0085      Freeformat parser tables too big to fit in memory
+'------------------------------------------------------------------------------
+ ^bert0085 Freeformat parser tables too big to fit in memory^b
+
+     ^bExplanation:^b  There is not enough memory on your machine for .RTLink
+     to load the input parser tables from RTLINK.DAT.
+
+     ^bAction:^b  In order to run .RTLink, you will need to increase the
+     amount of free memory on your machine.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0086      Cannot read RTLINK.DAT data (freeformat parser data)
+'------------------------------------------------------------------------------
+ ^bert0086 Cannot read RTLINK.DAT data (freeformat parser data)^b
+
+     ^bExplanation:^b  .RTLink was able to locate RTLINK.DAT, but an error
+     occurred while reading the file data.
+
+     ^bAction:^b  RTLINK.DAT is probably corrupted, and you will need to
+     reinstall it from your distribution disks.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0088      Illegal information level <level> requested
+'------------------------------------------------------------------------------
+ ^bert0088 Illegal information level <level> requested^b
+
+     ^bExplanation:^b  You have specified the VERBOSE option with an
+     information level that is not in the range of 0 to 2.
+
+     ^bAction:^b  Change the level requested and restart the link.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0092      Cannot find RTLINK.HLP
+'------------------------------------------------------------------------------
+ ^bert0092 Cannot find RTLINK.HLP^b
+
+     ^bExplanation:^b  You have specified the HELP option, but .RTLink is
+     unable to locate RTLINK.HLP.
+
+     ^bAction:^b  When RTLINK.HLP is needed, only the directory in which
+     RTLINK.EXE was originally found is searched--no other path settings are
+     used.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0097      Invalid MAP flag <type>
+'------------------------------------------------------------------------------
+ ^bert0097 Invalid MAP flag <type>^b
+
+     ^bExplanation:^b  You have specified the MAP option with an invalid
+     report option.
+
+     ^bAction:^b  The valid MAP options are S, N, and A.  Explanations can be
+     found in The CA-Clipper Linker--RTLINK.EXE chapter in the Programming
+     and Utilities guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0112      Filename <filename> is more than <length> characters long
+'------------------------------------------------------------------------------
+ ^bert0112 Filename <filename> is more than <length> characters long^b
+
+     ^bExplanation:^b  The length of the indicated filename (including path)
+     exceeds the maximum allowable length for a filename.
+
+     ^bAction:^b  This message is usually indicative of some syntax error in
+     the input to .RTLink.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ert0166      <library> is the wrong version of RTLUTILS.LIB...              ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bert0166 <library> is the wrong version of RTLUTILS.LIB.  It should only
+        ^b only be used with version: <versionDesc>.  Remove this
+        ^b RTLUTILS.LIB, change your PATH, or re-install.^b
+
+     ^bExplanation:^b  Indicates that the linker is trying to use the
+     wrong version of RTLTUILS.LIB.
+
+     ^bAction:^b  Check the PATH DOS environment variable for occurences
+     of older versions of RTLink and remove them.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^b.RTLink Miscellaneous Error Messages
+!short:
+!short: eut0003      Not enough free memory
+'------------------------------------------------------------------------------
+ ^beut0003 Not enough free memory^b
+
+     ^bExplanation:^b  Although .RTLink can run in small memory systems,
+     there is a minimum amount of memory which is required. .RTLink must have
+     room to load into memory, and there must be a small amount of memory
+     (about 10K) left after the load so that the linker can keep information
+     about the symbols and code which it encounters.
+
+     ^bAction:^b  If you get this error, try to free up more memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0006      Need to swap but nothing is on the swap list
+'------------------------------------------------------------------------------
+ ^beut0006 Need to swap but nothing is on the swap list^b
+
+     ^bExplanation:^b  There is not enough memory to run the link.  Memory
+     management within .RTLink is handled in such a way that it can run in
+     very tight memory situations by swapping data that is not currently
+     needed out to a swap file.  However, information which is being
+     currently acted on must be in memory.  This message indicates that there
+     is not enough free memory to keep even the minimum information in
+     memory.
+
+     ^bAction:^b  If you get this error, try to free up more memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0007      Cannot open work file '<filename>'
+'------------------------------------------------------------------------------
+ ^beut0007 Cannot open work file '<filename>'^b
+
+     ^bExplanation:^b  This message indicates that .RTLink cannot open the
+     indicated temporary work file.  Normally, a failure in opening a work
+     file indicates that you do not have permission to either read from or
+     write to the named file or its directory.  Other disk problems, such as
+     a corrupted disk, could also lead to this failure, but they are far less
+     likely to occur.
+
+     ^bAction:^b  Make sure you have read and write permission for the named
+     file and that you have permission to create a file in the indicated
+     directory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0009      Write of <number> chars to work file <filename> at position...
+'------------------------------------------------------------------------------
+ ^beut0009 Write of <number> chars to work file <filename> at position
+         ^b<position> returns <number>^b
+
+     ^bExplanation:^b  This message indicates that .RTLink cannot write to
+     the given position in the indicated temporary work file. Normally, this
+     message is caused by a lack of available disk space when .RTLink
+     attempts to extend the size of the work file in order to save additional
+     data to it.  Other disk problems, such as a corrupted disk, could also
+     lead to this failure, but they are far less likely to occur.
+
+     ^bAction:^b  If you get this message, the work file has already been
+     opened for both reading and writing indicating that you have acceptable
+     permissions to access the work file.  Make sure that you have at least
+     <position> + <number> bytes of available disk space.  You may need much
+     more disk space than the error message indicates.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0015      Write to buffered output file '<filename>' at position 0x...
+'------------------------------------------------------------------------------
+ ^beut0015 Write to buffered output file '<filename>' at position 0x <position>
+         ^b(<number> chars) failed^b
+
+     ^bExplanation:^b  .RTLink cannot write to the given position in the
+     indicated output file.  Normally, this message is caused by a lack of
+     available disk space when .RTLink attempts to extend the size of the
+     output file in order to save additional data to it.  Other disk
+     problems, such as a corrupted disk, could also lead to this failure, but
+     they are far less likely to occur.
+
+     ^bAction:^b  If you get this message, free up more disk space and try
+     again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0016      Open of buffered output file '<filename>' failed
+'------------------------------------------------------------------------------
+ ^beut0016 Open of buffered output file '<filename>' failed^b
+
+     ^bExplanation:^b  .RTLink cannot open the indicated output file. .RTLink
+     opens the output file for writing.  Normally, a failure in opening the
+     output file indicates that you do not have permission to write to the
+     named file or its directory.  Other disk problems, such as a corrupted
+     disk, could also lead to this failure, but they are far less likely to
+     occur.
+
+     ^bAction:^b  Make sure you have write permission for the named file and
+     that you have permission to create a file in the indicated directory.
+     If you cannot ensure that the named file will have acceptable
+     permissions, specify the name of another file for which you have write
+     permission.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0019      Bad format object or library file '<filename>'
+'------------------------------------------------------------------------------
+ ^beut0019 Bad format object or library file '<filename>'^b
+
+     ^bExplanation:^b  The indicated filename is badly formatted.
+
+     ^bAction:^b  The most frequent occurrence of this message is when you
+     type FREEFORMAT responses to POSITIONAL input prompts.  Check the
+     filename to ensure that the object file being scanned is the one you
+     meant to scan.  If it is not, check your input for errors.
+
+     If you cannot find any errors, it is possible that the indicated file is
+     corrupted.  Check your disk using CHKDSK, and regenerate or restore the
+     file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0032      Invalid Index 0x90 passed to get_block                         ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^beut0032 Invalid Index 0x90 passed to get_block^b
+
+     ^bExplanation:^b
+
+     1. You attempted to link with one or more Summer '87 compiled object
+        modules.  These could be either stand-alone object files (.OBJ) or
+        library files (.LIB) containing object modules compiled with Summer
+        '87.  The CA-Clipper version of .RTLink is not compatible with Summer
+        '87 compiled programs.
+
+     2. You declared a function or procedure twice in the same program.
+
+     3. You attempted to link with a very large object module.
+
+     ^bAction:^b
+
+     1. If you are upgrading a Summer '87 system to CA-Clipper, recompile all
+        program files (.prg) using the CA-Clipper compiler before linking
+        with .RTLink the CA-Clipper Linker.  Likewise, if you have library
+        files (.LIB) containing Summer '87 generated object modules, rebuild
+        the libraries using CA-Clipper generated object files (.OBJ) before
+        linking.
+
+     2. If you are maintaining both Summer '87 and CA-Clipper versions of a
+        program and libraries, check to see that you are not inadvertently
+        linking with Summer '87 object (.OBJ) and library (.LIB) files in the
+        current directory, directories referenced by the LIB or OBJ
+        environment variables, or directories referenced with the DOS APPEND
+        command.
+
+     3. If you declared the function or procedure more than once in the same
+        program, remove duplicate declaration and the problem may disappear.
+
+     4. If you have one or more object files (.OBJ) larger than 64K, try
+        compiling your (.prg) files individually using the /M compiler
+        option.  Make sure to supply all of the resultant .OBJ files to
+        .RTLink for linking.  For more information on compiler options and
+        linking multiple .OBJ files, refer to the CA-Clipper--CLIPPER.EXE and
+        the CA-Clipper Linker--RTLINK.EXE chapters of the Programming and
+        Utilities guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: eut0035      Write to expanded (EMS) or extended (XMS) memory failed        ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^beut0035 Write to expanded (EMS) or extended (XMS) memory failed^b
+
+     ^bExplanation:^b  An attempt by the linker to write to expanded/
+     extended memory failed.  This is usually indicative of either a
+     failure of the memory or a corruption of the memory by some other
+     program.
+
+     ^bAction:^b  Temporarily disable the EMS/XMS memory and re-link.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

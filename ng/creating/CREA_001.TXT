@@ -1,0 +1,180 @@
+!short: Creating Source Files           An Overview
+'------------------------------------------------------------------------------
+ ^bCreating Norton Guides Source Files^b
+
+     A Norton Guides database is created from two different kinds
+     of source files:
+
+          ^bData Source Files^b
+                   contain the text that appears in the
+                   Guides Window; and the
+
+          ^bMenu Link Control File^b
+                   defines the menu structure
+
+     You write the text that will appear in your database into data
+     source files. Each data file is then compiled, to produce a
+     corresponding Norton Guides Object File.
+
+     In addition to the data source files that contain the text of
+     the database, you need to write a single ^bmenu link control^b
+     ^bfile^b that defines the menu structure of the database, and
+     names the menus and menu items. The linker then uses this
+     control file to stitch all the compiled NG object files into a
+     single Norton Guides Database file.
+
+     All source files are standard ASCII. You can name source files
+     with any extension you wish (or none at all), ^uexcept^u `.ng',
+     which is reserved for the compiled and linked database, and
+     `.ngo', which is reserved for compiled object files.
+
+     To continue this tutorial, use the "seealso" window at the top
+     of the screen to learn more about data source files: just
+     press the Enter key display the entry on Data Source Files.
+
+!seealso: "Data Source Files" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Data Source Files               Writing the database text
+'------------------------------------------------------------------------------
+^b Data Source Files^b
+
+     To create a Norton Guides database, the text that is to appear
+     in the database is written into one or more data source files.
+
+     A single data source file is created for each menu item. If,
+     for example, you had a database with three menus, and each
+     menu contained three items, you would have nine separate data
+     source files. (Actually, you might have more, since you can
+     break up the data for a single menu item across several data
+     source files.)
+
+     All the data that appears in a Norton Guides database, and
+     hence the data you type into a source file, is structured into
+     one of two types:
+
+                ^bShort Entries^b, and
+
+                ^bLong Entries^b
+
+     Use the "seealso" window at the top of the screen to learn
+     more about short and long entrys.
+
+!seealso: "Short and Long Entries" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Short and Long Entries          The Basic Building Blocks of NG Databases
+'------------------------------------------------------------------------------
+^b Short and Long Entries - Building Blocks of a Database^b
+
+     Short and long entries are the basic "building blocks" of a
+     Norton Guides database: Text appears in a Norton Guides
+     Database either as a list of short entries, or as a single
+     long entry.
+
+     A short entry is a single line of text. Short entries almost
+     never appear alone; they are found as elements in a ^blist^b of
+     short entries. Each short entry can be thought of as an ^bindex^b
+     pointing to a longer, more complete description, called a long
+     entry.
+
+     The long entry is displayed by ^bexpanding^b the short entry; you
+     can think of the long entry as "lying under" the short. What
+     you are reading right now is a long entry; if you press the
+     Escape key, you will move up to the short entry above it.
+     (From the short entry above this, press Enter to return here.)
+
+     A long entry such as this one can be anywhere from one line,
+     up to hundreds of lines long. A long entry is something like a
+     chapter in a book, and the list of short entries like the
+     table of contents.
+
+         ^bAt any one time^b, the Norton Guides can display either a
+         ^blist^b of short entries, or a ^bsingle^b long entry.
+
+     Long entries cannot be expanded. You can, however, include in
+     a long entry references to other long entries, using the
+     "!seealso" command. A "seealso" can refer either to a long
+     entry in the same file (which means it's also part of the same
+     menu item) or in another file.
+
+     A short entry does not have to have a long entry under it
+     (that is, a short entry does not have to be expandable). You
+     can design a list of short entries so that some, none, or all
+     are expandable.
+
+     Instead of having a long entry under it, you can also design
+     short entries that expand to ^banother^b ^blist^b of short entries.
+     There is virtually no limit to the length of a chain of "short
+     entry points to list of short entries." (A long entry,
+     however, can only appear at the endpoint of a chain.)
+
+!seealso: "Creating Entries" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Creating Entries                Writing the Database
+'------------------------------------------------------------------------------
+ ^bWriting the Database: Creating Entries^b
+
+     Short entries are created by typing the command `!short:',
+     ^bstarting in column one^b, immediately followed by the text of
+     the short entry on the same line.
+
+     A long entry is created by typing text immediately under the
+     short entry; this is the text that the short entry will expand
+     to when the user selects the "Expand" menu. Long entries can
+     be 78 characters wide, and up to 17k in length.
+
+     Instead of including the text of a long entry immediately
+     under the short entry that points to it, you can substitute
+     the `!file' command, followed by a filename. You then type the
+     text of the long entry into the file specified in the !file
+     command. (You also use the !file command when you are
+     designing a short entry that points to another ^blist^b of short
+     entries; see also the !file command.)
+
+     Long entries can refer the reader to other long entries using
+     the `!seealso' command. See !seealso for information on how to
+     write such references.
+
+     You can include ^uunderline^u, ^Bbold^B, and ^Rreverse^R video
+     attributes in the text of your source files; read the
+     reference on character attributes for more information.
+
+
+!seealso: "Character Attributes" crea_004.ngo:"!seealso:" crea_004.ngo:"!file:" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Character Attributes            Reverse, Underline, and Bold
+'------------------------------------------------------------------------------
+^BAdding Character Attributes^B
+
+     You can include underline, bold, and reverse video attributes
+     in the text of both long and short entries by surrounding the
+     text with the two characters:
+
+           ^^U      for ^Uunderline^U
+           ^^B      for ^Bbold^b
+           ^^R      for ^Rreverse^r
+
+     Note:  Type the caret character (the shifted 6 key), followed
+            by the letter U, B, or R, rather than holding down the
+            Control key and typing the letter. (If you actually
+            want the characters ^^B to appear in the text, rather
+            than turning on Bold, type two carets.) If not
+            terminated by a matching pair later on in the same
+            line, an attribute is automatically terminated by the
+            end of the line.
+!seealso: crea_002.ngo:"Compiling" crea_004.ngo:"^^" 
+'------------------------------------------------------------------------------
+
+
+

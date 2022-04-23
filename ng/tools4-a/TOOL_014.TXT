@@ -1,0 +1,531 @@
+!short: Introduction Miscellaneous Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This chapter contains some useful functions that do not belong in any
+     other chapter of network functions.  The functions HEXTOSTR() and
+     STRTOHEX() are not network functions, but these functions have been
+     included in CA-Clipper Tools specifically for working with internet
+     addresses that are returned or are required by functions such as
+     NNETADR() or IPXOPEN().  The function NNETVER() is very useful if you
+     are developing applications that access Netware 2.2 and Netware 3.11
+     servers because the behavior of some CA-Clipper Tools functions depends
+     on the Netware version used (for example, NNETRIGHTS(), NNETPURGE()).
+     Other functions are available for only one Netware version (for example,
+     NNETSNDLOG(), NNETSALLST()).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: HEXTOSTR()   Converts a hexadecimal string into a byte sequence
+'------------------------------------------------------------------------------
+ ^bHEXTOSTR()^b
+ Converts a hexadecimal string into a byte sequence
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bHEXTOSTR(<cHex>) --> cBytes
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cHex>^b   Designates a character string of which two characters are
+     recognized as a hexadecimal form of a byte.  <cHex> can contain only the
+     characters "0" to "9" and "A" to "F".
+
+ ^bReturns^b
+
+     HEXTOSTR() returns a character string that contains a byte sequence in
+     which each byte corresponds to two characters of its hexadecimal form.
+     The return value is half as long as <cHex>.
+
+ ^bDescription^b
+
+     HEXTOSTR() is useful when working with the internet addresses that are
+     required in conjunction with the IPX/SPX functions of Point To Point
+     communication.
+
+ ^bExample^b
+
+     Convert the hexadecimal string into a byte sequence:
+
+     ? HEXTOSTR('4130')   // "A0"
+!seealso: "STRTOHEX()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDOWN()   Shuts down the file server
+'------------------------------------------------------------------------------
+ ^bNNETDOWN()^b
+ Shuts down the file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDOWN([<lMode>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<lMode>^b  Designates whether  the file server is shut down only if
+     the current workstation is the only logged in station (.F.) or if the
+     server is shut down for all logged in stations (.T.).  The default value
+     is .F..
+
+     ^b<cServer>^b  Designates the name of the file server that is used.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDOWN() returns .T. if the down process has been established.  If an
+     error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET DOWN
+     NNETDOWN() allows you to shut down a file server.
+
+     ^bImportant! ^b If the parameter <lMode> is designated .T., all logged
+     in stations are logged out immediately.  Data that is still in the
+     buffer cannot be saved.
+
+     This function requires supervisor rights on the related file server.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Attempt to shut down the default file server:
+
+        IF NNETDOWN()
+           ? 'Successful!'
+        ELSE
+           ? 'Error'
+        ENDIF
+
+     ^b^CFE^b  Wait until the server can be shut down safely:
+
+        WHILE .NOT. NNETDOWN()
+        ENDDO
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETERROR()  Returns error most recently encountered by a Novell function
+'------------------------------------------------------------------------------
+ ^bNNETERROR()^b
+ Returns the error most recently encountered by a Novell function
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETERROR() --> nErrorCode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETERROR() returns the error that occurred most recently on the network
+     as a numeric value.
+
+ ^bDescription^b
+
+     NOVELL NET ERROR
+     This function returns the code for the error that occurred most recently
+     in conjunction with NNETXXX() functions.  However, this error did not
+     necessarily occur in the function most recently called.  All the
+     possible error codes are in Appendix C.
+
+ ^bExample^b
+
+     Determine the last error that occurred:
+
+     ? NNETERROR()         // e.g. 254
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETINFO()   Returns the information string of the Netware in use
+'------------------------------------------------------------------------------
+ ^bNNETINFO()^b
+ Returns the information string of the Netware in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETINFO() --> cInfo
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETINFO() returns an information string to the Novell network software
+     in use on the default file server.  The return has a maximum of 512
+     characters.
+
+ ^bDescription^b
+
+     NOVELL NET INFO
+     This function can call an information string contained in Novell network
+     software.  This information always relates to the default file server.
+     For example, the character string contains specifications regarding the
+     company that sold the software being used.  This can be of particular
+     interest for OEM users.
+
+ ^bExample^b
+
+     Display the information string:
+
+     ? NNETINFO()         // String of up to 512 characters
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSDATE()  Queries the Novell file server date
+'------------------------------------------------------------------------------
+ ^bNNETSDATE()^b
+ Queries the Novell file server date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSDATE() --> dServerDate
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSDATE() returns the default file server date.
+
+ ^bDescription^b
+
+     NOVELL NETSERVER DATE
+     This function allows you to query the current default file server date.
+     This date is then available in the corresponding date format under
+     CA-Clipper.  This allows all applications to synchronize their dates
+     within a Novell network.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the default server date:
+
+        ? NNETSDATE()         // e.g. 04/01/91
+
+     ^b^CFE^b  Pass the date with an AT to the CMOS-RAM:
+
+        SETDATE(NNETSDATE(), ISAT())
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETSTIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSERNO()  Determines the Netware serial number
+'------------------------------------------------------------------------------
+ ^bNNETSERNO()^b
+ Determines the Netware serial number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSERNO([<cServer>|<nConId>]) --> cSerNo
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSERNO() returns a 12-character string that contains the serial
+     number of the Netware on <cServer>.
+
+ ^bDescription^b
+
+     NOVELL NET SERIAL NUMBER
+     NNETSERNO() allows you to determine the Netware serial number.  The
+     number can be used to limit the usage of an application to a specific
+     network.
+
+ ^bNote^b
+
+     ^b^CFE^b  Certain subversions of Netware prohibit the query of the
+        serial number.  In this case, NNETSERNO() returns an empty string.
+
+ ^bExample^b
+
+     Display the Netware serial number of the default server:
+
+     ? NNETSERNO()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSFTLVL() Determines the System Fault Tolerance level of the Netware
+'------------------------------------------------------------------------------
+ ^bNNETSFTLVL()^b
+ Determines the System Fault Tolerance (SFT) level of the Netware in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSFTLVL() --> nSFTLevel
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSFTLVL() returns the System Fault Tolerance (SFT) level of the
+     Netware version on the default file server.
+
+ ^bDescription^b
+
+     NOVELL NET SYSTEM FAULT TOLERANCE LEVEL
+     This function allows you to determine if a System Fault Tolerant version
+     of Netware is available on the server, and on what level it is working.
+
+ ^bExample^b
+
+     Determine the SFT level:
+
+     ? NNETSFTLVL            // e.g. 1
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETVER()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSPSTAT() Determines the status of a server printer
+'------------------------------------------------------------------------------
+ ^bNNETSPSTAT()^b
+ Determines the status of a server printer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSPSTAT(<nServerPrinter>) --> nPrinterStatus
+
+     ^bNetware: 2.2 only
+
+ ^bArgument^b
+
+     ^b<nServerPrinter>^b  Designates one  of the five possible server
+     printers for which the status is determined.  Values from 0 to 4 are
+     valid.
+
+ ^bReturns^b
+
+     NNETSPSTAT() returns the following status codes:
+
+     ^bTable 30.1:  Status Coding for Server Printer^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0    Server printer ready (according to the server!)
+     1    Server printer off-line
+     2    Server printer paused from server console
+     3    Server printer off-line and paused at server console
+     -1   No corresponding printer available on server
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     NOVELL NETWORK SERVER PRINTER STATUS
+     With NNETSPSTAT(), you can determine if a particular printer on the
+     default server is currently online or offline.  If you receive a return
+     value that is greater than or equal to 2, then the designated printer
+     has been paused from the server console.
+
+     If there is no corresponding printer on the default server, the function
+     returns -1.
+
+ ^bNote^b
+
+     ^b^CFE^b  Further explanations regarding the returned values of 2 or 3
+        can be found in the Novell Netware documentation, Versions 2.1 and
+        later (in the Console Reference manual under Stop Printer).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the status of server printer 0:
+
+        ? NNETSPSTAT(0)                  // 0  Printer online
+
+     ^b^CFE^b  Determine the status of server printer 4:
+
+        ? NNETSPSTAT(4)                  // -1  No printer available
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETWORK()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSTIME()  Queries the time on a Novell file server
+'------------------------------------------------------------------------------
+ ^bNNETSTIME()^b
+ Queries the time on a Novell file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSTIME() --> cServerTime
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSTIME() returns the default file server clock time in the format
+     "HH:MM:SS".
+
+ ^bDescription^b
+
+     NOVELL NET SERVER TIME
+     With NNETSTIME(), you can determine the clock time on the default file
+     server.  The time, which is returned in the format "HH:MM:SS", can be
+     passed with SETTIME() to DOS and with ATs to the CMOS-RAM.  In this way,
+     all applications within a network can be synchronized with regard to the
+     clock time.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the clock time of the default file server:
+
+        ? NNETSTIME()                     // e.g. "10:28:30"
+
+     ^b^CFE^b  Pass the clock time with an AT to CMOS-RAM:
+
+        SETTIME(NNETSTIME(), ISAT())
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETSDATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETVER()    Determines the version of the Netware in use
+'------------------------------------------------------------------------------
+ ^bNNETVER()^b
+ Determines the version of the Netware in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETVER([<cDrive>]) --> cVersion
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cDrive>^b  Designates a drive.  If this parameter is used, the
+     returned version number is related to the file server to which the
+     designated drive is mapped.
+
+     ()  When called without a parameter, the version number of the default
+     file server is returned.
+
+ ^bReturns^b
+
+     NNETVER() returns the Novell version number in the format "N.NN".
+
+ ^bDescription^b
+
+     NOVELL NETWORK VERSION
+     The function returns the version number of the Novell network software
+     being used.  If no disk drive is specified, the version number is
+     related to the default file server.  With a drive specification, the
+     version number depends on the file server to which the disk drive is
+     mapped.  The drive specification was taken into account because
+     different drives can be mapped to different file server versions.
+
+ ^bExample^b
+
+     Display the version number:
+
+     ? NNETVER()                   // e.g. 2.15
+     ? NNETVER("T:")               // e.g. 3.01
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETSFTLVL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETWORK()   Determines whether or not a Novell network is active
+'------------------------------------------------------------------------------
+ ^bNNETWORK()^b
+ Determines whether or not a Novell network is active
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETWORK() --> lNovellNetActive
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETWORK() returns .T. when you are working in a Novell network.
+
+ ^bDescription^b
+
+     NOVELL NETWORK
+     With NNETWORK(), you can determine if you are working with a Novell
+     network.  If so, the NNETVER() function can determine the related
+     version.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function only tests to see if a Novell shell (requestor)
+        has been loaded.
+
+ ^bExample^b
+
+     Determine if there a Novell network, version => 2.0/ELS I that is
+     active:
+
+     IF NNETWORK()
+        IF NNETVER() >= "2.0"
+           NNETCAPBEG(1)                     // Start capture
+        ENDIF
+     ENDIF
+!seealso: "NNETVER()" "NNETINFO()" "NNETSFTLVL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STRTOHEX()   Converts a byte sequence into hexadecimal form
+'------------------------------------------------------------------------------
+ ^bSTRTOHEX()^b
+ Converts a byte sequence into hexadecimal form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSTRTOHEX(<cBytes>) --> cHex
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cBytes>^b   Designates a character string that is recognized as a
+     byte sequence.
+
+ ^bReturns^b
+
+     STRTOHEX() returns a character string that contains each byte
+     (character) of the passed string in its two-character, hexadecimal form.
+     The returned string is exactly twice as long as <cBytes>.
+
+ ^bDescription^b
+
+     STRTOHEX() is useful when working with the internet addresses that are
+     required in conjunction with the IPX/SPX functions of Point To Point
+     communication.
+
+ ^bExample^b
+
+     Convert the byte sequence to hexadecimal form:
+
+     ? STRTOHEX(CHR(27)+'A')   // "1B41"
+!seealso: "HEXTOSTR()" 
+'------------------------------------------------------------------------------
+
+
+

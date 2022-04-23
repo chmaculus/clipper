@@ -1,0 +1,23 @@
+'------------------------------------------------------------------------------
+^BSET EXCLUSIVE^B
+
+    SET EXCLUSIVE determines the way in which database and related memo and
+    index files are opened.  It is used in conjunction with multi-user
+    environments.
+
+^USyntax^U
+
+    SET EXCLUSIVE ON/OFF
+
+^UUsage^U
+
+    When EXCLUSIVE is ON, all database and associated files are opened as
+    non-shareable and cannot be USEd by other users until they are CLOSEd.
+
+    When EXCLUSIVE is OFF, all non-shared access must be controlled
+    programmatically using RLOCK(), FLOCK(), and USE...EXCLUSIVE.
+!seealso: clip_088.ngo:"USE" clip_130.ngo:"RLOCK()" 
+'------------------------------------------------------------------------------
+
+
+

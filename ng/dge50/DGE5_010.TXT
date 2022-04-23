@@ -1,0 +1,191 @@
+!short: GKI_PMouseCursorOff        Turn the mouse cursor off
+'------------------------------------------------------------------------------
+void GKI_PMouseCursorOff()
+
+Turns the mouse cursor off.
+
+!seealso: "GKI_PMouseCursorOn" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseCursorOn         Turn the mouse cursor on
+'------------------------------------------------------------------------------
+void GKI_PMouseCursorOn()
+
+Turns the mouse cursor on.
+
+!seealso: "GKI_PMouseCursorOff" "GKI_PMouseEnable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseCursorShape      Redefine the shape of the mouse cursor
+'------------------------------------------------------------------------------
+void GKI_PMouseCursorShape(nXHot, nYHot, *Masks)
+
+Redefines the shape of the mouse cursor.
+
+^BParameters^B
+
+^Uint nXHot^U
+X position of the mouse hot spot. relative to top left corner.
+
+^Uint nYHot^U
+Y position of the mouse hot spot, relative to top left corner.
+
+^Uint *Masks^U
+Screen and cursor bitmap masks, stored consecutively.
+
+
+!seealso: "GKI_PMouseEnable" "GKI_PMouseCursorOn" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseDisable          Disable the mouse
+'------------------------------------------------------------------------------
+void GKI_PMouseDisable()
+
+Disables the mouse. Call this function before exiting a 
+program to remove interrupt routines.
+
+!seealso: "GKI_PMouseEnable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseEnable           Enable the mouse
+'------------------------------------------------------------------------------
+int GKI_PMouseEnable() => Number of buttons
+
+Enables the mouse, resets it, and returns the number of 
+buttons. Installs interrupt service routines that must be 
+removed by calling the function GKI_PMouseDisable() before 
+quitting an application.
+
+^BReturns^B
+Zero if the mouse cannot be found. Otherwise, an integer 
+indicating the number of buttons on the mouse.
+
+
+!seealso: "GKI_PMouseDisable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseGetX             Get the mouse cursor's current X coordinate
+'------------------------------------------------------------------------------
+int GKI_PMouseGetX() => X position in device coordinates
+
+Reads the mouse cursor's current position and returns the 
+X coordinate.
+
+^BReturns^B
+X coordinate of the mouse cursor's current location.
+
+
+!seealso: "GKI_PMouseGetY" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseGetY             Get the mouse cursor's current Y coordinate
+'------------------------------------------------------------------------------
+int GKI_PMouseGetY() => Y position in device coordinates
+
+Reads the mouse cursor's current position and returns the 
+Y coordinate.
+
+^BReturns^B
+Y coordinate of the mouse cursor's current location.
+
+
+!seealso: "GKI_PMouseGetX" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseMotion           Find out if the mouse has moved
+'------------------------------------------------------------------------------
+int GKI_PMouseMotion() => non-zero if movement
+
+Reports mouse motion.
+
+^BReturns^B
+Non-zero if the mouse cursor has moved since the last call 
+to this function.
+
+
+!seealso: "GKI_PMouseGetX" "GKI_PMouseGetY" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseSetPos           Set the current position of the mouse
+'------------------------------------------------------------------------------
+void GKI_PMouseSetPos(nX0, nY0)
+
+Sets the current position of the mouse.
+
+^BParameters^B
+
+^Uint nX0^U
+Mouse cursor X coordinate.
+
+^Uint nY0^U
+Mouse cursor Y coordinate.
+
+
+!seealso: "GKI_PMouseStatus" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseSetWin           Restrict mouse cursor movement
+'------------------------------------------------------------------------------
+void GKI_PMouseSetWin(nX0, nY0, nX1, nY1)
+
+Restricts mouse cursor movement to a rectangular window.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the bottom left corner.
+
+^Uint nY0^U
+Y coordinate for the bottom left corner.
+
+^Uint nX1^U
+X coordinate for the upper right corner.
+
+^Uint nY1^U
+Y coordinate for the upper right corner.
+
+
+!seealso: "GKI_PMouseStatus" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PMouseStatus           Get mouse button status
+'------------------------------------------------------------------------------
+int GKI_PMouseStatus() => button status
+
+Reads the mouse status.
+
+^BReturns^B
+An integer indicating the status of the mouse buttons.
+
+          Value      Meaning
+          컴컴�      컴컴컴컴컴컴컴컴�
+            0        No button pressed
+            1        Left button down
+            2        Right button down
+            3        Both buttons down
+
+!seealso: "GKI_PMouseGetX" "GKI_PMouseGetY" 
+'------------------------------------------------------------------------------
+
+
+

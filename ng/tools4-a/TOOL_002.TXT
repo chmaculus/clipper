@@ -1,0 +1,1798 @@
+!short: Introduction Low Level Bindery Access
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     Each Netware file server maintains a database of users and resources
+     available on the network.  This special-purpose database is called the
+     bindery.  The bindery contains objects uniquely specified by an object
+     name and an object type.  Possible object types are: users, user groups,
+     print queues, or print servers.  Each object has associated with it a
+     number of properties that can be addressed with names and contain
+     information about the object.  For example, the property GROUPS_I'M_IN
+     contains a list of user groups of which a user is a member.
+
+     The functions of this chapter allow a low level access to the bindery.
+     This provides you with maximum flexibility for programming within
+     Novell.  The low level functions allow the creation of your own bindery
+     objects as well as the development of bindery analyzers.
+
+     However, even though the bindery concept has a high security level,
+     incorrect use of the low level bindery functions can be very dangerous
+     if you have supervisor or equivalent access rights.  The network could
+     be brought to a standstill.  You should use these functions only with
+     extensive knowledge of the bindery concept, the Novell API, and bindery
+     management.  For example, you must know the terms object, item, and set
+     property.
+
+     For frequent, complex purposes that require bindery access, like adding
+     a user to a group, CA-Clipper Tools provides high level functions that
+     can be used without a problem.  These functions are based on the low
+     level functions and are available in CA-Clipper source code.
+
+     Netware internally uses a high low sequence to store numeric values,
+     which is contrary to the standard format of the 80x86 processor family
+     (low high sequence).  For efficiency reasons, the Netware functions of
+     CA-Clipper Tools expect numeric values that are passed to Netware
+     (object types or object IDs) in the high low sequence.  However, this
+     will not affect the practical work with the CA-Clipper Tools because
+     symbolic constants are defined in the high-low format in the header file
+     CTNNET.CH for the most important object types.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETADDSET() Adds a bindery object to a set property
+'------------------------------------------------------------------------------
+ ^bNNETADDSET()^b
+ Adds a bindery object to a set property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETADDSET(<cObjName>,[<nType>],<cPropName>,<cMember>,
+     ^b   [<cMemberType>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates a numeric value that indicates the type of
+     <cObjName>.  The header file CTNNET.CH contains symbolic constants for
+     the object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+
+     ^b<cPropName> ^b Designates the name of the set property of <cObjName>.
+
+     ^b<cMember> ^b Designates the name of the bindery object that is stored
+     in the property <cPropName> of the bindery object <cObjName>.
+
+     ^b<cMemberType> ^b Designates a numeric value that indicates the type of
+     <cMember>.  The default value indicates the object type OBJ_USER.
+
+     ^b<cServer> ^b Designates the name of the file server that contains the
+     bindery that is accessed.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETADDSET() returns .T. if the bindery object has been added
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETADDSET() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET ADD BINDERY OBJECT TO SET
+     Internally, Novell Netware differentiates between two possible property
+     types: item and set property.  The function NNETADDSET() allows the
+     storage of information to a set property.  Set properties contain a list
+     of references to other bindery objects.  For example, the GROUP_MEMBERS
+     property contains a list of users that are members of a user group.
+
+     The parameters <cObjName> and <nType> describe the object that is
+     processed.  <cPropName> is the name of the property.  The property must
+     have been created before (for example, with the NNETCRTPRP() function).
+     <cMember> and <cMemberType> specify the bindery object that is added to
+     <cPropName>.  By passing the parameters <cServer> or <nConId>, it is
+     possible to access the bindery of any connected file server.  The
+     connection ID of a server can be determined with the functions
+     NNETATTACH() or NNETLOGIN().
+
+     Prerequisites for a successful call of NNETADDSET() are sufficient
+     bindery and property access rights.  The necessary property access
+     rights depend on the property security of the property that is
+     manipulated.  For efficiency reasons, user defined object types must be
+     passed in the high-low format.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add user MIKE to the MARKET group :
+
+        #include "ctnnet.ch"
+
+        IF NNETADDSET('MARKET',OBJ_GROUP,'GROUP_MEMBERS','MIKE')
+        ? 'User added successfully!'
+        ELSE
+        ? 'No user added!'
+        ENDIF
+
+     ^b^CFE^b  To add a user to a group, it is also necessary to add the
+        group to two user properties.  Use NNETADDGRP() when adding a user to
+        a group.
+!seealso: tool_003.ngo:"NNETADDGRP()" "NNETCRTPRP()" "NNETDELSET()" "NNETWRTITM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETBINACC() Determines the bindery security access level
+'------------------------------------------------------------------------------
+ ^bNNETBINACC()^b
+ Determines the bindery security access level
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETBINACC([<cServer>|<nConId>]) --> nRights
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery security access level is determined.  Your workstation must be
+     attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETBINACC() returns the bindery security access level of the currently
+     logged in user.  nRights can be a numeric value between 0 and 3.
+
+ ^bDescription^b
+
+     NOVELL NET BINDERY ACCESS LEVEL
+     All bindery objects and their properties have security levels for  read
+     and write access.  For example, the security code can be defined when a
+     new bindery object is created with the NNETCRTOBJ() function.  The
+     access to an object or a property is possible only if the user's access
+     right is equivalent to or higher than the security level defined for the
+     operation.  With NNETBINACC(), you can determine the security access
+     level.  The function returns a numeric value between 0 and 3.
+
+     ^bTable 18.1:  Security Access Levels^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       User has not logged in to the file server
+     1       User has logged in to the file server
+     2       User has logged in to the file server with password
+     3       User has logged in to the file server as supervisor
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     With the parameters <cServer> or <nConId>, the security access level can
+     be determined for any attached file server.  The connection ID of a file
+     server can be determined with the functions NNETATTACH() or NNETLOGIN().
+
+ ^bExample^b
+
+     Determine the bindery security access level; if the return value is 3
+     (supervisor), delete a user:
+
+     #include "ctnnet.ch"
+
+     IF NNETBINACC()=3
+     NNETDELOBJ('GUEST',OBJ_USER)
+     ENDIF
+!seealso: "NNETCRTOBJ()" "NNETCRTPRP()" "NNETDELOBJ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETBINCL()  Closes a bindery
+'------------------------------------------------------------------------------
+ ^bNNETBINCL()^b
+ Closes a bindery
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETBINCL([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer> ^b Designates the name of the file server where the bindery
+     is closed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETBINCL() returns .T. if the bindery has been closed successfully.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETBINCL() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET BINDERY CLOSE
+     Under Netware, the bindery is physically organized as two files,
+     NET$BIND.SYS and NET$BVAL.SYS.  These files are hidden files in the
+     SYS:SYSTEM directory.  During network operation these files are
+     exclusively open and cannot be accessed directly.  For example, to
+     archive the bindery files, the bindery must be closed.  The bindery can
+     be closed with the NETBINCL() function, but supervisor rights are
+     required.
+
+     With the parameters <cServer> or <nConId>, the bindery can be closed on
+     any attached file server.  The connection ID of a file server can be
+     determined with the functions NNETATTACH() or NNETLOGIN().
+
+     ^bImportant!^b  While the bindery is closed, much of the network is not
+     functional.  The bindery should not be closed if another user is logged
+     in.  The time that the bindery is closed should be kept to a minimum.
+
+ ^bExample^b
+
+     In the following example, drive K: is mapped to the SYS:SYSTEM directory
+     of the current file server.  If the bindery has been closed
+     successfully, the bindery files are copied to a local drive with the
+     FILECOPY() function.  After the FILECOPY(), the bindery is reopened with
+     the NNETBINOP() function:
+
+     IF NNETBINCL()
+     FILECOPY('K:NET$BIND.SYS','C:\NET$BIND.SYS')
+     FILECOPY('K:NET$BVAL.SYS','C:\NET$BVAL.SYS')
+     NNETBINOP()
+     ELSE
+     ? 'Bindery could not be closed!'
+     ENDIF
+!seealso: "NNETBINACC()" "NNETBINOP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETBINOP()  Opens a bindery
+'------------------------------------------------------------------------------
+ ^bNNETBINOP()^b
+ Opens a bindery
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETBINOP([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer> ^b Designates the name of the file server where the bindery
+     is opened.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETBINOP() returns .T. if the bindery has been opened successfully.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETBINOP() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET BINDERY OPEN
+     NNETBINOP() reopens the bindery after it has been closed with
+     NNETBINCL().  Supervisor rights are required.
+
+     With the parameters <cServer> or <nConId>, the bindery can be opened on
+     any attached file server.  The connection ID of a file server can be
+     determined with the functions NNETATTACH() or NNETLOGIN().
+
+ ^bNote^b
+
+     ^b^CFE^b  It is not necessary to open the bindery explicitly before an
+        access.  The bindery files are kept open automatically.
+
+ ^bExample^b
+
+     See the examples for NNETBINCL().
+!seealso: "NNETBINACC()" "NNETBINCL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCRTOBJ() Creates a new bindery object
+'------------------------------------------------------------------------------
+ ^bNNETCRTOBJ()^b
+ Creates a new bindery object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCRTOBJ(<cName>,[<nType>],[<nDynamic>],[<nSafe>],
+     ^b   [<cServer>|<nConId>) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName> ^b Designates the name of the new bindery object.  Under
+     Netware, object names can be up to 47 characters long.
+
+     ^b<nType> ^b Designates a numeric value that indicates the type of
+     <cName>.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+
+     ^b<nDynamic> ^b Designates whether the bindery object is static (0) or
+     dynamic (1).  The default value is static (0).
+
+     ^b<nSafe> ^b Designates the value for the object security.  The value
+     specifies the rights required to find (read) or to modify (write) the
+     object in the bindery.  The settings are defined in a bit-coded mask.
+     The low-ordered bits control the read access; the high-ordered bits
+     control the write access to the bindery object.
+
+     ^bTable 18.2:  Values for Object Security^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue  Hex  Bin     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0      0    0000    Access allowed to all users
+     1      1    0001    Access allowed to users who have logged in to the
+                         file server
+     2      2    0010    Access allowed to users who have logged in to the
+                         file server with password
+     3      3    0011    Access allowed to users who have logged in to the
+                         file server as the supervisor or as a user who has
+                         supervisor equivalence
+     4      4    0100    Access only allowed to the Netware operating system
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default value for <nSafe> is 49 (31h).  The mask defines write
+     access for supervisors and equivalents, and read access for all logged
+     in users.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETCRTOBJ() returns .T. if the new object has been created
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETCRTOBJ() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET CREATE BINDERY OBJECT
+     NNETCRTOBJ() allows you to create a new bindery object.  Supervisor
+     rights are required.  For efficiency reasons, user defined object types
+     must be passed in high-low format.
+
+     For the definition of the security mask, the four bits for the write
+     access must be followed by the four bits for the read access.  The
+     resulting eight-bit string must be passed as decimal value for <nSafe>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create a static object of the type group under the name DEV:
+
+        #include "ctnnet.ch"
+
+        IF NNETCRTOBJ('DEV',OBJ_GROUP)
+        ? 'Group created successfully!'
+        ELSE
+        ? 'Group could not be created!'
+        ENDIF
+
+     ^b^CFE^b  To create groups, use the NNETCRTGRP function in CA-Clipper
+        Tools.
+!seealso: "NNETCRTPRP()" "NNETDELOBJ()" tool_014.ngo:"NNETERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCRTPRP() Creates a new bindery property
+'------------------------------------------------------------------------------
+ ^bNNETCRTPRP()^b
+ Creates a new bindery property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCRTPRP(<cObjName>,[<nObjType>],<cPropName>
+     ^b   [<nFlag>],[<nSafe>],[<cServer>|<nConId>])
+     ^b    --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the object for which a new
+     property is created.
+
+     ^b<nObjType> ^b Designates a numeric value that indicates the object
+     type.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+
+     ^b<cPropName> ^b Designates the name of the new property.  The name can
+     be up to 15 characters long.
+
+     ^b<nFlag> ^b Designates the value for the property flag.  With the
+     property flag, two property characteristics can be set.  With bit 1 you
+     can determine if the property is static (bit 1 = 0) or dynamic (bit
+     1=1).  Bit 2 specifies an item (bit 2 = 0) or a set (bit 2 = 1)
+     property.  The following table contains possible values for <nFlag>:
+
+     ^bTable 18.3:  Possible property flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Sym. Con.    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       PRP_ITEM     Static item property
+     1                    Dynamic item property
+     2       PRP_SET      Static set property
+     3                    Dynamic set property
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Symbolic constants can be found in the header file CTNNET.CH.  The
+     default value for <nFlag> is 0.
+
+     ^b<nSafe> ^b Designates the value for the property security.  For more
+     information, see the description of the function NNETCRTOBJ(). The
+     default value is 49 (31h).
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETCRTPRP() returns .T. if the new property <cPropName> has been
+     created successfully.  If an error occurs, the Novell error code can be
+     queried with the NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETCRTPRP() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET CREATE PROPERTY
+     NNETCRTPRP() allows you to create a new property for a bindery object.
+     Sufficient bindery and object access rights are required.  The necessary
+     object access rights depend on the object security of the object that is
+     manipulated.  For efficiency reasons, user defined object types must be
+     passed in the high-low format.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The property GROUP_MEMBERS is added to the group DEV.  This
+        property is defined by Novell and must be created as set property:
+
+        #include "ctnnet.ch"
+
+        IF NNETCRTPRP('DEV',OBJ_GROUP,'GROUP_MEMBERS',PRP_SET)
+        ? 'Property created successfully!'
+        ELSE
+        ? 'Property could not be created!'
+        ENDIF
+
+     ^b^CFE^b  To add a group, use the NNETADDGRP() function in CA-Clipper
+        Tools.
+!seealso: "NNETCRTOBJ()" "NNETDELPRP()" tool_014.ngo:"NNETERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDELOBJ() Deletes a bindery object
+'------------------------------------------------------------------------------
+ ^bNNETDELOBJ()^b
+ Deletes a bindery object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDELOBJ(<cName>,[<nType>],[<cServer>|<nConId>])
+     ^b    --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b Designates the name of the bindery object that is deleted.
+
+     ^b<nType> ^b Designates a numeric value that indicates the type of
+     <cName>.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDELTOBJ() returns .T. if the object <cName> has been deleted
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETDELOBJ() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET DELETE BINDERY OBJECT
+     NNETDELOBJ() allows you to delete bindery objects.  Users and user
+     groups can be deleted.  With the parameters <cServer> or <nConId>, the
+     bindery of any attached server can be accessed.  The connection ID of a
+     server can be determined with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights are required to delete a bindery object.  For
+     efficiency reasons, user defined object types must be passed in the high-
+     low format.
+
+ ^bNote^b
+
+     ^b^CFE^b  CA-Clipper Tools has no high level function available to
+        delete users or user groups.  Use NNETDELOBJ().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete user GUEST:
+
+        IF NNETDELOBJ('GUEST')
+        ? 'User has been deleted successfully!'
+        ELSE
+        ? 'User could not be deleted!'
+        ENDIF
+
+     ^b^CFE^b  Delete group DEV:
+
+        #include "ctnnet.ch"
+
+        IF NNETDELOBJ('DEV',OBJ_GROUP)
+        ? 'Group has been deleted successfully!'
+        ELSE
+        ? 'Group could not be deleted!'
+        ENDIF
+!seealso: "NNETCRTOBJ()" "NNETDELPRP()" tool_014.ngo:"NNETERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDELPRP() Deletes an object property
+'------------------------------------------------------------------------------
+ ^bNNETDELPRP()^b
+ Deletes an object property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDELPRP(<cObjName>,[<nObjType>],<cPropName>,
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName>^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nObjType> ^b Designates a numeric value that indicates the object
+     type.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+
+     ^b<cPropName> ^b Designates the name of the property that is deleted.
+     The name can contain the wildcards "?" and "*".  In this case, all
+     properties matching the search mask are deleted.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDELPRP() returns .T. if the property <cPropName> has been deleted
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETDELPRP() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET DELETE PROPERTY
+     NNETDELPRP() allows you to delete properties of a bindery object.
+     Sufficient bindery and object access rights are required.  The necessary
+     object access rights depend on the object security of the object that is
+     manipulated.  For efficiency reasons, user defined object types must be
+     passed in the high-low format.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete property IDENTIFICATION of the user MICK:
+
+        IF NNETDELPRP('MICK',,'IDENTIFICATION')
+        ? 'Property has been deleted successfully!'
+        ELSE
+        ? 'Property could not be deleted!'
+        ENDIF
+
+     ^b^CFE^b  The property IDENTIFICATION of a user object contains a user's
+        full name.  In the example above, this information is deleted.  Other
+        information, such as the user name (login name) or the password is
+        not affected.
+!seealso: "NNETCRTPRP()" "NNETDELOBJ()" tool_014.ngo:"NNETERROR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDELSET() Deletes a bindery object from a set property
+'------------------------------------------------------------------------------
+ ^bNNETDELSET()^b
+ Deletes a bindery object from a set property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDELSET(<cName>,[<nType>],<cProperty>,<cMember>,
+     ^b   [<cMemberType>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates a numeric value that indicates the type of
+     <cName>.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+
+     ^b<cProperty> ^b Designates the name of a set property of <cName>.
+
+     ^b<cMember> ^b Designates the name of the bindery object that is deleted
+     from <cProperty> of the bindery object <cName>.
+
+     ^b<cMemberType> ^b Designates a numeric value that specifies the type of
+     <cMember>.  The default value is OBJ_USER.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDELSET() returns .T. if the operation has been completed
+     successfully.  If an error occurs, the Novell error code can be queried
+     with the NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETDELSET() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET DELETE BINDERY OBJECT FROM SET
+     Internally, Novell Netware has defined two different property types:
+     item and set properties. NNETDELSET() allows you to delete information
+     from a set property.  A set property contains a list of references to
+     other bindery objects.  An example is the GROUP_MEMBERS property that
+     contains a list of users who are members of a user group.
+
+     The parameters <cName> and <cType> identify the object, and <cProperty>
+     is the name of the property.  <cMember> and <cMemberType> define the
+     bindery object that is deleted from  <cProperty>.  With the parameters
+     <cServer> or <nConId>, the bindery of any attached server can be
+     accessed.  The connection ID of a server can be determined with
+     NNETATTACH() or NNETLOGIN().
+
+     To delete information from a property, sufficient bindery and property
+     access rights are required.  The necessary property access rights depend
+     on the property security of the property that is manipulated.  For
+     efficiency reasons, user defined object types must be passed in the high-
+     low format.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETDELSET() deletes only the reference to the bindery object
+        <cMember> from <cProperty>.  The object itself is not affected or
+        deleted.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Delete user MIKE from the MARKET group:
+
+        #include "ctnnet.ch"
+
+        IF NNETDELSET('MARKET',OBJ_GROUP,'GROUP_MEMBERS','MIKE')
+        ? 'User has been deleted from group!'
+
+        ELSE
+        ? 'User could not be deleted!'
+        ENDIF
+
+     ^b^CFE^b  To delete a user from a group, it is also necessary to delete
+        the group from two user properties.  Use the function NNETREMGRP() to
+        remove a user from a group.
+!seealso: "NNETADDSET()" tool_003.ngo:"NNETREMGRP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETINSET()  Determines if a bindery object belongs to a set property
+'------------------------------------------------------------------------------
+ ^bNNETINSET()^b
+ Determines if a bindery object belongs to a set property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETINSET(<cObjName>,[<nType>],<cPropName>,<cMember>,
+     ^b   [<cMemberType>],[<cServer>|<nConId>]) --> lMember
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates a numeric value that indicates the type of
+     <cName>.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates the object type OBJ_USER.
+     When you work with numeric values, you must take into account that, for
+     efficiency reasons, NNETRDITM() expects the object type as an integer in
+     the high-low format.
+
+     ^b<cPropName> ^b Designates the name of a set property of <cObjName>.
+
+     ^b<cMember> ^b Designates the name of the bindery object for which the
+     membership in <cPropName> of <cObjName> is checked.
+
+     ^b<cMemberType> ^b Designates a numeric value that indicates the type of
+     <cMember>.  The default value indicates the object type OBJ_USER.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETINSET() returns .T. if <cMember> belongs to the set property
+     (<cPropName>) of the bindery object (<cObjName>).  If < cMember> does
+     not belong to the set property (<cPropName>) the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET OBJECT IN SET
+     Internally, Novell Netware has defined two different property types:
+     item and set properties.  A set property contains a list of references
+     to other bindery objects.  An example is the GROUP_MEMBERS property that
+     contains a list of users that are members of a user group.  With the
+     function NNETINSET(), you can check to see if a bindery object,
+     specified with the parameters <cMember> and <cMemberType>, belongs to
+     the set property (<cPropName> of the bindery object (<cObjName> and
+     <cType>).  With the parameters <cServer> or <nConId>, the bindery of any
+     attached server can be accessed.  The connection ID of a server is
+     returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExample^b
+
+     Check to see if user MIKE has supervisor rights:
+
+     #include "ctnnet.ch"
+
+     IF NNETINSET('MIKE',OBJ_USER,'SECURITY_EQUALS','SUPERVISOR',OBJ_USER)
+     ? 'User has supervisor rights!'
+     ELSE
+     ? 'User has no supervisor rights!'
+     ENDIF
+!seealso: "NNETADDSET()" tool_003.ngo:"NNETGRPMEM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETNUMMEM() Determines the number of members of a set property
+'------------------------------------------------------------------------------
+ ^bNNETNUMMEM()^b
+ Determines the number of members of a set property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETNUMMEM(<cObjName>,[<nType>],<cPropName>,
+     ^b   [<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates the object type of <cObjName>.  The header file
+     CTNNET.CH contains symbolic constants for a number of object types.
+     When you work with numeric values, take into account that, for
+     efficiency reasons, the function NNETNUMMEM() expects the object type in
+     the high-low format.  The default value indicates the object type
+     OBJ_USER.
+
+     ^b<cPropName> ^b Designates the name of the property for which the
+     members are counted.  <cPropName> must describe a set property.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns ^b
+
+     NNETNUMMEM() returns the number of members of the property <cPropName>
+     of <cObjName>.  If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET COUNT MEMBERS
+     Internally, Novell Netware defines two possible property types: item and
+     set properties.  Unlike an item property that accepts any kind of data,
+     the set property contains references to other bindery objects.  These
+     bindery objects are the members of the set property.  This function
+     allows you to determine the total of members of a set property without
+     having to specify all the members explicitly.
+
+     The object type <nType> must be passed in the high-low format (see the
+     Introduction to this chapter).  For the object types, use the symbolic
+     constants of the header file CTNNET.CH.  With the parameters <cServer>
+     or <nConId>, the bindery of any attached server can be accessed.  The
+     connection ID of a server is returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExample^b
+
+     Determine the number of members of the group EVERYONE:
+
+     #include "ctnnet.ch"
+
+     ? NNETNUMMEM('EVERYONE',OBJ_GROUP,'GROUP_MEMBERS')
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETOBJID()  Determines the object ID with the object name and object type
+'------------------------------------------------------------------------------
+ ^bNNETOBJID()^b
+ Determines the object ID with the object name and the object type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETOBJID(<cObjName>,<nObjType>,<cServer>|<nConId>])
+     ^b    --> nObjId
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the object for which the ID is
+     determined.
+
+     ^b<nObjType>^b Designates a numeric value that specifies the object
+     type.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use in conjunction with the bindery
+     functions of CA-Clipper Tools.
+
+     ^b<cServer> ^b Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETOBJID() returns the object ID of the bindery object that is
+     specified by <cObjName> and <nObjType> on <cServer>.  For efficiency
+     reasons, the object ID is returned in the high-low format.  If an error
+     occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET OBJECT ID
+     Each object in the bindery of a file server is identified by its object
+     ID.  NNETOBJID() allows you to determine the ID with the object name and
+     the object type.  For efficiency reasons, numeric values for <nObjType>
+     must be passed in the high-low format.
+
+ ^bExample^b
+
+     Determine the subdirectories of a print queue:
+
+     #include "ctnnet.ch"
+     nId=NNETOBJID('PRINTQ_0',OBJ_PRINTQUEUE)
+     ? 'Queue directory:'+HEXTOSTR(L2BIN(nId))+'.QDR'
+!seealso: tool_003.ngo:"NNETUSERID()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETOBJNAM() Determines the object name of an object ID
+'------------------------------------------------------------------------------
+ ^bNNETOBJNAM()^b
+ Determines the object name of an object ID
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETOBJNAM(<NId>, [<cServer>|<nConId>]) --> cObjName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<NId> ^b Designates a bindery object ID.  For efficiency reasons, the
+     ID must be passed in the high-low format (see the Introduction to this
+     chapter).
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NETOBJNAM() returns the name of the bindery object, specified by <NId>.
+     If an error occurs, the function returns a null string.
+
+ ^bDescription^b
+
+     NOVELL NET OBJECT NAME
+     Within a file server, each bindery object is given a unique object ID
+     with a length of four bytes.  With NNETOBJNAM(), you can determine the
+     name of the related bindery object.  NNETOBJNAM() can be used in
+     conjunction with functions that return an object ID in the high-low
+     format (for example, NNETRDSET()).
+
+ ^bExample^b
+
+     Read the property SECURITY_EQUALS of user MIKE, and return the object
+     names of the members (the SECURITY_EQUALS property contains a list of
+     objects to which an object is security-equivalent):
+
+     #include "ctnnet.ch"
+
+     aIn=NNETRDSET('MIKE',OBJ_USER,'SECURITY_EQUALS')
+     FOR i=1 TO LEN(aIn)
+     ?  NNETOBJNAM(aIn[i])
+     NEXT i
+!seealso: "NNETOBJTYP()" "NNETRDSET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETOBJSEC() Sets the security of a bindery object
+'------------------------------------------------------------------------------
+ ^bNNETOBJSEC()^b
+ Sets the security of a bindery object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETOBJSEC(<cObjName>,<nObjType>,<nSafe>,
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the object for which the security
+     is modified.
+
+     ^b<nObjType> ^b Designates a numeric value that specifies the object
+     type.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use in conjunction with the bindery
+     functions of CA-Clipper Tools.
+
+     ^b<nSafe> ^b Designates the new value for the object security.  This
+     value specifies the rights required to find (read) or to modify (write)
+     the object in the bindery.  The settings are defined with a bit-coded
+     mask.  The low-ordered bits control the read access; the high-ordered
+     bits control the write access to the bindery object.
+
+     ^bTable 18.4:  Values for Object Security^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue  Hex  Bin     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0      0    0000    Access allowed to all users
+     1      1    0001    Access allowed to users who have logged in to the
+                         file server
+     2      2    0010    Access allowed to users who have logged in to the
+                         file server with password
+     3      3    0011    Access allowed to users who have logged in to the
+                         file server as the supervisor or as a user who has
+                         supervisor equivalence
+     4      4    0100    Access only allowed to the network operating system
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^b<cServer> ^b Designates the name of the file server that is used.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETOBJSEC() returns .T. if the new security value (<nSafe>) has been
+     set successfully.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETOBJSEC() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET OBJECT SECURITY
+     NNETOBJSEC() allows you to modify the security of existing bindery
+     objects.  For efficiency reasons numeric values for <nObjType> must be
+     passed in the high-low format.  This function requires supervisor
+     rights.
+
+ ^bExample^b
+
+     Set the security of the user object MICK to 51 (hex 33):
+
+     IF NNETOBJSEC('MICK',OBJ_USER,51)
+        ? 'Security modified successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+!seealso: "NNETCRTOBJ()" "NNETPRPSEC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETOBJTYP() Determines the object type of an object ID
+'------------------------------------------------------------------------------
+ ^bNNETOBJTYP()^b
+ Determines the object type of an object ID
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETOBJTYP(<NId>, [<cServer>|<nConId>]) --> nObjType
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<NId> ^b Designates a bindery object ID.  For efficiency reasons, the
+     ID must be passed in the high-low format (see the Introduction to this
+     chapter).
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NETOBJTYP() returns the type of the bindery object, specified by <NId>
+     in the high-low format.  If an error occurs, the function returns 0.
+
+ ^bDescription^b
+
+     NOVELL NET OBJECT TYPE
+     Within a file server, each bindery object is given a unique object ID
+     with a length of four bytes.  With NNETOBJTYP(), you can determine the
+     type of the related bindery object.  NNETOBJTYP() can be used in
+     conjunction with functions that return an object ID in the high-low
+     format (for example, NNETRDSET()).
+
+ ^bExamples^b
+
+     Read the property SECURITY_EQUALS of user MIKE, and return the object
+     names and types of the members (the SECURITY_EQUALS property contains a
+     list of objects to which an object is security-equivalent):
+
+     #include "ctnnet.ch"
+
+     aIn=NNETRDSET('MIKE',OBJ_USER,'SECURITY_EQUALS')
+     FOR i=1 TO LEN(aIn)
+     ?  NNETOBJNAM(aIn[i])
+     ?? IF(NNETOBJTYP(aIn[i])=OBJ_USER,'User','Group')
+     NEXT i
+!seealso: "NNETOBJNAM()" "NNETRDSET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPRPSEC() Sets the property security
+'------------------------------------------------------------------------------
+ ^bNNETPRPSEC()^b
+ Sets the property security
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPRPSEC(<cObjName>,<nObjType>,<cProp>,<nSafe>,
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the object.
+
+     <nObjType>  Designates a numeric value that specifies the object type.
+     The header file CTNNET.CH contains symbolic constants for the object
+     types defined by Novell for use in conjunction with the bindery
+     functions of CA-Clipper Tools.
+
+     ^b<cProp> ^b Designates the property for which the security is modified.
+
+     ^b<nSafe> ^b Designates the new value for the property security.  This
+     value specifies the rights required to find (read) or to modify (write)
+     the property.  The settings are defined with a bit-coded mask.  The low-
+     ordered bits control the read access to the bindery object; the high-
+     ordered bits control the write access to the bindery object.
+
+     ^bTable 18.5:  Values for Property Security^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue  Hex  Bin     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0      0    0000    Access allowed to all users
+     1      1    0001    Access allowed to users who have logged in to the
+                         file server
+     2      2    0010    Access allowed to users who have logged in to the
+                         file server with password
+     3      3    0011    Access allowed to users who have logged in to the
+                         file server as the supervisor or as a user who has
+                         supervisor equivalence
+     4      4    0100    Access only allowed to the network operating system
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^b<cServer>^b Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPRPSEC() returns .T. if the new security value (<nSafe>) has been
+     set successfully.
+
+ ^bDescription^b
+
+     ^bImportant! ^b NNETPRPSEC() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET PROPERTY SECURITY
+     NNETPRPSEC() allows you to modify the security of existing properties.
+     For efficiency reasons numeric values for <nObjType> must be passed in
+     the high-low format.  This function requires supervisor rights.
+
+ ^bExample^b
+
+     Set the security of the property IDENTIFICATION of the user object MICK
+     to 51 (hex 33):
+
+     IF NNETOBJPRP('MICK',OBJ_USER,'IDENTIFICATION',51)
+        ? 'Security modified successfully!'
+     ELSE
+        ? 'Error!'
+     ENDIF
+
+!seealso: "NNETCRTPRP()" "NNETOBJSEC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRDITM()  Reads an item property segment
+'------------------------------------------------------------------------------
+ ^bNNETRDITM()^b
+ Reads an item property segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRDITM(<cObjName>,<nType>,<cProperty>,[<nSeg>],
+     ^b   [<lMode>],[<cServer>|<nConId>]) --> cPropValue
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates the object type of <cObjName>.  The header file
+     CTNNET.CH contains symbolic constants for a number of object types.
+     When you work with numeric values, take into account that, for
+     efficiency reasons, NNETRDITM() expects the object type in the high-low
+     format.
+
+     ^b<cPropName> ^b Designates the name of the property that is processed.
+     <cPropName> must describe an item property.
+
+     ^b<nSeg> ^b Designates the number of the segment that is read.  The
+     smallest possible number, as well as the default value, is 1.
+
+     ^b<lMode> ^b Designates whether the contents of the property are
+     interpreted as text (<lMode> = .F.) or as binary byte sequence (<lMode>
+     = .T.).  The default value is .F..  If text, NNETRDITM() returns the
+     characters up to the first occurrence of a terminator 0.  In binary
+     mode, all 128 bytes of the required property segment are returned.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETRDITM() returns the contents of the specified property segment in
+     the form of a character string.  In text mode, the returned string
+     contains all characters up to the first occurrence of a terminator 0.
+     In binary mode, the string always contains 128 characters.  If an error
+     occurs, the function returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET READ ITEM PROPERTY
+     Internally, Novell Netware defines two property types:  item and set
+     property.  With NNETRDITM(), you can read the contents of an item
+     property.  Item properties can contain any type of data.  The
+     information within an item property is organized in segments that have a
+     constant length of 128 bytes.  NNETRDITM() allows you to read single
+     segments (<nSeg>) of a property (<cPropName>) of a bindery object,
+     specified by <cObjName> and <nType>.  The organization of the
+     information within a segment depends on the property.  With <lMode> you
+     can specify if segment contains text or a binary sequence (see the
+     arguments).  An example for text mode is the property IDENTIFICATION.
+     The IDENTIFICATION property contains a bindery object's full name as a
+     zero-terminated ASCII character string.  An example for the binary mode
+     is the property LOGIN_CONTROL.  The property LOGIN_CONTROL contains
+     binary-coded information about a user's access limits.  To avoid
+     incorrect results when working with binary-coded information, the
+     parameter <lMode> must be designated .T..
+
+     To read all property segments, call NNETRDITM() with an incrementing
+     value for <nSeg> until NNETRDITM() returns an empty string and
+     NNETERROR() returns 236.
+
+     With the parameters <cServer> or <nConId>, the bindery of any attached
+     file server can be accessed.  The connection ID of a file server is
+     returned by NNETATTACH() or NNETLOGIN().
+
+     The function NNETRDITM() requires sufficient bindery and property access
+     rights.  The necessary property access rights depend on the property
+     security of the property that is read.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the full name of user MIKE:
+
+        #include "ctnnet.ch"
+
+        ? NNETRDITM('MIKE',OBJ_USER,'IDENTIFICATION')
+
+     ^b^CFE^b  Determine the date of the last login of user MIKE:
+
+        #include "ctnnet.ch"
+
+        cBuf=NNETRDITM('MIKE',OBJ_USER,'LOGIN_CONTROL',1,.T.)
+        IF !EMPTY(cBuf)
+         dLast=       STOD('19'+NTOC(ASC(SUBSTR(cBuf,57,1)),,2,'0');
+            +NTOC(ASC(SUBSTR(cBuf,58,1)),,2,'0');
+            +NTOC(ASC(SUBSTR(cBuf,59,1)),,2,'0'))
+         ? dLast
+        ENDIF
+!seealso: "NNETRDSET()" "NNETWRTITM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRDSET()  Reads a set property
+'------------------------------------------------------------------------------
+ ^bNNETRDSET()^b
+ Reads a set property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRDSET(<cObjName>,<nType>,<cPropName>,
+     ^b   [<cServer|<nConId>]) --> aObjList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName>^b Designates the name of the bindery objects that are
+     processed.
+
+     ^b<nType> ^b Designates the object type of <cObjName>.  The header file
+     CTNNET.CH contains symbolic constants for a number of object types.
+     When working with numeric values, take into account that, for efficiency
+     reasons, the function NNETRDSET() expects the object type in the high-
+     low format.
+
+     ^b<cPropName> ^b Designates the name of the property that is processed.
+     <cPropName> must describe a set property.
+
+     ^b<cServer>^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETRDSET() returns a one-dimensional array that contains the object
+     ID's of the bindery objects in <cPropName> as numeric values.
+
+ ^bDescription^b
+
+     NOVELL NET READ SET PROPERTY
+     Internally, Novell Netware defines two property types:  item and set
+     property.  With NNETRDSET(), the contents of a set property can be read.
+     Set properties contain a list of object ID's.  An object ID has a length
+     of four bytes and identifies a bindery object.  An example is the
+     property GROUP_MEMBERS, which contains a list of users that are members
+     of a group.
+
+     NNNETRDSET() returns an array with the object ID's of the members of the
+     set property <cPropName>.  With the functions NNETOBJNAM() and
+     NNETOBJTYP(), object name and object type for the object ID can be
+     determined.
+
+     The function NNETRDSET() requires sufficient bindery and property access
+     rights.  The necessary property access rights depend on the property
+     security of the property that is read.
+
+ ^bNote^b
+
+     ^b^CFE^b  For efficiency reasons, NNETRDSET() returns the object IDs in
+        the high-low format (see the Introduction to this chapter).
+
+ ^bExample^b
+
+     The SECURITY_EQUALS property contains a list of objects to which an
+     object is security-equivalent.  This property is usually attached to
+     user and user group objects.  Read the property SECURITY_EQUALS of user
+     MIKE, and display the object names and object types of the members:
+
+     #include "ctnnet.ch"
+
+     aIn=NNETRDSET('MIKE',OBJ_USER,'SECURITY_EQUALS')
+     FOR i=1 TO LEN(aIn)
+     ?  NNETOBJNAM(aIn[i])
+     ?? IF(NNETOBJTYP(aIn[i])=OBJ_USER,'User','Group')
+     NEXT i
+!seealso: "NNETADDSET()" "NNETDELSET()" "NNETOBJNAM()" "NNETOBJTYP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETRENOBJ() Renames a bindery object
+'------------------------------------------------------------------------------
+ ^bNNETRENOBJ()^b
+ Renames a bindery object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETRENOBJ(<cOldName>,[<nType>],<cNewName>,
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cOldName> ^b Designates the name of the bindery object that is
+     renamed.
+
+     ^b<nType> ^b Designates a numeric value that specifies the type of
+     <cOldName>.  The header file CTNNET.CH contains symbolic constants of
+     the object type defined by Novell for use in conjunction with the
+     bindery functions of CA-Clipper Tools.  The default value indicates the
+     object type OBJ_USER.
+
+     ^b<cNewName> ^b Designates the new name for the bindery object.
+
+     ^b<cServer> ^b Designates the name of the file server of which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETRENOBJ() returns .T. if the bindery object has been renamed
+     successfully.  If an error occurs, the error code can be queried with
+     NNETERROR().
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETRENOBJ() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET RENAME BINDERY OBJECT
+     NNETRENOBJ() allows you to rename bindery objects.  For example, this
+     function can be used to change the login name of a user.  With the
+     parameters <cServer> or <nConId>, the bindery object of any attached
+     server can be accessed.  The connection ID of a server is returned by
+     NNETATTACH() or NNETLOGIN().
+
+     To rename an object, the requesting user must have supervisor rights on
+     the related file server.  NNETRENOBJ() expects the object type in the
+     high-low sequence for efficiency reasons.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETRENOBJ() must be used to rename users or user groups, as
+        no other high level function is available in CA-Clipper Tools.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Rename user JIM to JAMES and evaluate the return values:
+
+        IF NNETRENOBJ('JIM',,'JAMES')
+        ? 'User has been renamed successfully!'
+        ELSE
+        ? 'Failure during rename!'
+        ENDIF
+
+     ^b^CFE^b  Rename the group DEV to TECH:
+
+        #include "ctnnet.ch"
+
+        NNETRENOBJ('DEV',OBJ_GROUP,'TECH')
+!seealso: "NNETCRTOBJ()" "NNETDELOBJ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSCNBIN() Scans a bindery for an object
+'------------------------------------------------------------------------------
+ ^bNNETSCNBIN()^b
+ Scans a bindery for an object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSCNBIN(<cObjMask>,[@]<nType>,[@]<NId>,
+     ^b   [@<nObjFlag>],[@<nObjSafe>],[@<lObjProp>],
+     ^b   [<cServer>|<nConId>]) --> cObjName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjMask> ^b Designates a search mask that is satisfied by the
+     bindery objects that are searched.  <cObjMask> can contain the wildcard
+     characters "*" and "?" according to DOS regulations.  The default value
+     is "*".
+
+     ^b<nType> ^b Designates the object type that is searched.  The header
+     file CTNNET.CH contains symbolic constants for a number of object types.
+     When you work with numeric values, NNETSCNBIN() expects the object type
+     in the high-low format for efficiency reasons.  If <nType> is passed by
+     reference, the variable contains the type of the object found after the
+     function has been completed successfully.
+
+     ^b<NId> ^b Contains the object ID (high-low format) of the last object
+     found.  To start the search with the first object, <NId> must be
+     designated -1.  If <NId> is passed by reference, the variable contains
+     the ID of the object found after the function has been completed
+     successfully.
+
+     ^b<nObjFlag> ^b Designates whether the object found is static (0) or
+     dynamic (1).  This parameter must be passed by reference.  In this case,
+     the variable contains the object flag after the function has been
+     completed successfully
+
+     ^b<nObjSafe> ^b Designates the object security as an eight-bit number.
+     The four high-order bits control the security level for the object's
+     write access; the four low-order bits control the object's read access.
+     This parameter must be passed by reference.  In this case, the variable
+     contains the object security after the function has been completed
+     successfully.  A table for access levels can be found with the
+     NNETCRTOBJ() function.
+
+     ^b<lObjProp> ^b Designates whether the object has property (.T.) or not
+     (.F.).  This parameter must be passed by reference.
+
+     ^b<cServer>  ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSCNBIN() returns the name of the binary object that is found.  If no
+     object has been found, the function returns a null string.  If the
+     parameters <nType>, <NId>, <nObjFlag>, <nObjSafe>, and/or <lObjProp> are
+     passed by reference, NNETSCNBIN() returns the object type, the object
+     ID, the object flag, the object security, and a flag for property
+     existence (see the arguments).
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETSCNBIN() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET SCAN BINDERY
+     NNETSCNBIN() allows you to scan the bindery of a file server for objects
+     that satisfy a specified search mask (<cObjMask>) and a defined type
+     (<nType>).  To find the first object that matches the passed criterion,
+     the parameter <NId> must be designated -1.  For a successive search, the
+     object ID must be passed by reference to use the ID of the object that
+     is found at the next function call.  To find objects of any type, the
+     parameter <nType> must contain -1 or the symbolic constant OBJ_WILD.
+     With the parameters <cServer> or <nConId>, the bindery of any attached
+     file server can be accessed.  The connection ID of a server is returned
+     by NNETATTACH() or NNETLOGIN().
+
+ ^bNote^b
+
+     ^b^CFE^b  The object type and the object ID are expected in the high-low
+        format (see the Introduction to this chapter).
+
+ ^bExample^b
+
+     List the names and types of all bindery objects on the default server:
+
+     #include "ctnnet.ch"
+
+     nId:=-1          // Start with the 1st object
+     WHILE .T.
+     nType=OBJ_WILD   // all objects
+     IF EMPTY(cName:=NNETSCNBIN('*',@type,@ID))
+     EXIT
+     ENDIF
+     ? cName,nType
+     ENDDO
+!seealso: "NNETCRTOBJ()" "NNETSCNPRP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSCNPRP() Scans a bindery object for a property
+'------------------------------------------------------------------------------
+ ^bNNETSCNPRP()^b
+ Scans a bindery object for a property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSCNPRP(<cObjName>,<nType>,<cPropMask>,[@]<nSeq>,
+     ^b   [@<nFlag>],[@<nSafe>],[@<lValue>],
+     ^b   [<cServer>|   <nConId>]) --> cPropName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates the object type of <cObjName>.  The header file
+     CTNNET.CH contains the symbolic constants for a number of object types.
+     When you work with numeric values, NNETSCNPRP() expects the object type
+     in the high-low format for efficiency reasons.
+
+     ^b<cPropMask> ^b Designates a search mask that is satisfied by the
+     properties that are searched.  <cPropMask> can contain the wildcard
+     characters "*" and "?".
+
+     ^b<nSeq> ^b Designates the sequence number (high-low format) of the last
+     property that was found.  To start the search with the first property,
+     <nSeq> must be designated -1.  If <nSeq> is passed by reference, the
+     variable contains the sequence number of the property found after the
+     function has been completed successfully.
+
+     ^b<nFlag> ^b Designates the property flag after the function has been
+     completed successfully.  This parameter must be passed by reference.
+     The following table contains the possible values for <nFlag>:
+
+     ^bTable 18.6:  Possible property flags^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Sym. Con.    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       PRP_ITEM     Static item property
+     1                    Dynamic item property
+     2       PRP_SET      Static set property
+     3                    Dynamic set property
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^b<nSafe> ^b Designates the property security after the function has
+     been completed successfully.  This parameter must be passed by
+     reference.  The property security is an eight-bit number.  The four high-
+     order bits control the security level for the property's write access;
+     the four low-order bits control the property's read access.  A table for
+     access levels can be found with the NNETCRTOBJ() function.
+
+     ^b<lValue> ^b Designates a logical value that indicates if the property
+     has any values (.T.) or not (.F.).  This parameter must be passed by
+     reference.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETSCNPRP() returns the name of the property that is found.  If no
+     property is found, the function returns an empty string.  If the
+     parameters <nSeq>, <nFlag>, and/or <nSafe> are passed by reference,
+     NNETSCNPRP() returns the sequence number, the property flag, property
+     security, and a flag for value existence (see the arguments).
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETSCNPRP() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET SCAN PROPERTY
+     NNETSCNPRP() allows you to scan a bindery object (<cObjName> and
+     <nType>) for properties that satisfy a specified search mask
+     (<cPropMask>).  To find the first property that matches the passed
+     criterion, the parameter <nSeq> must be designated -1.  For a successive
+     search, the sequence number must be passed by reference in order to use
+     the sequence number of the found property at the next function call.
+     With the parameters <cServer> or <nConId>, the bindery of any attached
+     file server can be accessed.  The connection ID of a server is returned
+     by NNETATTACH() or NNETLOGIN().
+
+ ^bNote^b
+
+     ^b^CFE^b  The object type and sequence number are expected and/or
+        returned in the high-low format (see the Introduction to this
+        chapter).
+
+ ^bExample^b
+
+     List all the properties of the bindery object SUPERVISOR:
+
+     #include "ctnnet.ch"
+
+     nSeq:=-1   // Start with 1st property
+     WHILE .T.
+     cName=NNETSCNPRP('SUPERVISOR',OBJ_USER,'*', @nSeq, ;
+     @nFlag,@nSafe,@lValue)
+     IF EMPTY(cName)
+     EXIT
+     ENDIF
+     ? cName,nSeq,nFlag,nSafe,lValue
+     ENDDO
+!seealso: "NNETCRTPRP()" "NNETSCNBIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETWRTITM() Writes a segment of an item property
+'------------------------------------------------------------------------------
+ ^bNNETWRTITM()^b
+ Writes a segment of an item property
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETWRTITM(<cObjName>,[<nObjType>],<cProperty>,
+     ^b   <cPropValue>,[<nSegment>],[<lDelete>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cObjName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nObjType> ^b Designates a numeric value that indicates the object
+     type.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates object value OBJ_USER.
+
+     ^b<cProperty> ^b Designates the name of an item property of the object
+     <cObjName>.
+
+     ^b<cPropValue> ^b Designates the value that is stored.  The value must
+     be passed as a character string of up to 128 characters.
+
+     ^b<nSegment> ^b Designates the segment of <cProperty> in which
+     <cPropValue> is written.  The default value is the first segment.
+
+     ^b<lDelete> ^b Designates whether the segments following <nSegment> are
+     deleted (.T.) or saved (.F.).  The default value (.F.) saves the
+     segments that follow <nSegment>.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETWRTITM() returns .T. if the operation was completed successfully.
+     If an error occurs, the Novell error code can be queried with the
+     NNETERROR() function.
+
+ ^bDescription^b
+
+     ^bImportant!^b  NNETWRITITM() is a low level bindery function and should
+     be used only with extensive knowledge of the bindery concept and the
+     Novell API.
+
+     NOVELL NET WRITE PROPERTY ITEM
+     Internally, Novell Netware defines two different property types: item
+     and set properties.  Item properties consist of segments that can accept
+     up to 128 characters.  The number of segments within an item property
+     can vary.
+
+     A typical example of an item property is the IDENTIFICATION property
+     that contains a user or user group's full name (unlike the login name).
+     NNETWRTITM() allows you to write information to a segment of an item
+     property.
+
+     The parameters <cName> and  <cType> specify the object that is
+     processed.  <cProperty> is the name of the property.  The property must
+     have been created before (for example, with NNETCRTPRP()).  <cPropValue>
+     is the character string that is written to <nSegment> of <cProperty>.
+     With the parameter <lDelete>, you can determine whether segments that
+     follow <nSegment> are deleted (.T.) or not (.F.).
+
+     With the parameters <cServer> or <nConId>, the bindery of any attached
+     server can be accessed.  The connection ID of a server is returned by
+     NNETATTACH() or NNETLOGIN().
+
+     To achieve results with NNETWRTITM(), sufficient bindery and property
+     access rights are required.  The necessary property access rights depend
+     on the property security of the property that is modified.  For
+     efficiency reasons, user defined object types must be passed in the high-
+     low format.
+
+ ^bExample^b
+
+     Set the full name for user MICK:
+
+     IF NNETWRTITM('MICK',,'IDENTIFICATION','Michael Smith')
+     ? 'Full name set successfully!'
+     ELSE
+     ? 'Full name could not be set!'
+     ENDIF
+!seealso: "NNETADDSET()" "NNETCRTPRP()" 
+'------------------------------------------------------------------------------
+
+
+

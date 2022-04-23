@@ -1,0 +1,27 @@
+'------------------------------------------------------------------------------
+^BNETERR()^B
+
+    NETERR() determines if a USE, USE...EXCLUSIVE, or APPEND BLANK has
+    failed in a network environment.
+
+^USyntax^U
+
+    NETERR()
+
+^UReturns^U
+
+    NETERR() returns a logical True (.T.) if a USE, USE... EXCLUSIVE, or
+    APPEND BLANK fails in a network environment.  These commands will fail
+    under the following circumstances.
+
+    ^UCommand^U                 ^UCause^U
+
+    USE                     USE EXCLUSIVE by another process
+    USE...EXCLUSIVE         USE EXCLUSIVE by another process
+    APPEND BLANK            FLOCK() by another process or 2 attempts at
+                            the same time
+!seealso: clip_088.ngo:"USE..EXCLUSIVE" ???.ngo:"FLOCK" clip_130.ngo:"RLOCK" 
+'------------------------------------------------------------------------------
+
+
+

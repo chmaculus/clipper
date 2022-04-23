@@ -1,0 +1,407 @@
+!short: ^bRelease Note #6 -- Runtime Memory Management Notes^b
+'------------------------------------------------------------------------------
+ Document:    ^bRelease Note #6^b
+              ^bRuntime Memory Management Notes^b
+
+              Copyright (c) 1991, Nantucket Corporation
+
+ Version:     5.01a  (April 19, 1991)
+ Supersedes:  Clipper 5.0 Support Bulletin #3  (October 4, 1990)
+
+ Summary:     This document provides information on the Clipper 5.0
+              runtime memory management system.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bNote:^b  This document makes several references to the CLIPPER
+   environment variable.  For general information on how to configure the
+   runtime environment, refer to the Clipper 5.0 Programming and Utilities
+   Guide and the Language:Environment option in The Guide to Clipper
+   database.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: 1   Virtual Memory Manager (VMM)
+'------------------------------------------------------------------------------
+ ^b1   Virtual Memory Manager (VMM)^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bVirtual memory^b is a generic term for hardware or software
+     techniques that allow a limited amount of ^breal^b memory to emulate a
+     much larger ^bvirtual^b memory.
+
+     The Clipper 5.0 Virtual Memory Manager (VMM) is implemented in the
+     software.  The system runs in real mode on any 8086-compatible
+     processor; it does not directly use the protected mode virtual memory
+     capabilities of the Intel 286 and 386 processors.
+
+     The VMM is a ^bsegmented^b memory manager.  Virtual memory is allocated
+     in segments, each of which may contain from 1K to 64K of data.
+     Initially, the VMM works somewhat like a normal memory allocator
+     (although it has an extra advantage: most VM segments are movable; the
+     VMM can reorganize them to get maximum utilization of real memory).
+     Unlike a normal memory allocator, however, the VMM does not ^brun out^b
+     when the available real memory can no longer contain all of the
+     allocated segments.  Instead, one or more of the least recently used
+     (LRU) segments are ^bswapped out^b into secondary storage (or otherwise
+     removed from real memory, see below) to make room for new segments.
+     Later, if data in a swapped segment must be accessed, it is swapped
+     back in, displacing segments which are not currently needed.
+
+     The maximum virtual address space of the Clipper 5.0 VMM is 64MB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2   Use of LIM 3.2 Expanded Memory (EMM)
+'------------------------------------------------------------------------------
+ ^b2   Use of LIM 3.2 Expanded Memory (EMM)^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     By default, the Clipper 5.0 VMM uses LIM 3.2 Expanded Memory (EMM) as
+     secondary storage.  EMM provides fast access to swapped segments.  Up
+     to 8MB of EMM can be used.
+
+     ^bConfiguration:^b  EMM usage can be controlled using the E setting in
+     the CLIPPER environment variable.  Valid settings are from 0 to 8192
+     (units of 1K).  A setting of 0 disables the use of EMM altogether.
+
+     ^bCaution:^b  Disabling EMM is highly undesirable under Clipper 5.0.
+     Although EMM is not required, it allows increased performance for most
+     applications.  In a very few cases, limiting EMM usage may be
+     desirable.  See the note below under Disk File Buffering.
+
+     ^bExample:^b  SET CLIPPER=E:2048
+
+     ^bConfiguration:^b  Some disk caching programs use EMM to cache disk
+     sectors.  Certain cache programs may cause conflicts with the Clipper
+     5.0 VMM system if they assume that application programs never use EMM.
+     The BADCACHE setting in the CLIPPER environment variable causes the VMM
+     to preserve and restore the state of the EMM ^bpage frame^b before and
+     after every EMM access (the EMM page frame is an area in real address
+     space through which EMM data is accessed).  This should make Clipper's
+     use of EMM undetectable to any other process using EMM.  (Note: on some
+     EMM systems the BADCACHE setting may adversely affect VMM performance.
+     It should only be used if you experience disk or file corruption
+     because of a conflict with a disk cache or other resident software.)
+
+     ^bExample:^b  SET CLIPPER=BADCACHE
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 3   Disk Swapping
+'------------------------------------------------------------------------------
+ ^b3   Disk Swapping^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     If insufficient EMM is available to contain swapped segments, a
+     temporary disk file (the ^bswap file^b) is created to hold them.
+     By default, the VMM will use a maximum of 8MB of disk space for
+     the swap file.  Disk space is used only as needed.
+
+     ^bConfiguration:^b  The maximum size of the disk swap file can be
+     controlled using the SWAPK setting in the CLIPPER environment
+     variable.  Valid settings are from 256 to 64000 (256K to
+     64MB).  The SWAPK setting has no effect on VMM swapping
+     activity; it merely serves to establish an upper limit on the
+     size of the swap file.  If the limit is exceeded, the VMM will
+     terminate the application.
+
+     ^bExample:^b  SET CLIPPER=SWAPK:16000
+
+     ^bConfiguration:^b  The disk drive and directory where the VMM swap
+     file is created can be controlled using the SWAPPATH setting in
+     the CLIPPER environment variable.  By default, the swap file is
+     created in the current DOS directory.
+
+     ^bExample:^b  SET CLIPPER=SWAPPATH:'C:\SWAP'
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4   Swap Space
+'------------------------------------------------------------------------------
+ ^b4   Swap Space^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The term ^bswap space^b refers to the region of real memory where the
+     VMM loads virtual memory segments.
+
+     ^bConfiguration:^b  The VMM allocates the swap space from DOS at
+     startup.  By default, all available DOS memory is used for swap space.
+     Real memory usage can be restricted using the X setting of the CLIPPER
+     environment variable.  The setting specifies an amount of DOS memory
+     (in 1K units) which is to be excluded from the VMM.  Valid settings are
+     from 0 to 256.  The X setting is provided as a way to reserve DOS
+     memory for other uses (e.g., allocation by memory-resident software).
+     In general, its use is undesirable because limiting the swap space
+     decreases VMM performance.
+
+     ^bExample:^b  SET CLIPPER=X:8
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 5   Object Memory (SVOS)
+'------------------------------------------------------------------------------
+ ^b5   Object Memory (SVOS)^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     An ^bobject memory^b is a special type of memory manager designed to
+     manage complex data values such as character strings and arrays.
+
+     The Clipper 5.0 object memory is called the Segmented Virtual Object
+     Store (SVOS).  SVOS uses virtual memory to store data values, including
+     character strings, arrays, and dynamically created (macro-compiled)
+     code blocks.
+
+     SVOS provides two important functions beyond the basic capabilities
+     offered by the VMM:
+
+     ^b^cFE  Memory compaction:^b  Stored values are automatically compacted
+        on an ongoing basis.  This eliminates fragmentation of the virtual
+        memory and reduces swapping.
+
+     ^b^cFE  Garbage collection:^b  Some Clipper 5.0 values (e.g., arrays)
+        may be referred to by several program variables (or array elements)
+        at the same time.  The garbage collection algorithms automatically
+        reclaim space occupied by ^bunreachable^b values (values which are
+        no longer accessible through any variable or array).
+
+     To minimize delays associated with memory compaction and garbage
+     collection, the SVOS algorithms are dynamically adjusted based on the
+     type, size, and persistence of data being stored, the amount of memory
+     available (real and EMM), and the overall performance of the system.
+     The algorithms attempt to manage memory in such a way that the VMM can
+     swap out infrequently used data, freeing up real address space for
+     time-critical operations.
+
+     The dynamic nature of the SVOS algorithms makes it difficult to
+     precisely state its maximum capacity.  The worst case capacity is in
+     excess of 1MB.  The theoretical maximum is in excess of 16MB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 6   Dynamic Overlaying
+'------------------------------------------------------------------------------
+ ^b6   Dynamic Overlaying^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper 5.0, using the supplied special version of .RTLink, manages
+     compiled Clipper code using a technique called dynamic overlaying.
+     This technique eliminates the need for complicated overlay structures
+     and allows flexible runtime management of compiled code.
+
+     During linking, .RTLink breaks compiled Clipper modules into fixed-size
+     ^bpages.^b  These pages are stored either in the executable file or in
+     separate overlay files.  The paging architecture eliminates
+     restrictions and memory calculations based on the size of compiled
+     functions or modules.  Large modules are broken into multiple pages;
+     small functions are grouped together in a single page.
+
+     At execution time, the dynamic overlay manager loads pages based on
+     information embedded in the .EXE by the linker.  The dynamic pages are
+     loaded into VM segments, allowing the VMM to manage the overlay pages
+     on a competitive basis with other uses of memory.  The paging
+     architecture allows the system to discard low-use sections of code even
+     if the code is associated with a pending active function; overlays are
+     not required to ^bnest^b in parallel with function activations.  Code
+     pages which are being heavily used are maintained in memory by the
+     VMM's LRU swapping policy.
+
+     When possible, the VMM will place dynamic overlay pages in EMM,
+     reducing overlay reads.  Overlay pages are never written to the VMM
+     disk swap file, however.  If a VM segment containing an overlay page is
+     to be removed from memory altogether, it is simply discarded.  If it is
+     needed subsequently, it is re-read from the overlay file.
+
+     In addition to virtual memory, the dynamic overlay manager uses a
+     dedicated area of real memory to cache the most active dynamic overlay
+     pages.
+
+     ^BConfiguration:^B  The dynamic overlay manager will hold overlay pages
+     in virtual memory only as long as it can maintain an active file handle
+     for the disk file containing the pages.  If the file is closed, the
+     pages are discarded from virtual memory.  The maximum number of file
+     handles used by the dynamic overlay manager can be controlled using the
+     DYNF setting of the CLIPPER environment variable.  Valid settings are
+     from 1 to 8.  The default setting is 2.  For applications which use
+     many separate overlay files, increasing this setting can improve
+     performance.
+
+     ^BExample:^B  SET CLIPPER=DYNF:4
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 7   Data File Buffering
+'------------------------------------------------------------------------------
+ ^b7   Data File Buffering^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Clipper 5.0 database drivers use virtual memory segments to contain
+     database and index file buffers.  This allows the VMM to manage these
+     buffers on a competitive basis with other uses of memory.  As with
+     dynamic overlay segments, the VMM will swap buffer segments into EMM
+     but not to the disk swap file.  If a VM segment containing a disk
+     buffer is to be removed from memory altogether, it is written back to
+     the appropriate data file.
+
+     The file buffering system allocates buffer management tables in fixed
+     memory (see Fixed Memory Allocator below).  The actual amount used
+     depends on the combined total of real memory and EMM available at
+     startup.  The tables use 14 bytes per 1K of real or Expanded memory
+     (the tables never exceed 8K, however).  Because these tables are
+     allocated in fixed memory, they have an effect on the amount of swap
+     space available to the VMM.  In some low-memory situations, reducing
+     the amount of available EMM may help to avoid ^bswap space exhausted^b
+     errors. (Note: reducing EMM availability may seriously degrade VMM
+     performance in very low memory situations due to increased disk
+     swapping--see Use of LIM 3.2 Expanded Memory above.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 8   Segment Locking
+'------------------------------------------------------------------------------
+ ^b8   Segment Locking^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     From time to time, certain VM segments are ^blocked^b by a subsystem.
+     This prevents the VMM from moving or swapping those segments until the
+     subsystem unlocks them.  This capability is used sparingly to keep the
+     swap space from becoming cluttered with locked segments.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 9   Fixed Memory Allocator
+'------------------------------------------------------------------------------
+ ^b9   Fixed Memory Allocator^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper 5.0 subsystems use virtual memory to contain code or data that
+     needs to be dynamically managed.  Some allocations are not appropriate
+     for VM (e.g., system tables which must remain in the same location
+     throughout execution).  A C-style fixed memory allocator is included
+     for this purpose.
+
+     The fixed memory system allocates one or more VM segments and
+     permanently locks them in real memory.  Space within these segments is
+     then parceled out as needed.  Since fixed segments are never unlocked,
+     the VMM locates them at the low end of the swap space to prevent them
+     from interfering with other operations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10  Memvar Tables
+'------------------------------------------------------------------------------
+ ^b10  Memvar Tables^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper 5.0 offers several different storage classes for program
+     variables.  Local and static variables are stored in a dedicated area
+     of real memory.  Private and public (MEMVAR) variables are stored in VM
+     segments.  Since MEMVAR variables are created and destroyed dynamically
+     during execution, the associated VM segments grow dynamically depending
+     on how many MEMVAR variables are in use.
+
+     For performance reasons, these segments remain locked during most
+     operations (they are unlocked during RUN commands and certain other
+     memory intensive operations).  In low memory situations, the MEMVAR
+     tables may have a significant effect on the amount of available swap
+     space (each MEMVAR variable uses 20 bytes in the MEMVAR segments, which
+     grow in increments of 1K or more).
+
+     MEMVAR variables also require symbol information to be maintained at
+     runtime (see below).  Converting private and public variables to local
+     and static variables may reduce memory requirements for some
+     applications.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 11  Symbol Tables
+'------------------------------------------------------------------------------
+ ^b11  Symbol Tables^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper maintains symbol information at runtime in order to support
+     symbolic references to variables and functions.  Some symbol
+     information is embedded in the .EXE file (the Clipper 5.0 version of
+     .RTLink eliminates duplication among symbols from compiled Clipper
+     modules).  Other symbols are created dynamically at runtime.
+
+     Memory for symbol tables and related information is allocated using the
+     fixed memory allocator.  The symbols are allocated in blocks and do not
+     fragment memory.  However, excessive dynamic symbol creation (e.g.,
+     large numbers of MEMVAR variables created via macros) may cause the
+     symbol tables to grow, reducing swap space.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 12  The Extend System
+'------------------------------------------------------------------------------
+ ^b12  The Extend System^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Extend system is a set of functions that are used by C and Assembly
+     language programs to interface with Clipper programs.  The Extend
+     system includes two memory allocation functions, _xalloc() and
+     _xgrab(), which allow C programs to allocate memory from Clipper.
+     These functions call the fixed memory allocator (see above).
+
+     The Extend system also allows C programs to gain access to Clipper data
+     values.  The Extend system _parc() function, used to inspect character
+     values passed from Clipper, is defined as returning an address in real
+     memory.  Since character values are stored in virtual memory under SVOS
+     (see above), the Extend system automatically locks the appropriate VM
+     segments in response to _parc() requests.  The segments are
+     automatically unlocked when the C function returns control to Clipper
+     (they may also be unlocked manually from C, see below).
+
+     A conflict can occur if a C function locks a VM segment via _parc() and
+     then attempts to allocate a large amount of memory using the Extend
+     allocators.  If the segment is locked near the low end of the swap
+     space, the fixed allocator may be unable to lock or expand a fixed
+     segment to satisfy the allocation request.  If this occurs, a new fixed
+     segment is created and locked higher in memory.  This reduces memory
+     efficiency because the VMM is not allowed to move fixed segments (in
+     severe cases, the VMM may issue a ^bswap space exhausted^b error
+     because the swap space has become too cluttered with fixed segments).
+     To prevent this, the VMM maintains a ^bsafety zone^b at the low end of
+     the swap space.  _parc() requests are prevented from locking segments
+     within this zone.
+
+     ^BConfiguration:^B  The Clipper 5.0 VMM defines an entry point called
+     _xunlock().  This function can be called from C or assembly language
+     programs to unlock SVOS segments when large amounts of memory are to be
+     allocated after _parc() has been called.
+
+     ^BCaution:^B  Calling _xunlock() causes any pointers returned from
+     previous _parc() calls to become invalid.  To access a Clipper
+     character value after calling _xunlock(), you must make another call to
+     _parc() to get a new pointer.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

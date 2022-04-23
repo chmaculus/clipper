@@ -1,0 +1,71 @@
+'------------------------------------------------------------------------------
+^BIF()/IIF()^B
+
+    IF() returns the result of one of two specified expressions, depending
+    upon the logical state of the given condition.
+
+^USyntax^U
+
+    IF(<exp L>,<exp1>,<exp2>)  -or- IIF(<exp L>,<exp1>,<exp2>)
+
+^UArguments^U
+
+    <expL> is a logical expression to be evaluated.
+
+    <exp1> is the value to return if <expL> is true (.T.).
+
+    <exp2> is the value to return if <expL> is false (.F.).
+
+    Note that unlike other dialects, <exp1> and <exp2> can evaluate to
+    different data types.  Note also that only the path pointed to by the
+    result of <expL> is evaluated.  This means that an undefined or
+    erroneous argument for the non-executed path does not generate a run-
+    time error.
+
+^UReturns^U
+
+    A value of any data type.
+
+    IF() returns the evaluation of the argument pointed to by the result of
+    the logical expression argument.  Since the two return arguments can be
+    different data types, the value returned is the data type of the
+    evaluated return argument.
+
+^UUsage^U
+
+    IF() is one of the most powerful and versatile functions in Clipper.
+    It provides a mechanism to evaluate a condition within an expression.
+    With this ability you can convert a logical data type expression to
+    another data type.  For example, the following converts a logical to a
+    numeric:
+
+    ^RIF(<condition>, 0, 1)^R
+
+    This leads to a number of applications.  You can, for example, format
+    a logical field:
+
+    ^RIF(Paid, SPACE(0), "Go get 'em")^R
+
+    If you are printing forms, you may want to print an indicating symbol
+    in different columns depending on the value of a logical field.  For
+    example:
+
+    ^R@ <row>, IF(In_hosp, 10, 12) SAY "X"^R
+
+    INDEXing is another area where IF() is useful.  You may want to create
+    a key based on a logical field or add a key depending on a condition.
+    This latter might be the case if the key field is empty.  In this case,
+    you want the contents of another field to be the key value.  For
+    example:
+
+    ^RINDEX ON IF(EMPTY(Name), Company, Name) TO <ntx file>^R
+
+    Another area where you can use IF() is to force the LABEL FORM to print
+    blank lines.  For example:
+
+    ^RIF(EMPTY(<expC>), CHR(255), <expC>)^R
+!seealso: clip_012.ngo:"IF" 
+'------------------------------------------------------------------------------
+
+
+

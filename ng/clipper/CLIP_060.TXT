@@ -1,0 +1,35 @@
+'------------------------------------------------------------------------------
+^BSET FIXED^B
+
+    SET FIXED determines whether a fixed number of decimal places are
+    displayed for all numeric output.
+
+^USyntax^U
+
+    SET FIXED on/OFF/(<expL>)
+
+^UOption^U
+
+    ^BOn^B: When FIXED is ON, display of all numeric output is controlled
+    by the DECIMALS SETting (two places if the SET DECIMALS default value
+    is in effect).
+
+    ^BOff^B: When FIXED is OFF, display of numeric output is dependent on
+    the type of operation performed and according to the following rules:
+
+
+                   ^BNumeric Decimal Display When FIXED is OFF^B
+
+    Operation                     Decimal Digits Displayed
+    Addition/Subtraction          Same as operand with the greatest
+                                  number of decimal digits
+    Multiplication                Sum of operand decimal digits
+    Division                      SET DECIMALS
+    Exponentation                 SET DECIMALS
+    EXP(), LOG(), SQRT()          SET DECIMALS
+    VAL()                         Same as operand
+!seealso: clip_051.ngo:"SET DECIMALS" clip_105.ngo:"LOG()" clip_139.ngo:"SQRT()" clip_150.ngo:"VAL()" 
+'------------------------------------------------------------------------------
+
+
+

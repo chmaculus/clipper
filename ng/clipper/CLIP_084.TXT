@@ -1,0 +1,56 @@
+'------------------------------------------------------------------------------
+^BTOTAL^B
+
+    TOTAL summarizes records by key value, sums specified numeric fields,
+    and copies summary records to a second database file.
+
+^USyntax^U
+
+    TOTAL ON <key exp> [<scope>] [FIELDS <field list>] TO <file>/(<expC>)
+    [FOR <condition>] [WHILE <condition>]
+
+^UArgument^U
+
+    <key exp> defines the group of records as encountered that produce a
+    new record in the target database file.  To make the summarizing
+    operation accurate, the source database file should be INDEXed or
+    SORTed on the TOTAL key expression.
+
+    <file> is the name of the target file to copy the summarized records.
+    Unless otherwise specified, TOTAL assumes a (.dbf) extension.
+
+^UOption^U
+
+    ^BFields:^B The FIELDS clause specifies the list of numeric fields to
+    TOTAL.  If the FIELDS clause is not specified, no numeric fields are
+    totaled.  Instead, each numeric field in the target file contains the
+    value for the first record matching the key expression.
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    TOTAL.  The default is ALL.
+
+    ^BCondition:^B The FOR clause specifies the conditional set of records
+    to TOTAL within the given scope.  The WHILE clause specifies the set of
+    records meeting the condition from the current record until the
+    condition fails.
+
+^UUsage^U
+
+    In Clipper, TOTAL has two modes depending on whether you specify a
+    FIELDS clause or not.  If the FIELDS clause is specified, TOTAL sums
+    the specified numeric fields to the target database file grouped by the
+    specified key expression.  If, however, the FIELDS clause is not
+    specified, TOTAL copies only records with unique keys to the target
+    database file.  With this formulation, you can eliminate records with
+    duplicate key values.
+
+    The structure of the target database file Clipper creates is identical
+    to the source except that memo fields are not copied.  Note that in
+    order to successfully TOTAL numeric fields, the source numeric fields
+    must be large enough to hold the largest total possible for that
+    numeric field.
+!seealso: ???.ngo:"AVERAGE" clip_082.ngo:"SUM" 
+'------------------------------------------------------------------------------
+
+
+

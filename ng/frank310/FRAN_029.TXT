@@ -1,0 +1,195 @@
+!short: ADat()              Returns the position of a substring within a string
+'------------------------------------------------------------------------------
+ ^bADat( <cSubstring>, <cString>, [nthOccur], [nActual] ) --> <nPos>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the position of <cSubString> within <cString>.  If [nthOccur] and
+ [nActual] are not passed, then ADat() is similar to AT().  If [nthOccur] is
+ passed, then the position of the [nthoccur] occurrence is returned.  If there
+ is no [nthOccur] occurrence, zero is returned.  If [nActual] is passed by
+ reference, it is filled with the actual number of occurrences from the
+ beginning of cString until the [nthOccur] occurrence.
+
+ Example:
+ --------
+ func main()
+ local cString := "The Frankie Library for Clipper"
+ local n := 0
+ ? ADat( "e", cString )                  // 3
+
+ ? ADat( "e", cString, 1 )               // 3
+ ? ADat( "e", cString, 2 )               // 11
+ ? ADat( "e", cString, 3 )               // 30
+ ? ADat( "e", cString, 4 )               // 0,  (No 4th occurrence)
+
+ ? ADat( "e", cString, 1, @n ), n        // 3,  1
+ ? ADat( "e", cString, 2, @n ), n        // 11, 2
+ ? ADat( "e", cString, 3, @n ), n        // 30, 3
+ ? ADat( "e", cString, 4, @n ), n        // 0,  3 (No 4th occurrence,
+                                         //        Only 3 occurrences)
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADccast()           Casts or converts an expn of any type into a string
+'------------------------------------------------------------------------------
+ ^bADccast( <xValue> ) --> <cString>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Casts or converts <xValue> of any value to a character string.  The
+ conversion rules are:
+
+ Numeric - converted to a string with str()
+ Character - its face value.
+ Date - converted to a string with dtoc()
+ Logical - converted to either "T" or "F"
+ Array - "ARRAY"
+ Block - "BLOCK"
+ Nil - "NIL"
+
+ Example:
+ --------
+ ? ADccast( 1 )          // "         1"
+ ? ADccast( .t. )        // "T"
+ ? ADccast( date() )     // "01/01/93"
+ ? ADccast( {} )         // "ARRAY"
+ ? ADccast( {||nil} )    // "BLOCK"
+ ? ADccast( NIL )        // "NIL"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADn2s()             Converts a numeric value to a trimmed string.
+'------------------------------------------------------------------------------
+ ^b ADn2s( n ) --> <cString>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Converts a numeric value to a trimmed string. Equivalent to ALLTRIM( STR(n) ).
+
+ Example:
+ --------
+ ? str( 1 )          // "          1"
+ ? ADn2s( 1 )        // "1"
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADparsel()          Parses a string from the left.
+'------------------------------------------------------------------------------
+ ^bADparsel( <cString>, <cDelimiter> ) --> <cExtractedString>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Parses a string, <cString> from the left and returns the extracted string.
+ <cDelimiter> is the delimiter that "divides" <cString> into segments.  If
+ <cDelimiter> does not occur in <cString>, <cString> is returned.  If <cString>
+ is passed by reference, then it gets shortened.
+
+
+ Example:
+ --------
+ func main()
+ local cString := "The Frankie Library for Clipper"
+ ? ADparsel( cString, "b" )      // "The Frankie Li"
+ ? cString                       // "The Frankie Library for Clipper"
+ ? ADparsel( cString, "a" )      // "The Fr"
+ ? ADparsel( cString, "x" )      // "The Frankie Library for Clipper"
+
+ ? ADparsel( @cString, "b" )     // "The Frankie Li"
+ ? cString                       // "rary for Clipper"
+ ? ADparsel( @cString, "a" )     // "r"
+ ? cString                       // "ry for Clipper"
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADparser()          Parses a string from the right.
+'------------------------------------------------------------------------------
+ ^bADparser( <cString>, <cDelimiter> ) --> <cExtractedString>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Parses a string, <cString> from the right and returns the extracted string.
+ <cDelimiter> is the delimiter that "divides" <cString> into segments.  If
+ <cDelimiter> does not occur in <cString>, <cString> is returned.  If <cString>
+ is passed by reference, then it gets shortened.
+
+
+ ^bExample
+ ^b-------
+ func main()
+ local cString := "The Frankie Library for Clipper"
+ ? ADparser( cString, "b" )      // "rary for Clipper"
+ ? ADparser( cString, "a" )      // "ry for Clipper"
+ ? ADparser( cString, "x" )      // "The Frankie Library for Clipper"
+
+ ? ADparser( @cString, "b" )     // "rary for Clipper"
+ ? cString                       // "The Frankie Li"
+ ? ADparser( @cString, "a" )     // "nkie Li"
+ ? cString                       // "The Fr"
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADrat()             Returns the position of a substring within a string
+'------------------------------------------------------------------------------
+ ^bADrat( <cSubstring>, <cString>, [nthOccur], [nActual] ) --> <nPos>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the position of <cSubString> within <cString>.  Unlike ADat(), the
+ search starts from the right.  If [nthOccur] and [nActual] are not passed,
+ then ADrat() is similar to RAT().  If [nthOccur] is passed, then the position
+ of the [nthoccur] occurrence is returned.  If there is no [nthOccur]
+ occurrence, zero is returned.  If [nActual] is passed by reference, it is
+ filled with the actual number of occurrences from the beginning of cString
+ until the [nthOccur] occurrence.
+
+ ^bExample
+ ^b-------
+ func main()
+ local cString := "The Frankie Library for Clipper"
+ local n := 0
+ ? ADrat( "e", cString )                  // 30
+
+ ? ADrat( "e", cString, 1 )               // 30
+ ? ADrat( "e", cString, 2 )               // 11
+ ? ADrat( "e", cString, 3 )               // 3
+ ? ADrat( "e", cString, 4 )               // 0,  (No 4th occurrence)
+
+ ? ADrat( "e", cString, 1, @n ), n        // 30,  1
+ ? ADrat( "e", cString, 2, @n ), n        // 11, 2
+ ? ADrat( "e", cString, 3, @n ), n        // 3, 3
+ ? ADrat( "e", cString, 4, @n ), n        // 0,  3 (No 4th occurrence,
+                                         //        Only 3 occurrences)
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADstrcnt()          Returns the number of occurrences of a substring
+'------------------------------------------------------------------------------
+ ^bADstrcnt( <cString>, <cSubstring> ) --> <nOccurrences>
+ ^b컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ Returns the number of occurrences of <cSubString> in <cString>.
+
+ ^bExample
+ ^b-------
+ func main()
+ local cString := "The Frankie Library for Clipper"
+ ? ADstrcnt( cString, "e" )               // 3
+ ? ADstrcnt( cString, "e " )              // 2
+ ? ADstrcnt( cString, "x" )               // 0
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,51 @@
+'------------------------------------------------------------------------------
+^BSTR()^B
+
+    STR() converts a numeric expression to a character string.
+
+^USyntax^U
+
+    STR(<expN1>,[,<expN2>[,<expN3>]])
+
+^UArguments^U
+
+    <expN1> is the numeric expression to convert to a character string.
+
+    <expN2> is the length of the character string to return including
+    decimal digits, decimal point, and minus sign.
+
+    <expN3> is the number of decimal places to return.
+
+^UReturns^U
+
+    A character string.
+
+    If the optional length and decimal arguments are not specified, STR()
+    returns 10 whole number digits including leading spaces, the number of
+    decimals in the numeric expression for memory variables, and the entire
+    contents of numeric fields including decimals digits.
+
+    If you specify <expN2> less than the number of whole number digits in
+    <expN1>, STR() returns asterisks instead of the number.
+
+    If you specify <expN2> less than the number of decimal digits length
+    required for the decimal portion of the returned string, Clipper rounds
+    the number to the available number of decimal places.
+
+    If you specify <expN2> but omit <expN3> (no decimal places), the return
+    value is rounded to an integer.
+
+    ^BDate functions^B: the STR() of YEAR(), MONTH(), and DAY() returns
+    different results than other numeric values.  The STR() of MONTH() and
+    DAY() returns a string of length three.  The STR() of YEAR() returns a
+    string five characters in length.
+
+^UUsage^U
+
+    STR() is useful when you want to display or print the results of
+    numeric expressions.
+!seealso: clip_150.ngo:"VAL()" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+

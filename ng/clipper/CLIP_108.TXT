@@ -1,0 +1,201 @@
+'------------------------------------------------------------------------------
+^BMEMOEDIT()^B
+
+    Allows you to display or edit memofields or long character strings.
+
+^USyntax^U
+
+    MEMOEDIT([<expC1>][,<expN1>,<expN2>,<expN3>,<expN4>][,<expL1>]
+    [,<expC2>][,<expN5>][,<expN6>][,<expN7>][,<expN8>][,<expN9>][,<expN10>]
+
+^UArguments^U
+
+    <expC1> is the character string or memo field to read.
+
+    <expN1>, <expN2>, <expN3>, <expN4> define the edit window coordinates
+    in the following order: top, left, bottom, and right.  if omitted , the
+    entire screen is used.
+
+    <expL1> determines whether a memo is edited or simply displayed.  If
+    you specify true (.T.), the memo is displayed and you enter the edit
+    mode.  If you specify false (.F.), you are placed in the browse mode
+    where the memo is simply displayed.  The default is true (.T.).
+
+    <expC2> is the name of a user function (a Clipper user-defined
+    function) to execute whenever a key is pressed.  Specify the function
+    name without the parenthetical suffix or arguments.  Refer to the
+    discussion below for more information.
+
+    <expN5> determines the line length.  If <expN5> is greater than the
+    width of the window (<expN4>-<expN2>-1), the window scrolls
+    horizontally.  The default is (<expN4>-<expN2>-1).
+
+    <expN6> determines the tab size and enables real tabs.  The default is
+    four.
+
+    <expN7> is the initial memo line where the cursor is placed.
+
+    <expN8> is the initial memo column where the cursor is placed.
+
+    <expN9> is the initial row for placing the cursor relative to the
+    window position.  The default is zero.
+
+    <expN10> is the initial column for placing the cursor relative to the
+    window position.  The default is zero.
+
+    All arguments are optional.  You must, however, pass a dummy argument
+    for any argument you wish to skip.
+
+^UReturns^U
+
+    A character string.
+
+    MEMOEDIT() returns the modified string if it is terminated with Ctrl-W
+    or the original string if it is terminated with Esc.
+
+^UUsage^U
+
+    MEMOEDIT is a general purpose text editing function that you can use in
+    your applications for a variety of purposes.  It supports a number of
+    different modes and includes a user function to allow key
+    reconfiguration and other activities germane to programming the current
+    text editing task.
+
+    The following are the active keys within MEMOEDIT():
+
+        ^UKEY^U                         ^UPURPOSE^U
+        Up arrow or ^^E              Move up one line
+        Down arrow or ^^X            Move down one line
+        Left arrow or ^^S            Move left one character
+        Right arrow or ^^D           Move right one character
+        ^^left arrow or ^^A           Move left one word
+        Right arrow or ^^F           Move right one word
+        HOME                        Beginning of current line
+        END                         End of current line
+        ^^HOME                       Beginning of the memo
+        ^^END                        End of the memo
+        ^^W                          Finish editing, save changes
+        Esc                         Abort edit, don't save changes
+        ^^Y                          Delete the current line
+        ^^T                          Delete word to right of cursor
+        ^^B                          Reformat paragraph
+
+    ^BBrowse/Update modes^B: MEMOEDIT() supports two display modes
+    depending on the value of <expL1>.  If <expL1> is true (.T.),
+    MEMOEDIT() enter update (edit) mode; otherwise, MEMOEDIT() enters
+    browse (display) mode.  In the browse mode, all navigation keys are
+    active and perform the same actions as update mode with one exception.
+    In update mode, the scroll state is off (Uparrow and Dnarrow move the
+    cursor up or down one line).  In browse mode, the scroll state is on
+    (Uparrow and Dnarrow scroll the contents of the MEMOEDIT() window up or
+    down one line).
+
+    Note that browse mode in Clipper's Autumn '86 release did ^Bnot^B allow
+    cursor movement and terminated immediately.  If you wish to retain this
+    behavior add a user function argument for the following function:
+
+    ^RFUNCTION NoBrowse  ^R
+    ^RPARAMETERS mode    ^R
+    ^RIF mode = 3        ^R
+    ^R   KEYBOARD CHR(27)^R
+    ^R   RETURN 0        ^R
+    ^RELSE               ^R
+    ^R   RETURN 0        ^R
+    ^RENDIF              ^R
+
+    You can also retain the behavior by using the syntax:
+    MEMOEDIT(<expC1>,<expN1>,<expN2>,<expn3>,<expN4>,.F.,.F.)
+
+    When MEMOEDIT() executes, it automatically calls the user function, as
+    explained below, which in this case immediately terminates MEMOEDIT().
+    Follow the MEMOEDIT() call with INKEY(0) to pause the display.
+
+    ^BUser Function^B: When MEMOEDIT() calls the user function, it
+    automatically passes three parameters: "status", "line", and "col".
+    The status message indicates the current state of MEMOEDIT() depending
+    on the last key pressed or the last action taken prior to executing the
+    user function.  The following status values are possible.
+
+    Status      Description
+      0         Idle
+      1         Re-configurable or unknown keystroke (memo unaltered)
+      2         Re-configurable or unknown keystroke (memo altered)
+      3         Start-up
+
+    A start-up value of 3 indicates that the current mode is the start-up
+    mode.  When you specify a user function.  MEMOEDIT() makes a call to it
+    immediately after being invoked.  At this point, you RETURN a request
+    to configure MEMOEDIT()'s various toggle states: word-wrap. scroll, or
+    insert.  MEMOEDIT() calls the user function repeatedly, remaining in
+    the start-up mode until you RETURN 0.  The memo is the ndisplayed and
+    you enter the display mode set by <expL1>.
+
+    Status message 0, 1, and 2 are used to process keys.  The idle state
+    (status = 0) is called once when there is no pending key to process.
+    Within this state, you generally update line and column number
+    displays.  MEMOEDIT() calls the user function whenever a key exception
+    occurs.  Keys that instigate a key exception are all available control
+    keys, function keys, and Alt keys.  Since these keys are not processed
+    by MEMOEDIT() when you have a user function, they can all be re-
+    configured.
+
+    The other two parameters, line and col, indicate the current cursor
+    position in the MEMOEDIT() window when the user function is called.
+    The line parameter begins with position one and col begins with
+    position zero.
+
+    When the status is either 1, 2, or 3, you can return a value
+    instructing MEMOEDIT() what action to perform next.  The following
+    table summarizes the possible return values and their consequences:
+
+                       ^BMEMOEDIT() User Function Requests^B
+
+    Value      Action
+      0        Perform default action
+    1 - 31     Perform requsted action corresponding to key value
+               (e.g., 22 = Ctrl-V = Ins = toggle insert mode)
+      32       Ignore the current key (disable)
+      33       Process the current key as data (insert control key)
+      34       Toggle word-wrap
+      35       Toggle scrolling
+
+    The following exceptions resolve key value collisions:
+
+     100       Next word (2 = Ctrl-B = reform)
+     101       Bottom right of window (23 = Ctrl-W = save and exit)
+
+    Note that cursor keys, Return, Backspace, Tab, Del, and character keys
+    cannot be disabled.
+
+    ^BWord-wrapping^B: Word-wrapping is a state you toggle by RETURNing a
+    34 from the user function.  The default is on.  When word-wrap is on,
+    MEMOEDIT() inserts a soft carriage return/line feed at the closest word
+    break to the window border or line length whichever occurs first.  WHen
+    word-wrap is off, MEMOEDIT() scrolls text entry beyond the window
+    definition until you reach the end-of-line.  At this point, you must
+    press Return (inserting a hard carriage return/line feed) to advance to
+    the next line.
+
+    Note that soft carriage returns may interfere with the result of
+    display commands such as ? and REPORT FORM or processing with another
+    word processor.  Use HARDCR() and MEMOTRAN() to replace these embedded
+    characters as needed.
+
+    ^BParagraph reform^B: Pressing Ctrl-B or RETURNing a 2 from a user
+    function reformats the memo until a hard carriage (end-of-paragraph) or
+    the end-of-memo is encountered.  This happens regardless of whether
+    word-wrap is on or off.
+
+    ^BTab characters^B: When you specify the tab size argument (<expN6>).
+    MEMOEDIT() inserts a hard tab character (09H) in the text when Tab is
+    pressed,  If the tab size argument has not been specified, MEMOEDIT()
+    inserts space characters instead.  The size of tabs is global for the
+    entire memo and set with <expN6>.  The default is four.
+
+    Note that MEMOEDIT() does not convert tab characters to spaces if real
+    tabs are on.
+!seealso: clip_091.ngo:"ACHOICE" clip_092.ngo:"DBEDIT" clip_093.ngo:"HARDCR" clip_109.ngo:"MEMOLINE" clip_110.ngo:"MEMOREAD" clip_112.ngo:"MEMOTRAN" clip_113.ngo:"MEMOWRIT" 
+'------------------------------------------------------------------------------
+
+
+

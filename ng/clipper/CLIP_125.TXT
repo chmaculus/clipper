@@ -1,0 +1,27 @@
+'------------------------------------------------------------------------------
+^BPROW()^B
+
+    PROW() determines the current row position on the printer.
+
+^USyntax^U
+
+    PROW()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    An EJECT resets PROW() to zero.  If you need to reset the internal
+    printer column value without performing an EJECT, use SETPRC().  Be
+    aware that if you move the print head with CHR(10), Clipper will ^Bnot^B
+    take this into account and PROW() will not return the expect value.
+
+^UUsage^U
+
+    PROW() helps keep track of the printer row position.  It is useful when
+    you want to place text on a line relative to another line on a page.
+!seealso: clip_121.ngo:"PCOL" ???.ngo:"COL" clip_137.ngo:"SETPRC" clip_132.ngo:"ROW" 
+'------------------------------------------------------------------------------
+
+
+

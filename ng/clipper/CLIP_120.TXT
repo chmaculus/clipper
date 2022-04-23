@@ -1,0 +1,31 @@
+'------------------------------------------------------------------------------
+^BNEXTKEY()^B
+
+    NEXTKEY() reads the next keystroke without removing it from the
+    keyboard buffer.
+
+^USyntax^U
+
+    NEXTKEY()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    NEXTKEY() returns a number from -39 to 386, identifying the ASCII code
+    of the key pressed (the same value as returned by INKEY() and
+    LASTKEY()).  If the keyboard buffer is empty, NEXTKEY() returns zero.
+
+    NEXTKEY() returns values for all function, Alt-function, Ctrl-function,
+    Alt-letter, and Ctrl-letter key combinations.
+
+^UUsage^U
+
+    Since NEXTKEY() does not remove the key from the keyboard buffer, you
+    can use it to poll the keyboard and then pass control to a routine
+    that uses a wait state to fetch the key from the buffer.
+!seealso: clip_098.ngo:"INKEY" clip_102.ngo:"LASTKEY" 
+'------------------------------------------------------------------------------
+
+
+

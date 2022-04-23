@@ -1,0 +1,668 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADini_create()        Creates an engine
+'------------------------------------------------------------------------------
+ ADini_create() --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates an engine.
+
+ <nEngine> is the numeric engine ID returned by the function.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    ADaview( ADini_lines( nEngine ) )
+ else
+    ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_load()" "ADini_kill()" "ADini_error()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADini_additem()       Adds an item to the ini file
+'------------------------------------------------------------------------------
+ ADini_additem( <nEngine>, <cSection>, <cItem> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds an item to the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section from which the item is to be
+ retrieved. It may not include the delimiting square brackets, [].
+
+ <cItem> is the item line to be added.  It must contain both the identifier
+ and value.
+
+ <nError> is a numeric error code.  (INI_NOSECTION if <cSection> is not
+ contained in the ini file, or INI_ITEMEXISTS if <cItem> is already contained
+ in the ini file.)
+
+ NOTE: The updated section is moved to the end of the ini file.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    nError := ADini_additem( nEngine, "desktop", "frankie=excellent" )
+
+    if nError == INI_NOERROR
+        ADaview( ADini_lines( nEngine ) )
+        nError := ADini_error()
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_addsection()" "ADini_item()" "ADini_delitem()" "ADini_repitem()" "ADini_editem()" "ADini_plitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_addsection()    Adds a section to the ini file
+'------------------------------------------------------------------------------
+ ADini_addsection( <nEngine>, <cSection> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a section to the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section to add.  It may not include the
+ delimiting square brackets, [].
+
+ <nError> is a numeric error code.  (INI_SECTIONEXISTS if <cSection> is
+ already contained in the ini file.)
+
+ NOTE: When <cSection> is added, it is converted to upper case and is
+ delimited with square brackets, [].
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    nError := ADini_addsection( nEngine, "frankie" )
+
+    if nError == INI_NOERROR
+        ADaview( ADini_lines( nEngine ) )
+        nError := ADini_error()
+    endif
+ endif
+
+ if nError != INI_NOERROR
+    ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_delsection()" "ADini_section()" "ADini_delitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_delitem()       Deletes an item from the ini file
+'------------------------------------------------------------------------------
+ ADini_delitem( <nEngine>, <cSection>, <cIdentifier> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Deletes an item from the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section from which the item is to be deleted.
+ It may not include the delimiting square brackets, [].
+
+ <cIdentifier> is the name of the item identifier to be deleted.
+
+ <nError> is a numeric error code.  (INI_NOSECTION or INI_NOITEM if <cSection>
+ or <cIdentifier> is not contained in the ini file.)
+
+ NOTE: The updated section is moved to the end of the ini file.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    nError := ADini_delitem( nEngine, "desktop", "wallpaper" )
+
+    if nError == INI_NOERROR
+        ADaview( ADini_lines( nEngine ) )
+        nError := ADini_error()
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_delsection()" "ADini_item()" "ADini_additem()" "ADini_repitem()" "ADini_editem()" "ADini_plitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_delsection()    Deletes a section from the ini file
+'------------------------------------------------------------------------------
+ ADini_delsection( <nEngine>, <cSection> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Deletes a section from the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section to delete.  It may not include the
+ delimiting square brackets, [].
+
+ <nError> is a numeric error code.  (INI_NOSECTION if <cSection> is not
+ contained in the ini file.)
+
+ NOTE: When <cSection> is deleted, all the items in the section are also
+ deleted.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    nError := ADini_delsection( nEngine, "frankie" )
+
+    if nError == INI_NOERROR
+        ADaview( ADini_lines( nEngine ) )
+    endif
+ endif
+
+ if nError != INI_NOERROR
+    ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_addsection()" "ADini_section()" "ADini_delitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_error()         Returns the error last trapped by the engine
+'------------------------------------------------------------------------------
+ ADini_error() --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the error last trapped by the engine.  Every ADini..() API posts an
+ error if one is encountered.  It is a good idea to test for such an error
+ after every call to an ADini..() API.
+
+ <nError> is a numeric code whose possible values are #defined in Frankie.ch:
+
+ #define INI_NOERROR       0  // no error
+ #define INI_NOTACTIVE     1  // engine is not active.  This is typically the
+                              // case before an engine is activated or right
+                              // after it is killed
+ #define INI_FILENOTREAD   2  // typically returned by ADini_load() when
+                              // it is unable to read the ini file. The
+                              // actual cause of the error may be examined
+                              // with FERROR().
+ #define INI_NOSECTION     3  // occurs when the specified section name is
+                              // not in the ini file
+ #define INI_NOITEM        4  // occurs when the specified item identifier is
+                              // not in the ini file
+ #define INI_SECTIONEXISTS 5  // occurs when the specified section name is
+                              // already in the ini file
+ #define INI_ITEMEXISTS    6  // occurs when the specified item identifier is
+                              // already in the ini file
+ #define INI_INVALIDENGINE 7  // the engine ID passed to an API is not valid.
+
+ A text description of the error may be obtained with ADini_errtext().
+
+ Example
+ -------
+ See the other APIs.
+!seealso: "ADini_errtext()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_errtext()       Returns an error description
+'------------------------------------------------------------------------------
+ ADini_errtext( <nError> ) --> <cError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns a text description of an error.
+
+ <nError> is a numeric error code returned by ADini_error().
+
+ <cError> is the meaning of <nError> in text.
+
+ Example
+ -------
+ // This example will display all possible errors:
+ func main()
+ local xx
+
+ for xx := 1 to 7
+      ADmessage( ADn2s( xx ) + " : " + ADini_errtext( xx ) )
+ next
+ return NIL
+!seealso: "ADini_error()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_item()          Retrieves a line from the ini file
+'------------------------------------------------------------------------------
+ ADini_item( <nEngine>, <cSection>, <cIdentifier>, [lValueOnly] ) --> <cItem>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Retrieves a line from the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section from which the item is to be
+ retrieved.  It may not include the delimiting square brackets, [].
+
+ <cIdentifier> is the name of the item identifier to be retrieved.
+
+ [lValueOnly] is a logical flag.  When TRUE (the default), only the value
+ of the identifier is retrieved.  If it is FALSE, the whole line is
+ retrieved.
+
+ NOTE: ADini_item() sets ADini_error() to return INI_NOSECTION or INI_NOITEM
+ if <cSection> or <cIdentifier> is not contained in the ini file.
+
+ NOTE: A typical ini item section may look like this:
+
+       [FRANKIE]
+       Rating=Excellent
+       Author=Lito Dizon
+
+ In the above example:
+
+   û '[FRANKIE]' is the section name
+   û 'Rating=Excellent'is an item line
+   û 'Rating' is an item identifier
+   û 'Excellent' is an item value
+
+ <cItem> is the retrieved line item.  It can either be the complete line or
+ only the item value, depending on the value of [lValueOnly].
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, cItem, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    cItem := ADini_item( nEngine, "desktop", "wallpaper", .f. )
+
+    if ( nError := ADini_error() ) == INI_NOERROR
+        ADmessage( cItem )
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_section()" "ADini_delitem()" "ADini_additem()" "ADini_repitem()" "ADini_editem()" "ADini_plitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_kill()          Kills an engine
+'------------------------------------------------------------------------------
+ ADini_kill( <nEngine> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills an engine. This API must be called when the engine is no longer
+ needed.
+
+ <nEngine> is the numeric engine ID.
+
+ <nError> is a numeric error code.
+
+ Example
+ -------
+ See ADini_create()
+!seealso: "ADini_error()" "ADini_create()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_lines()         Returns an array of the ini file lines
+'------------------------------------------------------------------------------
+ ADini_lines( <nEngine> ) --> <aIni>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array containing all the ini file lines.
+
+ <nEngine> is the numeric engine ID.
+
+ <aIni> is the returned value.  It is empty if there is an error.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    ADaview( ADini_lines( nEngine ) )
+    nError := ADini_error()
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_section()" "ADini_item()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_load()          Loads an ini file in the engine
+'------------------------------------------------------------------------------
+ ADini_load( <nEngine>, <cFile> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Loads an Ini file in the engine.
+
+ <nEngine> is the numeric engine ID.
+
+ <cFile> is the name of the ini file to process.
+
+ <nError> is a numeric error code.  If <cFile> was successfully loaded into
+ the engine, <nError> is set to INI_NOERROR.  Otherwise, one of the posssible
+ error values is returned.  See ADini_error() for all possible values.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    ADaview( ADini_lines( nEngine ) )
+ else
+    ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+
+ v3.00 -> v3.10
+ --------------
+ In v3.00, ADini_load() erroneously created <cFile> if it does not exist.
+ This was corrected in v3.10.
+!seealso: "ADini_create()" "ADini_kill()" "ADini_error()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_repitem()       Replaces an item in the ini file
+'------------------------------------------------------------------------------
+ ADini_repitem( <nEngine>, <cSection>, <cItem> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Replaces an item in the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section from where the item belongs to.  It
+ may not include the delimiting square brackets, [].
+
+ <cItem> is the replacement item.  It must contain both the identifier and
+ value.  ADini_repitem() uses the identifier part to locate the item to be
+ replaced.
+
+ <nError> is a numeric error code.  (INI_NOSECTION or INI_NOITEM if <cSection>
+ or <cItem> is not contained in the ini file.)
+
+ NOTE: The updated section is moved to the end of the ini file.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    nError := ADini_repitem( nEngine, "desktop", "wallpaper=frankie" )
+
+    if nError == INI_NOERROR
+        ADaview( ADini_lines( nEngine ) )
+        nError := ADini_error()
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_delsection()" "ADini_item()" "ADini_additem()" "ADini_delitem()" "ADini_editem()" "ADini_plitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_section()       Returns an array of items contained in a section
+'------------------------------------------------------------------------------
+ ADini_section( <nEngine>, <cSection> ) --> <aItems>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array of items contained in a section.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of an ini section.  It may not include the delimiting
+ square brackets, [].  ADini_section() sets ADini_error() to return
+ INI_NOSECTION if <cSection> is not contained in the ini file.
+
+ <aItems> is the array of items contained in <cSection>.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, aItems, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    aItems := ADini_section( nEngine, "desktop" )
+
+    if ( nError := ADini_error() ) == INI_NOERROR
+        ADaview( aItems )
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_item()" "ADini_delsection()" "ADini_addsection()" "ADini_plsection()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADini_editem()        Edits an item in the ini file
+'------------------------------------------------------------------------------
+ ADini_editem( <nEngine>, <cSection>, <cIdentifier> ) --> <nError>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Edits an item in the ini file.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section from which the item is to be deleted.
+ It may not include the delimiting square brackets, [].
+
+ <cIdentifier> is the name of the item identifier to be edited.
+
+ <nError> is a numeric error code.  (INI_NOSECTION or INI_NOITEM if <cSection>
+ or <cItem> is not contained in the ini file.)
+
+ NOTE: The updated section is moved to the end of the ini file.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, nError, lEdited
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    lEdited := ADini_editem( nEngine, "desktop", "wallpaper" )
+    nError := ADini_error()
+
+    if nError == INI_NOERROR
+       if lEdited
+           ADaview( ADini_lines( nEngine ) )
+           nError := ADini_error()
+       endif
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_delsection()" "ADini_item()" "ADini_additem()" "ADini_delitem()" "ADini_repitem()" "ADini_plitem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_plitem()        Implements a picklist of items
+'------------------------------------------------------------------------------
+ ADini_plitem( <nEngine>, <cSection> ) --> <cItem>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a picklist of items.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the section from where the items will be retrieved
+
+ <cItem> is the selected item, or an empty string if the picklist was aborted
+
+ NOTE: The source of this function is included as "ini_plit.prg".
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, cItem, nError
+
+ nEngine := ADini_create()
+ nError := ADini_load( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    cItem := ADini_plitem( nEngine, "desktop" )
+
+    if ( nError := ADini_error() ) == INI_NOERROR
+        ADmessage( cItem )
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_item()" "ADini_plsection()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADini_plsection()     Implements a picklist of section names
+'------------------------------------------------------------------------------
+ ADini_plsection( <nEngine> ) --> <cSection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a picklist of section names.
+
+ <nEngine> is the numeric engine ID.
+
+ <cSection> is the name of the selected section, or an empty string if the
+ picklist was aborted.
+
+ NOTE: The source of this function is included as "ini_plse.prg".
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local nEngine, cSection, nError
+
+ nEngine := ADini_create()
+ nError := ADini_loaded( nEngine, "test.ini" )
+
+ if nError == INI_NOERROR
+    cSection := ADini_plsection( nEngine )
+
+    if ( nError := ADini_error() ) == INI_NOERROR
+        ADmessage( cSection )
+    endif
+ endif
+
+ if nError != INI_NOERROR
+     ADmessage( { "Error: " + ADini_errtext( nError ) } )
+ endif
+
+ ADini_kill( nEngine )
+ return NIL
+!seealso: "ADini_error()" "ADini_section()" "ADini_plitem()" 
+'------------------------------------------------------------------------------
+
+
+

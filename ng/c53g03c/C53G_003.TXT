@@ -1,0 +1,1523 @@
+!short: _parc()            Retrieve a character parameter
+'------------------------------------------------------------------------------
+ ^b_parc()^b
+ Retrieve a character parameter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bchar * _parc(
+     ^b              int iParamNum
+     ^b              [, int iArrayIndex]
+     ^b            )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parc() returns a far pointer to a series of bytes that represent the
+     character value.
+
+ ^bDescription^b
+
+     _parc() retrieves a character value passed as a parameter from
+     CA-Clipper.
+
+     The pointer returned by _parc() may or may not point to the actual
+     character value passed from CA-Clipper.  In some cases, the pointer will
+     point to a copy of the actual value.  In other cases, it will point to
+     an internal value that is shared by more than one CA-Clipper variable.
+
+     The pointer returned from _parc() should not directly modify the
+     character value, since this can produce unpredictable results.  To
+     modify a character value, use _retc() returning a modified copy of the
+     value or passing the associated CA-Clipper parameter by reference; then
+     use _storc() to modify it.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char *str;
+        str = _parc(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parc:FAR
+              mov   ax, 1
+              push  ax
+              call  __parc            ; pointer returned in DX:AX
+              add   sp, 2             ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parclen()" "_retc()" "_ret()" "_storc()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parclen()         Retrieve the length of a character parameter
+'------------------------------------------------------------------------------
+ ^b_parclen()^b
+ Retrieve the length of a character parameter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bunsigned int _parclen(
+     ^b                       int iParamNum
+     ^b                       [, int iArrayIndex]
+     ^b                     )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parclen() returns the length of the character value as an unsigned
+     integer type.
+
+ ^bDescription^b
+
+     _parclen() returns the length of a character value passed as a parameter
+     from CA-Clipper.  The byte containing the null terminator is not
+     included in the logical length.  Embedded null bytes, however, are
+     included if present.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        unsigned int len;
+        len = _parclen(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parclen:FAR
+              mov   ax, 1
+              push  ax
+              call  __parclen         ; length returned in AX
+              add   sp, 2             ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parc()" "_retc()" "_storclen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parcsiz()         Retrieve the memory allocated for character parameters
+'------------------------------------------------------------------------------
+ ^b_parcsiz()^b
+ Retrieve the memory allocated for character parameters passed by reference
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bunsigned int _parcsiz(
+     ^b                       int iParamNum
+     ^b                       [, int iArrayIndex]
+     ^b                     )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parcsiz() returns the number of bytes of memory allocated for the
+     specified parameter, including its null terminator.
+
+ ^bDescription^b
+
+     _parcsiz() is included for compatibility with previous releases of
+     CA-Clipper.  It is not designed to work with STATIC and LOCAL variables,
+     and its use is not recommended.
+
+     ^bWarning! ^b Obsolete items are not in keeping with the current
+     CA-Clipper programming philosophy, and we strongly discourage their use
+     as they may not be supported in future releases of CA-Clipper.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        unsigned int len;
+        len = _parcsiz(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parclen:FAR
+              mov   ax, 1
+              push  ax
+              call  __parcsiz         ; length returned in AX
+              add   sp, 2             ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parclen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _pards()           Retrieve a date parameter as a string
+'------------------------------------------------------------------------------
+ ^b_pards()^b
+ Retrieve a date parameter as a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bchar * _pards(
+     ^b               int iParamNum
+     ^b               [, int iArrayIndex]
+     ^b             )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _pards() returns a far pointer to a series of bytes representing the
+     date value.
+
+ ^bDescription^b
+
+     _pards() retrieves a date value passed as a parameter from CA-Clipper,
+     converts it to a null-terminated character string of the form yyyymmdd,
+     and returns a far pointer to that string.
+
+     ^bNote:^b  _pards() uses a single statically allocated buffer to contain
+     the string representation of the date value.  Each call to _pards()
+     overwrites this buffer.  If your Extend function must access more than
+     one date, you should preserve the string value before calling _pards()
+     again.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char *str;
+        str = _pards(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __pards:FAR
+              mov   ax, 1
+              push  ax
+              call  __pards            ; pointer returned in DX:AX
+              add   sp, 2              ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_retds()" "_stords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parinfa()         Determine length or element type of an array parameter
+'------------------------------------------------------------------------------
+ ^b_parinfa()^b
+ Determine the length or element type of an array parameter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _parinfa(
+     ^b              int iParamNum,
+     ^b              unsigned int uiArrayIndex
+     ^b            )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^buiArrayIndex^b is the array element index.
+
+ ^bReturns^b
+
+     If uiArrayIndex is zero, _parinfa() returns the number of elements in
+     the specified array.  Otherwise, _parinfa() returns an integer value
+     that indicates the data type of the specified array element.  The type
+     codes are summarized in the table below:
+
+     ^b_parinfa() Return Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CA-Clipper Type          Extend.api Manifest Constant^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       NIL                      UNDEF
+     1       Character                CHARACTER
+     2       Numeric                  NUMERIC
+     4       Logical                  LOGICAL
+     8       Date                     DATE
+     32      Passed by reference      MPTR
+     65      Memo                     MEMO
+     512     Array                    ARRAY
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     _parinfa() determines the length of an array parameter or the type of
+     one of its elements.  You can also determine the length of an array
+     using the ALENGTH() macro defined in Extend.api.
+
+     ^bWarning!^b  Type checking is important since CA-Clipper arrays may
+     contain mixed data types.  To assure that your Extend routine receives
+     the correct data type, check the data type of each element before you
+     use it.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        int len;
+        int type;
+        len = _parinfa(1, 0);
+        type = _parinfa(1, 1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parinfa:FAR
+              mov   ax, 0             ; params pushed in reverse
+              push  ax
+              mov   ax, 1
+              push  ax
+              call  __parinfa         ; length returned in AX
+              add   sp, 4             ; reset stack pointer
+              mov   ax, 1
+              push  ax
+              push  ax
+              call  __parinfa         ; type code returned in AX
+              add   sp, 4             ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parinfo()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parinfo()         Determine the parameter count or data type of a parameter
+'------------------------------------------------------------------------------
+ ^b_parinfo()^b
+ Determine the parameter count or the data type of a parameter
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _parinfo(
+     ^b              int iParamNum
+     ^b            )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+ ^bReturns^b
+
+     If iParamNum is zero, _parinfo() returns the number of parameters passed
+     from CA-Clipper.  Otherwise, _parinfo() returns an integer value
+     representing the data type of the indicated parameter.  The following
+     table summarizes the type codes:
+
+     ^b_parinfo() Return Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   CA-Clipper Type          Extend.api Manifest Constant^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       NIL                      UNDEF
+     1       Character                CHARACTER
+     2       Numeric                  NUMERIC
+     4       Logical                  LOGICAL
+     8       Date                     DATE
+     32      Passed by reference      MPTR
+     65      Memo                     MEMO
+     512     Array                    ARRAY
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     _parinfo() determines either the CA-Clipper data type of a parameter or
+     the number of parameters passed.  You can also determine the number of
+     parameters passed by using the PCOUNT macro defined in Extend.api.
+
+     To use _parinfo() to determine if a parameter is of a particular type
+     and was also passed by reference, perform a logical OR of the desired
+     type code and the MPTR code; then test for the resulting value.  For
+     example, when a CA-Clipper variable containing a character value is
+     passed by reference, _parinfo() returns 33: MPTR (32) OR'ed with
+     CHARACTER (1).
+
+     The ISBYREF() macro defined in Extend.api also determines if a parameter
+     is passed by reference.  This pseudofunction accepts a parameter number
+     as its argument and returns one, (TRUE), if the parameter was passed by
+     reference.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        int count;
+        int type;
+        count = _parinfo(0);
+        type = _parinfo(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parinfo:FAR
+              mov   ax, 0
+              push  ax
+              call  __parinfo         ; count returned in AX
+              add   sp, 2             ; reset stack pointer
+              mov   ax, 1
+              push  ax
+              call  __parinfo         ; type code returned in AX
+              add   sp, 2             ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parinfa()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parl()            Retrieve a logical parameter as an int
+'------------------------------------------------------------------------------
+ ^b_parl()^b
+ Retrieve a logical parameter as an integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _parl(
+     ^b            int iParamNum
+     ^b            [, int iArrayIndex]
+     ^b         )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parl() returns an int type value where one represents true (.T.) and
+     zero represents false (.F.).
+
+ ^bDescription^b
+
+     _parl() retrieves a logical value passed as a parameter from CA-Clipper.
+     If the specified CA-Clipper parameter was true (.T.), _parl() returns
+     one; otherwise, it returns zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        int log;
+        log = _parl(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parl:FAR
+              mov   ax, 1
+              push  ax
+              call  __parl            ; value returned in AX
+              add   sp, 2             ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_retl()" "_storl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parnd()           Retrieve a numeric parameter as a double
+'------------------------------------------------------------------------------
+ ^b_parnd()^b
+ Retrieve a numeric parameter as a double
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bdouble _parnd(
+     ^b               int iParamNum
+     ^b               [, int iArrayIndex]
+     ^b             )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parnd() returns the value of the specified parameter as a double.
+
+ ^bDescription^b
+
+     _parnd() retrieves a numeric value passed as a parameter from CA-Clipper
+     and converts it to a double-precision floating point value.
+
+     _parnd() returns a far pointer to a statically allocated buffer that
+     contains the double numeric value.  When you call _parnd() from C, the
+     double value is automatically copied from the buffer into your C
+     variable.  If you call from Assembly language, however, you should take
+     care to preserve the double value since subsequent calls to _parnd()
+     will overwrite the buffer.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        double num;
+        num = _parnd(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parnd:FAR
+              mov   ax, 1
+              push  ax
+              call  __parnd        ; value pointed to by DX:AX
+              add   sp, 2          ; reset stack pointer
+              mov   es, dx         ; load pointer in ES:BX
+              mov   bx, ax         ; copy double into save area
+                                   ; (creation of save area not shown)
+                                   ;
+              mov   word ptr MySaveArea, es:[bx]
+              mov   word ptr MySaveArea+2, es:[bx+2]
+              mov   word ptr MySaveArea+4, es:[bx+4]
+              mov   word PTR MySaveArea+6, es:[bx+6]
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parni()" "_parnl()" "_retnd()" "_stornd()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parni()           Retrieve a numeric parameter as an integer
+'------------------------------------------------------------------------------
+ ^b_parni()^b
+ Retrieve a numeric parameter as an integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _parni(
+     ^b            int iParamNum
+     ^b            [, int iArrayIndex]
+     ^b          )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parni() returns the value of the specified parameter as an integer.
+
+ ^bDescription^b
+
+     _parni() retrieves a numeric value passed as a parameter from CA-Clipper
+     and converts it to an integer (type).
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        int num;
+        num = _parni(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parni:FAR
+              mov   ax, 1
+              push  ax
+              call  __parni            ; value returned in AX
+              add   sp, 2              ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parnd()" "_parnl()" "_retni()" "_storni()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _parnl()           Retrieve a numeric parameter as a long
+'------------------------------------------------------------------------------
+ ^b_parnl()^b
+ Retrieve a numeric parameter as a long
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^blong _parnl(
+     ^b             int iParamNum
+     ^b             [, int iArrayIndex]
+     ^b           )
+
+ ^bArguments^b
+
+     ^biParamNum^b is the one-based ordinal position of the parameter in the
+     parameter list.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _parnl() returns the value of the specified parameter as a long.
+
+ ^bDescription^b
+
+     _parnl() retrieves a numeric value passed as a parameter from CA-Clipper
+     and converts it to a long.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        long num;
+        long = _parnl(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __parnl:FAR
+              mov   ax, 1
+              push  ax
+              call  __parnl         ; value returned in DX:AX
+              add   sp, 2           ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parnd()" "_parni()" "_retnl()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _ret()             Post a NIL return value
+'------------------------------------------------------------------------------
+ ^b_ret()^b
+ Post a NIL return value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _ret(void)
+
+ ^bReturns^b
+
+     _ret() has no return value.
+
+ ^bDescription^b
+
+     _ret() posts a NIL value into CA-Clipper's return value area.  When your
+     Extend routine returns control to the calling CA-Clipper program, the
+     posted value becomes the CA-Clipper return value of your Extend routine.
+
+     ^bNote:^b  None of the following _ret functions return control to
+     CA-Clipper.  The _ret functions only post a return value to be used by
+     CA-Clipper as the Extend routines return value.  This does not happen
+     until the Extend routine actually returns control in whatever manner is
+     normal for that language (e.g., the return statement in C).
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _ret();
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __ret:FAR
+              call   __ret
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_retc()" "_retds()" "_retl()" "_retnd()" "_retni()" "_retnl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retc()            Post character return value using null-terminated string
+'------------------------------------------------------------------------------
+ ^b_retc()^b
+ Post a character return value using a null-terminated string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retc(
+     ^b            char far * fpString
+     ^b          )
+
+ ^bArguments^b
+
+     ^bfpString^b is a far pointer to the null-terminated string whose
+     contents are to be returned as a character value.
+
+ ^bReturns^b
+
+     _retc() has no return value.
+
+ ^bDescription^b
+
+     _retc() posts a character value into CA-Clipper's return value area.
+     When your Extend routine returns control to the calling CA-Clipper
+     program, the posted value becomes the CA-Clipper return value of your
+     Extend routine.
+
+     _retc() determines the logical length of the character value by scanning
+     the supplied string for a null terminator byte.  If you are returning
+     binary data that may contain embedded null bytes, use _retclen()
+     instead.
+
+     ^bNote: ^b _retc() automatically allocates memory in the CA-Clipper heap
+     and makes a copy of the supplied string.  The string need not be
+     preserved after the call to _retc().
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _retc("hello world");
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retc:FAR
+              mov   dx, seg MyString     ; pass address of string
+                                         ; (creation of string not shown)
+              mov   ax, offset MyString
+              push  dx
+              push  ax
+              call  __retc
+              add   sp, 4                ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parc()" "_parclen()" "_retclen()" "_storc()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retclen()         Post a character return value with explicit length
+'------------------------------------------------------------------------------
+ ^b_retclen()^b
+ Post a character return value with explicit length
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retclen(
+     ^b               char far * fpString,
+     ^b               unsigned int uiLength
+     ^b             )
+
+ ^bArguments^b
+
+     ^bfpString^b is a far pointer to the data representing the character
+     value to be returned.
+
+     ^buiLength^b is the logical length of the string.
+
+ ^bReturns^b
+
+     _retclen() has no return value.
+
+ ^bDescription^b
+
+     _retclen() posts a character value into CA-Clipper's return value area.
+     When your Extend routine returns control to the calling CA-Clipper
+     program, the posted value becomes the CA-Clipper return value of your
+     Extend routine.
+
+     Since _retclen() allows you to specify an explicit logical length for
+     the character value, the string you supply does not need to be
+     null-terminated and may safely contain embedded null bytes.
+
+     ^bNote: ^b _retclen() automatically allocates memory in the CA-Clipper
+     heap and makes a copy of the supplied string.  The string need not be
+     preserved after the call to _retclen().
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char data[5] = {1, 0, 2, 0, 3, 3};  // two embedded null bytes
+        _retclen(data, 5);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retclen:FAR
+              mov   ax, 5                ; params pushed in reverse
+              push  ax
+              mov   dx, seg MyData       ; pass address of data
+                                         ; (creation of MyData not shown)
+              mov   ax, offset MyData
+              push  dx
+              push  ax
+              call  __retclen
+              add   sp, 6                ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parc()" "_parclen()" "_retc()" "_storclen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retds()           Post a date return value using a date string
+'------------------------------------------------------------------------------
+ ^b_retds()^b
+ Post a date return value using a date string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retds(
+     ^b             char far * fpString
+     ^b           )
+
+ ^bArguments^b
+
+     ^bfpString^b is a far pointer to a null-terminated string representing
+     the date value to be returned.  The date string must have the form
+     yyyymmdd.
+
+ ^bReturns^b
+
+     _retds() has no return value.
+
+ ^bDescription^b
+
+     _retds() posts a date value into CA-Clipper's return value area.  When
+     your Extend routine returns control to the calling CA-Clipper program,
+     the posted value becomes the CA-Clipper return value of your Extend
+     routine.
+
+     _retds() converts the supplied string into a CA-Clipper date value.  If
+     you supply a string that does not represent a valid date, a blank date
+     value will be stored.
+
+     ^bNote: ^b _retds() converts the supplied string to a date value.  The
+     string need not be preserved after the call to _retds().
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _retds("19991231");
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retds:FAR
+              mov   dx, seg MyString     ; pass address of string
+                                         ; (creation of string not shown)
+              push  dx
+              mov   ax, offset MyString
+              push  ax
+              call  __retds
+              add   sp, 4
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_pards()" "_stords()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retl()            Post a logical return value
+'------------------------------------------------------------------------------
+ ^b_retl()^b
+ Post a logical return value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retl(
+     ^b            int iLogical
+     ^b          )
+
+ ^bArguments^b
+
+     ^biLogical^b is an integer type that represents the logical value to be
+     returned.  A value of zero is interpreted as false (.F.).  Any other
+     value is interpreted as true (.T.).
+
+ ^bReturns^b
+
+     _retl() has no return value.
+
+ ^bDescription^b
+
+     _retl() posts a logical value into CA-Clipper's return value area.  When
+     your Extend routine returns control to the calling CA-Clipper program,
+     the posted value becomes the CA-Clipper return value of your Extend
+     routine.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _retl(1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retl:FAR
+              mov   ax, 1
+              push  ax
+              call  __retl
+              add   sp, 2               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parl()" "_storl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retnd()           Post a numeric return value using a double
+'------------------------------------------------------------------------------
+ ^b_retnd()^b
+ Post a numeric return value using a double-precision numeric value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retnd(
+     ^b             double dNumber
+     ^b           )
+
+ ^bArguments^b
+
+     ^bdNumber^b is a numeric expression of type double.
+
+ ^bReturns^b
+
+     _retnd() has no return value.
+
+ ^bDescription^b
+
+     _retnd() posts a numeric value into CA-Clipper's return value area.
+     When your Extend routine returns control to the calling CA-Clipper
+     program, the posted value becomes the CA-Clipper return value of your
+     Extend routine.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _retnd( (double)3.14 );
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retnd:FAR
+              push  word ptr (MyPi+6)    ; push double number
+                                         ; (creation of MyPi not shown)
+              push  word ptr (MyPi+2)
+              push  word ptr (MyPi+4)
+              push  word ptr MyPi
+              call  __retnd
+              add   sp, 8                ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parnd()" "_retni()" "_retnl()" "_stornd()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retni()           Post a numeric return value using an integer
+'------------------------------------------------------------------------------
+ ^b_retni()^b
+ Post a numeric return value using an integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retni(
+     ^b             int iNumber
+     ^b           )
+
+ ^bArguments^b
+
+     ^biNumber^b is a numeric expression of integer (type).
+
+ ^bReturns^b
+
+     _retni() has no return value.
+
+ ^bDescription^b
+
+     _retni() posts a numeric value into CA-Clipper's return value area.
+     When your Extend routine returns control to the calling CA-Clipper
+     program, the posted value becomes the CA-Clipper return value of your
+     Extend routine.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _retni(99);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retni:FAR
+              mov   ax, 99
+              push  ax
+              call  __retni
+              add   sp, 2               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parni()" "_retnd()" "_retnl()" "_storni()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _retnl()           Post a numeric return value using a long
+'------------------------------------------------------------------------------
+ ^b_retnl()^b
+ Post a numeric return value using a long
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bvoid _retnl(
+     ^b             long lNumber
+     ^b           )
+
+ ^bArguments^b
+
+     ^blNumber^b is a numeric expression of type long.
+
+ ^bReturns^b
+
+     _retnl() has no return value.
+
+ ^bDescription^b
+
+     _retnl() posts a numeric value into CA-Clipper's return value area.
+     When your Extend routine returns control to the calling CA-Clipper
+     program, the posted value becomes the CA-Clipper return value of your
+     Extend routine.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _retnl(1234567689L);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __retni:FAR
+              mov   dx, 1883
+              mov   ax, 52501
+              push  dx                  ; push hi-order first
+              push  ax
+              call  __retnl
+              add   sp, 4               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parnl()" "_retnd()" "_retni()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storc()           Assign a null-terminated string to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_storc()^b
+ Assign a character value to a referenced variable using a null-terminated
+ string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _storc(
+     ^b             char far * fpString,
+     ^b             int iParamNum
+     ^b             [, int iArrayIndex]
+     ^b          )
+
+ ^bArguments^b
+
+     ^bfpString^b is a far pointer to a null-terminated string representing
+     the character value to be assigned.
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _storc() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storc() stores a character value to a variable passed by reference as a
+     parameter from CA-Clipper.  If the parameter specified by iParamNum is
+     not passed by reference, _storc() ignores the call and returns a value
+     of zero.
+
+     _storc() determines the logical length of the character value by
+     scanning the supplied string for a null terminator byte.  If you are
+     attempting to assign binary data that may contain embedded null bytes,
+     use _storclen() instead.
+
+     ^bNote: ^b _storc() automatically allocates memory in the CA-Clipper
+     heap and makes a copy of the supplied string.  The string need not be
+     preserved after the call to _storc().
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _storc("hello world", 1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __storc:FAR
+              mov   ax, 1                ; iParamNum
+              push  ax
+              mov   dx, seg MyString     ; pass address of string
+                                         ; (creation of string not shown)
+              mov   ax, offset MyString
+              push  dx
+              push  ax
+              call  __storc
+              add   sp, 6                ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parc()" "_parclen()" "_retc()" "_retclen()" "_storclen()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storclen()        Assign string of explicit length to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_storclen()^b
+ Assign a character value to a referenced variable using a string with
+ explicit length
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _storclen(
+     ^b               char far * fpString,
+     ^b               unsigned int uiLength,
+     ^b               int iParamNum
+     ^b               [, int iArrayIndex]
+     ^b             )
+
+ ^bArguments^b
+
+     ^bfpString^b is a far pointer to data representing the character value
+     to be assigned.
+
+     ^buiLength^b specifies the logical length of the character value to be
+     assigned.
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _storclen() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storclen() stores a character value to a variable passed by reference
+     as a parameter from CA-Clipper.  If the parameter specified by iParamNum
+     is not passed by reference, _storclen() ignores the call and returns a
+     value of zero.
+
+     Since _storclen() allows you to specify an explicit logical length for
+     the character value, the string you supply does not need to be
+     null-terminated and may safely contain embedded null bytes.
+
+     ^bNote: ^b _storclen() automatically allocates memory in the CA-Clipper
+     heap and makes a copy of the supplied string.  The string need not be
+     preserved after the call to _storclen().
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        char data[5] = {1, 0, 2, 0, 3, 3};
+        _storclen(data, 5, 1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __storclen:FAR
+              mov   ax, 1               ; iParamNum
+              push  ax
+              mov   ax, 5               ; logical length
+              push  ax
+              mov   dx, seg MyData      ; pass address of data
+                                        ; (creation of MyData not shown)
+              mov   ax, offset MyData
+              push  dx
+              push  ax
+              call  __storclen
+              add   sp, 8               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parc()" "_parclen()" "_retc()" "_retclen()" "_storc()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _stords()          Assign a date string to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_stords()^b
+ Assign a date value to a referenced variable using a date string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _stords(
+     ^b             char far * fpString,
+     ^b             int iParamNum
+     ^b             [, int iArrayIndex]
+     ^b           )
+
+ ^bArguments^b
+
+     ^bfpString^b is a far pointer to a null-terminated string representing
+     the date value to be assigned.  The string must have the form yyyymmdd.
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _stords() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _stords() stores a date value to a variable passed by reference as a
+     parameter from CA-Clipper.  If the parameter specified by iParamNum is
+     not passed by reference, _stords() ignores the call and returns a value
+     of zero.
+
+     _stords() converts the supplied string into a date value.  If you supply
+     a string that does not represent a valid date, a blank date value will
+     be stored.
+
+     ^bNote: ^b _stords() converts the supplied string into a date value.
+     The string need not be preserved after the call to _stords().
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _stords("19991231", 1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __stords:FAR
+              mov   ax, 1                ; iParamNum
+              push  ax
+              mov   dx, seg MyString     ; pass address of string
+                                         ; (creation of string not shown)
+              mov   ax, offset MyString
+              push  dx
+              push  ax
+              call  __stords
+              add   sp, 6                ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_pards()" "_retds()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storl()           Assign a logical value to a referenced variable
+'------------------------------------------------------------------------------
+ ^b_storl()^b
+ Assign a logical value to a referenced variable
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _storl(
+     ^b            int iLogical,
+     ^b            int iParamNum
+     ^b            [, int iArrayIndex]
+     ^b          )
+
+ ^bArguments^b
+
+     ^biLogical^b is an integer representing the logical value to be
+     assigned.  A value of zero represents false (.F.).  Any other value
+     represents true (.T.).
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _storl() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storl() stores a logical value to a variable passed by reference as a
+     parameter from CA-Clipper.  If the parameter specified by iParamNum is
+     not passed by reference, _storl() ignores the call and returns a value
+     of zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _storl(1, 1);
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __storl:FAR
+              mov   ax, 1               ; iParamNum
+              push  ax
+              push  ax
+              call  __storl
+              add   sp, 4               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parl()" "_retl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _stornd()          Assign a numeric to a variable using double-precision type
+'------------------------------------------------------------------------------
+ ^b_stornd()^b
+ Assign a numeric value to a referenced variable using a double-precision type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _stornd(
+     ^b             double dNumber,
+     ^b             int iParamNum
+     ^b             [, int iArrayIndex]
+     ^b           )
+
+ ^bArguments^b
+
+     ^bdNumber^b is a numeric expression of type double.
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _stornd() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _stornd() stores a numeric value to a variable passed by reference as a
+     parameter from CA-Clipper.  If the parameter specified by iParamNum is
+     not passed by reference, _stornd() ignores the call and returns a value
+     of zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _stornd( (double)3.14, 1 );
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __stornd:FAR
+              mov   ax, 1
+              push  ax                   ; iParamNum
+              push  word ptr (MyPi+6)    ; push double number
+                                         ; (creation of MyPi not shown)
+              push  word ptr (MyPi+2)
+              push  word ptr (MyPi+4)
+              push  word ptr MyPi
+              call  __stornd
+              add   sp, 10               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parnd()" "_retnd()" "_storni()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _storni()          Assign a numeric to a referenced variable using an integer
+'------------------------------------------------------------------------------
+ ^b_storni()^b
+ Assign a numeric value to a referenced variable using an integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _storni(
+     ^b             int iNumber,
+     ^b             int iParamNum
+     ^b             [, int iArrayIndex]
+     ^b           )
+
+ ^bArguments^b
+
+     ^biNumber^b is a numeric expression of type integer.
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _storni() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _storni() stores a numeric value to a variable passed by reference as a
+     parameter from CA-Clipper.  If the parameter specified by iParamNum is
+     not passed by reference, _storni() ignores the call and returns a value
+     of zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _storni( 123, 1 );
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __storni:FAR
+              mov   ax, 1
+              push  ax                  ; iParamNum
+              mov   ax, 123
+              push  ax                  ; iNumber
+              call  __storni
+              add   sp, 4               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parni()" "_retni()" "_stornd()" "_stornl()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _stornl()          Assign a numeric to a referenced variable using a long
+'------------------------------------------------------------------------------
+ ^b_stornl()^b
+ Assign a numeric value to a referenced variable using a long
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "extend.api"
+     ^bint _stornl(
+     ^b             long lNumber,
+     ^b             int iParamNum
+     ^b             [, int iArrayIndex]
+     ^b           )
+
+ ^bArguments^b
+
+     ^blNumber^b is a numeric expression of type long.
+
+     ^biParamNum^b is the one-based ordinal position in the parameter list of
+     the parameter to be assigned.
+
+     ^biArrayIndex^b is an array index that specifies a particular element if
+     the iParamNum parameter is an array.
+
+ ^bReturns^b
+
+     _stornl() returns one if the function is successful; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _stornl() stores a numeric value to a variable passed by reference as a
+     parameter from CA-Clipper.  If the parameter specified by iParamNum is
+     not passed by reference, _stornl() ignores the call and returns a value
+     of zero.
+
+ ^bExamples^b
+
+     ^b^CFE^b  From C:
+
+        _stornl( 123456789L, 1 );
+
+     ^b^CFE^b  From Assembly language:
+
+        EXTRN __stornl:FAR
+              mov   ax, 1
+              push  ax                  ; iParamNum
+              mov   dx, 1883
+              mov   ax, 52501
+              push  dx                  ; push hi-order first
+              push  ax
+              call  __stornl
+              add   sp, 6               ; reset stack pointer
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Extend.api.
+
+!seealso: "_parnl()" "_retnl()" "_stornd()" "_storni()" 
+'------------------------------------------------------------------------------
+
+
+

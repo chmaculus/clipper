@@ -1,0 +1,422 @@
+!short: Introduction to CA-Clipper Tools
+'------------------------------------------------------------------------------
+ ^bIntroduction
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper Tools contains over 800 functions which you can use to
+     develop CA-Clipper applications and system-level routines.  These
+     functions give CA-Clipper programmers capabilities previously reserved
+     for C or Assembler programmers with detailed system knowledge.
+
+     In order to use working memory as economically as possible, virtually
+     all the functions are written in Assembler and are highly optimized.
+     This guarantees high speed with a minimal use of memory.  This
+     efficiency is further supported by the modularity of the software within
+     the CA-Clipper Tools library.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Installing CA-Clipper Tools
+'------------------------------------------------------------------------------
+ ^bInstalling CA-Clipper Tools
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bRequirements^b
+
+     CA-Clipper Tools was designed for use with the CA-Clipper compiler.
+     Therefore it should only be used on IBM PC/XTs, PC/ATs, or completely
+     compatible systems.  The screen functions may not work on a system where
+     a modified CA-Clipper driver module has been used.  (The string
+     functions, on the other hand, are generally hardware independent.)
+
+     CA-Clipper Tools requires PC-DOS or MS-DOS, version 2.10 or higher, but
+     some functions work with system calls which are not supported until
+     PC/MS-DOS version 3.1 or higher.  This applies, for example, to network
+     functions: if you work with network functions under a DOS version
+     earlier than 3.1, the functions will not work properly.
+
+     We cannot guarantee that CA-Clipper Tools will work under any operating
+     system other than PC-DOS or MS-DOS.
+
+ ^bInstallation Program^b
+
+     CA-Clipper Tools is supplied with an installation program, located on
+     Disk 1.  To install CA-Clipper Tools, perform the following steps:
+
+     ^b^CFE^b  Insert Disk 1 in drive A
+
+     ^b^CFE^b  Type A: and press Return to change the default drive to A
+
+     ^b^CFE^b  Type INSTALL and press Return to start the installation
+        procedure
+
+     The installation procedure is self-explanatory.  You will be prompted to
+     insert other disks as the installation program needs them.  (Some of the
+     files are compressed; therefore you cannot use the DOS COPY command to
+     copy them to your hard disk.  You must use the installation program.)
+
+     When the installation is complete, read the READ.ME file (located on
+     disk 1) to learn about any last minute changes or enhancements.
+
+ ^bCompatibility^b
+
+     CA-Clipper Tools is generally compatible with previous versions, but
+     there are some deviations.  If you require full compatibility for
+     existing applications developed under CA-Clipper S'87, you must link in
+     the #include file CT.CH.  Notice, however, that we do not recommend this
+     procedure for development of new applications.
+
+     As CA-Clipper develops, some of the functions in previous versions of
+     the CA-Clipper Tools program are no longer meaningful.  These functions
+     remain unchanged in CA-Clipper Tools to avoid problems during the
+     compilation of existing applications, but they have been flagged with
+     asterisks (*) at the function name.  Again, we do not recommend that you
+     use these functions to develop new applications.
+
+ ^bDocumentation^b
+
+     All of the CA-Clipper Tools functions are described in detail in this
+     four-volume Reference Guide.  To allow you to find the function you need
+     in a particular situation, the Reference Guide is divided into chapters.
+     Each chapter presents a group of functions that serve a particular
+     purpose, such as date functions, database functions, or system
+     functions.  Each function is then described in detail on a separate
+     page.  Appendixes provide keyboard tables, DOS error codes, and Novell
+     network error codes.
+
+     A Quick Reference Guide gives the complete syntax and a short
+     description of every function.  In this booklet, the functions are
+     organized in alphabetical order for quick reference.  A chapter and page
+     number tells you where to look in this four-volume Reference Guide for a
+     complete description of the function.
+
+     The CA-Clipper Tools software contains a text retrieval system that lets
+     you search online for the expression you need.  This text retrieval
+     system finds the appropriate function for your purpose in seconds --
+     even if you don't know what that function is -- and provides complete
+     documentation on that function online.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Using CA-Clipper Tools
+'------------------------------------------------------------------------------
+ ^bUsing CA-Clipper Tools
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bProgramming^b
+
+     To use the CA-Clipper Tools functions in your programs, specify the
+     CT.LIB library during the LINK procedure.  If required, also specify the
+     CTUS.OBJ Extended Driver file.  (See the section called "Extended
+     Driver" below.)
+
+     All CA-Clipper rules apply when calling functions.  For example, a
+     function's return must not be assigned to a variable.
+
+     Both types of calls are possible:
+
+     FUNCTION(par1, par2)
+     Var=FUNCTION(par1, par2)
+
+ ^bLinking^b
+
+     CA-Clipper Tools functions can be linked with MS-LINK (often referred to
+     as the DOS linker) as well as with RTLink.
+
+     Here is an example using MS-LINK:
+
+     LINK <Prog1>+<Prog2>+CTUS,,,CT/SE:<nnn> /NOE
+
+     With the exception of small test programs, MS-LINK requires that a value
+     be assigned to the /SE: switch.  We cannot recommend an adequate value
+     for <nnn>.
+
+     Here is an example using RTLink in FreeFormat mode:
+
+     RTLINK FI<Prog1>,<Prog2>,CTUS LIB CT
+
+     RTLink also contains a positional mode. When using this mode, the link
+     command has to be identical to that in MS-LINK. Further information
+     regarding RTLink can be found in the CA-Clipper Programming and
+     Utilities Guide.
+
+     ^bPLL Files^b
+
+     CA-Clipper Tools cannot be implemented in conjunction with the
+     BASE50.PLL file created at CA-Clipper installation. You can, however,
+     create a new corresponding .PLL file with the linker script file CT.LNK
+     included in CA-Clipper Tools.  Use the following command:
+
+     RTLINK @CT
+
+     This will exchange a particular module from the CA-Clipper library as
+     well as several I/O routines out of TERMINAL.LIB for others in CTUS.OBJ
+     or CT.LIB. The new .PLL file is called CT.PLL. If a new .PLL file is not
+     created, then the alternative I/O routines and therefore many of the
+     CA-Clipper Tools functions will not work for all the programs generated
+     via prelinking.
+
+     If the CT.PLL file has been created once, the link procedure can be
+     called as follows:
+
+     RTLINK FI <prog> LIB CT PLL CT
+
+     The CTUS.OBJ Extended Driver must not be specified, since it is already
+     in the .PLL file.
+
+     Further CA-Clipper Tools modules have not been included in this or other
+     .LNK files, since prelinked modules are always loaded at program start
+     and increase memory usage accordingly.  Creation of a .PLL file in
+     conjunction with other external libraries becomes an individual
+     procedure.  However, all CT.LIB modules can be prelinked.  You simply
+     need to include a public for the desired module by inserting the REFER
+     command.
+
+     Here is an example.  By inserting:
+
+     REFER COM_BREAK, ACOS
+
+     the _COM and _TRI3 modules (serial interfaces and trigonometric
+     functions) will be prelinked. The names of the module and the publics
+     can be determined with a library manager like MS-LIB.
+
+     ^bCA-Clipper Libraries^b
+
+     None of the preceding examples mentions any of the files belonging to
+     CA-Clipper itself.  This is because, during compiling, CA-Clipper's
+     default setting enters the names of its four libraries in the resulting
+     .OBJ file.  When you influence this procedure, for example by using the
+     /r compiler switch, all the required libraries must be called explicitly
+     at linking.
+
+     ^bStatic Overlays^b
+
+     Most functions or CA-Clipper Tools modules cannot be stored to a static
+     overlay, as they contain interrupt service routines. They may not reside
+     in an overlay. The functions affected are KEYSEC(), KEYTIME(),
+     SHOWTIME(), SHOWKEY(), PRINTSCR(), PRINTSCRX(), and SETTIC(), as well as
+     serial interface functions that also work interrupt controlled.
+
+     The Extended Driver CTUS.OBJ may never be placed in an overlay, since it
+     is needed by CA-Clipper for every input and output. Linking CTUS.OBJ in
+     an overlay will result in a system crash immediately after the start of
+     your application.  Therefore, be aware that the overlay will always have
+     to be loaded in order for the function to be available.
+
+     All CA-Clipper Tools functions can be called from an overlay.  The
+     program code for some functions, however, cannot be placed within an
+     overlay.
+
+     ^bPossible Linking Problems^b
+
+     When implementing CA-Clipper Tools in an existing application for the
+     first time, the linker warning message "Duplicate Definitions" may
+     occur. In this case, probably one of your own procedures or functions or
+     a function from another library has a name that was also used by one of
+     the CA-Clipper Tools functions. If the name of this other function or
+     procedure cannot be changed, it must be specified as a separate .OBJ
+     file.  Otherwise CT.LIB must be designated as the last library.
+
+     Note, also, that an .OBJ file will always overwrite a library module
+     with the same name, independent of its position in the LINK command
+     line. Therefore, the CA-Clipper Tools Extended Driver is delivered as an
+     .OBJ file.
+
+ ^bExtended Driver^b
+
+     In addition to the CT.LIB library, you will find a separate .OBJ module
+     on your disk called CTUS.OBJ. This is the CA-Clipper Tools Extended
+     Driver.  If this is linked in, it replaces the CA-Clipper library
+     driver. Above all, the Extended Driver is important for the
+     implementation of window functions, but it also offers other interesting
+     possibilities.  For this reason all the functions in the chapter on the
+     Extended Driver in this Reference Guide form a part of this module.
+
+     The CTUS.OBJ must only be added to the .OBJ file list to be linked.  The
+     sequence is not important.  The Extended Driver replaces the CA-Clipper
+     library driver module, so storing out to an overlay is not possible. You
+     will find further information in the Extended Driver chapter.
+
+ ^bDebugging^b
+
+     Working with CA-Clipper Tools makes additional debugger features
+     available.  These features are also controlled via the CLIPPER
+     environmental variable, by setting a switch DEBUG:<n>.
+
+     ^bHow Problems Arise^b
+
+     There are many possible screen modes, fonts, windows, and virtual
+     screens, so various problems can arise.  The debugger also uses windows,
+     as you can see on the debugger Windows menu.  To avoid a collision with
+     the windows of your application, the debugger has an additional
+     windowing system.
+
+     ^bWorking with One Screen^b
+
+     When working with one screen, the debugger must be able to switch
+     between the application screen and its own screen.  The contents of the
+     application screen must be saved.  This can happen in an area of the
+     available memory or in a free screen page.
+
+     Using a screen page saves memory and offers better performance, but it
+     takes a screen page of the application.  This is, however, taken into
+     account by CA-Clipper Tools.  The MAXPAGE() function, for example,
+     returns a reduced value.  The default value for the application is
+     screen page, which can be changed with the environmental variable.
+
+     ^bWorking with Two Screens^b
+
+     Working intensively with CA-Clipper Tools video functions and the
+     debugger on one screen is difficult.  For this situation, the debugger
+     supports two screens.  This is possible because the PC can operate two
+     cards simultaneously, for example, a Hercules card and a VGA card.  The
+     application output always occurs on the screen from which it was
+     started, while the debugger output is displayed on the other screen.
+     This capability is set via the CLIPPER environmental variable, by
+     specifying DEBUG:2.
+
+     ^bDEBUG Values^b
+
+     The DEBUG: <n> switch can be set with a numeric value.  Each individual
+     bit has a certain meaning.  At this time, only two bits are used:
+
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit:      When set:      Default^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1         use PAGE       1
+     2         two screens    0
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Note:  Particular switch combinations in the CLIPPER environmental
+     variable can lead to problems. Please construct your environmental
+     variable as follows:
+
+     SET CLIPPER=/Fnnn /Ennnn /DEBUG:2 /SWAPPATH:"path"
+
+ ^bReference Sensitive[@]^b
+
+     CA-Clipper can pass parameters of the character string type to a UDF by
+     reference.  This means that what is actually passed is a pointer to the
+     original, thus avoiding the creation of an internal copy.  When a
+     function takes on this type of parameter and changes it, it is the
+     original that is actually changed.  Here is an example:
+
+     VAR := "Hello"
+     MYFUNC(@VAR)
+
+     Passing of parameters by reference has advantages and disadvantages.  An
+     important advantage is that memory usage is reduced.  This avoids
+     runtime errors that result from not having enough memory for string
+     manipulation.  If, on the other hand, you do not want the original
+     string to be changed, passing of parameters by reference is a
+     disadvantage.
+
+     With a normal call (that is, not by reference), it is the copy that is
+     changed by the function.  The change must then be passed back to the
+     original:
+
+     VAR := "Hello"
+     VAR :+ MYFUNC(VAR)
+
+     Particularly in the case of long strings, this method takes up memory
+     and time.
+
+     It is not a good idea to pass parameters by reference for most of the
+     CA-Clipper Tools functions.  (In some cases there will even be a
+     difference in the result when a parameter is passed this way.)  The
+     functions then change the string passed as a parameter directly.  This
+     saves memory space and the functions work more quickly, since there are
+     no internal copy procedures taking place.  Watch for the [@] identifier
+     meaning reference sensitive.
+
+ ^bCSETREF() ^b
+
+     This function allows you to further optimize memory requirements and
+     speed for different string functions. This assumes that a function is
+     only working with data passed as a parameter and avoids internal copies
+     of returned values as well. When CSETREF() is set, the affected function
+     no longer returns a value.
+
+     You will find more information on this function in the chapter on string
+     functions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Additional Programs
+'------------------------------------------------------------------------------
+ ^bAdditional Programs^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bSecurity^b
+
+     If CA-Clipper Tools functions that change interrupts are not properly
+     uninstalled or if the Extended Driver is not implemented, you could use
+     the INTSAVE.EXE and INTOFF.EXE programs as additional security.
+
+     ^bINTSAVE^b
+
+     <Drive>:INTSAVE[/S|/R[<FileName>]]<RETURN>
+
+     INTSAVE saves all 256 interrupt vectors to a file called INSAVE.TAB.
+     Alternatively, a different filename can be selected, if multiple
+     applications need to access the same path in a network.  A call with the
+     /S switch saves the interrupt vectors,while a call with /R restores
+     them.
+
+     If the program is called without parameters, it explains its operation
+     on the screen and, if required, displays a list of interrupt vectors
+     that have been changed.
+
+     ^bINTOFF^b
+
+     <Drive>:INTOFF <RETURN>
+
+     This program represents an "emergency brake".  It sets the vectors
+     described below to an IRET in the system ROM, so that there is no danger
+     of a system crash as a result of erroneous interrupt vectors.  The mouse
+     interrupt (033h) is also newly initialized and the timer tic rate is
+     reset.  Memory resident programs are uncoupled from their interrupt
+     vectors as well and are thereby rendered unusable. The program sets the
+     following interrupt vectors to harmless IRETs:
+
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bOperation    Vector         Use in CA-Clipper Tools^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     IRET         Timer 1C       KEYSEC(), SHOWIME()
+                  Alarm 4A       KEYTIME()
+                  COM1 0C        V24 Functions
+                  COM2 0B        V24 Functions
+     INIT         Mouse 33       If foreign routines linked in
+                  Timerspeed     SETTIC()
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Both programs could be linked into a batch job which starts your
+     CA-Clipper application. This would look as follows:
+
+     ECHO OFF
+     INTSAVE /S INTSAVE1.TAB
+
+        CLIPPROG
+     INTSAVE /R INTSAVE1.TAB
+     ECHO ON
+
+     With INTOFF, it would look like this:
+
+     ECHO OFF
+        CLIPPROG
+        INTOFF
+     ECHO ON
+
+     This will avoid later system crashes.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

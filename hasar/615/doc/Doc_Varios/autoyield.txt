@@ -1,0 +1,23 @@
+Nota   
+Para asegurar que se procesan todos los eventos de controles ActiveX, establezca la propiedad 
+AutoYield del objeto Application de Visual FoxPro como falsa (.F.).
+
+======
+
+PROCEDURE Unload
+        IF This.Tag = "AUTOYIELD_YES"
+                _VFP.AutoYield = .T.
+        ENDIF
+        SYS(2333,1)
+ENDPROC
+
+PROCEDURE Load
+        This.Tag = IIF( _VFP.AutoYield, ;
+"AUTOYIELD_YES", ;
+"AUTOYIELD_NO" )
+        _VFP.AutoYield = .F.
+        SYS(2333,0)
+ENDPROC
+
+======
+

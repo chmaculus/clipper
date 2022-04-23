@@ -1,0 +1,38 @@
+'------------------------------------------------------------------------------
+^BSET EXACT^B
+
+    SET EXACT determines whether a comparison between two character strings
+    requires the strings to be the same length.
+
+^USyntax^U
+
+    SET EXACT on/OFF/(<expL>)
+
+^UDefaults^U
+
+    When EXACT is OFF two characters are compared according to the
+    following rules:
+
+    1.  The strings are first considered equivalent (.T.).
+
+    2.  Strings are then compared by character position for each character
+        in both strings until the length of the string on the right side of
+        the operator is exhausted or the comparison returns false (.F.).
+
+    This has two implications:
+
+    1.  Two strings may equate even though they vary in length.
+
+    2.  A string of length greater than zero can equate to a null string.
+        This happens because a null string on the right side of the
+        operator has a length of zero and so no comparisons are made.  The
+        result returns is then the initial value, true (.T.).
+
+    With SET EXACT ON, two strings must match exactly, except for trailing
+    blanks.  The same characters (upper and lower case) must be in the same
+    order, and be of the same length to return true (.T.).
+!seealso: ???.ngo:"DISPLAY" clip_008.ngo:"FIND" clip_018.ngo:"LIST" clip_019.ngo:"LOCATE" clip_041.ngo:"SEEK" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,64 @@
+'------------------------------------------------------------------------------
+^BSET FORMAT^B
+
+    SET FORMAT activates a format procedure so that whenever a READ is
+    performed the format procedure is executed.
+
+^USyntax^U
+
+    SET FORMAT TO <procedure>
+
+^UArgument^U
+
+    <procedure> is a format (.fmt) file, a program (.prg) file, or a
+    PROCEDURE.
+
+    SET FORMAT TO with no argument deactivates the current format.
+
+^UUsage^U
+
+    Format procedures are like any other procedure in Clipper differing
+    only by the method by which you invoke them.  Unlike the interpreted
+    environment, formats are not opened at runtime and executed when the
+    application is run.  Instead, when Clipper encounters a SET FORMAT
+    statement while compiling, it attempts to compile the specified file
+    from disk as it would any other procedural reference.  Because of this
+    general character, format procedures can be stored in procedure files.
+
+    ^BNote^B: If you are compiling .CLP files with a program that contains
+    format references, the accompanying format files must have .prg file
+    extensions in order to compile correctly.
+
+    In Clipper there can only be one active format procedure, unlike other
+    dialects where each work area can have an active format.
+
+    Format declarations cannot be nested.  Clipper ignores SET FORMAT
+    statements within format procedures at compile time.
+
+    Clipper does not clear the screen before executing format files.
+
+    Commands, however, are allowed in format files, which gives more
+    flexibility.
+
+    Clipper does not support multiple-page format procedures and so READ
+    statements within format procedures are ignored.
+
+^BExample^B
+
+    ^RUSE Sales                             ^R
+    ^RSET FORMAT TO Sales_scr               ^R
+    ^RDO WHILE LASTKEY() <> 27              ^R
+    ^R   APPEND BLANK                       ^R
+    ^R   READ                               ^R
+    ^RENDDO                                 ^R
+    ^R                                      ^R
+    ^RPROCEDURE Sales_scr                   ^R
+    ^RCLEAR                                 ^R
+    ^R@ 12, 12 SAY "Branch :  " GET Branch  ^R
+    ^R@ 13, 14 SAY "Salesman: " GET Salesman^R
+    ^RRETURN                                ^R
+!seealso: ???.ngo:"@...SAY...GET" clip_028.ngo:"READ" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,186 @@
+'------------------------------------------------------------------------------
+^b Major Syntax Changes
+
+ Various changes are made in new versions of Frankie.  Those specifically
+ mentioned in this section are those that may require modifications in your
+ application's source.  The following notes will serve as a guide in
+ implementing such modifications.
+
+^b Version 3.00 to 3.10
+
+ 1. In v3.00, ADini_load() erroneously created the .ini file if it did not
+    exist.  In v3.10, this is no longer the case.  If you had relied on
+    ADini_load() to create your .ini file, you may have to change your code.
+
+    Change your code from:
+
+      ADini_load( nEngine, "my.ini" )
+
+    to:
+
+      if !file( "my.ini" )
+          fclose( fcreate( "my.ini" ) )
+      endif
+
+      ADini_load( nEngine, "my.ini" )
+
+^b Version 2.30 to 3.00
+
+ 1. &-embedding, to indicate menu item trigger position, was implemented.
+    If your menu item contains an '&', it will be mis-interpreted as a
+    trigger position indicator.  You will need to change it.
+
+^b Version 2.2x to 2.3x
+
+ None
+
+^b Version 2.1 to 2.2
+
+ 1. ADbm_isprinter().  Support for LPT ports other than the default LPT1
+    was added in v2.2.  The syntax changed from:
+
+    ADbm_isprinter( [bConfig], [cHelpID] )
+
+    to:
+
+    ADbm_isprinter( [nPrinter], [bConfig], [cHelpID] )
+
+    where [nPrinter] is 1 for LPT1, 2 for LPT2 and 3 for LPT3, but defaults
+    to 1.
+
+    You may have to modify your existing source code as follows:
+
+    1.  Old: ADbm_isprinter()
+        New: Same or ADbm_isprinter(1)
+
+    2.  Old: ADbm_isprinter( bConfig )
+        New: ADbm_isprinter( , bConfig ) or ADbm_isprinter( 1, bConfig )
+
+    3.  Old: ADbm_isprinter( , cHelpID )
+        New: ADbm_isprinter( ,, cHelpID ) or ADbm_isprinter( 1,, cHelpID )
+
+    4.  Old: ADbm_isprinter( bConfig, cHelpID )
+        New: ADbm_isprinter( , bConfig, cHelpID )
+          or ADbm_isprinter( 1, bConfig, cHelpID )
+
+ 2. ADdb_seek().  Added 4th and 5th parameters, [cPicture] and [lSoftSeek],
+    and inserted them just before [cHelpID] which used to be the
+    third and last parameter (Now it is the 5th and still the last).
+
+ 3. ADdb_columns().  The meaning of this function has been totally changed.
+    If you use this API, replace all ADdb_columns() calls with ADdb_fields()
+    all ADdb_adget() with ADdb_colget(), and all ADdb_fldread() with
+    ADdb_colread().  See DB_COLUM.TXT for more details.
+
+ 4. ADhormenu().  Now the Esc key and the right mouse button are active by
+    default.  They used to be not active.
+
+
+^bVersion 2.0 to 2.1
+
+ Some changes from v2.1 to v2.2 require modifications in your application's
+ source.  The following notes will serve as a guide in implementing such
+ modifications.
+
+ 1. ADr_tbpopup().  In v2.0 only the top/left corner of the popup box could
+    be specified.  In v2.1, all four corners can be specified.  This was
+    accomplished by changing the meanings of the first two parameters. Please
+    refer to the detailed documentation of ADr_tbpopup() for a complete
+    description of this change.  You might have to modify your existing code
+    as follows:
+
+    1.  Old: ADr_tbpopup( NIL, NIL, .. )
+        New: No change
+
+    2.  Old: ADr_tbpopup( nRow, nCol, .. )
+        New: ADr_tbpopup( { nRow, nCol, Nil, NIL }, NIL, .. )
+
+    3.  Old: ADr_tbpopup( nRow, NIL, .. )
+        New: ADr_tbpopup( { nRow, NIL, Nil, NIL }, NIL, .. )
+
+    4.  Old: ADr_tbpopup( NIL, nCol, .. )
+        New: ADr_tbpopup( { NIL, nCol, Nil, NIL }, NIL, .. )
+
+
+^b Version 2.0
+
+ Some changes from v1 to v2 require modifications in your application's
+ source.  The following notes will serve as a guide in implementing such
+ modifications.
+
+ 1.  Frankie v1 was compiled in Clipper 5.2.  If you are still using
+     Clipper 5.01, you need to do the following:
+
+     #include F2_501.CH in your programs.  Its correct placement is "before"
+     FRANKIE.CH, like this:
+
+        #include F2_501.CH
+        #include FRANKIE.CH
+
+     If you do not properly #include F2_501.CH, the mouse will not work
+     with ADread(), which is the Frankie replacement of the GetSys.Prg.
+
+     Also link F2_501.LIB, together with, but ahead of FRANKIE.LIB.
+     Your link command may look like this:
+
+        blinker file MYFILE lib F2_501, FRANKIE
+
+     or:
+
+        rtlink  file MYFILE lib F2_501, FRANKIE
+
+     If you do not properly link F2_501.LIB, you may get "undefined symbols"
+     warnings during linking, and the resulting .exe file may not work
+     properly.  However, if "CLIPPER520" is the only undefined symbol
+     encountered, you need not worry about it.
+
+     See F_TOUR.CH, F_TOUR.LNK, and F_TOURR.LNK for examples.
+
+ 2.  The ADMEMO extension of ADGET is no longer supported in this version.
+     Refer to the ADread() documentation for instructions on how to modify
+     existing code.  Basically, it is simply a change from:
+
+        @ .. SAY .. ADMEMO ..
+
+     to:
+
+        @ .. SAY .. ADGET .. MEMO
+
+ 3.  If you used the ADsbx_.. and the ADsby.. functions, you will have to
+     rewrite the source portions that call them.  Please refer to the
+     documentation of the Horizontal Scroll Bar Engine and the Vertical
+     Scroll Bar Engine.  If you used them only in implementing scroll bars
+     in the database browsers, then you only need to remove all the ADsby..
+     and ADsbx.. lines and configure the browser with the ADdb_horsbar()
+     and ADdb_versbar() APIs.  Refer to the Database Browser Engine
+     documentation.
+
+ 4.  The default location of a vertical menu has been changed from the
+     top/left corner of the screen to the center of the screen.  Thus if you
+     have an ADvermenu() call like this:
+
+        ADvermenu( ,, aMenu )
+
+     the menu will now be centered, instead of being placed at the top left
+     corner.  If you want to preserve the location of "default" menus in
+     existing applications, modify these menu calls to :
+
+        ADvermenu( 0,0, aMenu )
+
+ 5. In Frankie 1, the menu wraps from the first to the last option when the
+    up arrow is pressed, and vice-versa.  In Frankie 2, this wrap behavior
+    has to be explicitly configured in one-page menus, otherwise, no such
+    wrapping occurs.  The rewrite may take this form:
+
+        Original:  ADvermenu( ,, aMenu )
+        Rewrite:   ADvermenu( ,, aMenu,,, {|| ADvm_wrap(.t.)} )
+
+    In multi-page picklists, ADvermenu() always wraps.
+
+ 6. In Frankie 1, ADbm_exit() was used to abort ADboxmenu().  In Frankie 2
+    ADbm_exit() no longer exists.  It has been replaced with ADbm_abort().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

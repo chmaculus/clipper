@@ -1,0 +1,67 @@
+'------------------------------------------------------------------------------
+ ^BLinking the Object File^B
+
+     The last step in producing a Norton Guides database is linking
+     the compiled source files. Linking the source files produces a
+     single file compatible with the Norton Guides Instant Access
+     Program. The linking process is also the point at which the
+     menu structure of the database is defined.
+
+     The single argument to the Norton Guides Menu Linker, ngml, is
+     the name of a ^Umenu link control file^U. The menu link
+     control file:
+
+           Defines and names all the menus and menu items in the
+           database, and
+
+           Specifies the source file that each menu item will be
+           linked to.
+
+     The output of the Norton Guides Linker is a single Norton
+     Guides Database file compatible with the Instant Access
+     Program. The database file will be have the same base name as
+     the menu link control file, and the `.ng' extension.
+
+     Here, for example, is the the menu link control file that was
+     used to create this example database:
+
+
+          !name:    Creating a Database
+
+          !menu:    Creating
+                    Source Files        tutsourc.ngo
+                    Compiling           tutcmpil.ngo
+                    Linking             tutlink.ngo
+
+          !menu:    Database Creation
+                    Keywords            tutkeys.ngo
+                    Error Messages      tuterr.ngo
+
+     Every menu link control file must start with a `!name:'
+     command, which names the database. (Like all bang (!)
+     commands, the !name command must start in column 1.)  The name
+     specified in the !name command is the name that will appear in
+     the scroll box when you select a database using the options
+     menu.
+
+     In the final database, menus will appear in the menu bar in
+     the same order in which they are defined here. A menu is
+     defined and named by the `!menu' command, followed by a list
+     of the item names in that menu. Next to each item name is the
+     file whose data will be linked to that menu item. For example,
+     the data for the menu item `Keywords', under the `Reference'
+     menu, will be linked in from the file `keywords.ngo'.
+
+     If this file were named "creating.lnk", then the following
+     command would produce the database entitled "Creating a
+     Database":
+
+          ngl creating.lnk
+
+     This was, by the way, the very menu control file used to
+     create this example database, "Creating a Database".
+!seealso: crea_004.ngo:"!Menu:" crea_004.ngo:"!Name:" 
+'------------------------------------------------------------------------------
+
+
+

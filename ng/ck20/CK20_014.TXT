@@ -1,0 +1,456 @@
+!short:  Overview --- DOT
+'------------------------------------------------------------------------------
+
+               ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+               ³    ^UDOT  --- Dot Command in Clipper^U   ³Û
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
+                 ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+    Simulating the ^BDot Command Environment of dBASE^B, DOT provides a
+    user-friendly platform for learning/developing/testing clipper
+    programs or macro programs.
+
+    DOT can run basic dot commands, dos commands, clipper expressions and
+    macro programs consisting of clipper expressions.
+
+       basic dot-commands
+       run all clipper functions and Casual-Kit functions
+       edit/run macro program
+       clipper commands translator
+       user-define functions
+       manage file
+       manage database
+       manage dot-commands
+       dos command and dos shell
+       ..............
+
+    DOT is also a demonstration of Casual-Kit. This Program shows some
+    important functions of Casual-Kit and the important ideas of programming
+    using Casual-Kit.  such as:
+
+       macro*()    => macro programming
+       dotcom()    => debug in run-time
+        ......
+
+    In fact, this program has ^Btwo commands only^B, and they are
+
+         ÚÄÄÄÄ^BDOT.PRG^BÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+         ³    func main(opt1,opt2)                    ³
+         ³         macrof('dot.cfg',,{opt2})          ³
+         ³         dotcom()                           ³
+         ³    return                                  ³
+         ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+    The commands of DOT are provided by dotcom(), and the hotkey functions
+    are provided by DOT.CFG, ( DOT.CFG is a macro program )
+
+    ^U Running DOT
+
+      Syntax:  ^B[Path] DOT  [Path] [MacroFile]
+
+      Since DOT.EXE will sometimes call its data-file, an option is
+      used to specify the directory of data files. This option allows
+      you to run DOT.EXE from other directory.
+      If this option is set default, DOT.EXE will search for data-files
+      in the current directory.
+
+    ^U Commands
+
+        ^BThese commands are provided by Dotcom() of Casual-Kit
+
+        ^BKey Commands
+
+        ş Up   / PageUp      ...... Last 1/Page Command
+        ş Down / PageDown    ...... Next 1/Page Command
+
+        ^BDot Commands
+
+        ş Cls  / Clear       ...... Clear Screen
+        ş Dir  [<FileMap>]   ...... List Directory
+        ş Do   [<FileName>]  ...... Run Macro Program
+        ş Edit [<FileName>]  ...... Edit a File
+        ş Use  <DbfName>     ...... Use  a DataBase
+        ş SELE <DbfName>     ...... Select Area
+        ş Use / Close        ...... Close a database
+        ş Publ <VarList>     ...... Declare Public Variables
+        ş <Expression>       ...... Evaluate clipper expression
+        ş % <Expression>     ...... Evaluate expression and pause
+        ş # <Exp,...>        ...... Evaluate multi-expressions
+        ş . <User Command>   ...... Others (interpreted by Other Function)
+        ş ! <Dos Command>    ...... Run a Dos Command
+        ş Exit               ...... Exit DotCom without close DBF
+        ş Quit               ...... Quit DotCom   and   close DBF
+
+    ^U Functions
+
+        ^BThese function-keys are defined by Dot.CFG^B
+
+        ş F1......Display Help Message            (dot.cfg)
+        ş F2......Clipper commands translator     (dot.cfg+comtran.def)
+        ş F3......Clipper set commands translator (dot.cfg+settran.def)
+        ş F4......User-define function            (dot.cfg+usrfunc.def)
+        ş F5......File management                 (dot.cfg+dot1.mac)
+        ş F6......Database management             (dot.cfg+dot2.mac)
+        ş F7......Dot management                  (dot.cfg+dot3.mac)
+        ş F8......Dot command history             (dot.cfg)
+        ş F9......Dos shell                       (dot.cfg)
+        ş F10.....Quit                            (dot.cfg)
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Version      :  DOT 2.30
+     Last Updated :  94.12.10
+     Author       :  C.K.Hung
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Files of DOT
+'------------------------------------------------------------------------------
+
+    ^BFiles^B
+
+    ş dot.exe
+    ş dot.prg        source program
+    ş shell.prg      a shell of clipper version-dependent functions
+    ş clfunc.prg     a shell of all clipper 5.01 functions
+    ş ckfunc.prg     a shell of all Casual-Kit functions
+
+    ş dot.cfg        macro program of DOT (config)
+    ş dot1.mac       macro program of <File-Management>
+    ş dot2.mac       macro program of <DataBase-Management>
+    ş dot3.mac       macro program of <Dot-Management>
+    ş edtools.mac    macro program of <Edit-Tools>
+    ş dotdemo.mac    macro program of demonstration
+
+    ş comtran.def    data file of <translator>
+    ş settran.def    data file of <set command>
+    ş usrfunc.def    data file of <user function>
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Dot-Commands
+'------------------------------------------------------------------------------
+
+    ^BDot-Commands are provided by dotcom() of Casual-Kit.
+
+    ^UKey Commands
+
+     Dotcom() provides a buffer to store the last 50 commands.  You
+     can use the following key-commands to recall them
+
+     ^BUp ...............Last command
+     ^BDown..............Next command
+     ^BPageUp........... Last 5 Command
+     ^BPageDown......... Next 5 Command
+
+     <DotBufLen> is the variable to define the length of the buffer.
+     <DotPage> is the variable to define the page-size of commands.
+
+    ^UDot Commands
+
+     ^BCls  / Clear         =>  Clear Screen
+
+         Cls    :  clear screen in current color
+         Clear  :  set color to 'w/n,n/w' then clear screen
+
+     ^BDir  [<FileMap>]     =>  List Directory
+
+     ^BDo   [<FileName>]    =>  Run Macro Program
+
+         If you haven't specified the extension-name of a file, ".Mac"
+         is the default.
+         If <FileName> is default, DOT will run the latest file you
+         have edited/run by <EDIT>/<DO>.
+
+         Please refer to <Macro Programming> for more information of
+         the Macro Program.
+
+     ^BEdit [<FileName>]    =>  Edit a File
+
+         If you haven't specified the extension-name of file, ".Mac"
+         is the default.
+         If <FileName> is set default, DOT will edit the latest file you
+         have edited/run by <EDIT>/<DO>.
+
+     ^BUse  <DbfName>       =>  Use a DataBase
+
+     ^BSELE <n/cAlias>      =>  Select Area
+
+     ^BUse / Close          =>  Close a database
+
+     ^BPubl <VarList>       =>  Declare Public Variables
+
+     ^B<Expression>         =>  Evaluate a clipper expression
+
+         DOT can run all functions of clipper as well as those provided
+         by Casual-Kit.
+
+         ^BBut DOT can't run all commands of clipper^B, for example :
+
+            Invalid                         ³  Valid
+           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+            Close ALL                       ³  dbcloseall()
+            Use <dbfname> Inde <indexfile>  ³  use <dbfname>
+                                            ³  dbsetindex(<indexfile>)
+            Set Rela to ....                ³  dbsetrealtion(....)
+            i++                             ³  i:=i+1
+            i--                             ³  i:=i-1
+            i+=3                            ³  i:=i+3
+            ...                             ³
+
+         Dotcom() uses macro to interpret dot-command, and so, dotcom()
+         can't directly recognize commands of clipper.
+
+         There are two translators provided by DOT to translate clipper
+         commands into clipper expressions.
+
+         The relation files of the translators are
+
+             <Dot.Cfg>  <ComTran.Def>  <SetTran.Def>  <Shell.Prg>
+
+     ^B% <Expression>       =>  Evaluate clipper expression and pause
+
+     ^B# <Exp,...>          =>  Evaluate multi-expressions
+
+         Sometimes, we want to run several expressions in a dot-command.
+         DOT allows you to run multi-expressions in a dot-command by adding
+         "#" in the first. Each expression must be separated with ",".
+
+         For example =>  # tone(200),tone(300),tone(500),tone(200)
+
+     ^B! <Dos Command>      =>  Run a Dos Command
+         DOT will not release memory before running dos commands.
+
+     ^B. <Dos Command>      =>  Run a Dos Command
+         DOT will release as much memory as possible before running dos command.
+
+     ^BExit                 =>  Exit DotCom
+     ^BQuit                 =>  Quit DotCom
+!seealso: "Overview" "Files" "Variables" ck20_006.ngo:"DotCom()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Variables of DOT
+'------------------------------------------------------------------------------
+
+
+                      ^UVariables of DOT
+
+
+    ^BThere are some public variables declared by DOT.PRG :
+
+     ETBOX[20]              ->  BOX-String of ET Chinese system
+
+     ^BSpare Variables
+
+         publ tmp0,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7,tmp8,tmp9
+         publ var0,var1,var2,var3,var4,var5,var6,var7,var8,var9
+
+     ^BSystem Variables
+
+         publ col0,col1,col2,col3,col4,col5,col6,col7,col8,col9
+         publ sys0,sys1,sys2,sys3,sys4,sys5,sys6,sys7,sys8,sys9
+
+         publ syspath        // path of data files of DOT
+
+
+    ^BThese private variables are declared by DotCom().  You can use them
+    ^Bat DotCom() platform for advanced purposes.
+    ^BThese variables are usually named beginning with <Dot>
+
+        VarName              Type         Description
+      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        DotQuit:= {||nil}  -> (B) the block evaluated before exit dotcom()
+        DotOldErr          -> (B) the old error handle
+        DotCompile         -> (B) Interpret extension commands
+
+        DotBuflen:=50      -> (N) Length of dot-buffer
+        DotBuf             -> (A) Buffer of dot commands
+        DotPtr             -> (N) current position of <DotBuf>
+        DotPage:=5         -> (N) page size of commands
+        DotCom             -> (C) current command
+        DotVal             -> (?) The return value of dot-command
+        DotScroll:=.t.     -> (L) scroll screen
+        DotStatus:=.t.     -> (L) Status Line (On/Off)
+        DotStatCol:='n/w'  -> (C) Color of Status Line
+
+        DotEditLen:=180    -> (N) max length of edit-file
+        DotEditCol:=''     -> (C) color of edit-file
+        DotFileExt:='.MAC' -> (C) default extension name of <Edit><Do>
+        DotFile            -> (C) the file lastest <Edit><Do>
+
+        DotID_DOT  :='.'   -> (C) flag of extension commands
+        DotID_Delay:='%'   -> (C) flag of delay-command
+        DotID_Block:='#'   -> (C) flag of multi-command
+        DotID_DOS  :='!'   -> (C) flag of dos-command
+
+        DotVar0...DotVar6  -> spare variables
+!seealso: "Overview" "Files" "Dot-Commands" ck20_006.ngo:"DotCom()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Translator of Clipper Commands  ( F2 , F3 )
+'------------------------------------------------------------------------------
+
+    ^UThere are the two translators provided by DOT.
+
+      ^BF2......Clipper commands translator     (dot.cfg+comtran.def)
+      ^BF3......Clipper set commands translator (dot.cfg+settran.def)
+
+    They are defined in DOT.CFG. They use two data files :
+
+      ^BComTran.Def^B    rules to translate clipper commands
+      ^BSetTran.Def^B    rules to translate SET commands
+
+    Data files have the same format :
+
+      ^B< MenuItem >     =>    < Expressions >
+
+      < MenuItem > can be up to 30 characters.
+      < Expression > is the expression to simulate a clipper command
+
+      When you select a <MenuItem>, <Expressions> will be sent to keyboard
+      buffer to simulate the clipper command while ";"  in <Expressions> will
+      be regarded as  <Enter>.  ";" at the end of the line means 'continue
+      to the next line'.
+
+    Here is a part of SetTran.Def:
+
+      ALTERNATE            ON/OFF  => set( 18 , .t. )
+      BELL                 ON/OFF  => set( 26 , .t.)
+      CENTURY              ON/OFF  => s_setcentury(.t.)
+      COLOR                        => setcolor( '' )
+      CONFIRM              ON/OFF  => set( 27 , .t. )
+      CONSOLE              ON/OFF  => set( 17 , .t. )
+      CURSOR              0/1/2/3  => setcursor(1)
+      DATE FORMAT         YY.MM.DD => set( 4  , 'yy.mm.dd' )
+      DECIMALS                     => set( 3  , 2  )
+      .........
+!seealso: "User-Functions" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  User-Functions                  ( F4 )
+'------------------------------------------------------------------------------
+
+    This function is provided by Dot.CFG.  <UsrFunc.Def> is its data-file.
+    <F4> is the key to activate <user-Functions>.
+
+    ^BData Format
+
+      < MenuItem >     =>    < Expressions >
+
+      < MenuItem > can be up to 30 characters.
+
+      When you select a <MenuItem>, <Expressions> will be evaluated.
+      ";" at the end of the line means 'continue to the next line'.
+
+     ^BExample
+
+         (1) Dir *.*             =>  s_run( 'dir *.* /w' )
+         (2) Edit/Run T.MAC      =>  editfile('t.mac'), macrof('t.mac')
+         (3) Demonstration       =>  macrof('demo.mac')
+!seealso: "Overview" "Dot-Commands" "Translator" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  File-Management                 ( F5 )
+'------------------------------------------------------------------------------
+
+    This function is defined by DOT.CFG, and DOT1.MAC is its macro program.
+
+    ^B<F5> is the key to activate <File-Management>.
+
+    You can also activate it by typing this command at Dot Command-Line :
+
+        ^BDO DOT1  <Enter>
+
+    <File-Management> will pop up a menu with a file-list and the following
+    options:
+
+       <Edit>    <Run-Macro>   <Print>   <Delete>
+
+    Use  ^C1a^C1b to select an option and  ^C18^C19 to select a file or a directory.
+
+    If you select a directory item, <File-Management> will be changed to
+    the directory and the file-list will be updated.
+!seealso: "Overview" "User-Functions" "DOT-Management" "Database-Management" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Database-Management             ( F6 )
+'------------------------------------------------------------------------------
+
+    The Hot-Key <F6> is defined by DOT.CFG to activate Database-Management.
+    DOT2.MAC is the macro program of Database-Management.
+
+    Database-Management provides the following functions :
+
+     ^B (0) Dir *.Db? *.NTX
+     ^B (1) Select Area
+     ^B (2) Use DataBase ... New
+     ^B (3) Add Index
+     ^B (4) Copy Structure
+     ^B (5) Modify Structure
+     ^B (6) Browse Database
+     ^B (7) Close  Database
+     ^B (8) Create Database
+     ^B (9) Create Index
+     ^B (R) Reindex
+     ^B (P) Pack
+     ^B (Z) Zap
+!seealso: "Overview" "User-Functions" "File-Management" "DOT-Management" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Dot-Management                  ( F7 )
+'------------------------------------------------------------------------------
+
+    The Hot-Key <F7> is defined by DOT.CFG to activate DOT-Management.
+
+    DOT3.MAC is the macro program of DOT-Management.
+     DOT.HIS is the default file to store dot command history.
+     DOT.HBK is the backup file of dot command history.
+
+    Dot-Management provides five functions to manage dot commands.
+
+     ^BPick Up a Command^B    =>  Pick up a command from file
+
+     ^BLoad   History^B       =>  Save current history to DOT.HBK
+                               Load command history from DOT.HIS
+
+     ^BSave   History^B       =>  Save current history to DOT.HIS
+
+     ^BAppend History^B       =>  Append history from DOT.HIS
+
+     ^BRecall History^B       =>  Load command history from DOT.HBK
+!seealso: "Overview" "User-Functions" "File-Management" "Database-Management" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  Dos Shell                       ( F9 )
+'------------------------------------------------------------------------------
+
+   Dot will release as much memory as possible to run dos shell (Ver 2.20+).
+   Generally speaking, DOT only holds 700 bytes of the conventional memory
+   and 41k of the upper memory.
+
+   Note: pressing <.> + <enter> in DOT platform can also make a dos shell.
+!seealso: "Overview" "User-Functions" "File-Management" "Database-Management" 
+'------------------------------------------------------------------------------
+
+
+

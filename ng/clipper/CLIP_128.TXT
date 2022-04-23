@@ -1,0 +1,32 @@
+'------------------------------------------------------------------------------
+^BRECNO()^B
+
+    RECNO() returns the current record number of the current work area.
+
+^USyntax^U
+
+    RECNO()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    If there are no records in a database file, RECNO() = 1 and both BOF()
+    and EOF() return True (.T.).
+
+    If the record pointer is set to point past the last record in the file
+    (by using a SKIP command to skip past the last record), RECNO() returns
+    a value which is one more than the number of records in the file and
+    EOF() returns true (.T.).  If an attempt is made to set the record
+    pointer before the first record in a file, RECNO() returns the value 1
+    and BOF() returns true (.T.).
+
+^UUsage^U
+
+    RECNO() is useful when you want to determine a record number from
+    within a program.
+!seealso: ???.ngo:"BOF" ???.ngo:"EOF" 
+'------------------------------------------------------------------------------
+
+
+

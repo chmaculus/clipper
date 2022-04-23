@@ -1,0 +1,331 @@
+'------------------------------------------------------------------------------
+^BDBEDIT()^B
+
+    DBEDIT() displays and edits records from one or more work areas using a
+    browse-style table layout that executes within a defined window area.
+
+^USyntax^U
+
+    DBEDIT([<expN1>[,<expN2>[,<expN3>[,<expN4>]]]][,<array1>][,<expC>]
+    [,<array2>][,<array3>][,<array4>][,<array5>][,<array6>][,<array7>])
+
+^UArgument^U
+
+    <expN1..expN4> are the coordinates of the DBEDIT() window.  Any, or
+    all, of these arguments can be specified.
+
+    <array1> is an array of <expC> containing field names or expressions of
+    any type.  If this argument is not specified, DBEDIT() defaults to all
+    fields in the current work area.
+
+    <expC> is a user-defined function that executes when a key exception is
+    pressed or when there are no more keys to process in the keyboard
+    buffer.  Specify the function name without the parenthetical suffix or
+    arguments.  Note that the behavior of DBEDIT() is affected by the
+    presence of this argument.  Refer to the discussion below for more
+    information.
+
+    <array2> is an array of <expC> to be used as picture strings for column
+    formatting and is the same as TRANSFORM().  Specifying an <expC>
+    instead of an array formats all columns with the same picture.
+
+    <array3> is an array of <expC> for column headings.
+
+    <array4> is an array of <expC> used to draw lines separating headings
+    and the field display area.  Specifying an <expC> instead of an array
+    uses the same character for the heading line separator.
+
+    <array5> is an array of <expC> used to draw lines separating displayed
+    columns.  Specifying an <expC> instead of an array uses the same
+    character for the column separator.
+
+    <array6> is an array of <expC> used to draw lines separating footings
+    and the field display area.  Specifying an <expC> instead of an array
+    uses the same character for the footing line separator.
+
+    <array7> is an array of <expC> to display as column footings.  To force
+    a column footing onto more than one line, embed a semicolon where you
+    want the string to break.  Specying an <expC> instead of an array gives
+    all footings the same value.
+
+    All arguments are optional.  You must, however, pass a dummy argument
+    for any argument you wish to skip.
+
+^UReturns^U
+
+    A logical value.
+
+^UUsage^U
+
+    DBEDIT() is an interface function that displays records in a table
+    form.  it is useful for full-screen editing of one or more data files.
+    It formats the display according to the window coordinates and the
+    fields arrray.  All cursor movement keys are handled within DBEDIT.
+    This includes PgUp, PgDn, Home, End, the four arrows, and all valid
+    Ctrl key combinations that produce cursor movement.  The following are
+    the active keys with no function argument specified:
+
+                             ^BDBEDIT() Active Keys^B
+    ^UKey^U                  ^UAction^U
+
+    Uparrow              Up one row
+    Dnarrow              Down one row
+    Leftarrow            Column left
+    Rightarrow           Column right
+    Ctrl-Leftarrow       Pan left one column
+    Ctrl-Rightarrow      Pan right one column
+    Home                 Leftmost current screen column
+    End                  Rightmost current screen column
+    Ctrl-Home            Leftmost column
+    Ctrl-End             Rightmost column
+    PgUp                 Previous screen
+    PgDn                 Next screen
+    Ctrl-PgUp            First row of current column
+    Ctrl-PgDn            Last row of current column
+    Return               Terminate DBEDIT()
+    Esc                  Terminate DBEDIT()
+
+    Note that DBEDIT() is not a wait state and so a SET KEY procedure
+    cannot be invoked from within DBEDIT()'s native works unless you have
+    your own wait state within the user function.
+
+    ^BUser Function^B: When the user function argument (<expC>) is
+    specified, all keys indicated above are active with the exception of
+    Esc and Return.  When DBEDIT() calls the user function, it
+    automatically passes two parameters: "Status" and "fld_ptr".  The
+    status parameter indicates the current state of DBEDIT() depending on
+    the last key executed before the user function was called.  The
+    following are the possible status values:
+
+                           ^BDBEDIT() Status Messages^B
+
+    ^UStatus^U       ^UDescription^U
+
+      0          Idle, any cursor movement keystrokes have been handled
+                 and no keystrokes are pending
+      1          Attempt to cursor past beginning-of-file
+      2          Attempt to cursor past end-of-file
+      3          Database file is empty
+      4          Keystroke exception
+
+    Status messages 0, 1, 2, and 4 are used to process keys.
+
+    The other parameter, fld_ptr, is an index into the array of field names
+    argument (<array>).  If <array1> is not specified, fld_ptr points to
+    the current field in the database structure and can be accessed using
+    FIELD().
+
+    When the user function has been called, you must return a value
+    instructing DBEDIT() what action to perform next.  The following table
+    summarizes the possible request values and their consequences:
+
+                   ^BRequests to DBEDIT() from User Function^B
+
+    ^UValue^U     ^UDescription^U
+      0       Quit DBEDIT()
+      1       Continue DBEDIT()
+      2       Force reread/repaint and continue screen refresh; after
+              refresh, go to idle
+      3       Append mode toggle
+
+    The user function is called in a number of different instances:
+
+    -  A key exception occurs.  This happens when DBEDIT() picks up a
+       keystroke from the keyboard that is not a DBEDIT() executable key.
+       Any pending keys remain in the keyboard buffer until picked up
+       within the user function or DBEDIT() continues.
+
+    -  DBEDIT() goes to idle.  This happens when the keyboard buffer is
+       empty or when a request for a screen fresh has been executed
+       (request = 2).  In this instance, there is one call to the user
+       function.
+
+    -  Beginning or end-of-file are encountered.  This is the same as idle.
+       All executable keys are performed and then there is one call with
+       the indicating status message.
+
+    Note that when DBEDIT() is first executed, all keys pending in the
+    keyboard are executed and then DBEDIT() goes to idle with a user
+    function call.  If no keys are pending, the idle state is immediate.
+
+    The structure of the user function should be set up to handle all
+    status messages received from DBEDIT().  Status messages
+    characteristically indicate the current state of DBEDIT() and point to
+    the type of action to be taken by the user function.  The structure
+    therefore should consist of a CASE structure that branches control to a
+    subprocedure for each status message to process.  Although you may be
+    interested in less than all five of the status message values, your
+    structure should at a minimum process idle states (status = 0) and key
+    exceptions (status = 4).  Ignored status messages can be processed by
+    the OTHERWISE clause.  Tests for specific key pressed should then take
+    place within the called subprocedure.  The following block of code
+    demonstrates the basic structure of the user function.
+
+    ^RFUNCTION UserFunc                   ^R
+    ^RPARAMETERS status, fld_ptr          ^R
+    ^RPRIVATE request                     ^R
+    ^R                                    ^R
+    ^Rkey_stroke = LASTKEY()              ^R
+    ^R                                    ^R
+    ^RDO CASE                             ^R
+    ^RCASE status = 0                     ^R
+    ^R   * Idle.                          ^R
+    ^R   request = ProcessIdle(key_stroke)^R
+    ^R                                    ^R
+    ^RCASE status = 1                     ^R
+    ^R   * Beginning-of-file.             ^R
+    ^R   request = ProcessBof(key_stroke) ^R
+    ^R                                    ^R
+    ^RCASE status = 2                     ^R
+    ^R   * End-of-file.                   ^R
+    ^R   request = ProcessEof(key_stroke) ^R
+    ^R                                    ^R
+    ^RCASE status = 3                     ^R
+    ^R   * Empty database file            ^R
+    ^R   request = ProcessEmpty()         ^R
+    ^R                                    ^R
+    ^RCASE status = 4                     ^R
+    ^R   * Key exception                  ^R
+    ^R   request = KeyExcept(key_stroke)  ^R
+    ^R                                    ^R
+    ^ROTHERWISE                           ^R
+    ^R   request = 1                      ^R
+    ^R                                    ^R
+    ^RENDCASE                             ^R
+    ^R                                    ^R
+    ^RRETURN request                      ^R
+
+    There are two additional issues to deal with in the user function
+    proper.  First, to allow further processing of keys and the subsequent
+    use of LASTKEY() within called subprocedures, save the value of the
+    last key pressed to a memory variable before entering the main CASE
+    structure.  Then pass that key value throughout your subprocedure
+    system as a parameter.  Second, to allow execution of statements after
+    the CASE structure, make your request to DBEDIT() by assigning the
+    request value to a memory variable and then RETURN the value as the
+    last statement in the user function.
+
+    The two most important subprocedures in the user function architecture
+    are the key exception handler and the idle state processor.  In the key
+    exception handler, you should account for user requests for the
+    following set of actions:
+
+    -  Exit from DBEDIT()
+    -  Toggle delete status of the current record
+    -  Field edit
+    -  Entry into a menu system
+
+    In addition to these basic facilities, the key exception handler is
+    where most of the activity of the user function system takes place.
+    For example, the following demonstrates a typical key exception
+    handling subprocedure:
+
+    ^RFUNCTION KeyExcept                             ^R
+    ^RPARAMETER action_key                           ^R
+    ^R                                               ^R
+    ^RDO CASE                                        ^R
+    ^RCASE action_key = 27                           ^R
+    ^R   * Esc..exit DBEDIT()                        ^R
+    ^R   RETURN 0                                    ^R
+    ^R                                               ^R
+    ^RCASE action_key = 13                           ^R
+    ^R   * Return..field edit (see discussion below) ^R
+    ^R   RETURN FieldEdit()                          ^R
+    ^R                                               ^R
+    ^RCASE action_key = 7 .AND. (.NOT. EOF()) .AND.; ^R
+    ^R   LASTREC()<>0                                ^R
+    ^R   * Del..toggle delete status                 ^R
+    ^R   IF DELETED()                                ^R
+    ^R      RECALL                                   ^R
+    ^R   ELSE                                        ^R
+    ^R      DELETE                                   ^R
+    ^R   ENDIF                                       ^R
+    ^R   RETURN 1                                    ^R
+    ^R                                               ^R
+    ^RCASE action_key = -9                           ^R
+    ^R   * F10..enter menu system                    ^R
+    ^R   RETURN MenuSys()                            ^R
+    ^R                                               ^R
+    ^ROTHERWISE                                      ^R
+    ^R  * Any other key...give them the old raspberry^R
+    ^R  TONE(76,5)                                   ^R
+    ^R  TONE(50,5)                                   ^R
+    ^R  RETURN 1                                     ^R
+    ^RENDCASE                                        ^R
+
+    The other subprocedure of interest is the idle state processor.  In the
+    simplest case, you may just want to update a status area on the screen.
+    In a more complex scenario, you can perform actions based on the last
+    DBEDIT() key executed.
+
+    To edit a field value, add code like the following to the CASE
+    structure in your key exception handling subprocedure.
+
+    ^RCASE keystroke = 13         && return key    ^R
+    ^R                                             ^R
+    ^R   * Save current key expression and value.  ^R
+    ^R   index_exp = INDEXKEY(0)                   ^R
+    ^R   index_val = &index_exp                    ^R
+    ^R                                             ^R
+    ^R   *Edit current field value.                ^R
+    ^R   SET CURSOR ON                             ^R
+    ^R   field_name = field_list[fld_ptr]          ^R
+    ^R   @ ROW(), COL() GET &field_name            ^R
+    ^R   READ                                      ^R
+    ^R   SET CURSOR OFF                            ^R
+    ^R                                             ^R
+    ^R   * Refresh screen if key value has changed.^R
+    ^R   RETURN IF(index_val &index_exp., 2, 1)    ^R
+
+    The basic idea is to test for the key you are using for the field edit
+    key and then GET the field pointed to by the fld_ptr parameter in the
+    field array.  This means that if you specify a field array as an
+    argument to DBEDIT() you must use the same array name in your field
+    edit routine.  If you have not specified a field array, obtain the
+    field name using FIELD() with fld_ptr as the argument.
+
+    A second issue is the appearance of the cursor.  By default, the
+    DBEDIT() cursor is OFF.  You must therefore SET the CURSOR ON before
+    executing the READ and SET it OFF after the READ.
+
+    A last issue is updating the screen if a key value has changed.  To set
+    this up, you must save both the controlling index key expression and
+    its current value before editing the current field value.  Then after
+    the field edit is complete, send a request for a screen fresh (a value
+    of 2) if the new key value is the same as the old key value.
+
+    ^BNesting^B: You can call multiple copies of DBEDIT() within each copy
+    of DBEDIT() allowing you multiple browse windows on the screen at one
+    time.
+
+^UExample^U
+
+    The following demonstrates how to use DBEDIT() with a user function:
+
+    ^RSELECT 2                                             ^R
+    ^RUSE Customer INDEX Customer                          ^R
+    ^RSELECT 1                                             ^R
+    ^RUSE Sales INDEX Sales                                ^R
+    ^RSET RELATION TO Cust_num INTO Customer               ^R
+    ^R                                                     ^R
+    ^RDECLARE field_list[4]                                ^R
+    ^Rfield_list[1] = "Branch"                             ^R
+    ^Rfield_list[2] = "Salesman"                           ^R
+    ^Rfield_list[3] = "Amount"                             ^R
+    ^R*                                                    ^R
+    ^R* Fields in another work area must include the alias.^R
+    ^Rfields[4] = "Customer->Customer"                     ^R
+    ^R                                                     ^R
+    ^RDBEDIT(4, 0, 22, 79, FIELD_LIST, "UserFunc")         ^R
+
+    For an advanced example that demonstrates a full-featured browse, see
+    Browse() in Examplep.prg on the distribution disk.  Note that Browse()
+    is included in EXTEND.LIB so that to use it you need not compile and
+    link it.  The syntax is:
+
+    Browse([<window coordinates<])
+!seealso: clip_028.ngo:"READ" clip_091.ngo:"ACHOICE" clip_108.ngo:"MEMOEDIT" 
+'------------------------------------------------------------------------------
+
+
+

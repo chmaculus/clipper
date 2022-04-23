@@ -1,0 +1,153 @@
+!short:   Chapter 5: DBFMDX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bChapter 5: DBFMDX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBFMDX is the dBASE IV compatible RDD for CA-Clipper.  This driver
+     provides (.dbf), (.dbt), and (.mdx) file format compatibility.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short:      In This Chapter
+'------------------------------------------------------------------------------
+ ^bIn This Chapter^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This chapter explains how to install DBFMDX and how to use it in your
+     applications.  The following major topics are discussed:
+
+     ^b^CFE^b  Overview of the DBFMDX RDD
+
+     ^b^CFE^b  Installing DBFMDX Driver Files
+
+     ^b^CFE^b  Linking the DBFMDX Driver
+
+     ^b^CFE^b  Using the DBFMDX Driver
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Overview of the DBFMDX RDD
+'------------------------------------------------------------------------------
+ ^bOverview of the DBFMDX RDD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFMDX database driver provides dBASE IV compatibility, including
+     access to (.dbf), (.mdx), and (.dbt) file formats.  The driver also
+     supports dBASE IV compatible file and record locking schemes, allowing
+     shared access between CA-Clipper  and dBASE IV programs.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Installing DBFMDX Driver Files
+'------------------------------------------------------------------------------
+ ^bInstalling DBFMDX Driver Files^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFMDX database driver is supplied as the file, DBFMDX.LIB.
+
+     The CA-Clipper installation program installs this driver in the
+     \CLIPPER5\LIB subdirectory on the drive that you specify, so you need
+     not install the driver manually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Linking the DBFMDX Database Driver
+'------------------------------------------------------------------------------
+ ^bLinking the DBFMDX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To link the DBFMDX database driver into an application program, you must
+     specify DBFMDX.LIB to the linker in addition to your application object
+     files (.OBJ).
+
+     1. To link with .RTLink using positional syntax:
+
+        C>RTLINK <appObjectList> ,,,DBFMDX
+
+     2. To link with .RTLink using freeformat syntax:
+
+        C>RTLINK FI <appObjectList> LIB DBFMDX
+
+     ^bNote: ^b These link commands all assume the LIB, OBJ, and PLL
+     environment variables are set to the standard locations.  They also
+     assume that the CA-Clipper programs were compiled without the /R option.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Using the DBFMDX Database Driver
+'------------------------------------------------------------------------------
+ ^bUsing the DBFMDX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     To use (.mdx) files in a CA-Clipper  program:
+
+     1. Place REQUEST DBFMDX at the beginning of your application or at top
+        of the first program file (.prg) that opens a database file using the
+        DBFMDX driver.
+
+     2. Specify the VIA "DBFMDX" clause if you open the database file with
+        the USE command.
+
+        -OR-
+
+     3. Specify "DBFMDX" for the <cDriver> argument if you open the database
+        file with the DBUSEAREA() function.
+
+        -OR-
+
+     4. Use RDDSETDEFAULT("DBFMDX") to set the default driver to DBFMDX.
+
+        Except in the case of REQUEST, the RDD name must be a literal
+        character string or a variable.  In all cases it is important that
+        the driver name be spelled correctly using uppercase letters.
+
+     Though the DBFMDX driver supports numbered indexes, you should avoid
+     using them (e.g., in operations like SET ORDER and INDEXKEY()).  In a
+     multiple-index system you do not have the absolute control of the
+     numeric position of an open index that you have in a single-index
+     system.  As you add, delete, and rebuild index TAGs, their numeric
+     position may change.  You should make all command references by name.
+     For example:
+
+     SET ORDER TO [<nOrder> | [TAG <cOrderName>] [IN <xcOrderBagName>]]
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Summary
+'------------------------------------------------------------------------------
+ ^bSummary^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In this chapter, you were given an overview of the features and benefits
+     of the DBFMDX RDD.  You also learned how to link this driver and how to
+     use it in your applications.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

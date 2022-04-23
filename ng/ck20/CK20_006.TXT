@@ -1,0 +1,923 @@
+!short: Demonstrate() ^BMake a demonstration
+'------------------------------------------------------------------------------
+
+    ^BDemonstrate( <aDemoDef>, [<lRepeat>], [<cPrompt>], [<Col>] ) -> NIL
+
+    ^BUsage^B
+
+       Make a demonstration. Pressing <Esc> will stop demonstration.
+
+        ^BDemonstrate() requires include "DEMO.CH" or "CK20.CH".
+          ^BPlease add the command in the first of your program :
+          ^B         #include "demo.ch"    // or "CK20.CH"
+
+        ^B<aDemoDef>^B is an array stored the key-string and delay-seconds
+         of a demonstration.
+
+           <aDemoDef> ::= { <delay>, <key>, <delay>, <key>, ...... }
+                <key> ::= < String / nInkeyCode / bKey >
+              <Delay> ::= < nSeconds / bDelay >
+
+        <Key>   can be a string or a inkey-code at the range of 0--255
+                or a block returned KeyString or InkeyCode.
+        <delay> is the delay seconds or a block code return a number.
+
+        For Example:
+
+          { 1,'This ',1,'is ',1,'a ',1,'example!',{||makesound(),1},13 }
+
+          "This is a example!" will be sent to keyboard buffer in 5 seconds.
+
+        ^BBecause demonstrate() use <KEYBOARD> command to send key-string,
+         ^B<;> will be changed to <Enter> automatically, and you can not
+         ^Bsend the key which inkeycode not in the range of 0 -- 255.
+
+        ^B<lRepeat>^B = .T.  means repeat demonstration until <Esc> pressed
+         <lRepeat> default is false.
+
+        demonstrate() will display status at the bottom of the screen with
+         prompt message, current-step-No, delay-seconds.
+         <cPrompt> specifies the prompt message, default is 'Demo: '
+         <col>     specifies its color, default is 'w+/br'.
+
+        It usually make mistakes when you make a long array of demonstration,
+         aJoin() and aInsert() are useful to make a long array.
+
+    ^BExample^B
+
+        demonstr := { 1,'This',1,'is a',{||tone(600),1},'example!',1,13}
+         demonstrate( demonstr, , 'Demo-Example', 'w+/b' )
+
+        demo1   := { 'This ','is ','a ','example ','!' }
+         demo1   := aInsert(demo1,1)
+         demo2   := { 1,'... Anther',1,'Examples' }
+         demonstrate( aJoin( demo1, demo2 ) )
+!seealso: ck20_002.ngo:"aJoin()" ck20_002.ngo:"aInsert()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dotcom()      ^BDot Command
+'------------------------------------------------------------------------------
+
+    ^bDotCom( [<bDotComDef>], [<bDotErrBlk>] )  -> nil
+
+    ^BUsage^B
+
+        Simulate dBase Dot Command environment.
+
+        DotCom() is a good platform of debugging/testing program. It can
+        make your program run ^Blike a IDE of clipper^B.
+
+        ^BA macro program named <DOTCOM.CFG> will be run whenever
+        ^Brunning dotcom(). You can change the config of dotcom() here.
+
+        Dotcom() can do the following things :
+
+          þ run all functions linked in your program (clipper exp.)
+          þ run dos commands
+          þ run macro program
+          þ edit files
+          þ declare public variables
+          þ run dot commands
+          þ run the extension command your defined.( see <bDotComdef> )
+
+         <bDotComDef> is used to interpret extension command. when Dotcom()
+          read a command beginning with '.', <bDotComdef> will be evaluated
+          to interpret it.  This argument is used to define extension dot
+          command of dotcom(). usually take the default: NIL.
+
+         <bDotErrBlk> : error handle of dotcom(), usually take the default.
+
+    ^BExample^B
+
+        There are very ways to use dotcom(). Dotcom() is usually set to a
+        hot-key and activated whenever program running.
+
+        SetKey ( -9 , { || DotCom() } )     // set F10 to activate dotcom()
+
+        þ Because DotCom() is too power to user, it is suggested to remove
+          DotCom() or add password after finished testing for safety.
+
+          Setkey(-9, { || if(check_password(),Dotcom(),NIL) } )
+
+    ^BCommands^B
+
+        These commands are provided by dotcom().
+
+        ^BKey Commands
+
+        þ Up   / PageUp      ...... Last 1/Page Command
+        þ Down / PageDown    ...... Next 1/Page Command
+
+        ^BDot Commands
+
+        þ Cls  / Clear       ...... Clear Screen
+        þ Dir  [<FileMap>]   ...... List Directory
+        þ Do   [<FileName>]  ...... Run Macro Program
+        þ Edit [<FileName>]  ...... Edit a File
+        þ Use  <DbfName>     ...... Use  a DataBase
+        þ SELE <DbfName>     ...... Select Area
+        þ Use / Close        ...... Close a database
+        þ Publ <VarList>     ...... Declare Public Variables
+        þ <Expression>       ...... Evaluate clipper expression
+        þ % <Expression>     ...... Evaluate expression and pause
+        þ # <Exp,...>        ...... Evaluate multi-expressions
+        þ . <User Command>   ...... Others (interpreted by Other Function)
+        þ ! <Dos command>    ...... Run a Dos Command
+        þ Exit               ...... Exit DotCom without close DBF
+        þ Quit               ...... Quit DotCom   and   close DBF
+
+
+    ^BVariables^B
+
+        These private variables are declared by DotCom(), you can use them
+        at DotCom() platform for advanced purpose.
+
+        These variables are usually named beginning with <Dot>
+
+        VarName              Type         Description
+      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        DotQuit:= {||nil}  -> (B) the block evaluated before exit dotcom()
+        DotOldErr          -> (B) the old error handle
+        DotCompile         -> (B) Interpret extension commands
+
+        DotBuflen:=50      -> (N) Length of dot-buffer
+        DotBuf             -> (A) Buffer of dot commands
+        DotPtr             -> (N) current position of <DotBuf>
+        DotPage:=5         -> (N) page size of commands
+        DotCom             -> (C) current command
+        DotVal             -> (?) The return value of dot-command
+        DotScroll:=.t.     -> (L) scroll screen
+        DotStatus:=.t.     -> (L) Status Line (On/Off)
+        DotStatCol:='n/w'  -> (C) Color of Status Line
+
+        DotEditLen:=180    -> (N) max length of edit-file
+        DotEditCol:=''     -> (C) color of edit-file
+        DotFileExt:='.MAC' -> (C) default extension name of <Edit><Do>
+        DotFile            -> (C) the file latest <Edit><Do>
+
+        DotID_DOT  :='.'   -> (C) flag of extension commands
+        DotID_Delay:='%'   -> (C) flag of delay-command
+        DotID_Block:='#'   -> (C) flag of multi-command
+        DotID_DOS  :='!'   -> (C) flag of dos-command
+
+        DotVar0...DotVar6  -> spare variables
+!seealso: "MacroA()" "MacroF()" ck20_014.ngo:"Overview --- DOT" 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^U Overview Macro Functions
+'------------------------------------------------------------------------------
+
+                     ^UOverview Macro Functions
+
+    ^BMacro is run at lower speed, but sometimes, PC is too fast to
+    ^Bcare the speed.
+
+    Macro can make program flexible. Here is the functions provided :
+
+    The functions beginning with 'S' are simple macro functions, They are
+    not support structure macro commands.
+
+       ^B sMacro()      Simple macro ( all type )
+       ^B sMacrobc()    Simple macro ( BC  type )
+       ^B sMacroa()     Simple macro ( AMC type -> program )
+       ^B sMacrof()     Simple macro ( file     -> program )
+
+    The following functions are full support macro programming.
+
+       ^B Macro()       Run macro    ( all type )
+       ^B Macrobc()     Run macro    ( BC  type )
+       ^B Macroa()      Run macro    ( AMC type -> program )
+       ^B Macrof()      Run macro    ( file     -> program )
+       ^B Macrop()      Run a macro procedure/function
+
+    ^BCasual-Kit extent "MACRO" concept to
+    ^B   String -> Array -> Memo -> File -> Macro Program.
+
+    Macro Program is similar to clipper having the following structure:
+
+        remarks
+        Function/Procedure
+        Para, Priv, Publ
+        If..Then..Else..Endif
+        DoCase..Case..EndCase
+        For..End     ( or For..Next )
+        While..End   ( or While...EndDo )
+        Loop, Exit
+        Label, Goto, Skip
+        Return, Quit
+        user-define commands
+
+    Macro program is run like a interpret-clipper which can do the most
+    things like clipper program.
+!seealso: ck20_011.ngo:"Overview" ck20_011.ngo:"Rules" 
+'------------------------------------------------------------------------------
+
+
+
+!short: sMacro()      Simple macro ( all type )
+'------------------------------------------------------------------------------
+
+    ^BsMacro( <MacArg>, [<cMacOpt>], [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets macro for all type of <MacArg>.
+
+        <bMacErr> is the error handle of macro
+
+        <cMacOpt> is a string having the following options :
+
+           'A'    ->  Interpret array using sMacroA()
+           'B'    ->  Interpret block using eval()
+           'C'    ->  Interpret string
+           'D'    ->  return <MacArg> directly if type mismatch
+           'E'    ->  use error handle.
+
+        The default setting is "ABCDE".
+
+         if empty(<MacArg>) is true, sMacro() return <MacArg>.
+
+    ^BExample^B
+
+        smacro( 'tone(200)' )            -> make a sound
+        smacro( {||tone(200)} )          -> make a sound
+        smacro( 200 )                    -> 200
+        smacro( '200*3' )                -> 600
+        smacro( 'error exp' )            -> "_Run_Error_"
+        smacro( 200, 'ABCE' )            -> "_Type_Error_"
+        smacro()                         -> NIL
+        smacro( "" )                     -> ""
+        x:= { 'tone(200)','tone(300)','tone(400)' }
+        smacro( x )                      -> make sounds
+!seealso: "Macro()" "sMacrobc()" "sMacroa()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: sMacrobc()    Simple macro ( BC  type )
+'------------------------------------------------------------------------------
+
+    ^BSmacroBC( <MacArg>, [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets macro of string or block.
+        This Function is same as MacroBC().
+
+         if empty(<MacArg>) is true, sMacro() return <MacArg>.
+          if <MacArg> is a string, interprets using macro
+          if <MacArg> is a block, interprets using eval()
+
+         sMacrobc() return '_Run_Error_' when <MacVar> is not a string/block
+          or an error occurred.
+
+        <bMacErr> is the error handle.
+
+    ^BExample^B
+
+        smacrobc( 'tone(200)' )            -> make a sound
+        smacrobc( {||tone(200)} )          -> make a sound
+        smacrobc( 200 )                    -> "_Run_Error_"
+        smacrobc( '200*3' )                -> 600
+        smacrobc( 'error exp' )            -> "_Run_Error_"
+        smacrobc()                         -> NIL
+        smacrobc( "" )                     -> ""
+        x:= { 'tone(200)','tone(300)','tone(400)' }
+        smacrobc( x )                      -> "_Run_Error_"
+!seealso: "Macrobc()" "sMacro()" "sMacroa()" "sMacrof()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: sMacroa()     Simple macro ( AMC type -> program )
+'------------------------------------------------------------------------------
+
+    ^BsMacroA( <MacArg>, [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets Macro of Array Type or Memo Type. (macro program)
+
+        This function is an abbreviation of MacroA(). sMacroa() don't
+        support structure commands of macro programming.
+
+        If <MacArg> is a string or a memo, sMacroa() will translate it
+        into array format.
+
+        ^B";"  at the end of a line means 'continue to next line'.
+
+        ^BLines beginning with '*' or the string after "//" will be
+        ^Bregarded as remarks
+
+        If error occurred, sMacroa() will display the error line No. and
+        error reason with two options ( Quit/Skip ) to choice.
+
+        <bMacErr> is the error handle. take the default usually.
+
+    ^BExample^B
+
+        smacroa( 'tone(200)' )                -> make a sound
+        x := { 'tone(200)','tone(300)','tone(400)' }
+        smacro( x )                           -> make sounds
+
+        x := memoread('example.mac')         // macro program
+        smacroa( x )                         // run
+!seealso: "MacroA()" "sMacro()" "sMacrobc()" "sMacrof()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: sMacrof()     Simple macro ( file     -> program )
+'------------------------------------------------------------------------------
+
+    ^BsMacroF( <cFile>, [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets Macro of file (macro program).
+
+        This function is an abbreviation of MacroF(). sMacrof() don't
+        support structure commands of macro programming.
+
+        <cFile> is the file name of macro program.
+        <bMacErr> is the error handle. take the default usually.
+
+        ".Mac" is the default extension
+
+    ^BSource^B
+
+        Func SmacroF( cFile, bMacErr )
+        retu Smacroa( memoread(cFile+if('.'$cFile,'','.Mac')), bMacErr )
+
+    ^BExample^B
+
+        smacro( 'Example.mac' )
+!seealso: "MacroF()" "sMacroa()" "sMacro()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Macro()       Run macro    ( all type )
+'------------------------------------------------------------------------------
+
+    ^BMacro( <MacArg>, [<cMacOpt>], [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets macro for all type of <MacArg>.
+
+        <bMacErr> is the error handle of macro
+
+        <cMacOpt> is a string having the following options :
+
+           'A'    ->  Interprets array using ^BMacroA()^B
+           'B'    ->  Interprets block using eval()
+           'C'    ->  Interprets string
+           'D'    ->  return <MacArg> directly if type mismatch
+           'E'    ->  use error handle.
+
+        The default setting is "ABCDE".
+
+         if empty(<MacArg>) is true, Macro() return <MacArg>.
+
+    ^BExample^B
+
+        macro( 'tone(200)' )            -> make a sound
+        macro( {||tone(200)} )          -> make a sound
+        macro( 200 )                    -> 200
+        macro( '200*3' )                -> 600
+        macro( 'error exp' )            -> "_Run_Error_"
+        macro( 200, 'ABCE' )            -> "_Type_Error_"
+        macro()                         -> NIL
+        macro( "" )                     -> ""
+        x:= { 'tone(200)','tone(300)','tone(400)' }
+        macro( x )                      -> make sounds
+!seealso: "MacroA()" "sMacro()" "MacroBC()" "MacroF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Macrobc()     Run macro    ( BC  type )
+'------------------------------------------------------------------------------
+
+    ^BMacroBC( <MacArg>, [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets macro of string or block.
+
+         if empty(<MacArg>) is true, Macro() return <MacArg>.
+          if <MacArg> is a string, interprets using macro
+          if <MacArg> is a block, interprets using eval()
+
+         Macrobc() return '_Run_Error_' if <MacVar> is not a string or
+          block or an error occurred.
+
+        <bMacErr> is the error handle.
+
+    ^BExample^B
+
+        macrobc( 'tone(200)' )            -> make a sound
+        macrobc( {||tone(200)} )          -> make a sound
+        macrobc( 200 )                    -> "_Run_Error_"
+        macrobc( '200*3' )                -> 600
+        macrobc( 'error exp' )            -> "_Run_Error_"
+        macrobc()                         -> NIL
+        macrobc( "" )                     -> ""
+        x:= { 'tone(200)','tone(300)','tone(400)' }
+        macrobc( x )                        -> "_Run_Error_"
+!seealso: "Macro()" "MacroA()" "MacroF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Macroa()      Run macro    ( AMC type -> program )
+'------------------------------------------------------------------------------
+
+    ^BMacroA( <MacPrg>, [<cFuncName>], [<aPara>], [<bOthCom>], [<bMacErr>] )
+
+    ^BUsage^B
+
+        Interprets Macro of Array Type or Memo Type. (macro program)
+
+        ^BMacroa() supports the following structure:
+
+          remarks
+          Function/Procedure
+          Para, Priv, Publ
+          If..Then..Else..Endif
+          DoCase..Case..EndCase
+          For..End     ( or For..Next )
+          While..End   ( or While...EndDo )
+          Loop, Exit
+          Label, Goto, Skip
+          Return, Quit
+          user-define commands
+
+        If ^B<MacPrg>^B is a string or a memo, it will be translated into
+        array format first.
+
+        ^B";"  at the end of a line means 'continue to next line'.
+
+        ^BLines beginning with '*' or the string after "//" will be
+        ^Bregarded as remarks
+
+        ^B<cFuncName>^B is the name of macro function.
+        If <cFuncname> is default, MacroA() will search the function "Main"
+        or run from first line while "Main" not found (just like clipper)
+
+        ^B<aPara>^B is an array with arguments passed to macro function.
+        If <aPara> is not array type, <aPara> will be passed to macro
+        function as a single parameter.
+
+        ^B<bOthCom>^B is used to interpret user-define commands. When
+        MacroA() meets unknown macro command, <bOthCom> will be evaluated,
+        and <unknown command> will be passed to <bOthCom>.
+
+        ^B<bMacErr>^B is the error handle. take the default usually.
+        When error occurred, error object will be passed to <bMacErr>,
+        <bMacErr> must use break(<opt>) to pass options to MacroA().
+
+        The default error handle will do the following things :
+
+            display the error line No., error  macro-function and error
+            reason with five options to choice :
+
+               þ Skip  ...... skip
+               þ Retry ...... retry
+               þ Modify...... Modify macro command, then retry
+               þ Exit  ...... Exit current procedure
+               þ Quit  ...... Quit macro program
+
+    ^BExample^B
+
+        x := memoread('dot.cfg')
+        macroa( x )                          // Memo : macro program.
+
+        x := str_line( memoread('dot.cfg'), ';' )
+        macroa( x )                          // Array: macro program.
+!seealso: "Macroa()" "MacroF()" ck20_011.ngo:"Overview" ck20_011.ngo:"Rules" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Macrof()      Run macro    ( file     -> program )
+'------------------------------------------------------------------------------
+
+    ^BMacroF( <cMacFile>, [<cFuncName>], [<aPara>], [<bOthCom>], [<bMacErr>] )
+
+    ^BUsage^B
+
+        Run a macro program. Macrof() call MacroA() to run macro program.
+
+        '.MAC' is the default extension of file name.
+
+    ^BSource^B
+
+        Func MacroF( MfName, MfPrc, MfArg, MfOthDef, MfErr )
+        retu macroa( memoread( MfName+if('.'$MfName,'','.Mac') ), ;
+                    MfPrc, MfArg, MfOthDef, MfErr )
+
+    ^BExample^B
+
+        macrof( 'dot.cfg' )      // dot is a macro program
+
+        macrof( 'example','action',{opt1,opt2} )
+!seealso: "MacroA()" "Macro()" ck20_011.ngo:"Overview" ck20_011.ngo:"Rules" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Macrop()      Run a macro procedure/function
+'------------------------------------------------------------------------------
+
+    ^BMacroP( <cFuncName>, [<aPara>], [<bOthCom>] )
+
+    ^BUsage^B
+
+        MacroP() is used to run a function in macro program.
+
+        ^BThis function is used in macro program only.
+
+        <cFuncName> <aPara> <bOthCom> is same as MacroA().
+
+    ^BExample^B
+
+        ******** macro program -> Sample.Mac *******
+
+        \func main
+           macrop( 'mysay', { 10,10,'testing...','w/b'} )
+        \retu (NIL)
+
+        \func mysay (x,y,exp,col)
+           setpos(x,y)
+           dispout(exp,col)
+        \retu (NIL
+
+       *********************************************
+
+       (1) Macrof('sample.mac')
+
+       (2) macrof('sample','mysay',{10,10,'testing...','w/b'})
+
+        example (1) is same as (2)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short:^u Overview Object Functions
+'------------------------------------------------------------------------------
+
+                     ^u Overview Object Functions
+
+    Everybody talk about Object-Orient Programming, Casual-Kit also provides
+    a new structure named ^BObject-Type^B to support OOP.
+
+    Casual-Kit thinks that <Object> is a package of information. Information
+    maybe a data, a block (relation) or another <Object>, ( we used to call
+    them <Member> )  and each <Member> has a name to access.
+
+    ^B<Object Type> in Casual-Kit is a special array or a string :
+
+    ^BArray_Object ::= { <Member_List>, <Member1_Value>, ..., <MemberN_Value> }
+    ^BMember_List  ::= { <Flag>, <Member1_Name>, ..., <MemberN_Name> }
+
+    ^BString_Object::= " Mem1_Name = Mem1_Val ; ... ; MemN_Name = MemN_Val "
+
+     for example :
+
+      o1 := { {'MemList','M1','M2','M3','M4','M5','M6'} , ;
+                2, 'String', .t., {1,2,3}, {||tone(200)}, Oth_Object }
+
+      o2 := " M1=2; M2='String'; M3=.t.; M4={1,2,3}, M5={||tone(200)} "
+
+
+    All operations are based on array-object,  string-object will be
+    changed to array-object automatically. It is suggested to translate
+    string-object into array-object manually for effective purpose.
+
+    <Object Type> provided by Casual-Kit is a loose structure. Just like
+    array structure, the length of <Object> can be changed dynamically,
+    and the member can be accessed without any restriction.  Casual-Kit
+    only do the work of "Package" and provided basic operations to use
+    them.
+
+    There are ten functions provided on <Object Type>.
+
+      ^BObj_Tran()^B    Translate string-object into array-object
+      ^BObj_Chk()^B     Check object
+      ^BObj_Len()^B     Length of Object
+
+      ^BObj_Val()^B     Get a member value from an object
+      ^BObj_Get()^B     Get a member value from an object
+      ^BObj_Set()^B     Set/Add value to member in an object
+
+      ^BObj_Join()^B    Join two object     ( o1 + o2 )
+      ^BObj_Upda()^B    Update object       ( o1 ++ o2 )
+      ^BObj_Dele()^B    Delete members from object
+      ^BObj_Filt()^B    Filtrate members from object
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Tran()    Translate string-object into array-object
+'------------------------------------------------------------------------------
+
+    ^BObj_Tran ( <cObject>, [<cSym1>], [<cSym2>] )  -> aObject
+
+    ^BUsage^B
+
+        Translate string-object into array-object.
+
+        <cSym1> is the delimiter of <MemName> and <MemValue>. default is '='
+        <cSym2> is the delimiter of <Member>. default is ';'
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        StrObj := " Name::='Tom'!  Sex::=.t.!  Age::=30  "
+        AryObj := obj_tran( strobj,'::=','!' )
+!seealso: "Obj_Len()" "Obj_Set()" "Obj_Upda()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Chk()     Check object
+'------------------------------------------------------------------------------
+
+    ^BObj_Chk ( <aObject> )  ->  lAryObj
+
+    ^BUsage^B
+
+        Return true if <aObject> is a valid object.
+
+    ^BSource^B
+
+        Func Obj_Chk( OA )
+        Retu valtype( OA ) = 'A'   .and. ;
+             valtype( OA[1] ) = 'A'  .and. ;
+             len( OA ) = len( OA[1] )
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        obj_chk( strobj )      -> .f.
+        obj_chk( aryobj )      -> .t.
+!seealso: "Obj_Tran()" "Obj_Len()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Len()     Length of Object
+'------------------------------------------------------------------------------
+
+    ^BObj_Len ( <Object> )   ->  nLength
+
+    ^BUsage^B
+
+        Return the length of <object>.
+        <object> can be a string-object or an array-object.
+
+    ^BSource^B
+
+        Func Obj_Len( Obj )
+        retu len( if(valtype(Obj)='A', Obj, Obj:=Obj_Tran(Obj) ) ) -1
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        obj_len(strobj)    ->   3
+        obj_len(aryobj)    ->   3
+!seealso: "Obj_Tran()" "Obj_Chk()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Val()     Get a member value from an object
+'------------------------------------------------------------------------------
+
+    ^BObj_Val ( <Object>, <cMember>, [<Default>] )  -> MemberValue
+
+    ^BUsage^B
+
+        Get a member value from an object.
+        <object> can be a string-object or an array-object.
+
+        If <cMember> not found, Obj_Val() return <Default>.
+        If there are duplicate members in object, the first member will
+        be returned.
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        obj_val( strobj, 'name' )       ->  'Tom'
+        obj_val( strobj, 'Sex', )       ->  .t.
+        obj_val( aryobj, 'name' )       ->  'Tom'
+
+        obj_val( strobj, 'xxxx' )       ->  NIL
+        obj_val( aryobj, 'xxxx', 3 )    ->  3
+!seealso: "Obj_Get()" "Obj_Set()" "Obj_Tran()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Get()     Get a member value from an object
+'------------------------------------------------------------------------------
+
+    ^BObj_Get ( <cMember>, <Object>, [<DefObj>] )  -> MemberValue
+
+    ^BUsage^B
+
+        Get a member value from object.
+
+        <Object> <DefObj> can be a string or an array object.
+
+        If <cMember> is not found in <Object>, Obj_Get() return the value
+        of the <cMember> in <DefObj>
+
+        If there are duplicate member in object, the first member will
+        be returned.
+
+        This function is similar to Obj_Val(), The only difference is
+        that Obj_Get() use <DefObj> instead of <Default> to set default
+        value.
+
+        Notice that the order of arguments is different to Obj_Val()
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+        DefObj := " others = 'Not Found' "
+
+        obj_get( 'name', AryObj )           ->  'Tom'
+        obj_get( 'name', StrObj )           ->  'Tom'
+
+        obj_get( 'others', AryObj, DefObj )   ->  'Not Found'
+        obj_get( 'others', StrObj, DefObj )   ->  'Not Found'
+        obj_get( 'others', StrObj )           ->  NIL
+!seealso: "Obj_Val()" "Obj_Set()" "Obj_Tran()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Set()     Set/Add value to member in an object
+'------------------------------------------------------------------------------
+
+    ^BObj_Set( <Object>, <cMember>, <Value> )   ->  aNewObject
+
+    ^BUsage^B
+
+        Set member value, if member not found, add member to object.
+        Obj_Set() return an array-object.
+
+        <Object> <DefObj> can be a string or an array object.
+        Array-Object will be changed to <aNewObject> , String-Object won't.
+
+        If there are duplicate member in object, the first member will
+        be accessed.
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        newobj := obj_set( strobj, 'Name', 'Tommy' )   // strobj not change.
+
+        obj_set( aryobj, 'Name', 'Tommy' )
+          // aryobj will be changed because array is passed by reference.
+
+        newobj := obj_set( aryobj, 'Tel', '1234567' )  // add member.
+!seealso: "Obj_Val()" "Obj_Get()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Join()    Join two object     ( o1 + o2 )
+'------------------------------------------------------------------------------
+
+    ^BObj_Join ( <Object1>, <Object2> )  -> aNewObject
+
+    ^BUsage^B
+
+        Join two objects.
+
+        <Object1> <Object2> can be a string or an array object.
+
+        ^B<Object1> <Object2> won't be changed during Obj_Join().
+
+        ^BObj_Join() will not check the duplicate members in <object2>.
+
+    ^BExample^B
+
+        Obj1 := " Name='Tom'; Age=30  "
+        Obj2 := " Age=40; Sex=.t. "
+
+        Obj3 := Obj_Join ( Obj1, Obj2 )
+
+        Obj3 =>  { { 'MemList','NAME','AGE','AGE','SEX' }, ;
+                               'Tom' ,   30,   40,  .t.    }
+!seealso: "Obj_Upda()" "Obj_Dele()" "Obj_Filt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Upda()    Update o1 with o2   ( o1 ++ o2 )
+'------------------------------------------------------------------------------
+
+    ^BObj_Upda ( <Object1>, <Object2> )  -> aNewObject
+
+    ^BUsage^B
+
+        Update <object1> with <Object2>.
+
+        <Object1> <Object2> can be a string or an array object.
+
+        ^B<Object1> will be changed to aNewObject.
+
+        ^BObj_Join() will check the duplicate members in <object2>
+
+    ^BExample^B
+
+        Obj1 := " Name='Tom'; Age=30  "
+        Obj2 := " Age=40; Sex=.t. "
+
+        Obj3 := Obj_Upda( Obj1, Obj2 )
+
+        Obj3 => Obj1 =>  { { 'MemList','NAME','AGE','SEX' }, ;
+                                       'Tom' ,   40,  .t.    }
+!seealso: "Obj_Join()" "Obj_Dele()" "Obj_Filt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Dele()    Delete members from object
+'------------------------------------------------------------------------------
+
+    ^BObj_Dele ( <Object>, <aMemList> )  -> aNewObject
+
+    ^BUsage^B
+
+        Delete members from object.
+
+        <Object> can be a string or an array object.  Array-Object will
+        be changed to <aNewObject> , String-Object won't.
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        NewObj := obj_dele(StrObj, { 'sex','age' } )
+          // NewObj => { {'MemList','NAME'}, 'Tom' } , StrObj not changed.
+
+        NewObj := obj_dele(AryObj, { 'sex','age' } )
+          // NewObj => AryObj => { {'MemList','NAME'}, 'Tom' }
+!seealso: "Obj_Join()" "Obj_Upda()" "Obj_Filt()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Obj_Filt()    Filtrate members from object
+'------------------------------------------------------------------------------
+
+    ^BObj_Filt ( <Object>, <aMemList> )  -> aNewObject
+
+    ^BUsage^B
+
+        Filtrate members from object.
+
+        <Object> can be a string or an array object.
+        ^B<Object> won't be changed during Obj_Filt().
+
+    ^BExample^B
+
+        StrObj := " Name='Tom'; Sex=.t.; Age=30  "
+        AryObj := obj_tran( strobj )
+
+        NewObj := obj_filt(StrObj, { 'sex','age' } )
+        // NewObj => { {'MemList','SEX','AGE'}, .t.,30 } , StrObj not changed.
+
+        NewObj := obj_filt(AryObj, { 'sex','age' } )
+        // NewObj => { {'MemList','SEX','AGE'}, .t.,30 } , AryObj not changed.
+!seealso: "Obj_Join()" "Obj_Upda()" "Obj_Dele()" 
+'------------------------------------------------------------------------------
+
+
+

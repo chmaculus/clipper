@@ -1,0 +1,2972 @@
+!short: ^bRelease Note #1 -- Clipper 5.00 Change Summary^b
+'------------------------------------------------------------------------------
+ Document:   ^bRelease Note #1^b
+             ^bClipper 5.00 Change Summary^b
+
+             Copyright (c) 1991, Nantucket Corporation
+
+ Version:    5.01a (April 19, 1991)
+
+ Summary:    This document provides a summary of changes from Clipper
+             Summer '87 to Clipper 5.00.  This includes new and changed
+             features.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bStandard Functions^b
+!short:
+!short: 1   NEW:     AADD()
+'------------------------------------------------------------------------------
+ ^b1   NEW: AADD()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     AADD() is a new function that dynamically adds an element to the
+     end of an array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 2   CHANGED: ACHOICE()
+'------------------------------------------------------------------------------
+ ^b2   CHANGED: ACHOICE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A header file, Achoice.ch, is provided to make ACHOICE() more
+     readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 3   NEW:     ACLONE()
+'------------------------------------------------------------------------------
+ ^b3   NEW: ACLONE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ACLONE() is a new function used to duplicate an array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 4   CHANGED: ACOPY()
+'------------------------------------------------------------------------------
+ ^b4   CHANGED: ACOPY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ACOPY() now returns a reference to the target array.  This
+     function, originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 5   CHANGED: ADEL()
+'------------------------------------------------------------------------------
+ ^b5   CHANGED: ADEL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ADEL() now returns a reference to the target array.  This function,
+     originally defined in EXTEND.LIB, is now part of CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 6   CHANGED: ADIR()*
+'------------------------------------------------------------------------------
+ ^b6   CHANGED: ADIR()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ADIR() is now classified as a compatibility function.  It is
+     recommended that you use DIRECTORY() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 7   NEW:     AEVAL()
+'------------------------------------------------------------------------------
+ ^b7   NEW: AEVAL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     AEVAL() is a new function that evaluates a code block for each
+     element of an array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 8   CHANGED: AFIELDS()*
+'------------------------------------------------------------------------------
+ ^b8   CHANGED: AFIELDS()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     AFIELDS() is now classified as a compatibility function.  It is
+     recommended that you use DBSTRUCT() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 9   CHANGED: AFILL()
+'------------------------------------------------------------------------------
+ ^b9   CHANGED: AFILL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     AFILL() now returns a reference to the target array.  This
+     function, originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 10  CHANGED: AINS()
+'------------------------------------------------------------------------------
+ ^b10  CHANGED: AINS()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     AINS() now returns a reference to the target array.  This function,
+     originally defined in EXTEND.LIB, is now part of CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 11  CHANGED: ALTD()
+'------------------------------------------------------------------------------
+ ^b11  CHANGED: ALTD()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, ALTD() now returns NIL.  ALTD()
+     has also been updated to reflect the new Clipper Debugger.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 12  NEW:     ARRAY()
+'------------------------------------------------------------------------------
+ ^b12  NEW: ARRAY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ARRAY() is a new function used to create an array with specified
+     dimensions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 13  CHANGED: ASCAN()
+'------------------------------------------------------------------------------
+ ^b13  CHANGED: ASCAN()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ASCAN()'s search argument supports both a value and a code block.
+     If the <expSearch> argument is a code block, ASCAN() scans the
+     <aTarget> array executing the block for each element accessed.  As
+     each element is encountered, ASCAN() passes the element's value as
+     an argument to the code block, and then performs an EVAL() on the
+     block.  The scanning operation stops when the code block returns
+     true (.T.), or ASCAN() reaches the last element in the array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 14  NEW:     ASIZE()
+'------------------------------------------------------------------------------
+ ^b14  NEW: ASIZE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ASIZE() is a new function used to grow or shrink an array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 15  CHANGED: ASORT()
+'------------------------------------------------------------------------------
+ ^b15  CHANGED: ASORT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1.  ASORT() now returns a reference to the target array.
+
+     2.  ASORT() now supports an optional code block argument that can
+         be used to determine order.  Each time the block is evaluated,
+         two elements from the target array are passed to the code block
+         as parameters.  The block must return true (.T.) if the
+         elements are in sorted order.  This facility can be used to
+         create a descending or dictionary order sort.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 16  NEW:     BREAK()
+'------------------------------------------------------------------------------
+ ^b16  NEW: BREAK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     BREAK() is a new function that is identical in functionality to the
+     BREAK statement.  The function must be executed within a SEQUENCE
+     construct.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 17  CHANGED: BROWSE()
+'------------------------------------------------------------------------------
+ ^b17  CHANGED: BROWSE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, BROWSE() now returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 18  CHANGED: DBCREATE()
+'------------------------------------------------------------------------------
+ ^b18  CHANGED: DBCREATE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBCREATE(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.  A header file, Dbstruct.ch, is provided to make
+     DBCREATE() more readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 19  CHANGED: DBEDIT()*
+'------------------------------------------------------------------------------
+ ^b19  CHANGED: DBEDIT()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, DBEDIT() now returns NIL.  A
+     header file, Dbedit.ch, is provided to make DBEDIT() more
+     readable.  DBEDIT(), however, is now classified as a compatibility
+     function, and it is recommended that you use the TBrowse object
+     class for constructing browse facilities instead.
+
+     There is also an implementation change in DBEDIT().  In Summer '87,
+     DBEDIT() knew every record number on the screen.  If the user
+     function moved the record pointer to a record that was already on
+     the screen, DBEDIT() would change the current row without
+     refreshing the window.  If the user function moved the record
+     pointer to a record that was not on the screen, DBEDIT() would
+     refresh the window.  In 5.0, DBEDIT() no longer knows the numbers
+     of all the records in the window.  As a result of this change,
+     DBEDIT() refreshes the window whenever the user function changes
+     the record pointer, even if the new current record is already on
+     the screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 20  NEW:     DBEVAL()
+'------------------------------------------------------------------------------
+ ^b20  NEW: DBEVAL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBEVAL() is a new function that evaluates a code block for records
+     in a database file that match specified conditions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 21  CHANGED: DBF()*
+'------------------------------------------------------------------------------
+ ^b21  CHANGED: DBF()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBF() function, originally provided as a sample program, is now
+     part of EXTEND.LIB.  DBF(), however, is now classified as a
+     compatibility function, and it is recommended that you use ALIAS()
+     instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 22  NEW:     DBSTRUCT()
+'------------------------------------------------------------------------------
+ ^b22  NEW: DBSTRUCT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBSTRUCT() is a new function that creates an array defining the
+     structure of the current database file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 23  NEW:     DEVOUT()
+'------------------------------------------------------------------------------
+ ^b23  NEW: DEVOUT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DEVOUT() is a new function that writes a specified value to the
+     current output device.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 24  NEW:     DEVPOS()
+'------------------------------------------------------------------------------
+ ^b24  NEW: DEVPOS()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DEVPOS() is a new function that moves the device cursor or
+     printhead to a specified position.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 25  NEW:     DIRECTORY()
+'------------------------------------------------------------------------------
+ ^b25  NEW: DIRECTORY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DIRECTORY() is a new function used to create an array of directory
+     and file information.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 26  NEW:     DISPOUT()
+'------------------------------------------------------------------------------
+ ^b26  NEW: DISPOUT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DISPOUT() is a new function that writes a specified value to the
+     display.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 27  CHANGED: EMPTY()
+'------------------------------------------------------------------------------
+ ^b27  CHANGED: EMPTY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     EMPTY() has been updated to support array and NIL data types.  For
+     example:
+
+     ^bTable: EMPTY() Return Values^B
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     ^bExpression      Returns^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     EMPTY( {} )     .T.
+     EMPTY( NIL )    .T.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 28  NEW:     ERRORBLOCK()
+'------------------------------------------------------------------------------
+ ^b28  NEW: ERRORBLOCK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ERRORBLOCK() is a new function that posts a code block to be
+     executed when a runtime error occurs.  This function is part of the
+     Error object class implementation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 29  NEW:     EVAL()
+'------------------------------------------------------------------------------
+ ^b29  NEW: EVAL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     EVAL() is a new function used to evaluate a code block.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 30  CHANGED: FCLOSE()
+'------------------------------------------------------------------------------
+ ^b30  CHANGED: FCLOSE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FCLOSE(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 31  CHANGED: FCREATE()
+'------------------------------------------------------------------------------
+ ^b31  CHANGED: FCREATE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FCREATE(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.  A header file, Fileio.ch, is provided to make
+     FCREATE() more readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 32  NEW:     FERASE()
+'------------------------------------------------------------------------------
+ ^b32  NEW: FERASE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FERASE() is a new function that deletes a specified file from disk.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 33  CHANGED: FERROR()
+'------------------------------------------------------------------------------
+ ^b33  CHANGED: FERROR()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FERROR(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 34  NEW:     FIELDBLOCK()
+'------------------------------------------------------------------------------
+ ^b34  NEW: FIELDBLOCK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FIELDBLOCK() is a new function that builds a code block designed to
+     assign or retrieve a designated database field.  When executed with
+     an argument, the code block assigns the value of the argument to
+     the field.  When executed without an argument, the code block
+     retrieves the current field value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 35  NEW:     FIELDGET()
+'------------------------------------------------------------------------------
+ ^b35  NEW: FIELDGET()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FIELDGET() is a new function that returns the value of a field
+     using the ordinal position of the field in the current database
+     file structure.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 36  NEW:     FIELDPUT()
+'------------------------------------------------------------------------------
+ ^b36  NEW: FIELDPUT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FIELDPUT() is a new function that assigns a specified value to a
+     field using the ordinal position of the field in the current
+     database file structure.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 37  NEW:     FIELDWBLOCK()
+'------------------------------------------------------------------------------
+ ^b37  NEW: FIELDWBLOCK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FIELDWBLOCK() is a new function that builds a code block designed
+     to assign or retrieve a database field in a designated work area.
+     The function is identical to FIELDBLOCK() except that it takes a
+     work area number in addition to a field name argument.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 38  CHANGED: FKLABEL()*
+'------------------------------------------------------------------------------
+ ^b38  CHANGED: FKLABEL()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The FKLABEL() function, originally provided as a sample program, is
+     now part of EXTEND.LIB.  FKLABEL(), however, is now classified as a
+     compatibility function, and it is recommended that you refer
+     directly to the function key names.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 39  CHANGED: FKMAX()*
+'------------------------------------------------------------------------------
+ ^b39  CHANGED: FKMAX()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The FKMAX() function, originally provided as a sample program, is
+     now part of EXTEND.LIB.  FKMAX(), however, is now classified as a
+     compatibility function, and it is recommended that you use the
+     constant 40 as the maximum number of function keys.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 40  CHANGED: FOPEN()
+'------------------------------------------------------------------------------
+ ^b40  CHANGED: FOPEN()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FOPEN(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.  A header file, Fileio.ch, is provided to make FOPEN()
+     more readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 41  CHANGED: FREAD()
+'------------------------------------------------------------------------------
+ ^b41  CHANGED: FREAD()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FREAD(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 42  CHANGED: FREADSTR()
+'------------------------------------------------------------------------------
+ ^b42  CHANGED: FREADSTR()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FREADSTR(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 43  NEW:     FRENAME()
+'------------------------------------------------------------------------------
+ ^b43  NEW: FRENAME()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FRENAME() is a new function that renames a disk file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 44  CHANGED: FSEEK()
+'------------------------------------------------------------------------------
+ ^b44  CHANGED: FSEEK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FSEEK(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.  A header file, Fileio.ch, is provided to make FSEEK()
+     more readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 45  CHANGED: FWRITE()
+'------------------------------------------------------------------------------
+ ^b45  CHANGED: FWRITE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FWRITE(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 46  NEW:     GETACTIVE()
+'------------------------------------------------------------------------------
+ ^b46  NEW: GETACTIVE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     GETACTIVE() is a new function that returns the active Get object.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 47  CHANGED: GETENV()
+'------------------------------------------------------------------------------
+ ^b47  CHANGED: GETENV()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The syntax of the GETE() function has been changed to GETENV().
+     The shortened version, however, is still syntactically correct.
+     This function, originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 48  CHANGED: INKEY()
+'------------------------------------------------------------------------------
+ ^b48  CHANGED: INKEY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A header file, Inkey.ch, is provided to make INKEY() more readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 49  NEW:     ISDIGIT()
+'------------------------------------------------------------------------------
+ ^b49  NEW: ISDIGIT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ISDIGIT() is a new function used to determine if the left-most
+     character in a string is a digit.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 50  CHANGED: ISLOWER()
+'------------------------------------------------------------------------------
+ ^b50  CHANGED: ISLOWER()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ISLOWER(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 51  CHANGED: ISUPPER()
+'------------------------------------------------------------------------------
+ ^b51  CHANGED: ISUPPER()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ISUPPER(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 52  CHANGED: LASTKEY()
+'------------------------------------------------------------------------------
+ ^b52  CHANGED: LASTKEY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A header file, Inkey.ch, is provided to make LASTKEY() more
+     readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 53  CHANGED: LEFT()
+'------------------------------------------------------------------------------
+ ^b53  CHANGED: LEFT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     LEFT(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 54  NEW:     MAXCOL()
+'------------------------------------------------------------------------------
+ ^b54  NEW: MAXCOL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     MAXCOL() is a new function that returns the number of the maximum
+     visible screen column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 55  NEW:     MAXROW()
+'------------------------------------------------------------------------------
+ ^b55  NEW: MAXROW()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     MAXROW() is a new function that returns the number of the maximum
+     visible screen column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 56  CHANGED: MEMOEDIT()
+'------------------------------------------------------------------------------
+ ^b56  CHANGED: MEMOEDIT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A header file, Memoedit.ch, is provided to make MEMOEDIT() more
+     readable.
+
+     The MEMOEDIT() function in Clipper 5.0 uses a slightly different
+     formatting algorithm than in previous versions.  The change
+     concerns the way soft carriage return/line feed (soft-CRLF)
+     characters are inserted into the text when word-wrap occurs under
+     MEMOEDIT().
+
+     In Summer '87, if a single word is wrapped and later reformatted
+     with a greater line width, the word will appear as two words
+     because the soft-CRLF is replaced with a space.  In Clipper 5.0,
+     the insertion of soft-CRLF characters is never allowed to change
+     the significant content of the text.  The new method leaves the
+     text in its original form and properly handles the case where a
+     soft-CRLF has been inserted in the middle of a word.
+
+     If a text string formatted using Summer '87 MEMOEDIT() is viewed
+     using Clipper 5.0 MEMOEDIT(), words that were separated by a
+     soft-CRLF will be run together because the soft-CRLF is not
+     replaced with a space.  To prevent this, you can either change all
+     soft-CRLF pairs into space characters using STRTRAN(), or you can
+     use the supplied utility DBT50.EXE.  DBT50.EXE scans an entire .dbt
+     file, replacing any soft-CRLF pair with two spaces.  Although this
+     has the undesirable effect of causing certain words to be separated
+     by two spaces instead of one, it allows the file to be processed in
+     place without using additional disk space.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 57  CHANGED: MEMORY()
+'------------------------------------------------------------------------------
+ ^b57  CHANGED: MEMORY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     MEMORY() has been modified to accept several arguments and return
+     more memory availability information based on the argument value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 58  NEW:     MEMVARBLOCK()
+'------------------------------------------------------------------------------
+ ^b58  NEW: MEMVARBLOCK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     MEMVARBLOCK() is a new function that builds a code block designed
+     to assign or retrieve a designated memory variable.  When executed
+     with an argument, the code block assigns the value of the argument
+     to the variable.  When executed without an argument, the code block
+     retrieves the current variable value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 59  CHANGED: MOD()*
+'------------------------------------------------------------------------------
+ ^b59  CHANGED: MOD()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The MOD() function, originally provided as a sample program, is now
+     part of EXTEND.LIB.  MOD(), however, is now classified as a
+     compatibility function, and it is recommended that you use the
+     modulus (%) operator instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 60  CHANGED: NEXTKEY()
+'------------------------------------------------------------------------------
+ ^b60  CHANGED: NEXTKEY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A header file, Inkey.ch, is provided to make NEXTKEY() more
+     readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 61  NEW:     NOSNOW()
+'------------------------------------------------------------------------------
+ ^b61  NEW: NOSNOW()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     NOSNOW() is a new function used to suppress snow on CGA monitors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 62  CHANGED: OS()
+'------------------------------------------------------------------------------
+ ^b62  CHANGED: OS()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     OS(), originally provided as a sample program, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 63  NEW:     OUTERR()
+'------------------------------------------------------------------------------
+ ^b63  NEW: OUTERR()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     OUTERR() is a new function that writes a list of values to the
+     standard error device.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 64  NEW:     OUTSTD()
+'------------------------------------------------------------------------------
+ ^b64  NEW: OUTSTD()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     OUTSTD() is a new function that writes a list of values to the
+     standard output device.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 65  NEW:     PAD()
+'------------------------------------------------------------------------------
+ ^b65  NEW: PAD()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     PADC(), PADL(), and PADR() are new functions that pad a character
+     string with a specified fill character.  PADL() pads the original
+     string on the left, PADR() pads it on the right, and PADC() pads it
+     on both sides so that the original string is centered between the
+     fill characters.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 66  CHANGED: PROCLINE()
+'------------------------------------------------------------------------------
+ ^b66  CHANGED: PROCLINE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     PROCLINE() now accepts an argument that allows you to specify
+     previous activations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 67  CHANGED: PROCNAME()
+'------------------------------------------------------------------------------
+ ^b67  CHANGED: PROCNAME()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     PROCNAME() now accepts an argument that allows you to specify
+     previous activations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 68  NEW:     QOUT()
+'------------------------------------------------------------------------------
+ ^b68  NEW: QOUT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     QOUT() and QQOUT() are new functions that display a list of values
+     to the console.  These are the functional equivalents of the ? and
+     ?? commands.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 69  CHANGED: READKEY()*
+'------------------------------------------------------------------------------
+ ^b69  CHANGED: READKEY()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The READKEY() function, originally provided as a sample program, is
+     now part of EXTEND.LIB.  READKEY(), however, is now classified as a
+     compatibility function, and it is recommended that you use
+     LASTKEY() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 70  NEW:     READMODAL()
+'------------------------------------------------------------------------------
+ ^b70  NEW: READMODAL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     READMODAL() is a new function used to implement the READ command.
+     The function takes a GetList array as its argument but does not
+     re-initialize the array when the full-screen editing process is
+     terminated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 71  CHANGED: RECCOUNT()*
+'------------------------------------------------------------------------------
+ ^b71  CHANGED: RECCOUNT()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RECCOUNT() is now classified as a compatibility function.  It is
+     recommended that you use LASTREC() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 72  CHANGED: RESTSCREEN()
+'------------------------------------------------------------------------------
+ ^b72  CHANGED: RESTSCREEN()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, RESTSCREEN() now returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 73  CHANGED: SCROLL()
+'------------------------------------------------------------------------------
+ ^b73  CHANGED: SCROLL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, SCROLL() now returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 74  NEW:     SET()
+'------------------------------------------------------------------------------
+ ^b74  NEW: SET()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET() is a new function used to inspect or change the current value
+     of a global setting.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 75  NEW:     SETBLINK()
+'------------------------------------------------------------------------------
+ ^b75  NEW: SETBLINK()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SETBLINK() is a new function that allows you to change the
+     interpretation of the asterisk (*) in SETCOLOR() settings from
+     blinking to background intensity.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 76  CHANGED: SETCANCEL()
+'------------------------------------------------------------------------------
+ ^b76  CHANGED: SETCANCEL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In Clipper 5.0, Ctrl-Break can be used to terminate a program in
+     the same manner as Alt-C.  SETCANCEL() controls the ability of
+     Ctrl-Break to terminate a program.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 77  CHANGED: SETCOLOR()
+'------------------------------------------------------------------------------
+ ^b77  CHANGED: SETCOLOR()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SETCOLOR(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 78  NEW:     SETCURSOR()
+'------------------------------------------------------------------------------
+ ^b78  NEW: SETCURSOR()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SETCURSOR() is a new function that allows you to control the shape
+     of the cursor.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 79  NEW:     SETKEY()
+'------------------------------------------------------------------------------
+ ^b79  NEW: SETKEY()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SETKEY() is a new function that assigns a code block to a
+     particular key.  When the key is subsequently pressed, the
+     associated code block is executed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 80  NEW:     SETMODE()
+'------------------------------------------------------------------------------
+ ^b80  NEW: SETMODE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SETMODE() is a new function that allows you to change the display
+     mode to a specified number of rows and columns.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 81  NEW:     SETPOS()
+'------------------------------------------------------------------------------
+ ^b81  NEW: SETPOS()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SETPOS() is a new function that allows you to change the current
+     cursor position to a specified row and column.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 82  CHANGED: SETPRC()
+'------------------------------------------------------------------------------
+ ^b82  CHANGED: SETPRC()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, SETPRC() now returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 83  CHANGED: SOUNDEX()
+'------------------------------------------------------------------------------
+ ^b83  CHANGED: SOUNDEX()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SOUNDEX(), originally documented as defined in CLIPPER.LIB, is now
+     in EXTEND.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 84  CHANGED: STRTRAN()
+'------------------------------------------------------------------------------
+ ^b84  CHANGED: STRTRAN()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     STRTRAN(), originally defined in EXTEND.LIB, is now part of
+     CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 85  CHANGED: TONE()
+'------------------------------------------------------------------------------
+ ^b85  CHANGED: TONE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, TONE() now returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 86  CHANGED: TYPE()
+'------------------------------------------------------------------------------
+ ^b86  CHANGED: TYPE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     TYPE() has been updated to support the new Clipper 5.0 data types
+     as follows:
+
+     ^bTable: New and changed TYPE() return values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     ^bReturns         Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     B               Code block
+     O               Object
+     U               NIL, local or static declared variables
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+     Note that you cannot use TYPE() to determine the type of a local or
+     static variable.  The VALTYPE() function was added for this
+     purpose.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 87  NEW:     VALTYPE()
+'------------------------------------------------------------------------------
+ ^b87  NEW: VALTYPE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     VALTYPE() is a new function that determines the data type of the
+     value returned from an expression evaluation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 88  CHANGED: VERSION()
+'------------------------------------------------------------------------------
+ ^b88  CHANGED: VERSION()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     VERSION(), originally provided as a sample program, is now a
+     standard function located in CLIPPER.LIB.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 89  CHANGED: WORD()*
+'------------------------------------------------------------------------------
+ ^b89  CHANGED: WORD()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instead of having no return value, WORD() now returns NIL.  WORD(),
+     however, is now classified as a compatibility function, and it is
+     recommended that you use the Extend System functions instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bStandard Commands^b
+!short:
+!short: 90  NEW:     @...GET...WHEN
+'------------------------------------------------------------------------------
+ ^b90  NEW: @...GET...WHEN^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new WHEN clause performs a logical validation before the cursor
+     enters the GET.  A new implementation for @...GET utilizes Get
+     objects and the GetList array.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 91  CHANGED: @...GET
+'------------------------------------------------------------------------------
+ ^b91  CHANGED: @...GET^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1. ^BVALID and RANGE:^B  In Clipper 5.0, the VALID and RANGE clauses
+        are mutually exclusive (i.e., you cannot specify both in the
+        same command).
+
+     2. ^bInvalid dates:^b  In Summer '87, entering an invalid date
+        cleared the date field and homed the cursor.  Pressing Esc left
+        the field display blank, but the original value was restored to
+        the Get variable.  In Clipper 5.0, the cursor stays in the date
+        field at the current position so the field can be edited, but
+        the field is not cleared.  Pressing Esc to quit the READ
+        restores the initial value in the display and the original value
+        is restored to the Get variable.
+
+     3. ^bPressing Esc:^b  In Clipper 5.0, pressing Esc while SET ESCAPE
+        is ON not only restores the previous value for the current GET
+        variable but also redisplays the previous value on the screen.
+        Summer '87 did not redisplay the previous value.
+
+     4. ^bColor behavior:^b  In Clipper 5.0, the color of a Get variable
+        is fixed at the time of the @...GET.  This means that when a
+        READ is executed the Get variable retains its original color.
+
+     5. ^bClipping behavior:^b  In Summer '87, a Get variable that
+        attempted to display past column 80 wrapped to the next line.
+        In Clipper 5.0, a Get variable that attempts to display past
+        MAXCOL() is clipped.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 92  CHANGED: @...PROMPT
+'------------------------------------------------------------------------------
+ ^b92  CHANGED: @...PROMPT^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The maximum number of prompts that you can define with @...PROMPT
+     has been increased from 32 to 4096.  The new limitation is due to
+     the fact that 4096 is the maximum number of elements in an array
+     which is how the prompts are stored.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 93  CHANGED: @...SAY
+'------------------------------------------------------------------------------
+ ^b93  CHANGED: @...SAY^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     @...SAY now truncates full-screen output that is too long for the
+     display as determined by MAXCOL() where it wrapped in Summer '87.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 94  CHANGED: APPEND FROM
+'------------------------------------------------------------------------------
+ ^b94  CHANGED: APPEND FROM^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DELIMITED WITH option for APPEND FROM requires a character
+     expression for the delimiter.  Literal delimiters are no longer
+     allowed as they were in Summer '87.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 95  CHANGED: CALL*
+'------------------------------------------------------------------------------
+ ^b95  CHANGED: CALL*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CALL* is now classified as a compatibility command.  It is
+     recommended that you use the Extend System functions instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 96  CHANGED: CANCEL*
+'------------------------------------------------------------------------------
+ ^b96  CHANGED: CANCEL*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CANCEL* is now classified as a compatibility command.  It is
+     recommended that you QUIT instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 97  CHANGED: CLEAR ALL*
+'------------------------------------------------------------------------------
+ ^b97  CHANGED: CLEAR ALL*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CLEAR ALL* is now classified as a compatibility command.  It is
+     recommended that you use CLOSE to close files and RELEASE to
+     release variables.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 98  CHANGED: CLEAR GETS
+'------------------------------------------------------------------------------
+ ^b98  CHANGED: CLEAR GETS^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A new implementation for CLEAR GETS releases all Get objects by
+     assigning an empty array to the GetList variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 99  NEW:     CLS
+'------------------------------------------------------------------------------
+ ^b99  NEW: CLS^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CLS is a new synonym for CLEAR SCREEN.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 100 NEW:     CLOSE
+'------------------------------------------------------------------------------
+ ^b100 NEW: CLOSE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Individual database files can be closed with the CLOSE <idAlias>
+     syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 101 CHANGED: COPY TO
+'------------------------------------------------------------------------------
+ ^b101 CHANGED: COPY TO^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DELIMITED WITH option for COPY TO requires a character
+     expression for the delimiter.  Literal delimiters are no longer
+     allowed as they were in Summer '87.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 102 CHANGED: DIR*
+'------------------------------------------------------------------------------
+ ^b102 CHANGED: DIR*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DIR* is now classified as a compatibility command.  It is
+     recommended that you use DIRECTORY() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 103 CHANGED: FIND*
+'------------------------------------------------------------------------------
+ ^b103 CHANGED: FIND*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FIND* is now classified as a compatibility command.  It is
+     recommended that you use SEEK instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 104 NEW:     INDEX
+'------------------------------------------------------------------------------
+ ^b104 NEW: INDEX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The UNIQUE keyword is available as part of the INDEX syntax making
+     the SET UNIQUE command obsolete.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 105 CHANGED: NOTE*
+'------------------------------------------------------------------------------
+ ^b105 CHANGED: NOTE*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The NOTE* command is now obsolete with the addition of C-style
+     comments to the Clipper language.  For multi-line comments,
+     slash-asterisk (/*) marks the beginning of the comment block and
+     asterisk-slash (*/) marks the end.  The double-slash (//) can be
+     used for single-line and in-line comments.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 106 CHANGED: PICTURE functions
+'------------------------------------------------------------------------------
+ ^b106 CHANGED: PICTURE functions^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following PICTURE functions have been changed from Summer '87
+     to Clipper 5.0:
+
+     1. ^b@B:^b  An @...GET variable using this PICTURE function is
+        right-justified when the GET initially receives input focus.  As
+        soon as you start typing, the value is left-justified.  When the
+        variable does not have input focus, it is left-justified.
+
+     2. ^b@S:^b  Instead of waiting until the cursor is at the end of
+        the Get to start scrolling, characters begin scrolling when the
+        cursor is somewhere in the middle of the Get.
+
+     3. ^b@Z:^b  The zero appears for an @...GET variable when the GET
+        has input focus; otherwise, the zero is displayed as a blank.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 107 NEW:     READ
+'------------------------------------------------------------------------------
+ ^b107 NEW: READ^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A new implementation for READ utilizes Get objects and the GetList
+     variable.  Among other advantages, the object-oriented
+     implementation allows nested READs within SET KEY, VALID, and WHEN
+     procedures.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 108 CHANGED: READ
+'------------------------------------------------------------------------------
+ ^b108 CHANGED: READ^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Ctrl-End no longer serves as a navigation key for READ.  It is now
+     an exit key that is equivalent in functionality to Ctrl-W.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 109 CHANGED: RESTORE SCREEN*
+'------------------------------------------------------------------------------
+ ^b109 CHANGED: RESTORE SCREEN*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RESTORE SCREEN* is now classified as a compatibility command.  It
+     is recommended that you use RESTSCREEN() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 110 CHANGED: SAVE SCREEN*
+'------------------------------------------------------------------------------
+ ^b110 CHANGED: SAVE SCREEN*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SAVE SCREEN* is now classified as a compatibility command.  It is
+     recommended that you use SAVESCREEN() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 111 CHANGED: SET COLOR*
+'------------------------------------------------------------------------------
+ ^b111 CHANGED: SET COLOR*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET COLOR* is now classified as a compatibility command.  It is
+     recommended that you use SETCOLOR() instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 112 NEW:     SET DATE
+'------------------------------------------------------------------------------
+ ^b112 NEW: SET DATE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1. User-defined date formats can be defined with the SET DATE
+        FORMAT TO <cDateFormat> syntax.
+
+     2. JAPAN and USA are new pre-defined date formats.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 113 NEW:     SET EPOCH
+'------------------------------------------------------------------------------
+ ^b113 NEW: SET EPOCH^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET EPOCH is a new command that allows you to control the default
+     century for all date values.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 114 CHANGED: SET EXACT*
+'------------------------------------------------------------------------------
+ ^b114 CHANGED: SET EXACT*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET EXACT* is now classified as a compatibility command.  It is
+     recommended that you avoid using this command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 115 CHANGED: SET EXCLUSIVE*
+'------------------------------------------------------------------------------
+ ^b115 CHANGED: SET EXCLUSIVE*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET EXCLUSIVE* is now classified as a compatibility command.  It is
+     recommended that you specify the open mode as either SHARED or
+     EXCLUSIVE as part of the USE command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 116 CHANGED: SET FORMAT*
+'------------------------------------------------------------------------------
+ ^b116 CHANGED: SET FORMAT*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET FORMAT* is now classified as a compatibility command.  The
+     recommended way to call a format (or any other) procedure is to
+     include the procedure name on a line by itself.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 117 CHANGED: SET FUNCTION
+'------------------------------------------------------------------------------
+ ^b117 CHANGED: SET FUNCTION^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new implementation for SET FUNCTION pre-processes the command
+     into SET KEY and KEYBOARD commands causing SET FUNCTION to clear a
+     KEY SETting for the same key.  This is incompatible with previous
+     releases which maintained separate SET FUNCTION and SET KEY lists.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 118 CHANGED: SET KEY
+'------------------------------------------------------------------------------
+ ^b118 CHANGED: SET KEY^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1. ^BSETCANCEL():^B  If SETCANCEL() is on (.T.), SET KEY 302 is
+        ignored and pressing Alt-C always terminates the application.
+
+     2. ^BAlt-D:^b  If the Debugger is enabled (e.g., with ALTD(1)), SET
+        KEY 288 is ignored and pressing Alt-D always invokes the
+        Debugger.  In both cases, however, disabling the key (with
+        SETCANCEL(.F.) or ALTD(0)) allows you to define and use a SET
+        KEY equivalent.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 119 CHANGED: SET PROCEDURE*
+'------------------------------------------------------------------------------
+ ^b119 CHANGED: SET PROCEDURE*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET PROCEDURE* is now classified as a compatibility command.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 120 CHANGED: SET RELATION
+'------------------------------------------------------------------------------
+ ^b120 CHANGED: SET RELATION^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     New syntax allows omission of the TO keyword for multiple
+     relations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 121 CHANGED: SET TYPEAHEAD
+'------------------------------------------------------------------------------
+ ^b121 CHANGED: SET TYPEAHEAD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1. ^bMinimum setting:^b  The minimum setting for SET TYPEAHEAD is
+        driver dependent.  For the standard IBM-PC drivers, this minimum
+        is 15.  Note, however, that SET TYPEAHEAD TO 0 is a special case
+        that is supported for all drivers and that the behavior of SET
+        TYPEAHEAD TO 0 is slightly different than in Summer '87.
+
+     2. ^bSET TYPEAHEAD TO 0:^B  When TYPEAHEAD is SET TO zero, keyboard
+        polling is suspended.  An explicit request for keyboard input,
+        however, will temporarily enable the keyboard and read any
+        pending keystrokes from the BIOS buffer.  Calling NEXTKEY()
+        constitutes such an explicit request.  NEXTKEY() reads any
+        pending keystrokes from the BIOS buffer and returns the INKEY()
+        value of the first keystroke read, or zero if no keystrokes are
+        pending.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 122 CHANGED: SET UNIQUE*
+'------------------------------------------------------------------------------
+ ^b122 CHANGED: SET UNIQUE*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET UNIQUE* is now classified as a compatibility command.  It is
+     recommended that you use INDEX...UNIQUE to create unique indexes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 123 CHANGED: STORE*
+'------------------------------------------------------------------------------
+ ^b123 CHANGED: STORE*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The STORE* command is now obsolete with the addition of the in-line
+     assignment (:=) operator.  Other powerful assignment operators such
+     as increment (++), decrement (--), and compound assignments (+=,
+     -=, *=, /=) have also been added to the Clipper language.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 124 CHANGED: TEXT*
+'------------------------------------------------------------------------------
+ ^b124 CHANGED: TEXT*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     TEXT* is now classified as a compatibility command.  It is
+     recommended that you use one of the other Clipper output methods
+     (e.g., ?, @...SAY, MEMOLINE()) instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 125 NEW:     USE
+'------------------------------------------------------------------------------
+ ^b125 NEW: USE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     USE has been enhanced with several new keywords:
+
+     1. ^bNEW^b opens files in the next available work area.
+
+     2. ^bREADONLY^b opens files with a read-only attribute.
+
+     3. ^bSHARED^b opens files with shared access regardless of the
+        current EXCLUSIVE SETting.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 126 CHANGED: WAIT*
+'------------------------------------------------------------------------------
+ ^b126 CHANGED: WAIT*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     WAIT* is now classified as a compatibility command.  It is
+     recommended that you use INKEY() or @...GET instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bStatements^b
+!short:
+!short: 127 NEW:     BEGIN SEQUENCE
+'------------------------------------------------------------------------------
+ ^b127 NEW: BEGIN SEQUENCE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     BEGIN SEQUENCE has been enhanced with two added clauses that increase
+     the ability to generate and handle runtime errors and exceptions:
+
+     1. ^bRECOVER USING:^B  The RECOVER [USING <idVar>] clause defines
+        an error recovery mechanism within the SEQUENCE construct where
+        control branches after a BREAK.
+
+     2. ^BBREAK:^B  The BREAK <exp> clause now allows a return value to
+        be specified that can be captured by the RECOVER USING clause.
+        This is generally an error object to be passed to the RECOVER
+        <idVar> where it may be used to determine the nature of the
+        error.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 128 CHANGED: BEGIN SEQUENCE
+'------------------------------------------------------------------------------
+ ^b128 CHANGED: BEGIN SEQUENCE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You can no longer EXIT or LOOP from within a BEGIN SEQUENCE...END
+     construct.  Both conditions are trapped as compiler errors.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 129 CHANGED: DECLARE*
+'------------------------------------------------------------------------------
+ ^b129 CHANGED: DECLARE*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DECLARE* has been classified as a compatibility statement.  It is
+     synonymous with PRIVATE which should be used instead.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 130 CHANGED: DO*
+'------------------------------------------------------------------------------
+ ^b130 CHANGED: DO*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DO* is now classified as a compatibility command.  The recommended
+     way to call a procedure or function is to include the procedure
+     name on a line by itself.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 131 NEW:     FIELD
+'------------------------------------------------------------------------------
+ ^b131 NEW: FIELD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FIELD is a new statement that declares database field names to the
+     compiler and optionally supplies an implicit alias for the fields.
+     If an alias is not specified in the FIELD statement, unaliased
+     references to FIELD variables are implicitly preceded by the field
+     alias (FIELD->).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 132 NEW:     FUNCTION
+'------------------------------------------------------------------------------
+ ^b132 NEW: FUNCTION^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     FUNCTION declarations have been enhanced in several ways:
+
+     1. ^BSTATIC FUNCTION:^B  The ability to declare a STATIC FUNCTION
+        limits the scope of the function to the (.prg) file where it is
+        defined.
+
+     2. ^bParameters:^b  Formal parameters may be declared as part of the
+        FUNCTION definition by enclosing the variable names in
+        parentheses following the function name.
+
+     3. ^bVariable declarations:^b  FIELD, LOCAL, MEMVAR, and STATIC
+        variable declarations may be made as part of the FUNCTION
+        definition.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 133 NEW:     LOCAL
+'------------------------------------------------------------------------------
+ ^b133 NEW: LOCAL^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     LOCAL is a new statement that declares one or more variables or
+     arrays local to the current procedure or user-defined function.
+     Variables declared as local may be assigned an initial value as
+     part of the LOCAL statement using the in-line assignment (:=)
+     operator.  The visibility and lifetime of a local variable are
+     limited to the declaring procedure or function.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 134 NEW:     MEMVAR
+'------------------------------------------------------------------------------
+ ^b134 NEW: MEMVAR^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     MEMVAR is a new statement that declares memory variable names to
+     the compiler.  When unaliased references are made to variable names
+     declared with MEMVAR, the memory variable alias (MEMVAR->) is
+     assumed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 135 CHANGED: PARAMETERS
+'------------------------------------------------------------------------------
+ ^b135 CHANGED: PARAMETERS^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In Clipper 5.0, the PARAMETERS statement assigns a NIL value for
+     missing command-line parameters.  In Summer '87, missing PARAMETERS
+     retain their previous value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 136 NEW:     PRIVATE
+'------------------------------------------------------------------------------
+ ^b136 NEW: PRIVATE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Variables declared as private may be assigned an initial value as
+     part of the PRIVATE statement using the in-line assignment (:=)
+     operator.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 137 NEW:     PROCEDURE
+'------------------------------------------------------------------------------
+ ^b137 NEW: PROCEDURE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     PROCEDURE declarations have been enhanced in several ways:
+
+     1. ^bSTATIC PROCEDURE:^B  The ability to declare a STATIC PROCEDURE
+        limits the scope of the procedure to the .prg file where it is
+        defined.
+
+     2. ^BParameters:^b  Formal parameters may be declared as part of
+        the PROCEDURE definition by enclosing the variable names in
+        parentheses following the function name.
+
+     3. ^bVariable declarations:^b  FIELD, LOCAL, MEMVAR and STATIC
+        variable declarations may be made as part of the PROCEDURE
+        definition.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 138 NEW:     PUBLIC
+'------------------------------------------------------------------------------
+ ^b138 NEW: PUBLIC^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Variables declared as public may be assigned an initial value as
+     part of the PUBLIC statement using the in-line assignment (:=)
+     operator.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 139 NEW:     STATIC
+'------------------------------------------------------------------------------
+ ^b139 NEW: STATIC^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     STATIC is a new statement that declares variables and arrays that
+     have a lifetime of the entire program.
+
+     Variables declared as static may be assigned an initial value as
+     part of the STATIC statement using the in-line assignment (:=)
+     operator.
+
+     The visibility of a static variable is limited to the declaring
+     procedure or function.
+
+     If declared before the first procedure or function declaration in
+     a program (.prg) file compiled with the /N option, static variables
+     are visible anywhere in the file.  This is referred to as file-wide
+     scope.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bPreprocessor Directives^b
+!short:
+!short: 140 NEW:     Directives
+'------------------------------------------------------------------------------
+ ^b140 NEW: Directives^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Clipper 5.0 compiler has a new pre-processor feature that
+     supports the following directives:
+
+     ^b#command | #translate
+     ^b#define
+     ^b#ifdef...#else...#endif
+     ^b#ifndef...#else...#endif
+     ^b#include
+     ^b#undef
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bOperators^b
+!short:
+!short: 141 NEW:     :=
+'------------------------------------------------------------------------------
+ ^b141 NEW: :=^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The in-line assignment operator (:=) is new to Clipper 5.0.  Using
+     this operator, multiple assignments can be made to several
+     different variables at once, making the STORE command obsolete.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 142 CHANGED: .AND.
+'------------------------------------------------------------------------------
+ ^b142 CHANGED: .AND.^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In a departure from Summer '87, Clipper 5.0 shortcuts the
+     evaluation of .AND. operands by evaluating the second condition
+     only when the first condition is true (.T.).  If the first
+     condition is false (.F.), the .AND. operation is false (.F.), and
+     the second condition is never evaluated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 143 CHANGED: .OR.
+'------------------------------------------------------------------------------
+ ^b143 CHANGED: .OR.^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In a departure from Summer '87, Clipper 5.0 shortcuts the
+     evaluation of .OR. operands by evaluating the second condition only
+     when the first condition is false (.F.).  If the first condition is
+     false (.T.), the .OR. operation is true (.T.), and the second
+     condition is never evaluated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 144 NEW:     op=
+'------------------------------------------------------------------------------
+ ^b144 NEW: op=^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     A group of compound assignment operators (+=, -=, *=, /=, %=, and
+     **=) have been added to the Clipper language to allow operation and
+     assignment in a single statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 145 NEW:     ++
+'------------------------------------------------------------------------------
+ ^b145 NEW: ++^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The increment operator (++) is new to Clipper 5.0.  ++ is a unary
+     operator that increments a variable by one and assigns the
+     incremented value back to the variable.  It can be used as either a
+     prefix or a postfix operator, depending on when the assignment is
+     to take place.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 146 NEW:     --
+'------------------------------------------------------------------------------
+ ^b146 NEW: --^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The decrement operator (--) is new to Clipper 5.0.  -- is a unary
+     operator that decrements a variable by one and assigns the
+     decremented value back to the variable.  It can be used as either a
+     prefix or a postfix operator, depending on when the assignment is
+     to take place.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 147 NEW:     &
+'------------------------------------------------------------------------------
+ ^b147 NEW: &^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The macro operator (&) can be used to evaluate an expression by
+     enclosing the expression in parentheses following the operator
+     (e.g., &(INDEXKEY(0)) ).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 148 NEW:     ->
+'------------------------------------------------------------------------------
+ ^b148 NEW: ->^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The alias operator (->) has been enhanced in several ways:
+
+     1. The alias operator (->) now supports the FIELD and MEMVAR alias
+        names to refer explicitly to a database field or memory
+        variable.
+
+     2. In addition, database fields may be aliased using their work
+        area number by enclosing the number in parentheses before the
+        alias operator (e.g., (5)->CustName).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 149 NEW:     { }, ||
+'------------------------------------------------------------------------------
+ ^b149 NEW: { }, ||^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The { } operator is a new operator used to define literal arrays
+     and code blocks:
+
+     1. ^bLiteral arrays:^b  Curly braces ({ }) used to indicate literal
+        arrays.  This operator can be used anywhere an array can be
+        specified.  For example:
+
+        aArray := { 1, 2, 3, 4 }
+
+        defines a literal array, assigning it to aArray.
+
+     2. ^bCode blocks:^b  Curly braces are also used to define a code
+        block.  A code block consists of list of expressions.  In
+        addition, the vertical bars (||) are used to specify an argument
+        list to pass to the code block.  For example:
+
+        bBlock := { |a, b| QOUT("The sum is: "), QQOUT(a + b) }
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 150 NEW:     :
+'------------------------------------------------------------------------------
+ ^B150 NEW: :^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The send (:) operator is used to construct messages that can be
+     sent to objects.  A message has the form:
+
+     ^b<object>:<selector>([<argList>])
+
+     where <object> represents the object the message is sent and
+     <selector> represents the operation (method) to perform.  If the
+     <selector> is an exported instance variable, the variable is
+     accessed and its value is returned.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExtend System^b
+!short:
+!short: 151 NEW:     _storc()
+'------------------------------------------------------------------------------
+ ^b151 NEW: _storc()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _storc() is a new function in the Extend System that allows you to
+     store a null-terminated character value to a Clipper variable
+     passed by reference from Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 152 NEW:     _storclen()
+'------------------------------------------------------------------------------
+ ^b152 NEW: _storclen()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _storclen() is a new function in the Extend System that allows you
+     to store a character value to a Clipper variable passed by
+     reference from Clipper.  With this function, you specify the length
+     of the string so that it does not have to be null-terminated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 153 NEW:     _stords()
+'------------------------------------------------------------------------------
+ ^b153 NEW: _stords()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _stords() is a new function in the Extend System that allows you to
+     store a date value to a Clipper variable passed by reference from
+     Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 154 NEW:     _storl()
+'------------------------------------------------------------------------------
+ ^b154 NEW: _storl()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _storl() is a new function in the Extend System that allows you to
+     store a logical value to a Clipper variable passed by reference
+     from Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 155 NEW:     _stornd()
+'------------------------------------------------------------------------------
+ ^b155 NEW: _stornd()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _stornd() is a new function in the Extend System that allows you to
+     store a numeric value to a Clipper variable passed by reference
+     from Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 156 NEW:     _storni()
+'------------------------------------------------------------------------------
+ ^b156 NEW: _storni()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _storni() is a new function in the Extend System that allows you to
+     store a numeric value to a Clipper variable passed by reference
+     from Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 157 NEW:     _stornl()
+'------------------------------------------------------------------------------
+ ^b157 NEW: _stornl()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _stornl() is a new function in the Extend System that allows you to
+     store a numeric value to a Clipper variable passed by reference
+     from Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 158 NEW:     _xalloc()
+'------------------------------------------------------------------------------
+ ^b158 NEW: _xalloc()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _xalloc() is a new function in the Extend System that allows a C or
+     Assembly language function to allocate memory from Clipper's fixed
+     heap.  A NULL pointer is returned if the allocation is
+     unsuccessful.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 159 NEW:     _xfree()
+'------------------------------------------------------------------------------
+ ^b159 NEW: _xfree()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _xfree() is a new function in the Extend System that releases
+     memory allocated by _xalloc() or _xgrab.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 160 NEW:     _xgrab()
+'------------------------------------------------------------------------------
+ ^b160 NEW: _xgrab()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     _xgrab() is a new function in the Extend System that allows a C or
+     Assembly language function to allocate memory from Clipper's fixed
+     heap.  A runtime error is generated if the allocation is
+     unsuccessful.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 161 CHANGED: _exmgrab()
+'------------------------------------------------------------------------------
+ ^b161 CHANGED: _exmgrab()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The _exmgrab() function is #defined to _xgrab() in extend.h to
+     maintain compatibility with previous releases.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 162 REMOVED: nandef.h
+'------------------------------------------------------------------------------
+ ^b162 REMOVED: nandef.h^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Extend System header file, nandef.h, has been removed in
+     Clipper 5.0.  Portions of this file have been added to extend.h.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bRuntime Error System^b
+!short:
+!short: 163 NEW:     Runtime Error System
+'------------------------------------------------------------------------------
+ ^b163 NEW: Runtime Error System^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Runtime Error System has been updated in Clipper 5.0.  The new
+     system, still in keeping with Clipper's open architecture
+     philosophy, uses the Error object class along with a few
+     specialized functions to allow improved runtime error handling.
+     The Clipper 5.0 standard error handling system is defined in
+     Errorsys.prg as it was in Summer '87; however, the Summer '87 error
+     functions (e.g., Db_error(), Undef_error(), Print_error(),
+     Expr_error()) are no longer supported and are not supplied as part
+     of the 5.0 system.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bReserved Words^b
+!short:
+!short: 164 NEW:     Reserved Words
+'------------------------------------------------------------------------------
+ ^b164 NEW: Reserved Words^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following reserved words are new to Clipper 5.0:
+
+     ^bFIELD
+     ^bFUNCTION
+     ^bMEMVAR
+     ^bPROCEDURE
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bData Types^b
+!short:
+!short: 165 CHANGED: Arrays
+'------------------------------------------------------------------------------
+ ^b165 CHANGED: Arrays^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Arrays in Clipper 5.0 have been enhanced in a number of ways:
+
+     1.  ^bArray references:^b  Arrays in Clipper 5.0 are handled
+         referentially, allowing multiple variables to refer to the same
+         array.  Arrays are automatically deallocated when all
+         references are eliminated.  For example:
+
+         aArray1     := { 1, 2, 3 }
+         aArray2     := aArray1
+         aArray1 [1] := 10
+
+         ? aArray2 [1]           // Result: 10
+
+     2.  ^bNested arrays:^b  Array elements may contain references to
+         other arrays, allowing you to create complex data structures.
+         For example:
+
+         LOCAL aArray1 [1], aArray2 [1]
+         //
+         aArray1 [1] := aArray2
+         aArray2 [1] := 10
+         //
+         ? aArray1 [1, 1]        // Result: 10
+
+     3.  ^bMulti-dimensional arrays:^b  Clipper 5.0's support of nested
+         arrays allows you to create multi-dimensional arrays.  Elements
+         in multi-dimensional or nested arrays can be referenced using
+         either Pascal or C syntax, as shown in the following examples:
+
+         // Pascal syntax
+         LOCAL aArray [2, 2]
+         aArray [1, 1] := 10
+         aArray [1, 2] := 12
+
+         // C syntax
+         LOCAL aArray [2][2]
+         aArray [1][1] := 10
+         aArray [1][2] := 12
+
+     4.  ^bCreating arrays:^b  Arrays in Summer '87 could only be created
+         using the DECLARE statement.  In Clipper 5.0, arrays can be
+         created in a number of ways:
+
+         ^b^CFE^b  Declaration statement
+
+            LOCAL aArray [2, 2]
+
+         ^b^CFE^b  ARRAY() function
+
+            ARRAY( 2, 2 )
+
+         ^b^CFE^b  Literal array
+
+            { 1, 2, {1, 2} }
+
+     5.  ^bDynamic sizing:^b  In Summer '87, the size of an array was
+         determined when the array was created by the DECLARE
+         statement.  In Clipper 5.0, the size of an array is completely
+         dynamic.  At any time after an array is created, elements can
+         be added or removed using the AADD() and ASIZE() functions.
+         For example:
+
+         // Create an array
+         aArray := { 1, 2 }      // Result: aArray is now {1, 2}
+
+         // Add an element and assign it a value
+         AADD( aArray, 3 )       // Result: aArray is now {1, 2, 3}
+
+         // Add an element
+         ASIZE( aArray, 4 )      // Result: aArray is now {1, 2, 3, NIL}
+
+         // Remove two elements
+         ASIZE( aArray, 2 )      // Result: aArray is now {1, 2}
+
+     6.  ^bReturn values:^b  In Summer '87, you could pass an array as
+         an argument to a procedure or a user-defined function, but you
+         could not return an array.  In Clipper 5.0, you can now return
+         an array from a user-defined function.  For example:
+
+         myArray := MakeArray()
+         ? myArray [1, 1]        // Result: 1
+
+         FUNCTION MakeArray
+            RETURN { {1, 2}, {1, 2} }
+
+     7.  ^bLiteral arrays:^b  In Clipper 5.0, an array can be specified
+         as a constant or literal value by enclosing a list of
+         expressions in curly ({}) braces:
+
+         aArray := { 1, 2, 3, 4 }
+
+         The list of expressions can evaluate to any data including
+         other arrays.
+
+     8.  ^bEmpty arrays:^b  In Summer '87, arrays had to have at least
+         one element.  Because Clipper 5.0 arrays can be sized
+         dynamically, you can create arrays with no elements.  These are
+         commonly referred to as empty arrays.  For example:
+
+         aArray := {}
+         ? LEN( aArray )         // Result: 0
+
+     9.  ^bNew array functions:^b  Adding to the list of array functions
+         supported in Summer '87, Clipper 5.0 adds the following
+         functions:
+
+         ^bTable: New Clipper 5.0 Array Functions^b
+         컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+         ^bFunction       Action^b
+         컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+         AADD()         Add a new element to the end of an array
+         ACLONE()       Duplicate a nested or multi-dimensional array
+         AEVAL()        Execute a code block for each element in an array
+         ARRAY()        Create an uninitialized array of specified length
+         ASIZE()        Grow or shrink an array
+         컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 166 NEW:     Code Blocks
+'------------------------------------------------------------------------------
+ ^b166 NEW: Code Blocks^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Code blocks have been added to Clipper 5.0 as a new data type.
+     Code blocks allow compiled code to be treated as data which
+     provides a capability similar to macros.
+
+     Like other data types, code blocks can be assigned to variables,
+     passed as arguments and returned from functions.  Whenever desired,
+     a code block can be evaluated.  This executes the code in the block
+     and returns its result.
+
+     A code block can also be declared with block parameters, which
+     behave like the formal parameters of a function or procedure.
+     Parameter values can then be supplied each time the block is
+     evaluated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 167 NEW:     NIL
+'------------------------------------------------------------------------------
+ ^b167 NEW: NIL^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     NIL has been added to Clipper 5.0 as a new data type.  This value
+     is automatically assigned to all uninitialized variables (except
+     for publics).  Also, when parameters are omitted in a procedure or
+     function call, NIL is automatically passed in their place.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 168 NEW:     Objects
+'------------------------------------------------------------------------------
+ ^b168 NEW: Objects^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Objects are new in Clipper 5.0.  Objects are instances of classes.
+     Classes in turn define the behavior and structure of objects.  In
+     Clipper 5.0, there are four built-in classes of objects:
+
+     ^bTable: Clipper 5.0 Classes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     ^bClass        Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     Error        Provides objects containing information about
+                  runtime errors
+     Get          Provides objects for interactive editing of database
+                  fields and memory variables
+     TBrowse      Provides objects for browsing table-oriented data
+     TBColumn     Provides column objects for TBrowse objects
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+     Each class has a function (xxxNew()) to create instances of
+     the class.  Each class also has a number of exported
+     instance variables and methods.  Instance variables
+     represent the data structure of the class and methods (like
+     functions and procedures) implement the operations an object
+     can perform.  Changes in state as well as requests for an
+     object to do something are performed by sending the object a
+     message using the send (:) operator, as follows:
+
+     ^b<object>:<method>(<arg list>)
+
+     Note that all Clipper 5.0 classes are built-in.  There is no
+     way to define your own classes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bUtilities^b
+!short:
+!short: 169 NEW:     Compiler
+'------------------------------------------------------------------------------
+ ^b169 NEW: Compiler^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     With Clipper 5.0, a completely new compiler has been supplied.
+     This compiler is considerably more complex than the Summer '87
+     compiler with many more options and some new behaviors.  The
+     following is a list of some of the major changes this compiler
+     represents over the Summer '87 compiler:
+
+     1. ^bPreprocessor:^b  The Clipper 5.0 compiler includes a built-in
+        preprocessor that automatically runs each time a program (.prg)
+        file is compiled.  Its basic function is similar to that of a C
+        compiler preprocessor: it scans the text of the program you are
+        compiling, searching and replacing text according to rules
+        defined by preprocessor directives.  Refer to the list of
+        directives above.
+
+     2. ^bCommands:^b  All commands in Clipper 5.0 are defined by the
+        preprocessor directives #command and #translate.
+
+     3. ^bStandard Commands:^b  All Clipper 5.0 standard commands are
+        defined in the header file STD.CH.
+
+     4. ^bCommand-line options:^b  All compiler options can be specified
+        prefaced by the backslash (/) character as well as the dash (-)
+        character.
+
+     5. ^bOptions:^b  All new (and modified) compiler options are
+        summarized below:
+
+        ^bTable: New and Changed Compiler Options^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        ^bOption    Meaning^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        /A        Automatic MEMVAR declaration
+        /B        Include debugging information in object file
+        /CREDIT   Display the Clipper 5.0 credits
+        /D        Define an identifier to the pre-processor
+        /I        Specify an #include file search path
+        /N        Specify no implicit starting procedure
+        /P        In previous releases, this option allowed you to load
+                  the compiler and switch disks.  This feature is no
+                  longer supported.  The /P option is now used to
+                  generate a pre-processed output (.ppo) file.
+        /R        Request linker to search named library
+        /U        Specify a user-defined standard header file
+        /V        Assume references to undeclared or unaliased variable
+                  names are public or private variables
+        /W        Enable warning messages for undeclared variables, etc.
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+     6. ^bEnvironment variables:^b  In addition to command-line options,
+        the Clipper 5.0 compiler can now use environment variables to
+        control compiler operations as follows:
+
+        ^bTable: Compiler Environment Variables^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        ^bVariable     Meaning^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        CLIPPERCMD   Defines default compiler command-line options
+        INCLUDE      Specifies a path list to search for header files
+        TMP          Specifies a directory for creating temporary files
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+     7. ^b(.clp) files:^b  There are two changes that have been made to
+        compiler (.clp) script files.  First, files specified in a
+        (.clp) file can include a drive and path spec.  Second, files
+        specified in a (.clp) file can optionally include an extension.
+
+     8. ^bPickiness:^b  As a general principle, the Clipper 5.0 compiler
+        provides a high degree of compatibility with the Summer '87
+        compiler.  However, it adheres to a more rigorously defined
+        semantic model and, therefore, is pickier in some cases about
+        syntax that was accepted by the Summer '87 compiler.
+
+     9. ^bOptimization:^b  The Clipper 5.0 compiler performs several types
+        of optimization including:
+
+        ^B^CFE^B  Shortcutting
+        ^B^CFE^B  Constant folding
+        ^B^CFE^B  Dead code removal
+
+        Refer to Release Note #4 for more details on this subject.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 170 NEW:     Linker
+'------------------------------------------------------------------------------
+ ^b170 NEW: Linker^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper 5.0 has a new linker, .RTLink for Clipper, which is
+     designed to make it easier to create large programs without the
+     headache of creating overlays as was required by PLINK-86.  In
+     particular, the following are the areas of improvement that .RTLink
+     for Clipper represents:
+
+     1.  ^bDynamic overlays:^b  All Clipper-compiled code is
+         automatically overlayed.  Dynamic overlays can be either
+         internal or external.  That is, they can be either bound into
+         the executable (.EXE) file or placed in a separate overlay
+         (.OVL) file.
+
+     2.  ^bIncremental linking of Clipper-compiled code:^b  For very
+         large Clipper-generated object files, .RTLink will link only
+         procedures and user-defined functions that have changed since
+         the last link.  Note, for small modules the actual speed of
+         linking might be slower.
+
+     3.  ^bPre-linking of existing libraries and object files:^b .RTLink
+         will create pre-linked portions of libraries and object files to
+         a .PLL file.  Use this feature to speed linking or if you want
+         more than one .EXE file to share the same library code, thereby
+         saving disk space.
+
+         Note that the installation program generates BASE50.PLL
+         containing most of CLIPPER.LIB.  Using this pre-linked library
+         will make linking of programs at development-time many times
+         faster than without it.  Assuming the \BIN directory is in your
+         path, typical linking syntax is:
+
+         C>RTLINK FI <objList> /PLL:BASE50
+
+     4.  ^bStatic overlaying of C and Assembler code:^b  Static
+         overlaying is still supported for C and Assembler in the same
+         way it was with PLINK-86.
+
+     5.  ^bCommon syntax compatibility:^b  .RTLink supports both
+         Microsoft Link (positional) and PLINK-86 (freeformat)
+         compatible syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 171 NEW:     RMAKE
+'------------------------------------------------------------------------------
+ ^b171 NEW: RMAKE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Make system in Clipper 5.0, RMAKE.EXE, has been completely
+     rewritten.  The new system provides you with a much more powerful
+     make capability than was available with previous releases.  The
+     enhancements include additional command-line options, directives
+     that allow conditional processing of the make file, and enhanced
+     macro capabilities.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 172 NEW:     Debugger
+'------------------------------------------------------------------------------
+ ^b172 NEW: Debugger^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Clipper 5.0 has a new source code debugger, CLD.EXE, that allows
+     you to debug source code as it executes.  The debugger has a number
+     of features including: Breakpoints that cause execution to pause
+     when a specified point in the source code is reached; Watchpoints
+     that allow you to monitor the values of variables or expressions;
+     Tracepoints that cause execution to pause when the value of a
+     specified expression changes; and a Callstack Window that allows
+     you to view all pending procedure and code block activations.
+
+     The Debugger library file, CLD.LIB, is provided so that you can
+     link the Debugger into your application as an object file.  Using
+     this feature, the Debugger can be called while the application is
+     running without the presence of CLD.EXE.  The Alt-D key is used to
+     invoke the Debugger when it is linked and ALTD() controls the use
+     of the Alt-D key.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bMiscellaneous^b
+!short:
+!short: 173 CHANGED: Aliases
+'------------------------------------------------------------------------------
+ ^b173 CHANGED: Aliases
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     1. ^bStatements can begin with an alias:^b  Unlike Summer '87, you
+        can now specify statements beginning with an alias.  This allows
+        you to execute an alias expression on a line by itself as shown
+        below:
+
+        <alias>->(<exp>)
+
+     2. ^bReferencing work areas with an expression:^b  In Clipper 5.0,
+        you can reference a work area using an expression as the left
+        operand of the alias (->) operator if the expression is enclosed
+        by parentheses.  This expression is a numeric value representing
+        the work area number.  The intent is to allow work area numbers
+        to be used as handles (not numeric values).  It is useful for
+        passing references to work areas without using macros, aliases,
+        names, etc.  For example:
+
+        USE Customers NEW
+        nWork := SELECT()
+        .
+        .
+        .
+        ? (nWork)->(FIELDGET(1))
+
+     3. ^bUndefined aliases:^b  Clipper 5.0 does not allow an alias to
+        be used before it is defined.  Summer '87 allowed this usage in
+        certain cases.  The most common example is to test if a database
+        is in USE in another work area with a construct.  For example:
+
+        ? MyTable->( USED() )
+
+        In Clipper 5.0, this generates a runtime error.  There are
+        numerous workarounds, but the simplest is to use the
+        SELECT() function to check for the existence of a particular
+        alias:
+
+        ? SELECT("MyTable") != 0
+
+        Another case is where undefined aliases were used in some Summer
+        '87 programs with the M-> alias in an aliased expression.  For
+        example:
+
+        ? M->( MyFunc() )
+
+        Clipper 5.0 generates an error with this expression.  The
+        workaround is simply to select an unoccupied work area before
+        evaluating the expression.  This can be done with a #translate,
+        if desired:
+
+        #translate M->( <expr> )  =>   (0)->( <expr> )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 174 NEW:     Comments
+'------------------------------------------------------------------------------
+ ^b174 NEW: Comments^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In Clipper 5.0, two new comment indicators have been added to the
+     existing set of comment indicators:
+
+     /* <text> */  Multi-line comment indicator
+     // <text>     In-line comment indicator
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 175 NEW:     Environment Variables
+'------------------------------------------------------------------------------
+ ^b175 NEW: Environment Variables^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following new environment variables are supported by various
+     components of the Clipper 5.0 system:
+
+   ^bTable: Clipper 5.0 Environment Variables^b
+   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+   ^bVariable    Component            Purpose^b
+   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+   CLIPPERCMD  (compiler)           Set default compiler options
+   INCLUDE     (compiler)           Paths to search for header files
+   LIB         (linker, runtime)    Paths to search for (.LIB, .PLT, .PLL)
+   OBJ         (linker)             Paths to search for object (.OBJ) files
+   PLL         (linker, runtime)    Paths to search for .PLT and .PLL files
+   RMAKE       (make)               Set default RMAKE command-line options
+   TMP         (compiler, linker)   Location for creating temporary files
+   RTLINKCMD   (linker)             Set default .RTLink command-line options
+   TMP         (compiler, linker)   Location for creating temporary files
+   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 176 NEW:     Libraries
+'------------------------------------------------------------------------------
+ ^b176 NEW: Libraries^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In Clipper 5.0, the library organization is different from Summer
+     '87 with a greater granularity.
+
+     ^bTable: Clipper 5.0 Libraries^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     ^bLibrary        Contents^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+     CLIPPER.LIB    Contains critical subsystems, built-in functions,
+                    extend functions, and many standard functions
+     EXTEND.LIB     Contains the remaining standard functions
+     TERMINAL.LIB   Contains the terminal I/O system.  This includes
+                    routines for keyboard and screen handling other than
+                    OUTSTD() and OUTERR()
+     DBFNTX.LIB     Contains the (.ntx) handling section of the (.dbf)
+                    database handling system
+     CLD.LIB        Contains a linkable version of The Clipper Debugger
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+     All libraries except CLD.LIB are automatically searched for
+     undefined symbols by the linker.  CLD.LIB must be explicitly
+     specified when the linker is invoked.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 177 CHANGED: Runtime Environment
+'------------------------------------------------------------------------------
+ ^b177 CHANGED: Runtime Environment^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In Clipper 5.0, the runtime configuration options (as controlled by
+     the CLIPPER environment variable) of a Clipper-compiled program
+     have been enhanced to provide you with more control over how your
+     application runs.  The following are the major areas of change:
+
+     1.  You can now specify runtime environment settings on the
+         application command-line as well as in the CLIPPER environment
+         variable.  To do this, invoke the application program in the
+         following manner:
+
+         C><app> [//<setting> ... ] [<app arguments>]
+
+     2.  You can now specify configuration settings with a colon to
+         separate the CLIPPER parameter from its associated argument.
+
+     3.  The V and R parameters available under previous releases are no
+         longer supported.
+
+     4.  The E, F, and X parameters are basically the same as in
+         previous versions.
+
+     5.  The following list summarizes the new CLIPPER parameters:
+
+         ^bTable: New Clipper 5.0 Runtime Configuration Parameters^b
+         컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+         ^bParameter  Meaning^b
+         컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+         DYNK       Controls the amount of memory (in kilobytes)
+                    dedicated to the dynamic overlay cache
+         DYNF       Specifies the number of file handles the dynamic
+                    overlay system is allowed to use
+         SWAPK      Specifies the maximum allowable size of the disk
+                    swap file used for the virtual memory (VM) system
+         SWAPPATH   Specifies the location of the virtual memory swap
+                    file
+         XHEAP      Controls the minimum guaranteed amount of fixed
+                    memory available using _xgrab() or _xalloc()
+         BADCACHE   Causes VMM to save and restore the state of the EMM
+                    page frame before and after each EMM access
+         CGACURS    Prevents the use of the extended cursor of the
+                    EGA/VGA
+         컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDropped Features^b
+!short:
+!short: 178 REMOVED: PLINK86.EXE
+'------------------------------------------------------------------------------
+ ^b178 REMOVED: PLINK86.EXE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     PLINK86.EXE, the linker shipped with previous releases, is not
+     included in Clipper 5.0.  The new linker, RTLINK.EXE, supports
+     PLINK-86 Plus syntax and provides you with many new and powerful
+     features.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 179 REMOVED: SWITCH
+'------------------------------------------------------------------------------
+ ^b179 REMOVED: SWITCH^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SWITCH.EXE, a memory management utility shipped with previous
+     releases, is not included in Clipper 5.0.  This utility has been
+     made obsolete by enhancements to the compiler and linker.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 180 REMOVED: LINE
+'------------------------------------------------------------------------------
+ ^b180 REMOVED: LINE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     LINE.EXE is not included in Clipper 5.0.  This utility has been
+     made obsolete by enhancements to The Clipper Debugger.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 181 REMOVED: MAKE
+'------------------------------------------------------------------------------
+ ^b181 REMOVED: MAKE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     MAKE.EXE, the make system shipped with previous releases, is not
+     included in Clipper 5.0.  An improved make system, RMAKE.EXE, has
+     taken its place.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 182 REMOVED: INDEX
+'------------------------------------------------------------------------------
+ ^b182 REMOVED: INDEX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     INDEX.EXE is not included in Clipper 5.0.  This utility has been
+     made obsolete by enhancements to The Clipper Debugger.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: 183 REMOVED: Screen Drivers
+'------------------------------------------------------------------------------
+ ^b183 REMOVED: Screen Drivers^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The ANSI.OBJ, IBMANSI.OBJ, and PCBIOS.OBJ screen drivers are not
+     included in Clipper 5.0.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

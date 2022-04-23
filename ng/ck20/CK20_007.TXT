@@ -1,0 +1,409 @@
+!short: ^UOverview of tBrowse Functions
+'------------------------------------------------------------------------------
+
+
+                 ^BOverview of tBrowse Functions
+                 ^B~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   It is known that tBrowse Object is one of the most important class
+   of clipper. When the dbedit() can't meet your requirement, the
+   tbrowse object maybe the only choice.
+
+   It is said tBrowse Object is easy to learn and use, everyone can build
+   functions based on tBrowse object. But in details, it usually have some
+   bugs while using tBrowse object.
+
+   In most case of bugs, the record pointer and o:skipblock of tBrowse
+   object maybe the point. So, there are two function are provided
+   for o:skipblock
+
+   ^BtbStdSkip()    ^B  common skip function
+   ^BtbWhileSkip()  ^B  skip record in the "WHILE...FOR" condition.
+
+   dbEdit() combines the action of new tbrowse object and doing browse,
+   there is no break for user to perform other definition without provided
+   by dbEdit(). So, Casual-Kit process tbrowse object using two function.
+
+   ^bNewBrowse()    ^B new tBrowse object with "WHILE..FOR" condition
+   ^bDoBrowse()     ^B do browse
+
+   A combination function is provided to perform the browse operation
+   and database management.
+
+   ^BcBrowse()      ^B Browse and manage database, many options
+
+   For more details or sample, please refer to source "tBRowse.Prg".
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: tbStdSkip()   Common Skip Function for tBrowse
+'------------------------------------------------------------------------------
+
+   ^BtbStdSkip( <n> )  ->  nSkipped
+
+    <n> is the record number to skip, if n=.t. means go bottom, .f. to top
+
+   ^BExample
+
+     // This function is written for o:skipblock. It will regard the EOF
+     // as a record of database (it is used for appending record).
+
+     o := tbrowsenew()
+
+     o:skipblock     := { |n| tbStdSkip(n) }
+     o:gotopblock    := { || dbgotop()     }
+     o:gobottomblock := { || dbgobottom()  }
+     ......
+
+   // If you don't want the cursor go to EOF, just set o:skipblock as:
+
+     o:skipblock := { |n| tbstdskip(n) - if(eof(),tbstdskip(-1),0) }
+!seealso: "tbWhileSkip()" "NewBrowse()" "DoBrowse()" "cBrowse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: tbWhileSkip() Skip function with "WHILE..FOR" condition
+'------------------------------------------------------------------------------
+
+   ^BtbStdSkip( <n>, <o> )  ->  nSkipped
+
+   <n> is the record number to skip, if n=.t. means go bottom, .f. to top
+
+   Please notice that the parameter <o>, it is the tBrowse Object.
+   This function assumes that "while..for" condition and some others
+   parameters are store in the object. They are:
+
+
+         o:cargo[1]     // bWhile     (Set by user)
+         o:cargo[2]     // bFor       (Set by user)
+         o:cargo[3]     // lEmpty
+         o:cargo[4]     // Refer record, a record no while in the range of
+                           "WHILE..FOR" condition   (Set by user)
+         o:cargo[5]     // Last Record No
+         o:cargo[6]     // spare
+
+   tbWhileSkip() is used by NewBrowse().  for more details, please refer
+   to the source code of NewBrowse()
+
+   ^BExample
+
+     // This function is written for o:skipblock. It will regard the EOF
+     // as a record of database (it is used for new record).
+
+     o := tbrowsenew()
+
+     o:cargo := { bWhileBlock, bForBlock, .f., recno(), recno(), nil }
+
+     o:skipblock     := { |n| tbWhileSkip(n,o) }
+     o:gotopblock    := { || tbWhileSkip(.f.)  }
+     o:gobottomblock := { || tbWhileSkip(.t.)  }
+     ......
+
+   // If you don't want the cursor go to EOF, just set o:skipblock as:
+
+     o:skipblock := { |n| tbwhileskip(n) - if(eof(),tbwhileskip(-1),0) }
+!seealso: "tbStdSkip()" "NewBrowse()" "DoBrowse()" "cBrowse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NewBrowse()   Create a tBrowse object
+'------------------------------------------------------------------------------
+
+   ^BNewBrowse ( [<bWhile>], [<bFor>], [<aCol>], [<aHead>], ;
+   ^B            [<nFreeze>], [<cColSep>], [<cHeadCol>], [<cFootCol>] ) ;
+   ^B       ->   tBrowseObject
+
+   ^BUsage
+
+      Create a tBrowse object with "WHILE..FOR" condition.
+
+      ^BNotice that if you use <bWhile>, you must move the record pointer
+      ^Bto a valid record of <bWhile> before using NewBrowse().
+
+      <bWhile>  code block of while condition, default is {||.t.}
+      <bFor>    code block of for condition, default is {||.t.}
+
+      <aCol>    array of column description, the elements of aCol can be
+                a numeric or a string expression or a code block, pl
+
+                acol := { 1,2,3, "if(OK,'Yes','No')", {|| padr(name,30)} }
+
+                the numeric means the Nth filed.
+
+                if <aCol> is default, all field of database will be added.
+                set <aCol>=.f. will stop to add column to tBrowse object.
+
+      <aHead>   array of the header of column. It can also be a string. pl:
+
+                aHead := { 'Field1', 'Field2', 'Field3' }
+                aHead := 'Field1, Field2, Field3'
+
+      <nFreeze>, <cColSep>, <cHeadCol>, <cFootCol> are the parameter to set
+      o:freeze, o:colsep, o:headcol, o:footcol of tBroswse object.
+
+      For more details, please refer to source code in "tbrowse.prg"
+
+
+   ^BExample
+
+
+      o := newbrowse()            // new     (all default)
+      dobrowse( 5,5,15,50, o )    // browse
+
+
+      dbseek('100')                                       // move
+      o := newbrowse( {|| dept='100'}, , {1,2,4,3,6,5} )  // new tb
+      dobrowse( 5,5,15,50,o )                             // browse
+!seealso: "tbStdSkip()" "tbWhileSkip()" "DoBrowse()" "cBrowse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DoBrowse()    Perform a browse from an tbrowse object
+'------------------------------------------------------------------------------
+
+   ^BDoBrowse ( [<x1>], [<y1>], [<x2>], [<y2>], <otb>, [<bUsrFunc>] ) -> NIL
+
+   ^BUsage
+
+       Perform a browse from an tBrowse Object.
+
+       The function is similar to the interface of dbEdit() except you need
+       to initialize the tBrowse object before using this function.
+
+       <x1>,<y1>,<x2>,<y2> is the coordinate of the screen area.
+       <otb> is a tbrwose object
+
+       <bUsrfunc> is a code block or a string of the name of user function.
+                  pl. "UF" is same as { |s,c,o| uf(s,c,o) }
+
+       DoBrowse() passes 3 parameters to <bUsrFunc>
+
+          ^BParameters:  <nStatus>, <nColumn>, <oTb>.
+
+                  <nStatus>, <nColumn> are at the same meaning as dbEdit()
+                  and <otb> is the current tBrowse object.
+
+                  <nStatus> = 0    // IDLE
+                              1    // HIT TOP
+                              2    // HIT BOTTOM
+                              3    // EMPTY, no record to browse
+                              4    // Key exception
+
+          ^BReturn Value is in the meaning like dbEdit()
+
+                  Return 0         // Abort Browse
+                         1         // continue
+                         2         // o:refreshall()
+                         3         // o:refreshcurrent()
+                         4         // o:configure(); o:refreshall()
+
+        ^BFor more details, please refer the source of "tBrowse.Prg"
+
+
+   ^BExample
+
+      o := newbrowse()            // new     (all default)
+      dobrowse( 5,5,15,50, o )    // browse
+
+
+      dbseek('100')                                       // move
+      o := newbrowse( {|| dept='100'}, , {1,2,4,3,6,5} )  // new tb
+      dobrowse( 5,5,15,50,o )                             // browse
+!seealso: "tbStdSkip()" "tbWhileSkip()" "NewBrowse()" "cBrowse()" "fBrowse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: cBrowse()     browse database ( append,edit,delete,recall,help,.. )
+'------------------------------------------------------------------------------
+
+   ^BcBrowse ( [<x1>], [<y1>], [<x2>], [<y2>], [<cMode>], [<bUser>],    ;
+   ^B          [<aCol>], [<aPict>], [<aValid>], [<aHead>], [<nFreeze>], ;
+   ^B          [<cColSep>], [<cHeadSep>], [<cFootSep>] )  -> NIL
+
+   ^BUsage
+
+       Browse and manage database. It provides "Help", "Edit","Append",
+       "Delete", "Recall" , "Seek", "Change Index Order", and other
+       functions at a browse platform.
+
+       ^BcBrowse() has many rich usage, to get more information, please
+       ^Brefer to source or test it in DOT COMMAND Platform.
+
+       ^B<cMode> is a string to request functions.
+       ^B<cMode> ::= [H] [E|[^^]|[#]|[U]] [A] [R] [D] [S] [O] [!] [-] [,StatusCol]
+       ^Bif <cMode> is omitted, "HERAD OS" is the default.
+
+       if "Help" is request, The help message will change dynamic for
+       different <cMOde>. Only the functions provided will be listed.
+
+       Mode   Key
+       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+       H  =>  Ctrl-F1  Help
+
+       E  =>  Enter    Edit
+       ^^  =>           User Defined Editor instead of default editor
+       !  =>           display & edit in uppercase
+       #  =>           Disable auto switch to Edit Mode while letter key-in
+       U  =>           Check Unique while edit if index opened.
+
+       C  =>           Copy last record while append. (Set Carry ON)
+       A  =>           Enable append record (move to EOF and press Enter)
+
+       R  =>  Del      Enable recall record
+       D  =>  Del      Enable delete record
+
+       S  =>  TAB      Seek Record if there is a index opened
+       O  =>  ShiftTab Change Index Order
+
+       -  =>           disable Alt-Esc to exit browse
+       [,StatusColor] => define the color of status color
+
+
+       ^B<bUser> is the name of user function or a code block to process
+       ^Bthe key unrecognized. If you use user function and forget to
+       ^Bassign an exit key for cBrowse(), you will get in loop. However,
+       ^B"Alt-Esc" is internalized as the emergency exit key.
+
+          ^B<Parameters> pass to User-Function:
+
+             <cMode>   => same as the parameter of <cMode> of cBrowse()
+             <nColumn> => the column position
+             <otb>     => the tBrowse object
+
+          ^BMeaning of return value  // same as dobrowse()
+
+              0        => abort
+              1        => continue
+              2        => refresh all
+              3        => refresh current record
+              4        => reconfigure and refreshall
+
+       ^B<aCol> is an array of column description. default is all fields.
+                the element in <aCol> can be a numeric or a string
+                expression or a code block.  // just like NewBrowse()
+
+       ^B<aPict> is an array of column picture, it will be used in
+                displaying and editing. If aPict is a string only,
+                this string will be the picture of all column.
+
+       ^B<aValid> is an array of valid condition of each column, if
+       ^B        <aValid> is nil or its element is NIL means no checking
+
+       ^B<aHead> is an array of column header. // same as NewColumn()
+
+       ^BOther parameters are same as NewColumn()
+
+   ^BExample
+
+      use test                       // use a database
+      cbrowse()                      // browse in default mode
+
+      use test                       // use database
+      cbrowse( 5,5,15,50, 'Heard' )  // cBrowse
+
+      cbrowse( ,,,, 'read' )         // Recall,edit,append,delete
+      cbrowse( ,,,, 'red' )          // recall, edit, delete
+      cbrowse( ,,,, 'heard !U' )     // uppercase, ...
+      cbrowse( ,,,, 'house' )        // help, order, unique, seek, edit
+      cbrowse( ,,,, 'heard ^^' )      // use user editor
+      cbrowse( ,,,, 'heard,w+/B' ) // change color of status line
+
+      cbrowse( ,,,, 'heard', 'UsrFunc' )      // using user function
+      cbrowse( ,,,, 'hard EUS', 'UsrFunc' )   // using user function
+
+      cbrowse( ,,,, '', 'UF', {1,2,4} )       // browse field 1,2,4 only
+      cbrowse( ,,,, '', 'UF', {1,2,"Name"} )  // browse field 1,2 and "name"
+
+      cbrowse( ,,,, '', 'UF', {1,2,4},{ '@!','999'} )     // picture
+
+      cbrowse( ,,,, '', 'UF', {1,2,4},{ '!empty(Name)'} ) // check name
+
+      // .... Too many usage, please test it in Dot Command !!
+!seealso: "tbStdSkip()" "tbWhileSkip()" "NewBrowse()" "DoBrowse()" "fBrowse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: fBrowse()     browse database and select records
+'------------------------------------------------------------------------------
+
+   ^BfBrowse ( [<x1>], [<y1>], [<x2>], [<y2>], [<cMode>], [<bUser>],    ;
+   ^B          [<aCol>], [<aPict>], [<aValid>], [<aHead>], [<nFreeze>], ;
+   ^B          [<cColSep>], [<cHeadSep>], [<cFootSep>],                 ;
+   ^B          [<cFlag>], [<aInit>] )    ->  aSelected
+
+   ^BUsage
+
+       fBrowse() is an improvement of cBrowse(). Besides the functions of
+       cBrowse(), it also allow user to select record, the selected record
+       will have a flag at leftmost column, and the selected record No.
+       will be stored in array and it will be passed to user-function or
+       returned as the result of fBrowse().
+
+       ^BfBrowse() provides the following function key additionally:
+
+       ^BKeyPad
+          Alt-Minus             => Unselect the current record
+          Alt-Plus              => Unselect the current record
+          Alt-Enter             => Toggle the flag of current record
+
+       ^BKeyBoard
+          Alt-Left,  Alt-Right  => Toggle the flag of current record
+          Alt-Up  ,  Alt-Down   => Toggle current record and Up/Down
+          Alt-PgUp,  Alt-PgDn   => Toggle a page of record
+
+
+       The first 14th parameters are same as cBrowse(), they will be passed
+       to cBrowse(). Please refer to cBrowse() for more message.
+
+       <cFlag> can be a string defined the flag-character, "û" is default
+               character of <cFlag>. ( <cFlag> can also be a block for
+               advanced purpose, please refer to source for more info. )
+
+       <aInit> is the initialize array of the selected record No.
+               usually take the default value -- {}
+
+        ^BPlease notice that there are 5 parameters passed to user-funciton:
+
+          <cMode>      =>   Same as <cMode> of fBrowse()
+          <nColumn>    =>   The Position of Current Column
+          <oTbrowse>   =>   The tBrowse Object
+          <aSelected>  =>   The array stored the selected records No.
+          <bTollge>    =>   The Code Block to Toggle the flag
+                      PS: Eval(bToggle)     =>  Toggle current record
+                          Eval(bToggle,.t.) =>  select current record
+                          Eval(bToggle,.f.) =>  unselect current record
+
+        ^BMeaning of return value of user-function // same as dobrowse()
+
+              0        => abort
+              1        => continue
+              2        => refresh all
+              3        => refresh current record
+              4        => reconfigure and refreshall
+
+   ^BExample
+
+      use test                       // use a database
+      fbrowse()                      // browse in default mode
+
+      use test                       // use database
+      fbrowse( 5,5,15,50, 'Heard' )  // cBrowse
+
+
+      // .... To get more message, Please
+      //         (1) refer to cBrowse()
+      //         (2) refer to source
+      //         (3) try it in Dot Command !!
+!seealso: "tbStdSkip()" "tbWhileSkip()" "NewBrowse()" "DoBrowse()" "fBrowse()" 
+'------------------------------------------------------------------------------
+
+
+

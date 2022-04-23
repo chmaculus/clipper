@@ -1,0 +1,406 @@
+!short: GWAction()      ^bWait for a mouse button or key to be pressed                ^A4FM
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWAction()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Wait for a mouse button or keyboard to be pressed. The pressed keyboard
+   value is returned. If the left mouse button is pressed K_ENTER is
+   returned and if the right mouse button is pressed twice K_ESCAPE is
+   returned. This function uses GWmWait().
+
+ ^bSyntax
+   ^bGWAction([bFunc], [nSeconds], [aValues]) -> nResult
+
+!seealso: "GWLastKey()" "GWmWait()" gw23_014.ngo:"GWScreenSavers" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWLastKey()     ^bGet the GWAction() value of the last key or mouse button    ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWLastKey()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the GWAction() value of the last key or mouse button. This function
+   is a replacement of LASTKEY() that can only return values from the
+   keyboard. This function can also return values from the mouse buttons.
+   This is useful if you gave the mouse buttons special values. For example
+   if you used GWAction(,, {-50,-51}) and the user pressed the left button
+   then GWLastKey() will return -50.
+
+ ^bSyntax
+   ^bGWLastKey() -> nResult
+
+!seealso: "GWAction()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmCol()        ^bGet the current mouse column number
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmCol()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the current mouse column number.
+
+ ^bSyntax
+   ^bGWmCol() -> nResult
+
+!seealso: "GWmRow()" "GWmPosition()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmDblClick()   ^bGet/set the double click time of the mouse buttons
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmDblClick()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get/set double click time of the mouse buttons.
+
+ ^bSyntax
+   ^bGWmDblClick([nTime]) -> nResult
+
+!seealso: "GWmWait()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmDirection()  ^bGet the direction the mouse cursor is moving in
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmDirection()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the direction the mouse cursor is moving in.
+
+ ^bSyntax
+   ^bGWmDirection() -> nResult
+
+!seealso: "GWmMotion()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmHRange()     ^bSet the minimum and maximum row for mouse movements
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmHRange()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set the minimum and maximum row for mouse movements.
+
+ ^bSyntax
+   ^bGWmHRange([nMin], [nMax]) -> NIL
+
+!seealso: "GWmRange()" "GWmVRange()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmInArea()     ^bCheck if the mouse is inside an area
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmInArea()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if the mouse cursor is inside an area.
+
+ ^bSyntax
+   ^bGWmInArea(nTop, nLeft, nBottom, nRight) -> lResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmInit()       ^bCheck mouse availability and number of buttons
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmInit()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if there is a mouse installed and if so how many buttons are
+   available.
+
+ ^bSyntax
+   ^bGWmInit(@nButtons) -> lResult
+
+!seealso: "GWmOn()" "GWmOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmMotion()     ^bGet the number of vertical and horizontal mickeys moved
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmMotion()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the number of vertical and horizontal mickeys moved since the last
+   call.
+
+ ^bSyntax
+   ^bGWmMotion(aMotion) -> NIL
+
+!seealso: "GWmDirection()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmOff()        ^bTurn the mouse cursor off
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmOff()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Turn the mouse cursor off.
+
+ ^bSyntax
+   ^bGWmOff() -> NIL
+
+!seealso: "GWmOn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmOn()         ^bTurn the mouse cursor on
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmOn()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Turn the mouse cursor on.
+
+ ^bSyntax
+   ^bGWmOn() -> NIL
+
+!seealso: "GWmOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmPosition()   ^bGet the current mouse row and column numbers
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmPosition()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the current mouse row and column numbers.
+
+ ^bSyntax
+   ^bGWmPosition() -> aResult
+
+!seealso: "GWmCol()" "GWmRow()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmPresent()    ^bCheck mouse availability
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmPresent()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if there a mouse installed or available. Before using this
+   function be sure to activate mouse support with GWmUse(.T.).
+
+ ^bSyntax
+   ^bGWmPresent([lForce]) -> lResult
+
+!seealso: "GWmInit()" "GWmUse()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmRange()      ^bSet the minimum/maximum row/column for mouse movements
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmRange()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set the minimum and maximum row and column for mouse movements.
+
+ ^bSyntax
+   ^bGWmRange([nTop], [nLeft], [nBottom], [nRight]) -> NIL
+
+!seealso: "GWmHRange()" "GWmVRange()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmRead()       ^bRead mouse status and mouse position
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmRead()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Read the mouse status and the mouse cursor position.
+
+ ^bSyntax
+   ^bGWmRead(aMouse) -> NIL
+
+!seealso: "GWmCol()" "GWmRow()" "GWmPosition()" "GWmWaitButton()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmRow()        ^bGet the current mouse row number
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmRow()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the current mouse row number.
+
+ ^bSyntax
+   ^bGWmRow() -> nResult
+
+!seealso: "GWmCol()" "GWmPosition()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmSet()        ^bGet/set mouse cursor availability
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmSet()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if the mouse cursor is 'on' and visible. This function can also
+   make de mouse cursor invisible, but let it remain active.
+
+ ^bSyntax
+   ^bGWmSet([lMode]) -> lResult
+
+!seealso: "GWmOn()" "GWmOff()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmSetPos()     ^bPosition the mouse cursor
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmSetPos()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Position the mouse cursor somewhere on the screen.
+
+ ^bSyntax
+   ^bGWmSetPos([nRow], [nCol]) -> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmUse()        ^bMake an application mouse sensitive (or not)                ^A4FM
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmUse()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Make an application mouse sensitive (or not).
+
+ ^bSyntax
+   ^bGWmUse([lUseMouse]) -> lResult
+     or
+   ^bSET MOUSE ON|OFF
+
+!seealso: "GWmPresent()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmVRange()     ^bSet the minimum and maximum column for mouse movement
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmVRange()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set the minimum and maximum column for mouse movements.
+
+ ^bSyntax
+   ^bGWmVRange([nMin], [nMax]) -> NIL
+
+!seealso: "GWmHRange()" "GWmRange()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmWait()       ^bWait for a button or key to be pressed, like GWWaitKey(0)   ^A4FM
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmWait()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Wait for a button or key to be pressed. This function acts like
+   WAITKEY(0).
+
+ ^bSyntax
+   ^bGWmWait([bFunc], [nSeconds]) -> aResult
+
+!seealso: "GWAction()" "GWmWaitButton()" gw23_014.ngo:"GWScreenSavers" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWmWaitButton() ^bWait for button 1 or 2 or key to be pressed
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWmWaitButton()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Wait for button 1 or 2 or key to be pressed. This function acts like
+   GWWAITKEY(0).
+
+ ^bSyntax
+   ^bGWmWaitButton(nButton) -> nResult
+
+!seealso: "GWmRead()" "GWmWait()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET MOUSE ...   ^bMake an application mouse sensitive (or not)                ^A2FN
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1ESET MOUSE ...^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Make an application mouse sensitive (or not).
+
+ ^bSyntax
+   ^bSET MOUSE ON|OFF
+!seealso: "GWmUse()" 
+'------------------------------------------------------------------------------
+
+
+

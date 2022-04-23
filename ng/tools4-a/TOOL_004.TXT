@@ -1,0 +1,978 @@
+!short: Introduction Connection Services
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This chapter provides functions that return information about the
+     connection between workstations and file servers and allow you to set up
+     or terminate connections.  Even the login of a user from within a
+     CA-Clipper application is possible.  With the functions in this chapter,
+     you can create a list of file servers within the internal network and
+     all attached file servers, and you can determine the network address of
+     a workstation.
+
+     ^bImportant!^b  The term "attach" in conjunction with CA-Clipper Tools
+     only describes the setup of a logical connection between a workstation
+     and a file server and does not include a login, as is the case with the
+     Novell utility ATTACH.EXE.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETADR()    Determines the internal netaddress of a user
+'------------------------------------------------------------------------------
+ ^bNNETADR()^b
+ Determines the internal netaddress of a user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETADR([<cUser>],[<nNumber>],[<cServer>|<nConId>])
+     ^b    --> cNetAddress
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser>^b  Designates the login name of the user whose internal
+     netaddress is determined.  The default value is the internal netaddress
+     of the current workstation.
+
+     ^b<nNumber>^b  Designates the connection of <cUser>.  The default value
+     is 1.
+
+     ^b<cServer>^b  Designates the name of the file server on which <cUser>
+     is logged in.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETADR() returns the internal netaddress of <cUser> in the form of a 20-
+     character hexadecimal string.  The returned string represents a
+     10-byte sequence, where each byte consists of two hexadecimal
+     characters.  The leading eight characters of <cNetAddress> (four byte)
+     specify the network number of <cUser>.  The remaining 12 characters (six
+     byte) contain the station ID of <cUser> (number of the network adapter,
+     Node Address).
+
+     If an error occurs (no user is logged in with the name <cUser>),
+     NNETADR() returns an empty string.
+
+ ^bDescription^b
+
+     NOVELL NET ADDRESS
+     NNETADR() allows you to determine the internal netaddress of the
+     workstation, where <cUser> is currently logged in.  For example, this
+     address can be used to establish a Point-To-Point connection with
+     <cUser>.
+
+     Netware does not limit the number of workstations where a user can be
+     simultaneously logged in.  The currently active connections can be
+     passed with the optional parameter <nNumber>.  The default return value
+     of NNETADR() contains the internal netaddress of the first connection.
+     By passing <nNumber>, additional addresses can be determined.
+
+ ^bNote^b
+
+     ^b^CFE^b  <nNumber> does not specify the connection ID of <cServer>.
+        This parameter simply counts the connections of <cUser>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the internal netaddress of the first connection of
+        user MIKE:
+
+        ? NNETADR('MIKE')  // z.B. "4921750400001B025A99"
+
+     ^b^CFE^b  Determine the internal netaddresses of all connections of user
+        MIKE:
+
+        nNumber=1
+        cAdr=""
+        WHILE .T.
+        cAdr=NNETADR('MIKE',nNumber)
+        IF EMPTY(cAdr)
+        EXIT
+        ENDIF
+        ? cAdr
+        nNumber=nNumber+1
+        ENDDO
+!seealso: "NNETSTAID()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETATTACH() Attaches a file server to a workstation
+'------------------------------------------------------------------------------
+ ^bNNETATTACH()^b
+ Attaches a file server to a workstation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETATTACH(<cServer>) --> nConId
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cServer>^b  Designates the name of the server that is attached.
+
+ ^bReturns^b
+
+     If the server has been attached successfully, NNETATTACH() returns a
+     numeric value between 1 and 8.  This value specifies the connection ID.
+     The workstation uses the connection ID to address the server.
+
+     If an error occurs, NNETATTACH() returns 0.  The error code can be
+     queried with the function NNETERROR().
+
+ ^bDescription^b
+
+     NOVELL NET ATTACH
+     A workstation can be attached to up to eight file servers.  This logical
+     connection between workstation and file server is necessary to access
+     network services and resources.  NNETATTACH() allows you to establish a
+     connection without a login of the user on <cServer>.
+
+     If the server has been attached successfully, NNETATTACH() returns a
+     value between 1 and 8.  The return value can be stored in a variable and
+     can be used later to identify a file server.  Alternatively, a file
+     server can also be identified by using the server name.
+
+     Using the NNETLOGIN() function to log in a user on a file server does
+     not require the call of NNETATTACH().  NNETLOGIN() attaches the file
+     server automatically if necessary.
+
+ ^bNote^b
+
+     ^b^CFE^b  The names of the attached file servers can be determined by
+        using the function NNETFSLIST() or the Novell utility SLIST.
+
+ ^bExample^b
+
+     Attach the file server NANGERTOOLS2:
+
+     nConId=NNETATTACH("NANGERTOOLS2")
+!seealso: "NNETLOGIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCCNSRV() Determines the number of attached file servers
+'------------------------------------------------------------------------------
+ ^bNNETCCNSRV()^b
+ Determines the number of attached file servers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCCNSRV([<lLoggedIn>]) --> nServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<lLoggedIn> ^b Designates whether the number of all attached servers
+     (.F.) or if the number of servers with logged in users (.T.) is
+     determined.  The default value (.F.) counts all servers.
+
+ ^bReturns^b
+
+     NNETCCNSRV() returns the number of attached servers.
+
+ ^bDescription^b
+
+     NOVELL NET COUNT CONNECTED SERVERS
+     With the function NNETCCNSRV() you can determine the number of attached
+     servers without having to specify the server names (NNETFSLST()).
+     Alternatively, you can determine the number of servers, where the user
+     is currently logged in.
+
+ ^bExample^b
+
+     Server1 is attached.  A user then logs into another server.  The
+     information about the attached servers is determined by using
+     NNETCCNSRV():
+
+     NNETATTACH('SERVER1')
+     NNETLOGIN('PAUL','190366','SERVER2')
+
+     ? NNETCCNSRV()      // Returns: 2
+     ? NNETCCNSRV(.T.)   // Returns: 1
+!seealso: "NNETATTACH()" "NNETCCNSRV()" "NNETLOGIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCLRCON() Clears a connection number
+'------------------------------------------------------------------------------
+ ^bNNETCLRCON()^b
+ Clears a connection number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCLRCON(<nConnect>,[<cServer>|<nConId>])
+     ^b    --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nConnect>^b Designates the connection number that is cleared.
+
+     ^b<cServer>^b Designates the name of the file server that is used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETCLRCON() returns .T. if <nConnect> has been cleared successfully.
+     If an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET CLEAR CONNECTION
+     When a workstation is first attached to a server, the Netware file
+     server returns a connection number (connection ID) to the workstation.
+     The file server keeps the connection ID even after a logout and is
+     assigned to the related workstation at the next connection setup.
+     However, the connection ID is changed, if all connection numbers are
+     used.  In this case, the connection ID can be assigned to another
+     workstation. NNETCLRCON() allows you to clear used connection numbers.
+
+     ^bImportant! ^b If the connection <nConnect> is currently active, it is
+     interrupted immediately.  This can lead to data loss on the related
+     workstation, as all drive mappings become invalid and the writing of
+     data to the server is no longer possible.
+
+     Supervisor rights on the related file server are required to clear a
+     connection.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function should be used very carefully as data loss is
+        possible if <nConnect> is currently active.
+
+ ^bExample^b
+
+     Determine the connection ID of the user MICK, and clear the connection
+     (ATTENTION: MICK will be logged out):
+
+     NNETCLRCON(NNETSTANUM('MICK'))
+!seealso: "NNETSTANUM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCVSSRV() Determines the number of visible file servers in a network
+'------------------------------------------------------------------------------
+ ^bNNETCVSSRV()^b
+ Determines the number of visible file servers in a network
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCVSSRV([<cMask>]) --> nServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cMask>^b  Designates a search mask that can contain the wildcards "?"
+     and "*".  The default value ("*") indicates that all file servers are
+     taken into account.
+
+ ^bReturns^b
+
+     NNETCVSSRV() returns the number of visible file servers that match the
+     search mask, <cMask>.  Without argument, the function returns the number
+     of all servers within a network.
+
+ ^bDescription^b
+
+     NOVELL NET COUNT VISIBLE SERVERS
+     With NNETCVSSRV() you can determine the number of all visible file
+     servers in a network without having to specify the server names
+     (NNETFSLST()).  For example, you can determine if all file servers in a
+     WAN are available or if some file servers are currently unavailable.
+
+ ^bExample^b
+
+     Determine the number of all visible file servers:
+
+     ? NNETCVSSRV()                        // Returns: 6
+!seealso: "NNETCCNSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETDISLOG() Disables a file server for logins
+'------------------------------------------------------------------------------
+ ^bNNETDISLOG()^b
+ Disables a file server for logins
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDISLOG([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server that is used.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDISLOG() returns .T., if the file server has been successfully
+     disabled for logins.  If an error occurs (for example, insufficient
+     access rights), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET DISABLE LOGIN
+     NNETDISLOG() allows you to disable a file server for further logins of
+     new users.  For example, you should use this function if you want to
+     execute a data backup.  Console rights are required to disable a file
+     server for logins with NNETDISLOG().
+
+ ^bExample^b
+
+     Disable the default server for further logins:
+
+     IF NNETDISLOG()
+        ? 'Server disabled for logins!'
+     ELSE
+        ? 'Error!
+     ENDIF
+!seealso: "NNETENLOG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETENLOG()  Enables a file server for logins
+'------------------------------------------------------------------------------
+ ^bNNETENLOG()^b
+ Enables a file server for logins
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETENLOG([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b Designates the name of the file server that is used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETENLOG() returns .T. if the file server has been successfully enabled
+     for logins.  If an error occurs (for example, insufficient access
+     rights), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET ENABLE LOGINS
+     NNETENLOG() allows you to enable a file server for logins if it has been
+     previously disabled with NNETDISLOG().  Console rights are required to
+     enable a file server for logins with NNETENLOG().
+
+ ^bExample^b
+
+     Enable the default server for logins:
+
+     NNETENLOG()
+!seealso: "NNETDISLOG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETFSLST()  Determines the names of all visible file servers in a network
+'------------------------------------------------------------------------------
+ ^bNNETFSLST()^b
+ Determines the names of all visible file servers within a network
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETFSLST([<cMask>]) --> aServerList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cMask>^b  Designates a search mask that can contain the wildcard
+     characters "?" and "*".  The default value ("*") indicates that all
+     server names are returned.
+
+ ^bReturns^b
+
+     NNETFSLST() returns a one-dimensional array.  Each array element
+     contains one server name.
+
+ ^bDescription^b
+
+     NOVELL NET FILE SERVER LIST
+     NNETFSLST() returns the names of all visible file servers, whether the
+     server is attached or not.  With this function you can determine if you
+     can address a specific file server before you call NNETATTACH() or
+     NNETLOGIN().
+
+ ^bNote^b
+
+     ^b^CFE^b  Unlike NNETSLIST(), which returns the names of the attached
+        servers (maximum of eight), NNETFSLST() returns the names of all
+        servers within a network.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display the names of all the file servers in a network:
+
+        aServer=NNETFSLST()
+        FOR i = 1 TO LEN(aServer)
+        ? aServer[i]
+        NEXT i
+
+     ^b^CFE^b  Select a file server with ACHOICE(), and then log in a user:
+
+        aServer=NNETFSLST()
+        IF (nSelect:=ACHOICE(5,5,8,45,aServer))>0
+        NNETLOGIN("PAUL","190366",aServer[nSelect])
+        ENDIF
+!seealso: "NNETATTACH()" "NNETLOGIN()" "NNETSLIST()" "NNETCVSSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETINUSE()  Returns the number of objects currently logged into the network
+'------------------------------------------------------------------------------
+ ^bNNETINUSE()^b
+ Returns the number of objects currently logged into the network
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETINUSE() --> nStations
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETINUSE() returns the number of stations currently in use on the
+     default file server.
+
+ ^bDescription^b
+
+     NOVELL NET IN USE
+     With NNETINUSE() you can determine the number of stations that are
+     currently in use on the default file server.  For example, you could
+     provide an overview of network capacity.
+
+ ^bNote^b
+
+     ^b^CFE^b  The returned value does not agree with the users that are
+        displayed in USERLIST or CONNECTION INFORMATION within FCONSOLE.  You
+        will always have at least one more channel that is open than there
+        are users in the network.  The returned value for Netware, versions
+        2.1 or later, agree with STATISTIC --> SUMMARY --> CONNECTIONS IN USE
+        under FCONSOLE.
+
+ ^bExample^b
+
+     Determine the stations in use on the default file server:
+
+     ? NNETINUSE()                        // e.g. 7
+!seealso: "NNETSETSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETLOGGED() Determines if a station has logged in using LOGIN
+'------------------------------------------------------------------------------
+ ^bNNETLOGGED()^b
+ Determines if a station has logged in using LOGIN
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETLOGGED() --> lLoggedIn
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETLOGGED() returns .T. when the related station is logged in on the
+     default file server.
+
+ ^bDescription^b
+
+     NOVELL NET LOGGED IN
+     This function allows you to determine if the related station is logged
+     into the network.  This is important information since LOGIN is a
+     prerequisite to having any rights within a network.
+
+ ^bExample^b
+
+     Determine if this station on the default server is logged in:
+
+     ? NNETLOGGED()            // .T., when logged in
+!seealso: "NNETSETSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETLOGIN()  Log in a user on a file server
+'------------------------------------------------------------------------------
+ ^bNNETLOGIN()^b
+ Log in a user on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETLOGIN(<cName>,<cPassword>,[<cServer>|<nConId>])
+     ^b    --> nConId
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName>^b  Designates the name of the user that is logged in.
+
+     ^b<cPassword>^b  Designates the corresponding password.  If no password
+     is required, an empty string must be passed.
+
+     ^b<cServer>^b  Designates the name of the file server on which the user
+     is logged in.
+
+     ^b<nConId>^b  Designates the connection ID of the workstation on
+     <cServer>.  A connection ID can be passed only if the file server is
+     attached to the workstation.
+
+ ^bReturns^b
+
+     If a user has been logged in successfully, NNETLOGIN() returns a value
+     between 1 and 8.  This value represents the connection ID that can be
+     used to address the file server on the workstation.  If an error occurs,
+     the function returns 0.
+
+ ^bDescription^b
+
+     NNETLOGIN() allows you to log in a user on a file server within an
+     application.  The file server must not be attached when you call this
+     function.  When NNETLOGIN() is first called, it automatically attaches
+     the workstation to <cServer>.  If no server is specified, the function
+     tries to log in the user on the default server.
+
+     If a user at the requesting workstation is already logged in on the
+     related file server, this user is logged out automatically.  The log out
+     is performed even if the name of the logged in user is identical to the
+     user name passed with NNETLOGIN().  If the attempt to log in is
+     unsuccessful (for example, because of an incorrect password), the
+     previous log in is canceled.  Any drives mapped to the related file
+     server are deleted and are not restored even if the log in is
+     successful.
+
+     ^bImportant!^b  Before you attempt to log in on file servers where a
+     user is already logged in on the current workstation, make sure that all
+     files on the volumes of the related file server are closed correctly.
+
+     A return value that is greater than 0 indicates that the log in has been
+     successful.  The value can be stored in a variable and used later to
+     identify the required file server.  Alternatively, the identification of
+     the server is possible with the server name.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The password is case sensitive.
+
+     ^b^CFE^b  If the log in is unsuccessful (for example, because of an
+        invalid password or user name), the server remains attached.
+
+     ^b^CFE^b  The function does not execute a login script.  To get a login
+        script, the function must be called.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Log in Paul on server NANGERTOOLS2:
+
+        IF (nConId:= NNETLOGIN('PAUL','190366','NANGERTOOLS2'))>0
+        ? 'Login successful!'
+        ELSE
+        ? 'Login failed!'
+        ENDIF
+
+     ^b^CFE^b  Log in on an attached server:
+
+        IF (nConId:=NNETATTACH('NANGERTOOLS2'))>0
+        NNETLOGIN('PAUL','190366',nConId)
+        ENDIF
+!seealso: "NNETATTACH()" "NNETFSLST()" "NNETLOGOUT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETLOGOUT() Log out a user of one or all file servers
+'------------------------------------------------------------------------------
+ ^bNNETLOGOUT()^b
+ Log out a user of one or all file servers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETLOGOUT(<cServer>|<nConId>|<lAll>,[<lConnect>])
+     ^b    --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server on which a user is
+     logged out.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+     ^b<lAll>^b  Allows a log out from all file servers if designated .T..
+
+     ^b<lAttach>^b  Designates whether or not the file server remains
+     attached.  If a user logs out on a file server, the workstation and the
+     server are detached.  If the parameter <lAttach> is designated .T., the
+     workstation remains attached to <cServer>.
+
+ ^bReturns^b
+
+     NNETLOGOUT() returns .T. if the log out has been successful.  If an
+     error occurs (for example if the server name or the connection ID are
+     invalid), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET LOGOUT
+     NNETLOGOUT() allows you to log out a user on one or all file servers.
+
+     To log out on a server, the server can be specified either by its name
+     or its connection ID.  The connection ID of a server is returned by
+     NNETATTACH() or NNETLOGIN().  To log out a user on all servers, the
+     parameter <lAll> must be designated .T..
+
+     Usually if you log out on a file server, the workstation connection is
+     terminated (detached).  However ,if you want to remain attached to the
+     related file server, you can pass the parameter <lAttach> with .T..
+
+     To be able to perform a successful log in, at least one file server must
+     be attached.  Therefore, when you use the function NNETLOGOUT(), the
+     default server always remains attached and is independent of the
+     parameter <lAttach>.
+
+     NNETLOGOUT() can also be used to terminate a connection between a
+     workstation and a file server (detach) when no user is logged in.
+
+     ^bImportant!^b  When you call NNETLOGOUT(), all drive mappings for the
+     specified server or all servers are terminated.  Files on related server
+     volumes cannot be accessed, which can lead to data loss.  Before you use
+     NNETLOGOUT(), make sure that all files on the network drives have been
+     closed properly.
+
+ ^bNote^b
+
+     ^b^CFE^b  The server name <cServer> must be passed in uppercase letters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Close all databases, and then log out on all file servers:
+
+        CLOSE DATABASES
+        NNETLOGOUT(.T.)
+
+     ^b^CFE^b  After you call NNETLOGOUT(), the default server is still
+        attached.
+
+     ^b^CFE^b  Log out on server NANGERTOOLS2:
+
+        NNETLOGOUT('NANGERTOOLS2')
+!seealso: "NNETLOGIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETNAME()   Determines the user name for an internal netaddress
+'------------------------------------------------------------------------------
+ ^bNNETNAME()^b
+ Determines the user name for an internal netaddress
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETNAME(<cInterNetAdr>,[<cServer>|<nConId>]) --> cUser
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cInterNetAdr>^b  Designates a 20-character string containing a 10-
+     character hexadecimal byte sequence.  Two characters represent one byte
+     in hexadecimal form.  The leading eight characters of <cInterNetAdr>
+     (four byte) indicate the network number of <cUser>.  The remaining 12
+     characters (six byte) contain the station ID of <cUser> (number of the
+     network adapter, Node Address).
+
+     ^b<cServer>^b Designates the name of the file server that is used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETNAME() returns the name of the user that is logged in with the
+     internet address, <cInterNetAdr>.  The function returns an empty string
+     if the user cannot be determined.
+
+ ^bDescription^b
+
+     NOVELL NET NAME
+     NNETNAME() allows you to determine the name of a user with an internal
+     netaddress and can be used in conjunction with the SPX functions of the
+     Point to Point communication.  Functions like SPXCONTARG() always return
+     the communication's destination as an internet address.  If both the
+     current station and the station specified by <cInterNetAdr> are logged
+     in on <cServer>, NNETNAME() allows you to determine the user name of a
+     passed internet address.
+
+ ^bExample^b
+
+     Determine the destination's user name of an SPX session:
+
+     ? NNETNAME(SPXCONTARG(nHandle))
+!seealso: "NNETSTAID()" tool_015.ngo:"SPXCONTARG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSETSRV() Sets an attached server as the default server
+'------------------------------------------------------------------------------
+ ^bNNETSETSRV()^b
+ Sets an attached server as the default server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSETSRV(<cServerName>) --> lLoggedIn
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cServerName^b> Designates the name of the server that is redirected
+     as the default server.
+
+ ^bReturns^b
+
+     NNETSETSRV() returns .T. when the designated name has been found in the
+     attached server table and designated as the default server.
+
+ ^bDescription^b
+
+     NOVELL NET SET SERVER
+     With NNETSETSRV(), it is possible to designate an attached server as the
+     default server.  Then all NNETXXXXXX() functions except NNETSLIST()
+     (list of the attached servers) and NNETSTAID() (station ID) relate to
+     this server specifically.
+
+ ^bExample^b
+
+     Switch from CA1 server to CA2 server:
+
+     ? NNETSNAME()                        // "CA1"
+     ? NNETSETSRV("CA2")                  // .T., if OK.
+!seealso: "NNETSNAME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSLIST()  Returns a list of all the attached file servers
+'------------------------------------------------------------------------------
+ ^bNNETSLIST()^b
+ Returns a list of all the attached file servers
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSLIST() --> cServerList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSLIST() returns the names of all the attached servers.
+
+ ^bDescription^b
+
+     NOVELL NET SERVER LIST
+     This function allows you to determine the names of all the servers
+     attached through the station.  The character string that is returned
+     contains all the server names separated by a CR/LF.  Each of the servers
+     that are returned can be redirected as the default server using
+     NNETSETSRV().
+
+ ^bExample^b
+
+     Determine the names of all attached servers:
+
+     cSList  :=  NNETSLIST()
+     TOKENINIT(@cSList, CHR(10)+CHR(13))
+     DO WHILE .NOT. TOKENEND()
+        cServer  :=  TOKENNEXT(cSList)
+        ? cServer
+     ENDDO
+!seealso: "NNETSETSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSNAME()  Returns the name of the default file server
+'------------------------------------------------------------------------------
+ ^bNNETSNAME()^b
+ Returns the name of the default file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSNAME() --> cServerName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSNAME() returns the name of the default file server.
+
+ ^bDescription^b
+
+     NOVELL NET SERVER NAME
+     This function allows you to determine the name of the default file
+     server.  The returned character string can be up to 48 characters long.
+     The NNETSETSRV() function allows you to set another attached file server
+     as the default file server.
+
+ ^bExample^b
+
+     Determine the name of the default file server:
+
+     ? NNETSNAME()                           // e.g. "CA"
+!seealso: "NNETSETSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSTAID()  Determines the ID of a station (network card)
+'------------------------------------------------------------------------------
+ ^bNNETSTAID()^b
+ Determines the ID of a station (network card)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSTAID() --> cStationID
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSTAID() returns a network station ID as a 12-character string.
+
+ ^bDescription^b
+
+     NOVELL NET STATION ID
+     This function returns the ID of the network adapter that is built into
+     the station.  In the case of an Ethernet card, this ID is the full 12
+     characters in length; it is guaranteed that this code is unique.  With
+     other types of network cards, and frequently with Ethernet clones, this
+     ID depends upon the DIP switch settings on the adapter.  These switches
+     must have different settings for each adapter within a network.
+
+ ^bNote^b
+
+     ^b^CFE^b  If an ID is shorter than 12 characters, the empty places in
+        the character string are filled with zeroes, starting from the left.
+
+ ^bExample^b
+
+     Determine the station ID:
+
+     ? NNETSTAID()         // e.g. "000F71100123"
+!seealso: "NNETSTANUM()" tool_003.ngo:"NNETUSERID()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSTANUM() Queries the station number on a file server
+'------------------------------------------------------------------------------
+ ^bNNETSTANUM()^b
+ Queries the station number on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSTANUM() --> nStation
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSTANUM() returns the station number of the workstation, relative to
+     the default server.
+
+ ^bDescription^b
+
+     NOVELL NETSTATION NUMBER
+     With NNETSTANUM(), you can query the station number of the network
+     station where the function has been implemented can be queried.  This
+     information is always relative to the default file server.  The function
+     returns a numeric value, based on Netware version, between 1 and 99.  If
+     the value is used in file names, then it can be expanded with leading
+     zeroes using the NTOC() function.
+
+ ^bExample^b
+
+     Query the station number as a fixed length string:
+
+     ? NTOC(NNETSTANUM(), 10, 2, "0")                     // e.g. 09
+!seealso: "NNETSETSRV()" tool_003.ngo:"NNETUSERID()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETWHOAMI() Determines the station LOGIN name
+'------------------------------------------------------------------------------
+ ^bNNETWHOAMI()^b
+ Determines the station LOGIN name
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETWHOAMI() --> cStationName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETWHOAMI() returns the names that are logged in at the station in use
+     on the default file server.
+
+ ^bDescription^b
+
+     NOVELL NET WHO AM I
+     The CA-Clipper NETNAME() function returns information (limited by the
+     Novell software) in a Novell network when a machine name is defined in
+     the login script.  However, NNETWHOAMI() is a special Novell call that
+     returns the name logged in at a station.  The returned character string
+     can be up to 48 characters long.
+
+ ^bExample^b
+
+     Determine the name under which the station is logged in:
+
+     ? NNETWHOAMI()      // Character string/max 48 characters
+!seealso: "NNETSETSRV()" 
+'------------------------------------------------------------------------------
+
+
+

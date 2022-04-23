@@ -1,0 +1,320 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfview()             The engine function
+'------------------------------------------------------------------------------
+ ADfview( <xFileMemo>, [bOption], [bConfig], [cHelpId],;
+    [cHelpHeader ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a file in a mouseable window.  Note the viewer is based on
+ MEMOEDIT() and therefore is limited by MEMOEDIT's limitations as to file
+ size (max is 64K).
+
+ <xFileMemo> is the name of the file or memo field to display.  By default,
+ ADfview() understands <xFileMemo> as a file name.  If, instead, a memo
+ field name is passed, it has to be explicitly configured as a memo viewer
+ with the API ADfv_memo().
+
+ [bOption] is an optional codeblock that is EVALuated when F10 is pressed or
+ when the 'F10:xxxxx' hot spot is clicked.  [bOption] defaults to
+ {||ADfprint( <cFile> )}, and the F10 prompt defaults to 'F10:Print'.
+
+ [bConfig] is an optional codeblock.  If passed, ADfview() EVALuates it to
+ reconfigure itself.  Typically, [bConfig] is a series of calls to the
+ Config APIs.
+
+ [cHelpId] is the Help identifier string.
+
+ [cHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.
+
+ Example:
+ --------
+ ADfview( "frankie.ch" )
+
+ See also the various SAMPLE\FV_DEMO?.PRGs and FV_TOUR.PRG
+
+ v2.30 -> v3.00
+ --------------
+ Added a 5th parameter, [cHelpHeader].
+
+ 2.3
+ ---
+ The 'Print' option in v2.21 did not eject the last page.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADfv_coords()         Reconfigures the window attributes
+'------------------------------------------------------------------------------
+ ADfv_coords( <aCoords> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the coordinates of the ADfview() window. <aCoords> is an array
+ of 4 elements:
+
+   1 - top, defaults to 0
+   2 - left, defaults to 0
+   3 - bottom, defaults to maxrow()
+   4 - right, defaults to maxcol()
+
+ Example
+ -------
+ bConfig := {||ADfv_coords( { 10,9,20,70 } )}
+ ADfview( "q.prg",, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_colors()         Reconfigures the colors
+'------------------------------------------------------------------------------
+ ADfv_colors( <aColors> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the default colors.  <aColors> is an array of 3 elements:
+
+   1 - the standard color.  Defaults to "W+/G" and "W/N" in color and
+       monochrome, respectively.
+   2 - the header color.  Defaults to "N/GR*" and "N/W" in color and
+       monochrome, respectively.  Note that setblink is toggled to FALSE to
+       enable the bright yellow background.  It is toggled to TRUE at exit.
+   3 - the option prompt color.  Defaults to "R+/GR*" and "N/W" in color and
+       monochrome, respectively.
+
+ Example
+ -------
+ bConfig := {||ADfv_colors( { "R/B", "W+/B", "W+/GR" } )}
+ ADfview( "q.prg",, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_footer()         Defines a string of footer prompts
+'------------------------------------------------------------------------------
+ ADfv_footer( <cFooter> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the default first 4 footer prompts.
+
+ NOTE: The prompt string must contain all 4 prompts, that is,
+ the prompts for F1, ESC, , and .
+
+ Example
+ -------
+ local bConfig := {|| ADfv_footer( "F1:Saup  " +;
+                                   "ESC:Lumual  " +;
+                                   ":MuntaLalam  " +;
+                                   ":MuntaBabo";
+                                 ),;
+                      ADfv_colors( {,, "GR+/GR*" } ); // Hides the F10 prompt
+                   }
+ ADfview( "q.prg", {||NIL}, bConfig )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_header()         Defines a header title
+'------------------------------------------------------------------------------
+ ADfv_header( <cHeader> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the default header displayed at the top of the ADfview()
+ window.  Defaults to "Viewing <filename>".
+
+ Example
+ -------
+ local bConfig := {|| ADfv_header( "MyHeader") }
+ ADfview( "q.prg", {||NIL}, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_memo()           Tells ADfview() that it is a memo that is to be viewed
+'------------------------------------------------------------------------------
+ ADfv_memo( [cHeader] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADfview() that it is a memo field, and not a file, that is to be
+ viewed.  [cHeader] is the header string that is displayed at the window
+ top.  It defaults to "Viewing Memo".
+
+ Example
+ -------
+ bConfig := {|| ADfv_memo( "Viewing Description Field") }
+ ADfview( demo->descriptn,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_prompt()         Reconfigures the Options prompt
+'------------------------------------------------------------------------------
+ ADfv_prompt( <cPrompt> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the "F10:Print" default options prompt.  Note that only the
+ "Print" part is actually configured.  The "F10:" part stays the same.  This
+ is because F10 is always the hot key for this special option.
+
+ bConfig := {|| ADfv_prompt( "PrintTheFile") }
+ ADfview( "Q.PRG",, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_linelength()     Reconfigures the linelength
+'------------------------------------------------------------------------------
+ ADfv_linelength( <nLength>, [nBigMove] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the linelength.  Defaults to the window width.  If the lines
+ are longer than the line length, they will wrap to the next line.
+
+ <nLength> is the line length.
+
+ [nBigMove] is the number of columns to scroll horizontally when the left
+ or right key is pressed.  This applies only if <nLength> is greater than
+ the window width.  Defaults to 20.
+
+ Example
+ -------
+ bConfig := {|| ADfv_linelength( 124 )}
+ ADfview( "Q.PRG",, bConfig )
+
+ v2.1 -> 2.2
+ -----------
+ Added the 2nd parameter.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_printer()        Specifies the LPT port to send output to.
+'------------------------------------------------------------------------------
+ ADfv_printer( <nPort> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies the LPT port where ADfview() sends printed output.
+
+ <nPort> is the LPT port to send output.  (1=LPT1, 2=LPT2, 3=LPT3).
+ Defaults to LPT1.
+
+ Example
+ -------
+ bConfig := {|| ADfv_printer( 2 )}     // LPT2
+ ADfview( "Q.PRG",, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_rbnoexit()       Prevents exiting of the engine on right button click
+'------------------------------------------------------------------------------
+ ADfv_rbnoexit() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Prevents exiting of the engine when the right mouse button is clicked.
+
+ Example
+ -------
+ func main()
+ ADset_help( "MYHELP" )
+ ADfview( "MYFILE.TXT",, {||ADfv_rbnoexit()}, "MY_HELP_ID" )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_timeout()        Defines a timeout routine for ADfview()
+'------------------------------------------------------------------------------
+ ADfv_timeout( <nSeconds>, [bTimeOut] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a timeout routine for ADfview().
+
+ <nSeconds> is the number of seconds of idle time before ADfview() times out.
+
+ [bTimeOut] is an optional codeblock that gets EVALed when ADfview() times
+ out.  If it is not passed, the engine exits.
+
+ Example
+ -------
+ ADfview( "q.prg",, {||ADfv_timeout( 3, {||ADblankscn()} )} )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_vermenu()        Activates a special pulldown menu when F10 is pressed.
+'------------------------------------------------------------------------------
+ ADfv_vermenu( <aMenu>, [aTrigger], [xProcess], [xHelpID], [xHelpHeader] )
+    --> <xSel>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Activates a special pulldown menu when F10 is pressed.  It is designed to
+ be used in a codeblock form and passed as [bOption] in ADfview().  The menu
+ is pulled down from the top of the ADfview() window.  It will be displayed
+ in ADfview's header color.  The parameters <aMenu>, [aTrigger], [xProcess],
+ [xHelpID] and [xHelpHeader] have the same meaning as the corresponding
+ parameters in ADvermenu().
+
+ NOTE: The F10 prompt may need to be reconfigured.
+
+ Example
+ -------
+ bConfig := {||ADfv_prompt( "PullDown" )}
+ ADfview( "Q.PRG", {||ADfv_vermenu( {"one", "two" } )}, bConfig )
+
+ v2.30 -> v3.00
+ --------------
+ 1. Added the 4th and 5th parameters [xHelpID] and [xHelpHeader].
+ 2. It now inherits the timeout properties of its mother ADfview().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_vmboxattr()      Configures the box attributes of ADfv_vermenu().
+'------------------------------------------------------------------------------
+ ADfv_vmboxattr( <aAttr> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the box attributes of ADfv_vermenu() if it is passed as the
+ [bOption] in ADfview().
+
+ <aAttr> is an array consisting of 4 elements.  Please see ADvm_boxattr()
+ for a description of this array.
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ ADfview( "c:\autoexec.bat",;
+          {||ADfv_vermenu( { "One", "Two", "Four" } )},;
+          {||ADfv_vmboxattr( { FRAME11, "G/N", .f., 3 } )};
+        )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADfv_vmcolor()        Configures the colors of ADfv_vermenu().
+'------------------------------------------------------------------------------
+ ADfv_vmcolor( <aColors> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the colors of ADfv_vermenu() if it is passed as the [bOption]
+ in ADfview().
+
+ <aColors> is an array consisting of 4 elements.  Its elements are similar
+ to the first 4 elements of ADvm_color().
+
+ Example
+ -------
+ func main()
+ ADfview( "c:\autoexec.bat",;
+          {||ADfv_vermenu( { "One", "Two", "Four" } )},;
+          {||ADfv_vmcolor( {"W+/N", "BG+/W", "W/N", "G+" } )};
+        )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,206 @@
+'------------------------------------------------------------------------------
+ ^bClipper Linker -- RTLINK.EXE^b
+ Combine object (.OBJ) files with library (.LIB) files to form an executable
+ (.EXE) file or pre-link (.PLL) library
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bSyntax^b
+
+     ^b^CFE^B  The default, FREEFORMAT syntax to invoke .RTLink is as follows:
+
+        ^bRTLINK [FILE <objFile list>^b
+           ^b[OUTPUT <outputFile>]^b
+           ^b[LIBRARY [<libFile list>]^b
+           ^b[<linkOption list>]]  |  [@<scriptFile>]^b
+
+     ^b^CFE^B  The POSITIONAL syntax is:
+
+        ^bRTLINK [<objFile list>,^b
+           ^b[<outputFile>],^b
+           ^b[<mapFile>],^b
+           ^b[<libFile list>]^b
+           ^b[<linkOption list>]]  |  [@<scriptFile>][;]^b
+
+     If used without arguments, .RTLink enters prompt mode in which
+     you are prompted for linker input.
+
+ ^bCommand-line Arguments^b
+
+     ^B<objFile list>^B is a list of object files to link.
+
+     ^B<outputFile>^B is the name of the output file to be generated.  If
+     not specified, the name of the first file on the .RTLink command-line
+     is used.
+
+     ^B<mapFile>^B is the name of a map file to generate.
+
+     ^B<libFile list>^B is the list of library files to search in order to
+     resolve any undefined symbols.
+
+     ^B<linkOption list>^B refers to the use of one or more of the linker
+     options described below.
+
+     ^B<scriptFile>^B is the name of an ASCII text file used as the linker
+     script file.
+
+ ^bScript File^b
+
+     Using the FREEFORMAT syntax, options specified in the script file do
+     not have to be in a specific order.  However, when using POSITIONAL
+     syntax, the format of the script file must be as follows:
+
+     ^b<objFile list>[<linkOption list>]^b
+     ^b[<outputFile>]^b
+     ^b[<mapFile>]^b
+     ^b[<libFile list>]^b
+
+ ^bLinker Options^b
+
+     For many options, two syntaxes are given and the correct one depends on
+     the input mode used.  Specifying options in POSITIONAL mode requires
+     the option to begin with a forward slash (if no forward slash is
+     included in the syntax, the option is allowed only in FREEFORMAT).
+     FREEFORMAT mode allows you to use either syntax, and where there is
+     only one syntax representation it allows you to omit both the slash and
+     the colon.
+
+     ^b/BATCH  |  /NOBATCH^b
+
+     BATCH prevents the linker from prompting you when it is unable to
+     locate a file.  NOBATCH is the default.
+
+     ^bBEGINAREA^b
+     ^b.^b
+     ^b. <linker freeformat options>^b
+     ^b.^b
+     ^bENDAREA^b
+
+     Designates a static overlay area with all sections specified between
+     these two commands becoming static overlay sections within the overlay
+     area.  Static overlay areas may be nested by specifying a
+     BEGINAREA...ENDAREA construct inside of another.
+
+     ^b/DEBUG^b
+
+     Causes the .RTLink overlay manager to display a message that identifies
+     each overlay as it is loaded into memory during program execution.
+
+     ^b/DEFAULTLIBRARYSEARCH  |  /NODEFAULTLIBRARYSEARCH^b
+
+     NODEFAULTLIBRARYSEARCH causes .RTLink to ignore any library names
+     embedded by the compiler.  DEFAULTLIBRARYSEARCH is the default.
+
+     ^b/DYNAMIC[:<ovlFile>]^b
+     ^bDYNAMIC [INTO <ovlFile>]^b
+
+     DYNAMIC forces the linker to place any subsequent Clipper-compiled
+     modules into a dynamic overlay instead of placing the module in the
+     root section.  DYNAMIC is the opposite of RESIDENT and is the default
+     mode.
+
+     ^b/EXCLUDE:<symbol>^b
+     ^bEXCLUDE <symbol list>^b
+
+     In pre-link mode, causes any module defining the specified symbol(s) to
+     be excluded from the link.
+
+     ^b/EXTDICTIONARY  |  /NOEXTDICTIONARY^b
+
+     /NOEXTDICTIONARY causes the linker not to search the extended
+     dictionary.  /EXTDICTIONARY is the default.
+
+     ^b/FREEFORMAT^b
+
+     Configures the linker interface to FREEFORMAT input mode when .RTLink
+     switches to a new input stream.  /FREEFORMAT is the opposite of
+     /POSITIONAL and the default input mode.
+
+     ^b/HELP^b
+
+     Lists the linker options to the console.
+
+     ^b/IGNORECASE  |  /NOIGNORECASE^b
+
+     NOIGNORECASE causes case to be significant in symbol and segment
+     names.  IGNORECASE is the default.
+
+     ^b/INCREMENTAL[:<wastedSpace>]  |  /NOINCREMENTAL^b
+
+     INCREMENTAL enables incremental linking of Clipper-compiled modules.
+     When a program is linked, only modules that have changed are
+     re-linked.  NOINCREMENTAL is the default.
+
+     ^b/MAP[:<mapOption list>]^b
+     ^bMAP [= <mapFile>] [<mapOption list>]^b
+
+     Generates a map file containing one or more reports about the link
+     session.  The available map options are S, N, and A.
+
+     ^bMODULE <moduleName list>^b
+
+     Moves the segments from the specified modules into the current static
+     overlay section.
+
+     ^b/PLL:<prelinkLib>^b
+
+     Used in link mode to specify a pre-linked library file the output
+     executable file depends on.
+
+     ^b/POSITIONAL^b
+
+     Configures the linker interface to the POSITIONAL input mode when
+     .RTLink switches to a new input stream.  /POSITIONAL is the opposite of
+     /FREEFORMAT which is the default input mode.
+
+     ^b/PRELINK^b
+
+     Changes .RTLink to pre-link mode.  In this mode the <outputFile>
+     generated by .RTLink is a pre-link library (.PLL) file instead of an
+     executable (.EXE) file.
+
+     ^bPRELOAD^b
+
+     Causes the current static overly section to be loaded into memory
+     before the program begins execution.  Normally, only the resident
+     sections of the program are loaded into memory before execution begins.
+
+     ^b/REFER:<symbol>^b
+     ^bREFER <symbol list>^b
+
+     In pre-link mode, forces .RTLink to search all specified libraries
+     in order to load the necessary code associated with the specified
+     symbols.
+
+     ^b/RESIDENT^b
+
+     Causes subsequent Clipper-compiled modules to be loaded into the root
+     section of the current program, overriding the automatic creation of
+     dynamic overlays for all Clipper-compiled code.  RESIDENT is the
+     opposite of DYNAMIC.
+
+     ^bSECTION [= <sectionName>] [INTO <ovlFile>]^b
+
+     Creates a static overlay section, and causes segments within any
+     non-Clipper object modules specified in subsequent FILE or LIBRARY
+     options to become a part of that section.
+
+     ^b/SILENT^b
+
+     Suppresses the display of the linker prompts and responses when .RTLink
+     is invoked with a script file.
+
+     ^b/STACK:<sizeBytes>^b
+
+     Specifies a program stack overriding the stack size specified in the
+     object module.  <sizeBytes> is a numeric values up to 65,535.
+
+     ^b/VERBOSE[:<level>]^b
+
+     Causes .RTLink to display status messages during linking indicating the
+     modules being linked and in what order.  <level> specifies the amount
+     of information to display (0, 1, or 2).
+!seealso: c5g0_002.ngo:"SET LIB" c5g0_002.ngo:"SET OBJ" c5g0_002.ngo:"SET PLL" c5g0_002.ngo:"SET RTLINKCMD" c5g0_002.ngo:"SET TMP" 
+'------------------------------------------------------------------------------
+
+
+

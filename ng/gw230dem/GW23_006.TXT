@@ -1,0 +1,306 @@
+!short: GWChDir()       ^bChange to another directory
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWChDir()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Change to another directory. If an error occurs an optional message will
+   be displayed.
+
+ ^bSyntax
+   ^bGWChDir(cDir, [lError]) -> nResult
+
+!seealso: "GWMkDir()" "GWRmDir()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWCopyFile()    ^bCopy 1 or more files
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWCopyFile()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Copy 1 or more files and show the status of the copy proces on one or
+   two statusbars. The use of wildcards is allowed.
+
+ ^bSyntax
+   ^bGWCopyFile([xFromDir], [cTo], [xExcludeFiles], [lStatusbar],
+   ^b[lPrompt]) -> NIL
+
+!seealso: "GWIsValid()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWDrive()       ^bSet/get the default drive
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWDrive()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Set/get the default drive. With this function the current drive can be
+   determined and/or the current drive can be changed.
+
+ ^bSyntax
+   ^bGWDrive(cDrive, [@nError]) -> cResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWGetDir()      ^bGet directory information with exclusion option
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWGetDir()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get an array with directory-information with the possibility to exclude
+   file from the array. It's possible to get all the files excluding the
+   EXE- and COM-files. The filenames can contain the full path.
+
+ ^bSyntax
+   ^bGWGetDir([xFromDir], [xExcludeFiles], [cAttributes], [cSort],
+   ^b       [cOrder], [lFullPath], [lStatus]) Ä> aResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWGetTree()     ^bGet an array with tree-information
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWGetTree()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get an array with tree-information.
+
+ ^bSyntax
+   ^bGWGetTree([cPath], [lSize], [lDisplay], [lGraphic]) Ä> aResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWIsRAMDisk()   ^bCheck if there is a RAM-disk available
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWIsRAMDisk()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if there is a RAM-disk available on the system. This function
+   looks for the existence of a drive which volume name contains either
+   "VDISK" or "RAMDISK".
+
+ ^bSyntax
+   ^bGWIsRAMDisk() Ä> lResult
+
+!seealso: "GWCopyFile()" "GWRAMDisk()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWIsValid()     ^bCheck if a drive, directory or file exists
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWIsValid()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if a drive, directory or file exists. If not an error message is
+   displayed.
+
+ ^bSyntax
+   ^bGWIsValid([cName], [lFile], [lMessage]) Ä> aResult
+
+!seealso: "GWCopyFile()" "GWWhatIsThis()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWIsValid()     ^bCheck if a drive, directory or file exists
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWIsValid()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Check if a drive, directory or file exists. If not an error message is
+   displayed.
+
+ ^bSyntax
+   ^bGWIsValid([cName], [lFile], [lMessage]) Ä> aResult
+
+!seealso: "GWCopyFile()" "GWWhatIsThis()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWMemory()      ^bDisplay the status of free memory
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWMemory()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Display the status of free memory in a window. If assigned to a key
+   (with SETKEY()) you can use this function during development.
+
+ ^bSyntax
+   ^bGWMemory() Ä> NIL
+    or
+   ^bSETKEY(<nKey>, {|| GWMemory() })
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWMkDir()       ^bMake a directory
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWMkDir()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Make a directory. If an error occurs an optional message will be
+   displayed.
+
+ ^bSyntax
+   ^bGWMkDir(cDir, [lError]) -> nResult
+
+!seealso: "GWChDir()" "GWRmDir()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWRAMDisk()     ^bGet the drive letter of a RAM-disk
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWRAMDisk()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Get the drive-letter of a RAM-disk. This functions looks for a drive
+   which volume name contains either "VDISK" or "RAMDISK".
+   This is very useful if you want to copy files (or whatever) to a
+   RAM-disk.
+
+ ^bSyntax
+   ^bGWRAMDisk() Ä> cResult
+
+!seealso: "GWIsRAMDisk()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWRestEnv()     ^bRestore the OS environment
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWRestEnv()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Restore the operating system environment before the application is
+   exited. The environment must be saved first with GWSaveEnv().
+
+ ^bSyntax
+   ^bGWRestEnv() Ä> NIL
+
+!seealso: "GWSaveEnv()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWRmDir()       ^bRemove a directory
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWRmDir()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Remove a directory. If an error occurs an optional message will be
+   displayed.
+
+ ^bSyntax
+   ^bGWRmDir(cDir, [lError]) -> nResult
+
+!seealso: "GWChDir()" "GWMkDir()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWSaveEnv()     ^bSave the OS environment                                     ^A4FM
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWSaveEnv()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Save the operating system environment when the application is started.
+   The following 'things' are saved :
+   - the screen ;
+   - the color settings ;
+   - the cursor size ;
+   - the cursor location ;
+   - blink state ;
+   - screen mode (eg. SETMODE(25, 80) is restored) ;
+   - mouse mode ;
+   - mouse position.
+   Before the application is exited you can restore the environment with
+   GWRestEnv().
+   You can use this function more than once in a program. All the
+   information is stored for each call. Restoring uses the LIFO (Last In
+   First Out) principle. So the last saved environment is restored first.
+
+ ^bSyntax
+   ^bGWSaveEnv() Ä> NIL
+
+!seealso: "GWRestEnv()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWSize()        ^bDetermine the size of a file bytes or kilobutes
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWSize()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Determine the size of a file in bytes or kilobytes.
+
+ ^bSyntax
+   ^bGWSize(cFile, [lKilo]) Ä> nResult
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GWWhatIsThis()  ^bExamine if the argument is a station, directory of file
+'------------------------------------------------------------------------------
+ ^A4F DEMO version! After registering you will receive a complete version! ^A4F
+ ^A1FÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ^A10¿^A10
+ ^A1F³  ^A1EGWWhatIsThis()^A10  ³^A10
+ ^A1FÀ^A10ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ^A10
+ ^bDescription
+   Examines if the argument is a station-, directory- or filename.
+
+ ^bSyntax
+   ^bGWWhatIsThis(cInput) Ä> cResult
+
+!seealso: "GWIsValid()" 
+'------------------------------------------------------------------------------
+
+
+

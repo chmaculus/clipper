@@ -1,0 +1,368 @@
+!short: Error -- Overview
+'------------------------------------------------------------------------------
+ ^bError^b
+ Provides objects containing information about runtime errors
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bDescription^b
+
+     An Error object is a simple object that contains information pertaining
+     to a runtime error.  Error objects have no methods, only exported
+     instance variables.  When a runtime error occurs, CA-Clipper creates a
+     new Error object and passes it as an argument to the error handler block
+     specified with the ERRORBLOCK() function.  Within the error handler, the
+     Error object can then be queried to determine the nature of the error
+     condition.
+
+     Error objects can also be returned to the RECOVER statement of a BEGIN
+     SEQUENCE construct with a BREAK statement.  Here, the error object can
+     be queried for local error handling.  For more detailed information and
+     examples refer to the Error Handling Strategies chapter in the
+     Programming and Utilities guide.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example demonstrates how a file open operation might be
+        handled in an error handler replicating the default CA-Clipper
+        behavior.  When, for example, an attempt to open a database file with
+        a USE command fails, control returns to the statement following the
+        offending command:
+
+        #include "Error.ch"
+        #command RETRY      => RETURN (.T.)    // Retry operation
+        #command RESUME     => RETURN (.F.)    // Default recovery
+        //
+
+        FUNCTION MyError( objError )
+           //
+           // Handle file open error
+           IF objError:genCode == EG_OPEN .AND.;
+              objError:canDefault .AND.;
+              NETERR()
+              //
+              RESUME
+           ENDIF
+           .
+           . <other error statements>
+           .
+           RETURN NIL
+
+     ^b^CFE^b  This example retries an operation within an error handler a
+        specified number of times:
+
+        #include "Error.ch"
+        #command RETRY      => RETURN (.T.)    // Retry operation
+        #command RESUME     => RETURN (.F.)    // Default recovery
+        //
+
+        FUNCTION MyError( objError )
+           //
+           // Handle printer not ready error
+           IF objError:genCode == EG_PRINT .AND.;
+              objError:canRetry .AND.;
+              objError:tries < 25
+              //
+              RETRY
+           ENDIF
+           .
+           . <other error statements>
+           .
+           RETURN NIL
+
+     ^b^CFE^b  This code fragment returns an error object from an error
+        handler to the RECOVER statement for further processing:
+
+        LOCAL objLocal, bLastHandler
+        //
+        // Save current and set new error handler
+        bLastHandler := ERRORBLOCK({    |objErr| ;
+                          MyHandler(objErr, .T.)})
+        //
+        BEGIN SEQUENCE
+           .
+           . <operation that might fail>
+           .
+        RECOVER USING objLocal
+           .
+           . <send messages to objLocal and handle the error>
+           .
+        END
+        //
+        // Restore previous error handler
+        ERRORBLOCK( bLastHandler )
+
+        FUNCTION MyHandler( objError, lLocalHandler )
+           //
+           // Handle locally returning the error object
+           IF lLocalHandler
+              BREAK objError
+           ENDIF
+           .
+           . <other statements to handle the error>
+           .
+           RETURN NIL
+
+ ^bFiles:^b  Header file is Error.ch, default error handler is in Errorsys.prg.
+!seealso: c52g_004.ngo:"BEGIN SEQUENCE" c52g_001.ngo:"DOSERROR()" c52g_001.ngo:"ERRORBLOCK()" c52g_001.ngo:"NETERR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bClass Function^b
+!short:
+!short: ErrorNew()      Create a new error object
+'------------------------------------------------------------------------------
+
+     ^bErrorNew() --> objError
+
+        Returns a new Error object.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bExported Instance Variables^b
+!short:
+!short: args            An array of function or operator arguments
+'------------------------------------------------------------------------------
+
+     ^bargs                                             (Assignable)
+
+        Contains an array of the arguments supplied to an operator or
+        function when an argument error occurs.  For other types of errors,
+        Error:args contains a NIL value.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: canDefault      Indicates whether or not default recovery is available
+'------------------------------------------------------------------------------
+
+     ^bcanDefault                                       (Assignable)
+
+        Contains a logical value indicating whether the subsystem can perform
+        default error recovery for the error condition.  A value of true
+        (.T.) indicates that default recovery is available.  Availability of
+        default handling and the actual default recovery strategy depends on
+        the subsystem and the error condition.  The minimum action is simply
+        to ignore the error condition.
+
+        Default recovery is requested by returning false (.F.) from the error
+        block invoked to handle the error.  Note that Error:canDefault is
+        never true (.T.) if Error:canSubstitute is true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: canRetry        Indicates whether or not a retry is possible after an error
+'------------------------------------------------------------------------------
+
+     ^bcanRetry                                       (Assignable)
+
+        Contains a logical value indicating whether the subsystem can retry
+        the operation that caused the error condition.  A value of true (.T.)
+        indicates that a retry is possible.  Retry may or may not be
+        available, depending on the subsystem and the error condition.
+
+        Retry is requested by returning true (.T.) from the error block
+        invoked to handle the error.  Note that Error:canRetry never contains
+        true (.T.) if Error:canSubstitute contains true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: canSubstitute   Indicates if a new result can be substituted after an error
+'------------------------------------------------------------------------------
+
+     ^bcanSubstitute                                 (Assignable)
+
+        Contains a logical value indicating whether a new result can be
+        substituted for the operation that produced the error condition.
+        Argument errors and certain other simple errors allow the error
+        handler to substitute a new result value for the failed operation.  A
+        value of true (.T.) means that substitution is possible.
+
+        The substitution is performed by returning the new result value from
+        the code block invoked to handle the error.  Note that
+        Error:canSubstitute is never true (.T.) if either Error:canDefault or
+        Error:canRetry is true (.T.).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: cargo           User-definable variable
+'------------------------------------------------------------------------------
+
+     ^bcargo                                             (Assignable)
+
+        Contains a value of any data type unused by the Error system.  It is
+        provided as a user-definable slot, allowing arbitrary information to
+        be attached to an Error object and retrieved later.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: description     Character description of the error condition
+'------------------------------------------------------------------------------
+
+     ^bdescription                                    (Assignable)
+
+        Contains a character string that describes the error condition.  A
+        zero-length string indicates that the subsystem does not provide a
+        printable description for the error.  If Error:genCode is not zero, a
+        printable description is always available.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: filename        Name of the file associated with the error
+'------------------------------------------------------------------------------
+
+     ^bfilename                                       (Assignable)
+
+        Contains a character value representing the name originally used to
+        open the file associated with the error condition.  A zero-length
+        string indicates either that the error condition is not associated
+        with a particular file or that the subsystem does not retain filename
+        information.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: genCode         CA-Clipper error code number
+'------------------------------------------------------------------------------
+
+     ^bgenCode                                          (Assignable)
+
+        Contains an integer numeric value representing a CA-Clipper generic
+        error code.  Generic error codes allow default handling of similar
+        errors from different subsystems.  A value of zero indicates that the
+        error condition is specific to the subsystem and does not correspond
+        to any of the generic error codes.  The header file, Error.ch,
+        provides a set of manifest constants for generic error codes.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: operation       Character description of the failed operation
+'------------------------------------------------------------------------------
+
+     ^boperation                                       (Assignable)
+
+        Contains a character string that describes the operation being
+        attempted when the error occurred.  For operators and functions,
+        Error:operation contains the name of the operator or function.  For
+        undefined variables or functions, it contains the name of the
+        variable or function.  A zero-length string indicates that the
+        subsystem does not provide a printable description of the operation.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: osCode          Operating system error code number
+'------------------------------------------------------------------------------
+
+     ^bosCode                                          (Assignable)
+
+        Contains an integer numeric value representing the operating system
+        error code associated with the error condition.  A value of zero
+        indicates that the error condition was not caused by an error from
+        the operating system.  When Error:osCode is set to a value other than
+        zero DOSERROR() is updated with the same value.
+
+        Error:osCode properly reflects the DOS extended error code for file
+        errors.  This allows proper distinction between errors which result
+        from sharing violations (e.g., opening EXCLUSIVE when another process
+        has already opened the file) and access violations (e.g., opening
+        read/write when the file is marked read-only).
+
+        For a list of DOS error codes refer to the Error Messages and
+        Appendices guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: severity        Indicates error severity
+'------------------------------------------------------------------------------
+
+     ^bseverity                                       (Assignable)
+
+        Contains a numeric value indicating the severity of the error
+        condition.  Four standard values are defined in Error.ch:
+
+        ^bError:severity Values^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        ^bError.ch            Meaning^b
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+        ES_WHOCARES         The condition does not represent a failure; the
+                            error is informational.
+        ES_WARNING          The condition does not prevent further operations,
+                            but may result in a more serious error later.
+        ES_ERROR            The condition prevents further operations without
+                            corrective action of some kind.
+        ES_CATASTROPHIC     The condition requires immediate termination of
+                            the application.
+        컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+        Note that the CA-Clipper runtime support code only generates errors
+        with severities of ES_WARNING or ES_ERROR.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: subCode         Subsystem-specific error code number
+'------------------------------------------------------------------------------
+
+     ^bsubCode                                          (Assignable)
+
+        Contains an integer numeric value representing a subsystem-specific
+        error code.  A value of zero indicates that the subsystem does not
+        assign any particular number to the error condition.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: subSystem       Character description of the subsystem generating the error
+'------------------------------------------------------------------------------
+
+     ^bsubSystem                                       (Assignable)
+
+        Contains a character string representing the name of the subsystem
+        generating the error.  For errors with basic CA-Clipper operators and
+        functions, the subsystem name "BASE" is given.  For errors generated
+        by a database driver, Error:subSystem contains the name of the
+        database driver.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: tries           Number of times the failed operation has been attempted
+'------------------------------------------------------------------------------
+
+     ^btries                                             (Assignable)
+
+        Contains an integer numeric value representing the number of times
+        the failed operation has been attempted.  When Error:canRetry is true
+        (.T.), Error:tries can be used to limit the number of retry attempts.
+        A value of zero indicates that the subsystem does not track the
+        number of times the operation has been tried.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

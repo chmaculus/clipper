@@ -1,0 +1,214 @@
+'------------------------------------------------------------------------------
+ ^bProgram Maintenance -- RMAKE.EXE^b
+ Automate the maintenance of multi-file program systems by keeping files
+ up-to-date.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bSyntax^b
+
+     ^bRMAKE [<makeFile list>]^b
+        ^b[<macroDef list>] [<option list>]^b
+
+ ^bCommand-line Arguments^b
+
+     This is the command-line syntax to invoke the Clipper make utility.  If
+     issued without any arguments, a help screen is displayed.
+
+     ^B<makeFile list>^B is a list of one or more make files to process.
+
+     ^B<macroDef list>^B is a list of one or more macro definitions of the
+     form <macroName>=<value>.
+
+     ^B<option list>^B is a list of one or more options to control the
+     course of the make, all of which are described below.
+
+ ^BDescription^b
+
+     RMAKE keeps files up to date by comparing the date and time stamps
+     of files related to one another and performs a series of actions if the
+     date and time stamps do not match.
+
+ ^bRMAKE Options^b
+
+     ^b/B^b
+
+     Displays debugging information.
+
+     ^b/D<macroName>[:<value>]^b
+
+     Defines a macro and an optional value.  If the value is not supplied,
+     the macro is defined with a null value.
+
+     ^b/I^b
+
+     Ignores execution errors.
+
+     ^b/N^b
+
+     Performs a null make displaying the commands that would be executed
+     without actually executing them.
+
+     ^b/S^b
+
+     Searches subdirectories for make files.
+
+     ^b/U^b
+
+     Enables the # character as a comment indicator and suppresses its use
+     as a directive indicator.
+
+     ^b/W^b
+
+     Displays certain warning messages.
+
+     ^b/XS<numSymbols>^b
+
+     Sets the size of the internal symbol table.  If not specified, the
+     default is 500 symbols.
+
+     ^b/XW<numBytes>^b
+
+     Sets the size of the internal workspace.  If not specified, the default
+     is 2048 bytes.
+
+ ^bComments^b
+
+     Comments may be specified using C-style inline comments (e.g. /* .. */)
+     or C-style line comments (//) or, if the /U option is used, Unix-make
+     style comments (#).  Comments cannot be nested.
+
+ ^bDependency Rules^b
+
+     A dependency rule causes certain actions to be performed if any of the
+     dependent files have a newer date and time stamp than the target file:
+
+     ^b<targetFile>: <dependentFile list>^b
+        ^b[<action>]^b
+        ^b[<action>]...^b
+
+ ^bInference Rules^b
+
+     An inference rule is used to complete a dependency rule specified with
+     no actions.  It defines the actions to take for any incomplete
+     dependency rule that satisfies certain filename extensions:
+
+     ^b.<dependentExtension>.<targetExtension>:^b
+       ^b[<action>]^b
+       ^b[<action>]...^b
+
+ ^bMacro Definitions^b
+
+     Macros are defined in make files using the following syntax:
+
+     ^b<macroName> = <value>^b
+
+     Once defined, a macro can be referred to using the following syntax:
+
+     ^b$(<macroName>)^b
+
+     To assign the contents of a macro to another macro, use the following
+     syntax:
+
+     ^b<macroName> := $(<macroName>)^b
+
+ ^bMakepath Macros^b
+
+     Makepath macros are special macros that define where RMAKE searches and
+     creates classes of files as defined by extension.  Makepath macros are
+     defined using the following syntax:
+
+     ^bmakepath.[<extension>] = <pathSpec>^b
+
+ ^bPre-Defined Macros^b
+
+     In addition to user-defined macros, there are several pre-defined
+     macros that can be used to access dependency and target filenames.
+
+     ^B$*^B
+
+     Expands to the target filename without a path or extension.
+
+     ^b$@^b
+
+     Expands to the target filename including path and extension.
+
+     ^b$**^b
+
+     Expands to the complete list of full dependency filenames.
+
+     ^b$<^b
+
+     Expands to the full name of the dependency file that triggered the
+     rule.
+
+     ^b$?^b
+
+     Expands to a list of dependencies that have a more recent date and time
+     stamp than the target file.
+
+ ^bDirectives^b
+
+     RMAKE provides directives to control the operation of the make
+     process.  Directives cannot be used as action lines.  Macros
+     encountered in a directive are expanded immediately.  By default,
+     either the # character or the ! character can be used to specify a
+     directive.  If the /U option is used, the # character is interpreted as
+     a comment indicator, and cannot be used to specify directives.
+
+     ^b#! <action>^b
+
+     Execute a DOS command.
+
+     ^b#else^b
+
+     Executes statements between the #else and the next #endif directive
+     when the corresponding #if directive evaluates to false (.F.).
+
+     ^b#end[if]^b
+
+     Terminates the block of statements defined by a #if directive.
+
+     ^b#ifdef <macroName>^b
+
+     Executes statements between the #ifdef directive and the corresponding
+     #else or #endif directives if the specified <macroName> exists.
+
+     ^b#ifeq <word1> <word2>^b
+
+     Executes statements between the #ifeq directive and the corresponding
+     #else or #endif directives if <word1> and <word2> are identical.  A
+     word consists of one or more characters up to the next white space
+     character.  To include a white space character within a word, enclose
+     the word in double-quote (") marks.
+
+     ^b#iffile <fileSpec>^b
+
+     Executes statements between the #iffile directive and the corresponding
+     #else or #endif directives if any files match the specified <fileSpec>.
+
+     ^b#ifndef <macroName>^b
+
+     Executes statements between the #ifndef directive and the corresponding
+     #else or #endif directives if the specified <macroName> does not exist.
+
+     ^b#include <fileName>^b
+
+     Inserts and processes the contents of <fileName> before continuing with
+     the current make file.
+
+     ^b#stderr "<text>"^b
+
+     Writes the <text> to the standard error file or device.
+
+     ^b#stdout "<text>"^b
+
+     Writes the <text> to the standard output file or device.
+
+     ^b#undef <macroName>^b
+
+     Removes any previous definition of the specified <macroName>.
+!seealso: c5g0_002.ngo:"SET RMAKE" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,1009 @@
+!short: ^bSample Programs--Overview^b
+'------------------------------------------------------------------------------
+ Document:   ^bSample Programs--Overview^b
+             ^bClipper 5.01^b
+
+             Copyright (c) 1991, Nantucket Corporation
+
+ Version:    5.01a (April 19, 1991)
+
+ Summary:    In Clipper 5.01 there are several sample functions and demo
+             programs to implement many of the application features
+             users have requested.  The programs described herein can be
+             found in the \CLIPPER5\SOURCE\SAMPLE directory.
+
+             Note that sample programs are not part of Clipper and must be
+             used at your own discretion.  There is no guarantee that these
+             functions will appear in the sample programs of future release
+             of Clipper.  If you use them, therefore, you must be prepared
+             to maintain them.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short: Array.ch        Header file for array manipulation examples
+'------------------------------------------------------------------------------
+ ^bArray.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Array.ch is the header file for the array functions contained in
+   Array.ch.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Array.prg       Array manipulation examples
+'------------------------------------------------------------------------------
+ ^bArray.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bABrowse( <aArray>, <nTop>, <nLeft>, <nBottom>, <nRight> ) --> value
+
+   Browse a 2-dimensional array using a TBrowse object and return the value
+   of the highlighted array element.
+
+   ^bABlock( <cName>, <nSubx> ) --> bABlock
+
+   Given an array name and subscript, return a set-get block for the array
+   element indicated.
+
+   ^bAmax( <aArray> ) --> nPos
+
+   Return the subscript of the array element with the highest value.
+
+   ^bAmin( <aArray> ) --> nPos
+
+   Return the subscript of the array element with the lowest value.
+
+   ^bAComp( <aArray>, <bComp>, [<nStart>], [<nStop>] ) --> valueElement
+
+   Compare all elements of <aArray> using the <bComp> code block from
+   <nStart> to <nStop> (if specified, otherwise entire array) and return
+   the result.  Several sample blocks are provided in Array.ch.
+
+   ^bDimensions( <aArray> ) --> aDims
+
+   Return an array of numeric values describing the dimensions of a nested
+   or multi-dimensional array, assuming the array has uniform dimensions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Asrtdemo.prg    Demonstrates the Assert() pseudo-function
+'------------------------------------------------------------------------------
+ ^bAsrtdemo.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Asrtdemo.prg demonstrates the Assert() pseudo-function defined in
+   Assert.ch.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Assert.ch       Header file for error checking assertions
+'------------------------------------------------------------------------------
+ ^bAssert.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bAssert( <lCondition> [, <cMsg>] )
+
+   If <lCondition> evaluates to true (.T.), Assert() does nothing.
+   Otherwise, a message is written to STDOUT and the application
+   terminates. <cMsg> specifies the message to display if the assertion
+   fails.  Otherwise, the text of the condition itself is displayed as the
+   message.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Box.prg         Simple box menus
+'------------------------------------------------------------------------------
+ ^bBox.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bBoxMenu( <aMenuItems>, [<nTop>], [<nLeft>], [<nBottom>], [<nRight>],
+      ^b[<cMenuTitle>], [<nChoice>], [<cBoxChars>],
+      ^b[<cColorString>] ) --> nChoice
+
+   Paint quick and simple menu inside a box with a drop shadow. Returns a
+   numeric value which denotes the subscript of the array passed to the
+   BoxMenu() function which holds the menu prompts. One menu choice per
+   element.
+
+   ^bBoxShadow( <nTop>, <nLeft>, <nBottom>, <nRight> ) --> NIL
+
+   Draw a box shadow with see through.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Browse.Prg      Browses active database using TBrowse object
+'------------------------------------------------------------------------------
+ ^bBrowse.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bBrowse(<nTop>, <nLeft>, <nBottom>, <nRight>) --> lSuccess
+
+   Defines coordinates and activates a browse window for the current
+   database file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Date.prg        Date manipulation functions
+'------------------------------------------------------------------------------
+ ^bDate.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bMdy( <dDate> ) --> cDate
+
+   Convert a date to a string in the format month dd, yyyy.
+
+   ^bDmy( <dDate> ) --> cDate
+
+   Convert a date to string formatted as dd month yyyy.
+
+   ^bDateAsAge( <dDate> ) --> nAge
+
+   Convert a date of birth to an age in years.
+
+   ^bAddMonth( <dDate>, <nMonths> ) --> dNewDate
+
+   Calculate a new date by adding a number of months to a given date.
+
+   ^bDateAsArray( dDate ) --> aDate
+
+   Convert a date to an array of year, month, and day.
+
+   ^bArrayAsDate( aDate ) --> dDate
+
+   Convert an array of year, month, and day to a date value.
+
+   ^bDateIsLeap( <dDate> ) --> lLeap
+
+   Determine if the year of a supplied date is a leap year.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dict.ch         Header file for keyed dictionary utility
+'------------------------------------------------------------------------------
+ ^bDict.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Dict.ch is the header file for Dict.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dict.prg        Keyed dictionary utility
+'------------------------------------------------------------------------------
+ ^bDict.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bDictNew() --> aDictionary
+
+   Creates and returns an empty dictionary.
+
+   ^bDictAt( <aDictionary>, <cKey> ) --> xValue
+
+   Returns the value associated with <xKey> in dictionary, NIL if <cKey> is
+   not present in dictionary.
+
+   ^bDictPut( <aDictionary>, <cKey>, <xValue> ) --> xValue
+
+   Associates <cKey> to <xValue> in <aDictionary>.
+
+   ^bDictPutPair( <aDictionary>, <aPair> ) --> aPair
+
+   Adds <aPair> to <aDictionary>.  <aPair> is a key/value pair: { <cKey>,
+   <xValue> }.
+
+   ^bDictRemove( <aDictionary>, <cKey> ) --> aDictionary
+
+   Removes the key/value pair for <cKey>.
+
+   ^bDictEval( <aDictionary>, <bBlock> ) --> aDictionary
+
+   Evaluates <bBlock> against each <cKey>/<xValue> pair in dictionary.
+   Pair is passed to block as { <cKey>, <xValue> }  (pair array indexes
+   defined in "dict.ch").
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dot.prg         Dot prompt emulator
+'------------------------------------------------------------------------------
+ ^bDot.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Dot.prg is a dot prompt interpreter written in Clipper.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Environ.prg     File look up and state control functions
+'------------------------------------------------------------------------------
+ ^bEnviron.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bFilePath( <cFile> ) --> cFilePath
+
+   Extract the full path name from a filename.
+
+   ^bFileBase( <cFile> ) --> cFileBase
+
+   Extract the eight letter base name from a filename.
+
+   ^bFileExt( <cFile> ) --> cFileExt
+
+   Extract the three letter extension from a filename.
+
+   ^bFileDrive( <cFile> ) --> cFileDrive
+
+   Extract the drive designator from a fully qualified filename.
+
+   ^bFullPath( <cFile>, <lClipPath> ) --> cFullPath
+
+   Returns the full path of cFile; similar to the FoxPro FULLPATH()
+   function.
+
+   ^bGetPath( <cFile>, <cPathSpec> ) --> cPath
+
+   Returns the location of a file if found in cPathSpec; otherwise returns
+   NIL.
+
+   ^bSetAll( [<aNewSets>] ) --> aCurrentSets
+
+   Using an array of settings, change all global SETs and return their
+   original settings in an array.  If no argument is passed, simply return
+   current settings.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Examplep.prg    Miscellaneous examples
+'------------------------------------------------------------------------------
+ ^bExamplep.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bAmPm( <cTime> ) --> cTime
+
+   Convert a time string to 12-hour format.
+
+   ^bStrZero( <nNumber>, <nLength>, <nDecimals> ) --> cNumber
+
+   Convert a numeric to a string padded with leading zeros.
+
+   ^bDays( <nSeconds> )
+
+   Return integer number of days from numeric seconds.
+
+   ^bDBF()
+
+   Return the alias of the currently selected database.
+
+   ^bElapTime( <nStartTime>, <nEndTime> )
+
+   Return a time string showing the difference between start and end times.
+
+   ^bFKLABEL( <nFunKey> )
+
+   Return the name of the <expN>th programmable function key.
+
+   ^bFKMAX()
+
+   Return the maximum number of programmable function keys on the computer.
+
+   ^bLenNum( <nNum> )
+
+   Return the string length of <nNum>.
+
+   ^bMOD( <expN1>, <expN2> )
+
+   Return remainder of <expN1> divided by <expN2>.
+
+   ^bREADKEY()
+
+   Return a number representing the key pressed to exit from full-screen
+   mode.
+
+   ^bSecs( <time string> )
+
+   Return numeric seconds as a quantity of the time string.
+
+   ^bTstring( <seconds> )
+
+   Return a 24-hour time string from numeric seconds.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Fileio.prg      Binary file manipulation
+'------------------------------------------------------------------------------
+ ^bFileio.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bFGets( <nHandle>, <nLines>, <nLineLength>, <cDelimiter> ) --> cBuffer
+
+   Read one or more lines from a text file.
+
+   ^bFPuts( <nHandle>, <cString>, <nLength> ) --> nBytes
+
+   Write a line to a text file.
+
+   ^bDirEval( <cMask>, <bAction> ) --> aArray
+
+   Apply a code block to each file matching a skeleton.
+
+   ^bFileTop( <nHandle> ) --> nPos
+
+   Position the file pointer to the first byte in a binary file and return
+   the new file position (i.e., 0).
+
+   ^bFileBottom( <nHandle> ) --> nPos
+
+   Position the file pointer to the last byte in a binary file and return
+   the new file position.
+
+   ^bFilePos( <nHandle> ) --> nPos
+
+   Report the current position of the file pointer in a binary file.
+
+   ^bFileSize( <nHandle> ) --> nBytes
+
+   Return the size of a binary file.
+
+   ^bFReadLn( <nHandle>, [<nLines>], [<nLineLength>],
+      ^b[<cDelimiter>] ) --> cBuffer
+
+   Read one or more lines from a text file.
+
+   ^bFileEval( <nHandle>, [<nLineLength>], [<cDelim>], <bBlock>,
+      ^b[<bForCondition>], [<bWhileCondition>],
+      ^b[<nNextLines>], [<nLine>], [<lRest>] ) --> NIL
+
+   Apply a code block to lines in a binary file using DBEVAL() as a model.
+   If the intent is to modify the file, the output must be written to a
+   temporary file and copied over the original when done.
+
+   ^bFEof( <nHandle> ) --> lBoundary
+
+   Determine if the current file pointer position is the last byte in the
+   file.
+
+   ^bFWriteLn( <nHandle>, <cString>, <nLength> ) --> nBytes
+
+   Write a line to a text file at the current file pointer position. Check
+   FERROR() for the error.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Filedemo.prg    Demonstration Of file manager function
+'------------------------------------------------------------------------------
+ ^bFiledemo.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Filedemo.prg is a demonstration program of FileMan() from Fileman.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Filedemo.rmk    Rmake Script for file manager function
+'------------------------------------------------------------------------------
+ ^bFiledemo.rmk^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Filedemo.rmk is the make file for Filedemo.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Fileman.ch      Header File for file manager function
+'------------------------------------------------------------------------------
+ ^bFileman.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Fileman.ch is the header file for Fileman.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Fileman.prg     File Manager function
+'------------------------------------------------------------------------------
+ ^bFileman.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bFileMan( <nRowTop>, <nColumnTop>, <nRowBottom>,
+      ^b[<cColorString>], [<cDefaultPath>] ) --> cDOSFileName
+
+   Main file manager access function.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Gaugdemo.prg    Demonstration program for Gauge.prg
+'------------------------------------------------------------------------------
+ ^bGuagdemo.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Gaugdemo.prg is a sample program to demonstrate the use of the bar
+   progress gauge defined in Gauge.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Gauge.prg       Status gauge functions
+'------------------------------------------------------------------------------
+ ^bGuage.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bGaugeNew( <nRowTop>, <nColumnTop>, <nRowBottom>, <nColumnBottom>,
+      ^b[<cBackgroundColor>],
+      ^b[<cGaugeColor>],
+      ^b[<cGaugeCharacter>] ) --> aGauge
+
+   Create a new gauge array.
+
+   ^bGaugeDisplay( aGauge ) --> aGauge
+
+   Display a gauge array to the screen.
+
+   ^bGaugeUpdate( aGauge, nPercent ) --> aGauge
+
+   Updates a gauge with a new progress value and redisplays the gauge to
+   the screen to the screen.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Iterator.prg    Array iterator functions
+'------------------------------------------------------------------------------
+ ^bIterator.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bIEval( <nCount>, <bBlock> ) --> valueLast
+
+   Evaluate <bBlock> <nCount> times, passing it the current iteration
+   (starting at 1).  Return the value the last iteration returns.
+
+   ^bCollect( <aArray>, <bBlock> ) --> aResults
+
+   Evaluate bBlock on each element of <aArray> and store the results in
+   aResults.
+
+   ^bExtract( <aArray>, <bMatch> ) --> aMatches
+
+   Returns the elements in <aArray> that match specified criteria.
+   <bMatch> is passed one element at a time and should return true (.T.) if
+   element matches criteria and false (.F.) otherwise.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Keyboard.prg    Keyboard functions
+'------------------------------------------------------------------------------
+ ^bKeyboard.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bInKeyWait( <nSecs> ) --> nInkeyCode
+
+   Similar to INKEY(), except services SET KEYs.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Locks.prg       Database file locking functions
+'------------------------------------------------------------------------------
+ ^bLocks.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bAddRec( <nWaitSeconds> ) --> lSuccess
+
+   Attempt to APPEND BLANK with optional retry
+
+   ^bFilLock( <nWaitSeconds> ) --> lSuccess
+
+   Attempt to FLOCK() with optional retry
+
+   ^bNetUse( <cDatabase>, <lOpenMode>, <nWaitSeconds> ) --> lSuccess
+
+   Attempt to USE a database file with optional retry
+
+   ^bRecLock( <nWaitSeconds> ) --> lSuccess
+
+   Attempt to RLOCK() with optional retry
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Locks87.ch      Header file for S87 locking functions compatibility
+'------------------------------------------------------------------------------
+ ^bLocks87.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Locks87.ch is a header file to implement Summer '87 compatibility.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Num.prg         Numeric functions
+'------------------------------------------------------------------------------
+ ^bNum.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bBaseToBase( <cInString>, <nInBase>, <nOutBase> ) --> cNewBaseValue
+
+   Transform a string of a number from one base to another within the base
+   range of 2 to 36.
+
+   ^bCeiling( <nNumber> ) --> nInteger
+
+   Return the smallest integer that is greater than or equal to <nNumber>.
+
+   ^bDtor( <nDegrees> ) --> nRadians
+
+   Convert an angle size specified in radians to degrees.
+
+   ^bFloor( <nNumber> ) --> nInteger
+
+   Return the largest integer that is less than or equal to <nNumber>.
+
+   ^bNumAsCurrency( <nNumber>, <cSymbol>, <nSide> ) --> cCurrency
+
+   Convert number to currency format, floating dollar symbol.
+
+   ^bNumAsLog10( <nNumber> ) --> nLog10
+
+   Convert a positive number to log base 10.
+
+   ^bNumGetDecimals( <nNumber> ) --> nDecimals
+
+   Determine the number of decimal digits.
+
+   ^bNumGetLen( <nNumber> ) --> nDigits
+
+   Determine the number of whole number digits.
+
+   ^bPI() --> nPI
+
+   Approximates the constant pi.
+
+   ^bRtod( <nRadians> ) --> nDegrees
+
+   Convert an angle size specified in radians to degrees.
+
+   ^bSign( <nNumber> ) --> nSign
+
+   Return the sign of a number.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Odemo1.prg      Demonstration of menu functions
+'------------------------------------------------------------------------------
+ ^bOdemo1.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Odemo1.prg is a demonstration program for the Omenu menu system defined
+   in Omenu.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Odemo1.rmk      Rmake script for ODEMO1.PRG
+'------------------------------------------------------------------------------
+ ^bOdemo1.rmk^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Odemo1.rmk is the make file for Omenu1.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Odemo2.prg      Demonstration of menu functions
+'------------------------------------------------------------------------------
+ ^bOdemo2.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Odemo2.prg demonstrates proper usage of the Omenu menu system defined in
+   Omenu.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Odemo2.rmk      Rmake script for ODEMO2.PRG
+'------------------------------------------------------------------------------
+ ^bOdemo2.rmk^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Odemo2.rmk is the make file for Omenu2.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Omenu.ch        Header file for menu functions
+'------------------------------------------------------------------------------
+ ^bOmenu.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Omenu.ch is the header file by Omenu.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Omenu.doc       Documentation for menu functions
+'------------------------------------------------------------------------------
+ ^bOmenu.doc^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Omenu.doc contains documentation for the Omenu menu system defined in
+   Omenu.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Omenu.prg       Menu functions
+'------------------------------------------------------------------------------
+ ^bOmenu.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bBarActivate( <hBar>, [<nKey>] ) --> nMenuChoice
+
+   Activate bar menu as primary task (nothing else active).
+
+   ^bBarDeInstall( <hBar> ) --> hBar
+
+   Uninstall menu bar from SET KEY handler.
+
+   ^bBarDisplay( <hBar> ) --> hBar
+
+   Display a menu bar to the screen.
+
+   ^bBarInstall( <hBar> ) --> hBar
+
+   Install a menu bar into the SET KEY handler.
+
+   ^bBarMenuChoice( <hBar>, [<nChoice>] ) --> nChoice.
+
+   Retreives the last menu selection.
+
+   ^bBarNew( <cColor>, <nBorder> ) --> hBar
+
+   Create a new menu bar and return a handle to it.
+
+   ^bMenuAdd( <hMenu> ) --> hBar
+
+   Add a menu to menu bar.
+
+   ^bMenuDisplay( <hMenu> ) --> hMenu
+
+   Display a menu to the screen.
+
+   ^bMenuNew( <cTitle> ) --> hMenuHandle
+
+   Create a new menu and return a new handle to it.
+
+   ^bPostExitBlock( [<bBlock>] ) --> bOldBlock
+
+   Post a code block to execute when a function is terminated.
+
+   ^bPromptAction( <hMenu>, <nID>, <bBlock> ) --> hMenu
+
+   Change the menu action block.
+
+   ^bPromptAdd( <hMenu>, <nID>, <cText>, <bBlock> ) --> hMenu
+
+   Add a prompt to the menu.
+
+   ^bPromptAddLine( <hMenu> ) --> hMenu
+
+   Add a line separator between prompts.
+
+   ^bPromptAddSub( <hMenu>, <nID>, <hSubMenu> ) --> hMenu
+
+   Add a hierarchical submenu to an existing menu.
+
+   ^bPromptAddToggle( <hMenu>, <nID>, <cText>, <bBlock> ) --> hMenu
+
+   Has to be separate from PromptAdd() because of needing to add <bBlock>
+   to key event array.
+
+   ^bPromptCheck( <hMenu>, <nID> ) --> hMenu
+
+   Mark a menu prompt with a check mark.
+
+   ^bPromptEnable( <hMenu>, <nID> ) --> hMenu
+
+   Ungray a menu prompt.
+
+   ^bPromptGray( <hMenu>, <nID> ) --> hMenu
+
+   Gray a menu prompt.
+
+   ^bPromptIsChecked( <hMenu>, <nID> ) --> lChecked
+
+   Determine if a menu prompt is checked.
+
+   ^bPromptIsEnabled( <hMenu>, <nID> ) --> lEnabled
+
+   Determine if a menu prompt is active.
+
+   ^bPromptQuickKey( <hBar>, <hMenu>, <nID>, <nKey> ) --> hMenu
+
+   Assign nKey to nID.
+
+   ^bPromptUnCheck( <hMenu>, <nID> ) --> hMenu
+
+   Uncheck menu prompt.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Omenu.rmk       Rmake script for menu functions
+'------------------------------------------------------------------------------
+ ^bOmenu.rmk^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Odemo.rmk is the make file for Omenu.prg.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Print.prg       Printer control function
+'------------------------------------------------------------------------------
+ ^bPrint.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bPrintCodes( <cCtrlCode> ) --> NIL
+
+   Send control codes to the printer without affecting printhead position.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scrolbar.prg    Scroll bar functions
+'------------------------------------------------------------------------------
+ ^bScrolbar.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bScrollBarNew( <nTopRow>, <nTopColumn>, <nBottomRow>,
+      ^b<cColorString>, <nInitPosition> ) --> aScrollBar
+
+   Create a new scroll bar array with the specified coordinates.
+
+   ^bScrollBarDisplay( <aScrollBar> ) --> aScrollBar
+
+   Display a scroll bar array to the screen.
+
+   ^bScrollBarUpdate( <aScrollBar>, <nCurrent>, <nTotal>,
+      ^b<lForceUpdate> ) --> aScrollBar
+
+   Update scroll bar array with new tab position and redisplay tab.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Stack.prg       Functions to implement a stack data structure
+'------------------------------------------------------------------------------
+ ^bStack.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bStackNew( ) --> aStack
+
+   Create a new array.
+
+   ^bStackPush( <aStack>, <exp> ) --> aStack
+
+   Add a new value to a stack array.
+
+   ^bStackPop( <aStack> ) --> value
+
+   Remove the last element of a stack array.
+
+   ^bStackIsEmpty( <aStack> ) --> lEmpty
+
+   Determine if a stack array has no elements.
+
+   ^bStackGetTop( <aStack> ) --> value
+
+   Retrieve top stack element without removing.
+
+   ^bStackTop( <aStack> ) --> value
+
+   Retrieve top stack element without removing.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Status.prg      Status indicator function
+'------------------------------------------------------------------------------
+ ^bStatus.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bStatusNew( [<nRow>], [<nCol>], [<cColor>] ) --> aStat
+
+   Create a new Status array.
+
+   ^bStatusUpdate( <aStat> ) --> NIL
+
+   Update screen with new Status position.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: String.prg      String manipulation functions
+'------------------------------------------------------------------------------
+ ^bString.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bCityState( <cCity>, <cState>, <cZip> ) --> cString
+
+   Format city, state and zip variables into a single string.
+
+   ^bListAsArray( <cList>, <cDelimiter> ) --> aList
+
+   Convert a delimited string to an array.
+
+   ^bOccurs( <cSearch>, <cTarget> ) --> nCount
+
+   Determine the number of times <cSearch> is found in <cTarget>.
+
+   ^bProper( <cString> ) --> cProper
+
+   Capitalize each word in a string.
+
+   ^bStrZero( <nNumber>, <nLength>, <nDecimals> ) --> cNumber
+
+   Convert a numeric to a string padded with leading zeros.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Tbdemo.prg      Example of using TBrowse objects
+'------------------------------------------------------------------------------
+ ^bTbdemo.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Tbdemo.prg illustrates the use of TBrowse and Get objects.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Time.prg        Time manipulation functions
+'------------------------------------------------------------------------------
+ ^bTime.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bSecondsAsDays( <nSeconds> ) --> nDays
+
+   Convert numeric seconds to days.
+
+   ^bTimeAsAMPM( <cTime> ) --> cTime
+
+   Convert a time string to 12-hour format.
+
+   ^bTimeAsSeconds( <cTime> ) --> nSeconds
+
+   Convert a time string to number of seconds from midnight.
+
+   ^bTimeAsString( <nSeconds> ) --> cTime
+
+   Convert numeric seconds to a time string.
+
+   ^bTimeDiff( <cStartTime>, <cEndTime> ) --> cDiffTime
+
+   Return the difference between two time strings in the form hh:mm:ss.
+
+   ^bTimeIsValid( <cTime> ) --> lValid
+
+   Validate a time string.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Time87.ch       Header file for S87 time functions compatibility
+'------------------------------------------------------------------------------
+ ^bTime87.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   Time87.ch is a header file to make Time.prg functions Summer '87
+   compatible.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Valedit.prg     Example of using Get objects
+'------------------------------------------------------------------------------
+ ^bValedit.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   ^bValEdit( <nRow>, <nCol>, <xValue>, [<cPicture>], [<cColor>] ) --> value
+
+   Uses a Get object to edit value <xValue> at screen location given by
+   <nRow>, <nCol>.  Uses picture <cPicture>, color <cColor> if passed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: EXAMPLEC.C      Clipper/C interface examples
+'------------------------------------------------------------------------------
+ ^bEXAMPLEC.C^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   EXAMPLEC.C is a collection of sample C functions that use the Clipper
+   Extend System interface.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: EXAMPLEA.ASM    Clipper/Assembler interface examples
+'------------------------------------------------------------------------------
+ ^bEXAMPLEA.ASM^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   EXAMPLEA.ASM is a collection of sample Assembler functions that use the
+   Clipper Extend System interface.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: TEMPLATE.ASM    Assembler source code example
+'------------------------------------------------------------------------------
+ ^bTEMPLATE.ASM^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+   TEMPLATE.ASM is an Extend System template for interfacing Clipper with
+   Assembly Language.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

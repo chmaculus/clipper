@@ -1,0 +1,70 @@
+'------------------------------------------------------------------------------
+^BRUN/!^B
+
+    To execute a DOS command or program from within a compiled application.
+
+^USyntax^U
+
+    RUN/! <DOS command>/(<expC>)
+
+^UArgument^U
+
+    <DOS command> is any executable program including resident DOS commands
+    and COMMAND.COM.
+
+^UUsage^U
+
+    When you RUN a DOS program, Clipper executes another copy of
+    COMMAND.COM passing the DOS command to run at the same time.  This has
+    two implications.  First, you must have enough memory for COMMAND.COM
+    (27K for DOS 3.2) and the program you wish to execute.  Second,
+    COMMAND.COM must be available on the path specified by COMSPEC (the
+    default is the root directory of the disk where you boot DOS).  If
+    COMMAND.COM is not located on this disk or the disk is changed, SET
+    COMSPEC to the new location prior to running the Clipper application.
+
+    ^BMemory Resident programs^B: You should not RUN memory resident
+    programs from within Clipper since you may lose memory when the
+    application terminates.
+
+    ^BDOS Access^B: One of the options you may want to give your users is
+    direct access to DOS.  You can do this with the command:
+
+    RUN COMMAND
+
+    If you use this technique, you may also want to change the DOS prompt
+    in order to give instructions on how to return to the application
+    program.  To set this up, create a batch file to set the DOS access
+    prompt, load the application program, and restore the DOS prompt after
+    the application program terminates as follows:
+
+    ^Recho off                                ^R
+    ^Rprompt Dir: $p$_Type EXIT to return.$_$g^R
+    ^R<your application program>              ^R
+    ^Rprompt $p$                              ^R
+
+    Then instruct the suer to execute the batch file in place of the
+    application .EXE file.
+
+^UExample^U
+
+    The following demonstrates how you can use RUN in combination with
+    MEMOREAD() and MEMOWRIT() to create a user-defined function that calls
+    your editor with the current memo field:
+
+    ^RFUNCTION EditorMemo                              ^R
+    ^RPARAMETERS editor, memofld                       ^R
+    ^RIF MEMOWRIT("Clipedit.tmp", &memofld)            ^R
+    ^R   RUN (editor + " Clipedit.tmp")                ^R
+    ^R   REPLACE &memofld WITH MEMOREAD("Clipedit.tmp")^R
+    ^R   RETURN 0                                      ^R
+    ^RELSE                                             ^R
+    ^R   RETURN -1                                     ^R
+    ^RENDIF                                            ^R
+
+    EditorMemo() returns -1 if there is an error and zero if successful.
+!seealso: clip_013.ngo:"INDEX" clip_022.ngo:"PACK" clip_063.ngo:"SET INDEX" clip_077.ngo:"SET UNIQUE" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+

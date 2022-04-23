@@ -1,0 +1,407 @@
+!short: SET CLIPPER     Runtime configuration                     (runtime)
+'------------------------------------------------------------------------------
+ ^BSET CLIPPER^B
+ Runtime configuration of CA-Clipper-compiled programs
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Environment Variable:
+
+     ^bSET CLIPPER=
+        ^b[//BADCACHE]
+        ^b[//CGACURS]
+        ^b[//DYNF:<nHandles>]
+        ^b[//E:<nExpandedKBytes>]
+        ^b[//F:<nHandles>]
+        ^b[//INFO]
+        ^b[//NOIDLE]
+        ^b[//SWAPK:<nBytes>]
+        ^b[//SWAPPATH:'<path>']
+        ^b[//TEMPPATH:'<path>']
+        ^b[//X:<nKBytes>]
+
+     ^bNote:^b  If you link your application with CA-Clipper/Exospace, you
+     can specify application environment settings using an environment
+     variable name other than CLIPPER.  See the EXOSPACE EXECUTABLE CLIPPER
+     command in the "Protected Mode Linker" entry in this database for a
+     list of these settings.
+
+     Application Command Line:
+
+     ^bC><app> [//<setting> ... ] [<app arguments>]
+
+     The following rules apply when specifying environment settings,
+     regardless of whether they are specified on the application command
+     line or in the CLIPPER environment variable.
+
+     ^b^CFE^b  Preface each setting with a double-slash
+
+     ^b^CFE^b  Place a single blank space between settings
+
+     ^b^CFE^b  Place a colon between setting and argument, with no intervening space
+
+     It is possible to specify a setting twice, once in the CLIPPER
+     environment variable and then again on the application command line.  If
+     you do this, settings on the command line override like settings in the
+     environment variable.  This feature provides an easy way to define those
+     settings that are more or less permanent using the CLIPPER environment
+     variable and to override those settings on an application-by-application
+     basis.
+
+ ^bDescription^b
+
+     CA-Clipper provides runtime configuration control of CA-Clipper-
+     compiled programs with a number of settings.  You can specify settings
+     in the DOS environment variable CLIPPER or on the command line used to
+     invoke an application.  You can enter the CLIPPER variable at the DOS
+     prompt or include it in the AUTOEXEC.BAT file.  If the user will be
+     accessing the application from a network, you can also add the SET
+     CLIPPER command to the user's login script.
+
+     Settings that you specify on the application program command line must
+     precede application arguments.  If you wish to use the command line
+     method instead of the CLIPPER environment variable but want to hide the
+     complexity from your end user, use an application batch file to invoke
+     the application with the configuration settings.
+
+ ^bSettings^b
+
+     ^bBADCACHE^b causes the Virtual Memory Manager (VMM) to preserve and
+     restore the state of the EMM page frame before and after every EMM
+     access (the EMM page frame is an area in real address space through
+     which EMM data is accessed).  This setting can be used to correct
+     problems when there are conflicts with other programs that use EMM.
+
+     Note that on some EMM systems, the BADCACHE setting may adversely
+     affect VMM performance.  It should be used only if you experience disk
+     or file corruption because of a conflict with a disk cache or other
+     resident software.
+
+     ^bCGACURS^b prevents the use of the extended cursor capability of the
+     EGA/VGA.  Specifying this setting may preclude some cursor modes by
+     some display adaptors.  CGACURS prevents the cursor weirdness when a
+     CA-Clipper program is executed in some multitasking and TSR
+     environments.
+
+     ^bDYNF:<nHandles>^b specifies the number of file handles the dynamic
+     overlay system is allowed to use.  Valid settings range from 1 to 8,
+     inclusive.  If not specified, the default is 2.
+
+     ^bE:<nExpandedKBytes>^b restricts the amount of expanded memory
+     automatically allocated to <nExpandedKBytes>.  CA-Clipper-compiled
+     programs can use expanded memory to speed up processing, as well as
+     some disk-based operations.  CA-Clipper can use memory configured as
+     expanded memory according to the Lotus-Intel-Microsoft (LIM) Expanded
+     Memory Specification (EMS) version 4.0 or higher.
+
+     Expanded memory is automatically allocated in its entirety at startup;
+     there is no dynamic allocation as execution proceeds.  The maximum
+     amount allocated is limited by four factors:
+
+     ^B^CFE^B  The amount of expanded memory available
+     ^B^CFE^B  The //E:<nExpandedKBytes> environment setting
+     ^B^CFE^B  A theoretical maximum of 32 MB
+     ^B^CFE^B  The amount of conventional memory available
+
+     The E parameter can be used to restrict the amount of expanded memory
+     automatically allocated to <nExpandedKBytes>.  For example, specifying
+     the following E parameter restricts the expanded memory CA Clipper will
+     allocate to 2 MB:
+
+     SET CLIPPER=//E:2000
+
+     Note that a certain amount of conventional memory must be used to
+     contain management tables for the virtual memory system--the more total
+     memory (both conventional and expanded), the more space taken up by
+     this control information.  The amount of expanded memory used may be
+     less than the amount available if there is insufficient conventional
+     memory to hold the tables.
+
+     ^bF:<nHandles>^b is used in combination with the value specified with
+     the FILES setting in CONFIG.SYS to inform CA-Clipper of the maximum
+     number of file handles to use.  This setting is only valid for
+     application programs using more than 20 files and running under DOS
+     3.3 or greater.  When specified, CA-Clipper determines the number of
+     files that can be opened using the smaller of the F setting and the
+     CONFIG.SYS FILES setting.  For example, if the FILES command is set to
+     120 and the F parameter is set to 50, the maximum number of files that
+     can be opened is 50.  The ideal <nHandles> is an odd number that is 5
+     less than specified with the FILES settings.
+
+     ^bINFO^b Provides the following information about CA-Clipper's memory
+     usage at application startup.
+
+     ^B^CFE^B  The first line describes the general product version, revision,
+        and international version.
+
+     ^B^CFE^B  DS=<offset>:0000 is the address for the data segment or DGROUP.
+
+     ^B^CFE^B  DS avail=<memory>KB reflects the amount of DGROUP available.
+
+     ^B^CFE^B  OS avail=<memory>KB represents the amount of conventional
+        memory available for VMM swap space.
+
+     ^B^CFE^B  EMM avail=<EMM memory>KB shows the amount of EMM (expanded
+        memory) allocated to the current application.
+
+     ^B^CFE^B  Fixed Heap=<fixed heap>KB/<number of fixed segments> shows the
+        size of the fixed heap in kilobyte increments in addition to the
+        number of fixed segments.
+
+     ^bNOIDLE^b prevents CA-Clipper from detecting and taking advantage of idle
+     time during execution of compiled applications.
+
+     If NOIDLE is not specified, CA-Clipper detects idle states (for example,
+     keyboard wait states) during execution of compiled applications.  When
+     an idle condition is detected, the system uses the slack time to perform
+     garbage collection, file updates, and other routine housekeeping duties.
+     This increases system performance by performing this work while the
+     application is waiting for user input.
+
+     ^bNote: ^bNOIDLE is provided for applications in which idle time processing
+     is unacceptable.  Since it reduces overall system performance, its use
+     is generally not recommended.
+
+     ^bSWAPK:<nBytes>^b specifies the maximum allowable size of the disk
+     swap file used for the virtual memory (VM) system.  Settings are
+     specified in KB increments.  Valid settings range from 256 to 65,535,
+     inclusive.  If this setting is not specified, the default is 16,384
+     (16 MB).
+
+     ^bNote: ^bSwap space is only allocated as needed--a particular setting
+     does not guarantee that the swap file will get that big.  Suppressing or
+     restricting disk swapping may cause an application to fail.
+
+     ^bSWAPPATH:'<path>'^b specifies the location of the virtual memory swap
+     file.  If not specified, the swap file is created in the current DOS
+     drive and directory.
+
+     ^bTEMPPATH:'<path>'^b controls the placement of temporary files created
+     during sorting and indexing.  By default these files are placed in
+     the current DOS directory or in the directory specified by the SET TMP
+     environment variable, if it is defined.
+
+     ^bNote: ^bTemporary files created during sorting and indexing can be quite
+     large.  Setting TEMPPATH to a small volume (for example, a ram disk) may
+     cause these operations to fail.  In general, the volume where these
+     temporary files will be written should have an available capacity at
+     least twice the size of the largest index to be created or database file
+     to be sorted.
+
+     ^bX:<nKBytes>^b specifies the amount of memory to exclude from being
+     allocated, except for the RUN command.  Specified in kilobytes, valid
+     values range from zero to 64, inclusive.  If not specified, the default
+     value is zero.
+
+     ^bNote:^b  If you link your application with CA-Clipper/Exospace, there
+     are several additional runtime environment settings that you can use to
+     control the VM system.  See the EXOSPACE EXECUTABLE CLIPPER command in
+     the "Protected Mode Linker" entry in this database for a list of these
+     settings.
+
+ ^bExamples^b
+
+     This example shows a series of settings using the CA-Clipper
+     environment variable:
+
+     SET CLIPPER=//F:50 //DYNF:4 //SWAPK:4096 //NOIDLE
+
+     This example shows how the same settings can be used on the
+     application's command line:
+
+     ACCOUNTS //F:50 //DYNF:4 //SWAPK:4096 //NOIDLE
+!seealso: c53g_001.ngo:"Protected Mode Linker" c53g_001.ngo:"Real Mode Linker" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET CLIPPERCMD  Set default compiler options              (compiler)
+'------------------------------------------------------------------------------
+ ^BSET CLIPPERCMD^B
+ Set default compiler options
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    ^bSET CLIPPERCMD=<option list>^b
+
+ ^bArguments^b
+
+    ^b<option list>^b is a list of compiler options used each time
+    the compiler is executed.
+
+ ^bDescription^b
+
+    The CLIPPERCMD environment variable defines the default options the
+    compiler will use each time it is invoked.  Options defined in CLIPPERCMD
+    are overridden by the same options specified on the compiler command
+    line.
+
+ ^bExamples^b
+
+    The following example sets up a default compiler configuration to embed
+    debugging information, generate a preprocessor output file, and issue
+    warnings for ambiguously referenced variables:
+
+    SET CLIPPERCMD=/B/P/W
+!seealso: c53g_001.ngo:"Compiler" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET INCLUDE     Paths to search for header files          (compiler)
+'------------------------------------------------------------------------------
+ ^BSET INCLUDE^B
+ Define a list of paths to search for header files
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    ^bSET INCLUDE=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b is a list of one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The INCLUDE environment variable is used by the CA-Clipper compiler to
+    search for header (#include) files if the files cannot be found in the
+    current directory.  If the /I compiler option is used to specify an
+    additional search directory, the indicated directory is searched after
+    the current directory and before the path specified in the INCLUDE
+    variable.
+
+    The default location for CA-Clipper header files is the \CLIP53\INCLUDE
+    directory.
+
+ ^bExamples^b
+
+    SET INCLUDE=C:\CLIP53\INCLUDE
+!seealso: c53g_001.ngo:"Compiler" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET LIB         Paths to search for library files (.LIB)  (linker)
+'------------------------------------------------------------------------------
+ ^BSET LIB^B
+ Define a list of paths to search for library files (.LIB)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+    ^bSET LIB=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b specifies one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The LIB environment variable specifies the paths that various linkers
+    use to search for library files (.LIB) not found in the current
+    directory at link time.
+
+    The default location of the CA-Clipper libraries is the \CLIP53\LIB
+    directory.
+
+ ^bExamples^b
+
+    SET LIB=C:\CLIP53\LIB
+!seealso: c53g_001.ngo:"Protected Mode Linker" c53g_001.ngo:"Real Mode Linker" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET OBJ         Paths to search for object files (.OBJ)   (linker)
+'------------------------------------------------------------------------------
+ ^bSET OBJ^B
+ Define a list of paths to search for object files (.OBJ)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+    ^bSET OBJ=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b specifies one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The OBJ environment variable defines the paths the linker uses to search
+    for object files (.OBJ) if a specified object file cannot be found in
+    the current directory.
+
+    Object files (.OBJ) are created by the CA-Clipper compiler which creates
+    them either in the current directory or the location specified with
+    the /O command line option.
+
+ ^bExamples^b
+
+    SET OBJ=C:\OBJ;C:\APPS\UTIL;C:\CLIP53\LIB
+!seealso: c53g_001.ngo:"Protected Mode Linker" c53g_001.ngo:"Real Mode Linker" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET RMAKE       Set default RMAKE command line options    (make)
+'------------------------------------------------------------------------------
+ ^bSET RMAKE^B
+ Set default RMAKE command line options
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+    ^bSET RMAKE=<option list>^b
+
+ ^bArguments^b
+
+    ^b<option list>^b is a list of command line options to use each
+    time RMAKE is executed.
+
+ ^bDescription^b
+
+    The RMAKE environment variable specifies a list of command line options
+    processed each time RMAKE.EXE is executed.  Options defined in the
+    environment variable are overridden by the same options specified on
+    the RMAKE command line.
+
+ ^bExamples^b
+
+    SET RMAKE=/B /W
+!seealso: c53g_001.ngo:"Program Maintenance" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET TMP         Location for creating temporary files     (compiler, linker)
+'------------------------------------------------------------------------------
+ ^BSET TMP^B
+ Specifies the location for creating temporary files
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+    ^bSET TMP=<pathName>^b
+
+ ^bArguments^b
+
+    ^b<pathName>^b is the name of the directory where temporary files are
+    created.
+
+ ^bDescription^b
+
+    The TMP environment variable specifies a single directory where both
+    CLIPPER.EXE and BLINKER.EXE write temporary work files.  If this variable
+    is not specified, temporary files are created in the current directory.
+    The /T compiler option can be used to override the TMP setting for the
+    current compiler session.
+
+    In the process of some operations, such as sorting and indexing,
+    CA-Clipper creates temporary files.  These files are created either in
+    the current directory or in the directory specified by the environment
+    variable TMP.
+
+ ^bExamples^b
+
+    To assign a TMP variable, place a command line like the following in
+    the user's AUTOEXEC.BAT file:
+
+    SET TMP=D:\TEMP
+!seealso: c53g_001.ngo:"Compiler" c53g_001.ngo:"Real Mode Linker" 
+'------------------------------------------------------------------------------
+
+
+

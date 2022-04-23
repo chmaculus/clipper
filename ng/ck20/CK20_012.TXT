@@ -1,0 +1,39 @@
+'------------------------------------------------------------------------------
+
+                              ^UAuto Security
+
+    ^BAfter including header file <Security.ch>, all program can get
+    ^BDatabase Security Function automatically.
+
+    This function is called ^BAUTO-SECURITY^B in Casual-Kit.
+
+    ^BAUTO-SECURITY is better than manual-security usually.
+
+    AUTO-SECURITY will encrypt the header of database with a password to
+    prevent other program to use it.  AUTO-SECURITY will decrypt database
+    before using it and encrypt database while closing.
+
+    AUTO-SECURITY can ^Bwork with CK-MU^B to make multi-user program work
+    in security mode.
+
+    AUTO-SECURITY will call the following functions automatically :
+
+        Sec_Use()         use database
+        Sec_Close()       close database
+        Sec_Closeall()    close all database
+        dbSecure()        secure database
+
+    There are two public variables used by AUTO-SECURITY :
+
+        _ckSecKey     =>  password of database, default is NIL
+        _ckSecByte    =>  the length of header to secure, default is 4
+
+       If you want to use special password or length to secure database,
+       you must initialize variables before using/close any database.
+
+    ^Bþ SEC.EXE is a utility program to lock/unlock database in DOS.
+!seealso: ck20_005.ngo:"dbSecure()" ck20_005.ngo:"Sec_use()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,1464 @@
+!short: Introduction Miscellaneous Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     Functions that do not belong in any other module are assembled in this
+     group under the Miscellaneous heading.  However, this does not imply
+     they are less useful.  For example, use KEYTIME() or KEYSEC() to
+     activate a CA-Clipper procedure at a specific time, after a delay of
+     seconds, implement file saves, or control demo programs.
+
+     This module enables you to determine complements, determine data types,
+     and query keyboard scan codes.
+
+ ^bPassing Parameters by Reference^b
+
+     Finally, this chapter discusses functions that permit you to pass
+     parameters by reference.  To find more information on this subject, see
+     Chapter 4, String Manipulations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ALLOFREE()*  Determines the maximum memory size allocation
+'------------------------------------------------------------------------------
+ ^bALLOFREE()*^b
+ Determines the maximum memory size allocation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bALLOFREE([<lMode>]) --> nFreeMemory
+
+     ^b*  This has been retained in CA-Clipper for compatibility purposes.^b
+     ^b   Use the CA-Clipper MEMORY() function to develop future^b
+     ^b   applications.^b
+
+ ^bArgument^b
+
+     ^b<lMode>^b  If passed as .T., the total available memory size is
+     returned.  The default value is the largest contiguous block (.F.).
+
+ ^bReturns^b
+
+     ALLOFREE() returns the maximum possible size for a contiguous memory
+     block or the total amount of free memory available.
+
+ ^bDescription^b
+
+     Use this function to help avoid "memory fault" error messages.  You can
+     implement it in conjunction with other functions that use a string area
+     as a buffer (as when you read files).
+
+ ^bNote^b
+
+     ^b^CFE^b  If there is not enough room on the stack, ALLOFREE(.T.)
+        returns a value of -1.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This is what can happen if you try to print a maximum-length
+        string without enough free memory:
+
+        Var  :=  SPACE(65520)
+
+     ^b^CFE^b  Make a string of the maximum-length possible:
+
+        Var  := SPACE(ALLOFREE())           // Under no circumstances
+                                            // call with .T.!
+        ? LEN(Var)                          // How long has it become?
+
+     ^b^CFE^b  Read in a file...
+
+        FILESTR("Bigfile", ALLOFREE())      // The largest possible buffer
+
+     ^b^CFE^b  Entire available memory:
+
+        ? ALLOFREE(.T.)                     // Available memory
+
+!seealso: "STACKFREE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BLANK()      Creates a blank value for each data type
+'------------------------------------------------------------------------------
+ ^bBLANK()^b
+ Creates a blank value for each data type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bBLANK([<expValue>], [<lMode>]) --> xBlank
+
+ ^bArguments^b
+
+     ^b<expValue>[@]^b  Designates any valid expression; the type is not
+     important.
+
+     ^b<lMode>^b  Designates whether or not the length of the <expValue> is
+     to change in the event that <expValue> is a string.  If .T. is
+     designated, the length is retained.  The default value is Change Length
+     (.F.).
+
+ ^bReturns^b
+
+     BLANK() returns a blank value with the same data type as the <expValue>
+     parameter.
+
+ ^bDescription^b
+
+     BLANK() clears desired data fields with the variables.  BLANK() returns
+     the following results:
+
+     ^bTable 13-1: Data Type Blank Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bArgument            Returned Value
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Character string    Null string or blank string
+     Numeric             Value of 0
+     Logical             .F.
+     Date                A blank date
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default for <lMode> is .F. and produces a null string when a
+     character string is input.  However, if this parameter is designated as
+     .T.., the string length is not changed.
+
+ ^bNotes^b
+
+     ^b^CFE^b  SET DATE has no affect on how BLANK() handles a date.  The
+        blank date display is created in the format you select.
+
+     ^b^CFE^b  You can suppress the value this function returns by
+        manipulating strings through CSETREF() implementation.  To save room
+        in the working memory, designate <lMode> as .T..
+
+ ^bExample^b
+
+     Display blank values for data-type values:
+
+     SET DATE AMERICAN
+     ? BLANK(DATE())          // "  /  /  "
+     ? BLANK()                // .F.
+     ? BLANK(.T.)             // .F.
+     ? BLANK(99)              //  0
+     ? BLANK("abc")           // ""
+     ? BLANK("11:59:59")      // ""
+     ? BLANK("abc", .T.)      // "  " Blank string
+
+!seealso: tool_005.ngo:"CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COMPLEMENT() Forms the complement value of a data type
+'------------------------------------------------------------------------------
+ ^bCOMPLEMENT()^b
+ Forms the complement value of a data type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOMPLEMENT(<expValue>) --> xComplement
+
+ ^bArgument^b
+
+     ^b<expValue>[@]^b  Designates any valid expression of any data type to
+     form a complement value.  Complement() only allows a character string to
+     be passed by reference.
+
+ ^bReturns^b
+
+     COMPLEMENT() returns the complement value that corresponds to the same
+     data type for <expValue>.
+
+ ^bDescription^b
+
+     COMPLEMENT() returns the respective opposite value of the <expValue>
+     parameter.  In contrast to CHARNOT(), which only permits character
+     strings, this function permits all data types.  The result is the same
+     data type as the parameter.  For example, a date returns a date as a
+     result.  It corresponds to the difference between the indicated date and
+     12/31/2999.
+
+ ^bNote^b
+
+     ^b^CFE^b  COMPLEMENT(COMPLEMENT(<expValue>)) always returns <expValue>
+        as output.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The complement of a logical value corresponds to the use of
+        .NOT.:
+
+        ? COMPLEMENT(.T.)                  // .F.
+        ? COMPLEMENT(.F.)                  // .T.
+
+     ^b^CFE^b  Numeric values change sign:
+
+        ? COMPLEMENT(99)                   // -99.00
+        ? COMPLEMENT(0)                    // 0
+        ? COMPLEMENT(-99)                  // 99.00
+        ? COMPLEMENT(-9.9)                 // 9.90
+        ? COMPLEMENT(9.9)                  // -9.9
+
+     ^b^CFE^b  With strings, the function works like CHARNOT:
+
+        ? COMPLEMENT("123ABCabc")          // "       <157><156>"
+
+     ^b^CFE^b  The difference between 1/1/1900 and 01/01/3000:
+
+        SET CENTURY ON
+        ? COMPLEMENT(CTOD("01/01/00"))     // 12/31/1099
+
+     ^b^CFE^b  An empty or invalid date gives the same result -- 01/01/3000:
+
+        SET CENTURY ON
+        ? COMPLEMENT(CTOD("  /  /  "))     // 01/01/3000
+        ? COMPLEMENT(CTOD("77/77/77"))     // 01/01/3000
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DATATYPE()*  Determines the data type of a variable or UDF
+'------------------------------------------------------------------------------
+ ^bDATATYPE()*^b
+ Determines the data type of a variable or UDF
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDATATYPE(<expValue>) --> nDataType
+
+     ^b*  This is retained in CA-Clipper for compatibility purposes.  Use the^b
+     ^b   CA-Clipper VALTYPE() function to develop future applications.^b
+
+ ^bArgument^b
+
+     ^b<expValue>^b  Designates any valid CA-Clipper expression.
+
+ ^bReturns^b
+
+     DATATYPE() returns a value that corresponds to the data type in
+     <expValue>.
+
+ ^bDescription^b
+
+     DATATYPE() is similar to the CA-Clipper TYPE() function, but returns
+     more extensive information in numeric value form.  The bits in the
+     result correspond to specific data types.  Two bits can be set at the
+     same time.  It is easy to recognize specific data types with the ISBIT()
+     function.  The following codes apply:
+
+     ^bTable 13-2: Data Type Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. Const.   Data Type^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      TYPE_UNDEF     Undefined
+      1      TYPE_STR       Character string
+      2      TYPE_NUM       Numeric
+      4      TYPE_LOG       Logical
+      8      TYPE_DATE      Date
+     16      TYPE_ALIAS     Alias
+     64      TYPE_MEMO      Memo field
+     128     TYPE_WORD      Word
+     512     TYPE_ARRAY     Array
+     4096    TYPE_BLOCK     Code block
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In addition, DATATYPE() returns the respective data type for a
+     CA-Clipper Tools function or one of your own UDF's.  This is impossible
+     with TYPE().
+
+ ^bNotes^b
+
+     ^b^CFE^b  An invalid <expValue> output results in a runtime error.
+
+     ^b^CFE^b  The function cannot determine if a parameter has passed to a
+        function by reference (32 + type), because this information is no
+        longer available in CA-Clipper.
+
+ ^bExample^b
+
+     Return values of DATATYPES() used for different data types:
+
+     ? DATATYPE()                 //    0, undefined
+     ? DATATYPE("XXX")            //    1, string
+     ? DATATYPE(123)              //    2, numeric
+     ? DATATYPE(DOY())            //    2, numeric result
+     ? DATATYPE(.T.)              //    4, logical
+     ? DATATYPE(3 > 2)            //    4, logical expression
+     ? DATATYPE(EOF())            //    4, logical result
+     ? DATATYPE(DATE())           //    8, date
+     ? DATATYPE(memofld)          //    1, memo field
+     ? DATATYPE(@crlf)            //   33, reference to string
+     ? DATATYPE(@array)           //  544, reference to array
+     ? DATATYPE(array[1])         //    2, numeric element
+     ? DATATYPE(array[2])         //    1, string element
+     ? DATATYPE(myfunc())         //       type for your own UDF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETTIC()     Determines the number of timer ticks
+'------------------------------------------------------------------------------
+ ^bGETTIC()^b
+ Determines the number of timer ticks
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETTIC() --> nTickCount
+
+ ^bReturns^b
+
+     GETTIC() returns the number of timer ticks executed since the last
+     SETTIC (.T.).
+
+ ^bDescription^b
+
+     Use this function in conjunction with SETTIC().  At any given time, it
+     returns the number of completed timer ticks since the timer was set in
+     motion (by calling SETTIC(.T.)).
+
+ ^bExample^b
+
+     An individual UDF is to be measured in ticks.  The tick rate counter is
+     started with the SETTIC(.T.) call, then stopped after execution of the
+     UDF (by passing .F. to SETTIC()) and the number of completed ticks is
+     queried:
+
+     SETTIC(.T.)
+        MY_UDF(I)
+     SETTIC(.F.)
+     ? " Required ticks:", GETTIC()
+
+!seealso: "SETTIC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KBDDISABLE() Locks/unlocks the keyboard
+'------------------------------------------------------------------------------
+ ^bKBDDISABLE()^b
+ Locks/unlocks the keyboard
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKBDDISABLE(<lSwitch>) --> cNull
+
+ ^bArgument^b
+
+     ^b<lSwitch>^b  Designates whether the keyboard is switched on (.T.) or
+     off (.F.).
+
+ ^bReturns^b
+
+     KBDDISABLE() always returns a null string.
+
+ ^bDescription^b
+
+     With the help of this function, the keyboard can be turned on or off.
+     This allows you to prevent any user input for a specific time through
+     program control (even Ctrl-Alt-Del).
+
+ ^bNote^b
+
+     ^b^CFE^b  Be sure the program reenables the keyboard and does not leave
+        it locked when the program terminates.
+
+ ^bExample^b
+
+     Switch off the keyboard for 5 seconds:
+
+     KBDDISABLE(.F.)        // Turn off keyboard
+        INKEY(5)            // Can't be shortened by input!
+     KBDDISABLE(.T.)        // Turn on keyboard
+
+!seealso: "KBDTYPE()" "KBDSTAT()" "KBDSPEED()" tool_003.ngo:"DSETKBIOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KBDEMULATE() Inserts characters into BIOS keyboard buffer to emulate input
+'------------------------------------------------------------------------------
+ ^bKBDEMULATE()^b
+ Inserts characters into the BIOS keyboard buffer to emulate keyboard input
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKBDEMULATE(<cListKeyValue>) --> nValue
+
+ ^bArgument^b
+
+     ^b<cListKeyValue>^b  Designates a keyboard input sequence to emulate.
+     Use a maximum of 15 characters.
+
+ ^bReturns^b
+
+     KBDEMULATE() returns the number of key codes it could not place in the
+     BIOS buffer.
+
+ ^bDescription^b
+
+     KBDEMULATE() emulates keyboard input at a very low level.  This function
+     uses the BIOS input buffer to emulate input.  This emulated input can
+     then be used by another program.  For example, you might stuff the next
+     DOS command prior to the end of the application.  Keyboard input for
+     programs that use RUN() to be called is also feasible.  The buffer
+     capacity is a maximum of 15 characters.  Some of the key codes may vary
+     from keyboard to keyboard, but they still correspond to the values
+     returned by SCANKEY().  Construct the codes as follows:
+
+     CHR(ASCII code) + CHR(Scan code)
+
+     As a rule, a scan code that is transmitted this way cannot be
+     acknowledged by CA-Clipper or any subsequent program.  For example, a
+     DOS command can be passed as a string with spaces at each even position.
+     This emulation of a scan code with a value of 32, would only cause
+     problems when a subsequent program also checks the scan code (see
+     Examples on the next page).
+
+ ^bNotes^b
+
+     ^b^CFE^b  You can find the symbolic constants for key codes in the
+        include file CTSCAN.CH.
+
+     ^b^CFE^b  Problems may arise if you have incompatible hardware/BIOS, or
+        programs that extend the keyboard buffer.
+
+     ^b^CFE^b  Even though these emulated inputs occur at a low level, the
+        code translations defined with SETKXLAT() still function.
+
+ ^bExamples^b
+
+     ^b^CFE^b  These two programs always call each other reciprocally.
+        Before returning to DOS, each program wedges the keys necessary to
+        execute the other program in the BIOS buffer:
+
+        Program 1 (PROG1.EXE)
+        CLEAR
+           @ 10, 10 SAY "Here is program 1  !"
+           INKEY(5)                                // Wait a while...
+           KBDEMULATE("P R O G 2 " + CHR(13))      // Start PROG2 in DOS
+        RETURN
+
+        Program 2 (PROG2.EXE)
+        CLEAR
+           @ 10, 10 SAY "Here is program 2  !"
+           INKEY(5)                                // Wait a while...
+           KBDEMULATE("P R O G 1 " + CHR(13))      // Start PROG1 in DOS
+        RETURN
+
+     ^b^CFE^b  This program returns to DOS and then re-calls itself.  In this
+        case, the desired extra byte is created with the EXPAND() function.
+        The last token in the full path is the EXE name which includes the
+        file extension.  The first token is the file name:
+
+        xeName  :=  TOKEN(EXENAME(), ":\")
+        ExeName  :=  TOKEN(ExeName, ".", 1)
+        KBDEMULATE(EXPAND(ExeName + CHR(13)))      // Expansion with blanks
+        QUIT
+
+     ^b^CFE^b  The correct way to implement EXPAND():
+
+        * WRONG! No blank before CHR(13)
+        KBDEMULATE(EXPAND("TEST") + CHR(13))
+        * RIGHT! Blank before CHR(13)
+        KBDEMULATE(EXPAND("TEST" + CHR(13)))
+
+!seealso: tool_006.ngo:"NUMLOW()" tool_006.ngo:"NUMHIGH()" tool_003.ngo:"SETKXLAT()" tool_003.ngo:"KEYSEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KBDSPEED()   Sets keyboard auto repeat speed
+'------------------------------------------------------------------------------
+ ^bKBDSPEED()^b
+ Sets keyboard auto repeat speed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKBDSPEED(<nDelay>,<nFrequency>) --> lAmended
+
+     ^bWarning!^b  Use AT keyboards only.
+
+ ^bArguments^b
+
+     ^b<nDelay>^b  Designates the amount of delay before you begin auto
+     repeat.  Possible values are from 0 to 3.  The default value is 1.
+
+     ^b<nFrequency>^b  Designates the number of times a character repeats per
+     second.  Possible values are from 0 to 31.  The default value is 12.
+
+ ^bReturns^b
+
+     KBDSPEED() returns .T. when a new repeat rate is set successfully.
+
+ ^bDescription^b
+
+     KBDSPEED() sets the auto repeat rate for AT keyboards.  Both the time
+     delay and repeat rate for auto repeat can be set.  The table below
+     provides the values, their corresponding times, and repeat rates:
+
+     ^bTable 13-3: Auto Repeat Time Delay^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^b<nDelay>     Delay Time^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0            250 millisecond
+     1            500 millisecond
+     2            750 millisecond
+     3            1000 millisecond
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bTable 13-4: Repeat Rate for Depressed Keys^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^b<nFrequency>     Repeat Rate^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0                30 characters per second
+     12               10 characters per second
+     31               2 characters per second
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  It is best to determine valid values experimentally.
+
+ ^bExample^b
+
+     The quickest setting possible:
+
+     IF KBDTYPE() >0         // Only possible for AT's
+        KBDSPEED(0, 0)
+     ENDIF
+
+!seealso: "KBDTYPE()" "KBDSTAT()" "KBDDISABLE()" tool_003.ngo:"DSETKBIOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KBDSTAT()    Tests for key shift state status, such as Ctrl and Shift
+'------------------------------------------------------------------------------
+ ^bKBDSTAT()^b
+ Tests for key shift state status, such as Ctrl and Shift
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKBDSTAT() --> nKeyStatus
+
+ ^bReturns^b
+
+     KBDSTAT() returns a numeric code that corresponds to the status of
+     certain keys.
+
+ ^bDescription^b
+
+     This function determines the status of all shift state keys (e.g., Ctrl,
+     Shift or Alt, Scroll-Lock or Num-Lock).  The information KDBSTAT()
+     returns depends on the keyboard itself.
+
+     ^bTable 13-5: Applies to all Keyboards^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Key^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Right shift currently pressed
+     2       Left shift currently pressed
+     3       Ctrl currently pressed (left or right)
+     4       Alt currently pressed (Alt or Shift-Alt)
+     5       Scroll-Lock ON/OFF
+     6       Num-Lock ON/OFF
+     7       Caps-Lock ON/OFF
+     8       Insert ON/OFF
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  Since KBDSTAT() depends on the type of keyboard, use KBDTYPE()
+        to determine whether or not the left and right Ctrl or Alt keys are
+        valid return values.
+
+ ^bExample^b
+
+     This example tests the Alt key.  You could use it to display an
+     additional prompt menu when the Alt key is depressed:
+
+     IF ISBIT(KBSTAT(), 4)
+        * . . .
+     ENDIF
+
+!seealso: "KBDTYPE()" "KBDDISABLE()" "KBDSPEED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KBDTYPE()    Determines the type of keyboard in use
+'------------------------------------------------------------------------------
+ ^bKBDTYPE()^b
+ Determines the type of keyboard in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKBDTYPE() --> nKeyboardType
+
+ ^bReturns^b
+
+     KBDTYPE() returns a value that corresponds to the type of keyboard.
+
+ ^bDescription^b
+
+     KBDTYPE() determines the type of keyboard in use.  This lets you check
+     if the keyboard has F11/F12 keys available (which the CA-Clipper Tools
+     supports).  The possible keyboard values are:
+
+     ^bTable 13-7: Coding of Keyboard Types^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Keyboard Type
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       PC keyboard
+     1       AT keyboard
+     2       Extended keyboard w/101/102 keys,  F11/F12
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  This function has been thoroughly tested, but there may be
+        problems with keyboards that are not fully compatible.
+
+ ^bExample^b
+
+     Query the keyboard:
+
+     ? KBDTYPE()         // 2  Extended keyboard
+
+!seealso: "KBDSTAT()" "KBDDISABLE()" "KBDSPEED()" tool_003.ngo:"DSETKBIOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KEYSEC()     Triggers a key trap after a time delay
+'------------------------------------------------------------------------------
+ ^bKEYSEC()^b
+ Triggers a key trap after a time delay
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKEYSEC([<nKeyValue>,<nTime>, [<nCounter>],
+     ^b   [<lMode>]]) --> lActivated
+
+ ^bArguments^b
+
+     ^b<nKeyValue> ^b Designates the key code to place in the keyboard
+     buffer.
+
+     ^b<nTime>^b  Designates the time, in seconds, after which the character
+     is placed in the buffer.  Negative values correspond to multiples of
+     1/18.2 seconds.
+
+     ^b<nCounter>^b  Designates the number of times the function occurs
+     before it uninstalls itself.  A value of -1 indicates that KEYSEC() will
+     continue until it is specifically uninstalled.  The default value is
+     "Uninstall after the first call" (1).
+
+     ^b<lMode>^b  Designates whether the internal time counter restarts at
+     the beginning (.T.) or not (.F.), after you press a desired key.  The
+     default value is "No new start with key stroke" (.F.).
+
+     ()  When called without parameters, the function is completely
+     uninstalled.
+
+ ^bReturns^b
+
+     KEYSEC() returns a value of .T. when installed correctly, so that the
+     desired character will be placed in the keyboard buffer after the
+     specified time.
+
+ ^bDescription^b
+
+     This function is useful in DEMO programs.  If used in conjunction with
+     KEYSEND(), you can simulate any keyboard input with time delays.
+
+     Use KEYSEC() in conjunction with CA-Clipper's SET KEY..TO, for key traps
+     (just like KEYTIME()).  For example, this makes it possible to
+     automatically write data still in the DOS buffer, to the hard drive at
+     specific intervals during a GET..READ.
+
+     As soon as the character is placed in the keyboard buffer <nCounter>
+     times, KEYSEC() uninstalls itself.
+
+     If the <lMode> parameter is specified as .T., the elapsed time counter
+     is reset when you press any key.
+
+     If you want to specifically uninstall the function from the program,
+     call it without parameters.
+
+ ^bNotes^b
+
+     ^bWarning!^b  Always uninstall the function before you leave the program
+     or use the CTUS.LIB Extended Drivers found in CA-Clipper Tools.  The
+     function changes interrupt vectors, and if the previous status is not
+     restored before you exit the program, the system will eventually crash.
+
+     ^b^CFE^b  Only one time delay can be active.  A new KEYSEC() deactivates
+        the previous one.
+
+     ^b^CFE^b  You can use any symbols defined in the CA-Clipper file
+        INKEY.CH.  You can set any other keys described in the CA-Clipper
+        Tools header file CTSCAN.CH.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Place CHR(7) in the keyboard buffer three times, every 5
+        seconds:
+
+        ? KEYSEC(7, 5, 3)             // (.T.)
+
+     ^b^CFE^b  Place CHR(255) in the keyboard buffer every 60 seconds until
+        an uninstall occurs:
+
+        ? KEYSEC(255, 60, -1)         // (.T.)
+
+     ^b^CFE^b  As soon as a key is pressed, the internal counter restarts
+        from the beginning:
+
+        ? KEYSEC(13, 60, -1, .T.)     // (.T.)
+
+!seealso: "KEYTIME()" tool_012.ngo:"LASTKLINE()" tool_012.ngo:"LASTKFUNC()" tool_012.ngo:"LASTKPROC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: KEYTIME()    Triggers a key trap at a specific clock time
+'------------------------------------------------------------------------------
+ ^bKEYTIME()^b
+ Triggers a key trap at a specific clock time
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bKEYTIME([<nKeyValue>,<cClocktime>]) --> lActivated
+
+ ^bArguments^b
+
+     ^b<nKeyValue>^b  Designates the character to place in the keyboard
+     buffer.
+
+     ^b<cClocktime>^b  Designates the specified time to place the character
+     in the keyboard buffer.
+
+     ()  When called without parameters, the function completely uninstalls.
+
+ ^bReturns^b
+
+     KEYTIME() returns a .T. to indicate the specified character was placed
+     in the keyboard buffer at the desired time.
+
+ ^bDescription^b
+
+     ^bWarning!^b  Use on AT-class systems only!
+
+     KEYTIME() executes a specific program at an indicated time.  To do this,
+     the function places the desired key code in the keyboard buffer at the
+     selected clock time.  If a procedure is established with
+     SET KEY..TO, CA-Clipper calls the procedure if, or when, you are in a
+     wait state.  This allows you to perform specific tasks at a particular
+     time of day such as file backups.
+
+     There is also a special variant over and above an exact time
+     designation.  You can specify "99" for hours, minutes, or seconds, which
+     modifies the interpretation of this portion of the time designation.  A
+     time string of "10:99:00" instructs the function to trigger a key trap
+     every minute between 10:00 and 10:59.
+
+     If you want to specifically uninstall the function from the program,
+     call it without specifying parameters.
+
+ ^bNotes^b
+
+     ^bWarning!^b  Always uninstall the function before you leave the program
+     or use the CTUS.LIB Extended Drivers found in CA-Clipper Tools.  This
+     function changes the interrupt vectors, and if the previous status is
+     not restored before you leave the program, a system crash will
+     eventually occur.
+
+     ^b^CFE^b  Only one time monitor can be active at any given time.  A
+        subsequent call to KEYTIME() deactivates the previous one.
+
+     ^b^CFE^b  You can use any symbols defined in the CA-Clipper file
+        INKEY.CH.   You can set any other keys described in the CA-Clipper
+        Tools header file CTSCAN.CH.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Place key code 7 in the keyboard buffer at 12:30:
+
+        ? KEYTIME(7, "12:30:00")      // .T.
+
+     ^b^CFE^b  Place key code 255 in the keyboard buffer at 2:00 PM:
+
+        ? KEYTIME(255, "2")           // .T.
+
+     ^b^CFE^b  Place key code 7 in the keyboard buffer at midnight:
+
+        ? KEYTIME(7, "00:00:00")      // .T.
+
+     ^b^CFE^b  Set a key trap every second, starting at 11:59 PM:
+
+        ? KEYTIME(7, "11:59:99")      // .T.
+
+     ^b^CFE^b  Set a key trap every full hour:
+
+        ? KEYTIME(7, "99:00:00")      // .T.
+
+     ^b^CFE^b  Call with an invalid time:
+
+        ? KEYTIME(7, "25:30:00")      // .F.
+
+     ^b^CFE^b  Uninstall KEYTIME():
+
+        ? KEYTIME()                   // .F.
+
+!seealso: "KEYSEC()" tool_012.ngo:"LASTKLINE()" tool_012.ngo:"LASTKFUNC()" tool_012.ngo:"LASTKPROC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MILLISEC()   Time delay in milliseconds
+'------------------------------------------------------------------------------
+ ^bMILLISEC()^b
+ Time delay in milliseconds
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMILLISEC(<nDelay>) --> cNull
+
+ ^bArgument^b
+
+     ^b<nDelay>^b  Designates the number of milliseconds the function waits.
+     You can specify values between 1 and 65535.
+
+ ^bReturns^b
+
+     The MILLISEC() function always returns a null string.
+
+ ^bDescription^b
+
+     This function allows you to designate a time delay in milliseconds.
+
+ ^bExample^b
+
+     Pause for different time delays:
+
+     MILLISEC(1)                 // 1 millisecond time delay
+     MILLISEC(100)               // 0.1 seconds
+     MILLISEC(1000)              // 1 second
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUL()        Converts the value returned by a function into a null string
+'------------------------------------------------------------------------------
+ ^bNUL()^b
+ Converts the value returned by a function into a null string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUL(<expValue>) --> cNull
+
+ ^bArgument^b
+
+     ^b<expValue>^b  Designates an expression or function that has a return
+     value you want to suppress.
+
+ ^bReturns^b
+
+     NUL() always returns a null string as a value.
+
+ ^bDescription^b
+
+     NUL() converts a function that returns a value into a function that
+     returns a null string.  This suppresses the returned value for every
+     function.
+
+ ^bNote^b
+
+     ^b^CFE^b  The function is not VOID.  It returns a value of a specific
+        data type -- a (null) string.  Therefore, you cannot use this
+        function to compare with other data types (see Examples).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Wait for a key stroke:
+
+        ? "Please press a key  :" + NUL(INKEY(0))
+
+     ^b^CFE^b  Show output that uses LIST and waits for a key stroke after 20
+        lines:
+
+        LIST Name, IF(RECNO() %20 = 0, NUL(INKEY(0)), "")
+
+     ^b^CFE^b  This leads to a TYPE MISMATCH:
+
+        ? 3 = NUL(INKEY(5))         //  Error after 5 seconds
+        ? 7 + NUL(INKEY())          //  Leads to error, like saying 7+""
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCANKEY()    Queries scan code of keyboard input
+'------------------------------------------------------------------------------
+ ^bSCANKEY()^b
+ Queries scan code of keyboard input
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCANKEY([<lMode>]) --> nKeyValue
+
+     ^bWarning!^b  Augmented from CA-Clipper Tools.  This is new optional
+     parameter.
+
+ ^bArgument^b
+
+     ^b<lMode>^b  Designates whether or not to ignore the additional keys on
+     the European extended keyboard.
+
+ ^bReturns^b
+
+     SCANKEY() returns the scan code for the key pressed.
+
+ ^bDescription^b
+
+     SCANKEY() returns an untranslated scan code for a key.  This allows you
+     to differentiate between keys or key combinations that return the same
+     INKEY() value.  SCANKEY() does not take the character out of the buffer.
+     The function waits for a keyboard input and returns the scan code which
+     corresponds.  The third example shows how a returned value is converted
+     into something you can display, as in CTSCAN.CH by SCANKEY().  Although
+     it depends on the keyboard, the scan codes may differ from those listed
+     in CTSCAN.CH.
+
+ ^bNote^b
+
+     ^b^CFE^b  No key traps (including the CA-Clipper internal key traps),
+        are acknowledged.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Return with input of Ctrl-W:
+
+        ? INKEY()                // 23
+        ? SCANKEY()              // 4375
+        ? NUMLOW(SCANKEY())      // 23
+        ? NUMHIGH(SCANKEY())     // 17
+
+     ^b^CFE^b  When inputting Ctrl-End (numeric key pad), return:
+
+        ? INKEY()                // 23
+        ? SCANKEY()              // 29952
+        ? NUMLOW(SCANKEY())      // 0
+        ? NUMHIGH(SCANKEY())     // 117
+
+     ^b^CFE^b  Reuse codes with other functions:
+
+        nCode  :=  SCANKEY()
+        SETKXLAT(CHR(NUMLOW(nCode)) * CHR(NUMHIGH(nCode)), -1)
+
+!seealso: tool_006.ngo:"NUMHIGH()" tool_003.ngo:"DSETKBIOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETTIC()     Increases number of time ticks
+'------------------------------------------------------------------------------
+ ^bSETTIC()^b
+ Increases number of time ticks to produce a more precise time measurement
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETTIC([<lAcceleration>]) --> lAccelerated
+
+ ^bArguments^b
+
+     ^b<lAcceleration> ^b When this parameter is .T., the number of timer
+     ticks is increased by a factor of 128.  The default is normal timer
+     ticks (.F.).
+
+     ()  With no arguments, SETTIC() returns the current status of the timer
+     as a .T. when accelerated; .F. if it is not.
+
+ ^bReturns^b
+
+     The SETTIC() function returns .T. when the timer is accelerated;
+     otherwise, it returns .F..
+
+ ^bDescription^b
+
+     If the integrated timer in your computer uses SETTIC(.T.) to accelerate,
+     then the number of ticks per second increases from 18.2 to around 2500.
+     This makes time measurement more precise and allows you to compare the
+     speed of different routines more accurately.
+
+     The computer's clock time, which is also based on the timer tick,
+     continues to operate correctly.
+
+ ^bNotes^b
+
+     ^bWarning!^b  You must uninstall SETTIC() before you leave a program;
+     otherwise, you will hang the system.  However, if the Extended Drivers
+     CTUS.LIB is linked in, then SETTIC() uninstalls automatically when you
+     exit the program.
+
+     ^b^CFE^b  As long as the timer is accelerated, you cannot implement the
+        KEYSEC(), SHOWTIME(), and SHOWKEY() functions because they use the
+        timer tick.  Therefore, you must uninstall these functions before you
+        implement SETTIC(.T.).
+
+     ^b^CFE^b  Do not place (link) SETTIC() within an overlay, since an
+        interrupt service routine can never be within an overlay.  Of course,
+        you can call SETTIC() from an overlay.
+
+     ^b^CFE^b  Since each timer tick must call an interrupt service, your
+        program's execution speed decreases.
+
+ ^bExample^b
+
+     Measure an individual UDF in ticks.  The tick rate increases first, and
+     then decreases after UDF is executed and the number of resulting ticks
+     is queried:
+
+     SETTIC(.T.)
+        MY_UDF(I)            // Needs to be measured...
+     SETTIC()
+     ? "Required ticks:", GETTIC()
+
+!seealso: "GETTIC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SHOWKEY()    Continuously displays the INSERT and LOCK status
+'------------------------------------------------------------------------------
+ ^bSHOWKEY()^b
+ Continuously displays the INSERT and LOCK status
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSHOWKEY([<cKey>, [[<nLine>], [<nColumn>], <cTextON>,
+     ^b   <cTextOFF>, [<cAttrON|nAttrON>],
+     ^b   [<cAttrOFF|nAttrOFF>]]]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cKey>^b  Designates which key to monitor in the form of a letter
+     ("C", "N", "S", or "I").  If <cKey> is the only parameter in SHOWKEY()
+      (C, N, S, or I), the respective key monitoring is uninstalled.
+
+     ^b<Line> ^b Designates the line where the display occurs.
+
+     ^b<nColumn>^b  Designates the column where the display occurs.
+
+     ^b<cTextON>^b  Designates text for the active status.  A maximum length
+     of 15 characters is allowed.
+
+     ^b<cTextOFF>^b  Designates text for the inactive status. There is a
+     maximum of 15 characters and it must have the same length as <cTextON>.
+
+     ^b<cAttrON|nAttrON>^b  Designates the color attribute for the active
+     status.  The default value is 7/0.
+
+     ^b<cAttrOFF|nAttrOFF> ^b Designates the color attribute for the inactive
+     status.  The default value is the same as in <cAttrON|nAttrON>.
+
+     ()  If you call SHOWKEY() without parameters, it uninstalls.
+
+ ^bReturns^b
+
+     The SHOWKEY() function always returns a null string.
+
+ ^bDescription^b
+
+     SHOWKEY() is an extremely versatile system that can be used to monitor
+     the NUM-LOCK, SCROLL-LOCK, CAPS-LOCK, and INSERT keys.  After it is
+     installed, you can display an indicator for each key, the desired screen
+     position, and a color attribute (without concerning the CA-Clipper
+     program).  You can establish a display for both the active and inactive
+     status with individual color attributes.  However, both these strings
+     must have the same length.
+
+     Since the system INSERT status is handled separately from the
+     CA-Clipper INSERT status, this monitoring can only be implemented from
+     within a READ.  An indicator display, in so far as it has been
+     activated, is refreshed in intervals of approximately 200 milliseconds.
+     Therefore, when you clear a portion or the complete screen, do not
+     concern yourself with restoring this display.
+
+ ^bNote^b
+
+     ^bWarning!^b  Always uninstall this function before you leave a program
+     or use the Extended Drivers provided with this CA-Clipper Tools.  The
+     function changes interrupt vectors.  You may cause a system crash, if
+     the old status is not restored before you exit the program!  Use the
+     enclosed INTSAVE program to avoid this problem.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Display "CAPS" if CAPS-LOCK is on: CAPS-LOCK for off: "    ",
+        in line 24, column 50.  The default value for on and off is "7/0"
+
+        SHOWKEY("C", 24, 50, "CAPS", "    ")
+
+     ^b^CFE^b  Attributes can be numeric and or designated as in CA-Clipper:
+
+        SHOWKEY("N", 24, 60, "NUM ON", "NUMOFF", 112, "W/R")
+
+     ^b^CFE^b  Inverse the display for on and off:
+
+        SHOWKEY("S", 24, 70, "SCRL", "  ", "0/7")
+
+     ^b^CFE^b  Uninstall the NUM-LOCK display:
+
+        SHOWKEY("N")
+
+     ^b^CFE^b  Uninstall the function:
+
+        SHOWKEY()
+
+!seealso: tool_010.ngo:"SHOWTIME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SOUND()      Creates tones (melodies) by designating frequency and duration
+'------------------------------------------------------------------------------
+ ^bSOUND()^b
+ Creates tones (melodies) by designating frequency and duration
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSOUND(<nFrequency>,<nDuration>,[<lTimer>]) --> cNull
+
+     ^bor:
+
+     ^bSOUND(<cToneSequence>,[<lTimer>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nFrequency>^b  Designates the tone frequency in hertz.
+
+     ^b<nDuration>^b  Designates the duration of the tones in 1/100ths
+     seconds; or when <lTimer> is set at .T., in intervals of 1/18.2 seconds.
+
+     ^b<lTimer> ^b Designates whether the tones designated as values are
+     created on a basis of 1/100ths seconds (.F.); or 1/18.2 seconds (.T.).
+     The default value is 1/100th seconds (.F.).
+
+     or:
+
+     ^b<cToneSequence>^b  Designates a character string that contains an
+     entire melody.  Use the CA-Clipper I2BIN() function to produce 2-byte
+     values for frequency and duration.  The string format assumes 2 bytes
+     for frequency and 2 bytes for duration, which are alternated until the
+     melody is defined.
+
+     ^b<lTimer>^b  Designates if you want the designated tones values created
+     on a basis of 1/100ths seconds (.F.) or 1/18.2 seconds (.T.).  The
+     default value is 1/100th seconds (.F.).
+
+ ^bReturns^b
+
+     SOUND() always returns a null string as a value.
+
+ ^bDescription^b
+
+     Use SOUND() to create tones at intervals of 1/100th seconds, in the
+     range of 21 to 65535 hertz, for a maximum of 655.36 seconds.
+
+     To make it compatible with parameters for the CA-Clipper TONE() function
+     or various other programming language functions, select the 1/18.2-
+     seconds interval.  To achieve this, designate the last parameter as .T..
+
+     The table below shows tones and their frequencies for three octaves at
+     1/100th second intervals.  To go one octave higher, double the frequency
+     value.
+
+     ^bTable 13-8: Tones and their Frequencies^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bTone    Freq.     Tone    Freq.     Tone    Freq.^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     C 3     131       C 4     262       C 5     523
+     C#      139       C#      277       C#      554
+     D       147       D       294       D       587
+     D#      156       D#      311       D#      622
+     E       165       E       330       E       659
+     F       175       F       349       F       698
+     F#      185       F#      370       F#      740
+     G       196       G       392       G       784
+     G#      208       G#      415       G#      831
+     A       220       A       440       A       880
+     A#      233       A#      466       A#      932
+     B       247       B       494       B       988
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Frequency values that lie below 21 hertz, are not perceived by the human
+     ear.  You can use them as pauses.
+
+ ^bNote^b
+
+     ^b^CFE^b  You can find additional uses for SOUND() in the sample file
+        Melodies.prg.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the tonal scale:
+
+        SOUND(262, 40)
+        SOUND(294, 40)
+        SOUND(330, 40)
+        SOUND(349, 40)
+        SOUND(392, 40)
+        SOUND(440, 40)
+        SOUND(494, 40)
+        SOUND(523, 40)
+
+     ^b^CFE^b  Call with a string parameter:
+
+        cVar := I2BIN(262) + I2BIN(40) + I2BIN(294) + I2BIN(40)
+        SOUND(cVar)
+
+     ^b^CFE^b  Pause for one-half second:
+
+        SOUND(0, 50)
+
+!seealso: "MILLISEC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPEED()      A comparison value used to determine the processor speed
+'------------------------------------------------------------------------------
+ ^bSPEED()^b
+ A comparison value used to determine the processor speed
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSPEED([<lMode>]) --> nCPUSpeed
+
+ ^bArgument^b
+
+     ^b<lMode>^b  If designated as .T., causes all interrupts, with the
+     exception of the clock, to switch off..  The default value is "Leave
+     interrupts on" (.F.).
+
+ ^bReturns^b
+
+     SPEED() returns a percentage value to compare to a normal 4.77 MHz PC-
+     XT, which corresponds to 100%.
+
+ ^bDescription^b
+
+     The function determines, in a precise fashion, the speed to compare to a
+     4.77 MHz PC.  To make the measurement more precise, switch the
+     interrupts off.  The only exceptions are the timer interrupts that
+     refresh  working memory.
+
+ ^bNote^b
+
+     ^bWarning!^b  When you use the optional parameters to shut off all
+     interrupts (with the exception of the timer interrupts) you cannot work
+     simultaneously with the serial interface.  After you take the
+     measurement, you can restore all interrupts.
+
+ ^bExamples^b
+
+     ^b^CFE^b  For a normal AT:
+
+        ? SPEED(.T.)         // 470  4.7 times PC
+
+     ^b^CFE^b  Switch off interrupts in the same system:
+
+        ? SPEED(.T.)         // 480  4.8 times PC
+
+!seealso: tool_013.ngo:"CPUTYPE()" tool_013.ngo:"PCTYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STACKFREE()  Determines the remaining stack space
+'------------------------------------------------------------------------------
+ ^bSTACKFREE()^b
+ Determines the remaining stack space
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSTACKFREE() --> nFreeByte
+
+ ^bReturns^b
+
+     STACKFREE() returns the number of bytes available on the stack.
+
+ ^bDescription^b
+
+     This function helps avoid system crashes.  If the returned value falls
+     below 100, do not permit deeper branching.  Either change the program so
+     that a large nesting depth cannot be reached, or increase the stack size
+     when linking.
+
+ ^bNote^b
+
+     ^b^CFE^b  The stack is a low-level system area.  Each DO requires some
+        memory bytes, before a RETURN can ensue.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the stack size:
+
+        ? STACKFREE()               // < 100 ??
+
+     ^b^CFE^b  Link the application within increased stack size:
+
+        RTLINK FI Test /ST:8000
+
+!seealso: "ALLOFREE()*" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TOOLVER()    Queries the version number of the CA-Clipper Tools in use
+'------------------------------------------------------------------------------
+ ^bTOOLVER()^b
+ Queries the version number of the CA-Clipper Tools in use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTOOLVER(<lCheckDriver>) --> cVersion
+
+ ^bArgument^b
+
+     ^b<lCheckDriver>^b  When passed as .T., the function checks if the
+     Extended Drivers correspond to the library.  If not, the function
+     returns "0.00".
+
+ ^bReturns^b
+
+     TOOLVER() returns CA-Clipper Tools as a string in the "n.nn" format; or
+     "0.00", if the Extended Drivers does not correspond to the library.
+
+ ^bDescription^b
+
+     This function determines the current CA-Clipper Tools version.  It also
+     allows you to check if the CT.LIB and the Extended Drivers CTUS.OBJ
+     agree.  This agreement is essential.  If they do not agree, the function
+     returns "0.00".
+
+ ^bExamples^b
+
+     ^b^CFE^b  Query the CA-Clipper Tools version:
+
+        ? TOOLVER()               // e.g. "5.01"
+
+     ^b^CFE^b  Verify the driver version:
+
+        IF TOOLVER() <> TOOLVER(.T.)
+           ? "Wrong driver or driver not linked in..."
+        ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: XTOC()       Converts an expression of any data type into a string
+'------------------------------------------------------------------------------
+ ^bXTOC()^b
+ Converts an expression of any data type into a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bXTOC(<expValue>) --> cValue
+
+ ^bArgument^b
+
+     ^b<expValue>^b  Designates an expression of any desired data type.
+
+ ^bReturns^b
+
+     XTOC() returns a character string version of the <expValue> parameter.
+
+ ^bDescription^b
+
+     At first glance, the XTOC() function does not appear to accomplish
+     anything that cannot be done with the other functions.  However, the
+     advantage lies in the fact that you do not have to pay attention to the
+     input data types.  For example, you can convert the data in every field
+     within a loop into a string.  You could then link these into a longer
+     string and use them to index or for comparisons.
+
+     Each data type always returns a string with a particular fixed length:
+
+     ^bTable 13-9: Resulting String^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bData Type    Result Length^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     Numeric      8
+     Logical      1
+     Date         8
+     String       Unchanged
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  The index string cannot be longer than 256 characters.
+
+ ^bExamples^b
+
+     ^b^CFE^b  In the case of logical parameters, XTOC() works like LTOC():
+
+        ? XTOC(.T.)                              // "T"
+        ? XTOC(.F.)                              // "F"
+
+     ^b^CFE^b  Numeric values always return an 8-byte string:
+
+        ? XTOC(0)                                // Length 8
+        ? XTOC(9.9)                              // Ditto
+        ? XTOC(-9.9)                             // Ditto
+        ? XTOC(99)                               // Ditto
+        ? XTOC(-99)                              // Ditto
+
+     ^b^CFE^b  A string returns the same string:
+
+        ? XTOC("123ABCabc")                      // "123ABCabc"
+
+     ^b^CFE^b  A date returns the ANSI date:
+
+        ? XTOC(CTOD("12/31/99"))                 // "19991231"
+        ? XTOC(CTOD("01/01/00")                  // "19000101"
+
+     ^b^CFE^b  An empty or false date returns an empty string rather than a
+        null string:
+
+        ? XTOC(CTOD("  /  /  ")                  // "        "
+        ? XTOC(CTOD("77/77/77")                  // "        "
+
+     ^b^CFE^b  Show a function where all the fields in a database are
+        combined into one string.  This way, you can do a complete comparison
+        of the two data strings:
+
+        FUNCTION STRINGREC
+           PRIVATE nI, nFieldNo, cField, cStringRec
+           cStringRec := ""
+           nFieldNo   := FCOUNT()                // Number of fields
+           FOR nI = 1 to nFieldNo
+             cField          := FIELD(nI)        //  Field name
+             cStringRec := cStringRec + XTOC(&cField)
+           NEXT nI
+           RETURN (cStringRec)
+
+!seealso: tool_006.ngo:"CTOF()" 
+'------------------------------------------------------------------------------
+
+
+

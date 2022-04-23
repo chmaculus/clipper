@@ -1,0 +1,2903 @@
+!short: ABS          Returns the absolute value of a numeric expression.
+'------------------------------------------------------------------------------
+^BABS()^B
+
+    ABS() returns a number representing the absolute value of a numeric
+    expression.
+
+^USyntax^U
+
+    ABS(<expN>)
+
+^UArgument^U
+
+    <expN> is a numeric expression to evaluate.
+
+^UUsage^U
+
+    The ABS() function enables you to find the difference between two
+    numbers without first needing to test for which is larger.
+
+    The returned value is always a positive number.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ACHOICE      Executes a pop-up menu using character string array.
+!file: clip_091.ngo
+!short: ACOPY        Copies elements from one array to another.
+'------------------------------------------------------------------------------
+^BACOPY()^B
+
+    ACOPY() copies elements from one array to another.
+
+^USyntax^U
+
+    ACOPY(<array1>,<array2>[,<expN1>[,<expN2>[,<expN3]]])
+
+^UArgument^U
+
+    <array1> is the source array.
+
+    <array2> is the target array.
+
+    <expN1> is the starting element position in the source array.
+
+    <expN2> is the number of elements to copy from the source array
+    beginning with <expN1>.
+
+    <expN3> is the starting element position in the target array to begin
+    the copy.
+
+^UReturns^U
+
+    There is no return value.
+!seealso: ???.ngo:"ACHOICE" "ADEL" "ADIR" "AFIELDS" "AFILL" "AINS" "ASCAN" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADEL         Deletes an array element.
+'------------------------------------------------------------------------------
+^BADEL()^B
+
+    ADEL() deletes an array element.
+
+^USyntax^U
+
+    ADEL(<array>,<expN>)
+
+^UArgument^U
+
+    <array> is the name of the array to delete an element from.
+
+    <expN> is the position of the element to delete.
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    The contents of the indicated array position are lost and all elements
+    from that position to the end of the array are shifted up one element.
+    The last position in the array then becomes undefined until a new value
+    is assigned to it.
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADIR" "AFIELDS" "AFILL" "AINS" "ASCAN" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADIR         Fills a series of arrays with file information.
+'------------------------------------------------------------------------------
+^BADIR()^B
+
+    ADIR() fills a series of arrays with directory information including
+    filenames and/or return the number of files matching a skeleton.
+
+^USyntax^U
+
+    ADIR(<directory skeleton>[,<array1>[,<array2>[,<array3>
+          [,<array4>[,<array5]]]]])
+
+^UArguments^U
+
+    <directory skeleton> is a wildcard pattern of files.  The standard
+    wildcard characters (* and ?) are supported.  The default is "*.*"
+
+    <array1> is the name of the array to fill with the filenames matching
+    the directory skeleton.  Each element is character type.
+
+    <array2> is the array to fill with the sizes of the corresponding files
+    in <array1>.  Each element is numeric type.
+
+    <array3> is the array to fill with the dates of the corresponding files
+    in <array1>.  Each element is date type.
+
+    <array4> is the array to fill with the times of the corresponding files
+    in <array1>.  Each element is character type.
+
+    <array5> is the array to fill with the attributes of the corresponding
+    files in <array1>.  Each element is character type.  The possible
+    values returned are as follows:
+
+                    ^BAttributes of Files Returned by ADIR()^B
+    ^USymbol^U       ^UDescription^U
+      R          Read only
+      H          Hidden
+      S          System
+      D          Directory
+      A          Archive
+
+    Note that if <array5> is specified, hidden, system, and directory files
+    are included as well as normal files.  If <array5> is not specified
+    only normal files are included.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    ADIR() returns the number of files matching the specified directory
+    skeleton.  If the optional array name is included, elements of the
+    array are filled with one filename per element until all matching files
+    have been found or all of the elements have been used.
+
+^UUsage^U
+
+    ADIR() is useful as a tool for building file selectors and directory
+    maintenance routines.  To create a file list array, you must DECLARE an
+    array and then fill it with the necessary filenames.  The best way to
+    do this is to first use ADIR() as the number of elements argument in
+    the DECLARE statement.  For example:
+
+    ^RDECLARE dbf_files[ADIR("*.dbf")]^R
+
+    Then sometime later, fill the array using the directory skeleton.
+
+    To fill arrays for some attributes while ignoring others, pass a dummy
+    variable.  For example, to obtain only the filenames and corresponding
+    file dates:
+
+    ^Rdbf_count = ADIR(*.dbf")                         ^R
+    ^RDECLARE dbf_files[dbf_count], dbf_date[dbf_count]^R
+    ^Rdummy = ""                                       ^R
+    ^RADIR(dbf_file, dummy, dbf_date)                  ^R
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADEL" "AFIELDS" "AFILL" "AINS" "ASCAN" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: AFIELDS      Fills a series of arrays with field definitions.
+'------------------------------------------------------------------------------
+^BAFIELDS()^B
+
+    AFIELDS() fills a series of arrays with fieldnames, field types, field
+    lengths, and field decimals.
+
+^USyntax^U
+
+    AFIELDS([<array1>[,<array2>[,<array3>[,<array4>]]]])
+
+^UArguments^U
+
+    <array1> is the name of the array to fill with fieldnames.  Each
+    element is character type.
+
+    <array2> is the array to fill with the type of fields in <array1>.
+    Each element is character type.
+
+    <array3> is the array to fill with the widths of fields in <array1>.
+    Each element is numeric type.
+
+    <array4> is the array to fill with the number of decimals define for
+    fields in <array1>.  Each element is numeric type.  If the field type
+    is not numeric, the element is zero.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    AFIELDS() returns the number of fields or the length of the shortest
+    array argument, whichever is less.  If no parameters are specified,
+    AFIELDS() returns zero.
+
+^UUsage^U
+
+    AFIELDS() fills a series of arrays with the attributes of fields from
+    the current work area and returns the number of elements filled with
+    field information.  If there is no database file in USE, AFIELDS()
+    returns zero.  The arrays passed correspond to fieldname, field type,
+    field length, and field decimals if the field is numeric.
+
+    To fill arrays for some attributes while ignoring others, pass a dummy
+    variable.  For example, to obtain the fieldnames and corresponding
+    field lengths only:
+
+    ^RDECLARE fname[FCOUNT()], ftype[FCOUNT()]^R
+    ^Rdummy = ""                              ^R
+    ^RAFIELDS(fname, dummy, ftype)            ^R
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADEL" "ADIR" "AFILL" "AINS" "ASCAN" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: AFILL        Fills any array with one value.
+'------------------------------------------------------------------------------
+^BAFILL()^B
+
+    AFILL() fills an array with a chosen value.
+
+^USyntax^U
+
+    AFILL(<array>,<exp>[,<expN1>[,<expN2>]])
+
+^UArguments^U
+
+    <array> is the array to fill.
+
+    <exp> is the value to place in each array element.  It can be an
+    expression of any data type.
+
+    <expN1> is the position of the first element to fill.  This argument is
+    optional and defaults to 1.
+
+    <expN2> is the number of elements to fill starting with element
+    <expN1>.  This argument is optional and defaults to all elements from
+    the starting element to the end of the array.
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    Note that AFILL() does not work the same as similar functions in
+    spreadsheet languages.  Specifically, there is no provision for
+    incrementing values in the range specified.
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADEL" "ADIR" "AFIELDS" "AINS" "ASCAN" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: AINS         Inserts a new position into an array.
+'------------------------------------------------------------------------------
+^BAINS()^B
+
+    AINS() inserts an undefined element into an array.
+
+^USyntax^U
+
+    AINS(<array>,<expN>)
+
+^UArguments^U
+
+    <array> is the array to insert a new element into.
+
+    <expN> is the position to insert the new element.
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    The newly inserted position remains undefined until a new value is
+    assigned to it.  After the insertion, all elements after the new
+    element are shifted down one position and the last array element is
+    lost.
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADEL" "ADIR" "AFIELDS" "AFILL" "ASCAN" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ALIAS        Returns the alias of a work area.
+'------------------------------------------------------------------------------
+^BALIAS()^B
+
+    ALIAS() returns the alias of the specified work area.
+
+^USyntax^U
+
+    ALIAS([exp N])
+
+^UArgument^U
+
+    <expN> is the number of the specified work area.
+
+^UReturns^U
+
+    A character string.
+
+    If no argument is specified, the alias of the current work area is
+    returned.  If a numeric argument is specified, the alias of that area
+    is returned.  If there is no database file in USE, ALIAS() returns a
+    null string ("").
+!seealso: ???.ngo:"SELECT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ALLTRIM      Removes all leading and trailing spaces.
+'------------------------------------------------------------------------------
+^BALLTRIM()^B
+
+    Removes leading and trailing spaces from a character string.
+
+^USyntax^U
+
+    ALLTRIM(<expC>)
+
+^UUsage^U
+
+    ALLTRIM() returns <expC> without leading or trailing blanks and is the
+    equivalent of LTRIM(RTRIM(<expC>)).
+!seealso: "LTRIM" "RTRIM" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ALTD         Executes the Clipper Debugger within a program.
+'------------------------------------------------------------------------------
+^BALTD()^B
+
+    Executes the Clipper Debugger or enabless/disables the use of Alt-D to
+    invoke it.
+
+^USyntax^U
+
+    ALTD([<expD>]
+
+^UArgument^U
+
+    <expN> sets the Alt_d invocation state as follows:
+
+    Argument     Action
+      None       Invokes Debugger (last screen)
+       0         Disables Alt-D
+       1         Enables Alt-D
+       2         Invokes Debugger (View Privates)
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    If there is no argumen t specified, the Debugger is invoked displaying
+    the last screen displayed.  Specifying two as the argument invokes the
+    Debugger displaying the Variables: View Privates screen.
+
+    Note that ALTD(), when specified with no argument or two as the
+    argument, sets the invocation state for subsequent invocations using
+    the Alt-D key.
+!seealso: clip_056.ngo:"SET ESCAPE" clip_136.ngo:"SETCANCEL" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASC          Returns the ASCII code value of a character.
+'------------------------------------------------------------------------------
+^BASC()^B
+
+    ASC() evaluates the leftmost character of a character string and
+    returns its ASCII value in the IBM extended character set.
+
+^USyntax^U
+
+    ASC(<exp C>)
+
+^UArgument^U
+
+    <expC> is the character expression to convert to a number.
+
+^UReturns^U
+
+    An integer numeric value in the range of 0 to 255.
+
+^UUsage^U
+
+    ASC() is used primarily in expressions where you need to perform
+    numeric calculations on the ASCII value of a character.
+!seealso: "CHR" clip_098.ngo:"INKEY" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASCAN        Searches for a specific value within an array.
+'------------------------------------------------------------------------------
+^BASCAN()^B
+
+    ASCAN() scans an array for a specific value.
+
+^USyntax^U
+
+    ASCAN(<array>,<exp>[,<expN1>[,<expN2>]])
+
+^UArguments^U
+
+    <array> is the array to fill.
+
+    <exp> is the value to scan for.  This can be a valid expression of any
+    data type.
+
+    <expN1> is the starting element of the scan.  This argument is optional
+    and defaults to one if not specified.
+
+    <expN2> is the number of elements to scan from the starting position.
+    This argument is optional and defaults to all elements from the
+    starting element to the end of the array.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    ASCAN() returns the element position containing the matching value.  If
+    no value is found, ASCAN() returns zero.
+
+^UUsage^U
+
+    ASCAN() works the same as SEEK and FIND in the way it performs a
+    search.  The <exp> is tested against the target array element beginning
+    with the leftmost character in the target element and proceeds until
+    there are no more characters left in the <exp>.  If there is no match,
+    ASCAN() proceeds to the next element in the array.  Note that ASCAN()
+    is also sensitive to the status of EXACT.  If EXACT is ON, the target
+    array element must match the result of <exp> character for character.
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADEL" "ADIR" "AFIELDS" "AFILL" "AINS" "ASORT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASORT        To sort an array in ascending order.
+'------------------------------------------------------------------------------
+^BASORT()^B
+
+    ASORT() sorts the contents of an array in ascending order.
+
+^USyntax^U
+
+    ASORT(<array>,[,<expN1>[,<expN2>]])
+
+^UArguments^U
+
+    <array> is the array to sort.
+
+    <expN1> is the first element of the sort.  If omitted, the sort begins
+    with position 1.
+
+    <expN2> is the number of elements to sort.  If you omit this argument,
+    the sort operation proceeds from the beginning element position to the
+    end of the array.
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    All elements in the range of the array being sorted must be the same
+    data type.
+!seealso: ???.ngo:"ACHOICE" "ACOPY" "ADEL" "ADIR" "AFIELDS" "AFILL" "AINS" "ASCAN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: AT           Returns the position of a string within another string.
+'------------------------------------------------------------------------------
+^BAT()^B
+
+    AT() returns a number showing the starting position of a character
+    string within a second string.  The contained character string is
+    called a substring.  If the substring is not contained within the
+    character string, the function returns a zero (0).
+
+^USyntax^U
+
+    AT(<exp C>,<exp C>)
+
+^UExample^U
+
+    ? AT('been','Chillee beenee') returns the value 9.
+!seealso: clip_126.ngo:"RAT" clip_141.ngo:"STRTRAN()" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BIN2I        Converts binary two-byte character string to numeric.
+'------------------------------------------------------------------------------
+^BBIN2I()^B
+
+    Converts a character string formatted as a 16-bit signed integer to a
+    Clipper numeric value.
+
+^USyntax^U
+
+    BIN2I(<expC>)
+
+^UArgument^U
+
+    <expC> is a two-byte string in the form of a 16-bit signed integer
+    number.  If more than two characters are specified, the remaining are
+    ignored.
+
+^UReturns^U
+
+    An integer numeric value.
+
+^UUsage^U
+
+    BIN2I() is used in combination with FREAD() or FREADSTR() to convert a
+    two-byte character string as a signed integer to a Clipper numeric.
+    This is most useful when you are reading foreign file types and want to
+    read numeric data formatted in its native form.
+
+^UExample^U
+
+    This example opens a database file using low-level file functions and
+    reads the date of last update (bytes 1-3).  The result is the same as
+    with LUPDATE():
+
+    ^Rhandle = FOPEN("Sales.dbf")                      ^R
+    ^R*                                                ^R
+    ^R* Point to byte 1 in the file                    ^R
+    ^RFSEEK(handle, 1, 0)                              ^R
+    ^R*                                                ^R
+    ^R* Read date of last update                       ^R
+    ^Ryear  = BIN2I(FREADSTR(handle, 1))               ^R
+    ^Rmonth = BIN2I(FREADSTR(handle, 1))               ^R
+    ^Rday   = BIN2I(FREADSTR(handle, 1))               ^R
+    ^R*                                                ^R
+    ^R? LTRIM(STR(month)),;          && Result 9  1  87^R
+    ^R    LTRIM(STR(day)), LTRIM(STR(year))            ^R
+    ^RFCLOSE(handle)                                   ^R
+!seealso: "BIN2L" "BIN2W" "I2BIN" "L2BIN" "FOPEN" "FREAD" "FREADSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BIN2L        Converts binary four-byte character string to numeric.
+'------------------------------------------------------------------------------
+^BBIN2L()^B
+
+    Converts a character string formatted as a 32-bit signed integer to a
+    Clipper numeric value.
+
+^USyntax^U
+
+    BIN2L(<expC>)
+
+^UArgument^U
+
+    <expC> is a four-byte string in the form of a 16-bit signed integer
+    number.  If more than four characters are specified, the remaining are
+    ignored.
+
+^UReturns^U
+
+    An integer numeric value.
+
+^UUsage^U
+
+    BIN2L() is used in combination with FREAD() or FREADSTR() to convert a
+    four-byte character string as a signed integer to a Clipper numeric.
+    This is most useful when you are reading foreign file types and want to
+    read numeric data formatted in its native form.
+
+^UExample^U
+
+    This example opens a database file using low-level file functions and
+    reads the number of records (bytes 4-7).  The result is the same as
+    with LASTREC():
+
+    ^Rhandle = FOPEN("Sales.dbf")                      ^R
+    ^Rnum_recs = SPACE(4)                              ^R
+    ^R*                                                ^R
+    ^R* Point to byte 4 in the file                    ^R
+    ^RFSEEK(handle, 4, 0)                              ^R
+    ^R*                                                ^R
+    ^R* Read number of records                         ^R
+    ^RFREAD(handle, @num_recs, 4)                      ^R
+    ^R*                                                ^R
+    ^R? LTRIM(STR(BIN2L(num_recs)))     && Result 84   ^R
+    ^RFCLOSE(handle)                                   ^R
+!seealso: "BIN2I" "BIN2W" "I2BIN" "L2BIN" "FOPEN" "FCLOSE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BIN2W        Converts binary four-byte character string to numeric.
+'------------------------------------------------------------------------------
+^BBIN2W()^B
+
+    Converts a character string formatted as a 16-bit unsigned integer to a
+    Clipper numeric value.
+
+^USyntax^U
+
+    BIN2W(<expC>)
+
+^UArgument^U
+
+    <expC> is a two-byte string in the form of a 16-bit unsigned or long
+    integer number.
+
+^UReturns^U
+
+    An integer numeric value.
+
+^UUsage^U
+
+    BIN2W() is used in combination with FREAD() or FREADSTR() to convert a
+    two-byte character string as a signed integer to a Clipper numeric.
+    This is most useful when you are reading foreign file types and want to
+    read numeric data formatted in its native form.
+
+^UExample^U
+
+    This example opens a database file using low-level file functions and
+    reads the number of bytes per record (bytes 10-11).  The result is the
+    same as with RECSIZE():
+
+    ^Rhandle = FOPEN("Sales.dbf")                      ^R
+    ^R*                                                ^R
+    ^R* Point to byte 10 in the file                   ^R
+    ^RFSEEK(handle, 10, 0)                             ^R
+    ^R*                                                ^R
+    ^R* Read record size                               ^R
+    ^Rrec_size = SPACE(2)                              ^R
+    ^RFREAD(handle, @rec_size, 2)                      ^R
+    ^R*                                                ^R
+    ^R? LTRIM(STR(BIN2W(rec_size)))    && Result 124   ^R
+    ^RFCLOSE(handle)                                   ^R
+!seealso: "BIN2I" "BIN2L" "I2BIN" "L2BIN" "FOPEN" "FREAD" "FREADSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BOF          Indicates the beginning of a file.
+'------------------------------------------------------------------------------
+^BBOF()^B
+
+    BOF() indicates that an attempt has been made to move the record
+    pointer past the beginning of the current database file.
+
+^USyntax^U
+
+    BOF()
+
+^UUsage^U
+
+    This function is intended for programming applications in which the
+    database is read in reverse order.  A logical True (.T.) is returned
+    when an attempt is made to move the record pointer before the first
+    logical record of the active file.
+
+    If no database is in USE, BOF() will return .F.
+
+    Note that SKIP is the only record movement command that can set BOF()
+    true.
+!seealso: clip_079.ngo:"SKIP" "EOF" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CDOW         Returns the name of the day of the week from a date value.
+'------------------------------------------------------------------------------
+^BCDOW()^B
+
+    CDOW() returns the name of the day of the week from a date expression.
+
+^USyntax^U
+
+    CDOW(<exp D>)
+
+^UArgument^U
+
+    <expD> is the date value to convert.
+
+^UReturns^U
+
+    A character string.
+
+    CDOW() returns the name of the day of the week with the first letter in
+    upper case and the rest of the string in lower case.  The maximum
+    return value length is nine characters for Wednesday.  A null date
+    value returns a null string ("").
+
+^UUsage^U
+
+    CDOW() is useful alone or as part of date formatting expressions for
+    reports, labels, and screens.
+!seealso: "DOW" "CMONTH" clip_117.ngo:"MONTH" "DAY" clip_152.ngo:"YEAR()" "CTOD" "DTOC" "DTOS" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHR          Returns a character for the specified ASCII code.
+'------------------------------------------------------------------------------
+^BCHR()^B
+
+    CHR() returns a character from the IBM Extended Character Set.
+
+^USyntax^U
+
+    CHR(<exp N>)
+
+^UArgument^U
+
+    <expN> is the IBM Extended Character Set code of the character to
+    return and can be in the range of zero to 255.
+
+^UReturns^U
+
+    A character value.
+
+    CHR() returns the character corresponding to the IBM Extended Character
+    Set code.  Note that different commands treat characters in different
+    ways.  For example, @...SAY CHR(7) displays a graphic character to the
+    screen whereas ? CHR(7) sounds the bell.
+
+^UUsage^U
+
+    CHR() enables you to send control codes to the printer.  Another
+    typical application is to produce special effects on a printer and/or
+    monitor by sending a value in the IBM Extended Character Set for any
+    keyboard character or graphics character.  Another typical application
+    is to use CHR() to ring the bell alerting the user of an error.
+
+    A more sophisticated application is to control the keyboard.
+    Typically, you use CHR() in combination with KEYBOARD to stuff the
+    keyboard with key codes.  In some instances, you might find it useful
+    to create key names by assigning the CHR() of the key code to a memory
+    variable.  Later, you can compare the result of a CHR(INKEY()) to the
+    key name variable.
+
+    BNote^B: CHR(0) now has a length of one and is treated the same as any
+    other character.  This allows you to send it to any device or file,
+    including a database file.
+!seealso: clip_016.ngo:"KEYBOARD" "ASC" clip_098.ngo:"INKEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CMONTH       Returns the name of the month from a date value.
+'------------------------------------------------------------------------------
+^BCMONTH()^B
+
+    CMONTH() returns the name of the month from a date expression.
+
+^USyntax^U
+
+    CMONTH(<exp D>)
+
+^UArgument^U
+
+    <expD> is the date value to convert.
+
+^UReturns^U
+
+    A character string.
+
+    CDOW() returns the name of the month from a date value with the first
+    letter in upper case and the rest of the string in lower case.  The
+    maximum return value length is nine characters for the month of
+    September.  A null date value returns a null string ("").
+
+^UUsage^U
+
+    CMONTH() is useful alone or as part of date formatting expressions for
+    reports, labels, and screens.
+!seealso: "CDOW" "DOW" clip_117.ngo:"MONTH()" "DAY" clip_152.ngo:"YEAR()" "CTOD" "DTOC" "DTOS" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COL          Returns the current column position of the cursor.
+'------------------------------------------------------------------------------
+^BCOL()^B
+
+    COL() returns the current column position of the cursor.
+
+^USyntax^U
+
+    COL()
+
+^UUsage^U
+
+    COL() is used when you want to position the cursor to a column relative
+    to the current column position.  COL() is generally used in combination
+    with ROW() and all variations of the @ command.  In particular, you use
+    it and ROW() to create screen position-independent procedures or
+    functions where you pass the upper left row and column as parameters.
+!seealso: clip_132.ngo:"ROW()" clip_121.ngo:"PCOL()" clip_125.ngo:"PROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CTOD         Converts a character string to a date value.
+'------------------------------------------------------------------------------
+^BCTOD()^B
+
+    CTOD() converts a date string to a date value.
+
+^USyntax^U
+
+    CTOD(<exp C>)
+
+^UArgument^U
+
+    <expC> is a character string consisting of number representing the
+    month, day, and year separated by a delimiter character (any character
+    other than a number).  When you pass the date string, CTOD() evaluates
+    the order of the month, day, and year substrings according to the DATE
+    SETting.  The default is AMERICAN ("mm/dd/yy").
+
+    ^BCentury^B: A twentieth-century date is assumed if you only use two
+    numbers for the year.
+
+    ^BEmpty date^B: To specify a null date, use SPACE(8), "", or "  /  /  "
+    as the function argument.
+
+^UReturns^U
+
+    A date value.
+
+^UUsage^U
+
+    CTOD() is useful whenever you want to use a character string as a date
+    value.  There are a number of common instances which include:
+
+    -  Initializing a memory variable as a date.
+
+    -  Specifying a literal date string as an argument of a RANGE clause of
+       @..GET.
+
+    -  Specifying a literal date string in order to perform date
+       arithmetic.
+
+    -  Comparing the result of a date expression to a literal date string.
+
+    -  REPLACEing a date field with a literal date string.
+!seealso: clip_050.ngo:"SET DATE" "CDOW" "DOW" "CMONTH" clip_117.ngo:"MONTH" "DAY" clip_152.ngo:"YEAR()" "DTOC" "DTOS" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CURDIR       Returns current DOS directory path of specified drive.
+'------------------------------------------------------------------------------
+^BCURDIR()^B
+
+    Determines the current DOS directory path of a specified drive.
+
+^USyntax^U
+
+    CURDIR([<expC>])
+
+^UArgument^U
+
+    <expC> is the drive letter (A, B, ...).  If omitted, the current DOS
+    drive is assumed.
+
+^UReturns^U
+
+    A character string.
+
+    CURDIR() returns the DOS directory path of the drive specified by
+    <expC>.  If the return value is a null string (""), either an error has
+    occurred, or the root directory is the current drive.
+!seealso: clip_052.ngo:"SET DEFAULT" clip_069.ngo:"SET PATH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DATE         Returns system date in the form "mm/dd/yy".
+'------------------------------------------------------------------------------
+^BDATE()^B
+
+    DATE() returns the system date as a date value.
+
+^USyntax^U
+
+    DATE()
+
+^UReturns^U
+
+    A date value.
+
+    DATE() returns the system date in a format set by any combination of
+    SET DATE and SET CENTURY .  The default is AMERICAN and CENTURY OFF
+    ("mm/dd/yy").
+
+^UUsage^U
+
+    DATE() provides a means of initializing memory variables to the current
+    date, comparing other date values to the current date, and performing
+    date arithmetic relative to the current date.
+!seealso: clip_045.ngo:"SET CENTURY" clip_050.ngo:"SET DATE" "CDOW" "DOW" "CMONTH" clip_117.ngo:"MONTH" "DAY" clip_152.ngo:"YEAR()" "CTOD" "DTOC" "DTOS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DAY          Returns the numeric value of the day of the month from date.
+'------------------------------------------------------------------------------
+^BDAY()^B
+
+    DAY() returns an integer representing the day of the month.
+
+^USyntax^U
+
+    DAY(<exp D>)
+
+^UReturns^U
+
+    An integer numeric value.
+
+    DAY() returns a number in the range of zero to 31 depending on the
+    month of <expD>.  If the month is February, leap years are accounted
+    for and the number returned is either 28 or 29.  In Clipper, if the
+    date argument is February 29 and the year is not a leap year, the value
+    returned is zero.  If the date argument is empty, then DAY() returns
+    zero.
+!seealso: "CDOW" "DOW" "CMONTH" clip_117.ngo:"MONTH()" clip_152.ngo:"YEAR()" "CTOD" "DTOC" "DTOS" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBEDIT       Displays and edits records using browse-style editor.
+!file: clip_092.ngo
+!short: DBFILTER     Determines active filter expression in current area.
+'------------------------------------------------------------------------------
+^BDBFILTER()^B
+
+    DBFILTER() determines the expression of the active filter in the
+    current work area.
+
+^USyntax^U
+
+    DBFILTER()
+
+^UReturns^U
+
+    A character string.
+
+    DBFILTER() returns as a character string the filter condition defined
+    in the current work area.  If no FILTER has been SET, DBFILTER()
+    returns a null string("").
+
+^UExample^U
+
+    The following user-defined function, CreateQry(), uses DBFILTER() to
+    create a memory file containing the current filter expression in the
+    memory variable "qry_string".  The memory file is named with the
+    extension "qwy" to indicate that it contains a query.
+
+    ^RFUNCTION CreateQry                        ^R
+    ^RPARAMETERS qry_name                       ^R
+    ^R*                                         ^R
+    ^Rqry_string = DBFILTER()                   ^R
+    ^RSAVE ALL LIKE qry_string TO &qry_name..qwy^R
+    ^RRETURN .F.                                ^R
+
+    You can later RESTORE a query file created by CreateQry() with the
+    following user-defined function, SetFilter().  This function RESTOREs
+    the query file and then SETs FILTER TO the condition stored in the
+    variable "qry_string".
+
+    ^RFUNCTION SetFilter                  ^R
+    ^RPARAMETERS qry_name                 ^R
+    ^R*                                   ^R
+    ^RRESTORE FROM &qry_name..qwy ADDITIVE^R
+    ^RSET FILTER TO &qry_string           ^R
+    ^RRETURN .F.                          ^R
+!seealso: "DBRELATION" "DBRSELECT" clip_059.ngo:"SET FILTER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBRELATION   Determines the linking expression of specified relation.
+'------------------------------------------------------------------------------
+^BDBRELATION()^B
+
+    DBRELATION() determines the linking expression of a specified relation
+    in the current work area.
+
+^USyntax^U
+
+    DBRELATION(<expN>)
+
+^UArgument^U
+
+    <expN> is the ordinal position in the list of relations defined.
+
+^UReturns^U
+
+    A character string.
+
+    DBRELATION() returns a character string containing the relation
+    expression of the relation pointed to by <expN>.  If there is no
+    RELATION SET for <expN>, DBRELATION() returns a null string ("").
+
+^UUsage^U
+
+    DBRELATION() is used in combination with DBRSELECT() to query the
+    linking expression and work area of an existing relation.  Using these
+    functions in addition to DBFILTER(), you can create a user-defined View
+    system analagous to that of dBASE III PLUS and the Clipper utility,
+    DBU.EXE.  Essentially, you utilize these functions to create the View
+    definition from the environment.
+!seealso: "DBFILTER" "DBRSELECT" clip_073.ngo:"SET RELATION" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBRSELECT    Determines target work area of a specified relation.
+'------------------------------------------------------------------------------
+^BDBRSELECT()^B
+
+    DBRSELECT() determines the target work area of a specified relation
+    in the current work area.
+
+^USyntax^U
+
+    DBRSELECT(<expN>)
+
+^UArgument^U
+
+    <expN> is the ordinal position in the list of relations defined.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    DBRSELECT() returns the work area number of the relation pointed to by
+<expN>.  If there is no RELATION SET for <expN>, DBRSELECT() returns
+zero.
+
+^UUsage^U
+
+    DBRSELECT() is used in combination with DBRELATION() to query the work
+area and linking expression of an existing relation.  Using these
+    functions in addition to DBFILTER(), you can create a user-defined View
+    system analagous to that of dBASE III PLUS and the Clipper utility,
+    DBU.EXE.  Essentially, you utilize these functions to create the View
+    definition from the environment.
+
+    Since the work area number is environment specific information, you
+may want the alias name if your application is independent of a
+specific work area.  In this case, use the following expression to
+obtain the alias of the relation:
+
+ALIAS(DBRSELECT(<expN>))
+!seealso: "DBFILTER" "DBRELATION" clip_073.ngo:"SET RELATION" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DESCEND      To create and SEEK descending order indexes.
+'------------------------------------------------------------------------------
+^BDESCEND()^B
+
+    DESCEND() creates and SEEKS descending order indexes.
+
+^USyntax^U
+
+    DESCEND(<exp>)
+
+^UArgument^U
+
+    <exp> is an expression of any data type.
+
+^UReturns^U
+
+    DESCEND() returns the same data type as the <exp> in a complemented
+    form.
+
+^UUsage^U
+
+    DESCEND() is designed to be used in combination with INDEX and SEEK to
+allow for the creation of descending order indexes.
+
+    To use DESCEND() in an INDEX expression, use the following syntaxL:
+
+INDEX ON DESCEND(Sales_date) TO date_dwn
+!seealso: clip_013.ngo:"INDEX" clip_041.ngo:"SEEK" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DELETED      Returns the deletion status of the current record.
+'------------------------------------------------------------------------------
+^BDELETED()^B
+
+    DELETED() identifies records that are marked for deletion.
+^USyntax^U
+
+    DELETED()
+
+^UReturns^U
+
+    A logical value.
+
+    DELETED() returns true (.T.) if the current record is marked for
+    deletion; otherwise, false (.F.) is returned.
+
+^UUsage^U
+
+    There are two areas where DELETED() may be used effectively.  First is
+    querying the deletion status as a part of record processing conditions.
+    Second is displaying a record's deleted status as a part of screens and
+    reports.  To do this, format the return value of DELETED() using IF()
+    as follows:
+
+    ^R@ 1, 65 SAY IF(DELETED(), "Inactive", "Active")^R
+!seealso: clip_029.ngo:"RECALL" clip_053.ngo:"SET DELETED" clip_022.ngo:"PACK" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISKSPACE    Determines available memory on specified disk drive.
+'------------------------------------------------------------------------------
+^BDISKSPACE()^B
+
+    DISKSPACE() determines the number of available bytes remaining on the
+    specified disk drive.
+
+^USyntax^U
+
+    DISKSPACE([<expN>])
+
+^UArgument^U
+
+    <expN> is the number of the drive to query where one is drive A, two is
+    B, and three is C, etc.  The default is the current drive if <expN> is
+    omitted or zero.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    DISKSPACE() returns the number of bytes of empty space on the specified
+    disk drive.  If DISKSPACE() is specified without an argument, the
+    return value reflects the amount of space available on the default
+    drive.  It does not honor the SET DEFAULT drive.
+
+^UUsage^U
+
+    DISKSPACE() is useful when COPYing or SORTing to another drive and you
+    want to determine if there is enough space available before initiating
+    the operation.  A variation of this concept is to use DISKSPACE() in
+    combination with the RECSIZE() and RECCOUNT() functions to create a
+    procedure to automatically backup database files.
+
+^UExample^U
+
+    The following is a user-defined function that uses DISKSPACE() to
+    backup a database file to another drive:
+
+    ^RFUNCTION BackUp                                    ^R
+    ^RPARAMETERS outfile, drive                          ^R
+    ^R*                                                  ^R
+    ^Rneeded = INT((RECSIZE() * LASTREC() + HEADER() + 1)^R
+    ^RIF DISKSPACE() < needed                            ^R
+    ^R   RETURN .F.                                      ^R
+    ^RENDIF                                              ^R
+    ^RCOPY TO &drive.:&outfile.                          ^R
+    ^RRETURN .T.                                         ^R
+!seealso: "LUPDATE" clip_103.ngo:"LASTREC" "RECSIZE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DOSERROR     Determines error number of the last DOS error.
+'------------------------------------------------------------------------------
+^BDOSERROR()^B
+
+    DOSERROR() determines the error number of the last DOS error.
+
+^USyntax^U
+
+    DOSERROR()
+
+^UReturns^U
+
+    An integer numeric value.
+
+^UUsage^U
+
+    DOSERROR() is used in conjunction with the error function Open_error()
+    to determine the exact cause of a file use error.
+
+    When your program experiences a DOS error, the errror includes a
+    number, described below.
+
+    ^BError #^B     ^BDescription^B
+       1        Invalid function number
+       2        File not found
+       3        Path not found
+       4        Too many open files (no handles left)
+       5        Access denied
+       6        Invalid handle
+       7        Memory control blocks destroyed
+       8        Insufficient memory
+       9        Invalid memory block address
+      10        Invalid environment
+      11        Invalid format
+      12        Invalid access code
+      13        Invalid data
+      14        Reserved
+      15        Invalid drive was specified
+      16        Attempt to remove current directory
+      17        Not same device
+      18        No more files
+      19        Attempt to write on write-protected diskette
+      20        Unknown unit
+      21        Drive not ready
+      22        Unknown command
+      23        Data error (CRC)
+      24        Bad request structure length
+      25        Seek error
+      26        Unknown media type
+      27        Sector not found
+      28        Printer out of paper
+      29        Write fault
+      30        Read fault
+      31        General failure
+      32        Sharing violation
+      33        Lock violation
+      34        Invalid disk change
+      35        FCB unavailable
+      36        Sharing buffer overflow
+    37-49       Reserved
+      50        Network request not supported
+      51        Remote computer not listening
+      52        Duplicate name on network
+      53        Network name not found
+      54        Network busy
+      55        Network device no longer exists
+      56        Network BIOS command limit exceeded
+      57        Network adapter hardware error
+      58        Incorrect response from network
+      59        Unexpected network error
+      60        Incompatible remote adapter
+      61        Print queue full
+      62        Not enough space for print file
+      63        Print file deleted (not enough space)
+      64        Network name deleted
+      65        Access denied
+      66        Network device type incorrect
+      67        Network name not found
+      68        Network name limit exceeded
+      69        Network BIOS session limit exceeded
+      70        Temporarily paused
+      71        Network request not accepted
+      72        Print or disk redirection paused
+     73-79      Reserved
+      80        File exists
+      81        Reserved
+      82        Cannot make directory entry
+      83        Fail on INT 24
+      84        Too many redirections
+      85        Duplicate redirection
+      86        Invalid password
+      87        Invalid parameter
+      88        Network device fault
+!seealso: "FERROR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DOW          Returns a number representing day of the week.
+'------------------------------------------------------------------------------
+^BDOW()^B
+
+    DOW() converts a date value to a number identifying the day of the
+    week.
+
+^USyntax^U
+
+    DOW(<exp D>)
+
+^UReturns^U
+
+    An integer numeric value.
+
+    DOW() returns a number between zero and seven.  The first day of the
+    week is one (Sunday) and the last is seven (Saturday).  If <expD> is
+    empty, DOW() returns zero.
+
+^UUsage^U
+
+    DOW() is useful when you want date calculations on a weekly basis.  For
+    example, you can use the DOW() to calculate last Monday's date with an
+    expression like the following:
+
+    ^RDATE() - DOW(DATE()) + 2^R
+!seealso: clip_117.ngo:"MONTH" "DAY" clip_152.ngo:"YEAR" "CTOD" "DTOC" "DTOS" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DTOC         Converts a date value to character string.
+'------------------------------------------------------------------------------
+^BDTOC()^B
+
+    DTOC() converts a date value to a character string.
+
+^USyntax^U
+
+    DTOC(<expD>)
+
+^UArgument^U
+
+    <expD> is the date value to convert.
+
+^UReturns^U
+
+    A character string.
+
+    DTOC() returns a character string representation of a date value based
+    on the DATE and CENTURY SETtings.  (See SET DATE for the supported
+    formats.)  The default format return value is in the form "mm/dd/yy".
+    A null date returns a string of eight or ten spaces depending on
+    whether CENTURY is OFF or ON.
+
+^UUsage^U
+
+    DTOC() is primarily useful for formatting purposes when you want
+    to display the date in the SET DATE format and a character expression
+    is required (in a LABEL FORM, for example).
+
+    If you are INDEXing a date as a part of a compound key, use DTOS()
+    instead of DTOC().
+!seealso: clip_050.ngo:"SET DATE" clip_045.ngo:"SET CENTURY" "CDOW" "DOW" "CMONTH" clip_117.ngo:"MONTH()" "DAY" clip_152.ngo:"YEAR" "CTOD" "DTOS" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DTOS         Converts a date value to character string format
+'------------------------------------------------------------------------------
+"yyyymmdd". ^BDTOS()^B
+
+    DTOS() converts a date value to a character string suitable for
+    INDEXing in a compound key.
+
+^USyntax^U
+
+    DTOS(<expD>)
+
+^UArgument^U
+
+    <expD> is the date value to convert.
+
+^UReturns^U
+
+    A character string.
+
+    DTOS() returns a string eight characters long in the format "yyyymmdd".
+    When <expD> evaluates to a null date, DTOS() returns a string of eight
+    spaces.
+
+^UUsage^U
+
+    The intention of DTOS() is to facilitate the ease of creating index key
+    expressions consisting of a date value and character expressions
+    independent of DATE and CENTURY SETtings and preserving date order
+    (year, month, and day).
+!seealso: clip_013.ngo:"INDEX" "CDOW" "DOW" "CMONTH" clip_117.ngo:"MONTH()" "DAY" clip_152.ngo:"YEAR()" "CTOD" "DATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EMPTY        Returns true if an expression is blank.
+'------------------------------------------------------------------------------
+^BEMPTY()^B
+
+    EMPTY() determines if the result of an expression is empty.
+
+^USyntax^U
+
+    EMPTY(<exp>)
+
+^UReturns^U
+
+    A logical value.
+
+    EMPTY() returns a logical true (.T.) depending on the type of
+    expression being evaluated if:
+
+    -  The character expression is a null string or equal to all spaces
+    -  The numeric expression equals 0
+    -  The date expression contains an empty date ("  /  /  ")
+    -  The logical expression equals .F.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: EOF          Returns true if the end of file is reached.
+'------------------------------------------------------------------------------
+^BEOF()^B
+
+    EOF() determines if an attempt has been made to move the record pointer
+    past the end of the current database file.
+
+^USyntax^U
+
+    EOF()
+
+^UReturns^U
+
+    EOF() returns True (.T.) when you attempt to move the record pointer
+    beyond the last logical record of the active database file.  When EOF()
+    becomes true (.T.), the record pointer is positioned to LASTREC() + 1.
+    This is the case whether or not an active FILTER is SET or DELETED is
+    ON.  Any further attempt to move the record pointer past LASTREC() + 1
+    returns the same result without error.
+
+    In addition, if the current database file contains no records, EOF()
+    returns true (.T.).
+
+^UUsage^U
+
+    EOF() is used as a boundary condition test in any application where you
+    are moving the record pointer downward through a database file.
+!seealso: clip_041.ngo:"SEEK" clip_019.ngo:"LOCATE" clip_079.ngo:"SKIP" "BOF" clip_128.ngo:"RECNO()" clip_103.ngo:"LASTREC()" "FOUND" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ERRORLEVEL   Returns current DOS error level.
+'------------------------------------------------------------------------------
+^BERRORLEVEL()^B
+
+    ERRORLEVEL() returns the current DOS error level setting and
+optionally set the DOS error level to a new value.
+
+^USyntax^U
+
+    ERRORLEVEL([<exp N>])
+
+^UArgument^U
+
+    <expN> is the new DOS error level setting.  This can be a value
+between zero and 255.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    ERRORLEVEL() returns the current DOS error level setting.
+
+^UUsage^U
+
+    ERRORLEVEL() is primarily design to use with SWITCH.EXE in order to
+chain execution of application programs.  As an example, assume you
+have a main application program and depending on some condition, it
+needs to execute another .EXE file.  You can do this by setting the
+error level just before exiting to DOS as follows:
+
+^RDO CASE              ^R
+^RIF choice = "ONE"    ^R
+^R   err_lev = 1       ^R
+^RELSEIF choice = "TWO"^R
+^R   err_lev = 2       ^R
+^RENDIF                ^R
+^RERRORLEVEL(err_lev)  ^R
+^RQUIT                 ^R
+
+You then execute SWITCH from the DOS prompt specifying the list of
+executable application programs corresponding to error levels
+specified in the shell program.  For example:
+
+    C>SWITCH ONE TWO THREE
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: EXP          Calculates number based on natural logarithm.
+'------------------------------------------------------------------------------
+^BEXP()^B
+
+    EXP() calculates ^Ue^U to the power of ^Ux^U where ^Ue^U is the base of natural
+    logarithms and ^Ux^U is the numeric argument.
+
+^USyntax^U
+
+    EXP(<exp N>)
+
+^UArgument^U
+
+    <expN> is the natural logarithm for which a numeric value is to be
+    calculated.
+
+^UReturns^U
+
+    A numeric value.
+
+    EXP() returns a value that obeys both the DECIMALS and FIXED SETtings.
+
+^UUsage^U
+                                                                    ^Ux^U
+    EXP() is useful in equations using of the natural log function ^Ue^U .
+
+    EXP() is the inverse of LOG().
+!seealso: clip_051.ngo:"SET DECIMALS" clip_060.ngo:"SET FIXED" clip_105.ngo:"LOG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FCLOSE       Closes the DOS file corresponding to the specified handle.
+'------------------------------------------------------------------------------
+^BFCLOSE()^B
+
+    FCLOSE() closes an open files, writing associated DOS buffers to disk.
+
+^USyntax^U
+
+    FCLOSE(<expN>)
+
+^UArgument^U
+
+    <expN> is the file handle obtained previously from FOPEN() or
+    FCREATE().
+
+^UReturns^U
+
+    A logical value.
+
+    FCLOSE() returns false (.F.) if an error has occurred while writing;
+    otherwise it returns true (.T.).
+
+^UExample^U
+
+    ^Rhandle = FCREATE("Testfile", 0)^R
+    ^RFCLOSE(handle)                 ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCREATE" "FERROR" "FOPEN" "FREAD" "FREADSTR" "FSEEK" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FCOUNT       Returns the number of fields in the current database file.
+'------------------------------------------------------------------------------
+^BFCOUNT()^B
+
+    FCOUNT() returns the number of fields in the current database.
+
+^USyntax^U
+
+    FCOUNT()
+
+^UReturns^U
+
+    An integer value.
+
+    FCOUNT() returns the number of fields of the database file open in the
+    current work area.  If there is no database file open, FCOUNT() returns
+    zero.
+
+^UUsage^U
+
+    FCOUNT() is useful in applications where you have created data-
+    independent programs that can operate on any database file.  These
+    include generalized import/export and reporting programs.  Typically,
+    you can use FCOUNT() to establish the upper limit of FOR/NEXT or DO
+    WHILE loops that process a single record at a time.  For example, to
+    display the names of all fields in the current work area.
+!seealso: "FIELD" clip_147.ngo:"TYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FCREATE      Creates a new DOS file or truncates existing file to zero.
+'------------------------------------------------------------------------------
+^BFCREATE()^B
+
+    FCREATE() creates a new file or truncates an existing file to zero
+    length.
+
+^USyntax^U
+
+    FCREATE(<expC>[,<expN>])
+
+^UArgument^U
+
+    <expC> is the name of the file to create.
+
+    <expN> is the DOS file attribute.  If omitted, the default is zero.
+
+                             ^BDOS File Attributes^B
+
+    ^UValue^U    ^UAttribute^U     ^UDescription^U
+      0      Normal        Read/write
+      1      Read only     Attempting to open for output returns an error.
+      2      Hidden        Excluded from normal directory searches.
+      3      System        Excluded from normal directory searches.
+
+^UReturns^U
+
+    A numeric value.
+
+    FCREATE() returns the DOS file handle number of the new file in the
+    range of zero to 65,535.  If an error occurs, it returns -1.
+
+^UUsage^U
+
+    When FCREATE() successfully creates a new file, it is left open with a
+    DOS open mode of 2 (mode 2 is compatibility sharing mode, read/write
+    access mode).
+
+    Since a file handle is required in order to identify an open file to
+    other file functions, always assign the return value from FCREATE() to
+    a memory variable for later use.
+
+    ^BAccessing files in other directories^B: FCREATE() does not obey
+    either the DEFAULT or PATH SETtings.  Instead, it writes to the current
+    directory unless a path is explicitly stated.
+
+^UExample^U
+
+    ^Rhandle = FCREATE("Testfile", 0)^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FERROR" "FOPEN" "FREAD" "FREADSTR" "FSEEK" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FERROR       Returns the DOS error number after file function terminates.
+'------------------------------------------------------------------------------
+^BFERROR()^B
+
+    FERROR() tests for a DOS error after a file function terminates.
+
+^USyntax^U
+
+    FERROR()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    FERROR() returns the DOS error from the last file operation.  If there
+    is no error, FERROR() returns zero.
+
+^UExample^U
+
+    ^Rshandle = FCREATE("Temp.txt")                  ^R
+    ^RIF FERROR() <> 0                               ^R
+    ^R   ? "Cannot create file, DOS error ", FERROR()^R
+    ^RENDIF                                          ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FCREATE" "FOPEN" "FREAD" "FREADSTR" "FSEEK" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FIELD        Returns the name of specified field in current work area.
+'------------------------------------------------------------------------------
+^BFIELD()/FIELDNAME()^B
+
+    FIELD() returns the field name of a specified field in the current
+    database file.
+
+^USyntax^U
+
+    FIELD(<expN>)/FIELDNAME(<expN>)
+
+^UArgument^U
+
+    <expN> is the numeric position of a field in the database file
+    structure.
+
+^UReturns^U
+
+    A character string.
+
+    If <expN> is not within the range of the fields contained in the
+    current database file, FIELD() returns a null string ("").
+
+    Fieldnames are returned all upper case.
+
+^UUsage^U
+
+    FIELD() permits a database file structure to be handled as if it is an
+    array, each field number a subscript pointer to the fieldname.  This
+    array of fields is useful for building data-independent programs for
+    import/export and reporting.
+
+    If you need other database file structure information, use TYPE() and
+    LEN().  If you need the number of decimal places a numeric field has
+    defined, use the following expression:
+
+    ^RLEN(SUBSTR(STR(<field>), RAT(".", STR(<field>)) + 1))^R
+
+    ^BNote^B: AFIELDS() provides similar but expanded capability for
+          manipulating field attribute information.
+!seealso: "AFIELDS" "FCOUNT" clip_103.ngo:"LASTREC()" clip_147.ngo:"TYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILE         Returns true if a specified filename exists.
+'------------------------------------------------------------------------------
+^BFILE()^B
+
+    FILE() verifies the existence of a specified filename and returns a
+    logical True (.T.) if the file exists.
+
+^USyntax^U
+
+    FILE(<exp C>)
+
+^UUsage^U
+
+    FILE() requires that the character expression input include both the
+    filename and the file extension.  If the file resides on a different
+    drive or directory than the default, you must either set a path using
+    the SET PATH command or the drive and directory must be specified as
+    part of the filename.  FILE() is not case-sensitive; any combination of
+    upper or lower case letters in the filename is accepted.  Be aware that
+    the DOS path is not searched.
+
+    FILE() is useful in identifying a duplicate filename before information
+    is stored to a file or for determining whether a needed file is
+    available.
+!seealso: clip_052.ngo:"SET DEFAULT" clip_069.ngo:"SET PATH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FLOCK        Locks a database file in a network environment.
+'------------------------------------------------------------------------------
+^BFLOCK()^B
+
+    FLOCK() is for locking a database file in a multi-user environment.
+
+^USyntax^U
+
+    FLOCK()
+
+^UUsage^U
+
+    FLOCK() attempts to logically lock the database file.  If a record was
+    previously locked by the same user, FLOCK() will release the lock.  If
+    successful, FLOCK() will return a logical True (.T.)
+!seealso: clip_130.ngo:"RLOCK()" clip_086.ngo:"UNLOCK" clip_058.ngo:"SET EXCLUSIVE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FOPEN        Opens a DOS file.
+'------------------------------------------------------------------------------
+^BFOPEN()^B
+
+    FOPEN() opens a DOS file.
+
+^USyntax^U
+
+    FOPEN(<expC>,[,<expN>])
+
+^UArgument^U
+
+    <expC> is the name of the file to open including the path if there is
+    one.
+
+    <expN> is the requested DOS open mode indicating how the open file can
+    be accessed.  Access falls into three categories:
+
+                              ^BDOS File Open Modes^B
+    ^UOpen Mode^U       ^UOperation^U
+        0           Read only
+        1           Write only
+        2           Read/write
+
+    The default open mode is zero.
+
+^UReturns^U
+
+    A numeric value.
+
+    FOPEN() returns the file handle of the opened file in the range of zero
+    to 65,535.  If an error occurs, it returns -1.
+
+^UUsage^U
+
+    Since a file handle is required in order to identify an open file to
+    other file functions, always assign the return value from FOPEN() to a
+    memory variable for later use.
+
+    ^BAccessing files in other directories^B: FOPEN() does not obey either
+    the DEFAULT or PATH SETtings.  Instead, it only searches the current
+    directory unless a path is explicitly stated.
+
+^UExample^U
+
+    ^Rhandle = FOPEN("Temp.txt"                      ^R
+    ^RIF FERROR() <> 0                               ^R
+    ^R   ? "Cannot create file, DOS error ", FERROR()^R
+    ^RENDIF                                          ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FCREATE" "FERROR" "FREAD" "FREADSTR" "FSEEK" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FOUND        Returns true if previous SEEK, FIND, LOCATE was successful.
+'------------------------------------------------------------------------------
+^BFOUND()^B
+
+    FOUND() returns a logical True (.T.) if the previous FIND, SEEK, LOCATE
+    or CONTINUE was successful.
+
+^USyntax^U
+
+    FOUND()
+
+^UReturns^U
+
+    A logical value.
+
+    FOUND() returns true (.T.) if the last search command was successful.
+
+    Each work area has a FOUND() flag.  This means that if one work area
+    has a RELATION SET to a child work area, querying FOUND() in the child
+    work area returns true (.T.) if there is a key value matching the
+    current linking value from the parent.
+
+    Note that all commands other than search commands update FOUND() to
+    false (.F.).  This means that SKIP cannot be used with FOUND().
+
+^UUsage^U
+
+    FOUND() is useful for determining whether a search of a database file
+    is successful before performing the next step in a program.
+!seealso: clip_041.ngo:"SEEK" clip_019.ngo:"LOCATE" clip_073.ngo:"SET RELATION" clip_075.ngo:"SET SOFTSEEK" "EOF" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FREAD        Reads characters from a DOS file into character variable.
+'------------------------------------------------------------------------------
+^BFREAD()^B
+
+    FREAD() reads characters from a DOS file into a character memory
+    variable.
+
+^USyntax^U
+
+    FREAD(<expN1>,@<memvarC>,<expN2>)
+
+^UArgument^U
+
+    <expN1> is the file handle obtained from FOPEN(), FCREATE(), or
+    predefined by DOS.
+
+    <memvarC> is the name of an existing character memory variable passed
+    by reference (preface it with the @ symbol) to use as a buffer.  The
+    length of this memory variable must be at least the same as <expN2>.
+
+    <expN2> is the number of bytes to read into the buffer starting at the
+    current DOS pointer location.  The value returned by a successful
+    FREAD() should be equal to <expN2>.
+
+^UReturns^U
+
+    An integer numeric value.
+
+    FREAD() returns the number of bytes successfully read.  A return value
+    of 0 indicates end-of-file or an error.
+
+^UUsage^U
+
+    FREAD() reads the file starting at the current file pointer position.
+    Note that FREAD() reads all characters including control, null, and
+    high-order (above CHR(128)).
+
+    To reposition the file pointer without reading, use FSEEK().
+
+^UExample^U
+
+    ^Rblock = 128                                    ^R
+    ^Rbuffer = SPACE(512)                            ^R
+    ^Rhandle = FOPEN("Temp.txt")                     ^R
+    ^R*                                              ^R
+    ^RIF FERROR() <> 0                               ^R
+    ^R   bytes = FREAD(handle, @buffer, block)       ^R
+    ^R   if bytes <> block                           ^R
+    ^R      ? "Error reading Temp.txt"               ^R
+    ^R   ENDIF                                       ^R
+    ^RENDIF                                          ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FCREATE" "FERROR" "FOPEN" "FREADSTR" "FSEEK" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FREADSTR     Reads characters from a DOS file.
+'------------------------------------------------------------------------------
+^BFREADSTR()^B
+
+    FREADSTR() reads characters from a DOS file.
+
+^USyntax^U
+
+    FREADSTR(<expN1>,<expN2>)
+
+^UArgument^U
+
+    <expN1> is the file handle obtained from FOPEN(), FCREATE(), or
+    predefined by DOS.
+
+    <expN2> is the number of bytes to read beginning at the current DOS file
+    pointer position.  This can be a positive or negative number depending
+    on the direction (forward or backward) you want to read from the
+    current pointer position.
+
+^UReturns^U
+
+    A character string.
+
+    FREADSTR() returns a string up to 65,535 (64K) bytes.  A null return
+    value ("") indicates an error or end-of-file.
+
+^UUsage^U
+
+    FREADSTR() reads from the current DOS file pointer position, the number
+    of characters specified by <expN2> or until a null character (ASCII 0)
+    is encountered.  Like FREAD(), all characters are read including
+    control characters.
+
+^UExample^U
+
+    The following example displays the ASCII value of the first 16 bytes of
+    the text file, New.txt:
+
+    ^Rhandle = FOPEN("Temp.txt")                           ^R
+    ^RIF FERROR() <> 0                                     ^R
+    ^R   ? "File open error."                              ^R
+    ^R   RETURN                                            ^R
+    ^RELSE                                                 ^R
+    ^R   buffer = FREADSTR(handle,16)                      ^R
+    ^R   ? "Length: ", LEN(buffer)                         ^R
+    ^R   ?                                                 ^R
+    ^R   FOR i = 1 TO LEN(buffer)                          ^R
+    ^R      ?? TRANSFORM(ASC(SUBSTR(buffer, i, 1)),; "99") ^R
+    ^R   NEXT                                              ^R
+    ^R   FCLOSE(handle)                                    ^R
+    ^RENDIF                                                ^R
+    ^RRETURN                                               ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FCREATE" "FERROR" "FOPEN" "FREAD" "FSEEK" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FSEEK        Moves the file pointer to new position in a DOS file.
+'------------------------------------------------------------------------------
+^BFSEEK()^B
+
+    FSEEK() sets the file pointer to a new position in a file.
+
+^USyntax^U
+
+    FSEEK(<expN1>,<expN2>[,<expN3>])
+
+^UArgument^U
+
+    <expN1> is the file handle obtained from FOPEN(), FCREATE(), or
+    predefined by DOS.
+
+    <expN2> is the number of bytes to move the file pointer from the
+    position as defined by <expN3>.  This can be a positive or negative
+    number depending on the direction to move the pointer.
+
+    <expN3> defines the method of moving and is indicated by a value from
+    the following list:
+
+                    ^BMethods of Moving the DOS File Pointer^B
+    ^UMethod^U       ^UDescription^U
+       0           Beginning-of-file
+       1           Current pointer position
+       2           End-of-file
+
+    The default method is zero.
+
+^UReturns^U
+
+    A numeric value.
+
+    FSEEK() returns the new position of the file pointer relative to the
+    beginning-of-file.
+
+^UExample^U
+
+    ^Rhandle = FOPEN("Temp.txt"   ^R
+    ^R*                           ^R
+    ^R* Get length of the file.   ^R
+    ^Rlength = FSEEK(handle, 0, 2)^R
+    ^R*                           ^R
+    ^R* Reset file position.      ^R
+    ^RFSEEK(handle, 0)            ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FCREATE" "FERROR" "FOPEN" "FREAD" "FREADSTR" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FWRITE       Writes a buffer variable to a specified DOS file.
+'------------------------------------------------------------------------------
+^BFWRITE()^B
+
+    FWRITE() writes a buffer variable to a DOS file.
+
+^USyntax^U
+
+    FWRITE(<expN1>,<memvarC>[,<expN2>])
+
+^UArgument^U
+
+    <expN1> is the file handle obtained previously from FOPEN(), FCREATE(),
+    or predefined by DOS.
+
+    <memvarC> is the name of a pre-existing character memory variable to
+    use as an output buffer.
+
+    <expN2> indicates the number of bytes to write from the buffer variable
+    to the file beginning with the current file pointer location.  If this
+    argument is omitted, the entire contents of the buffer variable are
+    written.
+
+^UReturns^U
+
+    A numeric value.
+
+    FWRITE() returns the number of bytes successfully written.  If the
+    return value is 0, the disk is full or an error has occurred.  Check
+    FERROR() for the precise DOS error designation.  Note that the value
+    returned by a successful FWRITE() should be equal to <expN2>.
+
+^UExample^U
+
+
+    ^Rbuffer = SPACE(512)                            ^R
+    ^Rhandle = FOPEN("Temp.txt")                     ^R
+    ^R*                                              ^R
+    ^Routfile = FCREATE("Newfile.txt")               ^R
+    ^RIF FERROR() <> 0                               ^R
+    ^R   ? "Cannot create file, DOS error ", FERROR()^R
+    ^R   RETURN                                      ^R
+    ^RENDIF                                          ^R
+    ^R*                                              ^R
+    ^RFREAD(infile, @buffer, 512)                    ^R
+    ^RIF FERROR() <> 0                               ^R
+    ^R   ? "Cannot read file, DOS error ", FERROR()  ^R
+    ^R   RETURN                                      ^R
+    ^RENDIF                                          ^R
+    ^R*                                              ^R
+    ^RFWRITE(outfile, buffer, 512)                   ^R
+    ^RIF FERROR() <> 0                               ^R
+    ^R   ? "Cannot write file, DOS error ", FERROR() ^R
+    ^RENDIF                                          ^R
+
+^UWARNING^U: This function allows low level access to DOS files & devices.
+             They should be used with extreme care and require a thorough
+             knowledge of the operating system.
+!seealso: "FCLOSE" "FCREATE" "FERROR" "FOPEN" "FREADSTR" "FSEEK" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETE         Retrieve the contents of a DOS environmental variable.
+'------------------------------------------------------------------------------
+^BGETE()^B
+
+    GETE() retrieves the contents of a DOS environmental variable.
+
+^USyntax^U
+
+    GETE(<expC>)
+
+^UArgument^U
+
+    <expC> is the name of the DOS environmental variable completely upper
+case.  Note that when an environmental variable is SET, it is
+converted to upper case.
+
+^UReturns^U
+
+    A character string.
+
+    GETE() returns the contents of the specified DOS environmental
+variable.  If the <expC> cannot be found, GETE() returns a null string
+("").
+
+    ^BNote^B: If you are certain that an environmental variable exists and
+yet GETE() always returns a null string (""), be sure there are no
+spaces between the environmental variable name and the first character
+of the string assigned to it.
+
+^UUsage^U
+
+    GETE() is useful for passing configuration information from the DOS
+environment into an application program.  Typically, this could be
+configuration information that includes pointers to the location of
+files (database, index, label, or reports).  This is particularly
+useful for network environments.
+
+For example, when you set up a system define environmental variables
+that contain the location of various file types along with the CLIPPER
+environmental variable.  The following DOS commands demonstrate:
+
+C>SET LOC_DBF=<database file path>
+C>SET LOC_NTX=<index file path>
+C>SET LOC_RPT=<report file path>
+
+In the configuration section of your application program, assign the
+contents of the environmental variables to memory variables.  Then
+when you access a file, preface the reference with the path variable:
+
+loc_dbf=GETE("LOC_DBF")
+USE (loc_dbf + "<alias>")
+
+^UExample^U
+
+    ^Rpath_set = GETE("PATH")^R
+    ^RSET PATH TO &path_set. ^R
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: HARDCR       Replaces soft carriage returns with hard carriage returns.
+!file: clip_093.ngo
+!short: HEADER       Determines length of header area of current database file.
+'------------------------------------------------------------------------------
+^BHEADER()^B
+
+    HEADER() determines the length of the header area of the current
+    database file.
+
+^USyntax^U
+
+    HEADER()
+
+^UReturns^U
+
+    An integer numeric value.
+
+^UUsage^U
+
+    HEADER() can be used with LASTREC()/RECCOUNT(), RECSIZE() and
+DISKSPACE() to create procedures for backing up files.
+!seealso: "DISKSPACE" clip_103.ngo:"LASTREC" "RECSIZE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: I2BIN        Converts integer to two-byte character string.
+'------------------------------------------------------------------------------
+^BI2BIN()^B
+
+    Converts an integer numeric value to character string formatted as an
+unsigned integer.
+
+^USyntax^U
+
+    I2BIN(<expN>)
+
+^UArgument^U
+
+    <expN> is the integer number to convert.  Note that decimal digits are
+    truncated.
+
+^UReturns^U
+
+    A character string.
+
+    I2BIN() returns a two-byte character string as a 16-byte unsigned
+integer.
+
+^UUsage^U
+
+    I2BIN() is used in combination with FWRITE() to convert a Clipper
+numeric data type to a two-byte character string formatted as an
+unsigned integer.
+!seealso: "BIN2I" "BIN2L" "BIN2W" "L2BIN" "FOPEN" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IF/IIF       Provides for conditional processing of expressions.
+!file: clip_094.ngo
+!short: INDEXEXT     Returns "NTX" or "NDX" to indicate current type of index.
+!file: clip_095.ngo
+!short: INDEXKEY     Returns the key expression of a specified index.
+!file: clip_096.ngo
+!short: INDEXORD     Returns the controlling index as a numeric value.
+!file: clip_097.ngo
+!short: INKEY        Returns numeric ASCII value of the key pressed.
+!file: clip_098.ngo
+!short: INT          Converts any numeric expression into an integer.
+!file: clip_099.ngo
+!short: ISALPHA      Returns true if first character in string is alphabetic.
+!file: clip_100.ngo
+!short: ISCOLOR      Returns true if a color display is installed.
+!file: clip_101.ngo
+!short: ISLOWER      Returns true if first character in string is lowercase.
+'------------------------------------------------------------------------------
+^BISLOWER()^B
+
+    ISLOWER() returns a logical True (.T.) if the specified character
+    string begins with a lower case character.
+
+^USyntax^U
+
+    ISLOWER(<exp C>)
+
+^UReturns^U
+
+    A logical value.
+!seealso: clip_100.ngo:"ISALPHA" "ISUPPER" clip_106.ngo:"LOWER" clip_149.ngo:"UPPER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISPRINTER    Determines whether LPT1 is ready.
+'------------------------------------------------------------------------------
+^BISPRINTER()^B
+
+    ISPRINTER() returns a logical True (.T.) if LPT1 is ready; otherwise,
+    it returns false (.F.).
+
+^USyntax^U
+
+    ISPRINTER()
+
+^UReturns^U
+
+    A logical value.
+!seealso: clip_055.ngo:"SET DEVICE" clip_070.ngo:"SET PRINT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISUPPER      Returns true if first character in string is uppercase.
+'------------------------------------------------------------------------------
+^BISUPPER()^B
+
+    ISUPPER() returns a logical True (.T.) if the specified character
+    string begins with an upper case character.
+
+^USyntax^U
+
+    ISUPPER(<exp C>)
+
+^UReturns^U
+
+    A logical value.
+!seealso: clip_100.ngo:"ISALPHA" "ISLOWER" clip_106.ngo:"LOWER" clip_149.ngo:"UPPER" 
+'------------------------------------------------------------------------------
+
+
+
+!short: L2BIN        Converts integer to four-byte character string.
+'------------------------------------------------------------------------------
+^BL2BIN()^B
+
+    Converts an integer numeric value to character string formatted as a
+32-bit signed integer.
+
+^USyntax^U
+
+    L2BIN(<expN>)
+
+^UArgument^U
+
+    <expN> is the integer number to convert.  Note that decimal digits are
+    truncated.
+
+^UReturns^U
+
+    A character string.
+
+    L2BIN() returns a four-byte character string formatted as a 32-bit
+signed integer.
+
+^UUsage^U
+
+    L2BIN() is used in combination with FWRITE() to convert a Clipper
+numeric data type to a four-byte character string formatted as a
+32-bit signed integer.
+!seealso: "BIN2I" "BIN2W" "BIN2L" "CHR" "I2BIN" "FOPEN" "FWRITE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LASTKEY      Returns numeric ASCII value of the last key pressed.
+!file: clip_102.ngo
+!short: LASTREC/RECCOUNT     Returns number of records in current work area.
+!file: clip_103.ngo
+!short: LEN          Returns number of characters in character string.
+!file: clip_104.ngo
+!short: LEFT         Extracts characters from left side of character string.
+'------------------------------------------------------------------------------
+^BLEFT()^B
+
+    Extracts a specified number of characters from the left of a character
+string.
+
+^USyntax^U
+
+    LEFT(<expC>,<expN>)
+
+^UArgument^U
+
+    <expC> is a character string from which to extract characters.
+
+    <expN> is the number of characters to extract.
+
+^UReturns^U
+
+    A character string.
+
+    LEFT() returns the leftmost <expN> characters of <expC>.  If <expN> is
+negative or zero, LEFT() returns a null string ("").  If <expN> is
+larger than the length of the character string, LEFT() returns the
+entire string.  The maximum size of <expC> is 65,535 (64K) bytes.
+!seealso: "AT" "LTRIM" clip_126.ngo:"RAT" "RIGHT" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LOG          Returns natural logarithm of a given number.
+!file: clip_105.ngo
+!short: LOWER        Converts upper case characters to lower case.
+!file: clip_106.ngo
+!short: LTRIM        Removes leading blanks from a character expression.
+'------------------------------------------------------------------------------
+^BLTRIM()^B
+
+    LTRIM() removes leading blanks from a character expression.
+
+^USyntax^U
+
+    LTRIM(<exp C>)
+
+^UUsage^U
+
+    Use this function to remove leading blanks that result from the STR()
+    function.
+
+    If the argument is a null string (""), LTRIM() returns a null also.
+!seealso: "ALLTRIM" clip_146.ngo:"TRIM" "RTRIM" clip_140.ngo:"STR" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LUPDATE      Determines date that current database was last modified.
+'------------------------------------------------------------------------------
+^BLUPDATE()^B
+
+    Determines the date the database file in the current work area was
+last modified and CLOSEd.
+
+^USyntax^U
+
+    LUPDATE()
+
+^UReturns^U
+
+    A date value.
+
+    LUPDATE() returns the date of change of the current database file.  If
+there is no database file in USE in the current work area, LUPDATE()
+returns a blank date.  Note that the last date of change is not
+reflected until the database file is CLOSEd.
+!seealso: "FIELD" clip_103.ngo:"LASTREC" "RECSIZE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAX          Returns the greater of two numeric or date expressions.
+!file: clip_107.ngo
+!short: MEMOEDIT     Displays and edits memofields and long strings.
+!file: clip_108.ngo
+!short: MEMOLINE     Returns formatted line from memofield or character exp.
+!file: clip_109.ngo
+!short: MEMOREAD     Returns the specified disk file as a character string.
+!file: clip_110.ngo
+!short: MEMORY       Returns the available free pool memory.
+!file: clip_111.ngo
+!short: MEMOTRAN     Returns character string with all CRs and LFs replaced.
+!file: clip_112.ngo
+!short: MEMOWRIT     Writes character string to specified disk file.
+!file: clip_113.ngo
+!short: MIN          Returns the lesser of two numeric or date expressions.
+!file: clip_114.ngo
+!short: MLCOUNT      Returns number of lines in a memofield or character exp.
+!file: clip_115.ngo
+!short: MLPOS        Returns position of specified line number in memo field.
+!file: clip_116.ngo
+!short: MONTH        Returns number representing month from a date variable.
+!file: clip_117.ngo
+!short: NETERR       Returns true if network environmental error occurs.
+!file: clip_118.ngo
+!short: NETNAME      Returns text of the computer name.
+!file: clip_119.ngo
+!short: NEXTKEY      Reads the next keystroke without removing it from buffer.
+!file: clip_120.ngo
+!short: PCOL         Returns the current column position on printer.
+!file: clip_121.ngo
+!short: PCOUNT       Returns number of actual parameters passed to a function.
+!file: clip_122.ngo
+!short: PROCLINE     Returns source code line number of current program.
+!file: clip_123.ngo
+!short: PROCNAME     Returns name of current program or procedure.
+!file: clip_124.ngo
+!short: PROW         Returns current row position on printer.
+!file: clip_125.ngo
+!short: RAT          Searches character string for last instance of a substring.
+!file: clip_126.ngo
+!short: READVAR      Returns the name of the current GET/MENU variable.
+!file: clip_127.ngo
+!short: READEXIT     Toggles the Uparrow and Dnarrow as READ exit keys.
+'------------------------------------------------------------------------------
+^BREADEXIT()^B
+
+    Toggles the Uparrow and Dnarrow as READ exit keys.
+
+^USyntax^U
+
+    READEXIT([<expL>])
+
+^UArgument^U
+
+    <expL> toggles the Uparrow or Dnarrow keys as exit keys for a READ.
+Setting READEXIT() true (.T.) activates them as exit keys; false (.F.)
+deactivates them.  The default setting is false.
+
+^UReturns^U
+
+    A logical value.
+
+    READEXIT() returns the current setting prior to toggling to a new
+setting.
+!seealso: clip_028.ngo:"READ" "READINSERT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: READINSERT   Toggle/report current insert mode setting for READs.
+'------------------------------------------------------------------------------
+^BREADINSERT()^B
+
+    Reports the current insert mode setting for READ and MEMOEDIT() and
+optionally toggle it on or off.
+
+^USyntax^U
+
+    READINSERT([<expL>])
+
+^UArgument^U
+
+    <expL> toggles the insert mode on or off.  True (.T.) turns insert on,
+while false (.F.) turns inset off.  The default setting is false.
+
+^UReturns^U
+
+    A logical value.
+
+    READINSERT() returns the current insert mode setting if an argument is
+not specified and the previous insert mode if the argument is
+specified.
+
+^UExample^U
+
+    The following sets the insert mode prior to entering MEMOEDIT() and
+resets the mode when MEMOEDIT() terminates:
+
+^Rins_mode = READINSERT(.T.)      && Turn on insert mode^R
+^Rx = MEMOEDIT(x)                                       ^R
+^RREADINSERT(ins_mode)           && Restore last setting^R
+!seealso: clip_028.ngo:"READ" clip_108.ngo:"MEMOEDIT" "READEXIT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RECNO        Returns the current record number of the current work area.
+!file: clip_128.ngo
+!short: RECSIZE      Determines record length of current database file.
+'------------------------------------------------------------------------------
+^BRECSIZE()^B
+
+    RECSIZE() determines the record length of the current database file.
+
+^USyntax^U
+
+    RECSIZE()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    RECSIZE() returns the record length for the database file in USE in
+the current work area.  If no database file is in USE, RECSIZE()
+returns zero.
+
+^UUsage^U
+
+    RECSIZE() determines the length of a record by taking the length of
+each field in the record and adding one character to the total (for
+the asterisk that indicates a deleted record).  WHen this value is
+multipled by LASTREC(), the produce is the amount of space occupied by
+the file's records.
+!seealso: "DISKSPACE" "FIELD" clip_103.ngo:"LASTREC" 
+'------------------------------------------------------------------------------
+
+
+
+!short: REPLICATE    Repeats a character expression a specified number of times.
+!file: clip_129.ngo
+!short: RESTSCREEN   Displays a previously saved screen region.
+'------------------------------------------------------------------------------
+^BRESTSCREEN()^B
+
+    RESTSCREEN() displays a previously saved screen region to a specified
+    screen area.
+
+^USyntax^U
+
+    RESTSCREEN(<expn1>,<expN2>,<expN3>,<expN4>,<expC>)
+
+^UArguments^U
+
+    <expN1..expN4> are the screen coordinates to display screen data
+contained in <expC>.
+
+<expC> is a character strnig containing the screen data to display.
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    RESTSCREEN() is used to redisplay a screen region saved with
+SAVESCREEN().  The screen location to restore may be the same or
+different.  If you specify a new screen location, be sure that the new
+screen region is the same size or you may get ambiguous results.  In
+addition, do not use RESTORE SCREEN to restore screen regions saved
+with SAVESCREEN() or you will get equally ambiguous results.
+!seealso: clip_036.ngo:"RESTORE SCREEN" clip_040.ngo:"SAVE SCREEN" "SAVESCREEN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RIGHT        Extracts characters from right side of character string.
+'------------------------------------------------------------------------------
+^BRIGHT()^B
+
+    Extracts a specified number of characters from the right of a
+character string.
+
+^USyntax^U
+
+    RIGHT<expC>,<expN>)
+
+^UArgument^U
+
+    <expC> is a character string from which to extract characters.
+
+    <expN> is the number of characters to extract.
+
+^UReturns^U
+
+    A character string.
+
+    RIGHT() returns the rightmost <expN> characters of <expC>.  If <expN>
+is negative or zero, LEFT() returns a null string ("").  If <expN> is
+larger than the length of the character string, LEFT() returns the
+entire string.  The maximum size of <expC> is 65,535 (64K) bytes.
+!seealso: "AT" "LTRIM" clip_126.ngo:"RAT" "LEFT" "RTRIM" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RLOCK/LOCK   Attempts to lock the current record.
+!file: clip_130.ngo
+!short: ROUND        Returns rounded numbers to specified number of decimals.
+!file: clip_131.ngo
+!short: ROW          Returns current screen row location of the cursor.
+!file: clip_132.ngo
+!short: RTRIM        Removes trailing blanks from a character expression.
+'------------------------------------------------------------------------------
+^BRTRIM()^B
+
+    RTRIM() removes trailing blanks from a character expression.
+
+^USyntax^U
+
+    RTRIM(<exp C>)
+
+^UUsage^U
+
+    Use this function to remove trailing blanks from a character string.
+
+    If the argument is a null string (""), RTRIM() returns a null also.
+!seealso: "ALLTRIM" "LTRIM" clip_146.ngo:"TRIM" clip_140.ngo:"STR" clip_143.ngo:"SUBSTR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVESCREEN   Saves specified screen region to be redisplayed.
+'------------------------------------------------------------------------------
+^BSAVESCREEN()^B
+
+    SAVESCREEN() saves a specified screen area to be redisplayed later.
+
+^USyntax^U
+
+    SAVESCREEN(<expn1>,<expN2>,<expN3>,<expN4>)
+
+^UArguments^U
+
+    <expN1..expN4> are the screen coordinates to save.
+
+^UReturns^U
+
+    A character string.
+
+    SAVESCREEN() returns the specified screen region as a string up to
+    4000 bytes in length.
+
+^UUsage^U
+
+    SAVESCREEN() is used to save a screen region to a memory variable.  To
+restore the partial screen, use RESTSCREEN().
+
+Typically, you would save and restore a screen region when using a
+pop-up menu or for dragging a screen object.
+!seealso: "RESTSCREEN" clip_036.ngo:"RESTORE SCREEN" clip_040.ngo:"SAVE SCREEN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCROLL       Uses window coordinates to scroll or blank part of screen.
+!file: clip_133.ngo
+!short: SECONDS      Returns system time in seconds and hundredths.
+!file: clip_134.ngo
+!short: SELECT       Returns the number of the current work area.
+!file: clip_135.ngo
+!short: SETCANCEL    Toggle program termination with Alt-C, on or off.
+!file: clip_136.ngo
+!short: SETCOLOR     Determines current or previous color setting.
+'------------------------------------------------------------------------------
+^BSETCOLOR()^B
+
+    SETCOLOR() determines the current or previous color setting and
+optionally defines colors for the next screen painting
+activity.
+
+^USyntax^U
+
+    SETCOLOR([<expC>])
+
+^UArgument^U
+
+    <expC> is a character string containing the standard, enhanced,
+border, background, and unselected color settings to make the current
+colors.  Unlike SET COLOR TO, SETCOLOR() with no argument does not
+restore colors to their default values.
+
+Note also that SETCOLOR() only supports color lettercombinations and
+not color numbers.
+
+^UReturns^U
+
+A character string.
+
+SETCOLOR() returns a string representing the last color setting if
+<expC> is specified and the current setting if it is not specified.
+
+^UUsage^U
+
+    ^BStandard/Enhanced^B: The "standard" and "enhanced" displays are color
+    pairs with a foreground and an optional background color.  "Standard"
+    is used by all output, such as @...SAY and ?.  "Enhanced" setting
+    affects only the display of GETs.
+
+    ^BBorder^B: Sets the border color.  Border color is not supported on
+    EGA or VGA monitors.
+
+    ^BBackground^B: The "background" is not currently supported by any
+    machines for which Nantucket provides drivers.
+
+    ^BUnselected^B: THe "unselected" setting displays the current GET in
+the "enhanced" color while other GETs are displayed in the
+"unselected" color.
+
+^BAttributes^B: High intensity and blinking are the supported
+attributes of colors.  High intensity is denoted by "+" and blinking
+with "*".  Each attribute specified is applied to the foreground color
+no matter where it occurs in the setting definition.
+
+    The following table lists the colors available:
+
+         ^UColor              Letter^U
+         BLACK              N
+         BLUE               B
+         GREEN              G
+         CYAN               BG
+         RED                R
+         MAGENTA            RB
+         BROWN              GR
+         WHITE              W
+         GREY               N+
+         YELLOW             GR+
+         BLANK              X
+         Underline          U
+         Inverse Video      I
+!seealso: clip_101.ngo:"ISCOLOR()" clip_046.ngo:"SET COLOR" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETPRC       Sets PROW() and PCOL() functions to specified values.
+!file: clip_137.ngo
+!short: SOUNDEX      Converts character string to soundex form for searching.
+'------------------------------------------------------------------------------
+^BSOUNDEX()^B
+
+    SOUNDEX() converts a character string to soundex form (phonetic
+complement) useful for INDEXing and searching.
+
+^USyntax^U
+
+    SOUNDEX(<expC>)
+
+^UArguments^U
+
+    <expC> is the character string to convert to soundex form.
+
+^UReturns^U
+
+    A character string.
+
+    The string returns is a code in the form A9999.
+
+^UUsage^U
+
+    SOUNDEX() is useful for creating indexes and searching for strings
+where the precise spelling is unknown.  SOUNDEX() is based on an
+algorithm by Donald E. Knuth.
+
+Knuth, Donald E. (1973).  Sorting and Searching.  ^UThe Art of
+Computer Programming^U (Vol. 3),(p. 392).  Reading, MA: Addison
+Wesley.
+!seealso: clip_013.ngo:"INDEX" clip_041.ngo:"SEEK" clip_075.ngo:"SET SOFTSEEK" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SPACE        Create character string of specified number of spaces.
+!file: clip_138.ngo
+!short: SQRT         Returns the square root of a given positive number.
+!file: clip_139.ngo
+!short: STR          Converts numeric expression to character string.
+!file: clip_140.ngo
+!short: STRTRAN      Searches and replaces within a character string.
+!file: clip_141.ngo
+!short: STUFF        To manipulate characters within a character string.
+!file: clip_142.ngo
+!short: SUBSTR       Extracts a specified part of a character string.
+!file: clip_143.ngo
+!short: TIME         Returns the system time in the format "hh:mm.ss".
+!file: clip_144.ngo
+!short: TONE         Sounds speaker for specified tone and duration.
+'------------------------------------------------------------------------------
+^BTONE()^B
+
+    TONE() sounds a speaker tone for a specified frequency and duration.
+
+^USyntax^U
+
+    TONE(<expN1>,<expN2>)
+
+^UArguments^U
+
+    <expN1> is the frequency of the tone to sound.
+
+<expN2> is the duration of the tone measured in increments of 1/18 of
+a second.  One second, therefore, is 18.
+
+^UReturns^U
+
+    There is no return value.
+
+^UUsage^U
+
+    TONE() sounds the speaker at the specified frequency for the specified
+duration.  The duration is measured in increments of 1/18 of a second.
+The frequency is measured in hertz (cycles per second).  Frequencies
+less than 20 are inaudible.  The following are the frequencies of
+standard musical notes:
+
+Pitch    Frequency             Pitch    Frequency
+  C       130.80               mid C      261.70
+  C#      138.60                 C#       277.20
+  D       146.80                 D        293.70
+  D#      155.60                 D#       311.10
+  E       164.80                 E        329.60
+  F       174.60                 F        349.20
+  F#      185.00                 F#       370.00
+  G       196.00                 G        392.00
+  G#      207.70                 G#       415.30
+  A       220.00                 A        440.00
+  A#      233.10                 A#       466.20
+  B       246.90                 B        493.90
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: TRANSFORM    Returns character string with specified picture format.
+!file: clip_145.ngo
+!short: TRIM         Removes trailing blanks from a character expression.
+!file: clip_146.ngo
+!short: TYPE         Returns data type of variable, expression or field.
+!file: clip_147.ngo
+!short: UPDATED      Returns true if last READ changed any data in GETS.
+!file: clip_148.ngo
+!short: UPPER        Converts lower case characters to upper case.
+!file: clip_149.ngo
+!short: USED         Determines if a database is in USE in current work area.
+'------------------------------------------------------------------------------
+^BUSED()^B
+
+    USED() determines if a database file is in USE in the current work
+area.
+
+^USyntax^U
+
+    USED()
+
+^UReturns^U
+
+    A logical value.
+
+    USED() returns true (.T.) if there is a database file in USE in the
+current work area, false (.F.) if not.
+!seealso: clip_088.ngo:"USE" clip_042.ngo:"SELECT" clip_118.ngo:"NETERR" clip_135.ngo:"SELECT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VAL          Converts a character string to a number value.
+!file: clip_150.ngo
+!short: WORD         Converts numeric arguments from type DOUBLE to type INT.
+!file: clip_151.ngo
+!short: YEAR         Returns complete numeric value of the year from a date.
+!file: clip_152.ngo

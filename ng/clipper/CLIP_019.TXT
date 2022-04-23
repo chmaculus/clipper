@@ -1,0 +1,47 @@
+'------------------------------------------------------------------------------
+^BLOCATE^B
+
+    LOCATE searches the active database file for a record that satisfies
+    specified criteria.
+
+^USyntax^U
+
+    LOCATE [<scope>] [FOR <condition>] [WHILE <condition>]
+
+^UDefaults^U
+
+    Unless otherwise restricted by the scope or a WHILE clause, LOCATE
+    searches the entire database beginning with the first record.
+
+^UUsage^U
+
+    The NEXT <n> option for the scope limits the search to the specified
+    number of records and begins the search at the current record.
+
+    To find the next occurrences of the specified condition, use the
+    CONTINUE command.
+
+ ^URecord Pointer^U
+
+    If a match is found, the record pointer moves to that record and
+    displays the record number.  FOUND() returns .T.
+
+    If no match is found, the record pointer moves to the end of the file
+    (EOF() is .T.) or the end of the scope if one was specified.  The
+    message ^BEnd of locate scope^B will be displayed.  FOUND() returns .F.
+
+^USpecial Cases^U
+
+    Unless the scope is NEXT <n>, REST, or WHILE, LOCATE starts searching
+    at the beginning of the file.  If there are multiple LOCATEs, the most
+    recent overrides any other.
+
+    LOCATE and CONTINUE are specific to the work area in which they are
+    issued.  You can have a different LOCATE/CONTINUE for each work area.
+    If you leave the work area, they will still be in effect when you
+    return.
+!seealso: ???.ngo:"CONTINUE" clip_008.ngo:"FIND" clip_041.ngo:"SEEK" clip_141.ngo:"STRTRAN()" 
+'------------------------------------------------------------------------------
+
+
+

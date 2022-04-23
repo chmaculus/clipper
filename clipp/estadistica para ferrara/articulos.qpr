@@ -1,0 +1,5 @@
+SELECT Detven.fecha, Detven.codart, Detven.canart, Detven.totite,;
+  Artic.codnew, Artic.codigo, Artic.detalle, Artic.univen, Detven.codven;
+ FROM  detven INNER JOIN artic ;
+   ON  Detven.codart = Artic.codnew;
+ ORDER BY Detven.fecha

@@ -1,0 +1,208 @@
+!short:Internal Datafile Structures
+!short:SCROLLER.DBF
+'------------------------------------------------------------------------------
+
+  ^bSCROLLER.DBF
+
+  SMODULE        C       8    Calling Proc
+  SFIELD         C       10   Calling variable
+  SDESCR         C       25   Description/box title
+  SSTRING        C       160  Display expression
+  SRETURN        C       75   Return expression
+  SDBFILE        C       8    DBF file
+  SIND           C       8    Index file
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:HELP.DBF
+'------------------------------------------------------------------------------
+
+  ^bHELP.DBF
+
+  H_MOD          C       10   Calling Proc
+  H_VAR          C       10   Calling variable
+  H_MEMO         M       10   Help text
+  HW_T           N       2    Window top
+  HW_L           N       2    Window Left
+  HW_B           N       2    Window Bottom
+  HW_R           N       2    Window right
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:PLIST.DBF
+'------------------------------------------------------------------------------
+
+  ^bPLIST.DBF
+
+  DESC           C      45    Description of list
+  LIST           C      200   Delimited string of list
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:FORM.DBF
+'------------------------------------------------------------------------------
+
+  ^bFORM.DBF
+
+  DESCRIPT       C       50   Description of the form
+  MEMO_ORIG      M       10   Form letter
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:TODO.DBF
+'------------------------------------------------------------------------------
+
+  ^bTODO.DBF
+
+  CATEGORY       C       10   Category of item
+  ITEM           C       60   Item description
+  PRIORITY       C       2    Priority of item
+  DOBY           D       8    Do by date
+  DONE           L       1    Done marker
+  LONG_DESC      C       231  Long description
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:QUERIES.DBF
+'------------------------------------------------------------------------------
+
+  ^bQUERIES.DBF
+
+  DBF            C      12    DBF query built for
+  DES            C      30    Description of query
+  FQUERY         C      220   Query expression
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SFREPORT.DBF
+'------------------------------------------------------------------------------
+
+  ^bSFREPORT.DBF
+
+  SF_DBF         C   8    Dbf name
+  SF_NDXKEY      C   60   Sort key(index)
+  SF_MAJKEY      C   60   Major sort key
+  SF_MINKEY      C   60   Minor sort key
+  SF_TITLE       C   35   Report name
+  SF_MAJTEXT     C   25   Major key text
+  SF_MINTEXT     C   25   Minor key text
+  SF_WIDTH       N   3    Pg width chrs
+  SF_LENGTH      N   3    Pg length lines
+  SF_LEFTM       N   2    Left margin
+  SF_TOPM        N   2    Top margin
+  SF_SPACE       N   1    Line spacing
+  SF_PAUSE       L   1    Pause between
+  SF_NPLINES     N   1    Lines left
+  SF_EJB4        L   1    Eject b4 report
+  SF_EJAFT       L   1    Eject aftreport
+  SF_EJMAJOR     L   1    Eject on Major
+  SF_EJMINOR     L   1    Eject on Minor
+  SF_EJGRAND     L   1    Eject b4 Grand
+  SF_UNTOTAL     L   1    Underline ttals
+  SF_MAJCHR      C   1    Major underline char
+  SF_MINCHR      C   1    Minor underline char
+  SF_NHEAD       N   1    # header lines
+  SF_NFOOT       N   1    # footer lines
+  SF_NTITL       N   1    # title lines
+  SF_TSEP        C   1    Title separation char
+  SF_COLSEP      C   1    Col sep char
+  SF_CSEPWID     N   1    Col sep width
+  SF_LINESEP     C   1    Line sep char
+  SF_NCOLS       N   2    # columns
+  SF_FEET        M   10   Footer contents
+  SF_HEADS       M   10   Header contents
+  SF_STDHEAD     L   1    Use standard header
+  SF_DETAILS     M   10   Detail contents
+  SF_QUERY       C   100  Last used query
+  SF_FULLSUM     C   1    Full / summary
+  SF_PRNCODE     C   50   Printer code pre-report
+  SF_AFTCODE     C   50   Printer code post-report
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:CLABEL.DBF
+'------------------------------------------------------------------------------
+
+  ^bCLABEL.DBF
+
+  DESCRIPT       C   60      Description
+  WIDTH          N   2       Label width
+  SPACESBETW     N   2       Spaces between labels
+  LINESBETW      N   2       Lines between labels
+  ACROSS         N   2       Labels across
+  LMARGIN        N   2       Left margin
+  HEIGHT         N   2       Label height (lines)
+  SETUPCODE      C   60      Pre print setup code
+  EXITCODE       C   60      Post print code
+  CONTENTS       M   10      Label contents
+  PRNPORT        C   10      Printer port
+  SHEETS         L   1       Using hand-fed sheets?
+  LBLSPAGE       N   3       Labels per page
+  TOPMARG        N   2       Top margin (lines)
+  PAUSE          L   1       Pause between pages
+  EJECT          L   1       Eject each page
+  DBFNAME        C   8       DBF name
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:COLORS.DBF
+'------------------------------------------------------------------------------
+
+  ^bCOLORS.DBF
+
+  SETNAME        C  40    Set name
+  DMAINCOL       C  40    SLS_NORMCOL() setting
+  DMAINMENU      C  40    SLS_NORMMENU() setting
+  DPOPCOL        C  40    SLS_POPCOL() setting
+  DPOPMENU       C  40    SLS_POPMENU() setting
+  DFRAME         C  40    SLS_FRAME() setting
+  DSHADATT       N   3    SLS_SHADATT() setting
+  DSHADPOS       N   1    SLS_SHADPOS() setting
+  DEXPLODE       L   1    SLS_XPLODE()  setting
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:APPOINT.DBF
+'------------------------------------------------------------------------------
+
+  ^bAPPOINT.DBF
+
+  DATE           C   8   Appointment date
+  TIME           C   5   Appointment time
+  DESC           C  65   Description
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:SLOLDS.DBF
+'------------------------------------------------------------------------------
+
+ ^bSLOLDS.DBF
+
+  TOPIC C 35
+  KEYS  M
+  TEXT  M
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

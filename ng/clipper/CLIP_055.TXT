@@ -1,0 +1,31 @@
+'------------------------------------------------------------------------------
+^BSET DEVICE^B
+
+    SET DEVICE determines whether @...SAY commands are routed to the screen
+    or the printer.
+
+^USyntax^U
+
+    SET DEVICE TO PRINT/SCREEN
+
+^UDefaults^U
+
+    SET DEVICE is normally set TO SCREEN.
+
+^UUsage^U
+
+    With SET DEVICE TO PRINT, the output from @...SAY commands is sent to
+    the printer.  @...GET commands are ignored.  An @ command that
+    specifies coordinates of lower values than previous @ commands results
+    in a page eject.
+
+    On some printers, @...SAYs may not appear until the print buffer is
+    emptied.  To empty the buffer, issue an EJECT command or print a blank
+    line.  EJECT resets the internal printer row and column values to zero.
+    Additionally, you can specify new internal printer row and column
+    values with SETPRC().
+!seealso: ???.ngo:"@...SAY...GET" ???.ngo:"EJECT" clip_071.ngo:"SET PRINTER" clip_125.ngo:"PROW()" clip_121.ngo:"PCOL()" clip_137.ngo:"SETPRC()" 
+'------------------------------------------------------------------------------
+
+
+

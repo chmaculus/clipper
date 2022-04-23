@@ -1,0 +1,443 @@
+!short: SET CLIPPER     Runtime configuration                     (runtime)         ^r^CE4^R
+'------------------------------------------------------------------------------
+ ^BSET CLIPPER^B
+ Runtime configuration of Clipper-compiled programs
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Environment Variable:
+
+     ^bSET CLIPPER=[E:<nExpandedKbytes>]^b
+        ^b[;F:<nHandles>]^b
+        ^b[;X:<nKbytes>]^b
+        ^b[;BADCACHE]^B
+        ^b[;CGACURS]^b
+        ^b[;DYNF:<nHandles>]^b
+        ^b[;NOIDLE]^b
+        ^b[;SWAPK:<nBytes>]^b
+        ^b[;SWAPPATH:'<path>']^b
+        ^b[;TEMPPATH:'<path>']^b
+
+     Application Command-line:
+
+     ^bC><app> [//<setting> ... ] [<app arguments>]
+
+ ^bDescription^b
+
+     Clipper provides runtime configuration control of a Clipper-compiled
+     programs with a number of settings.  Settings can be specified in the
+     DOS environment variable CLIPPER or on the application program's
+     command-line when it is invoked.  The CLIPPER variable can be entered
+     at the DOS prompt or included in the user's AUTOEXEC.BAT.  If the user
+     will be accessing the application from a network, you can also add the
+     SET CLIPPER command to the user's login script.
+
+     If setting are specified on the application program command-line, it
+     must be prefaced with double (//) slashes and specified before the
+     application arguments.  If you wish to use the command-line method in
+     place of the CLIPPER environment variable, but hide the command-line
+     complexity from your end-user, use an application batch file to invoke
+     the application with the configuration settings.
+
+ ^bSettings^b
+
+     ^bE:<nExpandedKbytes>^b restricts the amount of expanded memory
+     automatically allocated to <nExpandedKbytes>.  Clipper-compiled and
+     linked programs can use expanded memory to speed up processing as well
+     as some disk-based operations.  Clipper 5.0 can use memory configured
+     as expanded memory according to the Lotus-Intel-Microsoft (LIM)
+     Expanded Memory Specification (EMS) version 3.2 or higher.
+
+     Expanded memory is automatically allocated in its entirety at start-up;
+     there is no dynamic allocation as execution proceeds.  The maximum
+     amount allocated is limited by four factors:
+
+     ^B^CFE^B  The amount available
+     ^B^CFE^B  The SET CLIPPER=Ennn environment setting
+     ^B^CFE^B  A theoretical maximum of 8MB
+     ^B^CFE^B  The amount of conventional memory available
+
+     Note that a certain amount of conventional memory must be used to
+     contain management tables for the virtual memory system--the more total
+     memory (both conventional and expanded), the more space taken up by
+     this control information.  The amount of expanded memory used may be
+     less than the amount available if there is insufficient conventional
+     memory to hold the tables.
+
+     ^bF:<nHandles>^b is used in combination with the value specified with
+     the FILES command in CONFIG.SYS to inform Clipper of the maximum number
+     of file handles to use.  This setting is only valid for application
+     programs using more than 20 files and running under DOS 3.3 or
+     greater.  When specified, Clipper determines the number of files that
+     can be opened using the smaller of the F setting and the CONFIG.SYS
+     FILE value.  For example, if the FILES command is set to 120 and the F
+     parameter is set to 50, the maximum number of files that can be opened
+     is 50.  The ideal <nHandles> is an odd number and 5 less than specified
+     with the FILES command.
+
+     ^bX:<nKbytes>^b specifies the amount of memory to exclude from being
+     allocated, except for the RUN command.  Specified in kilobytes, valid
+     values range from zero to 64 inclusive.  If not specified, the default
+     value is zero.
+
+     ^bBADCACHE^b causes the VMM to preserve and restore the state of the
+     EMM page frame before and after every EMM access (the EMM page
+     frame is an area in real address space through which EMM data is
+     accessed).  This setting can be used to correct problems when there are
+     conflicts with other programs that use EMM.
+
+     Note that on some EMM systems, the BADCACHE setting may adversely
+     affect VMM performance.  It should only be used if you experience disk
+     or file corruption because of a conflict with a disk cache or other
+     resident software.
+
+     ^bCGACURS^b prevents the use of the extended cursor capability of the
+     EGA/VGA.  Specifying this setting may preclude some cursor modes by
+     some display adaptors.  The CGACURS prevents the cursor weirdness when
+     a Clipper program is executed in some multi-tasking and TSR
+     environments.
+
+     ^bDYNF:<nHandles>^b specifies the number of file handles the dynamic
+     overlay system is allowed to use.  Valid settings range from 1 to 8
+     inclusive.  If not specified, the default is 2.
+
+     ^bNOIDLE^b prevents Clipper from detecting and taking advantage of idle
+     time during execution of compiled applications.  Clipper detects idle
+     states (e.g. keyboard wait states) during execution of compiled
+     applications.  When an idle condition is detected, the system uses the
+     slack time to perform garbage collection, file updates, and other
+     routine housekeeping duties.  This increases system performance by
+     performing this work while the application is waiting for user input.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     NOIDLE is provided for applications in which idle time processing is
+     unacceptable.  Since it reduces overall system performance, its use is
+     generally not recommended.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^bSWAPK:<nBytes>^b specifies the maximum allowable size of the disk
+     swap file used for the virtual memory (VM) system.  Settings are
+     specified in kilobyte increments.  Valid settings range from 256 to
+     65,535 inclusive.  If this setting is not specified, the default is
+     16,384 (16 MB).
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     Swap space is only allocated as needed--a particular setting does not
+     guarantee that the swap file will get that big.  Suppressing or
+     restricting disk swapping may cause an application to fail.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     ^bSWAPPATH:'<path>'^b specifies the location of the virtual memory swap
+     file.  If not specified, the swap file is created in the current DOS
+     drive and directory.
+
+     ^bTEMPPATH:'<path>'^b controls the placement of temporary files created
+     during sorting and indexing.  By default these files are placed in the
+     current DOS directory.
+
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ^b Note^b
+
+     Temporary files created during sorting and indexing can be quite large.
+     Setting TEMPPATH to a small volume (e.g. a ram disk) may cause these
+     operations to fail.  In general, the volume where these temporary files
+     will be written should have an available capacity at least twice the
+     size of the largest index to be created or database file to be sorted.
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+     This example shows a series of settings using the CLIPPER environment
+     variable:
+
+     SET CLIPPER=F:50;DYNF:4;SWAPK:4096;NOIDLE
+
+     This example shows how the same settings can be used on the
+     application's command-line:
+
+     C>ACCOUNTS //F:50 //DYNF:4 //SWAPK:4096 //NOIDLE
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET CLIPPERCMD  Set default compiler options              (compiler)
+'------------------------------------------------------------------------------
+ ^BSET CLIPPERCMD^B
+ Set default compiler options
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET CLIPPERCMD=<compilerOption list>^b
+
+ ^bArguments^b
+
+    ^b<compilerOption list>^b is a list of compiler options used each time
+    the compiler is executed.
+
+ ^bDescription^b
+
+    The CLIPPERCMD environment variable defines the default options the
+    compiler will use each time the compiler is invoked.  Options defined
+    in CLIPPERCMD are overridden by the same options specified on the
+    compiler command-line.
+
+ ^bExamples^b
+
+    The following example sets up a default compiler configuration for
+    development.  This includes options for embedding debug information,
+    the automatic generation of a pre-processor output file, and automatic
+    generation of warnings for ambiguously referenced variables:
+
+    SET CLIPPERCMD=/B/P/W
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET INCLUDE     Paths to search for header files          (compiler)
+'------------------------------------------------------------------------------
+ ^BSET INCLUDE^B
+ Define a list of paths to search for header files
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET INCLUDE=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b is a list of one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The INCLUDE environment variable is used by the Clipper compiler to
+    search for header (#include) files if the files cannot be found in the
+    current directory.  If the /I compiler option is used to specify an
+    additional search directory, the indicated directory is searched after
+    the current directory and before the path specified in the INCLUDE
+    variable.
+
+    The default location for Clipper 5.0 header files is the
+    \CLIPPER5\INCLUDE directory.
+
+ ^bExamples^b
+
+    SET INCLUDE=C:\CLIPPER5\INCLUDE
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET LIB         Paths to search for (.LIB, .PLT, .PLL)    (linker, runtime)
+'------------------------------------------------------------------------------
+ ^BSET LIB^B
+ Define a list of paths to search for .LIB, .PLT, and .PLL files
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET LIB=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b specifies one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The LIB environment variable specifies the paths that .RTLink uses to
+    search for library (.LIB), pre-linked transfer (.PLT) files, and
+    pre-link (.PLL) libraries not found in the current directory at link
+    time.  For .PLT and .PLL files, .RTLink searches the PLL path before
+    the LIB path.  At runtime, the LIB environment variable is used to
+    search for .PLL files not in the directory where the executable (.EXE)
+    file is located or the path specified by the PLL environment variable.
+
+    The default location of the Clipper 5.0 libraries is the \CLIPPER5\LIB
+    directory.
+
+ ^bExamples^b
+
+    SET LIB=C:\CLIPPER5\LIB
+!seealso: "SET PLL" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET OBJ         Paths to search for object (.OBJ) files   (linker)
+'------------------------------------------------------------------------------
+ ^bSET OBJ^B
+ Define a list of paths to search for object (.OBJ) files
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET OBJ=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b specifies one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The OBJ environment variable defines the paths .RTLink uses to search
+    for object (.OBJ) files if a specified object file cannot be found in
+    the current directory.
+
+    Object (.OBJ) files are created by the Clipper compiler which outputs
+    them either into the current directory of the location specified with
+    the /O command-line option.
+
+ ^bExamples^b
+
+    SET OBJ=C:\APPS\UI;C:\APPS\UTIL;C:\CLIPPER5\LIB
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET PLL         Paths to search for .PLT and .PLL files   (linker, runtime)
+'------------------------------------------------------------------------------
+ ^bSET PLL^B
+ Define a list of paths to search for .PLT and .PLL files
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET PLL=<pathSpec list>^b
+
+ ^bArguments^b
+
+    ^b<pathSpec list>^b specifies one or more paths, separated by
+    semicolons (;).
+
+ ^bDescription^b
+
+    The PLL environment variable specifies one or more paths .RTLink uses
+    to search for pre-link transfer (.PLT) and pre-linked library (.PLL)
+    files if the files cannot be found in the current directory.
+
+    Additionally, the PLL environment variable is used at runtime to search
+    for pre-link library (.PLL) files not in the directory where the
+    executable (.EXE) file is located.
+
+    The default location for .PLL files in the Clipper 5.0 development
+    system is \CLIPPER5\PLL.
+
+ ^bExamples^b
+
+    SET PLL=C:\CLIPPER5\PLL
+!seealso: "SET LIB" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET RMAKE       Set default RMAKE command-line options    (make)
+'------------------------------------------------------------------------------
+ ^bSET RMAKE^B
+ Set default RMAKE command-line options
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET RMAKE=<rmakeOption list>^b
+
+ ^bArguments^b
+
+    ^b<rmakeOption list>^b is a list of command-line options to use each
+    time RMAKE is executed.
+
+ ^bDescription^b
+
+    The RMAKE environment variable specifies a list of command-line options
+    processed each time RMAKE.EXE is executed.  Options defined in the
+    environment variable are overridden by the same options specified on
+    the RMAKE command-line.
+
+ ^bExamples^b
+
+    SET RMAKE=/B/W
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET RTLINKCMD   Set default .RTLink command-line options  (linker)
+'------------------------------------------------------------------------------
+ ^BSET RTLINKCMD^B
+ Set default .RTLink command-line options
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET RTLINKCMD=<linkOption list>^b
+
+ ^bArguments^b
+
+    ^b<linkOption list>^b specifies a list of linker options used each time
+    the linker is executed.  In FREEFORMAT mode, the list may also include
+    command-line arguments such as FILE and LIBRARY.
+
+ ^bDescription^b
+
+    The RTLINKCMD environment variable specifies a list of default linker
+    options to process.  Each time .RTLink is invoked, it reads the options
+    specified in RTLINKCMD before processing options specified on the
+    command-line and in the script file.  This behavior allows defaults to
+    be overridden by options specified on the compiler command-line or in
+    the script (.LNK) file.
+
+    In addition to RTLINKCMD environment variable, .RTLink configuration
+    options can be defined in RTLINK.CFG.  If this file exists, the options
+    defined are overidden by those specified in RTLINKCMD as well as the
+    command-line and script (.LNK) file.
+
+ ^BExamples^b
+
+    The following example makes the default input mode POSITIONAL and sets
+    incremental linking on:
+
+    SET RTLINKCMD=/POSITIONAL /INCR:50
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SET TMP         Location for creating temporary files     (compiler, linker)
+'------------------------------------------------------------------------------
+ ^BSET TMP^B
+ Specifies the location for creating temporary files
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    ^bSET TMP=<pathName>^b
+
+ ^bArguments^b
+
+    ^b<pathName>^b is the name of the directory where temporary files are
+    created.
+
+ ^bDescription^b
+
+    The TMP environment variable specifies a single directory where both
+    CLIPPER.EXE and RTLINK.EXE write temporary work files.  If this
+    variable is not specified, temporary files are created in the current
+    directory.  The /T compiler option can be used to override the TMP
+    setting for the current compiler session.
+
+    In the process of some operations such as sorting and indexing, Clipper
+    creates temporary files.  These files are created either in the current
+    directory or in the directory specified by the environment variable
+    TMP.
+
+    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    ^b Note^b
+
+    In contrast to Clipper 5.0, Summer '87 created temporary files in the
+    directory specified by SET DEFAULT or in the DOS current directory, if
+    no SET DEFAULT was issued.
+    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ^bExamples^b
+
+    To assign a TMP variable, place a command-line like the following in
+    the user's AUTOEXEC.BAT file:
+
+    SET TMP=C:\TEMP
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

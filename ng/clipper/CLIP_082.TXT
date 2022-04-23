@@ -1,0 +1,35 @@
+'------------------------------------------------------------------------------
+^BSUM^B
+
+    SUM totals expressions involving numeric fields in the active database
+    file.
+
+^USyntax^U
+
+    SUM [<scope>] <expN list> TO <memvar list> [FOR <condition>]
+    [WHILE <condition>]
+
+^UArgument^U
+
+    <expN list> is the list of numeric values to SUM for each record
+    processed.
+
+    <memvar list> identifies the receiving memory variables for the SUM and
+    are created at the time of execution of the command.  Existing memory
+    variables with the same names are overwritten.  This list must contain
+    the same number of elements as the list of expressions to SUM.
+
+^UOption^U
+
+    ^BScope:^B The <scope> is the portion of the current database file to
+    SUM.  The default scope is ALL.
+
+    ^BCondition:^B The FOR clause specifies the conditional set of records
+    to SUM within the given scope.  The WHILE clause specifies the set of
+    records meeting the condition from the current record until the
+    condition fails.
+!seealso: ???.ngo:"AVERAGE" clip_084.ngo:"TOTAL" 
+'------------------------------------------------------------------------------
+
+
+

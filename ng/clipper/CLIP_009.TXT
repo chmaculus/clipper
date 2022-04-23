@@ -1,0 +1,56 @@
+'------------------------------------------------------------------------------
+^BFOR...NEXT^B
+
+    FOR...NEXT permits you to accomplish a looping operation for a range of
+    expressions, where you may optionally increment or decrement the range
+    expression.
+
+^USyntax^U
+
+    FOR <memvar> = <exp N1> to <exp N2> [STEP <exp N3>]
+        <commands>...
+        [EXIT]
+        <commands>...
+    NEXT
+
+^UArguments^U
+
+    <memvar> is the loop control variable.
+
+    <expN1> is the initial value assigned to the control variable and the
+    lower boundary of the looping range.
+
+    <expN2> is the upper boundary of the looping range.
+
+^UOptions^U
+
+    ^BStep^B: The STEP clause sets the increment of the control variable to
+    <expN3>.  If no STEP clause is specified, the default increment is one.
+
+    ^BExit^B: The EXIT clause unconditionally branches control from within
+    the FOR..NEXT control structure to the statement immediately following
+    the NEXT statement.
+
+^UUsage^U
+
+    FOR...NEXT allows you to loop from an initial value of a control
+    variable to some upper boundary moving through the range of values of
+    the control variable for a specified increment (or decrement).  Each
+    time the FOR statement executes, Clipper evaluates all command line
+    expressions.  This means that the upper boundary and increment are
+    dynamic and can change as the construct operates.
+
+^UExample^U
+
+    The FOR...NEXT construct is particularly useful for traversing arrays.
+
+    ^R* to walk forward through an entire array^R
+    ^Rlen_array = LEN(array)                   ^R
+    ^RFOR i = 1 TO len_array                   ^R
+    ^R   <commands>...                         ^R
+    ^RNEXT                                     ^R
+!seealso: ???.ngo:"DO CASE" ???.ngo:"DO WHILE" clip_012.ngo:"IF" 
+'------------------------------------------------------------------------------
+
+
+

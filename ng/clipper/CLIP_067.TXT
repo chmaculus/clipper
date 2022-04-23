@@ -1,0 +1,25 @@
+'------------------------------------------------------------------------------
+^BSET MESSAGE^B
+
+    SET MESSAGE TO sets the screen row where @...PROMPT...MESSAGEs display.
+
+^USyntax^U
+
+    SET MESSAGE TO [<exp N> [CENTER]]
+
+^UArgument^U
+
+    <expN> specifies the row position where the messages display.
+
+    Messages appear on row <expN>, column 0 unless the CENTER option is
+    used.  The display of messages is suppressed by SET MESSAGE TO 0 or SET
+    MESSAGE TO without an argument.
+
+^UOption^U
+
+    ^BCenter^B: The CENTER option centers the message on the specified row.
+!seealso: ???.ngo:"@..PROMPT" clip_020.ngo:"MENU" clip_078.ngo:"SET WRAP" 
+'------------------------------------------------------------------------------
+
+
+

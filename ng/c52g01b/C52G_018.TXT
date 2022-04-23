@@ -1,0 +1,844 @@
+!short: ^bObsolete Language Items^b
+'------------------------------------------------------------------------------
+ ^bObsolete Language Items^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ In the Reference guide, the asterisk symbol is used to indicate
+ items in the language that are obsolete or that exist for compatibility
+ with previous releases of CA-Clipper.  As you begin to incorporate
+ new product features into your existing applications, it would be
+ advisable to review your code to determine any obsolete items that you
+ might be using.  This table lists each obsolete language item with its
+ recommended replacement and should be helpful to you in updating your
+ programs.
+
+ ^bWarning:^b  In the future, this table will be the only documentation
+ for obsolete items because they will be removed from the Reference guide.
+ Furthermore, obsolete items are not in keeping with the current
+ CA-Clipper programming philosophy, and we strongly discourage their use
+ as they may not be supported in future releases of CA-Clipper.
+
+ ^bObsolete Language Items^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bObsolete^b              ³ ^bRecommended^b
+                       ³
+ ADIR() function       ³ DIRECTORY() function
+ AFIELDS() function    ³ DBSTRUCT() function
+ CALL command          ³ Extend API
+ CANCEL command        ³ QUIT command
+ CLEAR ALL command     ³ CLOSE or RELEASE command
+ DBEDIT() function     ³ TBrowse class
+ DBF() function        ³ ALIAS() function
+ DECLARE statement     ³ PRIVATE statement
+ DIR command           ³ DIRECTORY() function
+ DO statement          ³ Use function-calling syntax
+ EXTERNAL statement    ³ REQUEST statement
+ FIND command          ³ SEEK command
+ FKLABEL() function    ³ Use constant value Fn where n ranges from one to 40
+ FKMAX() function      ³ Use constant value of 40
+ MOD() function        ³ Modulus operator (%)
+ NOTE command          ³ C-style comment indicators, /*...*/ and //
+ READKEY() function    ³ LASTKEY() function
+ RECCOUNT() function   ³ LASTREC() function
+ RESTORE SCREEN command³ RESTSCREEN() function
+ SAVE SCREEN command   ³ SAVESCREEN() function
+ SET COLOR command     ³ SETCOLOR() function
+ SET EXACT command     ³ Not recommended
+ SET EXCLUSIVE command ³ USE command with EXCLUSIVE and SHARED clauses
+ SET FORMAT command    ³ Not recommended
+ SET PROCEDURE command ³ Compiler script files (.clp)
+ SET UNIQUE command    ³ INDEX command with UNIQUE clause
+ STORE command         ³ Inline assignment operator (:=)
+ TEXT command          ³ ? or @...SAY command
+ WAIT command          ³ @...GET...READ command or INKEY() function
+ WORD() function       ³ Extend API
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: Character Data Manipulations
+'------------------------------------------------------------------------------
+^b Character Data Manipulations^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ALLTRIM()     ³ Remove leading and trailing spaces from character string
+ ASC()         ³ Convert a character to its ASCII value
+ AT()          ³ Return the position of a substring within a string
+ CHR()         ³ Convert an ASCII code to a character value
+ CTOD()        ³ Convert a date string to a date value
+ DTOC()        ³ Convert a date value to a character string
+ EMPTY()       ³ Determine if the result of an expression is empty
+ HARDCR()      ³ Replace all soft CRs with hard CRs
+ ISALPHA()     ³ Determine if the leftmost character is alphabetic
+ ISDIGIT()     ³ Determine if the leftmost character is a digit
+ ISLOWER()     ³ Determine if the leftmost character is a lower case letter
+ ISUPPER()     ³ Determine if the leftmost character is upper case
+ LEFT()        ³ Extract a substring beginning with the first character
+ LEN()         ³ Return the length of a character string or array size
+ LOWER()       ³ Convert uppercase characters to lowercase
+ LTRIM()       ³ Remove leading spaces from a character string
+ PAD()         ³ Pad character, date or numeric values with a fill character
+ RAT()         ³ Return the position of the last occurrence of a substring
+ REPLICATE()   ³ Return a string repeated a specified number of times
+ RIGHT()       ³ Return a substring beginning with rightmost character
+ RTRIM()       ³ Remove trailing spaces from a character string
+ SET EXACT     ³ Toggle exact matches for character strings
+ SOUNDEX()     ³ Convert a character string to soundex form
+ SPACE()       ³ Return a string of spaces
+ STR()         ³ Convert a numeric expression to a character string
+ STRTRAN()     ³ Search and replace characters within a character string
+ STUFF()       ³ Delete and insert characters in a string
+ SUBSTR()      ³ Extract a substring from a character string
+ TRANSFORM()   ³ Convert any value into a formatted character string
+ TYPE()        ³ Determine the type of an expression
+ UPPER()       ³ Convert lowercase characters to uppercase
+ VAL()         ³ Convert a character number to numeric type
+ VALTYPE()     ³ Determine the data type returned by an expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Memo Field Manipulation
+'------------------------------------------------------------------------------
+^b Memo Field Manipulation^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ HARDCR()      ³ Replace all soft CRs with hard CRs
+ MEMOEDIT()    ³ Display or edit character strings and memo fields
+ MEMOLINE()    ³ Extract a line of text from character string or memo field
+ MEMOREAD()    ³ Return the contents of a disk file as a character string
+ MEMOTRAN()    ³ Replace carriage return/line feeds in character strings
+ MEMOWRIT()    ³ Write a character string or memo field to a disk file
+ MLCOUNT()     ³ Count the lines in a character string or memo field
+ MLCTOPOS()    ³ Return byte position based on line and column position
+ MLPOS()       ³ Determine the position of a line in a memo field
+ MPOSTOLC()    ³ Return line and column position based on byte position
+ READINSERT()  ³ Toggle the current insert mode for MEMOEDIT()
+ SET SCOREBOARD³ Toggle the message display from MEMOEDIT()
+ STRTRAN()     ³ Search and replace characters within a memo field
+ TYPE()        ³ Determine the type of an expression
+ VALTYPE()     ³ Determine the data type returned by an expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Numeric Data Manipulation
+'------------------------------------------------------------------------------
+^b Numeric Data Manipulation^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ABS()         ³ Return the absolute value of a numeric expression
+ BIN2I()       ³ Convert a 16-bit signed integer to a numeric value
+ BIN2L()       ³ Convert a 32-bit signed integer to a numeric value
+ BIN2W()       ³ Convert a 16-bit unsigned integer to a numeric value
+ CHR()         ³ Convert an ASCII code to a character value
+ EMPTY()       ³ Determine if the result of an expression is empty
+ EXP()         ³ Calculate e**x
+ INT()         ³ Convert a numeric value to an integer
+ I2BIN()       ³ Convert a CA-Clipper numeric to a 16-bit binary integer
+ LOG()         ³ Calculate the natural logarithm of a numeric value
+ L2BIN()       ³ Convert a numeric value to a 32-bit binary integer
+ MAX()         ³ Return the larger of two numeric or date values
+ MIN()         ³ Return the smaller of two numeric or date values
+ MOD()         ³ Return dBASE III PLUS modulus of two numbers
+ ROUND()       ³ Return a value rounded to a specified number of digits
+ SQRT()        ³ Return the square root of a positive number
+ STR()         ³ Convert a numeric expression to a character string
+ TRANSFORM()   ³ Convert any value into a formatted character string
+ TYPE()        ³ Determine the type of an expression
+ VAL()         ³ Convert a character number to a numeric type
+ VALTYPE()     ³ Determine the data type returned by an expression
+ WORD()        ³ Convert CALL command numeric parameters from double to int
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Date and Time Data Manipulation
+'------------------------------------------------------------------------------
+^b Date and Time Data Manipulation^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ CDOW()        ³ Convert a date value to a character day of the week
+ CMONTH()      ³ Convert a date to a character month name
+ CTOD()        ³ Convert a date string to a date value
+ DATE()        ³ Return the system date as a date value
+ DAY()         ³ Return the day of the month as a numeric value
+ DOW()         ³ Convert a date value to a numeric day of the week
+ DTOC()        ³ Convert a date value to a character string
+ DTOS()        ³ Convert a date value to a string formatted as yyyymmdd
+ EMPTY()       ³ Determine if the result of an expression is empty
+ MAX()         ³ Return the larger of two numeric or date values
+ MIN()         ³ Return the smaller of two numeric or date values
+ MONTH()       ³ Convert a date value to the number of the month
+ SECONDS()     ³ Return the number of seconds elapsed since midnight
+ TIME()        ³ Return the system time
+ TYPE()        ³ Determine the type of an expression
+ VALTYPE()     ³ Determine the data type returned by an expression
+ YEAR()        ³ Convert a date value to the year as a numeric value
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Array Manipulation
+'------------------------------------------------------------------------------
+^b Array Manipulation^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ AADD()        ³ Add a new element to the end of an array
+ ACHOICE()     ³ Execute a pop-up menu
+ ACLONE()      ³ Duplicate a nested or multidimensional array
+ ACOPY()       ³ Copy elements from one array to another
+ ADEL()        ³ Delete an array element
+ ADIR()        ³ Fill a series of arrays with directory information
+ AEVAL()       ³ Execute a code block for each element in an array
+ AFIELDS()     ³ Fill arrays with the structure of the current database file
+ AFILL()       ³ Fill an array with a specified value
+ AINS()        ³ Insert a NIL element into an array
+ ARRAY()       ³ Create an uninitialized array of specified length
+ ASCAN()       ³ Scan an array for a value or until a block returns (.T.)
+ ASIZE()       ³ Grow or shrink an array
+ ASORT()       ³ Sort an array
+ ATAIL()       ³ Return the highest numbered element of an array
+ DBSTRUCT()    ³ Create an array containing the structure of a database file
+ DECLARE       ³ Create and initialize private memory variables and arrays
+ DIRECTORY()   ³ Create an array of directory and file information
+ EMPTY()       ³ Determine if the result of an expression is empty
+ LEN()         ³ Return the length of a character string or array size
+ TYPE()        ³ Determine the type of an expression
+ VALTYPE()     ³ Determine the data type returned by an expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Code Block Manipulation
+'------------------------------------------------------------------------------
+^b Code Block Manipulation^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ AEVAL()       ³ Execute a code block for each element in an array
+ ASCAN()       ³ Scan an array for a value or until a block returns true
+ DBEVAL()      ³ Evaluate a code block for each record
+ ERRORBLOCK()  ³ Post a code block to execute when a runtime error occurs
+ EVAL()        ³ Evaluate a code block
+ FIELDBLOCK()  ³ Return a set-get code block for a field variable
+ FIELDWBLOCK() ³ Return a set-get block for a field in a given workarea
+ MEMVARBLOCK() ³ Return a set-get code block for a given memory variable
+ SETKEY()      ³ Assign an action block to a key
+ TYPE()        ³ Determine the type of an expression
+ VALTYPE()     ³ Determine the data type returned by an expression
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Databases
+'------------------------------------------------------------------------------
+^b Databases^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ AFIELDS()     ³ Fill arrays with the structure of the current database file
+ ALIAS()       ³ Return a specified work area alias
+ APPEND BLANK  ³ Add a new record to current database file
+ APPEND FROM   ³ Import records from a (.dbf) or ASCII file
+ AVERAGE       ³ Average numeric expressions in the current work area
+ BOF()         ³ Determine when beginning of file is encountered
+ CLEAR ALL     ³ Close files and release public and private variables
+ CLOSE         ³ Close a specific set of files
+ COMMIT        ³ Perform a solid-disk write for all active work areas
+ CONTINUE      ³ Resume a pending LOCATE
+ COPY STRUCTURE³ Copy the current (.dbf) structure to a new (.dbf) file
+ COPY STRUCTURE³
+    EXTENDED   ³ Copy field definitions to a (.dbf) file
+ COPY TO       ³ Export records to a new (.dbf) or ASCII file
+ COUNT         ³ Tally records to a variable
+ CREATE        ³ Create an empty structure extended (.dbf) file
+ CREATE FROM   ³ Create a new (.dbf) file from a structure extended file
+ DBAPPEND()    ³ Add a new record
+ DBCLEARFIL()  ³ Clear a filter condition
+ DBCLOSEALL()  ³ Close all occupied workareas
+ DBCLOSEAREA() ³ Close a workarea
+ DBCOMMIT()    ³ Flush pending updates
+ DBCOMMITALL() ³ Flush pending updates in all workareas
+ DBCREATE()    ³ Create a database file from a database structure array
+ DBDELETE()    ³ Mark a record for deletion
+ DBEVAL()      ³ Evaluate a code block for each record
+ DBF()         ³ Return current alias name
+ DBFILTER()    ³ Return the current filter expression as a character string
+ DBGOBOTTOM()  ³ Move to the last logical record
+ DBGOTO()      ³ Move to a particular record
+ DBGOTOP()     ³ Move to the first logical record
+ DBRECALL()    ³ Reinstate a record marked for deletion
+ DBSEEK()      ³ Search for a key value
+ DBSELECTAR()  ³ Change the current workarea
+ DBSETDRIVER() ³ Set the default database driver
+ DBSETFILTER() ³ Set a filter condition
+ DBSKIP()      ³ Move relative to the current record
+ DBSTRUCT()    ³ Create an array containing the structure of a database file
+ DBUSEAREA()   ³ Use a database file in a workarea
+ DELETE        ³ Mark records for deletion
+ DELETED()     ³ Return the deleted status of the current record
+ EOF()         ³ Determine when end of file is encountered
+ FCOUNT()      ³ Return the number of fields in the current (.dbf) file
+ FIELD         ³ Declare database field names
+ FIELDBLOCK()  ³ Return a set-get code block for a field variable
+ FIELDGET()    ³ Retrieve the value for a field variable
+ FIELDNAME()   ³ Return a field name from the current (.dbf) file
+ FIELDPOS()    ³ Return the position of a field in a workarea
+ FIELDPUT()    ³ Set the value of a field variable
+ FIELDWBLOCK() ³ Return a set-get block for a field in a given workarea
+ FIND          ³ Search an index for a specified key value
+ FOUND()       ³ Determine if the previous search operation succeeded
+ GO            ³ Move the record pointer to a specific record
+ HEADER()      ³ Return the current database file header length
+ JOIN          ³ Create a new database file by merging record/fields
+ LASTREC()     ³ Determine the number of records in the current (.dbf) file
+ LOCATE        ³ Search sequentially for a record matching a condition
+ LUPDATE()     ³ Return the last modification date of a (.dbf) file
+ PACK          ³ Remove deleted records from a database file
+ RECALL        ³ Restore records marked for deletion
+ RECCOUNT()    ³ Determine the number of records in the current (.dbf) file
+ RECNO()       ³ Return the current record number of a work area
+ RECSIZE()     ³ Determine the record length of a database (.dbf) file
+ REPLACE       ³ Assign new values to field variables
+ SEEK          ³ Search an index for a specified key value
+ SELECT        ³ Change the current work area
+ SELECT()      ³ Determine the work area number of a specified alias
+ SET DELETED   ³ Toggle filtering of deleted records
+ SET EXCLUSIVE ³ Establish shared or exclusive USE of database files
+ SET FILTER    ³ Hide records not meeting a condition
+ SET PATH      ³ Specify the CA-Clipper search path for opening files
+ SET SOFTSEEK  ³ Toggle relative SEEKing
+ SET UNIQUE    ³ Toggle the inclusion of nonunique keys into an index
+ SKIP          ³ Move the record pointer to a new position
+ SORT          ³ Copy to a (.dbf) file in sorted order
+ SUM           ³ Sum numeric expressions to variables
+ TOTAL         ³ Summarize records by key value to a (.dbf) file
+ UPDATE        ³ Update current database file from another database file
+ USE           ³ Open an existing (.dbf) and its associated files
+ USED()        ³ Determine if a database file is in USE
+ ZAP           ³ Remove all records from the current database file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Indexes
+'------------------------------------------------------------------------------
+^b Indexes^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ DBCLEARIND()  ³ Close indexes
+ DBCREATEIND() ³ Create an index file
+ DBREINDEX()   ³ Recreate all active indexes
+ DBSEEK()      ³ Search for a key value
+ DBSETINDEX()  ³ Open an index
+ DBSETORDER()  ³ Set the controlling order
+ DESCEND()     ³ Create a descending index key value
+ FOUND()       ³ Determine if the previous search operation succeeded
+ INDEX         ³ Create an index file
+ INDEXEXT()    ³ Return the default index extension
+ INDEXKEY()    ³ Return the key expression of a specified index
+ INDEXORD()    ³ Return the order position of the controlling index
+ REINDEX       ³ Rebuild open indexes in the current workarea
+ SET INDEX     ³ Open index file(s) in the current work area
+ SET ORDER     ³ Set a new controlling index
+ SET UNIQUE    ³ Toggle the inclusion of nonunique keys into an index
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Relations
+'------------------------------------------------------------------------------
+^b Relations^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ DBCLEAREL()   ³ Clear active relations
+ DBRELATION()  ³ Return the linking expression of a specified relation
+ DBRSELECT()   ³ Return the target workarea number of a relation
+ DBSETRELAT()  ³ Relate two workareas
+ SET RELATION  ³ Relate two work areas by a key value or record number
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Program Execution
+'------------------------------------------------------------------------------
+^b Program Execution^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ BEGIN SEQUENCE³ Define a sequence of statements for a BREAK
+ BREAK()       ³ Branch out of a BEGIN SEQUENCE...END construct
+ CALL          ³ Execute a C or Assembler procedure
+ CANCEL        ³ Terminate program processing
+ DO            ³ Call a procedure
+ DO CASE       ³ Execute one of several alternative blocks of statements
+ DO WHILE      ³ Execute a loop while a condition is true (.T.)
+ EXTERNAL      ³ Declare a list of procedure or user-defined function names
+ FOR           ³ Execute a block of statements a specified number of times
+ FUNCTION      ³ Declare a user-defined function name and formal parameters
+ IF            ³ Execute one of several alternative blocks of statements
+ IF()          ³ Return the result of an expression based on a condition
+ NOTE          ³ Place a single-line comment in a program file
+ PARAMETERS    ³ Create private parameter variables
+ PCOUNT()      ³ Determine the position of the last actual parameter passed
+ QUIT          ³ Terminate program processing
+ RETURN        ³ Terminate a procedure, user-defined function or program
+ RUN           ³ Execute a DOS command or program
+ SET KEY       ³ Assign a procedure invocation to a key
+ SET PROCEDURE ³ Compile procedures/functions into the current .OBJ file
+ SETKEY()      ³ Assign an action block to a key
+ SETCANCEL()   ³ Toggle Alt-C as a program termination key
+ WAIT          ³ Suspend program processing until a key is pressed
+ WORD()        ³ Convert CALL command numeric parameters from double to int
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Memory Variable Handling
+'------------------------------------------------------------------------------
+^b Memory Variable Handling^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ACCEPT        ³ Place keyboard input into a memory variable
+ CLEAR ALL     ³ Close files and release public and private variables
+ CLEAR MEMORY  ³ Release all public and private variables
+ DECLARE       ³ Create and initialize private memory variables and arrays
+ INPUT         ³ Enter the result of an expression into a variable
+ LOCAL         ³ Declare and initialize local variables and arrays
+ MEMVAR        ³ Declare private and public variable names
+ MEMVARBLOCK() ³ Return a set-get code block for a given memory variable
+ PARAMETERS    ³ Create private parameter variables
+ PRIVATE       ³ Create and initialize private memory variables and arrays
+ PUBLIC        ³ Create and initialize public memory variables and arrays
+ STATIC        ³ Declare and initialize static variables and arrays
+ RELEASE       ³ Delete public and private memory variables
+ RESTORE       ³ Retrieve memory variables from a memory (.mem) file
+ SAVE          ³ Save variables to a memory (.mem) file
+ STORE         ³ Assign a value to one or more variables
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Debugging and Error Handling
+'------------------------------------------------------------------------------
+^b Debugging and Error Handling^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ALTD()        ³ Invoke the CA-Clipper Debugger
+ BREAK()       ³ Branch out of a BEGIN SEQUENCE...END construct
+ DOSERROR()    ³ Return the DOS error number
+ ERRORBLOCK()  ³ Post a code block to execute when a runtime error occurs
+ ERRORLEVEL()  ³ Set the CA-Clipper return code
+ NETERR()      ³ Determine if a network command has failed
+ OUTERR()      ³ Write a list of values to the standard error device
+ PROCLINE()    ³ Return the source line number of an activation
+ PROCNAME()    ³ Return the name of a procedure or user-defined function
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Low-level File Handling
+'------------------------------------------------------------------------------
+^b Low-level File Handling^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ FCLOSE()      ³ Close an open binary file and write DOS buffers to disk
+ FCREATE()     ³ Create and/or truncate a binary file to zero length
+ FERASE()      ³ Delete a file from disk
+ FERROR()      ³ Test for errors after a binary file operation
+ FOPEN()       ³ Open a binary file
+ FREAD()       ³ Read characters from a binary file into a buffer variable
+ FREADSTR()    ³ Read characters from a binary file
+ FSEEK()       ³ Set a binary file pointer to a new position
+ FWRITE()      ³ Write to an open binary file
+ HEADER()      ³ Return the current database file header length
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Data Input and Output
+'------------------------------------------------------------------------------
+^b Data Input and Output^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ?/??          ³ Display one or more values to the console
+ @...BOX       ³ Draw a box on the screen
+ @...CLEAR     ³ Clear a rectangular region of the screen
+ @...GET       ³ Create a new Get object and display it on the screen
+ @...PROMPT    ³ Paint a menu item and define a message
+ @...SAY       ³ Display data at a specified screen or printer row and column
+ @...TO        ³ Draw a single or double line box
+ ACHOICE()     ³ Execute a pop-up menu
+ ALERT()       ³ Display a simple modal dialog box
+ BROWSE()      ³ Browse records within a window
+ CLEAR GETS    ³ Release Get objects from the current GetList array
+ CLEAR SCREEN  ³ Clear the screen and home the cursor
+ COL()         ³ Return the screen cursor column position
+ DBEDIT()      ³ Browse records in a table format
+ DEVOUT()      ³ Write a value to the current device
+ DISPBEGIN()   ³ Begin buffering screen output
+ DISPBOX()     ³ Display a box on the screen
+ DISPEND()     ³ Display buffered screen updates
+ DISPLAY       ³ Display records to the console
+ DISPOUT()     ³ Write a value to the display
+ GETACTIVE()   ³ Return the currently active Get object
+ LABEL FORM    ³ Display labels to the console
+ LIST          ³ List records to the console
+ MENU TO       ³ Execute a lightbar menu for defined PROMPTs
+ OUTSTD()      ³ Write a list of values to the standard output device
+ QOUT()        ³ Display a list of expressions to the console
+ READ          ³ Activate full-screen editing mode using Get objects
+ READEXIT()    ³ Toggle Uparrow and Downarrow as READ exit keys
+ READINSERT()  ³ Toggle the current insert mode for READ and MEMOEDIT()
+ READKEY()     ³ Determine what key was used to terminate a READ
+ READMODAL()   ³ Activate a full-screen editing mode for a GetList
+ READVAR()     ³ Return the current GET/MENU variable name
+ REPORT FORM   ³ Display a report to the console
+ RESTORE SCREEN³ Display a saved screen
+ RESTSCREEN()  ³ Display a saved screen region to a specified location
+ ROW()         ³ Return the screen row position of the cursor
+ SAVE SCREEN   ³ Save current screen to a buffer or variable
+ SAVESCREEN()  ³ Save a screen region for later display
+ SCROLL()      ³ Scroll a screen region up or down
+ SET CENTURY   ³ Modify the date format to include or omit century digits
+ SET COLOR     ³ Define screen colors
+ SET CONFIRM   ³ Toggle required exit key to terminate GETs
+ SET CONSOLE   ³ Toggle console display to the screen
+ SET CURSOR    ³ Toggle the screen cursor on or off
+ SET DATE      ³ Set the date format for input and display
+ SET DECIMALS  ³ Set the number of decimal places displayed
+ SET DELIMITERS³ Toggle or define GET delimiters
+ SET DEVICE    ³ Direct @...SAYs to the screen or printer
+ SET EPOCH     ³ Control the interpretation of dates with no century digits
+ SET ESCAPE    ³ Toggle Esc as a READ exit key
+ SET FIXED     ³ Toggle fixing of the number of decimal digits displayed
+ SET FORMAT    ³ Activate a format when READ is executed
+ SET INTENSITY ³ Toggle enhanced display of GETs and PROMPTs
+ SET MESSAGE   ³ Set the @...PROMPT message line row
+ SET SCOREBOARD³ Toggle the message display from READ or MEMOEDIT()
+ SET WRAP      ³ Toggle wrapping of the highlights in MENUs
+ SETBLINK()    ³ Toggle asterisk (*) interpretation in SET COLOR
+ SETCOLOR()    ³ Return the current colors and optionally set new colors
+ SETCURSOR()   ³ Set the cursor shape
+ SETMODE()     ³ Change display mode to specified number of rows and columns
+ SETPOS()      ³ Move the cursor to a new position
+ TEXT          ³ Display a literal block of text
+ TRANSFORM()   ³ Convert any value into a formatted character string
+ UPDATED()     ³ Determine if any GET changed during a READ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Printing
+'------------------------------------------------------------------------------
+^b Printing^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ?/??          ³ Display one or more values to the console
+ @...SAY       ³ Display data at a specified screen or printer row and column
+ DEVPOS()      ³ Move the printhead to a new position
+ DISPLAY       ³ Display records to the console
+ EJECT         ³ Advance the print head to top of form
+ ISPRINTER()   ³ Determine whether the LPT1 is ready
+ LABEL FORM    ³ Display labels to the console
+ LIST          ³ List records to the console
+ OUTSTD()      ³ Write a list of values to the standard output device
+ PCOL()        ³ Return the current column position of the printhead
+ PROW()        ³ Return the current row position of the printhead
+ QOUT()        ³ Display a list of expressions to the console
+ REPORT FORM   ³ Display a report to the console
+ SET MARGIN    ³ Set the page offset for all printed pages
+ SET PRINTER   ³ Toggle echo of console output to the printer
+ SETPRC()      ³ Set PROW() and PCOL() values
+ TYPE          ³ Display the contents of a text file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Keyboard Entry
+'------------------------------------------------------------------------------
+^b Keyboard Entry^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b ³ ^bDescription^b
+                ³
+ CLEAR TYPEAHEAD³ Empty the keyboard buffer
+ INKEY()        ³ Extract a character from the keyboard buffer
+ KEYBOARD       ³ Stuff a string into the keyboard buffer
+ LASTKEY()      ³ Return the INKEY() value of the last key in the buffer
+ NEXTKEY()      ³ Read the pending key in the keyboard buffer
+ SET TYPEAHEAD  ³ Set the size of the keyboard buffer
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Environment
+'------------------------------------------------------------------------------
+^b Environment^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ CURDIR()      ³ Return the current DOS directory
+ DISKSPACE()   ³ Return the space available on a specified disk
+ FKLABEL()     ³ Return function key name
+ FKMAX()       ³ Return number of function keys as a constant
+ GETENV()      ³ Retrieve the contents of a DOS environment variable
+ ISCOLOR()     ³ Determine if the current computer has color compatibility
+ MAXCOL()      ³ Determine the maximum visible screen column
+ MAXROW()      ³ Determine the maximum visible screen row
+ MEMORY()      ³ Determine the amount of available free pool memory
+ NOSNOW()      ³ Toggle snow position
+ OS()          ³ Return the operating system name
+ SET()         ³ Inspect or change a global setting
+ SET BELL      ³ Toggle automatic sounding of the bell
+ SET COLOR     ³ Define screen colors
+ SET DEFAULT   ³ Set the CA-Clipper default drive and directory
+ SET FUNCTION  ³ Assign a character string to a function key
+ SET TYPEAHEAD ³ Set the size of the keyboard buffer
+ TONE()        ³ Sound a speaker tone for a specified frequency and duration
+ VERSION()     ³ Returns CA-Clipper version
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: File Management
+'------------------------------------------------------------------------------
+^b File Management^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ ADIR()        ³ Fill a series of arrays with directory information
+ CLOSE         ³ Close a specific set of files
+ COPY FILE     ³ Copy a file to a new file
+ CURDIR()      ³ Return the current DOS directory
+ DELETE FILE   ³ Remove a file from disk
+ DIR           ³ Display a listing of files from a specified path
+ DIRECTORY()   ³ Create an array of directory and file information
+ DISKSPACE()   ³ Return the space available on a specified disk
+ ERASE         ³ Remove a file from disk
+ FILE()        ³ Determine if files exist in the default directory or path
+ FRENAME()     ³ Change the name of a file
+ RENAME        ³ Change the name of a file
+ SET ALTERNATE ³ Echo console output to a text file
+ SET DEFAULT   ³ Set the CA-Clipper default drive and directory
+ SET PATH      ³ Specify the CA-Clipper search path for opening files
+ TYPE          ³ Display the contents of a text file
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Networking
+'------------------------------------------------------------------------------
+^b Networking^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+^b Reference Item^b³ ^bDescription^b
+               ³
+ DBUNLOCK()    ³ Release all locks for the current workarea
+ DBUNLOCKALL() ³ Release all locks for all workareas
+ FLOCK()       ³ Lock an open and shared database file
+ NETERR()      ³ Determine if a network command has failed
+ NETNAME()     ³ Return the current workstation identification
+ RLOCK()       ³ Lock the current record in the active work area
+ SET EXCLUSIVE ³ Establish shared or exclusive USE of database files
+ UNLOCK        ³ Release file record locks set by the current user
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Preprocessor Directives
+'------------------------------------------------------------------------------
+^b Preprocessor Directives^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bDirective^b     ³ ^bDescription^b
+               ³
+ #command/     ³
+   #translate  ³ Specify a user-defined command or translation directive
+ #define       ³ Define a manifest constant or pseudofunction
+ #error        ³ Generate a compiler error and display a message
+ #ifdef        ³ Compile a section of code if an identifier is defined
+ #ifndef       ³ Compile a section of code if an identifier is undefined
+ #include      ³ Include a file into the current source file
+ #stdout       ³ Outputs the literal text to the standard output device
+ #undef        ³ Remove a #define definition
+ #xcommand/    ³
+   #xtranslate ³ Specify a user-defined command or translation directive
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: String Operators
+'------------------------------------------------------------------------------
+^b String Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ +             ³ Concatenate
+ -             ³ Concatenate without intervening spaces
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Mathematical Operators
+'------------------------------------------------------------------------------
+^b Mathematical Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ +             ³ Addition or Unary Positive
+ -             ³ Subtraction or Unary Negative
+ *             ³ Multiplication
+ /             ³ Division
+ %             ³ Modulus
+ ** or ^^       ³ Exponentiation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Relational Operators
+'------------------------------------------------------------------------------
+^b Relational Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ <             ³ Less than
+ >             ³ Greater than
+ =             ³ Equal
+ ==            ³ Exactly equal for character; equal for other data types
+ <>, #, or !=  ³ Not equal
+ <=            ³ Less than or equal
+ >=            ³ Greater than or equal
+ $             ³ Is contained in the set or is a subset of
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Logical Operators
+'------------------------------------------------------------------------------
+^b Logical Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ .AND.         ³ Logical and
+ .OR.          ³ Logical or
+ .NOT. or !    ³ Logical negate
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Assignment Operators
+'------------------------------------------------------------------------------
+^b Assignment Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ =             ³ Assign
+ :=            ³ Inline assign
+ +=            ³ Inline add (or concatenate) and assign
+ -=            ³ Inline subtract (or concatenate) and assign
+ *=            ³ Inline multiply and assign
+ /=            ³ Inline divide and assign
+ ^^=            ³ Inline exponentiate and assign
+ %=            ³ Inline modulus and assign
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Increment and Decrement Operators
+'------------------------------------------------------------------------------
+^b Increment and Decrement Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ ++            ³ Prefix or postfix increment
+ --            ³ Prefix or postfix decrement
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Special Operators
+'------------------------------------------------------------------------------
+^b Special Operators^b
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bOperator^b      ³ ^bDescription^b
+               ³
+ :             ³ Send a message to an object
+ ()            ³ Function or grouping
+ []            ³ Array element
+ {}            ³ Constant array definition
+ ->            ³ Alias identifier
+ &             ³ Compile and execute
+ @             ³ Pass by reference
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

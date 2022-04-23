@@ -1,0 +1,504 @@
+!short: GKI_Arc                    Draw an arc
+'------------------------------------------------------------------------------
+void GKI_Arc(nX0, nY0, nX1, nY1, nStartX, nStartY, nStopX, nStopY)
+
+Draws an arc using the current pen defined by a bounding 
+rectangle and by a start and end point. If the start and end 
+points coincide, no arc is drawn.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the bounding rectangle.
+
+^Uint nY0^U
+Y coordinate for the top of the rectangle.
+
+^Uint nX1^U
+X coordinate for the right edge of the rectangle.
+
+^Uint nY1^U
+Y coordinate for the bottom of the rectangle.
+
+^Uint nStartX^U
+X coordinate for the start of the arc.
+
+^Uint nStartY^U
+Y coordinate for the start of the arc.
+
+^Uint nStopX^U
+X coordinate for the end of the arc.
+
+^Uint nStopY^U
+Y coordinate for the end of the arc.
+
+
+!seealso: dge5_007.ngo:"GKI_CreatePen" "GKI_Ellipse" "GKI_Pie" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_BitMap                 Render a monochrome bitmap
+'------------------------------------------------------------------------------
+void GKI_BitMap(nX, nY, nWidth, nHeight, *Bitmap)
+
+Renders a monochrome bitmap located by its top left 
+corner.
+
+^BParameters^B
+
+^Uint nX^U
+X coordinate for the top left corner.
+
+^Uint nY^U
+Y coordinate for the top left corner.
+
+^Uint nWidth^U
+Width of the bitmap in pixels.
+
+^Uint nHeight^U
+Height of the bitmap in pixels.
+
+^Uint *Bitmap^U
+Identifies the bitmap. Bitmaps should be an ordered
+sequence of descending bitmap rows.
+
+
+!seealso: dge5_007.ngo:"GKI_CreateBitMapBrush" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_BoundaryFill           Fill an an area with the current brush
+'------------------------------------------------------------------------------
+void GKI_BoundaryFill(nX, nY)
+
+Fills an an area with the current brush. The area must be 
+bounded by a continuous boundary of color or mix of colors.
+
+^BParameters^B
+
+^Uint nX^U
+X coordinate of a point inside the area to be filled.
+
+^Uint nY^U
+Y coordinate of a point inside the area to be filled.
+
+
+!seealso: dge5_007.ngo:"GKI_SetPolyFillMode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_Ellipse                Draw an ellipse
+'------------------------------------------------------------------------------
+void GKI_Ellipse(nX0, nY0, nX1, nY1)
+
+Draws an ellipse defined by a bounding rectangle. Drawing
+is done using the current pen.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left side of the bounding rectangle.
+
+^Uint nY0^U
+Y coordinate for the top of the rectangle.
+
+^Uint nX1^U
+X coordinate for the right side of the rectangle.
+
+^Uint nY1^U
+Y coordinate for the bottom of the rectangle.
+
+
+!seealso: "GKI_Arc" "GKI_Pie" dge5_007.ngo:"GKI_CreatePen" dge5_007.ngo:"GKI_SetFgColor" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetBltSize             Size a buffer for storing part of the screen
+'------------------------------------------------------------------------------
+int GKI_GetBltSize(nX0, nY0, nX1, nY1) => size in dx, ax
+
+Calculates the buffer size required to copy an area of the 
+screen to memory.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left edge of the area.
+
+^Uint nY0^U
+Y coordinate for the top of the area.
+
+^Uint nX1^U
+X coordinate for the right edge of the area.
+
+^Uint nY1^U
+Y coordinate for the bottom of the area.
+
+^BReturns^B
+The buffer size in bytes is returned in registers dx, ax.
+
+
+!seealso: dge5_009.ngo:"GKI_BitBltV2M" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetColumnRaster        Store a vertical raster line in a buffer
+'------------------------------------------------------------------------------
+int GKI_GetColumnRaster(nY0, nY1, nX, *Buffer) => nPlanes & pitPix
+
+Returns a vertical raster line in a buffer. The format 
+depends on the native video mode. See the entry for 
+GKI_PutRaster.
+
+^BParameters^B
+
+^Uint nY0^U
+Y coordinate for the top of the raster line.
+
+^Uint nY1^U
+Y coordinate for the bottom of the raster line.
+
+^Uint nX^U
+X coordinate for the line.
+
+^Uint *Buffer^U
+Identifies the buffer to receive the raster line.
+
+^BReturns^B
+The number of planes and bits/pixel are returned in the 
+low/high nibbles of the ax register respectively.
+
+
+!seealso: "GKI_GetColumnRasterSize" "GKI_GetRaster" "GKI_PutRaster" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetColumnRasterSize    Size a buffer for storing a vertical raster line
+'------------------------------------------------------------------------------
+int GKI_GetColumnRasterSize(nY0, nY1) => buffer size required
+
+Calculates the size of the buffer required to read a vertical 
+raster line using the GKI_GetColumnRaster function.
+
+^BParameters^B
+
+^Uint nY0^U
+Y coordinate for the top of the raster line.
+
+^Uint nY1^U
+Y coordinate for the bottom of the raster line.
+
+^BReturns^B
+The size of the buffer required, in bytes.
+
+
+!seealso: "GKI_GetColumnRaster" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetPixel               Get a pixel's color
+'------------------------------------------------------------------------------
+int GKI_GetPixel(nX, nY) => pixel color
+
+Determines a pixel's color.
+
+^BParameters^B
+
+^Uint nX^U
+X coordinate for the pixel.
+
+^Uint nY^U
+Y coordinate for the pixel.
+
+^BReturns^B
+Color index number for the pixel.
+
+
+!seealso: "GKI_SetPixel" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetRaster              Store a raster line in a buffer
+'------------------------------------------------------------------------------
+int GKI_GetRaster(x0, x1, nY, *Buffer) => nPlanes & nBitPix
+
+Returns a raster line in a buffer. The format depends on the 
+native video mode. See the entry for GKI_PutRaster.
+
+
+In non-256 modes, the raster line is shifted prior to 
+returning it to left justify it at a byte boundary. Allow an 
+extra byte in the buffer supplied as workspace. The buffer 
+size required after shifting is returned by
+GKI_GetRasterSize.
+
+^BParameters^B
+
+^Ux0^U
+X coordinate for the start of the raster line.
+
+^Ux1^U
+X coordinate for the end of the raster line.
+
+^Uint nY^U
+Y coordinate for the line.
+
+^Uint *Buffer^U
+Identifies the buffer to receive the raster line.
+
+^BReturns^B
+The number of planes is returned in the low nibble of the ax 
+register and the number of bits per pixel is returned in the 
+lhigh nibble of the ax register.
+
+
+!seealso: "GKI_GetColumnRaster" "GKI_GetRasterSize" "GKI_PutRaster" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_GetRasterSize          Size a buffer for storing a raster line
+'------------------------------------------------------------------------------
+int GKI_GetRasterSize(nX0, nX1) => buffer size required
+
+Returns the size of buffer required to read a raster line 
+using the GKI_GetRaster function. Note that this is the size 
+after shifting left and does not allow for workspace.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the start of the line.
+
+^Uint nX1 ^U
+X coordinate for the end of the line.
+
+^BReturns^B
+The size of the buffer required, in bytes.
+
+
+!seealso: "GKI_GetRaster" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_LineTo                 Draw a line from the current position to a point
+'------------------------------------------------------------------------------
+void GKI_LineTo(nX, nY)
+
+Draws a line using the current pen from the current 
+position to a point. The current point is updated.
+
+^BParameters^B
+
+^Uint nX^U
+X coordinate for the end point of the line.
+
+^Uint nY^U
+Y coordinate for the end point of the line.
+
+
+!seealso: dge5_007.ngo:"GKI_CreatePen" "GKI_MoveTo" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_MoveTo                 Move the current position
+'------------------------------------------------------------------------------
+void GKI_MoveTo(nX, nY)
+
+Moves the current position for GKI_LineTo drawing.
+
+^BParameters^B
+
+^Uint nX^U
+X coordinate for the point.
+
+^Uint nY^U
+Y coordinate for the point.
+
+
+!seealso: "GKI_LineTo" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_Pie                    Draw a filled arc
+'------------------------------------------------------------------------------
+void GKI_Pie(nX0, nY0, nX1, nY1, nStartX, nStartY, nStopX, nStopY)
+
+Draws an arc using the current pen defined by a bounding 
+rectangle and by a start and end point. If the start and end
+points coincide a complete ellipse is drawn.
+
+
+Radii to the center are drawn from the extremes of the arc, 
+and it is filled with the current brush.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the top left corner of the bounding 
+rectangle.
+
+^Uint nY0^U
+Y coordinate for the top left corner of the rectangle.
+
+^Uint nX1^U
+X coordinate for the bottom right corner of the rectangle.
+
+^Uint nY1^U
+Y coordinate for the bottom right corner of the rectangle.
+
+^Uint nStartX^U
+X coordinate for the start of the arc.
+
+^Uint nStartY^U
+Y coordinate for the start of the arc.
+
+^Uint nStopX^U
+X coordinate for the end of the arc.
+
+^Uint nStopY^U
+Y coordinate for the end of the arc.
+
+
+!seealso: "GKI_Arc" "GKI_Ellipse" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_Polygon                Draw a polygon of connected points
+'------------------------------------------------------------------------------
+void GKI_Polygon(*arrXY, nPts)
+
+Draws a polygon of connected points using the current pen 
+and fills it with the current brush. The last point is 
+connected to the first to form a closed area.
+
+^BParameters^B
+
+^Uint *arrXY^U
+Identifies an array containing a series of consecutive X, Y 
+pairs.
+
+^Uint nPts^U
+Number of coordinate pairs.
+
+
+!seealso: dge5_007.ngo:"GKI_SetPolyFillMode" dge5_007.ngo:"GKI_SetFgColor" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_PutRaster              Render a raster line from a buffer
+'------------------------------------------------------------------------------
+void GKI_PutRaster(nX0,nX1,nY,nPlanes,nBitPix,nLenBuff,*Buffer)
+
+Renders a raster line from a buffer. The line may be in one 
+of several formats. These correspond to the native format in 
+which it is most easy to read and write to video RAM (see 
+below).
+
+
+The raster line is rendered in the interval X0 to X1 
+inclusive.
+
+
+In non-256 modes, before rendering on the screen the line 
+is shifted right to align its origin with X0, which may not 
+necessarily coincide with a byte boundary. Allow an extra 
+byte in the buffer which may be used as workspace.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the start of the line.
+
+^Uint nX1^U
+X coordinate for the end of the line.
+
+^Uint nY^U
+Y coordinate for the line.
+
+^Uint nPlanes, int nBitPix^U
+Number of planes and bits per pixel. Depends of the native 
+format.
+
+     Native format                         nPlanes    nBitPix
+      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴   컴컴컴�    컴컴컴�
+     CGA/MCGA                                 1          1
+     SCANNED grayscale                        1          4
+     VGA/SVGA 256                             1          8
+     EGA/VGA (consecutive B G R I planes)     4          1
+
+^Uint nLenBuff^U
+Size of the buffer, in bytes.
+
+^Uint *Buffer^U
+Identifies the buffer from which to read the line.
+
+
+!seealso: "GKI_GetRaster" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_Rectangle              Draw a filled rectangle
+'------------------------------------------------------------------------------
+void GKI_Rectangle(nX0, nY0, nX1, nY1)
+
+Draws a rectangle using the current pen and fills it with the 
+current brush.
+
+^BParameters^B
+
+^Uint nX0^U
+X coordinate for the left side of the rectangle.
+
+^Uint nY0^U
+Y coordinate for the top of the rectangle.
+
+^Uint nX1^U
+X coordinate for the right side of the rectangle.
+
+^Uint nY1^U
+Y coordinate for the bottom of the rectangle.
+
+
+!seealso: dge5_007.ngo:"GKI_SetPolyFillMode" dge5_007.ngo:"GKI_SetFgColor" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GKI_SetPixel               Set a pixel's color
+'------------------------------------------------------------------------------
+void GKI_SetPixel(nX, nY, nColor)
+
+Sets a pixel's color.
+
+^BParameters^B
+
+^Uint nX^U
+X coordinate for the pixel.
+
+^Uint nY^U
+Y coordinate for the pixel.
+
+^Uint nColor^U
+Color index number.
+
+
+!seealso: "GKI_GetPixel" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,113 @@
+'------------------------------------------------------------------------------
+ What's New in the Database Browser Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rv3.10
+ ÄÄÄÄÄ
+ û ADdb_concolum() - new.  A new API to configure a browse column.
+   Replaces ADdb_defcolumn().
+
+ û ADbrowse() - new.  A specialized browse with a hotbar menu.  Source
+   is included in the Frankie package.
+
+ û ADdb_colchange() - modified.  Added record locking capability.
+
+ û ADdb_incsearch() - new.  Adds incremental searching to ADdbview().
+
+ û ADdbis_reset() - new.  API specifically used with ADdb_incsearch().
+
+ û ADdb_extra() - modified.  The 3rd parameter was changed.
+
+ û ADdb_one2many() - new.  A specialized one-to-many implementation of
+   ADdbview().
+
+ ^rv3.00
+ ÄÄÄÄÄ
+ û ADdbview() - modified.  Added an 8th optional parameter for defining
+   a Help header.
+
+ û ADdb_rbuttons() - new.  API to reconfigure right mouse button behavior.
+
+ û ADdbs_massage() - new.  API to _massage_ the value to be SEEKed in
+ ADdb_seek().
+
+ û ADdbss_massage() - new.  API to _massage_ the value to be SEEKed in
+ ADdb_softseek().
+
+ ^rv2.30
+ ÄÄÄÄÄ
+ û ADdb_mouse() - new.  Posts engine behaviours triggered when the left
+   button is clicked on the highligted cell.
+
+ û ADdb_enter() - modified.  No longer affects the engine when the left
+   button is clicked on the highlighted cell if an alternate behavior was
+   defined with ADdb_mouse().
+
+ û ADdb_exitcode() - new.  Returns ADdbview() exit code.
+
+ û ADdb_exit() - modified.  A second parameter was added to optionally
+   set the exit code of ADdbview().
+
+ ^rv2.2x
+ ÄÄÄÄÄ
+ û ADdbview() - modified.  Added support for global hot keys.
+
+ û ADdb_fields() - new.  Specifies which fields to include in ADdbview().
+   Replaces ADdb_columns() which now has a different meaning.
+
+ û ADdb_columns() - modified/new.  Specifies what columns to include
+   in ADdbview().  This is more versatile than ADdb_fields() as it can
+   specify columns as aliased field names, aliased field positions and
+   codeblocks.
+
+ û ADdb_colget() - this is the equivalent of ADdb_adget() when the columns
+   are specified with ADdb_columns().  ADdb_adget() does not work with
+   ADdb_columns().
+
+ û ADdbcg_color()
+ û ADdbcg_dict()
+ û ADdbcg_extra()
+ û ADdbcg_lock()
+ û ADdbcg_stay()
+
+ û ADdb_sleep() - new.  Instructs browser to sleep, that is, not to process
+   events.  Optionally activates an alternate event handler while it is
+   asleep.
+
+ û ADdb_poll() - new.  Adds an event poller, in addition to keyboard
+   presses and mouse button clicks.
+
+ û ADdb_colors() - modified.  Now the 4th element of the colors array is
+   used.  Two additional elements are added.
+
+ û ADdb_colset() - new.  Colors a set of records.
+
+ û ADdb_hotedges() - Additional discussion.
+
+ û ADdbss_upper() - new.  Advises ADdb_softseek() to automatically upper
+   pressed keys.
+
+ û ADdb_seek() - modified.  Added a 4th parameter for the picture clause.
+   The first parameter, cPrompt, is now optional.  Defaults to "Find".
+
+ û ADdb_locate() - new.  Locates for an expression in the browse.  It asks
+   the user to enter an expression, validates the expression, then
+   attempts to LOCATE the expression in the database.  Repositions the
+   browse if LOCATE is successful.
+
+ û ADdbs_locate() - new.  This is a global configuration API for
+   ADdb_seek().  It posts a codeblock that is automatically EVALed when
+   ADdb_seek() is called and the browse is not currently indexed.
+
+ û ADdb_hasmoved() - new.  This API informs ADdbview() that the highlight
+   has moved.
+
+ û ADdbvsb_refresh() - new.  Refreshes the vertical scroll bar in an
+   ADdbview().
+
+ û ADdb_engine() - modified.  May now be used to set the focus to another
+   engine.
+!seealso: fran_013.ngo:"ADdb_concolumn()" fran_013.ngo:"ADbrowse()" fran_013.ngo:"ADdb_colchange()" fran_013.ngo:"ADdb_incsearch()" fran_013.ngo:"ADdbis_reset()" fran_013.ngo:"ADdb_extra()" fran_013.ngo:"ADdb_one2many()" 
+'------------------------------------------------------------------------------
+
+
+

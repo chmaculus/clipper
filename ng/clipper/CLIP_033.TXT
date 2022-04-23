@@ -1,0 +1,70 @@
+'------------------------------------------------------------------------------
+^BREPLACE^B
+
+    REPLACE changes the contents of specified fields in the active database
+    file.
+
+^USyntax^U
+
+    REPLACE [<scope>] [<alias>->]<field1> WITH <exp1>
+    [,<field2> WITH <exp2>...] [FOR <condition>] [WHILE <condition>]
+
+^UArguments^U
+
+    <field> is the name of the target field to change.  This can be a field
+    of any type including memo.  There is one target field per WITH clause.
+
+    <exp> is the replacement expression.
+
+^UOptions^U
+
+    ^BAlias^B: Fields in other work areas can be REPLACEd by preceding the
+    field name with the alias.
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    REPLACE.  The default is the current record.  If a condition is
+    specified the scope becomes ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to REPLACE within the given scope.  The WHILE clause specifies the set
+    of records meeting the condition from the current record until the
+    condition fails.
+
+^UUsage^U
+
+    The field and the WITH expression must have the same data type.  With
+    numeric fields, the WITH expression may not be larger than the field
+    width.  If it is, asterisks replace the field contents, and some data
+    may be lost.
+
+^UIndexed Files^U
+
+    Replacements on a key field of an indexed database file also update the
+    index file if it is in use.  When the replacement is made, the record
+    moves to a new position in the index file.  If you specify a scope,
+    WHILE, or FOR when making replacements on an indexed field, not all of
+    the records you intended will be replaced.  For example, if you REPLACE
+    ALL, only the first record and those that follow the new key field
+    value will be replaced.  That's because each record is reindexed as the
+    REPLACE is done, and the record pointer is moved to follow the replaced
+    record.  To REPLACE all the records, you should use the database file
+    without an index, and then REINDEX afterwards.
+
+^UMemo Fields^U
+
+    Since Clipper supports the manipulation of memo fields in the same way
+    as character fields, you can REPLACE a memo field with a character
+    string.
+
+^UNetwork^U
+
+    In a network environment, REPLACE requires the current record be locked
+    with RLOCK() if you are REPLACEing a single record; the current
+    database file be locked with FLOCK() or USEd EXCLUSIVEly, if you are
+    REPLACEing several records.  If a field is being REPLACEd in an
+    unselected work area, that record must also be locked with FLOCK().
+!seealso: ???.ngo:"APPEND" clip_015.ngo:"JOIN" clip_087.ngo:"UPDATE" clip_141.ngo:"STRTRAN()" 
+'------------------------------------------------------------------------------
+
+
+

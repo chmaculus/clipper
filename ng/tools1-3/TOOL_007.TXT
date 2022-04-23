@@ -1,0 +1,3859 @@
+!short: Introduction Video Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+ ^bWorking With Video Functions^b
+
+     This module discusses video functions that are either directly or
+     indirectly concerned with the screen.  Included are all functions that
+     deal with such screen adapters as CGA, EGA and Hercules.  Different
+     modes on various adapters are supported, such as a 40-column CGA, a 43-
+     line EGA, or a 50-line VGA.
+
+ ^bDSETWINDOW()^b
+
+     Many of the functions in this chapter depend on setting the DSETWINDOW()
+     switch.  This switch determines if the screen output of external
+     programs, as well as DOS, are redirected to a window.
+     CA-Clipper Tools output functions are also valid as external.  If the
+     default setting in DSETWINDOW() is .T. or on, this rerouting is carried
+     out.  Some functions will then return inaccurate, or at the very least,
+     different results.  Examples of this are ISANSI() or NUMCOL()
+
+ ^bAttribute^b
+
+     Many of the functions in this module work with color attributes
+     designated as parameters.  These arguments are carried out in three
+     different ways:
+
+     A numeric value, which corresponds to a combined color attribute
+     (e.g., 7).
+
+     A string in the "NN/NN" form, with two specified numeric values (e.g.,
+     "7/0").
+
+     A string in the "CC/CC" form, with two specified attributes are
+     designated in the form CA-Clipper requires (e.g., "W/N").
+
+     With many functions, the attribute returns a combined numeric value.
+     Attributes for the foreground and background are tied together this way.
+
+     Color attributes are constructed as follows:
+
+     Bit                8 7 6 5        4 3 2 1
+     Attribute          * R G B        + R G B
+           _ _ _ _ _ _  /   _ _ _ _ _ _
+
+           Background   /   Foreground
+
+     Each attribute consists of four bits, which represent a value in the
+     range of 0 to 15.  Therefore, there are a total of 16*16, or 256,
+     different values from 0 to 255.  These numeric values can be changed
+     into the "nn/nn" format, that can be used under CA-Clipper with the
+     NTOCOLOR function.  However, it is possible to directly influence this
+     combined attribute value.  The following examples show this and relate
+     back to the chapter on number and bit manipulation:
+
+     NUMOR( nattr, 128)    // Flashing on
+     NUMAND(nattr, 127)    // Flashing off
+     NUMXOR(nattr, 128)    // Change flashing
+     NUMOR(nattr,  8)      // High intensity on
+     NUMAND(nattr, 247)    // High intensity off
+     NUMXOR(nattr,  8)     // Switch high intensity
+
+ ^bSpecial Parameter Type^b
+
+     With many functions, a parameter may be of the <mIcCharacter|nCharacter>
+     type (e.g., an individual character).  This can occur in two different
+     ways:
+
+     Numerically, as the ASCII code of the desired character (e.g., 7).
+
+     Alphanumeric as the character (e.g., ":").
+
+     Because of this, you must not use the CHR() function to change special
+     characters.
+
+ ^bCLEARA and CLEARB^b
+
+     Some of the CA-Clipper Tools functions use a standard attribute and
+     character to  delete lines or screen areas.  This attribute is described
+     as CLEARA; the character as CLEARB.  You can query both CLEARA and
+     CLEARB with the corresponding functions.  At the same time, certain
+     preset values are in effect for CLEARA and CLEARB.  The attribute "W/N"
+     is the standard preset for CLEARA, while CHR(255) is the character used
+     for CLEARB.  If you use this character for CLEARB, it fills the
+     background with the corresponding color for every deletion on every
+     screen adapter.
+
+     Use the following functions to set standard values for CLEARA and
+     CLEARB:
+
+        GETCLEARA()
+        SETCLEARA()
+        GETCLEARB()
+        SETCLEARB()
+
+     If you use the SETCLEARx() functions in conjunction with the
+     corresponding parameters (<Attribute> or <Character>), the currently
+     existing default value is replaced by a parameter.
+
+ ^bClipper Functions and Commands Which Delete^b
+
+     If you use the CA-Clipper Extended Drivers, CHR(255) is used instead of
+     a space for all CA-Clipper functions and commands that delete the screen
+     in one way or another (see CLEARB).  A CHR(255) is helpful on many
+     screen adapters, since in contrast to a space, you can assign it a
+     color.  Then, the screen will not appear so fuzzy.
+
+     More precisely, the functions and commands concerned always use the
+     delete character set by SETCLEARB(), which uses CHR(255) as the default
+     setting.  If you want to use a space to clear in CA-Clipper or
+     CA-Clipper Tools, insert a SETCLEARB(32) into the program.
+
+     Re-implement a space for clear:
+
+        SETCLEARB(32)
+        CLEAR         // The affected Clipper command
+
+ ^bVideo Modes^b
+
+     Occasionally, there is some confusion about video modes.  You will not
+     be able to work in EGA mode just because your computer has an EGA
+     adapter built into it.  By the same token, you will not get either EGA
+     or VGA modes, if you do not work with graphics.
+
+ ^bEGA43 / VGA50 / VGA28, etc.^b
+
+     In this section, the concern is not to just get a mode "hardwired"' into
+     a card, but for CA-Clipper Tools it is to generate corresponding fonts
+     and other settings.  For these reasons, the GETMODE() and GETSCRMODE()
+     functions generate their own values that are greater than 255.
+
+     For example, changes to the screen mode concerned with line count can be
+     combined with a 40-column mode:
+
+     CGA40()
+     EGA43()          // 43 lines and 40 columns
+
+ ^bVideo Functions and Windows^b
+
+     You cannot implement functions that change the base address for screen
+     memory while windows are open.  This includes all mode changes, as well
+     as SETPAGE and SETSCRSTR.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: CHARPIX()    Returns the number of pixel lines per character
+'------------------------------------------------------------------------------
+ ^bCHARPIX()^b
+ Returns the number of pixel lines per character
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCHARPIX() --> nPixelline
+
+ ^bReturns^b
+
+     CHARPIX() returns a value that corresponds to the number of pixel lines
+     per character.
+
+ ^bDescription^b
+
+     Different screen adapters build characters from a different numbers of
+     pixel lines.  Based on the installed mode, the number of pixel lines for
+     a particular type of screen adapter may also vary.
+
+     Use CHARPIX() to determine the number of pixel lines available in the
+     currently installed mode.  This information is useful when used in
+     conjunction with SETCURSOR().
+
+ ^bExample^b
+
+     Display the number of pixel lines:
+
+     ? CHARPIX()         // VGA, no mode change - 16
+
+!seealso: tool_003.ngo:"SETCURSOR()" "SETFONT()" "FONTLOAD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHARWIN()    Exchanges particular characters in a screen area.
+'------------------------------------------------------------------------------
+ ^bCHARWIN()^b
+ Exchanges particular characters in a screen area.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCHARWIN([<nTopline>,<nLeftcolumn>,<nBottomline>,
+     ^b   <nRightcolumn>, [<cNewcharacter|nNewcharacter>],
+     ^b   [<cOldcharacter|nOldcharacter>]]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nTopline>^b  Designates the line for the top-left corner of the area.
+
+     ^b<nLeftcolumn>^b  Designates the column for the top-left corner the
+     area.
+
+     ^b<nBottomline>^b  Designates the line for the bottom-right corner of
+     the area.
+
+     ^b<nRightcolumn>^b  Designates  the column for the bottom-right corner
+     of the area.
+
+     ^b<cNewcharacter|nNewcharacter> ^b Designates the new character for the
+     screen area.  Specify the parameter as a numeric in the range of 0 to
+     255 or as a character string.  The default value is the CLEARB.
+
+     ^b<cOldcharacter|nOldcharacter>^b  Designates which character to
+     exchange.  Specify the parameter as a numeric in the range of  0 to 255
+     or as a character string.  The default is to exchange all characters.
+
+     ()  When no parameter is designated, the function replaces all
+     characters in the screen area with CLEARB.
+
+ ^bReturns^b
+
+     The function always returns a null string.
+
+ ^bDescription^b
+
+     Within a screen area, CHARWIN() replaces all characters or just a
+     particular character with a new one.  If <cNewcharacter|nNewcharacter>
+     is not designated, the function uses the character set with SETCLEARB(),
+     where the preset value is CHR(255).  The upper-left and lower-right
+     corner rows and columns are given for the borders of the area.  If these
+     arguments are missing, then the entire screen area is exchanged.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange all characters for CLEARB:
+
+        SETCLEARB("X")       // Exchanges within CHARWIN() entire screen
+
+     ^b^CFE^b  Exchange all "A" for "B":
+
+        CHARWIN(10, 10, 20, 70, "B", "A")    // Always returns a ("") null
+                                             // string
+
+     ^b^CFE^b  Numeric characters can also be designated:
+
+        CHARWIN(10, 10, 20, 70, 66, 65)      // A = 65, B = 66
+
+!seealso: "SETCLEARB()" "COLORWIN()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEAREOL()   Clears from the cursor position to the end of line
+'------------------------------------------------------------------------------
+ ^bCLEAREOL()^b
+ Clears from the cursor position to the end of line
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLEAREOL([<nRow>], [<nColumn>], [<cAttr|nAttr>],
+     ^b   [<cCharacter|nCharacter>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nRow>^b  Designates the line to be erased.  The default is the cursor
+     line.
+
+     ^b<nColumn >^b  Designates the column where the erasure is to begin.
+     The default is the cursor column.
+
+     ^b<cAttrn|nAttr>^b  Designates the attribute used to clear.  The
+     default is CLEARA.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character used to clear.
+     The default is CLEARB.
+
+ ^bReturns^b
+
+     CLEAREOL() always returns a null string.
+
+ ^bDescription^b
+
+     Use CLEAREOL() to clear a specific line from a given position to the end
+     of that line.  If arguments are not specified, then the current <nRow>
+     cursor line and <nColumn> cursor column are used as the starting
+     location.  The clear always goes to the end of the line specified with
+     the CLEARA attribute and CLEARB character, or with the <Attr|nAttr>
+     attribute and <cCharacter|nCharacter> character.
+
+     CLEAREOL() has some advantages over the CA-Clipper  @ Row, Column
+     commands:
+
+     1. It lets you take the returned value of the character string type and
+        combine it with string outputs (e.g., LIST...CLEAREOL()).
+
+     2. The cursor position is not affected.
+
+     3. The arguments are optional.  If they are not specified, the function
+        clears from the current cursor position with the CLEARA attribute and
+        CLEARB character.
+
+ ^bNotes^b
+
+     ^b^CFE^b  You can specify the <cAttr|nAttr> attribute and the
+        <cCharacter|nCharacter> character in a number of ways.  Please refer
+        to the chapter introduction.
+
+     ^b^CFE^b  Default attribute and character can be set with SETCLEARA()
+        and SETCLEARB().
+
+     ^b^CFE^b  If no arguments are specified for line or column, then the
+        function will automatically orients itself to the current cursor
+        position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Clear from the cursor position to the end of the line with the
+        CLEARB character and CLEARA attribute:
+
+        CLEAREOL()
+
+     ^b^CFE^b  Do the same for line 23 from the current cursor position:
+
+        CLEAREOL(23)
+
+     ^b^CFE^b  Do the same as before, but begin the erasure at column 55:
+
+        CLEAREOL(23, 55)
+
+     ^b^CFE^b  The attributes can be specified in different ways.  In the
+        following three examples, the clear character is set with
+        SETCLEARB():
+
+        CLEAREOL(23, 55, 4)         // red on black
+        CLEAREOL(23, 55, "4/7")     // red on white
+        CLEAREOL(23, 55, "B/W")     // blue on white
+
+     ^b^CFE^b  Clear with special attribute and character:
+
+        CLEAREOL(23, 55, "3/1", ":")
+        CLEAREOL(23, 55, "B/W", "+")
+
+!seealso: "CLEOL()" "SETCLEARA()" "SETCLEARB()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEARSLOW()  Deletes a screen area from the outside in with a delay
+'------------------------------------------------------------------------------
+ ^bCLEARSLOW()^b
+ Deletes a screen area from the outside in with a delay
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLEARSLOW(<nDelay>, [<nTopline>], [<nLeftcolumn>],
+     ^b   [<nBottomline>], [<nRightcolumn>],
+     ^b   [<cCharacter|nCharacter>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nDelay>^b  Designates the time delay in milliseconds for the
+     individual steps in the delete procedure.  The value is in the range of
+     1 to 65535.
+
+     ^b<nTopline>^b  Designates the line for the top-left corner of the area.
+     The default value is the topmost line.
+
+     ^b<nLeftcolumn>^b  Designates the column for the top-left corner of the
+     area.  The default value is the leftmost column.
+
+     ^b<nBottomline>^b  Designates the line for the bottom-right corner of
+     the area.  The default value is the bottommost line.
+
+     ^b<nRightcolumn>^b  Designates the column for the bottom-right corner of
+     the area.  The default value is the rightmost column.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character to use to clear
+     the screen.  The character can be numeric in the range of 0 to 255 or a
+     character string.  The default is the character set using SETCLEARB().
+
+ ^bReturns^b
+
+     The function always returns a null string.
+
+ ^bDescription^b
+
+     CLEARSLOW() clears a screen area from the outside in, step by step, with
+     time delays.  You can designate the delay in milliseconds.  If the
+     parameters for the area coordinates are left out, the function clears
+     the entire screen.  In this case, the delete character set through
+     SETCLEARB() is used.  The preset value is CHR(255).  CA-Clipper Tools
+     uses this character because, in contrast to CHR(32), it accepts a color
+     attribute on all screen adapters.
+
+ ^bNote^b
+
+     ^b^CFE^b  If no screen coordinates are designated, the entire screen is
+        cleared.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Use CHR(255) to clear the entire screen with a 50-millisecond
+        delay:
+
+        CLEARSLOW(50)                       // Always returns ""
+
+     ^b^CFE^b  Clear an area with spaces and use a 10-millisecond delay:
+
+        CLEARSLOW(10, 4, 4, 20, 76, 32)     // Delete character 32 (Blank)
+
+!seealso: "SETCLEARB()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEARWIN()   Clears a screen area
+'------------------------------------------------------------------------------
+ ^bCLEARWIN()^b
+ Clears a screen area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLEARWIN([<nTopLine>], [<nLeftCol>], [<nBottomLine>],
+     ^b   [<nRightCol>], [<cAttr|nAttr>],
+     ^b   [<cCharacter|nCharacter>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nTopLine>^b  Designates the topmost line where clearing is to begin.
+     The default value is the cursor line.
+
+     ^b<nLeftCol>^b  Designates the leftmost column from which clearing is to
+     begin.  The default value is the cursor column.
+
+     ^b<nBottomLine>^b  Designates the bottommost line to clear.  The default
+     is the last screen line or window line.
+
+     ^b<nRightCol>^b  Designates the rightmost column to clear.  The default
+     is the right screen border or window border.
+
+     ^b<cAttr|nAttr>^b  Designates the attribute to use to clear.  The
+     default is the standard attribute CLEARA.
+
+     ^b<cCharacter|nCharacter>^b  Designates the character to use to clear.
+     The default is the standard character CLEARB.
+
+ ^bReturns^b
+
+     CLEARWIN() always returns a null string.
+
+ ^bDescription^b
+
+     CLEARWIN() clears a specified screen area.  This area extends from
+      < nTopLine>  to <nBottomLine> and from <nLeftCol> to <nRightCol>.
+     Without these parameters, the line and column that correspond to the
+     current cursor position for <nTopLine> and <nLeftCol>, and the
+     bottommost line and rightmost column are used for <nBottomLine> and
+     <nRightCol>.
+
+     You can clear with the standard attribute and character (CLEARA and
+     CLEARB), or with the <cAttr|nAttr> attribute and the
+     <cCharacter|nCharacter> character.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The <cAttr|nAttr> attribute and <cCharacter|nCharacter>
+        character are specified in different ways.  Please refer to the
+        Introduction of this chapter for more details
+
+     ^b^CFE^b  The standard attribute and character are set with SETCLEARA()
+        and SETCLEARB().
+
+     ^b^CFE^b  If no parameters are specified for the line or column, the
+        function automatically orients itself to the current cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Clear from the cursor position to the end of the line with the
+        CLEARB character and CLEARA attribute:
+
+        CLEARWIN()
+
+     ^b^CFE^b  Do the same for line 23 from the current cursor position:
+
+        CLEARWIN(23)
+
+     ^b^CFE^b  Clear a window between line 23, column 15 and line 24, column
+        70:
+
+        CLEARWIN(23, 15, 24, 70)
+
+     ^b^CFE^b  You can specify the attributes in different ways.  In the
+        following three examples, the CLEARB() clear character is used.
+
+        CLEARWIN(23, 15, 24, 70, 4)            // red on black<
+        CLEARWIN(23, 15, 24, 70, "4/7")        // red on white
+        CLEARWIN(23, 15, 24, 70, "B/W")        // blue on white
+
+     ^b^CFE^b  Clear when specifying attribute and character:
+
+        CLEARWIN(23, 15, 24, 70, "B/W", "+")   // blue on white
+
+!seealso: "CLWIN()" "SETCLEARA()" "SETCLEARB()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEOL()      Clears characters and attributes to the end of a line
+'------------------------------------------------------------------------------
+ ^bCLEOL()^b
+ Clears characters and attributes to the end of a line
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLEOL([<nRow>], [<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nRow>^b  Designates the line to clear.  The default is the cursor
+     line.
+
+     ^b<nColumn> ^b Designates the column from which to clear.  The default
+     is the cursor column.
+
+ ^bReturns^b
+
+     CLEOL() always returns a null string.
+
+ ^bDescription^b
+
+     Implement the CLEOL() function when you need to clear to black and
+     cannot use the standard attribute and character.  This function is
+     especially useful with a monochrome video card.  A significant advantage
+     of CLEOL() over CLEAREOL(), is the omission of the
+     <cAttr|nAttr> and <cCharacter|nCharacter> parameters, which increase the
+     speed of CLEOL().  The function is faster because it does not note the
+     CLEARA and CLEARB settings.
+
+     CLEOL() has some advantages over the CA-Clipper @ Row, Column commands:
+
+     1. The function allows you to take the returned value of the character
+        string type and combine it with string outputs (e.g.,
+        LIST...CLEOL()).
+
+     2. The cursor position is not affected.
+
+     3. The parameters are optional.  If they are not specified, the function
+        clears from the current cursor position with the CLEARA attribute and
+        the CLEARB character.
+
+ ^bNote^b
+
+     ^b^CFE^b  If no parameters are specified for line or column, the
+        function automatically orients itself to the current cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Clear from the current cursor position to the end of the line:
+
+        CLEOL()
+
+     ^b^CFE^b  Clear line 23, starting from the cursor column position to the
+        end of the line:
+
+        CLEOL(23)
+
+     ^b^CFE^b  Clear line 23 from column 15 to the end of the line.
+
+        CLEOL(23, 15)
+
+!seealso: "CLEAREOL()" "CLEARWIN()" "CLWIN()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLWIN()      Clears character and attribute from a screen area
+'------------------------------------------------------------------------------
+ ^bCLWIN()^b
+ Clears character and attribute from a screen area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCLWIN([<nTopLine>], [<nLeftCol>], [<nBottomLine>],
+     ^b   [<nRightColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nTopLine>^b  Designates the topmost line where clearing should begin.
+     The default is the cursor line.
+
+     ^b<nLeftCol>^b  Designates the leftmost column where erasure should
+     begin.  The default is the cursor column.
+
+     ^b<nBottomLine>^b  Designates the bottommost line to clear.  The default
+     is the last screen line or window line.
+
+     ^b<nRightColumn>^b  Designates the rightmost column to clear.  The
+     default is the right screen border or window border.
+
+ ^bReturns^b
+
+     CLWIN() always returns a null string.
+
+ ^bDescription^b
+
+     Implement CLWIN() when you need to clear to black without the use of the
+     standard attribute and character.  This function is helpful when you use
+     a monochrome video card.  A significant advantage of CLWIN() over
+     CLEARWIN(), is the omission of the <cAttr|nAtt> and
+     <cCharacter|nCharacter> parameters, because it increases the speed of
+     CLWIN().  The function is faster because it does not note the CLEARA and
+     CLEARB settings.
+
+     CLWIN() has some advantages over the Clipper @ Row, Column commands:
+
+     1. This function takes the returned value of the character string type
+        and combines it with string outputs  (e.g., LIST...CLWIN()).
+
+     2. The cursor position is not affected.
+
+     3. The parameters are optional.  If they are not specified, the function
+        clears from the current cursor position.
+
+ ^bNote^b
+
+     ^b^CFE^b  If no parameters are specified for the line or column, the
+        function automatically orients itself to the current cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Clear from the cursor position to the end of the screen area:
+
+        CLWIN()
+
+     ^b^CFE^b  Do the same from the current cursor position in line 23:
+
+        CLWIN(23)
+
+     ^b^CFE^b  Clear from line 23, column 15, to the end of line 24:
+
+        CLWIN(23, 15, 24)
+
+     ^b^CFE^b  Clear a window between line 23, column 15, and line 24, column
+        70:
+
+        CLWIN(23, 15, 24, 70)
+
+!seealso: "CLEAREOL()" "CLEARWIN()" "CLEOL()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COLORREPL()  Exchanges particular screen attributes
+'------------------------------------------------------------------------------
+ ^bCOLORREPL()^b
+ Exchanges particular screen attributes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOLORREPL([<cNewAttr|nNewAttr>],
+     ^b   [<cOldAttr|nOldAttr>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cNewAttr|nNewAttr>^b  Designates the new attribute.  The default is
+     CLEARA.
+
+     ^b<cOldAttr|InOldAttr>^b  Designates the old attribute to exchange.  The
+     default is all existing attributes.
+
+ ^bReturns^b
+
+     COLORREPL() always returns a null string.
+
+ ^bDescription^b
+
+     COLORREPL() simplifies screen handling.  This function exchanges all
+     occurrences of the <cOldAttr|nOldAttr> attribute for the
+     <cNewAttr|nNewAttr> attribute.
+
+     For example, after a READ, you could take the colors in all input
+     fields, (assuming they have a common attribute), and change them.  This
+     designates these fields as no longer active.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the <cOldAttr|nOldAttr>parameter is not specified, then all
+        screen attributes (without exception) are exchanged for
+        <cNewAttr|nNewAttr>.  If <cNewAttr|nNewAttr> is also missing, then
+        <cOldAttr|nOldAttr> is exchanged for the CLEARA standard attribute.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange the attribute 7 (white on black) for 0 (black on
+        black= invisible):
+
+        COLORREPL(0, 7)
+
+     ^b^CFE^b  Replace all attributes for attribute 116 (red on white):
+
+        COLORREPL(116)
+
+     ^b^CFE^b  Exchange the attribute "7/0" (white on black) for 116 (red on
+        white):
+
+        COLORREPL(116, "7/0")
+
+     ^b^CFE^b  Exchange all attributes for the CLEARA standard attribute:
+
+        COLORREPL()
+
+     ^b^CFE^b  Change the display from white on black to black on white.  You
+        can specify different parameters:
+
+        COLORREPL("0/7", "7/0")
+        COLORREPL(112, 7)
+
+     ^b^CFE^b  Mixed formats are also possible:
+
+        COLORREPL("0/7", 7)
+
+!seealso: "COLORWIN()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COLORTON()   Converts NN/NN or CC/CC color values into numeric values
+'------------------------------------------------------------------------------
+ ^bCOLORTON()^b
+ Converts NN/NN or CC/CC color values into numeric values
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOLORTON(<cAttr>) --> nAttr
+
+ ^bArgument^b
+
+     ^b<cAttr>^b  Designates the alphanumeric color attribute that is
+     converted in NN/NN or CC/CC form.
+
+ ^bReturns^b
+
+     COLORTON() returns a number that corresponds to the combined numeric
+     color attribute.
+
+ ^bDescription^b
+
+     COLOR TO (N)umeric
+     The function changes an alphanumeric color attribute from NN/NN or CC/CC
+     into a combined numeric attribute.  These combined attribute values are
+     useful with the CA-Clipper Tools functions STRSCREEN(), SCREENMIX(),
+     SCREENATTR(), and the CA-Clipper commands SAVE/RESTORE SCREEN.
+
+     COLORTON() makes it easy to create numeric attributes for the
+     CA-Clipper Tools functions.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you specify an invalid attribute string, COLORTON() returns
+        the numeric attribute 0, meaning black on black (invisible).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the "normal" display (white on black); all alphanumeric
+        forms yield 7:
+
+        ? COLORTON("07")
+        ? COLORTON("07/00")
+        ? COLORTON("W/N")
+
+     ^b^CFE^b  Display red on white; all alphanumeric forms yield the numeric
+        attribute 116:
+
+        ? COLORTON("04/07")
+        ? COLORTON("R/W")
+
+     ^b^CFE^b  If the foreground color is missing,  0 is assumed.  Here it
+        corresponds to an inverse video display:
+
+        ? COLORTON("/7")
+
+     ^b^CFE^b  High intensity (+) and flashing (*) are also recognized:
+
+        ? COLORTON("BR+")
+        ? COLORTON("BR+*")
+        ? COLORTON("G/BR+*")
+        ? COLORTON("+G*/BR")
+
+     ^b^CFE^b  An invalid parameter returns 0:
+
+        ? COLORTON()
+
+     ^b^CFE^b  Parameters of the <cAttr|nAttr> type are allowed.  A numeric
+        attribute remains numeric.
+
+        ? COLORTON(112)         // Result:  112
+
+!seealso: "NTOCOLOR()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COLORWIN()   Exchanges particular attributes in a screen area
+'------------------------------------------------------------------------------
+ ^bCOLORWIN(^b)
+ Exchanges particular attributes in a screen area
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOLORWIN([<nTopLine>], [<nLeftCol>],
+     ^b   [<nBottomLine>], [<nRightCol>],
+     ^b   [<cNewAttr|nNewAttr>], [<cOldAttr|nOldAttr>])
+     ^b    --> cNull
+
+ ^bArguments^b
+
+     ^b<nTopLine>^b  Designates the topmost line to begin processing.  The
+     default is the cursor line.
+
+     ^b<nLeftCol>^b  Designates the leftmost column to begin processing.  The
+     default is the cursor column.
+
+     ^b<nBottomLine>^b  Designates the bottommost line that is processed.
+     The default is the last screen line or window line.
+
+     ^b<nRightCol>^b  Designates the rightmost column to clear.  The default
+     is the right screen border or window border.
+
+     ^b<cNewAttr|nNewAttr>^b  Designates the new attribute to replace the old
+     one.  The default is the standard attribute CLEARA.
+
+     ^b<cOldAttr|nOldAttr>^b  Designates the old character to exchange.  The
+     default is "exchange all attributes".
+
+ ^bReturns^b
+
+     COLORWIN() always returns a null string.
+
+ ^bDescription^b
+
+     COLORWIN() exchanges all occurrences of <cOldAttr|nOldAttr>for the
+     <cNewAttr|nNewAttr> attribute, within a particular screen or window
+     area.  The function operates in a similar way to COLORREPL(), except
+     with COLORWIN() you can define the screen area to work on.
+
+     The parameters <nTopLine> and <nLeftCol> define the row and column for
+     the top-left corner; <nBottomLine> and <nRightCol> define the row and
+     column for the bottom-right column.
+
+ ^bNote^b
+
+     ^b^CFE^b  If <cOldAttr|nOldAttr> is not specified, all attributes are
+        exchanged for <cNewAttr|nNewAttr>; if <cNewAttr|nNewAttr> is not
+        specified, the attributes are exchanged for CLEARA.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Exchange attribute 7 (white on black) for 0 (black on black =
+        invisible) from the current cursor position to the end of the screen
+        area:
+
+        COLORWIN(0, 7)
+
+     ^b^CFE^b  Exchange all attributes in the area from line 23, column 15 to
+        line 24, column 70 for the standard attribute CLEARA:
+
+        COLORWIN(23, 15, 24, 70)
+
+     ^b^CFE^b  Replace all attributes for attribute 116 (red on white) in the
+        region from line 23, column 15 to line 24, column 70:
+
+        COLORWIN(23, 15, 24, 70, 116)
+
+     ^b^CFE^b  Change the white on black display to black on white.  You can
+        specify different parameters:
+
+        COLORWIN(23, 15, 24, 70, "0/7", "7/0")
+
+     ^b^CFE^b  Mixed formats are also possible:
+
+        COLORWIN(23, 15, 24, 70, "0/7", 7)
+
+!seealso: "COLORREPL()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EGAPALETTE() Changes EGA palette colors
+'------------------------------------------------------------------------------
+ ^bEGAPALETTE()^b
+ Changes EGA palette colors
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bEGAPALETTE([<cColor1|nColor1>, [<nPalette>])
+     ^b    --> lValid
+
+     ^bor
+
+     ^bEGAPALETTE([<cColor1|nColor1>, [<cColor2>]])
+     ^b    --> lValid
+
+ ^bArguments^b
+
+     ^b<cColor1|nColor1>^b  Designates the color to change as a CA-Clipper
+     color code or a numeric in the 0 to 15 range.  If only this color is
+     given, the accompanying palette is reset to its default value.
+
+     ^b<nPalette>^b  Designates which color palette the color
+     <cColor1|nColor1> is assigned to.  May be in the range of 0 to 63.
+
+     ^b<cColor1|nColor1>, <cColor2>^b  If a color is also designated as a
+     second parameter, then that color's palette is designated as
+     <cColor1|nColor1>.
+
+     () When no parameters are designated, all color palettes are reset to
+     their default values.
+
+ ^bReturns^b
+
+     EGAPALETTE() returns .T. when the selected setting is successfully
+     implemented.
+
+ ^bDescription^b
+
+     EGAPALETTE() allocates one of the 16 colors available to another color
+     palette.  Since the function changes the screen adapter, everything on
+     the screen designated with <cColor1|nColor1> also changes.
+
+     Instead of a palette value, you can designate a second color.  Its
+     palette setting is allocated to the one designated in <cColor1|nColor1>,
+     so that two of the 16 colors are identical.
+
+     If only the <cColor1|nColor1> parameter is given, then the accompanying
+     palette is reset to its default value.  When calling the function
+     without parameters, all palettes are reset.
+
+ ^bNotes^b
+
+     ^b^CFE^b  You can also implement EGAPALETTE() in VGA mode, although
+        VGAPALETTE() provides more flexibility.
+
+     ^b^CFE^b  FONTRESET() resets all color palettes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Redefine the color blue to dark blue:
+
+        SET COLOR TO B            // Set blue
+        ? "Nantucket"             // Appears in blue
+        EGAPALETTE("B", 8)        // Affects everything blue.
+
+     ^b^CFE^b  Reset the palette for the color blue:
+
+        EGAPALETTE("B")
+        Reset all palettes
+        EGAPALETTE()
+
+!seealso: "VGAPALETTE()" "FONTRESET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ENHANCED()   Selects the enhanced color value for SET COLOR TO output
+'------------------------------------------------------------------------------
+ ^bENHANCED()^b
+ Selects the enhanced color value for SET COLOR TO output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bENHANCED() --> cNull
+
+ ^bReturns^b
+
+     ENHANCED() always returns a null string
+
+ ^bDescription^b
+
+     Use ENHANCED() to specify the color attribute designated as enhanced
+     (second color value), with SET COLOR TO as the active attribute for CA-
+     Clipper @...SAY and ? output.  Use STANDARD() to switch back to the
+     default attribute.
+
+ ^bExample^b
+
+     Output with enhanced attribute:
+
+     ? "........"
+     ? "........"
+
+     ENHANCED()
+        ? "Different Attribute!"
+     STANDARD()
+     ? "........"
+     ? "........"
+
+!seealso: "STANDARD()" "UNSELECTED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FILESCREEN() Reads screen content from a file
+'------------------------------------------------------------------------------
+ ^bFILESCREEN()^b
+ Reads screen content from a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFILESCREEN(<cFileName>, [<nOffset>]) --> nByte
+
+ ^bArguments^b
+
+     ^b<cFileName>^b  Designates the name and path of the screen file.
+
+     ^b<nOffset>^b  Designates from which part of the file offset the screen
+     is to be read.  The default is the beginning of file.
+
+ ^bReturns^b
+
+     FILESCREEN() returns the number of bytes read.
+
+ ^bDescription^b
+
+     FILESCREEEN() is the opposite of SCREENFILE().  Use FILESCREEN() to read
+     and display a screen stored with SCREENFILE().  Use the <nOffSet>
+     parameter to indicate an offset from which the file is to be read.
+     Since the number of bytes written with SCREENFILE() is known, you can
+     compute the location within the file of the beginning of the new screen.
+     This allows you to save multiple screens in a single file.
+
+ ^bNote^b
+
+     ^b^CFE^b  The file read with FILESCREEN() can also contain end of file
+        markers.  The read procedure does not end prematurely as a result,
+        since the function always reads 4000 bytes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read a screen from the beginning of a file:
+
+        FILESCREEN("screen.tst")
+
+     ^b^CFE^b  Read the second screen.  Since the offset is specified as
+        4000, the first screen is skipped:
+
+        FILESCREEN("screen.tst", 4000)
+
+     ^b^CFE^b  Drive and path are permitted:
+
+        FILESCREEN("\screen.tst")
+        FILESCREEN("a:screen.tst")
+
+     ^b^CFE^b  Wildcards are not permitted:
+
+        FILESCREEN("screen.*")         // Result:  0
+
+!seealso: "SCREENFILE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FONTLOAD()   Loads EGA/VGA fonts from another file
+'------------------------------------------------------------------------------
+ ^bFONTLOAD()^b
+ Loads EGA/VGA fonts from another file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFONTLOAD(<cFileName>, <nFontArea>, [<nOffset>],
+     ^b   [<nCounter>]) --> nErrorCode
+
+     ^bor
+
+     ^bFONTLOAD (<cFileName>, <nFontArea>,
+     ^b   [<lOtherPixelHeight>])--> nErrorCode
+
+ ^bArguments^b
+
+     ^b<cFileName>^b  Designates the name and path of the font file.
+
+     ^b<nFontArea>^b  Designates the number of the specified font area.  For
+     EGA, the values 1 to 4 are allowed, or whatever values MAXFONT()
+     permits.  For VGA, the values 1 to 8 are allowed, or whatever MAXFONT()
+     permits.
+
+     ^b<nOffset>^b  Designates from what character position the screen
+     adapter font table is overwritten.  The default value is 0.
+
+     ^b<nCounter>^b  Designates how many characters to load from the new
+     font.  The default value is 256.
+
+     ^b<lOtherPixelHeight>^b  Designates .T. to allow the function to modify
+     the pixel height.  This leads to a mode change and character count.
+     Please note that you must designate both <nOffset> and <nCounter> to
+     implement this parameter.
+
+ ^bReturns^b
+
+     The function returns an error code which corresponds to the explanation
+     below:
+
+     ^bTable 6-1: Values returned for FONTLOAD()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bError Code   Explanation^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0           Font loaded successfully
+     -2           Impossible in current video mode
+     -3           Font file not found
+     -4           The <lOtherPixelHeight> mode is not possible (the Extended
+                  Drivers are not linked in)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     FONTLOAD() allows you to load the font definitions from a file into the
+     font area of an EGA or VGA card.  Use FONTSELECT() to determine which
+     fonts serve as normal and high density for output.
+
+     You may already have some of these fonts on the CA-Clipper Tools disk,
+     and others can be created with the accompanying font editor.
+
+ ^bTechnical Background^b
+
+     The EGA and VGA cards permit you to modify a portion or all 256
+     characters of the character generator with software.  To do this, a
+     previously created pixel pattern for the character is loaded in the
+     corresponding position in a font area on the screen card.  Normally, an
+     EGA card has a maximum of four font areas and a VGA has eight, within
+     which you can redefine all 256 characters.  Use MAXFONT() to determine
+     the exact count of font areas.
+
+     Building fonts into a program requires unnecessary memory space.
+     Constructing fonts as a string within a program is also awkward.  With
+     the GETFONT() and SETFONT() functions, you can load a font from a screen
+     card into a string variable, or from such a variable, into a font area
+     on the card.  However, FONTLOAD() only allows you to load a font from a
+     file into a particular area of the screen card.  In both cases, use
+     ONTSELECT() to activate the loaded font.
+
+     On the CA-Clipper Tools sample disk, you will find a font editor to
+     construct new fonts in CA-Clipper source code.
+
+ ^bVariable Pixel Height^b
+
+     In principle, EGA and VGA screen adapters provide the opportunity to
+     display fonts with 2 to 32 pixels per character (1 pixel/character only,
+     when there are 200 scan lines).  ROM fonts are only available for pixel
+     heights of 8, 14 and 16, which accounts for the great expansion of the
+     EGA 25-/43-line modes and VGA 25-/28-/50-line modes.  You must construct
+     individual fonts for all other pixel heights.  The CA-Clipper font
+     editor can make this easy.
+
+     When FONTLOAD() loads a font, it also computes the pixel height from the
+     font data length.  Since a font file always contains all 256 character
+     definitions, there is a formula:
+
+        Pixel height = LEN(Font-Data)/256
+
+     The <lOtherPixelHeight> parameter determines whether the fonts that do
+     not match the pixel height just set are accepted.  This must be
+     explicitly indicated, since the line count and screen mode will change.
+     For this reason, you must always link in the CTUS.LIB Extended Drivers
+     (see Table 6-1, returned value -4).
+
+ ^bNotes^b
+
+     ^b^CFE^b  You cannot use FONTRESET() when a font is loaded for which
+        there is no associated ROM font (all pixel heights except 8, 14, 16).
+        Prior to a FONTRESET(), switch back to a permissible mode.
+
+     ^b^CFE^b  All previously successful FONTSELECT() settings are discarded
+        again during FONTLOAD().
+
+     ^b^CFE^b  If an EGA card does not span the entire memory range, then you
+        can reduce a maximum of four available font areas.  MAXFONT()
+        determines the number of available fonts.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Load all 256 characters of an EGA font in area 2:
+
+        ? FONTLOAD("\FONTS\OLDENG.014", 2)              // 0 OK<
+        FONTSELECT(2)
+
+     ^b^CFE^b  Exchange the fonts for the upper 128 characters in area 3:
+
+        ? FONTLOAD("\FONTS\OLDENG.EGA", 3, 128, 128)    // 0 OK
+        FONTSELECT(3)                                   // Select
+
+     ^b^CFE^b  Load a 24-pixel font in the last font area:
+
+        ? FONTLOAD("\FONTS\PC.024", MAXFONT(), .T.)
+
+!seealso: "FONTSELECT()" "FONTRESET()" "GETFONT()" "SETFONT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FONTRESET()  Resets all font and palette changes to the ROM defaults
+'------------------------------------------------------------------------------
+ ^bFONTRESET()^b
+ Resets all font and palette changes to the ROM defaults
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFONTRESET() --> lReset
+
+ ^bReturns^b
+
+     FONTRESET() returns .T. when all font and palette settings are reset.
+
+ ^bDescription^b
+
+     This function resets all the settings implemented with FONTLOAD(),
+     SETFONT(), and FONTSELECT().  Settings implemented with EGAPALETTE() or
+     VGAPALETTE() are also reset.  In addition, the border color set with SET
+     COLOR TO is reset.
+
+     ^bTable 6-2: Settings affected by FONTRESET()^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bSettings                    Functions concerned^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     All font information        FONTLOAD(), FONTSELECT, SETFONT()
+     All palette information.    EGAPALETTE(), VGAPALETTE()
+     Border attribute            CA-Clipper:  SET COLOR TO
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  No ROM fonts exist for screen modes that are not based on 8,
+        14 or 16 pixels.  You cannot implement FONTRESET() in this situation.
+
+ ^bExample^b
+
+     Reset all changes to fonts and palettes:
+
+     ? FONTRESET()         // .T., if ok
+
+!seealso: "FONTLOAD()" "FONTSELECT()" "EGAPALETTE()" "VGAPALETTE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FONTROTATE() Rotates and mirrors images within a font string
+'------------------------------------------------------------------------------
+ ^bFONTROTATE()^b
+ Rotates and mirrors images within a font string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFONTROTATE(<cFontstring>,<nTurnDirection>
+     ^b   [<nPixelHeight>],[<nStart>]) --> cNewFontString
+
+ ^bArguments^b
+
+     ^b<cFontstring>^b[@]  Designates the font in character string form,
+     within which the characters are rotated or mirrored.
+
+     ^b<nTurnDirection>^b  Designates the rotation axis or rotation direction
+     in numeric form with a value from 1 to 3 (see Description).
+
+     ^b<nPixelHeight>^b  Designates the accompanying pixel height and number
+     of bytes that represent an individual character within a font string.
+     This is only necessary for modes 1 and 3.
+
+     ^b<nStart>^b  (This is for only for mode 1.)  Designates from which
+     pixel line (from which byte), the 8 bytes are rotated.  Based on
+     <nPixelHeight>, the bytes before and after this range are deleted (set
+     to 0).  The first byte of the character corresponds to the 0 value.
+
+ ^bReturns^b
+
+     If CSETREF() is not implemented, FONTROTATE() returns an amended font
+     string.
+
+ ^bDescription^b
+
+     FONTROTATE() rotates the characters within a font string in different
+     directions.  Rotation direction affects the number of characters that
+     can rotate.
+
+ ^bConstructing Fonts^b
+
+     If a font is transferred to a string with GETFONT() and the same number
+     of bytes are used for an individual character each time, as specified by
+     the current font height from CHARPIX().  For example, if a 14-pixel font
+     is installed, then the font string contains 256 groups of 14 bytes.
+     Each of these bytes represents a horizontal pixel line.  Since the
+     characters are always 8 pixels wide, one bit always represents this
+     pixel.
+
+ ^bDirection of Rotation 1^b
+
+     If a font uses GETFONT() to transfer a string, then a comparable number
+     of bytes are used each time for an individual character, as specified by
+     the current font height in CHARPIX().  Since only an
+     8-pixel width is ever available, only 8 bytes are rotated for each
+     character every time.  To determine these bytes, you must designate the
+     pixel height <nPixelheight> and the start of the 8-byte area
+      <nStart> .  All bytes above and below the rotation are cleared (set to
+     0). The rotation point is determined by the computation <nStart> + 4.
+
+ ^bDirection of Rotation 2^b
+
+     In this mode, the characters are rotated 180 degrees on the vertical
+     axis (the Y-axis), and thereby mirrored.  The <nPixelheight> and
+     <nStart> parameters are unnecessary, since only the bits in each byte
+     are mirrored.
+
+ ^bDirection of Rotation 3^b
+
+     In this mode, the characters are rotated 180 degrees on the horizontal
+     axis (X-axis), and thereby mirrored in the other direction.  You must
+     specify the <nPixelheight> parameter.  The <nStart> parameter is not
+     needed, since the character is affected through its entire height.
+
+ ^bCombinations^b
+
+     Since modes 1 to 3 support all three rotation directions, multiple
+     function calls allow you to combine the rotation operations and create
+     rotated and mirrored characters.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The entire string is always worked on.  If you only want to
+        change a region of characters on the screen, it can be done easily
+        and is regulated by the SETFONT() optional parameter, when you write
+        the font back to the screen adapter.
+
+     ^b^CFE^b  If the parameter is passed by reference, use CSETREF() to
+        suppress the return value and increase the speed.
+
+ ^bExample^b
+
+     In the following example, the screen is first filled with characters and
+     then rotated.  This is particularly useful in the VGA 50-line mode,
+     since it has an 8 x 8 pixel matrix and none of the characters are cut
+     off.
+
+     All parameters for FONTROTATE() are designated in such a generalized
+     manner that you can use them for other pixel relationships.
+
+     CSETREF(.T.)                   // Optimize by reference method
+     nMODE  := GETSCRMODE()         // Save old mode
+     VGA50()
+     FOR I := 0 TO MAXROW()         // Build screen
+        @ I, 0 SAY CENTER("ABCDEFGHIJKLMNOPQRSTUVWXYZ- 1234567890")
+     NEXT I
+     nPixel  :=  CHARPIX()          // Determine font pixel count
+     cFont   :=  GETFONT()          // Load font to variable
+     nKey      :=  0
+     DO WHILE Key <<>> 27
+        MILLISEC(100)               // Time delay
+        FONTROTATE(@cFont, 1, nPixel, (nPixel-8)/2)
+        SETFONT(cFont)
+        nKey  :=  INKEY()
+     ENDDO
+     SETSCRMODE(nMODE)              // Reset to original mode
+     RETURN
+
+!seealso: "SETFONT()" tool_005.ngo:"CSETREF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FONTSELECT() Determines font areas for normal- and high-intensity output
+'------------------------------------------------------------------------------
+ ^bFONTSELECT()^b
+ Determines font areas for normal- and high-intensity output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFONTSELECT(<nFontArea>, [<nIntensiveFontArea>])
+     ^b    --> nErrorCode
+
+ ^bArguments^b
+
+     ^b<nFontArea>^b  Designates which font area the normal output mode
+     should use.
+
+     ^b<nIntensiveFontArea>^b  Designates which font area the higher-
+     intensity output mode should use.  The default is <nFontArea>.
+
+ ^bReturns^b
+
+     FONTSELECT() returns an error code with the following meaning:
+
+     ^bTable 6-3: Error code definitions^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0      Font loaded successfully
+     -1      Invalid font area specified
+     -2      Impossible in current video mode
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     This function selects the font areas for both normal output and higher-
+     intensity output.  Use SET COLOR TO with "+", to bring up to 512
+     different characters to the screen at the same time.  The second font is
+     displayed at a higher intensity.  If this is not what you want, you can
+     change the display (not the attribute itself) with
+     EGAPALETTE()/VGAPALETTE().  The system is preset for both output modes
+     and corresponds to a call of FONTSELECT(1, 1).
+
+ ^bNote^b
+
+     ^b^CFE^b  After you change the video mode with SETSCRMODE(), the fonts
+        must be re-selected.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show font area 1 with normal output and area 4 with high
+        intensity:
+
+        ? FONTSELECT(1, 4)      // 0  OK
+        SET COLOR TO W
+        ? "Nantucket"           // Output over font 1
+        SET COLOR TO W+         // Output over font 4
+
+     ^b^CFE^b  Show font area 2 for both output modes:
+
+        ? FONTSELECT(2)
+
+!seealso: "FONTLOAD()" "FONTRESET()" tool_003.ngo:"SETSCRMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETCLEARA()  Queries the current attribute for the clearing functions
+'------------------------------------------------------------------------------
+ ^bGETCLEARA()^b
+ Queries the current attribute for the clearing functions
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETCLEARA() --> nClearAttribute
+
+ ^bReturns^b
+
+     GETCLEARA() returns the value of the current standard attribute.
+
+ ^bDescription^b
+
+     GET CLEAR (A)ttribute
+     This function determines the standard attribute for some CA-Clipper
+     Tools functions with screen output.  In this discussion, the attribute
+     is referred to as CLEARA and the character as CLEARB.  GETCLEARA()
+     queries the current standard attribute.
+
+ ^bNote^b
+
+     ^b^CFE^b  The standard attribute is 7 (white on black), if no other
+        attribute is set with SETCLEARA().
+
+ ^bExamples^b
+
+     Display the current standard attribute:
+
+     GETCLEARA()         // e.g. 7
+
+!seealso: "SETCLEARA()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETCLEARB()  Queries the default character for the clearing functions
+'------------------------------------------------------------------------------
+ ^bGETCLEARB()^b
+ Queries the default character for the clearing functions
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETCLEARB() --> nClearCharacter
+
+ ^bReturns^b
+
+     GETCLEARB() returns the value of the current standard character CLEARB.
+
+ ^bDescription^b
+
+     GET CLEAR (B)yte
+     This function determines the standard character for some CA-Clipper
+     Tools functions with screen output.  In this discussion, the attribute
+     is referred to as CLEARA and the character as CLEARB.  GETCLEARB()
+     queries the current standard character set as CLEARB.
+
+ ^bNote^b
+
+     ^b^CFE^b  The standard character is CHR(255) when no other character is
+        set with SETCLEARB().
+
+ ^bExample^b
+
+     Display the current standard character:
+
+     ? GETCLEARB()         // e.g. 255
+
+!seealso: "SETCLEARB()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETFONT()    Queries the current font
+'------------------------------------------------------------------------------
+ ^bGETFONT()^b
+ Queries the current font
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETFONT([<nFontArea>]) --> cFontString
+
+ ^bArgument^b
+
+     ^b<nFontArea>^b  Designates out of which font area within the screen
+     adapter, the font is loaded into a string.  Values from 1 to MAXFONT()
+     are permitted.
+
+ ^bReturns^b
+
+     GETFONT() returns a font from the selected area in string form.
+
+ ^bDescription^b
+
+     GETFONT() transfers a font table from an available font area on the
+     screen card into a string.  This allows you to store loaded fonts.
+
+ ^bNote^b
+
+     ^b^CFE^b  If an invalid value is specified for <nFontArea>, the function
+        returns a null string.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Save font 1 ...
+
+        cVar  := GETFONT(1)
+
+     ^b^CFE^b  ...and reset again:
+
+        ? SETFONT(cVar, 1)      // 0, if OK
+
+!seealso: "SETFONT()" "FONTLOAD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETSCRSTR()  Queries screen output that was redirected by SETSCRSTR()
+'------------------------------------------------------------------------------
+ ^bGETSCRSTR()^b
+ Queries screen output that was redirected by SETSCRSTR()
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETSCRSTR() --> cHiddenCharacterstring
+
+ ^bReturns^b
+
+     GETSCRSTR() returns the content of the internal memory area determined
+     by SETSCRSTR().
+
+ ^bDescription^b
+
+     GETSCRSTR() returns the contents of the internal memory area (determined
+     by SETSCRSTR(.T.)) for hidden screen output .  This return value has a
+     length that always corresponds to SCREENSIZE(.T.).  You can pass it to a
+     variable and after the mode is switched off, transfer it to the CA-
+     Clipper RESTSCREEN() function.  The variable must be passed before the
+     redirected output mode is shut off with SETSCRSTR(.F.).  Otherwise, the
+     internal memory area is deallocated and GETSCRSTR() returns a null
+     string.
+
+ ^bNote^b
+
+     ^b^CFE^b  Since the entire screen output is always redirected
+        (independent of its actual size), you should always call RESTSCREEN()
+        with the maximum coordinates of 0, 0, MAXROW(), and MAXCOL()
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show hidden output, switched back to the physical screen, if
+        the need should arise:
+
+        WSELECT(0)
+        ? SETSCRSTR(.T.)            // .T., when mode on
+        @ 10, 10 SAY "XXXXXXX"      // Normal screen output
+           *...
+        @ 15, 10 SAY "YYYYYYY"
+
+     ^b^CFE^b  Always call the GETSCRSTR() function before SETSCRSTR(.F.)
+
+        cVar  :=  GETSCRSTR()
+        ? SETSCRSTR(.F.)            // .F. when mode off
+        RESTSCREEN(0, 0, MAXROW(), MAXCOL(), cVar)
+
+!seealso: "SETSCRSTR()" tool_003.ngo:"MAXROW()" tool_003.ngo:"MAXCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETVGAPAL()  Determines the palette settings on a VGA card
+'------------------------------------------------------------------------------
+ ^bGETVGAPAL()^b
+ Determines the palette settings on a VGA card
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bGETVGAPAL(<nColor|cColor>,<cRGB>)
+     ^b    --> nPaletteValue
+
+ ^bArguments^b
+
+     ^b<nColor>|<cColor>^b  Designates a color represented by a number in the
+     range of 0 to 15, or a color code that corresponds to the one in SET
+     COLOR TO.
+
+     ^b<cRGB>^b  May designate as R, G, or B to determine the corresponding
+     palette value.
+
+ ^bReturns^b
+
+     GETVGAPAL() returns the red, green, or blue palette value for the
+     designated color.  When invalid paramerters are specified, a value of -1
+     is returned.
+
+ ^bDescription^b
+
+     On a VGA adapter, each color is a combination of the three values for
+     red, green and blue.  Each value can be in the range of 0 to 63, to
+     permit you to install different color palettes.
+
+     GETVGAPAL() queries the R, G, and B values for all 16 colors.  The
+     individual color can be a number in the range of 0 to 15, or represented
+     as a color code corresponding to the CA-Clipper SET COLOR TO.
+
+ ^bNote^b
+
+     ^b^CFE^b  This function is implemented in the enclosed Colorpal.prg
+        program.
+
+ ^bExample^b
+
+     Determines the palette value of red in the color cyan:
+
+     GETVGAPAL("BG", "R")
+
+!seealso: "VGAPALETTE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INVERTATTR() Inverts the foreground and background of an attribute
+'------------------------------------------------------------------------------
+ ^bINVERTATTR()^b
+ Inverts the foreground and background of an attribute
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINVERTATTR(<cAttr|nAttr>) --> nInvertAttr
+
+ ^bArgument^b
+
+     ^b<cAttr|nAttr>^b  Designates the attribute to process.
+
+ ^bReturns^b
+
+     INVERTATTR() returns the value of the inverted attribute.
+
+ ^bDescription^b
+
+     INVERTATTR() returns a value that corresponds to the opposite of an
+     individual screen attribute.  This is same as if you were to exchange
+     the foreground color for the background.  For example, red characters on
+     a white background, become white characters on a red background.
+
+     This new attribute can be used in conjunction with such functions as
+     SCREENATTR(), COLORWIN(), and COLORREPL().
+
+ ^bNotes^b
+
+     ^b^CFE^b  The flashing and high-intensity attributes are not affected.
+
+     ^b^CFE^b  The result is always numeric, regardless of the parameter's
+        data type.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Invert the attributes at the current cursor position.  In
+        doing so, the attribute is not set:
+
+        ? INVERATTR(SCREENATTR())
+
+     ^b^CFE^b  You can represent the attribute in a number of different ways.
+        The returned value is always numeric:
+
+        8                           // Result:  30
+
+     ^b^CFE^b  An invalid attribute:
+
+        ? INVERTATTR("xx/yy")       // Result:  0
+
+!seealso: "SCREENATTR()" "NTOCOLOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: INVERTWIN()  Inverts all attributes in an area of the screen
+'------------------------------------------------------------------------------
+ ^bINVERTWIN()^b
+ Inverts all attributes in an area of the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bINVERTWIN([<nTopLine>], [<nLeftColumn>],
+     ^b   [<nBottomLine>], [<nRightColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nTopLine>^b  Designates the topmost line for the top-left corner of
+     the area.  The default is the cursor position.
+
+     ^b<nLeftColumn>^b  Designates the leftmost column for the top-left
+     corner of the area.  The default is the cursor position.
+
+     ^b<nBottomLine>^b  Designates the bottommost line for the bottom-right
+     corner of the area.  The default is the end of the screen area.
+
+     ^b<nRightColumn>^b  Designates the rightmost column for the bottom-right
+     corner of the area.  The default is the end of the screen area.
+
+ ^bReturns^b
+
+     The function always returns a null string.
+
+ ^bDescription^b
+
+     This function permits you to invert all attributes within a screen area.
+     Background attributes are exchanged for those in the foreground.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Invert the attributes in an area:
+
+        INVERTWIN(10, 10, 20, 70)      // Always returns a null string
+
+     ^b^CFE^b  Invert to end of screen:
+
+        INVERTWIN(10, 10)
+
+!seealso: "INVERTATTR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISCGA()      Tests for presence of a CGA card or if one can be emulated
+'------------------------------------------------------------------------------
+ ^bISCGA()^b
+ Tests for presence of a CGA card or if one can be emulated
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISCGA([<lMode>]) --> lCGA
+
+ ^bArgument^b
+
+     ^b<lMode>^b  When designated as .T., tests to see if a CGA card is
+     available.  The default value of .F. tests to see if a CGA adapter can
+     be emulated.
+
+ ^bReturns^b
+
+     Depending on the <lMode> parameter, ISCGA() returns .T. when a CGA card
+     is available, or if a CGA adapter can be emulated.
+
+ ^bDescription^b
+
+     You can determine two things with this function.  When designated as .F.
+     or when called without a parameter, ISCGA() tests it see if a CGA
+     adapter can be emulated.  This can be the case with an EGA or VGA card.
+     When designated as .T., the function determines if a CGA card is
+     available.
+
+ ^bNote^b
+
+     ^b^CFE^b  Use GETMODE() to determine which mode is active.
+
+ ^bExample^b
+
+     Can CGA be emulated?
+
+     IF ISCGA()
+     *...
+     ENDIF
+     CGA-Card?
+     IF ISCGA(.T.)
+     *...
+     ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISEGA()      Determines if an EGA card is present or can be emulated
+'------------------------------------------------------------------------------
+ ^bISEGA()^b
+ Determines if an EGA card is present or can be emulated
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISEGA([<lMode>]) --> lEGA
+
+     ^bImportant!^b  Contains <lMode>, an additional optional parameter over
+     and above the original CA-Clipper Tools.
+
+ ^bArgument^b
+
+     ^b<lMode>^b  When designated as .T., determines if an EGA card is
+     present.  The default value of .F. tests to see if an EGA adapter can be
+     emulated.
+
+ ^bReturns^b
+
+     In conjunction with the <lMode> parameter, ISEGA() returns .T. when an
+     EGA card is present or an EGA adapter can be emulated.
+
+ ^bDescription^b
+
+     This function determines two things.  When <lMode>  is designated as .F.
+     or the function is called without a parameter, ISEGA() determines if an
+     EGA adapter can be emulated.  This could be the case with a VGA card.
+     When <lMode> is .T.,  it determines if an EGA card present.
+
+ ^bNote^b
+
+     ^b^CFE^b  Use GETMODE() to determine the active mode.
+
+ ^bExample^b
+
+     Can EGA be emulated?
+
+     If ISEGA()
+        * ...
+     ENDIF
+     EGA card?
+     IF ISEGA(.T.)
+        * ...
+     ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISHERCULES() Determines if a HERCULES card is present or can be emulated
+'------------------------------------------------------------------------------
+ ^bISHERCULES()^b
+ Determines if a HERCULES card is present or can be emulated
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISHERCULES([<lMode>]) --> lHERCULES
+
+     ^bImportant!^b  Contains <lMode>, an additional optional parameter over
+     and above the original CA-Clipper Tools.
+
+ ^bArgument^b
+
+     ^b<lMode>^b  When designated as .T., determines if a HERCULES card is
+     present.  The default value .F. tests to see if a Herculess adapter can
+     be emulated.
+
+ ^bReturns^b
+
+     In conjunction with the <lMode> parameter, ISHERCULES() returns a .T.
+     when a HERCULES card is present or a HERCULES adapter can be emulated.
+
+ ^bDescription^b
+
+     This function determines two things.  When <lMode>  is designated as
+     .F., or the function is called without parameter, ISHERCULES()
+     determines if a HERCULES adapter can be emulated.  This could be the
+     case with a VGA or EGA card.  When <lMode> is .T., it determines if
+     there is a HERCULES card present.
+
+ ^bNotes^b
+
+     ^b^CFE^b  GETMODE() determines the active mode.
+
+     ^bWarning!^b  Although our function implies it, not all EGA and VGA
+     cards can emulate HERCULES.  In most cases, a HERCULES emulation on a
+     VGA card is possible , but it cannot be determined with absolute
+     certainty.  As long as the text is output under CA-Clipper, working with
+     ISMONO() should be sufficient
+
+ ^bExample^b
+
+     Can HERCULES be emulated?
+
+     If ISHERCULES()
+        * ...
+     ENDIF
+     HERCULES card?
+     IF ISHERCULES(.T.)
+        * ...
+     ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISMCGA()     Determines if an MCGA card is present or can be emulated
+'------------------------------------------------------------------------------
+ ^bISMCGA()^b
+ Determines if an MCGA card is present or can be emulated
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISMCGA([<lMode>]) --> lMCGA
+
+ ^bArgument^b
+
+     ^b<lMode>^b  When designated as .T. tests to see if an MCGA card is
+     actually available.  The default value of .F. tests to see if a
+     monochrome adapter can be emulated.
+
+ ^bReturns^b
+
+     Depending on the <lMode> parameter, the function returns .T. when a MCGA
+     card is available or if an MCGA adapter can be emulated.
+
+ ^bDescription^b
+
+     You can determine two things with this function. When designated as .F.
+     or when called without a parameter, ISMCGA() tests to see if a
+     monochrome adapter can be emulated.  This can happen with a HERCULES,
+     EGA, or VGA card.  When designated as .T., the function determines if a
+     Monochrome card is available.
+
+ ^bNote^b
+
+     ^b^CFE^b  GETMODE() determines the active mode.
+
+ ^bExample^b
+
+     Can MCGA be emulated?
+
+     IF ISMCGA()
+     *...
+     ENDIF
+     MCGA-Card?
+     IF ISMCGA(.T.)
+     *...
+     ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISMONO()     Determines if a monochrome card is present or can be emulated
+'------------------------------------------------------------------------------
+ ^bISMONO()^b
+ Determines if a monochrome card is present or can be emulated
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISMONO([<lMode>]) --> lMonochrome
+
+ ^bArgument^b
+
+     ^b<lMode>^b   When designated as .T., tests to  see if a monochrome card
+     is available.  The default value of .F. tests to see if a monochrome
+     card can be emulated.
+
+ ^bReturns^b
+
+     Depending on the <lMode> parameter, ISMONO() returns .T. when a
+     monochrome card is available, or if a monochrome adapter can be
+     emulated.
+
+ ^bDescription^b
+
+     This function determines two things.  When designated as .F. or when
+     called without a parameter, ISMONO() tests to see if a monochrome
+     adapter can be emulated.  This can be the case with a HERCULES, EGA, or
+     VGA card.  When designated as .T., the function determines if a
+     monochrome card is available.
+
+ ^bNote^b
+
+     ^b^CFE^b  GETMODE() determines the active mode.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Can monochrome be emulated?
+
+        IF ISMONO()
+           *...
+        ENDIF
+
+     ^b^CFE^b  Monochrome adapter?
+
+        IF ISMONO(.T.)
+           *...
+        ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" tool_003.ngo:"MONOCHROME()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISPGA()      Determines if a PGA card is present or can be emulated
+'------------------------------------------------------------------------------
+ ^bISPGA()^b
+ Determines if a PGA card is present or can be emulated
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISPGA([<lMode>]) --> lPGA
+
+ ^bArgument^b
+
+     ^b<lMode>^b  When designated as .T., tests to see if a PGA card is
+     available.  The default value of .F. tests to see if a PGA adapter can
+     be emulated.
+
+ ^bReturns^b
+
+     Depending upon the <lMode> parameter, ISPGA() returns .T. when a PGA
+     card is available or if a PGA adapter can be emulated.
+
+ ^bDescription^b
+
+     This function can determine two things.  When designated as. F. or when
+     called without a parameter, ISPGA() tests to see if a PGA adapter can be
+     emulated.  This can be the case with an EGA or VGA card.  When
+     designated as .T., the function determines if a PGA card is actually
+     available.
+
+ ^bNote^b
+
+     ^b^CFE^b  Use GETMODE() to determine the active mode.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Can PGA be emulated?
+
+        IF ISPGA()
+           *...
+        ENDIF
+
+     ^b^CFE^b  PGA card?
+
+        IF ISPGA(.T.)
+           *...
+        ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ISVGA()      Determines if a VGA card is present
+'------------------------------------------------------------------------------
+ ^bISVGA()^b
+ Determines if a VGA card is present
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bISVGA() --> lVGA
+
+ ^bReturns^b
+
+     ISVGA() returns .T. when a VGA card is available.
+
+ ^bDescription^b
+
+     The function tests to see if the screen card is a VGA adapter.  Use
+     GETMODE() to determine the active mode.
+
+ ^bExample^b
+
+     Is VGA adapter available?
+
+     IF ISVGA()<R>
+     ^b   *...^b
+     ENDIF
+
+!seealso: "VIDEOTYPE()" tool_003.ngo:"GETMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MAXFONT()    Determines the number of available fonts
+'------------------------------------------------------------------------------
+ ^bMAXFONT()^b
+ Determines the number of available fonts
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMAXFONT() --> nFontCount
+
+ ^bReturns^b
+
+     MAXFONT() returns the number of fonts you can load simultaneously within
+     the screen card in use.
+
+ ^bDescription^b
+
+     Depending upon the screen adapter and its available memory, a various
+     number of screen fonts can be loaded simultaneously.  MAXFONT() returns
+     the maximum number of loadable fonts and is very helpful when used in
+     conjunction with FONTLOAD() or SETFONT().
+
+ ^bNote^b
+
+     ^b^CFE^b  As a rule, EGA adapters support four different font areas and
+        VGA adapters support eight.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Load a font in the highest font area available...
+
+        FONTLOAD("ITALIC.016", MAXFONT())
+
+     ^b^CFE^b  ...and then select that font:
+
+        FONTSELECT(MAXFONT())
+
+!seealso: "FONTLOAD()" "SETFONT()" "FONTSELECT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: MONISWITCH() Switches between monochrome and color screen
+'------------------------------------------------------------------------------
+ ^bMONISWITCH()^b
+ Switches between monochrome and color screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bMONISWITCH() --> lSwitched
+
+ ^bReturns^b
+
+     When the switching is successful, MONISWITCH() returns .T.; otherwise,
+     it returns false .F..
+
+ ^bDescription^b
+
+     Today's IBM standard PC permit the simultaneous use of a monochrome card
+     and CGA, EGA, or VGA color adapters because their screen memory base
+     addresses do not conflict with each other.
+
+     You could also use MONISWITCH() to switch back and forth between screens
+     from within a CA-Clipper application.  ISCOLOR() determines which screen
+     is currently in use.
+
+     CA-Clipper Tools does not just offer the simple capability to switch
+     between two screens.  Two totally independent video systems are used
+     internally and all of the accompanying settings that go with them are
+     saved when you switch.  In addition, there are two window systems that
+     can display up to 256 windows per screen at one time.
+
+ ^bNote^b
+
+     ^b^CFE^b  When you first switch, the selected screen is both initialized
+        and cleared at the same time.  All subsequent switches retain all
+        screen information.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The "*" is switched from monochrome and output on the color
+        screen in a loop:
+
+        FOR I = 1 TO 79
+           ?? "*"
+           MONISWITCH()
+        NEXT I
+
+     ^b^CFE^b  Since an uneven loop counter was used in the example on the
+        previous page, the adapter used when you started will not be selected
+        after execution.  Use ISCOLOR() to determine the selected adapter:
+
+        ? ISCOLOR()                     // .T., when color screen selected
+
+     ^b^CFE^b  The following example shows how the current value for two
+        screen adapters is determined.  With the double exchange, the current
+        selection is retained:
+
+        ? MONISWITCH(MONISWITCH())      // When .T., 2 screen adapters
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NTOCOLOR()   Converts a numeric value into a color value
+'------------------------------------------------------------------------------
+ ^bNTOCOLOR()^b
+ Converts a numeric value into a color value in the NN/NN or CC/CC form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNTOCOLOR(<nAttr>, [<lColorCode>]) --> cAttr
+
+ ^bArguments^b
+
+     ^b<nAttr>^b   Designates the value for the combined numeric color
+     attributes.
+
+     ^b<lColorCode>^b  If designated as .F. or if the parameter is omitted,
+     NTOCOLOR() returns a string with a numeric color code.  When designated
+     as .T., NTOCOLOR() returns a string with the CA-Clipper alpha color
+     coding.
+
+ ^bReturns^b
+
+     NTOCOLOR() returns the designated color attribute in the NN/NN or CC/CC
+     form.
+
+ ^bDescription^b
+
+     NTOCOLOR() converts a color attribute returned from another function in
+     numeric form, into the alphanumeric data format.  Use this attribute in
+     conjunction with the CA-Clipper SET COLOR TO command.
+
+ ^bNotes^b
+
+     ^b^CFE^b  NTOCOLOR() returns a null string if the specified attributes
+        are invalid or unavailable attributes.  Acceptable values are in the
+        range of 0 and 255.
+
+     ^b^CFE^b  You cannot specify color attributes in letter format (e.g.,
+        "B/W") .
+
+ ^bExamples^b
+
+     ^b^CFE^b  Normal display (white on black):
+
+        ? NTOCOLOR(7)                 // 07/00
+        ? NTOCOLOR(7, .T.)            // W/N
+
+     ^b^CFE^b  Display red on white.  The numeric form 116 yields "04/07":
+
+        ? NTOCOLOR(116)               // 04/07
+        ? NTOCOLOR(116)               // R/W
+
+     ^b^CFE^b  An invalid parameter returns a null string:
+
+        ? NTOCOLOR(380)               // ""
+        ? NTOCOLOR(-1)                // ""
+
+!seealso: "COLORTON()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NUMCOL()     Restores the number of available screen columns
+'------------------------------------------------------------------------------
+ ^bNUMCOL()^b
+ Restores the number of available screen columns
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNUMCOL() --> nColumn
+
+ ^bReturns^b
+
+     NUMCOL() returns the number of columns available on the screen or in the
+     current window, under CA-Clipper.
+
+ ^bDescription^b
+
+     Use NUMCOL() to establish screen width to determine the line break for
+     output.
+
+     NUMCOL() receives its return value from the BIOS and then, in
+     conjunction with DSETWINDOW(), returns the number of columns on the
+     physical screen or for a window.
+
+ ^bExample^b
+
+     Column count for the open window:
+
+     WOPEN(10, 10, 20, 70)     // Open window
+     SETWINDOW(.T.)            // Default
+     ? NUMCOL()                // 61 columns
+     DSETWINDOW(.F.)           // Do not reroute external output?
+     NUMCOL()                  // 80 columns
+
+!seealso: tool_003.ngo:"MAXCOL()" tool_003.ngo:"MAXROW()" tool_003.ngo:"CGA40()" tool_003.ngo:"SETMAXCOL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RESTCURSOR() Restores a saved cursor position and form
+'------------------------------------------------------------------------------
+ ^bRESTCURSOR()^b
+ Restores a saved cursor position and form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRESTCURSOR(<nCursorSetting>) --> cNull
+
+ ^bArgument^b
+
+     ^b<nCursorSetting>^b  Designates a value previously returned by the
+     SAVECURSOR() function.
+
+ ^bReturns^b
+
+     RESTCURSOR() always returns a null string.
+
+ ^bDescription^b
+
+     With SAVECURSOR(), you can save three pieces of screen information. If
+     those return values are saved, then you can reset ROW(), COL(), and
+     CSETCURS() later with RESTCURSOR().
+
+ ^bExample^b
+
+     Save and restore:
+
+     nVar  :=  SAVECURSOR()
+     DO OUTPUT
+     RESTCURSOR(nVar)
+
+!seealso: "SAVECURSOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAVECURSOR() Saves current cursor position and form
+'------------------------------------------------------------------------------
+ ^bSAVECURSOR()^b
+ Saves current cursor position and form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAVECURSOR() --> nCursorSetting
+
+ ^bReturns^b
+
+     SAVECURSOR() returns a numeric value that corresponds to the setting for
+     ROW(), COL(), SETCURSOR(), and CSETCURS().
+
+ ^bDescription^b
+
+     SAVECURSOR() saves three pieces of screen information at one time.
+     SAVECURSOR() returns a combined numeric value that you can save and
+     restore later with RESTCURSOR().
+
+ ^bExample^b
+
+     Save and restore the cursor:
+
+     nVar  :=  SAVECURSOR()
+     DO OUTPUT
+     RESTCURSOR(nVar)
+
+!seealso: "RESTCURSOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAYDOWN()    Displays screen output downward and vertically
+'------------------------------------------------------------------------------
+ ^bSAYDOWN()^b
+ Displays screen output downward and vertically
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAYDOWN(<cCharacterstring>, [<nDelay>], [<nLine>],
+     ^b   [<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates vertical output for the string.
+
+     ^b<nDelay>^b  Designates that the time delay is set in milliseconds.
+     The default value is 4.
+
+     ^b<nLine>^b  Designates from which line to begin the output.  The
+     default is the cursor line.
+
+     ^b<nColumn>^b  Designates from which column to begin the output.  The
+     default is the cursor column.
+
+ ^bReturns^b
+
+     SAYDOWN() always returns a null string.
+
+ ^bDescription^b
+
+     SAYDOWN() allows you to have a particular affect on a string output.
+     The output is done vertically, downward from the current or selected
+     cursor position, and can have a time delay between individual
+     characters.  When the last line of the screen is reached, the function
+     outputs one more character and then terminates.  The SET COLOR TO
+     setting is used as an attribute.  The current cursor position is not
+     changed with this function.
+
+ ^bNote^b
+
+     ^b^CFE^b  Control characters such as with @...SAY commands in CA-
+        Clipper, are not interpreted.
+
+ ^bExample^b
+
+     Show vertical output from line 10, column 10, with a 100-millisecond
+     time delay between characters:
+
+     SAYDOWN("Clipper", 100, 10, 10)
+     Line 10: C
+              L
+              I
+              P
+              P
+              E
+              R
+
+!seealso: "SAYSPREAD()" "SAYMOVEIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAYMOVEIN()  Displays screen output with a "move in" effect
+'------------------------------------------------------------------------------
+ ^bSAYMOVEIN()^b
+ Displays screen output with a "move in" effect
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAYMOVEIN(<cCharacterstring>, [<nDelay>],
+     ^b   [<nLine>], [<nColumn>], [<lDirection>])
+     ^b    --> cNull
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates the string to be output with the
+     "move in" effect.
+
+     ^b<nDelay>^b  Designates a time delay in milliseconds.  The default
+     value
+     is 4.
+
+     ^b<nLine>^b  Designates the line where the result is output.  The
+     default is the cursor line.
+
+     ^b<nColumn>^b  Designates the column where the result is output.  The
+     default is the cursor column.
+
+     ^b<lDirection>^b  Designates the direction that the characters are moved
+     onto the screen.  If you omit this parameter or designate it as .F., the
+     movement is from the left.  If you designate it as .T., the movement is
+     from the right onto the screen.  The default is movement from the left
+     (.F.).
+
+ ^bReturns^b
+
+     The function always returns a null string.
+
+ ^bDescription^b
+
+     SAY MOVE IN
+     This function has a particular effect on string screen output.  From a
+     certain position characters are individually moved in from the left or
+     right of the screen.  After this output, the cursor position is at the
+     end of the string.
+
+ ^bNote^b
+
+     ^b^CFE^b  Control characters, as with @...SAY commands in CA-Clipper are
+        not interpreted.
+
+ ^bExamples^b
+
+     Show special affect output beginning at line 10, column 10 with a
+     100-millisecond time delay.  The string is moved in from the left:
+
+     SAYMOVEIN("Clipper", 100, 10, 10)
+     Column 10:
+           r
+           er
+           per
+           pper
+           ipper
+           lipper
+           Clipper            // Result on line 10 !
+
+!seealso: "SAYSPREAD()" "SAYDOWN()" "SAVECURSOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAYSCREEN()  Output to the screen without changing the attribute
+'------------------------------------------------------------------------------
+ ^bSAYSCREEN()^b
+ Output to the screen without changing the attribute
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAYSCREEN(<cCharacterstring>, [<nRow>],
+     ^b   [<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates the character string to output.
+
+     ^b<nRow>^b  Designates the first line for the output.  The default is
+     the cursor line.
+
+     ^b<nColumn>^b  Designates the first column for the output.  The default
+     is the cursor column.
+
+ ^bReturns^b
+
+     SAYSCREEN() always returns a null string.
+
+ ^bDescription^b
+
+     SAYSCREEN() produces an screen output and retains all existing
+     attributes.  This means that only the characters are overwritten, while
+     the accompanying attributes remain unchanged.
+
+ ^bNote^b
+
+     ^b^CFE^b  The current cursor position is not changed with the output.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show the output text at the current cursor position:
+
+        SAYSCREEN("  Test SCREEN  ")
+
+     ^b^CFE^b  Show output text at the current column position on line 24:
+
+        SAYSCREEN("  Test SCREEN  ", 24)
+
+     ^b^CFE^b  Show output text at column 70, line 24:
+
+        SAYSCREEN("  Test SCREEN  ", 24, 70)
+
+     All examples in this function return a null string.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SAYSPREAD()  Displays screen output with "spread" effect
+'------------------------------------------------------------------------------
+ ^bSAYSPREAD()^b
+ Displays screen output with "spread" effect
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSAYSPREAD(<cCharacterstring>, [<nDelay>],
+     ^b   [<nLine>], [<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates the string to output with the spread
+     effect.
+
+     ^b<nDelay>^b  Designates a time delay in milliseconds.  The default
+     value
+     is 4.
+
+     ^b<nLine>^b  Designates the line from which the output begins.  The
+     default is the cursor line.
+
+     ^b<nColumn>^b  Designates the column from which the output begins.  The
+     default is the cursor column.
+
+ ^bReturns^b
+
+     SAYSPREAD() always returns a null string.
+
+ ^bDescription^b
+
+     SAYSPREAD() has a particular effect on a string output to screen.  From
+     a center point, which corresponds to the center of the screen, window or
+     <nColumn>, characters are displayed outward (they have a type of spread
+     effect).  The SET COLOR TO attribute setting is used.  The current
+     cursor position is not changed with this function.
+
+ ^bNote^b
+
+     ^b^CFE^b  Control characters, as with @...SAY commands in CA-Clipper are
+        not interpreted.
+
+ ^bExample^b
+
+     Show special effect output that begins in the middle of the screen or
+     window at line 10, with a 100-millisecond time delay:
+
+     SAYSPREAD("Characters", 100, 10)
+
+     Output will be in the following steps, but always on the same line:
+
+               ac
+              ract
+             aracte
+            haracter
+           Characters         // Result on line 10
+
+!seealso: "SAYMOVEIN()" "SAYDOWN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCREENATTR() Determines the attribute at a particular position
+'------------------------------------------------------------------------------
+ ^bSCREENATTR()^b
+ Determines the attribute at a particular position
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCREENATTR([<nRow>], [<nColumn>]) --> nAttr
+
+ ^bArguments^b
+
+     ^b<nRow>^b  Designates the line from which to determine the attribute.
+     The default is the cursor line.
+
+     ^b<nColumn>^b  Designates the column from which to determine the
+     attribute.  The default is the cursor column.
+
+ ^bReturns^b
+
+     SCREENATTR() returns the attribute at the designated position.
+
+ ^bDescription^b
+
+     SCREENATTR() returns the current screen attribute at <nRow> and
+     <nColumn>.  You can query targeted attributes this way and save them to
+     use later, or process them later with INVERTATTR().
+
+ ^bNote^b
+
+     ^b^CFE^b  If no parameters are passed, the current cursor position is
+        queried.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The attribute for the current cursor position:
+
+        nVar:= SCREENATTR()
+
+     ^b^CFE^b  The attribute at the current column position in line 23:
+
+        nVar:= SCREENATTR(23)
+
+     ^b^CFE^b  The attribute at column 70, line 23:
+
+        nVar:= SCREENATTR(23, 70)
+
+!seealso: "INVERTATTR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCREENFILE() Writes screen content to a file
+'------------------------------------------------------------------------------
+ ^bSCREENFILE()^b
+ Writes screen content to a file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCREENFILE(<cFileName>, [<lOverwrite>],
+     ^b   [<nOffset>]), [<lTrim>] --> nBytesWritten
+
+ ^bArguments^b
+
+     ^b<cFileName>^b  Designates the name and path of the screen file.
+
+     ^b<lOverwrite>^b  Designates whether you are to append to an existing
+     file (.T.), or to overwrite it (.F.).  The default is overwrite (.F.).
+
+     ^b<nOffset>^b  Designates the file offset from which you append, when
+     <lOverwrite> is designated as .T..  The default is the end of file.
+
+     ^b<lTrim>^b  If this optional parameter is designated as .T., the
+     function trims the file when the written data ends and before the last
+     byte of the file.  The default is do not trim (.F.).
+
+ ^bReturns^b
+
+     SCREENFILE() returns the number of bytes written to the screen file.
+
+ ^bDescription^b
+
+     SCREENFILE() saves the contents of a screen to a file.  Since the
+     CA-Clipper SAVE SCREEN and RESTORE SCREEN also work with windows when
+     you use the CA-Clipper Tools Extended Drivers, use SCREENFILE() to save
+     the entire screen.  The number of characters you can write this way
+     depends on the respective screen mode.  For example, in a 50-line VGA
+     mode you can write 8000 instead of 4000 characters.  Use SCREENSIZE() to
+     determine the exact screen size at any given time.  You can only use the
+     <nOffset> parameter when you specify <lOverwrite> at the same time.
+     <nOffset> then specifies from which position in the screen file the new
+     screen data is to be written.  If the <nOffset> position lies before the
+     end of the file, the file is overwritten.  If it exceeds the end of the
+     file, the data is appended.  The default value for <nOffset> is
+     selected, so if you omit it and designate <lOverwrite> as .T., the file
+     is appended.  This behavior allows you to save the contents of several
+     screens to a file.
+
+     It is possible that a screen could be written to an already existing
+     file, and that everything beyond this screen is trimmed off.  The
+     <lTrim> logical parameter must be designated as .T..
+
+ ^bNotes^b
+
+     ^b^CFE^b  If SCREENFILE() creates a new file, use SETFCREATE() to create
+        an alternate attribute for this new file .
+
+     ^b^CFE^b  If you turn on the CA-Clipper Tools CSETSAFETY() internal
+        switch, the target file is not overwritten, even if the <lOverwrite>
+        parameter is designated as .F..
+
+     ^b^CFE^b  Wildcards within the file name are not permitted here.
+
+ ^bExamples^b
+
+     ^b^CFE^b  An existing file is overwritten:
+
+        SCREENFILE("screen.tst")                        // Result:  4000>
+        SCREENFILE("\screen.tst")                       // Result:  4000>
+        SCREENFILE("a:\screen.tst")                     // Result:  4000
+
+     ^b^CFE^b   On a VGA card in 50-line mode:
+
+        SCREENFILE("screen.tst")                        // Result:  8000
+
+     ^b^CFE^b  The file is appended:
+
+        SCREENFILE("screen.tst", .T. )                  // Result:  4000
+
+     ^b^CFE^b  Insert a screen from an offset of 4000 ( i.e., after the first
+        screen):
+
+        SCREENFILE("screen.tst", .T., 4000)             // Result:  4000
+
+     ^b^CFE^b  Insert a screen after the third screen:
+
+        SCREENFILE("screen.tst", .T., 12000)            // Result:  4000
+
+     ^b^CFE^b  Overwrite an existing file in the fourth screen and trim off
+        the rest of the file:
+
+        SCREENFILE("screen.tst", .T., 12000, .T.)       // Result:  4000
+
+     ^b^CFE^b  Wildcards not permitted:
+
+        SCREENFILE("screen.*")                          // Result:  0
+
+!seealso: "FILESCREEN()" "SCREENSIZE()" tool_012.ngo:"CSETSAFETY()" tool_008.ngo:"SETFCREATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCREENMARK() Searches for a string and marks it with an attribute
+'------------------------------------------------------------------------------
+ ^bSCREENMARK()^b
+ Searches for a string on the screen and marks it with an attribute
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCREENMARK(<cSearchString>, <cAttr|nAttr>,
+     ^b   <lUpperLower>, [<lAll>],
+     ^b   [<cForwardDelimiter>],    [<cTrailingDelimiter>])
+     ^b    --> lFound
+
+ ^bArguments^b
+
+     ^b<cSearchString>^b  Designates the character string to search for in
+     screen memory.
+
+     ^b<cAttr|nAttr>^b  Designates the new color attribute to use in the
+     sequence located in screen memory.  Can be specified as a numeric or in
+     the manner required under CA-Clipper.
+
+     ^b<lUpperLower>^b  Designates whether the function is case sensitive
+     (.T.) or not (.F.).
+
+     ^b<lAll>^b  Designates whether to mark each occurrence (.T.) or only the
+     first (.F.).  The default marks only the first (.F.).
+
+     ^b<cForwardDelimiter>^b  This optional parameter designates which
+     character preceding the <cSearchString> to use as a delimiter.  The
+     default is no delimiter considered.
+
+     ^b<cTrailingDelimiter>^b  This optional parameter designates which
+     character after the <cSearchString> to use as a delimiter.  The default
+     is no delimiter considered.
+
+ ^bReturns^b
+
+     SCREENMARK() returns a .T. when it locates the designated string at
+     least once.
+
+ ^bDescription^b
+
+     SCREENMARK() searches in the screen memory for a specified character
+     sequence and emphasizes it with a new attribute.  For example, you could
+     mark words out of MEMOEDIT() in inverse video.  When you press a cursor
+     key, SCREENMARK() is always called in the MEMOEDIT() that controls UDF.
+
+     If you are searching for a specific word, then designate <lUpperLower>
+     as .T..  If case sensitivity is not a major consideration, then
+     designate <lUpperLower> as .F..
+
+     If you want only words and not word fragments, then work with the two
+     delimiter characters <cForwardDelimiter> and <cTrailingDelimiter>.
+     Otherwise, the word "LOCK" is marked if the word "BLOCK" occurred.
+
+     If you define a space (see Note) for <cForwardDelimiter> as a separator
+     for the expression, then LOCK is no longer marked with BLOCK.  You can
+     specify all delimiters that could be valid in character string form.
+     The function allows a targeted expression to begin in the first position
+     or end at the last position on the screen or window.
+
+ ^bNotes^b
+
+     ^bImportant! ^b The CA-Clipper Tools uses CHR(255) as the default to
+     clear the screen, since the character can take on a color attribute on
+     all screen adapters.  Be sure to consider this when you create a
+     delimiter list.
+
+     ^b^CFE^b  The cursor position is not changed with this function.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Mark the first word "Clipper" on the screen (exactly) with the
+        INVERS attribute:
+
+        ? SCREENMARK("Clipper", "0/7", .T.)            // Not found if .F.
+
+     ^b^CFE^b  Mark all occurrences of "Clipper" (regardless of the case),
+        the attribute is white/blue:
+
+        ? SCREENMARK("Clipper", "W/B", .F., .T.)       // Not found if .F.
+
+     ^b^CFE^b  Search for all "LOCK" words.  Expressions, such as "BLOCK" are
+        not to be marked.  Blanks (when you use the CA-Clipper Tools these
+        are CHR(255)), slashes, dashes, and brackets, are delimiters:
+
+        cListA  :=  CHR(255) + "/("
+        cListB  :=  CHR(255) + "-)"
+        ? SCREENMARK("LOCK", "W/B", .F., .T., cListA, cListB)
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCREENMIX()  Mixes characters and attributes of a screen
+'------------------------------------------------------------------------------
+ ^bSCREENMIX()^b
+ Mixes characters and attributes of a screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCREENMIX(<cCharacterstring>, <cAttrString>,
+     ^b   [<nRow>], [<nColumn>]) -->cNull
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates the a string to use.
+
+     ^b<cAttrString> ^b Designates which attributes to mix with the
+     characters in the <cCharacterstring>.
+
+     ^b<nRow>^b  Designates the starting line of the output.  The default is
+     the cursor line.
+
+     ^b<nColumn>^b  Designates the starting column of the output.  The
+     default is the cursor column.
+
+ ^bReturns^b
+
+     SCREENMIX() always returns a null string.
+
+ ^bDescription^b
+
+     SCREENMIX() allows you to combine two character strings --
+     <cCharacterstring> which contains characters, and <cAttrString> which
+     contains attributes.  You can mix them together and output the resulting
+     character string directly to the screen.  This assigns the first
+     attribute of <cAttrString> to the first character in <cCharacterstring>,
+     and so on.  The first character is displayed in the color determined by
+     the first attribute.  The <nRow> and <nColumn> parameters determine the
+     first line and column for the output.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the parameters for line and column (<nRow> and <nColumn>)
+        are not specified, the output begins at the current cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following two character strings determine the text and
+        attribute to output with SCREENMIX().  The first "1" is red on white
+        (116) and the help text is blue on white (113):
+
+        cCharacter: = "1Help"
+        cAttribute: = CHR(116) + REPLICATE(CHR(113), 5)
+
+     ^b^CFE^b  Show output at the current cursor position:
+
+        SCREENMIX(cCharacter, cAttribute)
+
+     ^b^CFE^b  Show output at line 24 at the cursor column:
+
+        SCREENMIX(cCharacter, cAttribute, 24)
+
+     ^b^CFE^b  Show output at line 24, column 0:
+
+        SCREENMIX(cCharacter, cAttribute, 24, 0)
+
+!seealso: "COLORTON()" "SAYSCREEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCREENSIZE() Queries the number of characters that can be displayed
+'------------------------------------------------------------------------------
+ ^bSCREENSIZE()^b
+ Queries the number of characters that can be displayed on a screen or window
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCREENSIZE(<lMode>) --> nScreenSize
+
+     ^bWarning!^b  Contains <lMode>, an additional optional parameter over
+     and above CA-Clipper Tools.
+
+ ^bArgument^b
+
+     ^b<lMode>^b  If this parameter is designated as .T., then SCREENSIZE()
+     returns the size of the physical screen; otherwise, it returns the size
+     of the selected window.  The default (.F.) is the selected window size.
+
+ ^bReturns^b
+
+     SCREENSIZE() returns the number of bytes available for screen output, in
+     an active window, or the physical screen.
+
+ ^bDescription^b
+
+     SCREENSIZE() determines the screen size memory in bytes.  With 25 lines
+     and 80 columns, there are exactly 2000 characters.  For each character,
+     there is also an attribute byte that results in 4000 bytes of screen
+     memory.
+
+     If SCREENSIZE() is called without parameters or with .F., it returns the
+     active window size.  When called with .T., it returns the physical
+     screen size.
+
+ ^bExample^b
+
+     Display the number of available bytes:
+
+     WOPEN(10, 10, 20, 70)      // Open a window
+     ? SCREENSIZE()             // Size of window
+     ? SCREENSIZE(.T.)          // Size of physical screen
+
+!seealso: "NUMCOL()" tool_003.ngo:"MAXROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SCREENSTR()  Reads a string, including attributes, from the screen
+'------------------------------------------------------------------------------
+ ^bSCREENSTR()^b
+ Reads a string, including attributes, from the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSCREENSTR ([<nRow>], [<nColumn>], [<nCharCount>])
+     ^b    --> cCharacterstring
+
+ ^bArguments^b
+
+     ^b<nRow>^b  Designates the first line to read.  The default is the
+     cursor line.
+
+     ^b<nColumn>^b  Designates the first column to read.  The default is the
+     cursor column.
+
+     ^b<nCharCount>^b  Designates how many characters to read.  The default
+     is to the end of the window or screen area.
+
+ ^bReturns^b
+
+     SCREENSTR() returns the character string that contains all of the bytes
+     read from the screen.
+
+ ^bDescription^b
+
+     SCREENSTR() returns a specified portion of the screen or window
+     contents.  <nRow> specifies the first line, and <nColumn> the first
+     column to read from.  <nCharCount> designates the number of characters
+     to read, if you do not want the entire screen or window content.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The returned character string contains all the attribute
+        bytes.  For the entire screen, a variable that is 25 lines by 80
+        columns, is a total of 4000 characters.
+
+     ^b^CFE^b  If <nRow> or <nColumn> are not specified, then the function
+        automatically uses the corresponding coordinates of the current
+        cursor position.  The function does not change the cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Read all characters with their accompanying attributes from
+        the cursor position to the end of the screen:
+
+        cVar: = SCREENSTR()
+
+     ^b^CFE^b  Show all characters and attributes from the cursor position in
+        line 24:
+
+        cVar: = SCREENSTR(24)
+
+     ^b^CFE^b  The last 10 characters and attributes in line 24:
+
+        cVar: = SCREENSTR(24, 70)
+
+     ^b^CFE^b  The last 10 characters (without attributes) in line 24:
+
+        cVar: = CHARODD(SCREENSTR(24, 70))
+
+!seealso: "STRSCREEN()" tool_005.ngo:"CHARODD()" tool_005.ngo:"CHAREVEN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETCLEARA()  Changes the default attribute for screen clear
+'------------------------------------------------------------------------------
+ ^bSETCLEARA()^b
+ Changes the default attribute for screen clear
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETCLEARA([<cClearAttr|nClearAttr>]) --> cNull
+
+ ^bArgument^b
+
+     ^b<cClearAttr|nClearAttr>^b  Designates the desired attribute for
+     CLEARA.  The default is white on black (7).
+
+ ^bReturns^b
+
+     SETCLEARA() always returns a null string
+
+ ^bDescription^b
+
+     SETCLEAR(A)ttribute
+     SETCLEARA() allows you to set the current, standard attribute for screen-
+     oriented CA-Clipper Tools functions.  If this function is not called
+     within a program, the standard attribute of 7 (white on black) is used
+     by the clearing functions.
+
+ ^bNote^b
+
+     ^b^CFE^b  You can specify the <cClearAttr|nClearAttr> parameter in
+        different ways (see Introduction to this chapter).
+
+ ^bExamples^b
+
+     ^b^CFE^b  Use the standard attribute:
+
+        SETCLEARA()
+
+     ^b^CFE^b  Shown below are three ways to set the clear attribute:
+
+        SETCLEARA(19)
+        SETCLEARA("03/01")
+        SETCLEARA("B/GR")
+!seealso: "GETCLEARA()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETCLEARB()  Changes the default character for screen clear
+'------------------------------------------------------------------------------
+ ^bSETCLEARB()^b
+ Changes the default character for screen clear
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETCLEARB([<cClearCharacter|nClearCharacter>])
+     ^b   --> cNull
+
+ ^bArgument^b
+
+     ^b<cClearCharacter|nClearCharacter>^b  Designates the desired clear
+     character for CLEARB.  Can be a number in the range of 0 to 255 or the
+     character string type.  The default value is CHR(255).
+
+ ^bReturns^b
+
+     SETCLEARB() always returns a null string.
+
+ ^bDescription^b
+
+     SETCLEARB() sets the default character for screen-oriented CA-Clipper
+     Tools functions.  If this function is not called within a program,
+     character CHR(255) is used by the clearing functions.  This character
+     (a "hard"' blank) can accept a color attribute on all screen adapters.
+
+ ^bNote^b
+
+     ^b^CFE^b  When you call SETCLEARB() without designating the
+        <cClearCharacter|nClearCharacter> parameter, the standard character
+        CHR(255) is used.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Use CHR(255) as the standard character:
+
+        SETCLEARB()
+
+     ^b^CFE^b  Use CHR(178) as a clear character SETCLEARB(178)
+
+!seealso: "GETCLEARB()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETFONT()    Loads the font directly out of a string
+'------------------------------------------------------------------------------
+ ^bSETFONT()^b
+ Loads the font directly out of a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETFONT(<cFontString>, [<nFontArea>], [<nOffset>],
+     ^b   [<nCounter>]) -->nErrorCode
+
+     ^bor
+
+     ^bETFONT(<cFontString>, [<nFontArea>], [<lCompute>])
+     ^b   --> nErrorCode
+
+ ^bArguments^b
+
+     ^b<cFontString>^b  Designates a string that contains a valid font
+     definition.
+
+     ^b<nFontArea>^b  Designates the number of the desired font area.  For
+     EGA adapters, the values are 1 to 4, for VGA, they are 1 to 8 or the
+     number allowed by MAXFONT().
+
+     ^b<nOffset>^b  Designates the character position at which the font table
+     is transmitted to the screen adapter.  The default value is 0.
+
+     ^b<nCounter>^b  Designates the number of characters for which a new font
+     is loaded.  The default value is 256.
+
+     ^b<lCompute>^b  Use this parameter only when <nOffset> and <nCounter>
+     are not in concurrent use.  When designated as .T., the function
+     computes the pixel height from the length of the font string.
+
+ ^bReturns^b
+
+     The function returns an error code with the following definitions:
+
+     ^bTable 6-4: Error Code Definitions^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bError Code   Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+      0           Font loaded successfully
+     -1           Invalid font area designated
+     -2           Impossible in current video mode
+     -4           The <lOtherPixelHeight> mode is invalid (the Extended
+                  Drivers has not been linked in)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     With SETFONT(), you can load a screen font from a string into the font
+     area of an EGA or VGA card.  FONTSELECT() allows you to determine the
+     font to serve for normal and the font to serve for high-density output.
+
+ ^bTechnical Background^b
+
+     EGA and VGA cards permit you to modify all 256 characters of the
+     character generator or any portion of it with software.  For this
+     purpose, load a previously created pixel pattern for the character in
+     the corresponding position in a font area on the screen card.  Normally,
+     an EGA card has a maximum of four font areas and a VGA has eight.  You
+     can redefine any of the 256 characters within these font areas.  Use
+     MAXFONT() to determine the actual number of font areas.
+
+     Building fonts into a program requires unnecessary memory space.  It is
+     also awkward to construct string fonts within a program.  The GETFONT()
+     and SETFONT() functions load a font from a screen card into a string
+     variable, or from such a variable into a font area on the card.
+     However, FONTLOAD() only offers the ability to load a font from a file
+     into a particular area of the screen card.  In both cases, use
+     FONTSELECT() to activate the loaded font when necessary.
+
+     To construct new fonts, a font editor is included in CA-Clipper.
+
+ ^bVariable Pixel Height^b
+
+     In principle, the EGA and VGA screen adapters provide the ability to
+     display fonts with 2 to 32 pixels per character (1 pixel/character only,
+     when there are 200 scan lines).  ROM fonts are only available for pixel
+     heights of 8, 14, and 16, which explains the great expansion of the EGA
+     25/43-line and VGA 25/28/50-line modes.  You must construct individual
+     fonts for all other pixel heights.  This is easy with the
+     CA-Clipper Tools font editor.
+
+     If you deviate from the mode just set, use SETFONT() to implement other
+     desired pixel heights, where the <lCompute> parameter is designated as
+     .T.  The pixel height is computed with the following formula:
+
+               Pixel height = LEN(Font-String)/256
+
+     Partial fonts cannot be used for this calculation, only fonts that
+     contain the full 256 characters.
+
+     Since a change in pixel height also leads to a change in the screen mode
+     and line count, always link in the CTUS.LIB Extended Drivers.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The screen adapters do not permit you to mix fonts with
+        different pixel heights.
+
+     ^b^CFE^b  When an EGA card does not require the full use of memory, you
+        can reduce a maximum number of four font areas.  Use MAXFONT() to
+        determine the number of available fonts at any given time.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Load all 256 font characters in font area 2:
+
+        ? SETFONT(cFontString, 2)      // 0 < OK
+        FONTSELECT(2)                  // Font area 2 for<R>
+                                       // non-highlighted
+
+     ^b^CFE^b  Exchange the top 128 characters of a font in font area 3:
+
+        ? SETFONT(cFontString, 3, 128, 128)   // 0 <F128M><142><F255D><N>OK
+        FONTSELECT(3)                         // Font area 3 for<R>
+                                              // non-highlighted
+
+     ^b^CFE^b  In this example, the just-installed font height is doubled
+        wherever possible.  This is simple, since each byte in the font
+        string is doubled:
+
+        cFont  :=  GETFONT()
+        SETFONT(CHARMIX(cFont, cFont), .T.)
+
+     ^b^CFE^b  The font strings can be torn down to individual pixel lines.
+        This example shows pixel lines as a bit pattern in a binary display:
+
+        cFont  :=  GETFONT()
+        nPixel :=  CHARPIX()
+
+        FOR A = 0 TO 255
+           FOR B = 1 TO nPixel
+              nByte  := ASC(SUBSTR(cFont, (nPixel * A) + B, 1))
+              ? NTOC(nByte, 2, 8, "0")
+           NEXT B
+           INKEY(0)
+           ?
+        NEXT A
+
+!seealso: "GETFONT()" "FONTLOAD()" "FONTSELECT()" "FONTRESET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETRC()      Sets line and column for the CA-Clipper cursor
+'------------------------------------------------------------------------------
+ ^bSETRC()^b
+ Sets line and column for the CA-Clipper cursor
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETRC([<nRow>], [<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nRow> ^b Designates the new cursor line.  The default is the current
+     BIOS line.
+
+     ^b<nColumn>^b  Designates the new cursor column.  The default is the
+     current BIOS column.
+
+ ^bReturns^b
+
+     SETRC() always returns a null string.
+
+ ^bDescription^b
+
+     This function resets the internal value that CA-Clipper returns for the
+     current ROW() line and COL() column.  The cursor automatically moves to
+     this new location at the same time.  When output is not through
+     CA-Clipper, the CA-Clipper internal values for ROW() and COL() may
+     deviate from the actual position returned in the BIOS.  If you implement
+     SETRC without a parameter, then the position returned from the BIOS is
+     set within CA-Clipper.
+
+ ^bNote^b
+
+     ^b^CFE^b  Negative values or those too large for the line or column, are
+        corrected automatically.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Set the BIOS line and column in CA-Clipper and display:
+
+        SETRC()
+        ? ROW(), COL()
+
+     ^b^CFE^b  The BIOS line and the CA-Clipper column are used:
+
+        SETRC(, COL())
+        ? ROW(), COL()
+
+     ^b^CFE^b  The CA-Clipper line and the BIOS column are used:
+
+        SETRC( ROW())
+        ? ROW(), COL()
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETSCRSTR()  Redirects screen output into a string
+'------------------------------------------------------------------------------
+ ^bSETSCRSTR()^b
+ Redirects screen output into a string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETSCRSTR(<lMode>) --> lRedirected
+
+ ^bArgument^b
+
+     ^b<lMode>^b  Designates whether subsequent screen output is put into the
+     internal memory area (.T.) or is to reappear on the screen (.F.).  The
+     default is mode off (.F.)
+
+ ^bReturns^b
+
+     SETSCRSTR() returns .T. when the subsequent screen output is routed to
+     an internal memory area.  The function returns .F. when anything other
+     than window 0 is selected.
+
+ ^bDescription^b
+
+     SETSCRSTR() selects a mode where all screen output is redirected to an
+     internal memory area.  After switching on this mode, the memory area is
+     initialized as if you had cleared the screen with an @ 0, 0 CLEAR.  All
+     screen output that results from the CA-Clipper driver module or the CA-
+     Clipper Extended Drivers is rerouted to this memory area.  The data
+     stored there is then passed to a variable with GETSCRSTR(), and after
+     the mode is switched off, it is passed to the CA-Clipper RESTSCREEN()
+     function.  Since the entire screen output is always rerouted and must
+     always be selected (with the exception of window 0), call RESTSCREEN()
+     with the maximum coordinates for the physical screen of 0, 0, MAXROW(),
+     MAXCOL().
+
+ ^bNotes^b
+
+     ^bWarning!^b  You cannot implement this function when windows are open.
+
+     ^b^CFE^b  If the CTUS.LIB Extended Drivers is not linked in, you cannot
+        use a CA-Clipper Library function to reroute screen output to a
+        variable.
+
+     ^b^CFE^b  External programs, DOS and BIOS output, can also be redirected
+        in a string.  To do this, you must set DSETWINDOW() on (.T.).
+
+     ^b^CFE^b  Since no output appears on the screen during this hidden
+        output mode, switch off "snow prevent" through NOSNOW(.F.).
+
+     ^b^CFE^b  Use SET CURSOR ON/OFF, if you also want to switch the cursor
+        off.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show hidden output.  Should the need arise, switch back to the
+        physical screen:
+
+        WSELECT(0)
+        ? SETSCRSTR(.T.)                  // .T. when mode on
+        @ 10, 10 SAY "XXXXXXX"            // Normal screen output
+           *....
+        @@ 15, 10 SAY "YYYYYYY
+
+     ^b^CFE^b  Always call the  GETSCRSTR() function before SETSCRSTR(.F.):
+
+        cVar  := GETSCRSTR()
+        ? SETSCRSTR(.F.)                  // .F. when mode off
+        RESTSCREEN(0, 0, MAXROW(), MAXCOL(), cVar)
+
+!seealso: "GETSCRSTR()" tool_003.ngo:"MAXROW()" tool_003.ngo:"MAXCOL()" tool_003.ngo:"DSETWINDOW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STANDARD()   Selects the standard color value for SET COLOR TO output
+'------------------------------------------------------------------------------
+ ^bSTANDARD()^b
+ Selects the standard color value for SET COLOR TO output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSTANDARD() --> cNull
+
+ ^bReturns^b
+
+     STANDARD() always returns a null string.
+
+ ^bDescription^b
+
+     STANDARD() permits you to reselect the standard attribute for
+     CA-Clipper  @...SAY and ? outputs, after you use ENHANCED() or
+     UNSELECTED() to switch over.  An attribute is considered a standard,
+     when it is the first parameter is passed by SET COLOR TO.
+
+ ^bExample^b
+
+     Change attribute output to enhanced, and then switch back to standard:
+
+     ? "........"
+     ? "........"
+     ENHANCED()
+        ? "Different attribute!"
+     STANDARD()
+     ? "........"
+     ? "........"
+
+!seealso: "ENHANCED()" "UNSELECTED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STRSCREEN()  Displays a string with characters and attributes on the screen
+'------------------------------------------------------------------------------
+ ^bSTRSCREEN()^b
+ Displays a string with characters and attributes on the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSTRSCREEN(<cCharacterstring>, [<nRow>],
+     ^b   [<nColumn>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<cCharacterstring>^b  Designates the character string to display.
+
+     ^b<nRow>^b  Designates the starting line for the output.  The default is
+     the cursor line.
+
+     ^b<nColumn>^b  Designates the starting column for output.
+
+ ^bReturns^b
+
+     STRSCREEN() always returns a null string.
+
+ ^bDescription^b
+
+     STRSCREEN() displays the contents of a variable to the screen (assuming
+     that it is in a particular format).  You must always have a character,
+     an attribute, another character, etc., in the designated character
+     string.
+
+     <nRow> and <nColumn> specify the first row and column in which to write
+     the string.
+
+ ^bNotes^b
+
+     ^bWarning!^b   The string must also contain attribute bytes.  Use
+     COLORTON() to create the combined numeric attributes.
+
+     ^b^CFE^b  Output does not alter the cursor position.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Output "ABC" at the current cursor position with a different
+        attribute for each character:
+
+        STRSCREEN("A"+CHR(1)+"B"+CHR(2)+"C"+CHR(3))
+
+     ^b^CFE^b  Output ABC with different attributes at the current cursor
+        column in line 24:
+
+        STRSCREEN("A"+CHR(1)+"B"+CHR(2)+"C"+CHR(3), 24)
+
+     ^b^CFE^b  Output ABC with different attributes at column 70, line 24:
+
+        STRSCREEN("A"+CHR(1)+"B"+CHR(2)+"C"+CHR(3), 24, 70)
+
+!seealso: "SCREENSTR()" "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: UNSELECTED() Selects the unselected color value for SET COLOR TO output
+'------------------------------------------------------------------------------
+ ^bUNSELECTED()^b
+ Selects the unselected color value for SET COLOR TO output
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bUNSELECTED() --> cNull
+
+ ^bReturns^b
+
+     UNSELECTED() always returns a null string.
+
+ ^bDescription^b
+
+     UNSELECTED() takes a color attribute designated by SET COLOR TO as
+     unselected (fifth color value), and designates it as the active
+     attribute for CA-Clipper @...SAY and ? output.  Use STANDARD() to switch
+     back to the normal attribute.
+
+ ^bExample^b
+
+     Output with the unselected attribute:
+
+     ? "........"
+     ? "........"
+     UNSELECTED()
+        ? "Different attribute!"
+     STANDARD()
+     ? "........"
+     ? "........"
+
+!seealso: "STANDARD()" "ENHANCED()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: UNTEXTWIN()  Replaces an area of characters from a region of the screen
+'------------------------------------------------------------------------------
+ ^bUNTEXTWIN()^b
+ Replaces an area of characters from a region of the screen
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bUNTEXTWIN(<nTopLine>, <nLeftColumn>, <nBottomLine>,
+     ^b   <nRightColumn>,
+     ^b   <cReplacementCharacter|nReplacementCharacter>,
+     ^b   [<cInitialCharacter|nInitialCharacter>],
+     ^b   [<cEndCharacter|nEndCharacter>]) --> cNull
+
+ ^bArguments^b
+
+     ^b<nTopLine>^b  Designates the line for the upper-left corner of the
+     area.
+
+     ^b<nLeftColumn>^b  Designates the column for the upper-left corner of
+     the area.
+
+     ^b<nBottomLine>^b  Designates the line for the bottom-right corner of
+     the area.
+
+     ^b<nRightColumn>^b  Designates the line for the bottom-right column of
+     the area.
+
+     ^b<cReplacementCharacter|nReplacementCharacter> ^b Replaces each
+     character within the window, with the exception of those within the
+     range of <cInitialCharacter|nInitialCharacter> and
+     <cEndCharacter|nEndCharacter>.
+
+     ^b<cInitialCharacter|nInitialCharacter>^b  Designates the beginning of
+     the bracketed area.  The character can be number in the range of 0 to
+     255, or the character string type.  The default value is 176.
+
+     ^b<cEndCharacter|nEndCharacter>^b  Designates the end of the bracketed
+     area.  The character can be number in the range of 0 to 255 or the
+     character string type.  The default value is 223.
+
+ ^bReturns^b
+
+     UNTEXTWIN() always returns a null string.
+
+ ^bDescription^b
+
+     Use UNTEXTWIN() to delete particular character from within a screen
+     area.  You can bracket off a specific area of characters.  This area
+     begins with <cInitialCharacter|nInitialCharacter> and ends with
+     <cEndCharacter|nEndCharacter>.  The preset values have bracketed out
+     characters 176 to 223 (the graphics characters).  This allows you to
+     clear a screen, but retain the boxes.
+
+     The designated area can even "double back"; EndCharacter could be
+     smaller than Initial Character.  In this case, the area stretches from
+     the larger value to 255 and, inclusive of 0, to the smaller value.  You
+     might say these two areas are designated.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Clear the screen, with the exception of the boxes.  Since no
+        range is specified, 176 to 223 are bracketed out:
+
+        UNTEXTWIN(0, 0, 24, 79, " ")               // ""
+
+     ^b^CFE^b  Clear all characters, with the exception of uppercase letters
+        (65-90).  A numeric BLANK is designated as a clear character:
+
+        UNTEXTWIN(0, 0, 24, 79, 32, 65, 90)        // ""
+
+     ^b^CFE^b  Double back on an area.  All characters with the exception of
+        uppercase letters are deleted:
+
+        UNTEXTWIN(0, 0, 24, 79, 255, 91, 64)       // ""
+
+!seealso: "CLEARWIN()" "CLWIN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VGAPALETTE() Changes VGA palette colors
+'------------------------------------------------------------------------------
+ ^bVGAPALETTE()^b
+ Changes VGA palette colors
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVGAPALETTE([<cColor|nColor>, [<nRedValue>,
+     ^b   <nGreenValue>, <nBlueValue>]]) --> lValid
+
+ ^bArguments^b
+
+     ^b<cColor|nColor> ^b Designates the color to change as a CA-Clipper
+     color code or in the range of 0 to 15.  If no RGB value is specified,
+     the color palette is reset to its default value.
+
+     ^b<nRedValue> ^b Designates the palette setting for the red portion in
+     the range of 0 to 63.
+
+     ^b<nGreenValue>^b  Designates the palette setting for the green portion
+     in the range of 0 to 63.
+
+     ^b<nBlueValue> ^b Designates the palette setting for the blue portion in
+     the range of 0 to 63.
+
+     ()  When the function is called without parameters, the palettes for all
+     colors are reset to their default values.
+
+ ^bReturns^b
+
+     VGAPALETTE() returns .T. when the selected setting is successfully
+     implemented.
+
+ ^bDescription^b
+
+     A VGA card offers a larger color selection for the palette than the EGA
+     adapter.  The three basic colors to add color synthesis are red, green,
+     and blue.  With the <nRedValue> through <nBlueValue> parameters, the
+     intensity for each of these three colors is set, and different color
+     combinations can result.  You can assign one color mix to one or more of
+     the SET COLOR TO <cColor|nColor> installed colors.
+
+     If only the color is designated as a parameter, then the accompanying
+     palette is reset to its default value.  When you call the function
+     without parameters, all the palettes are reset.
+
+ ^bNote^b
+
+     ^b^CFE^b  The FONTRESET() function resets all color palettes.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show a lot of red, a little green, and some blue as a new
+        setting for color 3:
+
+        ? VGAPALETTE("BG", 60, 4, 10)      // .T., when accepted
+
+     ^b^CFE^b  Reset the red palette:
+
+        VGAPALETTE("R")
+
+     ^b^CFE^b  Reset all palettes:
+
+        VGAPALETTE()
+
+!seealso: "EGAPALETTE()" "FONTRESET()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VIDEOINIT()  Reinitializes a video system after a RUN
+'------------------------------------------------------------------------------
+ ^bVIDEOINIT()^b
+ Reinitializes a video system after a RUN
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVIDEOINIT()
+
+ ^bDescription^b
+
+     When you call an external program through RUN, or add on library
+     routines that change the screen mode or other related settings, use
+     VIDEOINIT() to reinitialize the CA-Clipper Tools internal video system.
+
+ ^bNote^b
+
+     ^b^CFE^b  Despite the fact no value is returned, the Var variable
+        contains a value of .F. when you attempt something like Var:=
+        VIDEOINIT().
+
+ ^bExamples^b
+
+     ^b^CFE^b  After calling an external program...
+
+        RUN VGATEST.EXE
+
+     ^b^CFE^b  ...reset the CA-Clipper video system:
+
+        VIDEOINIT()
+
+!seealso: "Introduction" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VIDEOSETUP() Queries video mode at system start
+'------------------------------------------------------------------------------
+ ^bVIDEOSETUP()^b
+ Queries video mode at system start
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVIDEOSETUP() --> nVideoMode
+
+ ^bReturns^b
+
+     The returned number designates which video mode is installed at system
+     start.  The following codes apply:
+
+     ^bTable 6-5: Video Mode Coding^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bCode    Mode^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     0       Impossible to determine video mode
+     1       Monochrome display w/color card & 40 columns
+     2       Monochrome display w/color card & 80 columns
+     3       Monochrome w/80 columns (HERCULES or IBM monochrome)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bDescription^b
+
+     Depending on whether you have an XT or AT, this function returns the dip
+     switch setting of the motherboard and/or the CMOS-RAM setting.
+
+ ^bNote^b
+
+     ^b^CFE^b  VIDEOSETUP() always returns the video mode at the time of the
+        booting.
+
+ ^bExample^b
+
+     Display video mode of a monochrome system:
+
+     ? VIDEOSETUP()            // returns:  3
+
+!seealso: "ISEGA()" "ISHERCULES()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: VIDEOTYPE()  Returns bit-coded information about available video modes
+'------------------------------------------------------------------------------
+ ^bVIDEOTYPE()^b
+ Returns bit-coded information about available video modes
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bVIDEOTYPE() --> nVideoBitMode
+
+ ^bReturns^b
+
+     VIDEOTYPE() returns a value that reveals the bit codes for available
+     video modes.
+
+ ^bDescription^b
+
+     This function returns bit-coded information about which video modes are
+     available.  If needed, you can set more bits.  A HERCULES adapter is
+     also a monochrome adapter; and a VGA card can emulate many different
+     modes.  The following codes are used:
+
+     ^bTable 6-6: Coding of Screen Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bBit     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       Monochrome adapter
+     2       CGA adapter
+     3       HERCULES adapter
+     4       MCGA adapter
+     5       PGA adapter
+     6       EGA adapter
+     7       GA adapter
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Since different cards imitate several modes, the following values are
+     usually returned:
+
+     ^bTable 6-7: Grouping of Screen Modes^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bValue   Symb. constants     Definition^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     1       VCARD_MONOCHROME    Monochrome adapter
+     2       VCARD_CGA           CGA adapter
+     5       VCARD_HERCULES      HERCULES, also emulates monochrome
+     10      VCARD_MCGA          MCGA, also emulates CGA
+     19      VCARD_PGA           PGA, also emulates CGA and monochrome
+     55      VCARD_EGA           EGA, emulates all those previously
+                                 mentioned, except MCGA
+     127     VCARD_VGA           VGA, emulates all those previously mentioned
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bNote^b
+
+     ^b^CFE^b  The information presented here assumes absolute hardware
+        compatibility.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Is it a VGA card?
+
+        IF ISBIT(VIDEOTYPE(), 7)
+           *...
+        ENDIF
+
+     ^b^CFE^b  Is CGA mode available?
+
+        IF ISBIT(VIDEOTYPE(), 2)
+           *...
+        ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

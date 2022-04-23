@@ -1,0 +1,978 @@
+!short: ^UOverview of Standard Programming and Standard Functions
+'------------------------------------------------------------------------------
+
+
+            ^UOverview of Standard Programming and Standard Functions
+
+
+    Casual-Kit assumes that ^BStandard Programming^B writes program in
+    the standard view of program object, that is, use same ways, same
+    view to process difference things.
+
+    In fact, we usually write program in similar source code. Only
+    when there are some differences in the program object can we not
+    re-use the source code.
+
+    Before we re-use our source code, we must make the view standard so
+    that it can be used to deal with difference program object.
+
+    Using the same view to recognize difference objects will result in
+    using the same function to deal with difference things. Programming
+    using this idea is known as Standard Programming.
+
+    ^BStandard Functions in Casual-Kit are usually driven by public
+    variables, these variables are usually defined in the initialization
+    section of a program.
+
+       < E_Std.Prg> provides STD-Functions for English screen.
+       <CH_Std.Prg> provides STD-Functions for Chinese screen.
+
+    STD-Functions in Casual-Kit include :
+
+      ^Bþ Basic Functions    => stdmsg(), stdgetconf()
+
+      ^Bþ System Config      => stdconfig()
+
+      ^Bþ Password System    => stdpassword(), stdlevel(), stdeditkey()
+
+      ^Bþ Error handle       => stderror()
+
+      ^Bþ Diary System       => stddiary(), stdnote()
+
+      ^Bþ Help System        => stdhelp
+
+      ^Bþ Print File         => stdprint()
+
+      ^Bþ Use Database       => stduse()
+
+      ^Bþ Reindex            => stdreindex()
+
+      ^Bþ Backup             => stdbackup()
+
+    All standard functions can be upgraded to lan-version by ^BCK-MU^B,
+    or extend database security function by ^BAuto-Security^B
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Main Program
+'------------------------------------------------------------------------------
+
+
+    ^BCasual-Kit assumes that a standard clipper program includes 4 sections:
+
+                          ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                     ÚÄ>  ³  Initialize System Variables  ³
+                     ³    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+            Login  ÄÄ´                    
+                     ³    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                     ÀÄ>  ³ Initialize System Environment ³
+                          ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                                          
+                          ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+            Actions  ÄÄ>  ³       System Operations       ³
+                          ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                                          
+                          ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+            Logout   ÄÄ>  ³        Exit Procedure         ³
+                          ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+    For example, a typical standard program is written in this style :
+
+
+       Func Main( Opt1, Opt2 )
+
+         initvar( opt1, opt2 )     // initialize system variable
+         initenv( opt1, opt2 )     // initialize environment
+
+         while ( no := mainmenu() ) > 0        // main menu
+
+           ^B// Sequence...End sentence in main() is used to set a
+           ^B// break point to error-handle; you can choose "Main-Menu"
+           ^B// option to return mainmenu instead of quit program while
+           ^B// run-time error.
+           begin sequence
+             do case
+                case no = 1     // sys-operation
+                  .......
+                othe
+             endc
+           end                                 // end sequence
+         endd
+
+       retu nil
+
+      Exit Proc exitprg
+                dbcloseall()
+                stdnote( ' User Logout' )      // note down logout message
+           retu
+
+      Func InitVar( opt1, opt2 )
+        publ s_dispmode := iscolor()
+        publ s_msgcol   := if( s_dispmode,'w+/b;w+/br;w+/b,gr+/b','w/n')
+        publ s_xorkey   := 'Casual Kit'
+        publ s_usrkey   := str_xor('1,A=>2,B=>3,C=>4,D=>SUPER',s_xorkey)
+        publ s_dbflist  := { 'DBF1', 'DBF2' }
+        publ s_idxlist  := { 'DBF1', { 'DBF21', 'DBF22' } }
+        .......
+      retu nil
+
+      Func InitEnv( opt1, opt2 )
+        set date ansi
+        set dele on
+        set wrap on
+        ......
+        stdconfig()
+        s_usrlevel := stdpassword()
+        stdnote( 'User Login' )
+        ......
+      retu nil
+
+      Func MainMenu( ... )
+        ......
+      retu no
+
+      Func Others ( ... )
+        ......
+      retu ...
+
+      // ========= END OF StdMain.Prg ======
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: System Config
+'------------------------------------------------------------------------------
+
+    Driven by public variables, standard program can change its behavior
+    by changing the value of these variables.
+
+    ^BA database (default is CONFIG.DBF) is used to control these variables.
+    ^BStdConfig() is used to interpret CONFIG.DBF
+
+    Config.DBF is in the following structure :
+
+       VarName   C  20      =>  name of variable or a flag of record
+       Descript  C  150     =>  variable description
+       Remarks   C  30      =>  remarks of description
+
+    Three symbols can be used in <Varname> :
+
+       <VarName>     => <VarName> := <Description>
+       *<string>     => this record is a remarks
+       &<key>        => beginning with <&> means the record is a macro,
+                        <description> will be interpreted as a clipper
+                        expression. <key> is for search usage.
+
+    For example :
+
+     No ³ VarName    ³ Description
+    ÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     1  ³ s_XorKey   ³ CKTOOLS
+     2  ³ s_MsgCol   ³ w+/r,bg+/r
+     3  ³ &PrnMode   ³ s_PrnMode := 1
+     4  ³ &Debug     ³ Setkey( -9, { || Dotcom() } )
+     5  ³ *Remarks   ³ &Debug should be removed after testing !
+
+     1: equal to    s_XorKey  := "CKTOOLS"
+     2: equal to    s_MsgCol  := "w+/r,bg+/r"
+     3: equal to    s_PrnMode := 1
+     4: equal to    Setkey( -9, { || Dotcom() } )
+     5: will be ignored as remarks
+!seealso: "StdConfig()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Screen Layout
+'------------------------------------------------------------------------------
+
+
+    There is no standard screen layout provided in Casual-Kit !
+
+    But you can use the Screen-Functions of Casual-Kit to design screen
+    layout in your desirable style.
+
+    There are 5 units of screen functions of Casual-Kit:
+
+        1. Basic   Screen --- improvement of clipper command/fucntion
+        2. Advance Screen --- can be used in both English or Chinese Scr.
+        3. English Screen --- English Box/Windowcan/Menu/...
+        4. Chinese Screen --- Chinese Box/Windowcan/Menu/...
+        5. Power   Screen --- Power screen functions for English-Scr only
+
+    The following functions are recommended :
+
+     þ m_msg()          =>  stdmsg() => standard message function
+
+     þ e_box()
+       e_wind()         =>  Box, Window, Menu in English Screen
+       e_menu()
+       e_choice()
+
+     þ ch_box()
+       ch_wind()        =>  Box, Window, Menu in Chinese Screen
+       ch_menu()
+       ch_choice()
+
+     þ Scr_Menu()
+       Scr_Say()        =>  screen layout
+       Scr_Make()
+
+     þ all functions in Power Screen Unit.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Print Form/Report
+'------------------------------------------------------------------------------
+
+    There is no standard function provided, because Casual-Kit have full
+    support in printing FORM/REPORT.
+
+    The functions beginning with <PRN_> or <RPT_> are recommended.  They
+    can be used to design various FORM/REPORT.
+
+    It is suggested that you put the description of FORM/REPORT out of program.
+    You can describe forms in text file and print it by using PRN_FORM();
+    you can also describe reports in macro program and print it by using
+    MACROA() or RPT_MACRO().
+
+    User can maintain forms themselves and help programmer maintain reports
+    If you use the <Printer&Report> functions of Casual-Kit.
+!seealso: ck20_006.ngo:"MacroA()" ck20_005.ngo:"Rpt_Macro()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Database
+'------------------------------------------------------------------------------
+
+    There are three STD-Functions provided in database management. You are
+    advised not to make too many STD-Functions in database because it is too
+    complex to standard.
+
+        ^BStdUse()   ^B   =>  use database and index
+
+        ^BStdIndex() ^B   =>  reindex database
+
+        ^BStdBackup()^B   =>  backup database
+
+    They use same public variables :
+
+        s_dbflist     => list of database name
+        s_idxlist     => list of index name
+
+    ^BYou can write STD-Functions in your own desirable way.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Password System
+'------------------------------------------------------------------------------
+
+    Clipper  program  usually has a password system. Casual-Kit provides a
+    standard password system which can define multi-user in multi-level,
+    and the users and levels are not limited.
+
+    The  standard  password  system is not a complex system.  Password is
+    stored in a string/memo which can be placed in database or text file
+    or  memvar file. Usually, it can only be modified by the user of the
+    highest  level, imply that users in lower level are not allowed to
+    modify password.
+
+    The standard password system consists of the following functions.
+
+       ^BStdPassword()^B => reads password and determines the level of user.
+
+       ^BStdLevel()^B    => checks user level
+
+       ^BStdEditkey()^B  => modifies password
+
+    The following variables are used in the password system :
+
+      þ s_xorkey      =>  the key to encrypt password
+      þ s_usrkey      =>  password description
+      þ s_usrlevel    =>  user login level
+
+    The password level can be created in this way :
+
+      1 level    =>   User             =>  view data       => basic op.
+      2 level    =>   Junior Operater  =>  modify data     => common op.
+      3 level    =>   Senior Operater  =>  delete data     => danger op.
+      4 level    =>   supervisor       =>  modify password => all operation
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Diary system
+'------------------------------------------------------------------------------
+
+    Sometimes, it is necessary to record some messages for the system.
+    For example, when a run-time error occurs, the user login, the user
+    logout, or an important operation would have been done.
+
+    Casual-Kit provides a standard diary function named ^BStdDiary()^B to
+    record the date,time and system messages to a text file.
+
+    ^BStdNote()^B is an additional function of StdDiary() to record date,
+    time, User No. and message.
+
+    If you use STD error system, StdDiary() will be used to record the
+    error messages.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Error Handle
+'------------------------------------------------------------------------------
+
+    If you use the default error handle, you will have no idea to continue
+    when run-time error has occured.
+
+    For testing reason, we would like to continue instead of quit.
+    For using reason, we would like to inform users and note down error
+    messages automatically. So we need a new error handle.
+
+    Casual-Kit provides a standard error handle to do the following things:
+
+       þ Display error message in screen
+
+       þ call StdDiary() to record error message.
+
+       þ two options to choice
+
+         (1)  break to mainmenu
+         (2)  quit
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Help System
+'------------------------------------------------------------------------------
+
+    The standard help system in Casual-Kit is an intellectual system which
+    can detect and pick out the best help message to user.
+
+    This function is provided by StdHelp().
+
+    StdHelp() assumes that the help message is stored in database named
+    DOCUMENT.DBF with three fields: KEY, TITLE, TEXT.
+
+    StdHelp() will search procedure name in the DOCUMENT.DBF, and display
+    the relation text in screen. If the procedure name is not found in the
+    database, StdHelp() will display the index of DOCUMENT.DBF and wait for
+    a choice.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Security
+'------------------------------------------------------------------------------
+
+    Sometimes, we would like to secure database for safe purpose.
+
+    Casual-Kit can make your program work in security mode automatically.
+    This function is usually called ^BAUTO-SECURITY^B.
+
+    Casual-Kit secure database by changing the header of database.  You can
+    define the password and the length to secure. The secured database
+    cannot be used without correct password and length.
+
+    It is suggested that you should write and test program in un-security
+    mode, and use AUTO-SECURITY after testing.
+
+    ^BAUTO-SECURITY is, usually, better than manual-security.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Multi-User Program
+'------------------------------------------------------------------------------
+
+    It takes much time to write and test a multi-user program. Now,
+    you can save this time by using Casual-Kit.
+
+    Casual-Kit has a powerful function to upgrade your program to multi-user
+    program automatically. The effect is similar to manual-upgrade.
+
+    Casual-Kit can make effective multi-user program if the single-user
+    program is written in the style of multi-user.
+
+    You are advised to write single-user programs in multi-user style, and
+    then upgrade them to multi-user using Casual-Kit.
+
+    This function can be used with AUTO-SECURITY to make multi-user
+    program work under the security mode.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+!short: System Variables
+'------------------------------------------------------------------------------
+
+    ^uStandard functions in Casual-Kit are driven by the following public
+    ^uvariables defined in the initialization section of a program.
+
+    ^BVariables marked with <*> are not necessary but suggested.
+
+    ^BScreen
+
+        s_DispMode      =>  display mode ( .T. means color )
+        s_MsgCol        =>  color of standard message function
+        s_HelpCol       =>  color of standard help system
+        s_EditCol     * =>  color of edit function
+        s_WindCol     * =>  color of window
+        s_MenuCol     * =>  color of menu
+        .....         *
+
+    ^BPrint
+
+        s_PrnMode     * => the option of print file ( default: 0 )
+
+    ^BPassword System
+
+        s_XorKey        =>  encrypt key of password description
+        s_UsrKey        =>  password description
+        s_UsrLevel      =>  user login level
+
+     ^BHelp System
+
+        s_DispHelp    * =>  block to display help message
+
+     ^BDiary & Error System
+
+        s_Diary[1]    * =>  diary file ( default: diary.log )
+        s_Diary[2]    * =>  maximum length of diary file ( default: 8K )
+
+    ^BDatabase
+
+        s_DbfList       =>  list of database name
+        s_IdxList       =>  list of index file
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdMsg()        Standard message function
+'------------------------------------------------------------------------------
+
+    ^BStdMsg( <cMsg>, [<cMode>] )
+
+    ^BUsage^B
+
+        StdMsg() is a shell of m_msg() usually.
+
+        Generally, an area on the screen will be used as message area to
+        display system message. The message function needs to be
+        standardized
+
+        The source code of StdMsg() is a sample only.  This function
+        usually needs to be modified for different message areas.
+
+    ^BAssume^B
+
+        Other functions will assume StdMsg() can display a line message
+        in the message area with the following options provided:
+
+         þ M|  -> center adjust
+         þ >  -> right  adjust
+         þ <  -> left   adjust  ( default       )
+
+         þ S  -> make a sound   ( makesound()   )
+         þ B  -> bell           ( qqout(chr(7)) )
+
+         þ K  -> wait a key and return <nKeyCode>
+         þ C  -> wait a key and return Chr(<nKeyCode>)
+         þ U  -> wait a key and return Uppe(chr(<nKeyCode>))
+
+         þ R  -> if 'KCU' in <cMode>, restore screen before return
+                 else return a screen picture.
+
+        ^BPublic variable <s_MsgCol> is used to describe the color of message
+
+        ^BYou can modify or re-write StdMsg().
+
+    ^BSource^B
+
+        func stdmsg( cMsg, cMode )            // Shell of m_msg()
+        publ s_msgcol
+        retu m_msg( cMsg, cMode, , , , s_msgcol )
+!seealso: ck20_004.ngo:"m_Msg()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdGetConf()    Standard confirm function for @...GET
+'------------------------------------------------------------------------------
+
+    ^BStdGetConf( [<lUpdate>], [<nLastkey>] )   ->  nOption
+
+    ^BUsage^B
+
+        StdGetConf() is used to determine how to continue after GET...READ
+        command.
+
+        ^B<lUpdate>^B  describes the get object as either changed or not.
+                   default is the return value of update()
+        ^B<nLastkey>^B is the last key pressed in GET...READ, default
+                   is the key code of lastkey()
+
+        The return code of StdGetConf() is a number carrying the meaning
+        as follows :
+
+            0    =>  repeat the GET...READ action.
+            1    =>  cancel or no changed, no update need.
+            2    =>  confirm, updated data please.
+
+    ^BSource^B
+
+        func stdgetconf( lUpdate, nLastkey )
+        loca confirm1 := '  Are you want to cancel ? Y/[N]'
+        loca confirm2 := '  Are you want to update ? [Y]/N'
+        if( nLastkey=nil, nLastkey:=lastkey(), )
+        if( lUpdate=nil,  lUpdate:=updated(), )
+        do case
+           case ! lUpdate
+             retu 1
+           case lUpdate .and. nLastkey = 27
+             retu if( stdmsg( confirm1 ,'USR' ) = 'Y', 1, 0 )
+           case lUpdate .and. nLastkey # 23
+             retu if( stdmsg( confirm2, 'USR' ) = 'N', 0, 2 )
+        endc
+        retu 2
+
+    ^BExample^B
+
+        lud := .f.
+        opt := 0
+        while opt == 0
+           @ .... GET ...
+           @ .... GET ...
+           @ .... GET ...
+           read
+           lud := lud .or. update()
+           opt := stdgetconf(lud)
+        endd
+        if opt == 2
+           // do updated !
+        endi
+!seealso: "StdMsg()" ck20_004.ngo:"m_Msg()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdConfig()     Interprets config message from config database
+'------------------------------------------------------------------------------
+
+    ^BStdConfig( [<cCfgDbf>] )   ->  Nil
+
+    ^BUsage^B
+
+        Interprets config message from config database.
+
+        <cCfgDbf> is the name of config database, default is 'CONFIG.DBF'.
+
+        Config.DBF is in the following structure :
+
+           VarName   C  20      =>  name of variable or a flag
+           Descript  C  150     =>  description variable
+           Remarks   C  30      =>  remarks of description
+
+        Three symbols can be used in <Varname> :
+
+           <VarName>     => <VarName> := <Description>
+           *<string>     => this record is a remarks
+           &<key>        => beginning with <&> means the record is a macro,
+                            <description> will be interpreted as a clipper
+                            expression. <key> is for search usage.
+
+    ^BExample^B
+
+         No ³ VarName    ³ Description
+        ÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+         1  ³ s_XorKey   ³ CKTOOLS
+         2  ³ s_MsgCol   ³ w+/r,bg+/r
+         3  ³ &PrnMode   ³ s_PrnMode := 1
+         4  ³ &Debug     ³ Setkey( -9, { || Dotcom() } )
+         5  ³ *Remarks   ³ &Debug should be removed after testing !
+
+         1: equal to    s_XorKey  := "CKTOOLS"
+         2: equal to    s_MsgCol  := "w+/r,bg+/r"
+         3: equal to    s_PrnMode := 1
+         4: equal to    Setkey( -9, { || Dotcom() } )
+         5: will be ignored as remarks
+
+         þ If a run-time error occurs when StdConfig() is interpreting macro
+           description, the current record will be changed to remarks record
+           and "Error:" will be added to <description>
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdPassword()   Determines user level of standard password system
+'------------------------------------------------------------------------------
+
+    ^BStdPassword( [<nTimes>], [<x>], [<y>] )  ->  nUsrLevel
+
+    ^BAssume^B
+
+        StdPassword() assumes that 'key' has been stored in the public var.
+
+          ^Bs_XorKey  =>  The key string to encrypt password
+          ^Bs_UsrKey  =>  The key description in encrypt string
+
+    ^BUsage^B
+
+        StdPassword() will require users to input a password, and return the
+        user-level after checking the password.
+
+        ^B<nTimes>^B describes the times allowed for an invalid password.
+                 default is 1
+
+        ^B<x> <y> ^B is the position of dialog box, default is <15,26>
+
+    ^BExample^B
+
+        s_usrlevel := stdpassword(3)
+!seealso: ck20_003.ngo:"Str_Xor()" ck20_005.ngo:"Psw_Level()" "StdLevel()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdLevel()      Checks the right of user
+'------------------------------------------------------------------------------
+
+    ^BStdLevel( <n> )  -> lRight
+
+    ^BAssume^B
+
+        The following public variables must be defined:
+
+          ^Bs_XorKey   =>  The key string to encrypt password
+          ^Bs_UsrKey   =>  The key description in encrypt string
+          ^Bs_UsrLevel =>  The user login level
+
+    ^BUsage^B
+
+        StdLevel() is used to determine the user if he/she has the right
+        to carry out operation.  <n> is the user level required.
+
+        If the login level of user is lower than <n>, StdLevel() will
+        require <n> level authorization.
+
+    ^BSource^B
+
+        func stdLevel( level )
+        publ s_usrlevel, s_usrkey, s_xorkey
+        priv zlevel := s_usrlevel
+          if zlevel < level
+             stdmsg( '  This operation needs ' ;
+                     + str(level,2) + ' level authorization !', 's' )
+             zlevel := stdpassword( 3 )
+          endi
+        retu zlevel >= level
+
+    ^BExample^B
+
+        if stdlevel(3)
+           dele for input_date < ( date()-100 )
+        endi
+!seealso: ck20_005.ngo:"Psw_Level()" "StdPassword()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdEditkey()    Edits password description
+'------------------------------------------------------------------------------
+
+    ^BStdEditKey( [<cCfgDbf>] )  ->  NIL
+
+    ^BAssume^B
+
+        StdPassword() assumes that 'key' has been stored in the public var.
+
+          ^Bs_XorKey  =>  The key string to encrypt password
+          ^Bs_UsrKey  =>  The key description in encrypt string
+          ^Bs_MsgCol  =>  message color
+
+        StdEditKey() also assumes that a database (default is config.dbf)
+        is used to store password description.
+
+    ^BUsage^B
+
+        StdEditKey() is used to modify and set password description.
+        It is suggested that only the highest level user should use
+        this function.
+
+    ^BExample^B
+
+        if stdlevel(4)
+           stdeditkey()
+        endi
+!seealso: "StdPassword()" "StdLevel()" "StdConfig()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdDiary()      Standard diary function
+'------------------------------------------------------------------------------
+
+    ^BStdDiary( <cMsg> )  ->  lSuccess
+
+    ^BUsage^B
+
+        StdDiary() is used to note messages of the system. StdDiary() will
+        write date, time and <cMsg> to a text file for diary usage.
+
+        Public variable <s_Diary> is used to describe the file name and the
+        max-length of diary file.
+
+        If StdDiary() fails to write, the message will be stored in a
+        buffer and written together with the next message of StdDiary().
+
+        StdDiary() is used to note down the run-time error messages or the
+        important operation messages.
+
+    ^BExample^B
+
+        delete    // delete record
+        stddiary(' Delete record #' + str(recno()) )
+
+    ^BSource^B
+
+        func stddiary( msg )
+        loca zi := 5, zs := ''
+        publ s_diary
+          if( empty(s_diary), s_diary:={'diary.log'}, nil )  // file
+          if( len(s_diary)=1, aadd(s_diary,8000), nil )      // max length
+          if( len(s_diary)=2, aadd(s_diary,''), nil )        // buffer
+
+          while file( s_diary[1] ) .and. ;
+                len( zs:=memoread(s_diary[1]) ) = 0 .and. (zi--) > 0
+               tone(0,3)        // retry while read error
+          endd
+
+          msg := dtoc(date()) + ' ' + time() +' ' + msg + chr(13) + chr(10)
+          zs  := right( zs, s_diary[2] ) + s_diary[3] + msg
+          s_diary[3] := if( zi:=memowrit(s_diary[1],zs), ;
+                            '', s_diary[3] + msg )
+        retu zi
+!seealso: "StdNote()" "StdError()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdNote()       Records system messages (include user No.)
+'------------------------------------------------------------------------------
+
+    ^BStdNote( <cMsg> )  -> lSuccess
+
+    ^BUsage^B
+
+        Record messages with the user login level.
+        Sometimes, we would like to know what user has done the operation.
+        StdNote() is particularly written to fulfil this need.
+
+    ^BSource^B
+
+        func stdnote( msg )
+        retu stddiary( '(' + str(s_usrlevel,5,2) + ') ' + msg )
+!seealso: "StdDiary()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdError()      Standard error system
+'------------------------------------------------------------------------------
+
+    ^BStdError ( <oErrObj> )
+
+    ^BUsage^B
+
+        StdError() is used to instead the default error handle of clipper.
+
+        StdError() will note down the messages during run-time error, and
+        two options can be chosen in the meantime :
+
+           < Break to MainMenu >   < Quit to Dos >
+
+    ^BExample^B
+
+        errorblock( { |x| stderror(x) }
+
+        þ remember to set the break point in mainmenu section.
+!seealso: "StdDiary()" "Main Program" "Error Handle" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdHelp         Standard help system
+'------------------------------------------------------------------------------
+
+    ^BStdHelp( [<cDocDbf>] , [<cHelpKey>] )
+
+    ^BAssume^B
+
+        s_DispHelp  => describes how to display help message
+        s_HelpCol   => color of help-window
+
+        Help message is stored in the database named <cDocDbf> with
+        three fields: <KEY>, <TITLE>, <TEXT>.
+
+        <Key>  is the procedure name of help message.
+        <Text> is a memo field stored the help message.
+
+    ^BUsage^B
+
+        StdHelp() will search <cHelpKey> in the <cDocDbf>, and display
+        the relation text in screen. If <cHelpKey> is not found in
+        database, StdHelp() display the index of <cDocDbf> and wait for
+        a choice.
+
+        <cDocDbf> default is  "Document.DBF"
+        ^B<cHelpKey> usually takes the default, and the related procedure
+        ^B           names will be searched.
+
+    ^BExample^B
+
+        setkey( 28, { || stdhelp() } )               // F1 --- help
+        setkey( -1, { || stdhelp( , 'Overview') } )  // F2 --- Overview
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdPrint()      Prints a file ( direct/preview/edit )
+'------------------------------------------------------------------------------
+
+   ^BStdPrint( <cFile>, [<cMode>], [<cLen>], [<cCol>] )  -> lPrint
+
+    ^BUsage^B
+
+        StdPrint() is used to print <cFile> in the following mode:
+
+        <cMode> = 0      => send to printer directly
+        <cMode> = 1      => preview <cFile> and print
+        <cMode> = 2      => edit <cFile> and print
+
+        default:  <cMode>  <-  s_PrnMode  <-  0
+
+        <cLen> <cCol> is the length and color of memoedit()
+
+    ^BExample^B
+
+         // generate report to file "printer.buf" first
+         stdprint( 'printer.buf' )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdUse()        Use database and index
+'------------------------------------------------------------------------------
+
+    ^BStdUse( <aDbf>, [<lNew>] )   ->  nDoUsed
+
+    ^BUsage^B
+
+        It is suggested that all index files should be used while a database
+        used. StdUse() is written for this purpose.
+
+        StdUse() can use one or more databases and all index of the database.
+        If a database had been used, StdUse() will select the area instead
+        of using it.
+
+        ^BStdUse() can be upgraded to lan-version by CK-MU and work safe in
+        ^Bmulti-user environment.
+
+        ^B<aDbf>^B is an array of the names or the orders of database.
+               if <aDbf> is a number or string, StdUse() use one database only.
+
+         <lNew> default is true.
+
+    ^BAssume^B
+
+        s_DbfList    =>  (array)  List of database
+        s_IdxList    =>  (array)  List of index file
+
+        for example, there are 3 databases and 5 index in a program:
+
+         s_DbfList := { 'Dbf1' , 'Dbf2', 'Dbf3' }
+         s_IdxList := { {'Dbf1A','Dbf1B'} , 'Dbf2', {'Dbf3A','Dbf3B'} }
+
+    ^BExample^B
+
+         StdUse( 'Dbf2' )   =>  StdUse( { 'Dbf2' } )  => use dbf2
+          StdUse( 2 )        =>  StdUse( { 2 } )       => use dbf2
+
+         stduse( { 'dbf1','dbf3'} )   => use two database
+          stduse( { 1, 3 }             => same.
+
+         stduse( s_dbflist )          => use all database and all index
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdReindex()    Standard reindex function
+'------------------------------------------------------------------------------
+
+    ^BStdReindex()  -> nReIndex
+
+    ^BUsage^B
+
+        Reindex all database.
+
+    ^BAssume^B
+
+        s_DbfList    =>  (array)  List of database
+        s_IdxList    =>  (array)  List of index file
+!seealso: "StdBackup()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: StdBackup()     Standard backup function
+'------------------------------------------------------------------------------
+
+    ^BStdBackup( [<cPath>] )  ->  nDbf
+
+    ^BUsage^B
+
+        Backup database.
+
+        StdBackup() assumed that <s_DbfList> is a list of all database.
+
+        <cPath> default is "a:"
+
+        þ A flag file named "Backup.flg" is needed in the directory of
+          <cPath> to verify the valid path to backup.
+
+        þ StdBackup() cannot check the space of backup disk.  It can't
+          backup database if the disk is full.
+          You can write your StdBackup() in your own way.
+
+    ^BExample^B
+
+        Stdbackup()             => backup to a:
+        StdBackup('c:\temp\')   => backup to c:\temp\
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

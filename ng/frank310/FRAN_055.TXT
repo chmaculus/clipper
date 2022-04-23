@@ -1,0 +1,80 @@
+'------------------------------------------------------------------------------
+ These Navigation APIs all accept the engine ID as parameter and return NIL.
+
+^r ADfs_down()          Scrolls one line down if the last line is not visible  ^r
+^r ADfs_pgdn()          Scrolls one page down if the last line is not visible  ^r
+^r ADfs_bottom()        Moves to the bottom if the last line is not visible    ^r
+^r ADfs_left()          Scrolls one column to the left if the first column     ^r
+^r                      is not visible                                         ^r
+^r ADfs_panleft()       Scrolls a number of columns to the left if the first   ^r
+^r                      column is not visible                                  ^r
+^r ADfs_home()          Moves to the the first column if it is not visible     ^r
+^r ADfs_right()         Scrolls one column to the right if the last column     ^r
+^r                      is not visible                                         ^r
+^r ADfs_panright()      Scrolls a number of columns to the right if the last   ^r
+^r                      column is not visible                                  ^r
+^r ADfs_end()           Moves to the the last column if it is not visible      ^r
+^r ADfs_up()            Scrolls one line up if the first line is not visible   ^r
+^r ADfs_pgup()          Scrolls one page up if the first line is not visible   ^r
+^r ADfs_top()           Moves to the top if the first line is not visible      ^r
+
+ Example
+ -------
+ #include "frankie.ch"
+ func main()
+ local aCoor := { 10, 10, 20, 70 }
+ local aSpots := {;   // array of hot spots
+                   { aCoor[1], aCoor[2], aCoor[1], aCoor[4] },; // top edge
+                   { aCoor[3], aCoor[2], aCoor[3], aCoor[4] },; // bottom
+                   { aCoor[1], aCoor[2], aCoor[3], aCoor[2] },; // left
+                   { aCoor[1], aCoor[4], aCoor[3], aCoor[4] };  // right
+                 }
+ local e := ADfs_create( "c:\autoexec.bat" )
+
+ ADcls()
+ ADfs_coords( e, aCoor )
+ ADfs_lbuttons( e, aSpots, {|n,m,r|xHots( e,n,m,r )} )
+ ADfs_activate( e )
+ ADfs_kill( e )
+ return NIL
+
+ func xHots( e, nthSpot, mRow, mCol )
+ if ADkbflag( K_ALT )
+    ADm_rwait()
+    if nthSpot == 1      // top edge
+        ADfs_top(e)
+    elseif nthSpot == 2  // bottom edge
+        ADfs_bottom(e)
+    elseif nthSpot == 3  // left edge
+        ADfs_home(e)
+    elseif nthSpot == 4  // right edge
+        ADfs_end(e)
+    endif
+ elseif ADkbflag( K_CTRL )
+    ADm_rwait()
+    if nthSpot == 1      // top edge
+        ADfs_pgup(e)
+    elseif nthSpot == 2  // bottom edge
+        ADfs_pgdn(e)
+    elseif nthSpot == 3  // left edge
+        ADfs_panleft(e)
+    elseif nthSpot == 4  // right edge
+        ADfs_panright(e)
+    endif
+ else
+    if nthSpot == 1      // top edge
+        ADfs_up(e)
+    elseif nthSpot == 2  // bottom edge
+        ADfs_down(e)
+    elseif nthSpot == 3  // left edge
+        ADfs_left(e)
+    elseif nthSpot == 4  // right edge
+        ADfs_right(e)
+    endif
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

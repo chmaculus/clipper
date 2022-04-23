@@ -1,0 +1,34 @@
+'------------------------------------------------------------------------------
+^BPROCEDURE^B
+
+    PROCEDURE identifies the beginning of each procedure.
+
+^USyntax^U
+
+    PROCEDURE <procedure name>
+
+^UUsage^U
+
+    Each separate procedure within a procedure file must begin with the
+    PROCEDURE command followed by the procedure name.  The name can be up
+    to 10 characters in length and must begin with an alpha character.
+
+    Each procedure name must be unique from all other procedures,
+    functions, programs, and formats within the same application, or else
+    errors in compilation or linking will occur.
+
+    A procedure is any executable block of code beginning with the
+    statement PROCEDURE <proc name> and can occur anywhere in a program
+    file, but cannot be nested within other procedures.
+
+    To terminate execution and branch back to the calling procedure,
+    execute a RETURN.  Unlike FUNCTIONs, a RETURN statement is not
+    required.  When compiling, Clipper assigns all statements from the
+    PROCEDURE statement to the procedure name until another PROCEDURE
+    statement, FUNCTION statement, or end-of-file mark (1A hex) is
+    encountered.
+!seealso: ???.ngo:"DO" clip_072.ngo:"SET PROCEDURE" 
+'------------------------------------------------------------------------------
+
+
+

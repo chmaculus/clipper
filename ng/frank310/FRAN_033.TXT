@@ -1,0 +1,90 @@
+'------------------------------------------------------------------------------
+ ^rVersion 3.10
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ New Engine Behavior
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bû^b K_ALT_F1 is now a standard engine active key.  It EVALs the Help
+ Identifier processor block. The default block is simply an ADmessage()
+ that displays the engine's Help Identifier string.  It may be get/set
+ with ADg_hidproc().
+
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ New Engines
+ ÄÄÄÄÄÄÄÄÄÄÄ
+ ^bû^b Hot Bar Engine - Also known as a menu bar.  May be attached to
+  another engine using that other engine's AD.._keys() and AD.._lbuttons()
+  APIs.
+
+ ^bû^b Database Browse Lister - Prints a database browse
+
+ ^bû^b The File Viewer 2 - Displays a text file
+
+ ^bû^b The Ini File Processor - Processes an Ini file
+
+ New Engine Behavior
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bû^b The engines now give time slices to other running applications in
+  a multi-tasking environment.
+
+ ^bû^b The right mouse button may now be reconfigured so that it does not
+  exit an engine.  In some engines, it can even be reconfigured to do
+  something (e.g., display a popup menu).
+
+ ^bû^b The trigger positions of menus and buttons may now be identified by
+  embedding a trigger marker in the prompt.  The marker defaults to an
+  ampersand (&).
+
+ ^rVersion 2.2
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bû^b Right Click on top/left corner of the screen EVALuates the
+   Developer's Block (similar to ALT-0)
+
+
+ New Engines
+ ÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 2.0
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bû^b Vertical Scroll Bar - A collection of a vertical scroll bar engine and
+   APIs.
+
+ ^bû^b Horizontal Scroll Bar - A collection of a horizontal scroll bar engine
+   and APIs.
+
+ ^bû^b Boxed Read - With this engine, you can pass an array of Get variables to
+   the engine, and the engine will build the Get objects one on top of each
+   other, draw a box around them, and implement an ADread().
+
+ ^bû^b Push Buttons - With this engine, you can create push buttons and use them
+   either by themselves or in conjunction with another engine.
+
+ ^bû^b Radio Buttons - With this engine, you can create radio buttons and check
+   boxes.
+
+
+ ^rVersion 2.1
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^bû^b (modified) ADpb_add() - A color may be explicitly specified for a
+   button
+
+ ^bû^b (modified) ADpb_push() - The cursor is now restored after "pushing."
+   It is now possible to process the pushed button even before the mouse
+   button is released.
+
+ ^bû^b (modified) ADpb_horizontal() - The buttons may now be of various
+   colors.
+
+ ^bû^b (modified) ADpb_vertical() - The buttons may now be of various
+   colors.
+
+ ^bû^b (new) ADpb_version() - Returns the Push Button Collection version
+  number
+
+ ^bû^b (new) ADpb_chgcolor() - Changes the color of a button.
+
+ ^bû^b (new) ADpb_restcolor() - Restores the original color of a button.
+!seealso: fran_031.ngo:"ADg_hidproc()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,35 @@
+!short: ^bRelease Note #7 -- Runtime Environment Notes^b
+'------------------------------------------------------------------------------
+ Document:   ^bRelease Note #7^b
+             ^bRuntime Environment Notes^b
+
+             Copyright (c) 1991, Nantucket Corporation
+
+ Version:    5.01a (April 19, 1991)
+
+ Summary:    This document contains notes about the runtime enviroment.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: 1   Suppressing Snow on CGA Monitors
+'------------------------------------------------------------------------------
+ ^b1   Suppressing Snow on CGA Monitors^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     With versions of Clipper prior to 5.0, snow that appeared on some
+     CGA monitors could be suppressed using the S argument of the SET
+     CLIPPER environment variable.
+
+     In Clipper 5.0, this option has been removed and the function
+     NOSNOW() is supplied in its place.  NOSNOW() called with true (.T.)
+     as its argument suppresses snow and called with false (.F.) as its
+     argument allows snow.  NOSNOW() always returns NIL.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,57 @@
+'------------------------------------------------------------------------------
+^BSET PATH^B
+
+    SET PATH specifies the search path that Clipper follows when attempting
+    to access files.
+
+^USyntax^U
+
+    SET PATH TO [<path list>]
+
+^UArgument^U
+
+    <path list> identifies the paths where Clipper searches for a file if
+    it is not found in the current directory.  A path is a pointer to a
+    directory.  It includes a list of all the directories from the root to
+    the specified directory separated by backslashes.  A path list then is
+    the sequence of paths to search, each separated by a comma or semi-
+    colon.
+
+    Note: Because the semi-colon is a path list separator, continuation of
+    a path command line with a semi-colon is not supported.
+
+    SET PATH TO with no argument releases the path list and Clipper only
+    searches the current directory.
+
+^UUsage^U
+
+    SET PATH allows Clipper to find and update existing files in another
+    drive and/or directory.  When you attempt to access a file Clipper
+    first looks for it in the current drive and directory.  The current
+    disk drive and directory is established when your Clipper application
+    is loaded, or by SET DEFAULT.  If the file is not found, Clipper then
+    searches the path list you specified path by path until the first
+    instance of the file is found.  Note that FILE() respects the PATH
+    SETting when searching for the existence of a file.
+
+    The path, however, is only for finding existing files.  If you wish to
+    create new files in another drive or directory, use SET DEFAULT TO
+    <directory> or explicitly declare the path when specifying the
+    filename.
+
+    To configure a compiled application to a site-specific path setting at
+    runtime, pass a DOS environmental variable to your application program,
+    retrieve its value with GETE(), and SET PATH with this value.  For
+    example, in DOS
+
+       ^RC> SET CLIP_PATH=C:\APPS\DATA, C:\APPS\PROGS^R
+
+    Later in the configuration section of your application program:
+
+    ^Rpath_set = GETE(:CLIP_PATH")^R
+    ^RSET PATH TO &path_set       ^R
+!seealso: ???.ngo:"DIR" clip_052.ngo:"SET DEFAULT" 
+'------------------------------------------------------------------------------
+
+
+

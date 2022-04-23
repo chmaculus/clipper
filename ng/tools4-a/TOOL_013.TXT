@@ -1,0 +1,454 @@
+!short: Introduction Transaction Tracking System
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+ ^bNovell Transaction Tracking System (TTS)^b
+
+     This chapter provides functions for the use of the TTS within a
+     CA-Clipper application.  The use of the TTS within a CA-Clipper
+     application requires more than start and termination or cancellation of
+     a transaction with the related CA-Clipper Tools functions.  With regard
+     to the architecture, the application must be oriented to the specifics
+     of TTS.  The TTS takes into consideration only files managed on a server
+     volume.
+
+     Transaction tracking occurs only on the files that have been marked as
+     transactional.  The transactional bit is an extended file attribute that
+     can be set with the Novell utility FLAG.EXE or with the related
+     CA-Clipper Tools function NNETEXTATT().  All files related to a .DBF
+     file, (.NTX, .DBT) must also be marked as transactional.
+
+     The time between the start and the termination or cancellation of a
+     transaction should be as short as possible.  Avoid direct entries into
+     database fields.  Use memory variables for data input and then update
+     the database within a transaction.
+
+     The reason for minimizing the transaction time is a characteristic of
+     the Netware operating system that cannot be influenced by the
+     application.  When data in a file is modified, Netware physically locks
+     the affected file area.  In contrast to a logical locking with RLOCK(),
+     the affected data cannot be read as long as the transaction is
+     incomplete.  If the transaction has been terminated successfully, the
+     database record is updated.  If the transaction has been interrupted,
+     the record is reset to the previous value.  A successful read access by
+     another workstation could lead to fatal logical errors.  The physical
+     lock is removed automatically after the transaction has been completed
+     or canceled.  If a workstation tries to access a physically locked area,
+     CA-Clipper causes an ACCESS DENIED error message and evaluates the error
+     block.  Normally, this results in a branch into the error recovery
+     routine.  An error message box is displayed, and the user can cause a
+     repetition of the operation that failed.  The error message text can be
+     adapted to the running transaction.  However, the problem is that from
+     the beginning the application is not able to determine whether the
+     ACCESS DENIED error results from a running transaction or another error
+     source.  Therefore, an application using the TTS should have a mechanism
+     available that allows it to determine if a transaction is active for a
+     specified group of files or not.  Using Netware semaphores, for example,
+     allows you to check to see if a transaction is active, either during the
+     error recovery or before a file is accessed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETDISTTS() Turns off the Transaction Tracking System (TTS)
+'------------------------------------------------------------------------------
+ ^bNNETDISTTS()^b
+ Turns off the Transaction Tracking System (TTS)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETDISTTS([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETDISTTS() returns .T. if the TTS of the specified file server has
+     been turned off successfully.  If an error occurs (for example,
+     insufficient rights), the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET DISABLE TRANSACTION TRACKING SYSTEM
+     NNETDISTTS() allows you to temporarily turn off the TTS on a file
+     server.  Console rights are required to turn off the TTS with
+     NNETDISTTS().
+
+ ^bExample^b
+
+     Turn off the TTS on the default server:
+
+     IF NNETDISTTS()
+        ? 'TTS turned off successfully!'
+     ELSE
+        ? 'Error!
+     ENDIF
+!seealso: "NNETENTTS()" "NNETISTTS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETENTTS()  Activates the Transaction Tracking System (TTS)
+'------------------------------------------------------------------------------
+ ^bNNETENTTS()^b
+ Activates the Transaction Tracking System (TTS)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETENTTS([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETENTTS() returns .T. if the TTS has been activated successfully.  If
+     an error occurs (for example, insufficient rights), the function returns
+     .F..
+
+ ^bDescription^b
+
+     NOVELL NET ENABLE TRANSACTION TRACKING SYSTEM
+     NNETENTTS() allows you to activate the TTS on the file server if it has
+     been turned off with NNETDISTTS().  Console rights are required to
+     activate the TTS.
+
+ ^bExample^b
+
+     Activate the TTS on file server TOOLS1:
+
+     NNETENTTS('TOOLS1')
+!seealso: "NNETDISTTS()" "NNETISTTS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETISTTS()  Checks for the availability of the Transaction Tracking System
+'------------------------------------------------------------------------------
+ ^bNNETISTTS()^b
+ Checks for the availability of the Transaction Tracking System (TTS)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETISTTS([<lMode>],[<cServer>|<nConId>]) --> lAvailable
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<lMode>^b  Designates the test mode of NNETISTTS().  If .F. is passed,
+     NNETISTTS() checks for the general availability of the TTS.   The
+     default value is .F..  If .T. is passed, NNETISTTS() checks to see if an
+     available TTS is activated or not.
+
+     ^b<cServer>^b Designates the name of the file server that is used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETISTTS() returns .T. if the TTS is available (<lMode>=.F.) or
+     activated (<lMode>=.T.).
+
+ ^bDescription^b
+
+     NOVELL NET IS TRANSACTION TRACKING SYSTEM
+     NNETISTTS() allows applications using the TTS to check to see if the TTS
+     is available or currently activated.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Check for the availability of the TTS on the default server:
+
+        IF NNETISTTS()
+           ? 'TTS available!'
+        ELSE
+           ? 'TTS not available!'
+        ENDIF
+
+     ^b^CFE^b  Check to see if the TTS is currently activated:
+
+        IF NNETISTTS(.T.)
+           ? 'TTS activated!'
+        ELSE
+           ? 'TTS not activated!'
+        ENDIF
+!seealso: "NNETDISTTS()" "NNETTTSBEG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETTTSAB()  Aborts a running transaction
+'------------------------------------------------------------------------------
+ ^bNNETTTSAB()^b
+ Aborts a running transaction
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETTTSAB([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b Designates the name of the file server that is used.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETTTSAB() returns .T. if the current transaction of <cServer> has been
+     aborted.  If an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET TRANSACTION TRACKING SYSTEM ABORT
+     NNETTTSAB() allows you to abort the active transaction (rollback).  All
+     modifications performed by the current workstation in flagged,
+     transactional files on <cServer> since the start of the transaction with
+     NNETTTSBEG() become invalid.  For example, NNETTTSAB() can be called if
+     a successful termination of the transaction is impossible.  NNETTTSAB()
+     removes all file lockings of files affected by the transaction.
+
+ ^bNote^b
+
+     ^b^CFE^b  When you use the Transactional Tracking System (TTS), always
+        take into account that other stations might not be able to read files
+        attached by the transaction (see the Introduction to this chapter).
+
+ ^bExample^b
+
+     Abort the transaction if the available disk space is too small:
+
+     BEGIN SEQUENCE
+        NNETTTSBEG()
+        //
+        // Data manipulation
+        //
+        IF DISKSPACE() < 50000
+           BREAK
+        ENDIF
+        //
+        // Data manipulation
+        //
+        NNETTTSEND()
+     RECOVER
+        NNETTSAB()
+     END
+!seealso: "NNETTTSEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETTTSBEG() Starts an explicit transaction
+'------------------------------------------------------------------------------
+ ^bNNETTTSBEG()^b
+ Starts an explicit transaction
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETTTSBEG([<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b Designates the name of the file server that is used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETTTSBEG() returns .T. if a transaction on <cServer> has been opened
+     successfully.  If an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET TRANSACTION TRACKING SYSTEM BEGIN
+     A call of NNETTTSBEG() starts an explicit transaction on <cServer>.
+     After a transaction has been started, each write access to a marked,
+     transactional file (the extended attribute transactional is set) is
+     protocolled and becomes valid if the transaction is terminated.  During
+     a running transaction, all file modifications can be undone.  If a
+     failure occurs during a transaction (for example, a workstation crash),
+     the Transactional Tracking System (TTS) backs up the transaction
+     immediately.
+
+     Only one transaction can be active per workstation.  This transaction
+     includes all transactional files into which the data is written.
+
+     A file on a server volume can be marked 'transactional' with
+     NNETEXTATT().
+
+ ^bNote^b
+
+     ^b^CFE^b  When you use the TTS, always take into account that other
+        stations might not be able to read files attached by the transaction
+        (see the Introduction to this chapter).
+
+ ^bExample^b
+
+     Mark the file CLIENT.DBF as transactional, and start an explicit
+     transaction:
+
+     #include "ctnnet.ch"
+
+     NNETEXTATT('CLIENT.DBF',EXA_TTS)
+
+     IF .NOT. NNETTTSBEG()
+        ? 'Transaction could not be started!'
+     ENDIF
+!seealso: "NNETTTSAB()" "NNETTTSEND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETTTSEND() Terminates a transaction
+'------------------------------------------------------------------------------
+ ^bNNETTTSEND()^b
+ Terminates a transaction
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETTTSEND([<cServer>|<nConId>]) --> nTransNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer>^b  Designates the name of the file server that is used.
+     Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETTTSEND() returns the transaction number.  If the error occurs, the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET TRANSACTION TRACKING SYSTEM END
+     A call of NNETTTSEND() validates all write accesses to flagged,
+     transactional files since the start of the transaction (NNETTTSBEG()).
+     Before the end of a transaction, a buffer commit is executed.  At the
+     end of a transaction, the file server assigns a transaction number, that
+     can be used to determine when a transaction has been written
+     successfully.
+
+ ^bNote^b
+
+     ^b^CFE^b  When you use the Transactional Tracking System (TTS), always
+        take into account that other stations might not be able to read files
+        attached by the transaction (see the Introduction to this chapter).
+
+ ^bExample^b
+
+     The following example demonstrates a typical transaction.  The
+     transaction is embedded in a begin sequence structure.  If no problems
+     occur, the transaction is completed normally at the end of the
+     structure.  If problems do occur, a break causes a branch into the
+     recover routine, where the transaction is undone by NNETTTSAB().
+
+     BEGIN SEQUENCE
+        NNETTTSBEG()
+        //
+        // Data manipulation
+        //
+        IF DISKSPACE() < 50000
+           BREAK
+        ENDIF
+        //
+        // Data manipulation
+        //
+        NNETTTSEND()
+     RECOVER
+        NNETTSAB()
+     END
+!seealso: "NNETTTSAB()" "NNETTTSBEG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETTTSSTA() Determines the transaction status after completion
+'------------------------------------------------------------------------------
+ ^bNNETTTSSTA()^b
+ Determines the transaction status after completion
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETTTSSTA(<nTransNumber>,[<cServer>|<nConId>])
+     ^b    --> lWritten
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nTransNumber>^b  Designates a transaction number, which has been
+     returned by NNETTTSEND() at the end of a transaction.
+
+     ^b<cServer>^b Designates the name of the file server that is used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETTTSSTA() returns .T. if a terminated transaction has been written
+     completely.  If the terminated transaction has not been written
+     completely, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET TRANSACTION TRACKING SYSTEM STATUS
+     A few seconds after a transaction has been terminated by NNETTTSEND(),
+     Netware starts writing the transaction.  NNETTTSSTA() allows you to
+     determine if a transaction that has been completed successfully is
+     already written.  The first parameter that is passed contains the
+     transaction number that has been returned by NNETTTSEND().
+
+ ^bNote^b
+
+     ^b^CFE^b  When you use the Transaction Tracking System (TTS), always
+        take into account that other stations might not be able to read files
+        attached by the transaction (see the Introduction to this chapter).
+
+ ^bExample^b
+
+     Terminate the transaction, and wait until the transaction has been
+     written completely:
+
+     nTrans=NNETTTSEND()
+
+     WHILE !NNETTTSSTA(nTrans)
+     ENDDO
+!seealso: "NNETTTSEND()" 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,595 @@
+!short: Install Rescue
+'------------------------------------------------------------------------------
+^BInstalling Rescue5
+
+
+ 1) Take one backup of your master disk and store the original
+    in a safe place.
+
+ 2) Ensure that the following files are on your master copy:
+
+     ^A1ARESCUE5.EXE    Rescue5 self-extracting archive.
+     ^A1AREADME.1ST     Additional information.
+
+ 3) Read the file called README.1ST for information that didn't
+    make this document.
+
+ 4) Create a new directory for Rescue5 (unless you want to
+    install Rescue5 to an existing directory), move to the new
+    directory and type:
+
+     ^A1A   a:\rescue5
+
+    The following files will be extracted into the following
+    directories (assuming you created the directory \RESCUE5):
+
+        ^A1A\RESCUE5\
+          ^A1ARESCUE.EXE   ^A1A Rescue5
+          ^A1AVARIABLE.UDT ^A1A Default names for unknown variables
+          ^A1ARESCUE5.NG   ^A1A Documentation in Norton guide format
+
+        ^A1A\RESCUE5\SAMPLE\
+          ^A1AAPTFILER.EXE ^A1A Sample session .EXE file
+          ^A1AAPTFILER.SRC ^A1A Some of the source to APTFILER.EXE
+          ^A1AAPTFILER.UDT ^A1A User defined type file for APTFILER
+          ^A1AAPTFILER.CH  ^A1A Header file needed to compile APTFILER
+          ^A1ASAMPLE.GRP   ^A1A Edited grouping file for the 2nd pass
+          ^A1ASAMPLE.VAR   ^A1A Edited variable file the 2nd pass
+          ^A1ASAMPLE.LIB   ^A1A Code required to rebuild APTFILER.EXE
+
+ 5) Modify AUTOEXEC.BAT to include the Rescue5 directory in your
+    PATH statement.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Decompile CA-Clipper 5 .EXE, .OBJ and .LIB files
+'------------------------------------------------------------------------------
+^BDecompiling CA-Clipper 5 .EXE .OBJ & .LIB files
+
+
+ Rescue5 will run faster if you have 1Mb or more of expanded or
+ extended memory available and are running disk caching
+ software.
+
+  1) Ensure the file called RESCUE.EXE is in your DOS PATH and
+     that VARIABLE.UDT is in the same directory as RESCUE.EXE.
+
+  2) To decompile a .EXE file, type:
+
+          ^A1Arescue <EXE>[.EXE] [/o<out path>] [switches]^A1A
+
+     Where:
+
+        ^A1A<EXE>[.EXE]   ^A1A  Name of the .EXE file to decompile
+        ^A1A[/o<out path>]^A1A  Directory in which to write files
+        ^A1A[switches]    ^A1A  Output control switches
+
+     If paths are omitted Rescue5 uses the current directory.
+
+  3) Optionally run Rescue5 a second time with the same command
+     line to change the generated local and static variable
+     names (which are removed by CA-Clipper during compilation),
+     and/or the way code is grouped into source files.
+
+     Rescue5 will recover local and static names from code
+     compiled with the CA-Clipper /b switch and always recovers
+     private, public and auto (undeclared memvar) variable
+     names.
+
+ To decompile .OBJ and .LIB files you must first link them into
+ a .EXE file (to decompile all the object modules in a .LIB file
+ link the .LIB file as if it were a .OBJ file, including the
+ .LIB extension), then follow steps 2 and 3 (above).
+
+ Rescue5 does not require a fully linked file and you can safely
+ ignore any linker reported duplicate or missing symbols.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Configure the recovered code
+'------------------------------------------------------------------------------
+^BConfiguring the recovered code
+
+
+ Default local and static variable base names can be changed by
+ editing the supplied VARIABLE.UDT file, or by supplying a user
+ defined type file.
+
+ The way procedures are grouped into source files can be changed
+ by editing the file called <.EXE name>.GRP,  generated during
+ the first pass.
+
+ Local and static variable names can be changed by editing the
+ file called <.EXE name>.VAR, generated during the first pass.
+
+ After changes have been made to <.EXE name>.GRP or <.EXE
+ name>.VAR, Rescue5 should be run again to apply them to the
+ source code.
+
+ Refer to the sample session for a documented example of
+ changing the <.EXE name>.GRP and <.EXE name>.VAR files.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Change the way procedures are grouped
+'------------------------------------------------------------------------------
+^BChanging the way procedures are grouped
+
+
+ The <.EXE name>.GRP file consists of three sections, of which
+ only the first is processed by Rescue5, the other two are
+ supplied for information.
+
+ The first section is a list of the output source files, each
+ with one or more entries after it.  There are three types of
+ entry:
+
+   A number within square brackets is a cross reference to a
+   list of procedures that share a common static variable.  For
+   convenience these lists are reproduced in Section 2 of the
+   <.EXE name>.GRP file.
+
+   A procedure name with a number in round brackets is a cross
+   reference to a list of procedures that share a common static
+   procedure.  For convenience these lists are reproduced in
+   Section 3 of the <.EXE name>.GRP file.
+
+   A procedure name on its own refers to that procedure.
+
+ To change the way procedures are grouped, edit the first
+ section:
+
+   To change the name of a source module, over-type the current
+   name with the new name (be sure to follow MS-DOS file naming
+   conventions).  You cannot change the names of procedures in
+   <.EXE name>.GRP.
+
+   To add more procedures into a module, append them to the list
+   of procedures already associated with that module, then
+   remove them from the list belonging to the module they were
+   previously grouped within.
+
+   To create a new module add it to the list and move the
+   procedures you want it to contain.
+
+
+ Module names must be the first item on a line and must be
+ followed by a colon, then whitespace (tab, space or new-line),
+ then a list of entries separated by whitespace.
+
+ Procedures or groups of procedures from different static
+ variable frames (identified by cross reference numbers in
+ square brackets) cannot be combined into the same group.
+
+ Procedures or groups of procedures from different static
+ procedure frames (identified by cross reference numbers in
+ round brackets), and procedures with no static frame can be
+ combined, but be careful not to define groups such that
+ procedures with the same name end up in the same source file.
+
+ Rescue5 will always emit code that was originally compiled with
+ the CA-Clipper /b switch into files with the same name as the
+ original, but the extension .SRC.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Change local and static variable names
+'------------------------------------------------------------------------------
+^BChanging local and static variable names
+
+
+ During decompilation Rescue5 uses the variable naming
+ conventions in the VARIABLE.UDT file to create a name for each
+ local and static variable, writing the suggested names in the
+ <.EXE name>.VAR file.
+
+ The default names that Rescue5 uses in every decompilation can
+ be changed by editing the VARIABLE.UDT file, or by creating
+ additional user defined type files.
+
+ The specific names that Rescue5 uses for a particular
+ decompilation can be changed by editing the <.EXE name>.VAR
+ file.
+
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Change variable base names
+'------------------------------------------------------------------------------
+^BChanging variable base names
+
+
+ Changes made to the VARIABLE.UDT file will affect the default
+ variable names Rescue5 uses when creating the <.EXE name>.VAR
+ file.
+
+ The VARIABLE.UDT file contains two sections:
+
+   The first section is a list of generic variable base names,
+   prefixed with the identifier GenericBaseNames: (which must be
+   the first entry in the list).
+
+   There is a generic base name for each of the data types that
+   Rescue5 recognises.  These are the default base names used
+   for variables that are created when other variables of the
+   same type but different qualifiers are combined.
+
+   Each generic base name has two parts; a short description and
+   a variable base name composed of a one character type
+   identifier followed by up to *six characters of qualifier.
+
+   Rescue5 builds variable names from base names according to
+   the following rules:
+
+     If the variable is a static or a code-block parameter a
+     scope identifier is inserted after the type prefix.
+
+     If a variable with the same type prefix, scope identifier
+     (if applicable) and qualifier already exists, an ordinal
+     number is appended to the qualifier.
+
+     If neither a scope identifier nor ordinal number is
+     required the base name is used unchanged.
+
+   *Qualifiers may be longer, but Rescue5 will overwrite part of
+   the qualifier if the total variable length would otherwise
+   exceed ten characters.
+
+ To change generic variable base names, edit the first section:
+
+   To change a generic base name, edit the variable base name on
+   the right (*do not edit the description on the left of any of
+   the fundamental generic base names supplied with Rescue5).
+
+   To remove a generic base name either delete the entire entry
+   from the list or comment it out with a '#' (*do not remove or
+   comment out any of the fundamental generic base names
+   supplied with Rescue5).
+
+   To add a new generic base name append a description and base
+   name to the list.  Be careful to avoid defining more than one
+   generic base name with the same type prefix.
+
+ *Rescue5 expects certain generic base names to exist, which it
+ locates by using the description on the left.  These
+ fundamental generic base names are listed below and are clearly
+ marked in VARIABLE.UDT.  You can edit the type prefix and
+ qualifiers of these names, but do not edit or remove the
+ descriptions:
+
+   ^A1AArray        aArr
+   ^A1ABlock        bBlk
+   ^A1ADate         dDte
+   ^A1ALogical      lLog
+   ^A1AMacro        xMac
+   ^A1ANil          uNil
+   ^A1ANumber       nNum
+   ^A1AObject       oObj
+   ^A1AString       cStr
+   ^A1AUndefined    _Def
+   ^A1AVariable     vVar
+
+ All other predefined types may be edited or removed.  Please
+ note that if you change a type prefix in the generic variable
+ base names section, you must also change the type of all
+ entries in the function base names section that are affected.
+
+   The second section of VARIABLE.UDT consists of a list of
+   function names, prefixed with the identifier
+   FunctionBaseNames: (which must be the first entry in the
+   list).
+
+   Each function name is followed by a variable base name that
+   defines the default name applied to a variable created as a
+   result of that function being called.
+
+   The VARIABLE.UDT file supplied with Rescue5 has definitions
+   for every function in CA-Clipper. You can extend or modify
+   this list:
+
+     To change an existing function base name, *edit the
+     variable base name on the right.
+
+     To remove a function base name from the list either delete
+     the entire line or comment it out with a '#'.
+
+     To *add a new function base name append it to the list,
+     following the same rules.
+
+   *The new base name must use a type prefix that is defined in
+   the predefined generic base name list; if a new type prefix
+   is used a generic base name of the same type must be declared
+   (otherwise Rescue5 will fail to complete the decompilation).
+
+   If Rescue5 encounters duplicate definitions in VARIABLE.UDT
+   it will use the first definition found and write a warning
+   into the ERROR file.
+
+ Additional user defined generic base name files can be
+ 'included' in VARIABLE.UDT with the @ command:
+
+   ^A1A@funcky.udt                 ^A1A
+   ^A1A@\dev\clipper5\lib\mylib.udt^A1A
+
+ @commands may be placed anywhere in user defined type files and
+ can be nested.  Unless a directory is specified, Rescue5
+ searches the current directory first for @ included files, then
+ the /i directory (if one has been specified), then the /o
+ directory (if one has been specified) and finally the directory
+ Rescue5 was started from.  The first file encountered with the
+ correct name is read.
+
+ User defined type files should follow the same format as
+ VARIABLE.UDT:
+
+    If a generic base name section is declared it must appear
+    before the function base name section and start with the
+    identifier GenericBaseNames:
+
+    If a function base name section is declared it must start
+    with the identifier FunctionBaseNames:
+
+ Be careful where you @ include user defined type files; generic
+ base names must be processed before function base names.  The
+ safest approach is to add generic base names directly into
+ VARIABLE.UDT, reserving user defined type files for function
+ base name declarations (the user defined type files would then
+ be @ included in VARIABLE.UDT after the generic base name
+ section).
+
+ If you do not want to change VARIABLE.UDT, edit a copy and use
+ the /u switch to force Rescue5 to use the new file in place of
+ VARIABLE.UDT.
+
+ For example, here is a modified and extended generic base name
+ list:
+
+^A1A   Array        aArr
+^A1A   Block        bExp
+^A1A   Date         dDate
+^A1A   Logical      lBool
+^A1A   Macro        xExp
+^A1A   Nil          uNil
+^A1A   Number       nNum
+^A1A   Object       oObj
+^A1A   String       cStr
+^A1A   Undefined    _Nil
+^A1A   Variable     vChanges
+
+^A1A   Handle       hHnd
+^A1A   Time         tTime
+^A1A   Integer      iNum
+^A1A   Float        fNum
+
+ To use the new base names, change the default variable names
+ for the functions that are affected:
+
+^A1A   fcreate      hCreate
+^A1A   time         tNow
+^A1A   getBonus     iPercent
+^A1A   getSalary    fSalary
+   etc.
+
+ Rescue5 resolves type conflicts (variables that are created
+ when two or more expressions of different types are combined)
+ by using the generic base names defined for the v type.  Using
+ the definitions above:
+
+^A1A   vChanges := fBonus * iPercent
+
+ Rescue5 used vChanges because the user defined base names
+ specify f and i to be of different data types (the code
+ produced after running Rescue5 a second time with an unedited
+ <.EXE name>.VAR file is shown for clarity).
+
+ The following illustrates how Rescue5 uses generic and function
+ base names to construct variable names:
+
+^A1A   nRow := row()         // Base name defined for row() used
+^A1A   nRow1 := row() + nRow // Type & qualifier retained
+^A1A   nNum := row() + col() // Generic base name used
+
+ The initial call to row() caused Rescue5 to use the base name
+ defined for the row() function in the FunctionBaseNames:
+ section.  In the first arithmetic expression the expressions
+ being operated on are of the same type and qualifier, so
+ Rescue5 uses the base name common to both of them.  In the
+ second expression the qualifiers are different and Rescue5 used
+ the generic base name for 'n' type operations in the
+ GenericBaseNames:  section.
+
+ This behaviour means that it is better to give functions that
+ logically return the same, or very similar, values the same
+ base names.  The definitions:
+
+^A1A   row       nRow
+^A1A   maxrow   nRow
+
+ Produce:
+
+^A1A   nRow := maxrow() - row()
+
+ The definitions:
+
+^A1A   row      nRow
+^A1A   maxrow   nMaxRow
+
+ Produce:
+
+^A1A   nNum := maxrow() - row()
+
+ In the examples above the code produced after running Rescue5 a
+ second time with an unedited <.EXE name>.VAR file is shown for
+ clarity.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Change specific variable names
+'------------------------------------------------------------------------------
+^BChanging specific variable names
+
+
+ Changes made in the <.EXE name>.VAR file will affect the
+ variable names that Rescue5 writes into the source code on the
+ second pass.
+
+ The <.EXE name>.VAR file has two sections:
+
+   The first section is a list of the locally scoped variables
+   for each procedure.  Local variables are identified by the
+   mnemonic "Ln" after the '#', local parameters by "Pn" and
+   code-block parameters by "BLn".
+
+   The second section is a list of static variables by the
+   module they are declared in.  The module is identified by the
+   cross-reference index into Section 2 in the <.EXE name>.GRP
+   file.
+
+ To change a variable name over-type the suggested name to the
+ left of the '#'.  Be sure to follow CA-Clipper naming
+ conventions and to avoid duplicate variable names.  Rescue5
+ allows variable names of up to 32 characters, but only the
+ first 10 characters of the name are significant to CA- Clipper.
+
+ Rescue5 will apply variable names in the order in which it
+ finds them in the <.EXE name>.VAR file.  The first name is
+ applied to the first variable, the second name to the second
+ variable and so on.  It is therefore very important that the
+ order in <.EXE name>.VAR is maintained.
+
+ Variables cannot be removed or created through the <.EXE
+ name>.VAR file.
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Rebuild my application
+'------------------------------------------------------------------------------
+^BUsing RMake
+
+
+ Rescue5 creates two files containing the information required
+ to rebuild the application:
+
+^A1A    <.EXE name>.RMK     RMake script
+^A1A    <.EXE name>.LNK     List of object modules
+
+ To rebuild the application type:
+
+    ^A1Armake <.EXE name>^A1A
+
+ Before running RMake ensure that your environment is set up so
+ that DOS can find RMake, CA-Clipper and the linker used to
+ rebuild the .EXE, and that the linker can find the libraries
+ required.
+
+ The .RMK file has the following contents:
+
+ The CA-Clipper command line used to recompile the source
+ modules with a combination of the following switches:
+
+   ^A1A/l^A1A      Only used if all of the source code was originally
+           compiled with /l
+
+   ^A1A/m^A1A      Always used
+
+   ^A1A/b^A1A      Only used if all of the source code (including
+           GETSYS.PRG and ERRORSYS.PRG) was originally compiled
+           with /b
+
+   ^A1A/n^A1A      Always used.  Note that in systems that were
+           originally compiled without /n, CA-Clipper will have
+           automatically  declared a procedure for each of the
+           source files required to build the system.  These are
+           emitted by Rescue5 as procedures with no body (no
+           code between the procedure declaration and the
+           return statement)
+
+
+ The linker command line follows; the linker used to rebuild the
+ application is assumed to be the same as the linker that was
+ originally used to build the .EXE.
+
+ Next, Rescue5 embeds a comment containing the version string
+ from the CLIPPER.LIB that the application was linked with.
+ This is likely to be the same as the version of CA-Clipper that
+ was used to compile the source files originally, but note that
+ it is possible to compile a system with one version and link it
+ with library files from another.
+
+ Finally Rescue5 writes the rules and dependencies required to
+ rebuild the application.
+
+ The .LNK file contains a list of the object modules required to
+ link the application.  Note that you will need to edit the .LNK
+ file if the application requires libraries other than
+ CLIPPER.LIB, EXTEND.LIB, TERMINAL.LIB and DBFNTX.LIB (supplied
+ with CA-Clipper).
+
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Protect my .EXE files from de-compilers
+'------------------------------------------------------------------------------
+^BProtecting .EXE files
+
+
+ Rescue5 supports two methods of protecting .EXE files:
+
+ 1) In the procedure called "ERRORSYS" create a memvar (a
+    private, public or auto (undeclared) variable) called
+    "ERRORSYS" with the numerical value 9876543210.
+
+ 2) Use Blinker to "burn-in" a demonstration date or
+    demonstration limit into the .EXE file that exceeds the
+    likely life of the system.
+
+ If Rescue5 detects either of these methods it will refuse to
+ decompile the .EXE file.
+
+ There is currently no method of protecting a single procedure,
+ or group of procedures.
+
+ APTware is working on a general security and encryption tool
+ that will protect code at procedure level, preventing any
+ decompiler from recovering code from protected procedures.
+ This tool will be suitable for protecting third party library
+ code without disallowing the recovery of other code linked into
+ the same system.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

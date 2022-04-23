@@ -1,0 +1,39 @@
+'------------------------------------------------------------------------------
+^BSET DEFAULT^B
+
+    SET DEFAULT TO allows you to select the drive where all operations
+    take place and all files are stored, unless otherwise directed.
+
+^USyntax^U
+
+    SET DEFAULT TO <drive>[:<path>]
+
+^UArguments^U
+
+    <drive> identifies a disk drive name or letter.
+
+    <path> identifies the directory that you want to make the default.  If
+    you specify both a drive and directory, a colon must be included after
+    the drive letter.
+
+    SET DEFAULT TO without an argument defaults to the last directory used
+    on the designated drive.
+
+^UUsage^U
+
+    The default drive and directory are those where your Clipper
+    application is initially started.  Once in the application, you can
+    change this with SET DEFAULT.
+
+    Note that the default drive and directory do not constitute the search
+    path for accessing files.  To set a search path for file access, use
+    SET PATH.  SET DEFAULT is used primarily to specify the location where
+    new files are written.
+
+    Note also that SET DEFAULT does not change the DOS drive and directory.
+    Executing a RUN accesses the last drive and directory set in DOS.
+!seealso: clip_069.ngo:"SET PATH" 
+'------------------------------------------------------------------------------
+
+
+

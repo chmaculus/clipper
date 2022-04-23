@@ -1,0 +1,1864 @@
+!short: ^bRelease Note #3 -- Clipper 5.01 to CA-Clipper 5.2 Change Summary
+'------------------------------------------------------------------------------
+ Document:   ^bRelease Note #3
+             ^bCA-Clipper 5.2 Change Summary
+
+             Copyright (c) 1993, Computer Associates International, Inc.
+
+ Version:    5.2 (February 1, 1993)
+
+ Summary:    This document provides a summary of changes from Clipper 5.01
+             to CA-Clipper 5.2, including new and changed features.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bGeneral
+!short:
+!short: NEW:      Memory Management
+'------------------------------------------------------------------------------
+ ^bNEW:      Memory Management^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper 5.2 improves the handling of expanded memory.  Version 5.01
+     applications would hang in certain circumstances on a machine using a
+     LIM 4.0 compatible EMS driver with the page frame disabled.
+
+     CA-Clipper 5.2 requires that you enable the EMS page frame.  If the EMS
+     page frame is not detected, EMS will not be used.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      LIM 4.0 support
+'------------------------------------------------------------------------------
+ ^bNEW:      LIM 4.0 support^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Support for LIM 4.0 has been added.  If CA-Clipper detects a LIM 4.0
+     compatible driver, up to 32MB of EMS will be used.  CA-Clipper requires
+     that you enable the EMS page frame.  If the EMS page frame is not
+     detected, EMS will not be used.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      RSIS support
+'------------------------------------------------------------------------------
+ ^bNEW:      RSIS support^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper is now RSIS (Relocatable Screen Interface Specification)
+     compliant.  This produces faster screen updates when a RSIS compliant
+     driver is loaded.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Database error handling
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Database error handling^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In CA-Clipper 5.01, using database commands without an open work area
+     would not cause an error.  With the following exceptions, CA-Clipper 5.2
+     now produces a "Work area not in use" error.
+
+     The following table shows state query functions that do not produce a
+     "Work area not in use" error.  This list indicates the return value of
+     these functions when executed without an open work area.
+
+     ^bTable:  State query functions and their return value
+     ^b        with no open work area
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bFunction     Return value^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     EOF()        -->  .T.
+     BOF()        -->  .T.
+     FOUND()      -->  .F.
+     DELETED()    -->  .F.
+     RECNO()      -->   0 (zero)
+     LASTREC()    -->   0 (zero)
+     FIELDNAME(1) -->  ""
+     FCOUNT()     -->   0 (zero)
+     INDEXORD()   -->   0 (zero)
+     INDEXKEY()   -->  ""
+     DBSTRUCT()   -->  {} (empty array)
+     HEADER()     -->   0 (zero)
+     RECSIZE()    -->   0 (zero)
+     LUPDATE()    -->    /  /   (empty date)
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Miscellaneous error handling
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Miscellaneous error handling^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Improved error handling in many CA-Clipper commands and functions traps
+     and reports missing arguments or invalid arguments passed to them.
+
+     One notable example is DBEVAL(), which now produces an argument error if
+     the first parameter is missing.  This is notable because the original
+     side effect has been used as follows:
+
+     DBEVAL( , , bWhile )
+
+     This produced the same results as LOCATE WHILE, but operated more
+     slowly.  This code should be replace with the appropriate LOCATE WHILE
+     command.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Aliases
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Aliases^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Illegal aliases:  Previous versions of CA-Clipper accepted database
+     aliases that were not valid CA-Clipper identifiers.  These aliases were
+     then inaccessible.  CA-Clipper now detects illegal characters in the
+     alias and produces an EG_BADALIAS error.
+
+     Duplicate aliases:  Previous versions of CA-Clipper did not generate an
+     error when a duplicate alias was specified.  CA-Clipper now generates an
+     EG_DUPALIAS error if you attempt to create an alias identifier that is
+     already in use.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Reserved Word
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Reserved Word^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     AADD has been added to the Reserved Word list.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      Unrecoverable error messages
+'------------------------------------------------------------------------------
+ ^bNEW:      Unrecoverable error messages^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Unrecoverable errors are runtime errors that for some reason cannot make
+     use of the error system.  The following runtime unrecoverable error
+     messages are now documented:
+
+     24                 Write error
+     331                String/array memory overflow
+     332                String/array memory overflow
+     415                Cannot open overlay file
+     5302               Conventional memory exhausted
+     5304               Conventional memory exhausted
+     5306               Conventional memory exhausted
+     5312               VM swap file over allocated
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Miscellaneous Fixes
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Miscellaneous Fixes^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bLABEL FORM - SET DEFAULT
+
+     LABEL FORM now uses the SET DEFAULT setting to locate files when the
+     .LBL file is not in the default directory and an absolute path name is
+     not specified.
+
+     ^bDBEDIT() - Memory variables and expressions as columns
+
+     DBEDIT() now accepts memory variables and expressions as arguments in
+     the <acColumns> array.
+
+     ^bDBEDIT() - Field alias in column heading
+
+     When specified, DBEDIT() now properly displays field aliases in column
+     headings.  This is consistent with the Summer '87 version of CA-Clipper.
+
+     ^bWAIT
+
+     WAIT now accepts characters in the range 32 through 255 (ASCII).
+
+     ^bMENU TO
+
+     MENU TO no longer repaints the screen with the last prompt when you
+     press <Esc> to exit the menu.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bCommands
+!short:
+!short: CHANGED:  COPY FILE
+'------------------------------------------------------------------------------
+ ^bCHANGED:  COPY FILE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The COPY FILE command now allows control characters to be copied to a
+     device (printer, serial port, etc.).  Previous versions of CA-Clipper
+     generated an unrecoverable write error (24) if there was an embedded ^^Z
+     (CHR(26)) in a file being copied to a device.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  CREATE FROM
+'------------------------------------------------------------------------------
+ ^bCHANGED:  CREATE FROM^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The syntax for the CREATE FROM command is now:
+
+     ^bCREATE <xcDatabase> FROM <xcExtendedDatabase>
+     ^b   [NEW] [ALIAS <cAlias>] [VIA <cDriver>]
+
+     The following clauses have been added to the CREATE FROM command.
+
+     NEW is an optional clause that designates that the newly created
+     database should be opened in a new work area.  If not specified, the
+     resultant database (.dbf) file will be opened in the current work area.
+
+     ALIAS <cAlias> is the alias name to use when opening the database in a
+     new work area.  This allows for the creation of files whose names would
+     not be a legal identifier.
+
+     VIA <cDriver> is the name of the database driver to use to create the
+     database.  Note that the structure extended file must be created using
+     the same database driver.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  INDEX
+'------------------------------------------------------------------------------
+ ^bCHANGED:  INDEX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new syntax for the INDEX command is:
+
+     ^bINDEX ON <expKey> to <xcIndex> [UNIQUE]
+     ^b   <scope>
+     ^b   [FOR <lCondition>]
+     ^b   [WHILE <lCondition>]
+     ^b   [[EVAL <lCondition>] [<EVERY <nRecords>]]
+     ^b   [ASCENDING | DESCENDING]
+
+     The following clauses are new:
+
+     FOR <lCondition> specifies the conditional set of records on which to
+     index.
+
+     WHILE <lCondition> specifies another condition that each record
+     processed must meet.
+
+     EVAL <lCondition> specifies a condition that is evaluated either for
+     each record processed or at the interval specified by the EVERY clause.
+
+     EVERY <nRecords> specifies a numeric expression that modifies how often
+     EVAL is evaluated.
+
+     ASCENDING specifies that the index keys be sorted in increasing order of
+     value.
+
+     DESCENDING specifies that the index keys be sorted in decreasing order
+     of value.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  REINDEX
+'------------------------------------------------------------------------------
+ ^bCHANGED:  REINDEX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new syntax for the REINDEX command is:
+
+     ^bREINDEX [EVAL <lCondition>] [EVERY <nRecords>]
+
+     EVAL <lCondition> specifies a condition that is evaluated either for
+     each record processed or at the interval specified by the EVERY
+     <nRecords> clause.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  RESTORE
+'------------------------------------------------------------------------------
+ ^bCHANGED:  RESTORE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In the previous release RESTORE had various bugs (destroying variables,
+     eating memory) that have been fixed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  SET ORDER*
+'------------------------------------------------------------------------------
+ ^bCHANGED:  SET ORDER*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     SET ORDER* is now classified as a compatibility command.  It is
+     recommended that you use the new SET TAG command instead.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bFunctions
+!short:
+!short: CHANGED:  BROWSE()*
+'------------------------------------------------------------------------------
+ ^bCHANGED:  BROWSE()*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     BROWSE()* is now classified as a compatibility function.  It is
+     recommended that you use the TBrowse class instead.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      COLORSELECT()
+'------------------------------------------------------------------------------
+ ^bNEW:      COLORSELECT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     COLORSELECT() activates the specified color pair, it does not alter the
+     current SET COLOR setting.  The standard setting is the default color
+     pair for commands and functions that write to the screen.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DBCREATE()
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DBCREATE()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBCREATE() now accepts an optional additional parameter <cDriver>.
+
+     ^bDBCREATE(<cDatabase>, <aStruct>,
+     ^b   [<cDriver>] --> NIL
+
+     <cDriver> is the name of the database driver to use to create the
+     database.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DISPCOUNT()
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DISPCOUNT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DISPCOUNT() determines the current display context.  CA-Clipper uses
+     display contexts to buffer and supervise screen output operations.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DISPBEGIN()/DISPEND()
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DISPBEGIN()/DISPEND()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Each call to DISPBEGIN() defines a new display context. Output to the
+     display context is suppressed until a matching DISPEND() statement is
+     executed.  Since DISPBEGIN() calls may be nested, DISPCOUNT() can be
+     used to determine if there are any pending screen refresh requests.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  MEMOEDIT()
+'------------------------------------------------------------------------------
+ ^bCHANGED:  MEMOEDIT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In the previous release of CA-Clipper MEMOEDIT() failed to append a NULL
+     character to the end of its return string.  MEMOEDIT() will now return a
+     properly terminated string.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  SCROLL()
+'------------------------------------------------------------------------------
+ ^bCHANGED:  SCROLL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new syntax for SCROLL() is:
+
+     ^bSCROLL([<nTop>], [<nLeft>],
+     ^b   [<nBottom>], [<nRight>],
+     ^b   [<nRows>], [<nCols>] ) --> NIL
+
+     The <nCols> parameter has been added to SCROLL() to specify a horizontal
+     scroll value.
+
+     <nCols> defines the number of columns to scroll.  A value greater than
+     zero, scrolls left the specified number of columns.  A negative value
+     scrolls right the specified number of columns.  If <nCols> is not
+     specified, the screen will not be scrolled horizontally.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDirectives
+!short:
+!short: NEW:      #stdout
+'------------------------------------------------------------------------------
+ ^bNEW:      #stdout^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new directive #stdout causes the compiler to output a literal text
+     to the standard output device (stdout) during compilation.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bStatements
+!short:
+!short: NEW:      ANNOUNCE
+'------------------------------------------------------------------------------
+ ^bNEW:      ANNOUNCE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ANNOUNCE is a declaration statement that defines a module identifier.
+     This identifier may later be used to satisfy pending module REQUEST
+     statements.  ANNOUNCE and REQUEST provide a mechanism for managing
+     transient routines such as INIT and EXIT PROCEDUREs.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      EXIT PROCEDURE
+'------------------------------------------------------------------------------
+ ^bNEW:      EXIT PROCEDURE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The EXIT PROCEDURE statement declares a procedure that will be executed
+     on program termination.  EXIT procedures are called after the last
+     executable statement in a CA-Clipper application has completed.  EXIT
+     PROCEDUREs can be used to perform common housekeeping tasks such as
+     saving configuration settings to a file, closing a log file or
+     concluding a communications session.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  EXTERNAL*
+'------------------------------------------------------------------------------
+ ^bCHANGED:  EXTERNAL*^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     EXTERNAL* is now classified as a compatibility statement.  It is
+     recommended that you use the new REQUEST statement instead.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      INIT PROCEDURE
+'------------------------------------------------------------------------------
+ ^bNEW:      INIT PROCEDURE^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The INIT PROCEDURE statement declares a procedure that will be executed
+     at program startup.  INIT procedures are called prior to the first
+     executable statement in a CA-Clipper application and are quite useful
+     for performing common initialization tasks such as reading configuration
+     settings, or opening a communications port.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      REQUEST
+'------------------------------------------------------------------------------
+ ^bNEW:      REQUEST^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     REQUEST is a declaration statement that defines a list of module
+     identifiers to the linker.  Like all other declaration statements, a
+     REQUEST statement must be specified before any executable statements in
+     either the program file, or a procedure or user-defined function
+     definition.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bClasses
+!short:
+!short: NEW:      Getsys.prg functions
+'------------------------------------------------------------------------------
+ ^bNEW:      Getsys.prg functions^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Some of the functions in Getsys.prg have been made public so that you
+     can use them when implementing customized Get readers.  See
+     READFORMAT(), READKILL(), and READUPDATED() below.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Getsys.prg
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Getsys.prg^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper version 5.01 did not handle the interaction between SET BELL
+     ON and SET CONFIRM ON in a manner compatible with the Summer '87 version
+     of CA-Clipper and dBASE III.
+
+     Getsys.prg now respects SET BELL ON when SET CONFIRM ON is used.  The
+     Getsys.prg source code reflects this change.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      READFORMAT()
+'------------------------------------------------------------------------------
+ ^bNEW:      READFORMAT()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     READFORMAT() is a function that accesses the current format file in its
+     internal code block representation.  It lets you manipulate the format
+     file code block from outside of the Get system source code.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      READKILL()
+'------------------------------------------------------------------------------
+ ^bNEW:      READKILL()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     READKILL() is a function that lets you control whether or not to
+     terminate the current READ.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      READUPDATED()
+'------------------------------------------------------------------------------
+ ^bNEW:      READUPDATED()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     READUPDATED() is intended primarily for creating new READ Layers.  It is
+     identical in functionality to UPDATED() (see the UPDATED() entry in the
+     Reference guide), except that it allows the UPDATED() flag to be set.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  GET:subscript
+'------------------------------------------------------------------------------
+ ^bCHANGED:  GET:subscript^b
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Get:subscript is now an assignable exported instance variable.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  GET:display()
+'------------------------------------------------------------------------------
+ ^bCHANGED:  GET:display()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Get:display() exported method now handles delimiters.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Error.ch
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Error.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following generic error codes have been added to Error.ch:
+
+     ^bEG_DUPALIAS:^b  An attempt has been made to open a database with an alias
+     that is already in use.
+
+     ^bEG_BADALIAS:^b  An attempt has been made to open a database with an alias
+     that is not a valid CA-Clipper identifier.
+
+     ^bEG_CYCLICAL:^b  A subsystem has rejected request to perform a cyclic
+     operation. For example, a work area issues a SET RELATION into itself.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ErrorNew()
+'------------------------------------------------------------------------------
+ ^bNEW:      ErrorNew()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The ErrorNew() creates a new error object.  The syntax is:
+
+     ^bErrorNew() --> objError
+
+     It returns a new Error object.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ERRORINHANDLER()
+'------------------------------------------------------------------------------
+ ^bNEW:      ERRORINHANDLER()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ERRORINHANDLER() is a new function that assures a clean and prompt exit
+     from within an application.  It produces an "Error recovery failure"
+     error and indicates the name of the current module as well as the line
+     number.
+
+     Use this function to indicate that an error condition has occurred
+     within an error handler.
+
+     The following examples illustrate the use of ERRORINHANDLER().  An
+     invalid return value is trapped and reported by the handler:
+
+     oErr:canRetry := .T.
+     oErr:canDefault := .T.
+     xValue := EVAL(ERRORBLOCK(), oErr)
+
+     // If they request anything other than retry (.T.)
+     // or default (.F.), exit with error
+
+     IF VALTYPE(xValue) != "L"
+        ERRORINHANDLER()
+     ENDIF
+
+     A recursive activation of the error handler has been detected:
+
+     FUNCTION MyErrHandler( oErr )
+
+     STATIC lDejaVu := .F.
+
+        IF (lDejaVu)
+           ERRORINHANDLER()
+        ENDIF
+
+     lDejaVu := .T.
+        <error handling code>
+     lDejaVu := .F.
+
+     RETURN
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      TBrowse:forceStable()
+'------------------------------------------------------------------------------
+ ^bNEW:      TBrowse:forceStable()^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new method forceStable() performs a full stabilization of the
+     TBrowse.  It is analogous to the following code, only slightly faster:
+
+     DO WHILE .NOT. oBrowse:stabilize()
+     ENDDO
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  TBrowse error handling
+'------------------------------------------------------------------------------
+ ^bCHANGED:  TBrowse error handling^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Assigning invalid data to TBrowse and TBColumn instance variables would
+     not generate an error in version 5.01. Type checking during instance
+     variable assignment has been added in CA-Clipper 5.2 to trap invalid
+     values and produce a recoverable runtime error.
+
+     The problem commonly occurs when assigning a NIL value to an instance
+     variable as a result of an optional parameter:
+
+     FUNCTION MyBrowse( nTop, nLeft, nBottom, nRight, cHeadSep )
+
+        oBrowse := TBrowseNew( nTop, nLeft, nBottom, nRight )
+        // If only four arguments are passed to this function the following
+        // line will assign a NIL to headSep, resulting in an error.
+        oBrowse:headSep := cHeadSep
+
+     The following example prevents accidentally assigning a NIL to a TBrowse
+     instance variable when a function accepts optional parameters:
+
+     FUNCTION MyBrowse( nTop, nLeft, nBottom, nRight, cHeadSep )
+
+        oBrowse := TBrowseNew( nTop, nLeft, nBottom, nRight )
+        // don't assign a NIL - headSep has a default value.
+        IF cHeadSep != NIL
+           oBrowse:headSep := cHeadSep
+        ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bCompiler
+!short:
+!short: CHANGED:  General
+'------------------------------------------------------------------------------
+ ^bCHANGED:  General^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The compiler now requires a minimum of 25 file handles.  This can be
+     accomplished by adding the files statement "FILES=25" to the CONFIG.SYS.
+
+     CA-Clipper now requires DOS 3.3 or greater.
+
+     Include files (.ch) may be nested up to a maximum of 15 levels.  This
+     limitation was present in previous releases but was not documented.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      Common.ch
+'------------------------------------------------------------------------------
+ ^bNEW:      Common.ch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Common.ch has been added to the CA-Clipper 5.2 release.  Common.ch
+     incorporates many common/useful pseudofunctions and commands.  Std.ch is
+     now reserved for CA-Clipper language implementation ONLY.  A listing of
+     the current contents of Common.ch follows:
+
+     /***
+     *
+     *  Common.ch
+     *
+     *  Commonly used definitions
+     *
+     *  Copyright (c) 1993, Computer Associates International, Inc.
+     *  All rights reserved.
+     *
+     */
+
+     #define TRUE  .T.
+     #define FALSE .F.
+     #define YES   .T.
+     #define NO    .F.
+
+     #translate ISNIL( <v1> )         => ( <v1> == NIL )
+     #translate ISARRAY( <v1> )       => ( valtype( <v1> ) == "A" )
+     #translate ISBLOCK( <v1> )       => ( valtype( <v1> ) == "B" )
+     #translate ISCHARACTER( <v1> )   => ( valtype( <v1> ) == "C" )
+     #translate ISDATE( <v1> )        => ( valtype( <v1> ) == "D" )
+     #translate ISLOGICAL( <v1> )     => ( valtype( <v1> ) == "L" )
+     #translate ISMEMO( <v1> )        => ( valtype( <v1> ) == "M" )
+     #translate ISNUMBER( <v1> )      => ( valtype( <v1> ) == "N" )
+     #translate ISOBJECT( <v1> )      => ( valtype( <v1> ) == "O" )
+
+     #xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ]  ;
+               =>                                      ;
+               IF <v1> == NIL ; <v1> := <x1> ; END     ;
+               [; IF <vn> == NIL ; <vn> := <xn> ; END ]
+
+     #command UPDATE <v1> IF <exp> TO <v2> ;
+     |         =>                          ;
+                IF <exp> ; <v1> := <v2> ; END
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      Compiler options
+'------------------------------------------------------------------------------
+ ^bNEW:      Compiler options^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following compiler options have been added to CA-Clipper 5.2:
+
+     ^b/ES   Exit Severity level 0
+
+     Default exit severity level.  If warnings are encountered during
+     compilation, the compiler does not set the DOS error level upon exit.
+     This maintains compatibility with CA-Clipper 5.0x.
+
+     ^b/ES0   Exit Severity level 0
+
+     Same as /ES.
+
+     ^b/ES1   Exit Severity level 1
+
+     Specifies an exit severity level of 1.  If warnings are encountered
+     during compilation, the compiler sets the DOS error level upon exit.
+
+     ^b/ES2   Exit Severity level 2
+
+     Specifies an exit severity level of 2.  If warnings are encountered
+     during compilation, the compiler does not generate an object file (.OBJ)
+     and sets the DOS error level upon exit.  This effectively promotes
+     warnings to error status at the DOS level.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bLinker
+!short:
+!short: NEW:      /DEBUG option
+'------------------------------------------------------------------------------
+ ^bNEW:      /DEBUG option^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The /DEBUG option is now supported in the POSITIONAL syntax.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  BASE50.???
+'------------------------------------------------------------------------------
+ ^bCHANGED:  BASE50.???^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     All the base PLL related files have been changed to reflect the new
+     CA-Clipper version 5.2.  This includes the following:
+
+     1.  BASE50.LNK to BASE52.LNK
+
+     2.  BASE50.PLL to BASE52.PLL
+
+     3.  BASE50.PLT to BASE52.PLT
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      Error Messages
+'------------------------------------------------------------------------------
+ ^bNEW:      Error Messages^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The following .RTLink error messages are now documented:
+
+     ^bert0166^b <full pathname for library> is the wrong version of RTLUTILS.LIB
+     It should only be used with version: <version description>.
+
+     ^beut0032^b Invalid index 0x90 passed to get_block
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DOS 5.0 PLL problem fixed
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DOS 5.0 PLL problem fixed^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The fix for the DOS 5.0 PLL problem ("Illegal format in loadable file")
+     is included in the version of .RTLink for CA-Clipper.  Note that the fix
+     is in RTLINKST.COM which is normally placed in the PLL file.  Therefore,
+     users must relink BASE52.PLL and all other PLLs in order to eliminate
+     the failure of PLL's under DOS 5.0.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDebugger
+!short:
+!short: NEW:      General
+'------------------------------------------------------------------------------
+ ^bNEW:      General^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Instance variable and method names are now displayed when inspecting
+     objects instantiated from CA-Clipper's predefined classes (Get, TBrowse,
+     TBColumn, and Error).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      Run menu option
+'------------------------------------------------------------------------------
+ ^bNEW:      Run menu option^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The ^bNext routine (Ctrl-F5)^b option has been added to the Run menu.  This
+     option causes the Debugger to advance to the next routine.  It is
+     equivalent to creating a "PROCLINE() == 0" tracepoint.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      Monitor menu option
+'------------------------------------------------------------------------------
+ ^bNEW:      Monitor menu option^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bAll^b has been added to the Monitor menu.  This option allows you to
+     monitor LOCALs, PRIVATEs, PUBLICs, and STATICs without designating each
+     one individually.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Watchpoint window
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Watchpoint window^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The delete key, Del, can now be used to delete the currently highlighted
+     watch point.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  View|Workarea screen
+'------------------------------------------------------------------------------
+ ^bCHANGED:  View|Workarea screen^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default database driver of the selected work area is now displayed.
+
+     Work area and Index key are highlighted rather than designated by "->".
+
+     Multiple relations are now displayed in the work area outline.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Online Help
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Online Help^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Online help now appears in a separate file (CLD.HLP).  The Debugger
+     searches for this file in the following sequence:  1) the current
+     (default) directory, 2) each of the directories listed in the DOS PATH
+     environment variable.  If CLD.HLP cannot be found, you will be prompted
+     to enter the file name.  CLD.HLP is installed in \CLIPPER5\BIN by
+     default.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  CLD.LIB
+'------------------------------------------------------------------------------
+ ^bCHANGED:  CLD.LIB^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CLD.LIB must be linked as an OBJ file and not as a LIB file.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  Command line parameters
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Command line parameters^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You must place a space between the CA-Clipper application name and the
+     first CA-Clipper parameter when calling your routine from the CLD.EXE
+     command line.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  BP command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  BP command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     An additional parameter, <nLineNum> has been added to the BP command.
+
+     ^bBP [<nLineNum> [<cFileName>]]|[<cFuncName>]
+
+     The breakpoint is toggled at <nLineNum> in the current file.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDBU
+!short:
+!short: CHANGED:  Open mode
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Open mode^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBU now opens all databases SHARED by default.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      /e switch
+'------------------------------------------------------------------------------
+ ^bNEW:      /e switch^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The new optional command line parameter (/e) will cause DBU to open file
+     EXCLUSIVE to provide backward compatibility.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bRL
+!short:
+!short: CHANGED:  RL (Report Label) Utility
+'------------------------------------------------------------------------------
+ ^bCHANGED:  RL (Report Label) Utility^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^b.FRM file changes
+
+     The Report and Label utility (RL) formatted report headings as fixed-
+     length strings prior to saving them to the .FRM file.  This caused
+     report headings to be lost when the .FRM file was read by dBASE III
+     PLUS.  CA-Clipper 5.2 corrects this.  Compatibility with previous
+     versions of RL has been preserved.  If dBASE III PLUS .FRM file
+     compatibility is required, simply load the .FRM into RL and save it back
+     to disk.
+
+     ^bEmbedded semicolons in Report Headings
+
+     RL no longer lets you embed semicolons in report headings.  This is
+     consistent with dBASE III PLUS.
+
+     ^bRight Margin setting
+
+     RL no longer allows the right margin setting to exceed the width of the
+     report.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDrivers
+!short:
+!short: NEW:      DBMCMD Error messages
+'------------------------------------------------------------------------------
+ ^bNEW:      DBMCMD Error messages^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBCMD error messages occur in the database command set and are unrelated
+     to a particular driver.  They occur as a result of command usage rather
+     than from a failure of the driver itself.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  NTX
+'------------------------------------------------------------------------------
+ ^bCHANGED:  NTX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The NTX driver for CA-Clipper 5.2 enhances the DBFNTX driver supplied
+     with earlier versions of CA-Clipper by adding the following features:
+
+     ^b^CFE^b  Create conditional indexes by specifying a FOR condition.
+
+     ^b^CFE^b  Create indexes using a record scope or WHILE condition, allowing you
+        to INDEX based on the order of another index.
+
+     ^b^CFE^b  Create both ascending and descending order indexes.
+
+     ^b^CFE^b  Specify an expression that is evaluated periodically during indexing
+        in order to display an index progress indicator.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      MDX
+'------------------------------------------------------------------------------
+ ^bNEW:      MDX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The MDX replaceable database drivers is used to access dBASE IV
+     compatible index and multiple index (.mdx) file formats.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      CDX
+'------------------------------------------------------------------------------
+ ^bNEW:      CDX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The CDX driver replaceable database provides access to FoxPro compatible
+     database index file formats (.cdx).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      PDX
+'------------------------------------------------------------------------------
+ ^bNEW:      PDX^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The PDX replaceable database driver provides access to Paradox tables
+     (.pdx).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      NOVTERM
+'------------------------------------------------------------------------------
+ ^bNEW:      NOVTERM^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The NOVTERM driver provides faster execution when run on some
+     nondedicated network server software.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      PCBIOS
+'------------------------------------------------------------------------------
+ ^bNEW:      PCBIOS^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The PCBIOS driver provides direct BIOS calls rather than direct screen
+     writes for systems requiring this form of I/O.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ANSITERM
+'------------------------------------------------------------------------------
+ ^bNEW:      ANSITERM^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The ANSITERM driver provides ANSI terminal support for systems that
+     require it.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bDrivers Reference
+!short:
+!short: NEW:      Reference
+'------------------------------------------------------------------------------
+ ^bNEW:      Reference^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     CA-Clipper 5.2 provides many new and enhanced (changed) commands and
+     functions that can be used to access and manipulate databases and get
+     specific information about the replaceable database driver (RDD) in use.
+     These new and existing language elements, those that were changed to
+     accommodate the new RDD architecture, are documented in the new Drivers
+     guide.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  APPEND FROM command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  APPEND FROM command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The APPEND FROM command syntax has been changed to include the VIA
+     clause as follows:
+
+     ^bAPPEND FROM <xcFile>
+     ^b   [FIELDS <idField list>]
+     ^b   [<scope>] [WHILE <lCondition>] [FOR <lCondition>]
+     ^b   [SDF | DELIMITED [WITH BLANK | <xcDelimiter>] |
+     ^b   [VIA <xcDriver>]]
+
+     The new VIA clause specifies the replaceable database driver (RDD) to
+     use to import the desired data.  If you specify the VIA clause, you must
+     REQUEST the appropriate RDDs be linked into the application.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  COPY TO command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  COPY TO command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The COPY TO command syntax has been changed to include the VIA clause as
+     follows:
+
+     ^bCOPY [FIELDS <idField list>] TO <xcFile>
+     ^b   [<scope>] [WHILE <lCondition>] [FOR <lCondition>]
+     ^b   [SDF | DELIMITED [WITH BLANK | <xcDelimiter>] |
+     ^b   [VIA <xcDriver>]]
+
+     The new VIA clause specifies the replaceable database driver (RDD) to
+     use to create the resulting copy.  If you specify the VIA clause, you
+     must REQUEST the appropriate RDDs be linked into the application.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DBAPPEND() function
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DBAPPEND() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBAPPEND() has been changed to accept the parameter, <lReleaseRecLocks>
+     which allows you to maintain multiple records locks during an append.
+     The new syntax is:
+
+     ^bDBAPPEND([<lReleaseRecLocks>]) --> NIL
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DBGOTO() function
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DBGOTO() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBGOTO() has been modified to accept a parameter other than record
+     number.
+
+     ^bDBGOTO(<xIdentity>) --> NIL
+
+     <xIdentity> is a unique value guaranteed by the structure of the data
+     file to reference a specific item in a data source (database).  In a
+     (.dbf) <xIdentity> is the record number.  In other data formats,
+     <xIdentity> is the unique primary key value.  <xIdentity> could be an
+     array offset or virtual memory handle if the data set is in memory
+     instead of on disk.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      DBRLOCK() function
+'------------------------------------------------------------------------------
+ ^bNEW:      DBRLOCK() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBRLOCK() is a database function that locks the record identified by the
+     specified value <xIdentity>.  In Xbase, <xIdentity> is the record
+     number.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      DBRLOCKLIST() function
+'------------------------------------------------------------------------------
+ ^bNEW:      DBRLOCKLIST() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBRLOCKLIST() is a database function that returns a one-dimensional
+     array that contains the identities of record locks active in the
+     selected work area.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      DBRUNLOCK() function
+'------------------------------------------------------------------------------
+ ^bNEW:      DBRUNLOCK() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBRUNLOCK() is a database function that releases the lock on <xIdentity>
+     and removes it from the Lock List.  If <xIdentity> is not specified, all
+     record locks are released.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  DBSETINDEX()* function
+'------------------------------------------------------------------------------
+ ^bCHANGED:  DBSETINDEX()* function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBSETINDEX() is a database function that adds the contents of an Order
+     Bag into the Order List of the current work area.  Any Orders already
+     associated with the work area continue to be active.
+
+     DBSETINDEX() is a compatibility command and therefore not recommended.
+     It is superseded by the ORDLISTADD() function.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      DELETE TAG command
+'------------------------------------------------------------------------------
+ ^bNEW:      DELETE TAG command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This command removes an Order from an Order Bag in the current or
+     specified work area.  If you do not specify an <xcOrderBagName>, all
+     Orders Bags are searched in the current or specified work area.  The
+     first occurrence of <cOrderName> is deleted.  A runtime recoverable
+     error is raised if the Order is not found.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  GO command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  GO command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The GO command has been enhanced to also work with data format other
+     than (.dbf).  In a (.dbf), the parameter, identity, is the record
+     number.  In other data formats, identity is the unique primary key
+     value.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  INDEX command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  INDEX command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The INDEX syntax has been modified to include new clauses.  The new
+     syntax is:
+
+     ^bINDEX ON <expKey> [TAG <cOrderName>] TO  <xcOrderBagName>
+     ^b   [FOR <lCondition>] [ALL]
+     ^b   [WHILE <lCondition>] [NEXT <nNumber>]
+     ^b   [RECORD <nRecord>] [REST]
+     ^b   [EVAL <bBlock> [EVERY <nInterval>]
+     ^b   [UNIQUE] [ASCENDING|DESCENDING]
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDBAGEXT() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDBAGEXT() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDBAGEXT() is an Order management function that returns a character
+     expression that is the default Order Bag extension of the current or
+     aliased work area.  cBagExt is determined by the RDD active in the
+     current work area.
+
+     ORDBAGEXT() supersedes the INDEXEXT() and is the recommended of the
+     two.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDBAGNAME() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDBAGNAME() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDBAGNAME() is an Order management function that lets you access the
+     name of the Order Bag in which <cOrderName> resides.  You may identify
+     the Order as a character string or with an integer that represents its
+     position in the Order List.  In case of duplicate names, ORDBAGNAME()
+     only recognizes the first matching name.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDCREATE() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDCREATE() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDCREATE() is an Order management function that creates an Order in the
+     current work area.  It works like DBCREATEINDEX() except that it lets
+     you create Orders in RDDs that recognize multiple-Order Bags.
+     ORDCREATE() supersedes the DBCREATEINDEX() function because of this
+     capability, and is the preferred function.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDDESTROY() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDDESTROY() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDDESTROY() is an Order management function that removes a specified
+     Order from multiple-Order Bags.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDFOR() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDFOR() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDFOR() is an Order management function that returns the character
+     string, cForExp, that represents the logical FOR condition of the
+     Order.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDKEY() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDKEY() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDKEY() is an Order management function that returns a character
+     expression that represents the key expression of the specified Order.
+
+     You may specify the Order by name or with a number that represents its
+     position in the Order List.  Using the Order name is the preferred
+     method.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDLISTADD() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDLISTADD() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDLISTADD() is an Order management function that adds the contents of
+     an Order Bag, or a single Order in an Order Bag, to the Order List.
+     This function lets you extend the Order List without issuing a SET INDEX
+     command that, first, clears all the active Orders from the Order List.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDLISTCLEAR() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDLISTCLEAR() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDLISTCLEAR() is an Order management function that removes all Orders
+     from the Order List for the current or aliased work area.  When you are
+     done, the Order List is empty.
+
+     This function supersedes the function DBCLEARINDEX().
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDLISTREBUILD() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDLISTREBUILD() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDLISTREBUILD() is an Order management function that rebuilds all the
+     orders in the current or aliased Order List.
+
+     To only rebuild a single Order use the function ORDCREATE().
+
+     Unlike ORDCREATE(), this function rebuilds all Orders in the Order List.
+     It is equivalent to REINDEX.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDNAME() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDNAME() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDNAME() is an Order management function that returns the name of the
+     specified Order in the current Order List.
+
+     If <cOrderBagName> is an Order Bag that has been emptied into the
+     current Order List, only those Orders in the Order List that correspond
+     to <cOrderBagName> Order Bag are searched.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDNUMBER() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDNUMBER() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDNUMBER() is an Order management function that lets you determine the
+     position in the current Order List of the specified Order.  ORDNUMBER()
+     searches the Order List in the current work area and returns the
+     position of the first Order that matches <cOrderName>.  If
+     <cOrderBagName> is the name of an Order Bag newly emptied into the
+     current Order List, only those orders in the Order List that have been
+     emptied from <cOrderBagName> are searched.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      ORDSETFOCUS() function
+'------------------------------------------------------------------------------
+ ^bNEW:      ORDSETFOCUS() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ORDSETFOCUS() is an Order management function that returns the Order
+     Name of the previous controlling Order and optionally sets the focus to
+     an new Order.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      RDDLIST() function
+'------------------------------------------------------------------------------
+ ^bNEW:      RDDLIST() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RDDLIST() is an RDD function that returns a one-dimensional array that
+     lists the available RDDs.
+
+     If you do not supply <nRDDType>, all available RDDs, regardless of type,
+     are returned.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      RDDNAME() function
+'------------------------------------------------------------------------------
+ ^bNEW:      RDDNAME() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RDDNAME() is an RDD function that returns a character string, cRDDName,
+     the name of the active RDD in the current or specified work area.
+
+     You can specify a work area other than the currently active work area by
+     aliasing the function.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      RDDSETDEFAULT() function
+'------------------------------------------------------------------------------
+ ^bNEW:      RDDSETDEFAULT() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     RDDSETDEFAULT() is an RDD function that sets or returns the name of the
+     previous default RDD driver and, optionally, sets the current driver to
+     the new RDD driver specified by <cNewDefaultRDD>.  If <cNewDefaultRDD>
+     is not specified, the current default driver name is returned and
+     continues to be the current default driver.
+
+     This function replaces the DBSETDRIVER() function.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  RECNO() function
+'------------------------------------------------------------------------------
+ ^bCHANGED:  RECNO() function^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The RECNO() function has been changed to work with other data formats.
+     The new syntax is:
+
+     ^bRECNO() --> Identity
+
+     Identity is a unique value guaranteed by the structure of the data file
+     to reference a specific record of data file.  The data file need not be
+     a traditional Xbase file.  Therefore, unlike earlier versions of
+     CA-Clipper, the value returned need not be a numeric data type.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  SEEK command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  SEEK command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The SEEK command syntax has been changed to include the new clause,
+     SOFTSEEK:
+
+     ^bSEEK <expSearch> [SOFTSEEK]
+
+     SOFTSEEK causes the record pointer to be moved to the next record with a
+     higher key value after a failed Order search.  Default behavior moves
+     the record pointer to EOF() after a failed Order search.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  SET INDEX command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  SET INDEX command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The SET INDEX command syntax has been modified to work with other data
+     formats and includes the new clause, ADDITIVE:
+
+     ^bSET INDEX TO [<xcOrderBagName list>] [ADDITIVE]
+
+     ADDITIVE adds Order Bags to an existing Order List.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CHANGED:  SET ORDER command
+'------------------------------------------------------------------------------
+ ^bCHANGED:  SET ORDER command^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The SET ORDER command has been changed to also work with data formats
+     other than the traditional Xbase().  The new syntax is:
+
+     ^bSET ORDER TO [<nOrder> | [TAG <cOrderName>]
+     ^b   [IN <xcOrderBagName>]]
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bAPIs
+!short:
+!short: CHANGED:  Extend System
+'------------------------------------------------------------------------------
+ ^bCHANGED:  Extend System^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The Extend System is now identified as the Extend API.  The C header
+     file, extend.h, has been renamed to extend.api for consistency with
+     other CA-Clipper Application Programming Interfaces.  Standard C
+     typedefs have been added in a new header file, clipdefs.h, for use with
+     the Extend API.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      GT (General Terminal) API
+'------------------------------------------------------------------------------
+ ^bNEW:      GT (General Terminal) API^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The GT API is the level of system protocols that implements CA-Clipper
+     screen and keyboard commands and functions.  This level communicates
+     directly with the TERMINAL.LIB or other, user-supplied, terminal driver.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      VM API
+'------------------------------------------------------------------------------
+ ^bNEW:      VM API^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The VM API is a set of functions callable from extend functions that
+     allow direct communication with the VMM system.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NEW:      RDD API
+'------------------------------------------------------------------------------
+ ^bNEW:      RDD API^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The database driver programming interface (RDD API) can be used by third
+     party developers to create new drivers, allowing CA-Clipper applications
+     compatibility with any database engine for which a driver is created.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

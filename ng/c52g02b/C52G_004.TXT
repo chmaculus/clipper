@@ -1,0 +1,439 @@
+!short: ^bOverview -- RMAKE Errors
+'------------------------------------------------------------------------------
+     This section is a summary of error messages possible when using RMAKE,
+     the CA-Clipper make utility.  The messages are divided into categories
+     according to severity and the point in the make process where the error
+     occurs.  Each category is described below, followed by a listing of all
+     messages in each category.  For specific information on the syntax and
+     operation of RMAKE, refer to the Program Maintenance--RMAKE.EXE chapter
+     in the Programming and Utilities guide.
+
+ ^bRMAKE Warnings^b
+
+     RMAKE warnings indicate potential errors in the make file but do not
+     prevent the make process from continuing.  The DOS return code is
+     unaffected by warnings.
+
+     The general format of an RMAKE warning message is as follows:
+
+     ^b<filename>(<line>) Warning RMAKE/R1xxx <message text>
+     ^b   [: <symbol>]
+
+     If the warning is not associated with a particular line of a make file,
+     no filename or line number is displayed.  Unless the /W option is
+     specified, RMAKE does not display any warning messages.
+
+ ^bRMAKE Execution Errors^b
+
+     RMAKE results in an execution error if any program executed as an action
+     in a make file results in a DOS return code other than zero.  RMAKE sets
+     the DOS return code to 1 after an execution error and, unless the /I
+     option was specified, terminates the make run.
+
+     The general format of an RMAKE execution error message is as follows:
+
+     ^b<filename>(<line>) Error RMAKE/R2xxx Exit <n>:
+     ^b   <command line text>
+
+     The exit number indicates the DOS return code of the indicated command
+     line in the make file.
+
+ ^bRMAKE Fatal Errors^b
+
+     Fatal error messages identify serious make file problems from which
+     RMAKE cannot recover.  Fatal errors may occur during either the parse or
+     the make phase.  After a fatal error, RMAKE terminates the make run and
+     sets the DOS return code to 1.
+
+     The general format of a fatal error message is as follows:
+
+     ^b<filename>(<line>) Fatal RMAKE/R3xxx <message text>
+     ^b   [: <symbol>]
+
+     If the error is not associated with a particular line of a make file, no
+     filename or line number is displayed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bRMAKE Warning Messages
+!short:
+!short: R1001        Ignoring redefinition of command-line macro
+'------------------------------------------------------------------------------
+ ^bR1001   Ignoring redefinition of command-line macro^b
+
+     ^bExplanation:^b  A make file attempted to assign a new value to a macro
+     defined on the command line or in the RMAKE environment variable.  The
+     redefinition is ignored, and the macro retains its previous value.
+
+     ^bAction:^b  Specify an #undef directive to clear the definition of a
+     command-line macro, allowing a new value to be assigned.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R1002        Target does not exist: '<file>'
+'------------------------------------------------------------------------------
+ ^bR1002   Target does not exist: '<file>'^b
+
+     ^bExplanation:^b  The indicated target file is used in a dependency rule
+     and does not exist.
+
+     ^bAction:^b  RMAKE will build the target.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R1003        Ignoring text: '<text>'
+'------------------------------------------------------------------------------
+ ^bR1003   Ignoring text: '<text>'^b
+
+     ^bExplanation:^b  A statement in a make file contains extraneous
+     characters.  The characters are ignored.
+
+     ^bAction:^b  Examine the make file to ensure that the extraneous text is
+     not the result of some other error in the file.  If not, delete the
+     characters from the make file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bRMAKE Execution Error Messages
+!short:
+!short: R2001        Exit n: '<action line>'
+'------------------------------------------------------------------------------
+ ^bR2001   Exit n: '<action line>'^b
+
+     ^bExplanation:^b  A program executed as one of the actions in a
+     dependency or inference rule returned a nonzero DOS return code.  This
+     means the executable program terminated abnormally for some reason.  The
+     make run terminates unless the /I option was used.
+
+     ^bAction:^b  Correct the problem before attempting the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bRMAKE Fatal Error Messages
+!short:
+!short: R3001        Too many make files
+'------------------------------------------------------------------------------
+ ^bR3001   Too many make files^b
+
+     ^bExplanation:^b  You specified more than 16 make files on the command
+     line or in the RMAKE environment variable.
+
+     ^bAction:^b  Reduce the number of make files to 16 or fewer and run the
+     make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3002        Can't open: '<file>'
+'------------------------------------------------------------------------------
+ ^bR3002   Can't open: '<file>'^b
+
+     ^bExplanation:^b  RMAKE was unable to open a make file specified on the
+     command line, in the RMAKE environment variable, or in a #include
+     directive.
+
+     ^bAction:^b  A full or partial path may be specified as part of any make
+     filename in order to force RMAKE to look for the file in a particular
+     drive and/or directory.  If no path is specified, RMAKE searches only
+     the current directory.  The /S option causes RMAKE to search
+     subdirectories as well.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3003        Invalid option: '<option>'
+'------------------------------------------------------------------------------
+ ^bR3003   Invalid option: '<option>'^b
+
+     ^bExplanation:^b  An invalid option was specified on the command line or
+     in the RMAKE environment variable.  The available options can be found
+     in the chapter entitled Program Maintenance--RMAKE.EXE in the
+     Programming and Utilities guide.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3004        Out of memory
+'------------------------------------------------------------------------------
+ ^bR3004   Out of memory^b
+
+     ^bExplanation:^b  There is not enough memory for more definitions.
+
+     ^bAction:^b  Simplify the make by breaking it into two separate runs.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3005        Internal workspace exhausted
+'------------------------------------------------------------------------------
+ ^bR3005   Internal workspace exhausted^b
+
+     ^bExplanation:^b  The internal workspace was exhausted.
+
+     ^bAction:^b  The workspace can be enlarged using the /XW option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3006        Symbol table exhausted
+'------------------------------------------------------------------------------
+ ^bR3006   Symbol table exhausted^b
+
+     ^bExplanation:^b  The internal symbol table was exhausted.
+
+     ^bAction:^b  The table can be enlarged using the /XS option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3007        String too large
+'------------------------------------------------------------------------------
+ ^bR3007   String too large ^b
+
+     ^bExplanation:^b  A single string in the make file exceeded 1024 bytes.
+
+     ^bAction:^b  Simplify the offending line in the make file.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3008        String table exhausted
+'------------------------------------------------------------------------------
+ ^bR3008   String table exhausted^b
+
+     ^bExplanation:^b  No more memory is available for definitions.
+
+     ^bAction:^b  The make should be simplified by breaking it into two
+     separate runs.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3009        File table exhausted
+'------------------------------------------------------------------------------
+ ^bR3009   File table exhausted^b
+
+     ^bExplanation:^b  The table used to track filenames and time stamps is
+     exhausted.
+
+     ^bAction:^b  The make should be simplified by breaking it into two
+     separate runs.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3010        Too many actions
+'------------------------------------------------------------------------------
+ ^bR3010   Too many actions^b
+
+     ^bExplanation:^b  A dependency or inference rule specified more than 32
+     action lines, or the total of the action lines exceeded 1024 bytes.
+
+     ^bAction:^b  Simplify the offending definition.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3011        Too many dependencies
+'------------------------------------------------------------------------------
+ ^bR3011   Too many dependencies^b
+
+     ^bExplanation:^b  A dependency rule specified more than 128 dependent
+     files.
+
+     ^bAction:^b  Simplify the rule.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3012        Syntax error: '<token>'
+'------------------------------------------------------------------------------
+ ^bR3012   Syntax error: '<token>'^b
+
+     ^bExplanation:^b  A syntax error was detected in the indicated rule or
+     directive.  The proper syntax for all make file rules and directives can
+     be found in the chapter entitled Program Maintenance--RMAKE.EXE in the
+     Programming and Utilities guide.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3013        Unbalanced parentheses
+'------------------------------------------------------------------------------
+ ^bR3013   Unbalanced parentheses^b
+
+     ^bExplanation:^b  You specified a rule or directive with unbalanced
+     parentheses.  Each opening parenthesis must have a corresponding closing
+     parenthesis.
+
+     ^bAction:^b  Examine the offending line in the make file and correct the
+     problem.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3014        #else without if
+'------------------------------------------------------------------------------
+ ^bR3014   #else without if^b
+
+     ^bExplanation:^b  A #else directive was encountered, but no
+     corresponding #if directive preceded it.  #else is illegal in a make
+     file unless it falls between a #if directive and a #endif directive.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3015        #endif without if
+'------------------------------------------------------------------------------
+ ^bR3015   #endif without if^b
+
+     ^bExplanation:^b  You specified a #endif directive with no #if directive
+     preceding it.  #endif is illegal in a make file unless there is a
+     corresponding #if directive preceding it.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3016        Open conditionals
+'------------------------------------------------------------------------------
+ ^bR3016   Open conditionals^b
+
+     ^bExplanation:^b  You specified one or more #if unterminated directives
+     at the end of a make file.  All #if directives must have corresponding
+     #endif directives.
+
+     ^bAction:^b  Check the make file carefully and close all conditional
+     constructs with a #endif directive.  Using indentation in the make file
+     will make problems of this nature easier to spot and avoid.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3017        Unrecognized directive: '<directive>'
+'------------------------------------------------------------------------------
+ ^bR3017   Unrecognized directive: '<directive>'^b
+
+     ^bExplanation:^b  You specified an  invalid directive.  A complete list
+     of make file directives can be found in the chapter entitled Program
+     Maintenance--RMAKE.EXE in the Programming and Utilities guide.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3018        Dependency does not exist: '<file>'
+'------------------------------------------------------------------------------
+ ^bR3018   Dependency does not exist: '<file>'^b
+
+     ^bExplanation:^b  You specified a dependency rule containing a
+     nonexistent file as a dependency.  RMAKE is therefore unable to
+     determine whether the target file is out of date.  RMAKE searches the
+     current directory only for dependency files unless you define a special
+     macro to specify where dependency files are to be found.  See the
+     Program Maintenance-RMAKE.EXE chapter in the Programming and Utilities
+     guide for more information on these special search macros.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3019        Circular dependency
+'------------------------------------------------------------------------------
+ ^bR3019   Circular dependency^b
+
+     ^bExplanation:^b  You specified a target file that depends on itself,
+     either directly or through a series of dependency rules.  Circular
+     dependencies are not allowed.
+
+     ^bAction:^b  Check the make file resolving any such dependencies, and
+     run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3020        Environment overflows workspace
+'------------------------------------------------------------------------------
+ ^bR3020   Environment overflows workspace^b
+
+     ^bExplanation:^b  You specified one or more DOS SET commands as actions
+     and the text of the commands has overflowed the internal workspace.
+
+     ^bAction:^b  Expand the workspace with the /XW option and run the make
+     again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3021        Error in redirection
+'------------------------------------------------------------------------------
+ ^bR3021   Error in redirection^b
+
+     ^bExplanation:^b  An error occurred when RMAKE attempted to redirect the
+     standard input or output files as specified in an action line.  This
+     usually means the output file could not be created or opened.  There may
+     not be enough room to create another file in the directory specified, or
+     on a network the file was inadvertently deleted by another user.
+
+     ^bAction:^b  Correct and run the make again.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: R3022        Can't execute '<action line>'
+'------------------------------------------------------------------------------
+ ^bR3022   Can't execute '<action line>'^b
+
+     ^bExplanation:^b  A failure occurred when trying to execute an action
+     line.
+
+     ^bAction:^b  Check the action line to make sure the syntax used to
+     execute the specified program is correct.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

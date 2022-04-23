@@ -1,0 +1,1451 @@
+!short: Introduction User and Group Management
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     The functions of the User and Group Management chapter are based
+     exclusively upon low level bindery accesses and could be accomplished
+     completely with the low level bindery functions.  However, working with
+     low level bindery functions can be dangerous (see the Introduction to
+     the Low Level Bindery Access chapter).  Therefore, CA-Clipper Tools
+     provide a number of high level functions for the most common
+     requirements of user and group management.  The functions in this
+     chapter allow you to add or remove users, or groups of users, to or from
+     groups.  Various lists can be created: established users or groups,
+     currently logged in users, members of a group, or groups of which a user
+     is a member.  You can determine if a user is a member of a specified
+     group.  For example, this allows you to combine the availibility of menu
+     options with Netware settings.
+
+     A number of functions in this chapter have been developed in CA-Clipper
+     with the use of low level bindery functions.  The source code for these
+     functions can be found on the product disks and can be used as an
+     example for the use of the low level bindery functions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETACCDIS() Sets or queries an access account lock
+'------------------------------------------------------------------------------
+ ^bNNETACCDIS()^b
+ Sets or queries an access account lock
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETACCDIS(<cUser>,[<lLock>],[<cServer>|<nConId>),
+     ^b   --> lLocked
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user for whom an access account
+     lock is set or checked.
+
+     ^b<lLock> ^b Allows locking (.T.) or releasing (.F.) of the access
+     account of <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server where <cUser> is
+     established.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETACCDIS() returns .T. when the access account of <cUser> is currently
+     disabled.  <cUser> is not able to log in.  If the parameter <lLock> has
+     been passed and the return value does not match <lLock>, the user of the
+     NNETACCDIS() function did not have the rights requested for the
+     modification (see the description).
+
+ ^bDescription^b
+
+     NOVELL NET ACCOUNT DISABLED
+     With NNETACCDIS(), the access account lock for <cUser> can be set or
+     queried.  To determine the status of the account, do not pass a value
+     for the parameter <lLock>.  To set the status of the account, pass .T.
+     or .F. for <lLock>.  However, to lock or release an access account lock,
+     supervisor rights on the related file server are necessary.  With
+     <cServer> or <nConId>, the status of any user on any attached server can
+     be queried.  NNETATTACH() and NNETLOGIN() return the server connection
+     ID.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the access account status for user MIKE:
+
+        ? NNETACCDIS('MIKE')   // for example .T.
+
+     ^b^CFE^b  Disable the account for user MIKE:
+
+        NNETACCDIS('MIKE',.T.)
+
+     ^b^CFE^b  Release the account lock for user MIKE:
+
+        NNETACCDIS('MIKE',.F.)
+!seealso: "NNETAEXPD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETADDGRP() Adds one or more users to a group
+'------------------------------------------------------------------------------
+ ^bNNETADDGRP()^b
+ Adds one or more users to a group
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETADDGRP(<cGroup>,<cUser>|<aUser>,
+     ^b   [,<cServer>|<nConId>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cGroup> ^b Designates the name of the group to which <cUser>|<aUser>
+     is added.
+
+     ^b<cUser> ^b Designates the name of the user that is added to <cGroup>.
+
+     ^b<aUser> ^b Designates a number of elements of the type string.  Each
+     element is the name of a user that is added to <cGroup>.
+
+     ^b<cServer> ^b Designates the name of the file server.  Your workstation
+     must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETADDGRP() returns the number of users successfully added to <cGroup>.
+     If no user could be added, the function returns 0.
+
+ ^bDescription^b
+
+     NOVELL NET ADD USER TO GROUP
+     With NNETADDGRP(), one or more users can be added to an existing group.
+     To add one user, the login name of the user must be passed as the single
+     argument, <cUser>.  More users can be added by passing the array,
+     <aUser>, that contains the user names as elements.  As a member of a
+     group, users automatically inherit the group privileges.  By passing
+     <cServer> or <nConId>, the operation can be executed on any connected
+     file server.  The connection ID of a file server can be determined with
+     the functions NNETATTACH() or NNETLOGIN().
+
+     Supervisior rights are necessary to add a user to a group.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETADDGRP() is a high level function based on the low level
+        functions for bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Add user MIKE to the TECH group:
+
+        IF NNETADDGRP('TECH','MIKE')>0
+        ? 'User added successfully!'
+        ELSE
+        ? 'No user added!'
+        ENDIF
+
+     ^b^CFE^b  Add users PAUL, JIM, and STEPHEN to the group TOOLS:
+
+        NNETADDGRP('TOOLS',{'PAUL','JIM','STEPHEN'})
+!seealso: "NNETCRTGRP()" "NNETREMGRP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETAEXPD()  Determines or sets the expiration date of an access account
+'------------------------------------------------------------------------------
+ ^bNNETAEXPD()^b
+ Determines or sets the expiration date of an access account
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETAEXPD(<cUser>,[<dDate>],[<cServer>|<nConId>)
+     ^b   --> dExpiration
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user.
+
+     ^b<dDate> ^b Designates the new expiration date for the access account
+     of <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server where <cUser> is
+     established.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETAEXPD() returns the valid expiration date for the access account of
+     <cUser>. If <dDate> has been passed and the returned date does not match
+     <dDate>, the user of the NNETAEXPD() did not have the requested rights
+     for the modification (see the description).
+
+ ^bDescription^b
+
+     NOVELL NET ACCOUNT EXPIRATION DATE
+     NNETAEXPD() allows you to query and set the expiration date for the
+     access account of <cUser>.  Any attempt by <cUser> to log in after the
+     account expires disables the account.  To query the expiration date, do
+     not pass a date for <dDate>.  If a value is passed for <dDate>,
+     NNETAEXPD() tries to modify the expiration date.  However, supervisor
+     rights on <cServer> are required to set a new expiration date.  An
+     expiration date can be removed by passing an empty date.  With the
+     parameters <cServer> or <nConId>, the expiration date of users on any
+     file server can be queried or set.  The connection ID of a file server
+     can be determined with the functions NNETATTACH() or NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the expiration date for user MIKE:
+
+        ? NNETAEXPD('MIKE')   // z.B. 03/19/92
+
+     ^b^CFE^b  Set the new expiration date for the account of user MIKE:
+
+        NNETAEXPD('MIKE',CTOD('06/01/92'))
+
+     ^b^CFE^b  Remove the expiration date for the account of user MIKE:
+
+        NNETAEXPD("MIKE",CTOD(""))
+!seealso: "NNETACCDIS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCOPRIV() Tests for console privileges under Novell
+'------------------------------------------------------------------------------
+ ^bNNETCOPRIV()^b
+ Tests for console privileges under Novell
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCOPRIV() --> lEntitlement
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETCOPRIV() returns .T. when the station or the logged-in user has
+     privileges for the use of the file server console.
+
+ ^bDescription^b
+
+     NOVELL NET CONSOLE PRIVILEGES
+     This function allows you to determine if the user that is logged-in on
+     the station being used has rights for the use of the file server
+     console.  These rights are a prerequisite for particular network
+     operations and also for certain CA-Clipper Tools functions.  One example
+     of a network function that requires specific rights is NNETPURGE()
+
+ ^bNote^b
+
+     ^b^CFE^b  Console privileges are already contained within supervisor
+        rights.
+
+ ^bExample^b
+
+     Test to see if you have rights to the file server console:
+
+     ? NNETCOPRIV()         // .T. if console privileges exist
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETSPRVSR()" tool_007.ngo:"NNETPURGE()" tool_007.ngo:"NNETUSRFRE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCPASS()  Modifies or sets the password for a bindery object
+'------------------------------------------------------------------------------
+ ^bNNETCPASS()^b
+ Modifies or sets the password for a bindery object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCPASS(<cName>,[<nType>],<cOldPass>,<cNewPass>,
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates a numeric value that indicates the type of
+     <cName>.  The header file CTNNET.CH contains symbolic constants for the
+     object types defined by Novell for use with the bindery functions of
+     CA-Clipper Tools.  The default value indicates OBJ_USER.
+
+     ^b<cOldPass> ^b Designates the old password for <cName>.
+
+     ^b<cNewPass> ^b Designates the new password that is set for <cName>.
+
+     ^b<cServer> ^b Designates the name of the file server that contains the
+     bindery that is accessed.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETCPASS() returns .T. if the new password has been set successfully.
+     If an error occurs, the Novell error code can be queried with the
+     NNETERROR() function.
+
+ ^bDescription^b
+
+     NOVELL NET CHANGE BINDERY OBJECT PASSWORD
+     With NNETCPASS(), the password of a bindery object can be modified.
+     Usually the function is used to change the password of a user.  The
+     parameters <cName> and <nType> specify the object that is processed.  If
+     the user does not have supervisor rights, the old password must be
+     passed to prove the rights to set a new password.  If no password exists
+     for <cName>, an empty string ("") must be passed for <cOldPass>.
+     <cNewPass> is the new password that is set.  A user with supervisor
+     rights can pass the parameter <cOldPass> as an empty string.
+
+     With the parameters <cServer> or <nConId>, the bindery of any attached
+     file server can be accessed.  The connection ID of a file server can be
+     determined with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights for the bindery are required to modify passwords.  For
+     efficiency reasons, user defined object types must be passed in the high-
+     low format.
+
+ ^bNotes^b
+
+     ^b^CFE^b  The password of a bindery object does not affect the access
+        possibilities to the object.  The password is only required when the
+        object logs into the file server.
+
+     ^b^CFE^b  When a password is first set, the object is required to have
+        "password" property.  If necessary, the "password" property must be
+        created with NNETCRTPRP().
+
+ ^bExample^b
+
+     Change the password for user PAUL from LINDA to SILVIA:
+
+     IF NNETCPASS('PAUL',,'LINDA','SILVIA')
+     ? 'Password changed!'
+     ELSE
+     ? 'Password not changed!'
+     ENDIF
+!seealso: "NNETVPASS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCRTGRP() Creates a new group
+'------------------------------------------------------------------------------
+ ^bNNETCRTGRP()^b
+ Creates a new group
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCRTGRP(<cName>,[<cFullName>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName> ^b Designates the name of the new group.
+
+     ^b<cFullName> ^b Designates the full name of <cName>.
+
+     ^b<cServer> ^b Designates the name of the file server where the new
+     group is created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETCRTGRP() returns .T. if the group has been created successfully.
+
+ ^bDescription^b
+
+     NOVELL NET CREATE GROUP
+     NNETCRTGRP() allows you to create a new user group.  With the parameter
+     <cFullName>, a full name can be assigned to the group.  With the
+     parameters <cServer> or <nConId> ,a new group can be created on any
+     attached file server.  The connection ID of the server can be determined
+     with NNETATTACH() or NNETLOGIN().
+
+     The group's access rights can be set with the function NNETTRUST().
+
+     Supervisior rights are required to establish a new group.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETCRTGRP() is a high level-function based on the low level
+        functions for bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExample^b
+
+     Create the group DEV with full name DEVELOPMENT:
+
+     IF NNETCRTGRP('DEV','DEVELOPMENT')
+     ? 'Group created successfully!'
+     ELSE
+     ? 'Group could not be created!'
+     ENDIF
+!seealso: "NNETADDGRP()" tool_002.ngo:"NNETDELOBJ()" tool_007.ngo:"NNETTRUST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETCRTUSR() Creates a new user
+'------------------------------------------------------------------------------
+ ^bNNETCRTUSR()^b
+ Creates a new user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETCRTUSR(<cName>,[<cPass>],[<cFullName>],[<lSuper>],
+     ^b   [<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName> ^b Designates the login name of the new user.
+
+     ^b<cPass> ^b Designates the password for <cName>.
+
+     ^b<cFullName> ^b Designates the full name for <cName>.
+
+     ^b<lSuper> ^b Designates whether the new user is granted supervisor
+     rights (.T.) or not (.F.).  The default value (.F.) indicates that the
+     new user is not granted supervisor rights.
+
+     ^b<cServer> ^b Designates the name of the file server where the new user
+     is created.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETCRTUSR() returns .T. if the user has been added successfully.
+
+ ^bDescription^b
+
+     NOVELL NET CREATE USER
+     NNETCRTUSR() allows you to create a new user and to define the basic
+     characteristics for the user.  If NNETCRTUSR() is called only with the
+     parameter <cName>, a user of the type guest is created.  The guest user
+     can log into the file server without a password.  If <cPass> is passed,
+     the password is required to log into the file server.  The password can
+     also be defined later with the NNETCPASS() function.  With the argument
+     <cFullName>, the full name of the new user can be set.  Supervisor
+     rights can be granted to the new user by passing the <lSuper> with
+     (.T.).  The default value for <lSuper> (.F.) does not grant supervisor
+     rights.  Additional rights can be assigned to the user by adding the
+     user to a group (NNETADDGRP()) or by explicitly setting trustee rights.
+     With the parameters <cServer> or <nConId>, a new user can be added on
+     any attached file server.  The connection ID of a server can be
+     determined with NNETATTACH() or NNETLOGIN().
+
+     Supervisor rights are required to create a new user.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETCRTUSR() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Create user PAUL with password 190366 and the full name PAUL
+        SMITH  Give the new user supervisor rights:
+
+        IF NNETCRTUSR('PAUL','190366','Paul Smith',.T.)
+        ? 'User created successfully!'
+        ELSE
+        ? 'User could not be created!'
+        ENDIF
+
+     ^b^CFE^b  Create a new user, and then set the password to HELLO:
+
+        IF NNETCRTUSR('TEST')
+        NNETCPASS('TEST',,'','HELLO')
+        ENDIF
+!seealso: "NNETADDGRP()" "NNETCPASS()" tool_002.ngo:"NNETDELOBJ()" tool_007.ngo:"NNETTRUST()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETGROUPS() Queries the user groups on a file server
+'------------------------------------------------------------------------------
+ ^bNNETGROUPS()^b
+ Queries the user groups on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETGROUPS([<cServer>|<nConId>],[<cMask>])
+     ^b   --> aGroupList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer> ^b Designates the name of the file server for which the user
+     groups are determined.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.  If no file server is specified, the function uses the
+     default server.
+
+     ^b<cMask> ^b Designates a search mask that can contain the wildcard
+     characters "?" and "*".  The default value ("*") designates that all
+     user groups are determined.
+
+ ^bReturns^b
+
+     NNETGROUPS() returns a one-dimensional array.  Each array element
+     contains the name of a user group.
+
+ ^bDescription^b
+
+     NOVELL NET GROUPS
+     NNETGROUPS() allows you to determine all the user groups established on
+     a file server.  The file server can be specified either by its name or
+     its connection ID.  The connection ID of a server is returned by
+     NNETATTACH() or NNETLOGIN().
+
+     To achieve results with this function, the requesting user must be
+     logged in on the related file server.  If the requesting user is not
+     logged in on the related file server, the function returns an empty
+     array.
+
+ ^bExample^b
+
+     Display all user groups on the file server NANGERTOOLS2:
+
+     AEVAL(NNETGROUPS('NANGERTOOLS2'),{|x|QOUT(x)})
+!seealso: "NNETLGUSER()" "NNETUSERS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETGRPMEM() Checks to see if a user is a member of a group
+'------------------------------------------------------------------------------
+ ^bNNETGRPMEM()^b
+ Checks to see if a user is a member of a group
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETGRPMEM(<cUser>,<cGroup>,[<cServer>|<nConId>])
+     ^b   --> lMember
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user.
+
+     ^b<cGroup> ^b Designates the name of the group that is searched for
+     <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server on which the user
+     and group definition is searched.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.  If no server has been specified, the function uses the
+     default server.
+
+ ^bReturns^b
+
+     NNETGRPMEM() returns .T. if the user <cUser> is a member of the group
+     <cGroup>.  If <cUser> is not a member of <cGroup>, the function returns
+     .F..
+
+ ^bDescription^b
+
+     NOVELL NET GROUP MEMBER
+     To improve organization and simplify user access to file server
+     resources, user groups can be created under Novell Netware.  Each user
+     can be a member of one or more groups.  With the function NNETGRPMEM(),
+     you can determine if a user is a member of a specific group.  For
+     example, the branch in an application can be made dependent on the
+     membership of the logged in user to a specific group.
+
+     The file server can be specified either by its name or its connection
+     ID.  The connection ID of a server is returned by NNETATTACH() or
+     NNETLOGIN().
+
+     This function requires that the requesting user be logged in on the
+     related file server.
+
+ ^bExample^b
+
+     Log the user into another file server if the user is a member of the
+     group DEV:
+
+     IF NNETGRPMEM(cUser,"DEV")
+     NNETLOGIN(cUser,cPassword,"NANGERDEV")
+     ENDIF
+!seealso: "NNETGROUPS()" "NNETINGRPS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETINGRPS() Determines the groups to which a user belongs
+'------------------------------------------------------------------------------
+ ^bNNETINGRPS()^b
+ Determines the groups to which a user belongs
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETINGRPS(<cUser>[,<cServer>|<nConId>]) --> aGroupList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user whose group membership is
+     determined.
+
+     ^b<cServer> ^b Designates the name of the file server on which <cUser>
+     is established.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.  If no file server is specified, the function uses the
+     default file server.
+
+ ^bReturns^b
+
+     NNETINGRPS() returns a one-dimensional array.  Each array element
+     contains the name of a user group.
+
+ ^bDescription^b
+
+     NOVELL NET IN GROUPS
+     To improve organization and simplify user access to file server
+     resources, you can create user groups under the Novell Netware.  Each
+     user can be a member of one or more groups.  With the function
+     NNETINGRPS(), you can determine all the user groups to which a user
+     belongs.
+
+     The file server can be specified either by its name or its connection
+     ID.  The connection ID of a server is returned by  NNETATTACH() or
+     NNETLOGIN().
+
+     To achieve results with this function, the requesting user must be
+     logged in on the related file server.  If the requesting user is not
+     logged in on the related file server, the function returns an empty
+     array.
+
+ ^bExample^b
+
+     Display all the user groups to which user KEITH on file server STONES
+     belongs:
+
+     aList:=NNETINGRPS('KEITH','STONES')
+     FOR i = 1 TO LEN(aList)
+     ? aList[i]
+     NEXT i
+!seealso: "NNETGROUPS()" "NNETGRPMEM()" "NNETUSINGR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETLGUSER() Determines the users currently logged in on a file server
+'------------------------------------------------------------------------------
+ ^bNNETLGUSER()^b
+ Determines the users that are currently logged in on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETLGUSER([<cServer>|<nConId>]) --> aUserListe
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     logged in users are determined.  Your workstation must be attached to
+     <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.  If no file server is specified, the function uses the
+     default server.
+
+ ^bReturns^b
+
+     NNETLGUSER() returns a one-dimensional array.  Each array element
+     contains a user name.
+
+ ^bDescription^b
+
+     NOVELL NET LOGGED USER
+     NNETLGUSER() allows you to determine all the users currently logged in
+     on the specified file server.  The file server can be specified by its
+     name or its connection ID.  The connection ID of a server is returned by
+     NNETATTACH() or NNETLOGIN().
+
+     The function NNETLGUSER() requires that the requesting user be logged in
+     on the related file server.  If the requesting user is not logged in on
+     the related file server, the function returns an empty array.
+
+     All users on a file server can be determined with the function
+     NNETUSERS().
+
+ ^bExample^b
+
+     Display a list of the users currently logged in on file server
+     NANGERTOOLS2:
+
+     aList:=NNETLGUSER('NANGERTOOLS2')
+     FOR i = 1 TO LEN(aList)
+     ? aList[i]
+     NEXT i
+!seealso: "NNETUSERS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETMAXCON() Sets or determines the maximum number of connections
+'------------------------------------------------------------------------------
+ ^bNNETMAXCON()^b
+ Sets or determines the maximum number of connections
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETMAXCON(<cUser>,[<nNumber>],[<cServer>|<nConId>)
+     ^b   --> nMaxConn
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user for whom the maximum number
+     of connections is set or determined.
+
+     ^b<nNumber> ^b Designates the new maximum number of connections for
+     <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server where <cUser> is
+     established.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETMAXCON() returns the maximum number of connections for <cUser>. If
+     the function was called with a value for <nNumber> and the return value
+     does not match <nNumber>, the requesting user did not have the rights to
+     modify the number of connections.
+
+ ^bDescription^b
+
+     NOVELL NET MAXIMUM CONNECTIONS
+     NNETMAXCON() allows you to query or set the maximum number of
+     connections for <cUser> (the number of workstations where a user can be
+     logged in).  To determine the maximum number of connections, do not pass
+     a value for <nNumber>.  If <nNumber> contains a numeric value,
+     NNETMAXCON() tries to set the maximum number of connections to
+     <nNumber>.  Supervisor rights are required on the related file server to
+     modify the number of connections.  With <nNumber> equal to 0, an
+     existing limit for the number of connections can be removed.
+
+     With <cServer> or <nConId>, the number of connections for users on any
+     attached file servers can be modified.  The connection ID of a server is
+     returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the maximum number of connections for user MIKE:
+
+        ? NNETMAXCON('MIKE')   // For example 2
+
+     ^b^CFE^b  Set the new number of connections for user MIKE:
+
+        NNETMAXCON('MIKE',5)
+
+     ^b^CFE^b  Remove the limit for user MIKE:
+
+        NNETMAXCON("MIKE",0)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETOCNUMS() Determines all of the stations where a user is logged in
+'------------------------------------------------------------------------------
+ ^bNNETOCNUMS()^b
+ Determines all of the stations where a user is logged in
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETOCNUMS([<cUser>]) --> cStationList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     <cUser>  Designates the name of an object of the type user. The default
+     value specifies the logged in user.
+
+ ^bReturns^b
+
+     NNETOCNUMS() returns a character string where each byte represents a
+     station number.
+
+ ^bDescription^b
+
+     NOVELL NET OPEN CONNECTION NUMBERS
+     With the help of this function you can determine on how many stations,
+     and on which stations, an object of the type user is logged into the
+     network.  This always relates to the default file server.
+
+     The station numbers are returned as a character string; each byte
+     represents a station number.  This character string works very well with
+     CA-Clipper Tools string functions, such as CHARSORT(), CHARREM(), etc..
+
+     If no user name is specified, the function returns the numbers for all
+     stations that are logged in under the same name as the station being
+     used.  This corresponds to a call of NNETOCNUMS(NNETWHOAMI()).
+
+ ^bNote^b
+
+     ^b^CFE^b  Console privileges are required to determine the station
+        number of another user.
+
+ ^bExample^b
+
+     Determine the station numbers where JIM is logged in:
+
+     cVar  :=  NNETOCNUMS("JIM")
+     FOR I = 1 TO LEN(cVar)
+        ? ASC(SUBSTR(cVar, I, 1))               // Station numbers
+     NEXT I
+!seealso: tool_004.ngo:"NNETSETSRV()" tool_004.ngo:"NNETSTANUM()" "NNETCOPRIV()" "NNETSPRVSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPEXPD()  Sets or determines the password expiration date
+'------------------------------------------------------------------------------
+ ^bNNETPEXPD()^b
+ Sets or determines the password expiration date
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPEXPD(<cUser>,[<dDate>],[<cServer>|<nConId>)
+     ^b   --> dExpiration
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user whose password is set or
+     determined.
+
+     ^b<dDate> ^b Designates the new expiration date for the password of
+     <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server to which <cUser>
+     has access.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPEXPD() returns the current expiration date of the password for
+     <cUser>.  If <dDate> has been passed and the return value does not match
+     <dDate>, the requesting user did not have the rights required for the
+     modification.
+
+ ^bDescription^b
+
+     NOVELL NET PASSWORD EXPIRATION DATE
+     NNETPEXPD() allows you to query or set the expiration date of the
+     password of <cUser>. To determine the expiration date, do not pass a
+     date for <dDate>.  If <dDate> contains a date, NNETPEXPD() tries to set
+     a new expiration date.  Supervisor rights are required on the related
+     file server to modify the expiration date.  An existing expiration date
+     can be removed with an empty date.  With <cServer> or <nConId>, the
+     password expiration date of users on any attached file servers can be
+     modified.  The connection ID of a server is returned by NNETATTACH() or
+     NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the password expiration date for user MIKE:
+
+        ? NNETPEXPD('MIKE')               // z.B. 03/19/92
+
+     ^b^CFE^b  Set the new password expiration date for user MIKE:
+
+        NNETPEXPD('MIKE',CTOD('06/01/92'))
+
+     ^b^CFE^b  Remove the password expiration date for user MIKE:
+
+        NNETPEXPD("MIKE",CTOD(""))
+!seealso: "NNETPEXPI()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPEXPI()  Sets or determines the password expiration interval
+'------------------------------------------------------------------------------
+ ^bNNETPEXPI()^b
+ Sets or determines the password expiration interval
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPEXPI(<cUser>,[<nDays>],[<cServer>|<nConId>)
+     ^b   --> nExpiration
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of user whose password expiration
+     interval is set or determined.
+
+     ^b<nDays> ^b Designates the new password expiration interval of <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server to which <cUser>
+     has access.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPEXPI() returns the current expiration interval of the password for
+     <cUser>.  If <nDays> has been passed and the return value does not match
+     <nDays>, the requesting user did not have the rights required for the
+     modification.
+
+ ^bDescription^b
+
+     NOVELL NET PASSWORD EXPIRATION INTERVALL
+     NNETPEXPI() allows you to query or set the expiration interval of the
+     password of <cUser>. To determine the expiration interval, do not pass a
+     value for <nDays>.  If <nDays> contains a numeric value, NNETPEXPI()
+     tries to set this value as new expiration interval.  Supervisor rights
+     are required on the related file server to modify the expiration
+     interval.  An existing expiration interval can be removed if you set
+     <nDays> equal to 0.  With <cServer> or <nConId>, the password expiration
+     interval of users on any attached file servers can be modified.  The
+     connection ID of a server is returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the password expiration interval for user MIKE:
+
+        ? NNETPEXPI('MIKE')                     // For example 40
+
+     ^b^CFE^b  Set the new password expiration interval for user MIKE:
+
+        NNETPEXPI('MIKE',50)
+
+     ^b^CFE^b  Remove the password expiration interval for user MIKE:
+
+        NNETPEXPI("MIKE",0)
+!seealso: "NNETPEXPD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPWGRCE() Sets or queries the number of grace logins
+'------------------------------------------------------------------------------
+ ^bNNETPWGRCE()^b
+ Sets or queries the number of grace logins
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPWGRCE(<cUser>,[<nNumber>],[<lMode>],[<cServer>|
+     ^b   <nConId>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user whose number of grace
+     logins is set or determined.
+
+     ^b<nNumber> ^b Designates the new number of grace logins for <cUser>.
+     The number of remaining grace logins or the maximum number of grace
+     logins is set depending on the parameter <lMode>.
+
+     ^b<lMode> ^b Designates if the number of remaining grace logins (.F.) or
+     the maximum number of grace logins (.T.) is set.  The default value is
+     .F..
+
+     ^b<cServer> ^b Designates the name of the file server to which <cUser>
+     has access.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPWGRCE() returns the currently valid number of grace logins for
+     <cUser>.  Dependent on the parameter <lMode>, the return value contains
+     the number of remaining grace logins (<lMode>=.F.) or the maximum number
+     of grace logins (<lMode>=.T.).  If a value has been passed for <nNumber>
+     and the return value does not match <nNumber>, the requesting user did
+     not have the rights for the modification.
+
+ ^bDescription^b
+
+     NOVELL NET PASSWORD GRACE LOGINS
+     NNETPWGRCE() indicates the number times a user can log in with an
+     expired password.  With each login under an expired password, Netware
+     reduces the number of remaining logins by 1.  However, the maximum
+     number of grace logins remains unchanged.
+
+     NNETPWGRCE() allows you to set or determine the number of remaining
+     grace logins or the maximum number of grace logins for <cUser>. If the
+     parameter <lMode> is not passed or is passed with .F.,  NNETPWGRCE()
+     returns the number of remaining grace logins.  If the <lMode> paramter
+     is passed with .T., the maximum number of grace logins can be set or
+     determined.  To query the number of grace logins, do not pass a value
+     for <nNumber>.  If <nNumber> contains a numeric value, NNETPWGRCE()
+     tries to set this value as new number of grace logins.  Supervisor
+     rights on the related file server are required to modify the number of
+     grace logins.  With the parameters <cServer> or <nConId>, the number of
+     grace logins for users on any attached file server can be changed.  The
+     connection ID of a file server is returned by NNETATTACH() or
+     NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of remaining grace logins for user MIKE:
+
+        ? NNETPWGRCE('MIKE')              // For example 4
+
+     ^b^CFE^b  Determine the maximum number of grace logins for user MIKE:
+
+        ? NNETPWGRCE('MIKE',,.T.)         // For example 6
+
+     ^b^CFE^b  Set the new maximum number of grace logins for user MIKE:
+
+        NNETPWLEN('MIKE',8,.T.)
+!seealso: "NNETPEXPD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPWLEN()  Sets or determines the minimum password length
+'------------------------------------------------------------------------------
+ ^bNNETPWLEN()^b
+ Sets or determines the minimum password length
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPWLEN(<cUser>,[<nNumber>],[<cServer>|<nConId>)
+     ^b   --> nPassLen
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser> ^b Designates the name of the user whose minimum password
+     length is set or determined.
+
+     ^b<nNumber> ^b Designates the new minimum password length for <cUser>.
+
+     ^b<cServer> ^b Designates the name of the file server to which <cUser>
+     has access.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPWLEN() returns the currently valid minimum password length for
+     <cUser>.  If a value has been passed for <nNumber> and the return value
+     does not match <nNumber>, the requesting user did not have the rights
+     for the modification.
+
+ ^bDescription^b
+
+     NOVELL NET PASSWORD LENGTH
+     NNETPWLEN() allows you to set or determine the minimum password length
+     for <cUser>.  To query the minimum password length, do not pass a value
+     for <nNumber>.  If <nNumber> contains a numeric value, NNETPWLEN() tries
+     to set this value as new minimum password length.  Supervisor rights on
+     the related file server are required to modify the password length.
+     With <nNumber> equal to 0, a previously set password length can be
+     removed.  In this case, a password for <cUser> is not required.
+
+     With the parameters <cServer> or <nConId>, the password length for users
+     on any attached file server can be changed.  The connection ID of a file
+     server is returned by NNETATTACH() or NNETLOGIN().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the minimum password length for user MIKE:
+
+        ? NNETPWLEN('MIKE')               // For example 5
+
+     ^b^CFE^b  Set the new minimum password length for user MIKE:
+
+        NNETPWLEN('MIKE',8)
+
+     ^b^CFE^b  Remove the limit of the password length for user MIKE:
+
+        NNETPWLEN("MIKE",0)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETREMGRP() Removes one or more users from a group
+'------------------------------------------------------------------------------
+ ^bNNETREMGRP()^b
+ Removes one or more users from a group
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETREMGRP(<cGroup>,<cUser>|<aUser>,[<cServer>|
+     ^b   <nConId>) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cGroup> ^b Designates the name of the group from which the user is
+     removed.
+
+     ^b<cUser> ^b Designates the name of the user that is removed from
+     <cGroup>.
+
+     ^b<aUser> ^b Designates a one-dimensional array of the type string.
+     Each element contains the name of a user to be removed from <cGroup>.
+
+     ^b<cServer> ^b Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETREMGRP() returns the number of users successfully removed from
+     <cGroup>.  A return value of 0 indicates that no user has been removed.
+
+ ^bDescription^b
+
+     NOVELL NET REMOVE USER FROM GROUP
+     NNETREMGRP() allows you to remove one or more users from a group.  To
+     remove one user, the user's login name must be passed as the single
+     argument <cUser>.   More users can be removed by passing the array,
+     <aUser>.  Each element of the array, <aUser>, contains a user name.  As
+     soon as a user has been removed from a group, the user loses all the
+     rights that have been granted as a member of the group.  With the
+     parameters <cServer> or <nConId>, users on any attached file servers can
+     be removed.  The connection ID of a server is returned by NNETATTACH()
+     or NNETLOGIN().
+
+     Supervisor rights are required on the related file server to remove a
+     user from a group.
+
+ ^bNotes^b
+
+     ^b^CFE^b  NNETREMGRP() only removes the user from <Group>.  The user is
+        not deleted.
+
+     ^b^CFE^b  NNETCRTUSR() is a high level function based on the low level
+        functions of the bindery access.  The CA-Clipper source code can be
+        found on the product disks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Remove user MIKE from the TECH group:
+
+        IF NNETREMGRP('TECH','MIKE')>0
+        ? 'User removed successfully!'
+        ELSE
+        ? 'User cannot not be removed!'
+        ENDIF
+
+     ^b^CFE^b  Remove users JIM, STEPHEN and ED from the TOOLS group:
+
+        NNETREMGRP('TOOLS',{'JIM','STEPHEN','ED'})
+!seealso: "NNETADDGRP()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETSPRVSR() Determines if the logged in user has supervisor rights
+'------------------------------------------------------------------------------
+ ^bNNETSPRVSR()^b
+ Determines if the logged in user has supervisor rights
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETSPRVSR() --> lSupervisorMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bReturns^b
+
+     NNETSPRVSR() returns .T. when the station that is queried has supervisor
+     rights on the default file server.
+
+ ^bDescription^b
+
+     NOVELL NET SUPERVISOR
+     Supervisor rights are the highest level rights within a network.  These
+     rights allow a supervisor, or someone with the same security
+     equivalence, access to all Netware functions.  For example, this
+     function allows you to test to see if the account under which the
+     station has been logged in has those rights.
+
+ ^bNote^b
+
+     ^b^CFE^b  Supervisor rights contain console privileges, existing in
+        Netware 2.1/ELS II and up.
+
+ ^bExample^b
+
+     Test to see if you have supervisor rights:
+
+     ? NNETSPRVSR()                     // .T., when yes
+!seealso: tool_004.ngo:"NNETSETSRV()" "NNETCOPRIV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETUSERS()  Determines the users on a file server
+'------------------------------------------------------------------------------
+ ^bNNETUSERS()^b
+ Determines the users on a file server
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETUSERS([<cServer>|<nConId>],[<cMask>])
+     ^b   --> aUserListe
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     users are determined.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.  If no server is specified, the function uses the default
+     server.  .
+
+     ^b<cMask> ^b Designates a search mask that can contain the wildcard
+     characters  "?" and "*".  The default character "*" indicates that all
+     users are determined.
+
+ ^bReturns^b
+
+     NNETUSERS() returns a one-dimensional array.  Each array element
+     contains a user name.
+
+ ^bDescription^b
+
+     NOVELL NET USERS
+     NNETUSERS() allows you to determine all the users of a file server.  The
+     file server can be specified by either its name or its connection ID.
+     The connection ID of a server is returned by NNETATTACH() or
+     NNETLOGIN().
+
+     In order to achieve results with this function, the requesting user must
+     be currently logged in on the specified file server.  If the requesting
+     user is not currently logged in on the specified file server, the
+     function returns an empty array.
+
+     The users currently logged in on a file server can be determined with
+     the function NNETLGUSER().
+
+ ^bExample^b
+
+     Display a list of all the users on file server NANGERTOOLS2:
+
+     aList=NNETUSERS('NANGERTOOLS2')
+     FOR i = 1 TO LEN(aList)
+     ? aList[i]
+     NEXT i
+!seealso: "NNETLGUSER()" "NNETGROUPS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETUSINGR() Determines the users that are members of a group
+'------------------------------------------------------------------------------
+ ^bNNETUSINGR()^b
+ Determines the users that are members of a group
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETUSINGR(<cGroup>,[<cServer>|<nConId>]) --> aUserList
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cGroup> ^b Designates the group for which the members are determined.
+
+     ^b<cServer> ^b Designates the name of the file server on which <cGroup>
+     is established.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.  If no server is specified, the function uses the default
+     server.
+
+ ^bReturns^b
+
+     NNETUSINGR() returns a one-dimensional array.  Each array element
+     contains a user name.
+
+ ^bDescription^b
+
+     NOVELL NET USERS IN GROUP
+     To improve organization and simplify user access to file server
+     resources, you can create user groups under Novell Netware.  Each user
+     can be a member of one or more groups.  With the function NNETUSINGR(),
+     all the members of a user group can be determined.
+
+     This function requires that the requesting user be logged in on the
+     related file server.  If the requesting user is not logged in on the
+     related file server, the function returns an empty array.
+
+ ^bExample^b
+
+     Display all the users that are members of the STONES group on the
+     current file server:
+
+     aList:=NNETUSINGR('STONES')
+     FOR i = 1 TO LEN(aList)
+     ? aList[i]
+     NEXT i
+!seealso: "NNETGROUPS()" "NNETGRPMEM()" "NNETINGRPS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETVPASS()  Verifies a password for a bindery object
+'------------------------------------------------------------------------------
+ ^bNNETVPASS()^b
+ Verifies a password for a bindery object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETVPASS(<cName>,[<nType>],<cPass>,[<cServer>|
+     ^b   <nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cName> ^b Designates the name of the bindery object that is
+     processed.
+
+     ^b<nType> ^b Designates the object type of <cName>.  The header file
+     CTNNET.CH contains symbolic constants for a number of object types.  The
+     default value designates the object type OBJ_USER.
+
+     ^b<cPass> ^b Designates the password that is verified for <cName>.
+
+     ^b<cServer> ^b Designates the name of the file server for which the
+     bindery is accessed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId> ^b Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETVPASS() returns .T. if the password <cPass> and the password of
+     <cName> in the bindery are identical.  If these passwords are not
+     identical, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET VERIFY BINDERY OBJECT PASSWORD
+     NNETVPASS() allows you to check to see if a character string matches the
+     password of a bindery object.  For example, the function can be used to
+     verify a user's password.
+
+ ^bExample^b
+
+     Check to see if the password HONEY is valid for user JIM:
+
+     IF NNETVPASS('JIM',,'HONEY')
+     ? 'Valid password!'
+     ELSE
+     ? 'Invalid password!'
+     ENDIF
+!seealso: "NNETCPASS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETUSERID() Queries the established network user IDs
+'------------------------------------------------------------------------------
+ ^bNNETUSERID()^b
+ Queries the established network user IDs
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETUSERID([<cUser>]) --> cUserID
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArgument^b
+
+     ^b<cUser> ^b Designates the name of an object of the type user (login
+     name).  The default value designates the logged-in user.
+
+ ^bReturns^b
+
+     NNETUSERID() returns the ID of the designated object of the type user.
+
+ ^bDescription^b
+
+     NOVELL NET USER ID
+     With NNETUSERID(), the ID of an object of the type user can be
+     determined if the user is not logged in on any station.  The function is
+     always relative to the default file server.
+
+     The returned character string corresponds to a hexadecimal (eight place)
+     number that only occurs once within a network.
+
+     If the optional <cUser> parameter is not specified, the function returns
+     the ID for the name where one is currently logged in.  This corresponds
+     to a NNETUSERID(NNETWHOAMI) call.
+
+ ^bNote^b
+
+     ^b^CFE^b  An object ID is automatically assigned by Novell software at
+        its creation.
+
+ ^bExample^b
+
+     Deterine the ID of a login name:
+
+     ? NNETUSERID("JIM")      // e.g. "0A002300"
+!seealso: tool_004.ngo:"NNETSETSRV()" tool_004.ngo:"NNETSTANUM()" tool_004.ngo:"NNETSTAID()" 
+'------------------------------------------------------------------------------
+
+
+

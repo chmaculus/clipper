@@ -1,0 +1,31 @@
+'------------------------------------------------------------------------------
+^BSAVE^B
+
+    SAVE stores all or part of the current set of memory variables to a
+    disk file.
+
+^USyntax^U
+
+    SAVE TO <filename> [ALL [LIKE/EXCEPT <skeleton>]]
+
+^UArguments^U
+
+    <file> is the name of the file where specified memory variables are
+    SAVEd.  If no extension is specified, Clipper creates the file with a
+    .mem extension.
+
+    <skeleton> is the wildcard mask to specify a group of memory variables
+    to SAVE.
+
+^UUsage^U
+
+    SAVE copies the specified memory variables to a memory file without any
+    reference to scope (public or private).  Note that hidden memory
+    variables are not SAVEd even if they are PUBLIC.
+
+    Note also that you cannot SAVE arrays to memory files.
+!seealso: clip_035.ngo:"RESTORE" clip_036.ngo:"RESTORE SCREEN" clip_040.ngo:"SAVE SCREEN" 
+'------------------------------------------------------------------------------
+
+
+

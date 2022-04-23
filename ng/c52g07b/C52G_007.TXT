@@ -1,0 +1,670 @@
+!short:   Chapter 7: DBFNTX Driver Installation and Usage
+'------------------------------------------------------------------------------
+ ^bDBFNTX Driver Installation and Usage^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBFNTX is the default RDD for CA-Clipper.  This new database driver
+     replaces the DBFNTX database driver supplied with earlier versions of
+     CA-Clipper and adds a number of new indexing features.  With DBFNTX, you
+     can:
+
+     ^b^CFE^b  Create conditional indexes by specifying a FOR condition
+
+     ^b^CFE^b  Create indexes using a record scope or WHILE condition,
+        allowing you to INDEX based on the order of another index
+
+     ^b^CFE^b  Create both ascending and descending order indexes
+
+     ^b^CFE^b  Specify an expression that is evaluated periodically during
+        indexing in order to display an index progress indicator
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:   컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+!short:      In This Chapter
+'------------------------------------------------------------------------------
+ ^bIn This Chapter^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     This chapter explains how to install DBFNTX and how to use it in your
+     applications.  The following major topics are discussed:
+
+     ^b^CFE^b  Overview of the DBFNTX RDD
+
+     ^b^CFE^b  New Locking Scheme
+
+     ^b^CFE^b  Conditional Indexing
+
+     ^b^CFE^b  Installing DBFNTX Driver Files
+
+     ^b^CFE^b  Linking the DBFNTX Driver
+
+     ^b^CFE^b  Using the DBFNTX Driver
+
+     ^b^CFE^b  Compatibility with dBASE III PLUS
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Overview of the DBFNTX RDD
+'------------------------------------------------------------------------------
+ ^bOverview of the DBFNTX RDD^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     As an update of the default database driver, DBFNTX is linked into and
+     used automatically by your application unless you compile using the /R
+     option.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           New Features
+'------------------------------------------------------------------------------
+ ^bNew Features^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The replaceable driver lets you create and maintain (.ntx) files using
+     features above and beyond those supplied with the previous DBFNTX
+     driver.  The new indexing features are supplied in the form of several
+     syntactical additions to the INDEX and REINDEX commands.  Specifically
+     you can:
+
+     ^b^CFE^b  Specify full record scoping and conditional filtering using
+        the standard ALL, FOR, WHILE, NEXT, REST, and RECORD clauses
+
+     ^b^CFE^b  Create an index while another controlling index is still
+        active
+
+     ^b^CFE^b  Monitor indexing as each record (or a specified record number
+        interval) is processed using the EVAL and EVERY clauses
+
+     ^b^CFE^b  Eliminate separate coding for descending order keys using the
+        DESCENDING clause
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Compatibility
+'------------------------------------------------------------------------------
+ ^bCompatibility^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Index files (.ntx) created with the original DBFNTX driver are
+     compatible with DBFNTX and can be used in new applications without
+     reindexing.  Index files (.ntx) created with this version of DBFNTX will
+     also work with previous CA-Clipper applications provided that you use no
+     FOR, WHILE, <scope>, or DESCENDING clauses.
+
+     ^bImportant! ^b Indexes produced with DBFNTX using FOR or DESCENDING are
+     incompatible with earlier version (.ntx) files.  If you attempt to
+     access them with the original DBFNTX database driver or programs
+     compiled with versions earlier than CA-Clipper 5.2, you will get an
+     unrecoverable runtime error.  In CA-Clipper, this generates an "index
+     corrupted" error message, causing the application to terminate.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      New Locking Scheme
+'------------------------------------------------------------------------------
+ ^bNew Locking Scheme^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNTX database driver implements a new locking scheme to resolve
+     several problems identified in previous versions of CA-Clipper and to
+     prevent potential problems that might arise when running CA-Clipper
+     applications in a network environment.  This section discusses these
+     changes and their implications, including compatibility issues.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Lock Time-outs
+'------------------------------------------------------------------------------
+ ^bLock Time-outs^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Problem:  Index locking in previous versions of CA-Clipper was handled
+     automatically by the database driver, and had no time-out provision.
+     This created the potential for problems in network environments if a
+     workstation died while holding a lock.  If this situation occurred all
+     other workstations waiting for an index lock would appear to freeze
+     while waiting to obtain their lock.  This could also happen if a user
+     placed a CA-Clipper application in the background on a multitasking
+     system without sufficient processing time allocated to it.  Eventually,
+     most network operation systems would clear a connection that had no
+     activity for a specified period of time.  This would free the lock and
+     everything would resume as normal, but frustrated users may have
+     rebooted their machines possibly causing file corruption.
+
+     Solution:  In CA-Clipper 5.2 the NTX driver will generate a recoverable
+     runtime error if it fails to lock the index after a predetermined number
+     of retries.  The default error handler for this system simply returns
+     (.T.) to retry the operation.  This emulates the behavior of previous
+     CA-Clipper versions.
+
+ ^bError Handling
+
+     Time out handling:  The handling of this error is problematic because
+     the lock is issued from various internal index routines.  Therefore the
+     only safe recoveries are to retry or quit.  Choosing to default from the
+     error or issuing a break will more than likely leave the index in a
+     corrupted state.  If either of the options is employed, the application
+     should immediately recreate the index.  The preferred way to handle a
+     time out such as this is to alert the user of the situation so they
+     don't think their machine has hung, and then have the network
+     administrator determine what workstation is causing the problem.  When
+     the problem workstation is cleared, the users that have timed out can
+     select  retry and continue processing.
+
+     NTXERR.PRG:  The file NTXERR.PRG contains the source code for the
+     default error handler INIT procedure.  This error handler can be
+     modified to allow user-defined error handling for index lock time-outs.
+     Care should be exercised when modifying the error handler as detailed
+     above.
+
+     Compatibility:  The lock time-out capability when used in conjunction
+     with the default error handler is totally compatibility with previous
+     versions of CA-Clipper.  No changes are made to the NTX file structure
+     and no action is required by the developer to activate the time-out
+     functionality.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           New Lock Offset
+'------------------------------------------------------------------------------
+ ^bNew Lock Offset^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Problem:  Index locking, which is transparent to the developer, uses a
+     single-byte semaphore locking system.  This semaphore was placed at a
+     virtual offset (beyond the physical end of file) in the index file.  In
+     previous versions of CA-Clipper, this offset was located at one billion
+     (1,000,000,000) which was adequate at the time.  But many systems today
+     are capable of producing indexes that are large enough to cause the
+     actual data present at the lock offset to become physically locked.
+     This leads to problems when trying to read or write to the data at that
+     offset.
+
+     Solution:  The solution is to move the offset where locking occurs to a
+     location at a greater offset.  We have chosen FFFFFFFF hex, which is the
+     largest offset possible under the DOS operating system.  The problem
+     with this solution is that new applications using the index will be
+     locking this new byte while old applications using the same index will
+     lock the old position.  Clearly this would cause both applications to
+     fail because each could have a lock on the file at the same time.
+
+     To avoid this, the signature of the index (in the index header) is
+     modified to prevent pre-CA-Clipper 5.2 applications from being able to
+     open the index.  CA-Clipper 5.2 applications can detect the correct
+     offset to use by the flag in the header and will automatically use the
+     correct one.  In Figure 7-1 below, each bit represents a flag:
+
+        BIT     7   6   5   4   3   2   1   0
+        FLAG    R   R   R   O   P   I   I   C
+
+        R  ^bR^beserved
+        I  ^bI^bndex type - both bits set (NTX)
+        C  Index created with a ^bC^bondition, condition in header
+        T  Created as a ^bT^bemporary index
+        O  New ^bO^bffset for exclusive (semaphore) lock
+
+        ^bFigure 7-1: Bit Field for the Signature Byte
+        ^b            of a CA-Clipper 5.2 NTX File
+
+ ^bActivation
+
+     If CA-Clipper 5.2 automatically modified the signature in the header
+     when it created indexes, programs with automatic reindexing routines
+     would be creating indexes that appeared corrupt to pre-CA-Clipper 5.2
+     applications.  This has an obvious problem with backward compatibility.
+     Therefore, in order to create indexes with the new signature, the
+     developer must link in the module NTXLOCK2.OBJ with the full knowledge
+     that this will create indexes that older applications will not be able
+     to access.
+
+ ^bHeader Changes
+
+     The signature byte of a .NTX file is 6 for an unenhanced NTX index.  The
+     inclusion of the NTXLOCK2.OBJ will cause the signature to become 26 hex.
+     (6 hex ORed with 20 hex).  See Figure 7-1 for an illustration of all the
+     possible values for the signature byte.
+
+ ^bError Handling
+
+     CA-Clipper 5.2 applications will automatically recognize the signature
+     byte of the header, and depending on the signature value, will use the
+     correct index lock location.  Applications built with previous versions
+     of CA-Clipper, however, do not have the capability to detect the
+     optional new information in the signature byte.  Therefore, when an
+     order application tries to open a file that has been created with the
+     NTXLOCK2.OBJ linked in it will produce a Corruption Detected error.
+
+ ^bCompatibility
+
+     The new locking location, if used, is not backward compatible with
+     applications compiled with previous versions of CA-Clipper.
+
+     Indexes created by applications built with a previous version of
+     CA-Clipper can be used by CA-Clipper 5.2 using the new location and will
+     not be modified unless the index is recreated in application.
+
+     Since older applications have no knowledge of the new index locking
+     scheme nor of the significance of the header signature, these
+     applications will assume the index is corrupt and will produce an Index
+     Corrupted error.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Conditional Indexing
+'------------------------------------------------------------------------------
+ ^bConditional Indexing^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Conditional indexes are a feature of the DBFNTX driver.  This section
+     discusses this feature of the DBFNTX driver in some detail, giving you
+     specific information about the implementation of conditional indexes.
+     Compatibility issues are also discussed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Conditional Indexes
+'------------------------------------------------------------------------------
+ ^bConditional Indexes^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Conditional indexes are produced by using a FOR condition in the index
+     creation process.  These indexes are made fully maintainable by storing
+     the FOR condition in the index header.  This condition is subsequently
+     retrieved and compiled each time the index in opened.  During updates,
+     items are added to the index only if they meet the criteria of the
+     condition.
+
+     Since older applications do not have the ability to recognize and use
+     the condition stored in the header, they must be prevented from opening
+     the index since they corrupt the index.  This is accomplished by
+     modifying the signature of the index (in the index header) preventing
+     pre-CA-Clipper 5.2 applications from being able to open the index.
+     CA-Clipper 5.2 applications can detect the flag in the header and will
+     automatically use the stored FOR condition correctly.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Temporary Indexes
+'------------------------------------------------------------------------------
+ ^bTemporary Indexes^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Temporary indexes are produced by using any scoping clause other than
+     the FOR condition in the index creation process.  These indexes are not
+     automatically maintainable because the condition is not stored for later
+     use.  These indexes can be made maintainable if the condition can be
+     expressed as a FOR condition and is added using the FOR clause.  But the
+     main use of temporary indexes is for fast creation of indexes for read-
+     only browses or reports that operate on a subset of the database.
+
+     Since older applications would not operate properly with indexes that do
+     not contain all the keys in a given database, they must be prevented
+     from using them.  This is accomplished by modifying the index signature
+     to prevent pre-CA-Clipper 5.2 applications from being able to open the
+     index.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Activation
+'------------------------------------------------------------------------------
+ ^bActivation^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bConditional Indexes
+
+     The developer need only specify the FOR condition when creating the
+     index.  In doing so he must be fully aware the index will no longer be
+     accessible to pre-CA-Clipper 5.2 applications.
+
+ ^bTemporary Indexes
+
+     The developer need only specify a scope other than FOR when creating the
+     index.  In doing so he must be fully aware the index will no longer be
+     accessible to pre-CA-Clipper 5.2 applications and that the index created
+     is not maintainable.
+
+ ^bHeader Changes
+
+     The signature byte of a .NTX file is 6 for a unenhanced NTX index.  If
+     the index is created as a conditional index it will have a signature of
+     7 hex (6 hex ORed with 1 hex).  If the index is created as a temporary
+     index it will have a signature of E hex.  (6 hex ORed with 8 hex).  See
+     Figure 7-1 for an illustration of all the possible values for the
+     signature byte.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Error Handling
+'------------------------------------------------------------------------------
+ ^bError Handling^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bCorruption Detected
+
+     Since older applications have no knowledge of the new index features nor
+     how to interpret the additional flags in the header signature, these
+     applications will assume the index is corrupt and will produce an Index
+     Corrupted error.
+
+ ^bEOF()
+
+     If an index is created with a FOR condition and an attempt is made to
+     update the index with a key that does not match the condition, the
+     update is suppressed and the index is placed at EOF().  This is
+     consistent with the current behavior for indexes created with the unique
+     flag when an update is attempted with a non-unique key.
+
+     Also if a navigational action is attempted (SKIP) and the current record
+     is not found in the index, the index will place the record pointer at
+     EOF().  This is true for both conditional and temporary indexes.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Compatibility
+'------------------------------------------------------------------------------
+ ^bCompatibility^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bBackward Compatibility
+
+     If the conditional or temporary indexing features are used the index
+     produced will not be backward compatible with applications compiled with
+     previous versions of CA-Clipper.  Indexes that do not use the features,
+     however, will be 100% compatible.
+
+ ^bForward Compatibility
+
+     Indexes created by applications built with a previous version of
+     CA-Clipper can be used by CA-Clipper 5.2 and will not be modified unless
+     the index is recreated using either the conditional or temporary index
+     features.
+
+ ^bError Message Produced by Old Applications
+
+     Since older applications have no knowledge of the new index locking
+     scheme nor of the significance of the header signature, these
+     applications will assume the index is corrupt and will produce an Index
+     Corrupted error.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Installing DBFNTX Driver Files
+'------------------------------------------------------------------------------
+ ^bInstalling DBFNTX Driver Files^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     DBFNTX is supplied as the file DBFNTX.LIB.
+
+     The CA-Clipper installation program installs this driver as the default
+     in the \CLIPPER5\LIB subdirectory on the drive that you specify, so you
+     need not install the driver manually.
+
+     ^bImportant! ^b Before installing CA-Clipper, you may want to rename the
+     DBFNTX.LIB that currently resides in your \CLIPPER5\LIB directory to
+     DBFNTX.001. The new version, when installed, will overwrite DBFNTX.LIB.
+     If you do not rename or otherwise protect the old version of DBFNTX.LIB,
+     you will lose it.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Linking the DBFNTX Database Driver
+'------------------------------------------------------------------------------
+ ^bLinking the DBFNTX Database Driver^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Since DBFNTX is the default database driver for CA-Clipper, there are no
+     special instructions for linking.  Unless you specify the /R option when
+     you compile, the new driver will be linked into each program
+     automatically if you specify a USE command or DBUSEAREA() function
+     without an explicit request for another database driver.  The driver is
+     also linked if you specify an INDEX or REINDEX command with any of the
+     new features.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Using the DBFNTX Database Driver
+'------------------------------------------------------------------------------
+ ^bUsing the DBFNTX Database Driver ^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In applications written for the new DBFNTX driver, you can use the INDEX
+     and REINDEX commands exactly as you have used them in the past.  The
+     index files (.ntx) you create and maintain in this way are completely
+     compatible with those created using previous versions of the driver.
+
+     Changes to existing code are necessary only if you use the new indexing
+     features.  The (.ntx) files you create using the new features will have
+     a slightly different header file and cannot be used by programs linked
+     with a previous version of the driver.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Using (.ntx) and (.ndx) Files Concurrently
+'------------------------------------------------------------------------------
+ ^bUsing (.ntx) and (.ndx) Files Concurrently^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     You can use (.ntx) and (.ndx) files concurrently in a CA-Clipper program
+     like this:
+
+     // (.ntx) file using default DBFNTX driver
+     USE File1 INDEX File1 NEW
+
+     // (.ndx) files using DBFNDX driver
+     USE File2 VIA "DBFNDX" INDEX File2 NEW
+
+     Note, however, that you cannot use (.ntx) and (.ndx) files in the same
+     work area.  For example, the following does not work:
+
+     USE File1 VIA "DBFNDX" INDEX File1.ntx, File2.ndx
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Compatibility with dBASE III PLUS
+'------------------------------------------------------------------------------
+ ^bCompatibility with dBASE III PLUS^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The default DBFNTX driver makes CA-Clipper programs behave differently
+     than traditional dBASE programs.  Some of these differences are
+     discussed below.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Supported Data Types
+'------------------------------------------------------------------------------
+ ^bSupported Data Types^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNTX database driver supports the following dBASE III PLUS-
+     compatible data types for key expressions:
+
+          ^b^CFE^b  Character
+
+          ^b^CFE^b  Numeric
+
+          ^b^CFE^b  Date
+
+          ^b^CFE^b  Logical
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Supported Key Expressions
+'------------------------------------------------------------------------------
+ ^bSupported Key Expressions^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     When you create (.ntx) files using the DBFNTX driver, you can use all
+     CA-Clipper or user-defined functions compatible with dBASE III PLUS as
+     well as other functions accepted by the extended CA-Clipper
+     functionality.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Error Handling
+'------------------------------------------------------------------------------
+ ^bError Handling^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The indexing behavior of DBFNTX and DBFNDX in a CA-Clipper application
+     is identical unless otherwise noted.  With the default DBFNTX driver,
+     you can handle most errors using BEGIN SEQUENCE...END SEQUENCE as
+     illustrated in the next section.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           FIND vs SEEK
+'------------------------------------------------------------------------------
+ ^bFIND vs SEEK^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In CA-Clipper, you can use the FIND command only to locate keys in
+     indexes where the index key expression is character data type.  This
+     differs from dBASE III PLUS where FIND supports character and numeric
+     key values.
+
+     ^bNote: ^b In CA-Clipper programs, always use the SEEK command or the
+     DBSEEK() function to search an index for a key value.
+
+     The DBFNTX driver lets you recover from data type errors raised during a
+     FIND or SEEK.  However, since Error:canDefault, Error:canRetry or
+     Error:canSubstitute are set to false (.F.), you should use BEGIN
+     SEQUENCE...END to handle such SEEK or FIND data type errors.  Within the
+     error block for the current operation, issue a BREAK() using the error
+     object that the DBFNTX database driver generates, like this:
+
+     bOld := ERRORBLOCK({|oError| BREAK(oError)})
+     .
+     .
+     .
+     BEGIN SEQUENCE
+        SEEK xVar
+     RECOVER USING oError
+        // Recovery code
+     END
+     .
+     .
+     .
+     ERRORBLOCK(bOld)
+
+     There is an extensive discussion of the effective use of the CA-Clipper
+     error system in the Error Handling Strategies chapter of the Programming
+     and Utilities guide.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:           Sharing Data on a Network
+'------------------------------------------------------------------------------
+ ^bSharing Data on a Network^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     The DBFNTX driver provides file and record locking schemes that are
+     different from dBASE III PLUS schemes.  This means that if the same
+     database and index files are open in CA-Clipper and in dBASE III PLUS,
+     CA-Clipper program locks are not visible to dBASE III PLUS and vice
+     versa.
+
+     ^bWarning^b! Database integrity is not guaranteed and index corruption
+     will occur if CA-Clipper and dBASE III PLUS programs attempt to write to
+     a database or index file at the same time.  Therefore, concurrent use of
+     the same database (.dbf) and index (.ndx) files by dBASE III PLUS and
+     CA-Clipper programs is strongly discouraged and not supported by
+     Computer Associates.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:      컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short:      Summary
+'------------------------------------------------------------------------------
+ ^bSummary^b
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     In this chapter, you were given an overview of the new features of the
+     default DBFNTX RDD.  You learned how to this driver is automatically
+     linked and how to use it in your applications, and were given an
+     overview of the compatiblity issues.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

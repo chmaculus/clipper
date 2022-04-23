@@ -1,0 +1,48 @@
+'------------------------------------------------------------------------------
+^BSET DATE^B
+
+    SET DATE determines the format for date displays.
+
+^USyntax^U
+
+    SET DATE AMERICAN/ANSI/BRITISH/FRENCH/GERMAN/ITALIAN
+
+^UDefaults^U
+
+    DATE is normally SET to AMERICAN.
+
+^UUsage^U
+
+    SET DATE allows more flexibility in date output.
+
+           ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+           ³  AMERICAN        ³   mm/dd/yy   ³
+           ³  ANSI            ³   yy.mm.dd   ³
+           ³  BRITISH/FRENCH  ³   dd/mm/yy   ³
+           ³  GERMAN          ³   dd.mm.yy   ³
+           ³  ITALIAN         ³   dd-mm-yy   ³
+           ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+    To configure a compiled application to the proper date setting at
+    runtime, pass a DOS environmental variable to your application program,
+    retrieve its value with GETE() and SET DATE with this value.  For
+    example, in DOS:
+
+    SET CLIP_DATE=BRITISH
+
+    Later in the configuration section of your application program:
+
+    ^Rdate_set = UPPER(GETE("CLIP_DATE"))^R
+    ^RDO CASE                            ^R
+    ^RCASE date_set = "AMERICAN"         ^R
+    ^R   SET DATE AMERICAN               ^R
+    ^RCASE date_set = "ANSI"             ^R
+    ^R   SET DATE ANSI                   ^R
+    ^RCASE date_set = "BRITISH"          ^R
+    ^R   SET DATE BRITISH                ^R
+    ^R...                                ^R
+!seealso: clip_045.ngo:"SET CENTURY" 
+'------------------------------------------------------------------------------
+
+
+

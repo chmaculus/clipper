@@ -1,0 +1,1094 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpb_create()         Creates a push button engine
+'------------------------------------------------------------------------------
+ ADpb_create( [bConfig], [cHelpID], [cHelpHeader] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a "bare" push button engine.  A bare engine is one that does not
+ have any actual buttons added to it yet.  To add a button, use ADpb_add().
+ To show the buttons, use ADpb_show().  To activate the engine, use
+ ADpb_activate().
+
+ [bConfig] is an optional configuration block.  You use it to call the
+ engine's Config APIs that reconfigures the engine.
+
+ [cHelpID] is an optional Help ID string.
+
+ [cHelpHeader] is an optional Help Header string.
+
+ <nEngine> is the numeric return value.  You use it to send messages to the
+ engine.
+
+ Example
+ -------
+ func main()
+ local e := ADpb_create()
+
+ ADpb_add( e,2,2, "The" )          // button #1
+ ADpb_add( e,4,2, "Quick" )        // button #2
+ ADpb_add( e,6,2, "Brown" )        // button #3
+ cls
+ ADpb_show( e )
+ ADmessage( { "Selected #" + ADn2s( ADpb_activate( e ) ) } )
+ ADpb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpb_colors()         Configures the colors of the pushbutton engine
+'------------------------------------------------------------------------------
+ ADpb_colors( <aColors> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Configures the colors of the pushbutton engine.
+
+ <aColors> is an array of three elements:
+
+    1 - the standard color.  Defaults to "W+/W in color monitors
+        and "W/N" in monochrome.
+
+    2 - the foreground color of the trigger.  The background is the same as
+        the standard color.  Defaults to "R" in color monitors and "W+" in
+        monochrome.
+
+    3 - the background color of the shadow.  Defaults to "W" in color
+        monitors and "N" in monochrome. If this element is not passed, the
+        buttons will be displayed without a shadow, unless explicitly
+        specified otherwise in ADpb_show().  If it is passed, it must be set
+        to the background color of the standard color for aesthetic reasons.
+
+ Example
+ -------
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "N/W" )
+ local e := ADpb_create( {||ADpb_colors( { "R/B", "R+", "W" } )} )
+
+ ADpb_add( e,12,34, "The" )          // button #1
+ ADpb_add( e,12,39, "Quick" )        // button #2
+ ADpb_add( e,12,46, "Brown" )        // button #3
+ ADpb_add( e,12,53, "Clipper" )      // button #4
+
+ ADpb_show( e )
+ ADpb_activate( e )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_extra()          Defines _extra_ behaviors for ADpb_activate()
+'------------------------------------------------------------------------------
+ ADpb_extra( [bExtra1], [bExtra2], [bExtra3], [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines extra behaviors for ADpb_activate().
+
+ [bExtra1] is a codeblock that is EVALed just before the push buttons are
+ displayed. It is passed the engine ID.
+
+ [bExtra2] is a codeblock that is EVALed just after the push buttons are
+ displayed. It is passed the engine ID.
+
+ [bExtra3] is a codeblock that is EVALed just after the engine is exited.
+ It is passed the engine ID.
+
+ [lAdditive] is a logical flag that determines whether the extra behaviors
+ override existing ones, or are added (chained) to them.  Defaults to
+ FALSE.
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ local aCsr, aScn, nSel
+ local bExtra1 := {||aScn := ADbox( 10,30,14,64, "GR+/B" ),;
+                     aCsr := ADsavecsr( 0 );
+                  }
+ local bExtra2
+ local bExtra3 := {||ADrestscn( aScn ),;
+                     ADrestcsr( aCsr );
+                  }
+ local bConfig := {||ADpb_extra( bExtra1, bExtra2, bExtra3 )}
+ local e := ADpb_create( bConfig )
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ nSel := ADpb_activate( e )
+ ADpb_kill( e )
+ ADmessage( { "Selected " + ADn2s( nSel ) } )
+ return NIL
+!seealso: "ADpb_activate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_keys()           Defines hot keys for ADpb_activate()
+'------------------------------------------------------------------------------
+ ADpb_keys( <aKeys>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys for ADpb_activate().
+
+ [aKeys] is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+   1 - the index position of the pressed key
+   2 - the inkey code of the pressed key
+
+ [lAdditive] is a logical value.  If it is FALSE, the hot keys defined now
+ will supersede all previous definitions, if any.  If it is TRUE, the new
+ definitions are added or chained to existing ones.  The default is FALSE.
+
+ Example:
+ -------
+ // F9 and F10 are defined as a hot keys.
+ #include "inkey.ch"
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "GR+/B" )
+ local bConfig := {||ADpb_keys( { K_F9, K_F10 },;
+                                {|n,k|Xhandler(k)};
+                              );
+                  }
+ local e := ADpb_create( bConfig )
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ ? ADpb_activate( e )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+
+ func Xhandler( nKey )
+ if nKey == K_F9
+    ADmessage( { "Pressed F9" }, 18 )
+ elseif nKey == K_F10
+    ADmessage( { "Pressed F10" }, 18 )
+ endif
+ return NIL
+!seealso: "ADpb_lbuttons()" "ADpb_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_lbuttons()       Defines left button hot spots for ADpb_activate()
+'------------------------------------------------------------------------------
+ ADpb_lbuttons( <aSpots>, <bHandler>, [lAdditive] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines left button hot spots for ADpb_activate().
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ [lAdditive] is a logical value.  If it is FALSE, the hot spots defined now
+ will supersede all previous definitions, if any.  If it is TRUE, the new
+ definitions are added or chained to existing ones.  The default is FALSE.
+
+ Example:
+ --------
+ #include "inkey.ch"
+ #define TOPROW     {0,0,0,maxcol()}
+ #define BOTTOMROW  {maxrow(),0,maxrow(),maxcol()}
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "GR+/B" )
+ local bConfig := {||ADpb_lbuttons( { TOPROW, BOTTOMROW },;
+                                    {|n,m,r|Xhandler(n)};
+                                  );
+                  }
+ local e := ADpb_create( bConfig )
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ ? ADpb_activate( e )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+
+ func Xhandler( nthSpot )
+ if nthSpot == 1
+    ADmessage( { "Clicked Top of Screen" }, 18 )
+ elseif nthSpot == 2
+    ADmessage( { "Clicked Bottom of Screen" }, 18 )
+ endif
+ return NIL
+!seealso: "ADpb_keys()" "ADpb_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_rbuttons()       Defines right mouse button hot spots
+'------------------------------------------------------------------------------
+ ADpb_rbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse right button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ Example
+ -------
+ // deactivate the right mouse button
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "GR+/B" )
+ local bConfig := {||ADpb_rbuttons( { {0,0,maxrow(),maxcol()} },;
+                                    {||NIL};
+                                  );
+                  }
+ local e := ADpb_create( bConfig )
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ ADpb_activate( e )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+!seealso: "ADpb_keys()" "ADpb_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_setalt()         (De)activates the alt-keys as trigger keys
+'------------------------------------------------------------------------------
+ ADpb_setalt( [lActive] ) --> <lOldSetting>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ (De)activates the alt-keys as trigger keys.
+
+ [lActive] is a logical value. If it is TRUE, the alt-equivalents of the
+ trigger keys will be activated, and the regular trigger keys are
+ de-activated, and vice-versa.  If it is NIL, it does not change the current
+ setting.
+
+ <lOldSetting> is the return value.  It is the alt-keys setting before the
+ call was made.
+
+ Example
+ -------
+ func main()
+ local e := ADpb_create( {|| ADpb_setalt( .t. )} )
+
+ ADpb_add( e,2,2, "The" )          // button #1
+ ADpb_add( e,4,2, "Quick" )        // button #2
+ ADpb_add( e,6,2, "Brown" )        // button #3
+ cls
+ ADpb_show( e )
+ ADmessage( { "Selected #" + ADn2s( ADpb_activate( e ) ) } )
+ ADpb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_timeout()        Defines a timeout behavior for ADpb_activate()
+'------------------------------------------------------------------------------
+ ADpb_timeout( <nSeconds>, <bTimeOut> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a timeout behavior for ADpb_activate().
+
+ <nSeconds> is the number of seconds of inactivity before timing out.
+
+ <bTimeOut> is a codeblock that is EVALed at timeout.  When the codeblock
+ exits, control is returned to ADpb_activate(), unless ADpb_abort() is
+ called inside the block.  When control is returned to ADpb_activate(),
+ counting of <nSeconds> starts at zero again.
+
+ Example
+ -------
+ func main()
+ local aCsr, aScn, nSel
+ local bConfig := {||ADpb_timeout( 5, {||ADblankscn()} )}
+ local e := ADpb_create( bConfig )
+
+ aScn := ADbox( 10,30,14,64, "GR+/B" )
+ aCsr := ADsavecsr( 0 )
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ nSel := ADpb_activate( e )
+ ADrestscn( aScn )
+ ADrestcsr( aCsr )
+ ADpb_kill( e )
+ ADmessage( { "Selected " + ADn2s( nSel ) } )
+ return NIL
+!seealso: "ADpb_activate()" "ADpb_abort()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpb_abort()          Aborts ADpb_activate().
+'------------------------------------------------------------------------------
+ ADpb_abort() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Aborts ADpb_activate().
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "GR+/B" )
+ local bConfig := {||ADpb_keys( { K_F10 }, {||ADpb_abort()} )}
+ local e := ADpb_create( bConfig )
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ ? ADpb_activate( e )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+!seealso: "ADpb_activate()" "ADpb_select()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_activate()       Activates a pushbutton engine.
+'------------------------------------------------------------------------------
+ ADpb_activate( <nEngine>, [aInactive] ) --> <nSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Activates a pushbutton engine, <nEngine>.  This API does not display the
+ buttons, but merely activates them, that is, pauses the program until
+ a button is selected, or until engine is aborted.  Use ADpb_show() to
+ display the buttons.
+
+ <nSelection> is the position of the selected button.  It is zero if no
+ selection was made.
+
+ [aInactive] is an optional array of index positions of inactive buttons.
+ When a button is inactive, the engine disregards its selection.  An array
+ of { 2,3 } means buttons 2 and 3 are inactive.  An inactive button is
+ displayed with the default colors unless its color is explicitly specified
+ in ADpb_add() or changed on the fly with ADpb_chgcolor().
+
+ NOTE
+ ----
+ A selection is made by pressing a trigger key, or by clicking a push button
+ with the mouse left button.  The selection process is aborted by pressing
+ Esc or by clicking the mouse right button.
+
+ v2.1 -> v2.2
+ ------------
+ Documented the 2nd parameter.
+
+ Example
+ -------
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "GR+/B" )
+ local e := ADpb_create()
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "N+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "N+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ ADpb_activate( e, { 2, 3 } )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_add()            Adds a button into the engine
+'------------------------------------------------------------------------------
+ ADpb_add( <nEngine>, <nRow>, <nCol>, <cLabel>, [nTrigger], [cColor] )
+   --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Adds a button into the engine
+
+ <nEngine> is the numeric identifier of the push button engine.
+
+ <nRow>, <nCol> is the starting position of the added button.
+
+ <cLabel> is the label of the added button
+
+ [nTrigger] is the index position of the trigger key.  It defaults to 1.
+ NOTE: If an '&' is embedded in the label, its relative position supercedes
+ whatever is specified in [nTrigger].
+
+ [cColor] is an optional color specifier for the button.  It defaults to what
+ is specified by ADpb_color().
+
+ Example
+ -------
+ See ADpb_create()
+
+ v2.30 -> v3.00
+ --------------
+ Allows embedding of '&' in the label to identify trigger key.
+!seealso: fran_031.ngo:"ADg_trigmarker()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_chgcolor()       Changes the color of a button.
+'------------------------------------------------------------------------------
+ ADpb_chgcolor( <nEngine>, <nButton>, <cStd>, <cTrg> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Changes the color of a button.
+
+ <nEngine> is the numeric identifier of the engine where the button to change
+ color belongs.
+
+ <nButton> is the index position of the button to change color.
+
+ <cStd> is the button color
+
+ <cTrg> is the trigger color.  Note that this consists of a foreground and
+ a background component.
+
+ Example
+ -------
+ #include "tour\frankie.ch"
+
+ func main(nR)
+ local e := ADpb_create()
+ local aTagged[4]
+
+ setcursor(0)
+ afill( aTagged, .f. )
+ ADpb_add( e,2,2, " The   ", 2 )        // button #1
+ ADpb_add( e,4,2, " Quick ", 2 )        // button #2
+ ADpb_add( e,6,2, " Brown ", 2 )        // button #3
+ ADpb_add( e,8,2, " eXit  ", 3 )        // button #4
+ ADcls()
+ ADpb_show( e, "BG" )
+
+ do while .t.
+    if ( nSel := ADpb_activate( e ) ) > 0
+        ADm_rwait()
+
+        if aTagged[nSel]
+            ADpb_restcolor( e, nSel )
+        else
+            ADpb_chgcolor( e, nSel, "GR+/B", "R+/B" )
+        endif
+
+        aTagged[nSel] := !aTagged[nSel]
+    endif
+
+    if nSel == 4
+        exit
+    endif
+ enddo
+
+ ADpb_kill( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_kill()           Kills a push button engine.
+'------------------------------------------------------------------------------
+ ADpb_kill( <nEngine> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Kills a push button engine, <nEngine>
+
+ Example
+ -------
+ See ADpb_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_push()           Pushes a button.
+'------------------------------------------------------------------------------
+ ADpb_push( <nEngine>, <nButton>, [lPause] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ "Pushes" the button <nButton> in engine <nEngine>.  If the buttons are
+ shadowed (See ADpb_show()), the button actually "moves" when pushed.  If
+ the buttons are not shadowed, they merely change in color briefly.
+ ADpb_activate() calls this function, so you typically will not have to call
+ it directly unless you are attaching the PB engine to another user inter-
+ face, like ADdbview(), where you have to program your hot key and hot spot
+ handler.
+
+ <nEngine> is the numeric identifier of the engine where the button to push
+ belongs to.
+
+ <nButton> is the index position of the button to push.
+
+ [lPause] is a logical value that defaults to TRUE.  When TRUE, the program
+ pauses until the mouse button is released.
+
+ Example: A vertical push button engine is attached to a dbviewer engine.
+ To simplify this example, no hot keys are defined for the dbviewer.  Note
+ that ADpb_activate() is not used here.  Instead, the dbviewer's hot spot
+ handler calls ADpb_push() to push the selected button.
+ -------------------------------------------------------------------------
+ func main()
+ local aScn          // screen occupied by push buttons
+ local nPBEngine     // push button engine ID
+ local nArea := select()
+
+ select 0
+ use tour\demo
+ ADdbview( 10,10,20,79,;
+           {||ADdb_extra( {||dispbegin(),;
+                             aScn := ADbox( 10,0,20,9,;
+                                            "W+/B",;
+                                            space(9),;
+                                            .f.,;
+                                            .f.;
+                                          ),;
+                             nPBEngine := ADpb_vertical( 11, 2,;
+                                                         { "Edit  ",;
+                                                           "Add   ",;
+                                                           "Delete",;
+                                                           "Recall",;
+                                                           "Pack  ";
+                                                         };
+                                                       );
+                          },;
+                          {||ADpb_show( nPBEngine, "B" ),;
+                             ADdb_lbuttons( ADpb_spots( nPBEngine ),;
+                                            {|n|Xdb_shandler(n,nPBEngine)};
+                                          ),;
+                             ADcsay( 20, 10, 79,;
+                                     " Push Buttons With ADdbview() Demo ",;
+                                     "GR+/B";
+                                   ),;
+                             dispend();
+                          },;
+                          {||ADpb_kill( nPBEngine ),;
+                             ADrestscn( aScn );
+                          };
+                        );
+           };
+         )
+ use
+ select (nArea)
+ return NIL
+
+ //--------------------------------------
+ static func Xdb_shandler( n, nPBEngine )
+ ADpb_push( nPBEngine, n )
+
+ if n == 1
+     ADnotyet( "Edit" )
+ elseif n == 2
+     ADnotyet( "Add" )
+ elseif n == 3
+     ADnotyet( "Delete" )
+ elseif n == 4
+     ADnotyet( "Recall" )
+ elseif n == 5
+     ADnotyet( "Pack" )
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_restcolor()      Restores the button's original color.
+'------------------------------------------------------------------------------
+ ADpb_restcolor( <nEngine>, <nButton> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Restores the original color of a button which was previously changed with
+ ADpb_chgcolor().
+
+ <nEngine> is the numeric identifier of the engine
+
+ <nButton> is the index position of the button
+
+ Example
+ -------
+ See ADpb_chgcolor()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_toggle()       ^rn^r Toggles a push button on/off.
+'------------------------------------------------------------------------------
+ ADpb_toggle( <nEngine>, <nButton>, [lActive] ) --> <lOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Toggles a push button on/off.
+
+ <nEngine> is the numeric identifier of the engine
+
+ <nButton> is the index position of the button
+
+ [lActive] is an optional logical value.  The button is toggled to on or off
+ depending on whether [lActive] is TRUE or FALSE.  The button is not toggled
+ if [lActive] is not passed.
+
+ <lOld> is the current setting of the button when ADpb_toggle() is called.
+
+ Example
+ -------
+ /* Press the F10 key to toggle 'Edit' on and off */
+ #include "inkey.ch"
+ func main()
+ local aScn          // screen occupied by push buttons
+ local nPBEngine     // push button engine ID
+ local aPBKeys       // push buttons triggers
+
+ use demo
+
+ ADdbview( 10,10,20,79,;
+           {||ADdb_extra( {||dispbegin(),;
+                             aScn := ADbox( 10,0,20,9,;
+                                            "W+/B",;
+                                            space(9),;
+                                            .f.,;
+                                            .f.;
+                                          ),;
+                             nPBEngine := ADpb_vertical( 11, 2,;
+                                                         { "&Edit  ",;
+                                                           "&Add   ",;
+                                                           "&Delete",;
+                                                           "&Recall",;
+                                                           "&Pack  ";
+                                                         };
+                                                       );
+                          },;
+                          {||ADpb_show( nPBEngine, "B" ),;
+                             ADdb_lbuttons( ADpb_spots( nPBEngine ),;
+                                            {|n|Xdb_shandler(n,nPBEngine)};
+                                          ),;
+                             ADdb_keys( ADpb_triggers( nPBEngine ),;
+                                        {|n|Xdb_khandler(n,nPBEngine)};
+                                      ),;
+                             ADdb_keys( {K_F10},;
+                                        {|n|xToggle(nPBEngine,n)},;
+                                        .t.;
+                                      ),;
+                             ADcsay( 20, 10, 79,;
+                                     " Push Buttons With ADdbview() Demo ",;
+                                     "GR+/B";
+                                   ),;
+                             dispend();
+                          },;
+                          {||ADpb_kill( nPBEngine ),;
+                             ADrestscn( aScn );
+                          };
+                        );
+           };
+         )
+ use
+ return NIL
+
+ static func Xdb_shandler( n, nPBEngine )
+ if  ADpb_toggle( nPBEngine, n )
+     ADpb_push( nPBEngine, n )
+
+     if n == 1
+         ADnotyet( "Edit" )
+     elseif n == 2
+         ADnotyet( "Add" )
+     elseif n == 3
+         ADnotyet( "Delete" )
+     elseif n == 4
+         ADnotyet( "Recall" )
+     elseif n == 5
+         ADnotyet( "Pack" )
+     endif
+ endif
+ return NIL
+
+ static func Xdb_khandler( n, nPBEngine )
+ if ADpb_toggle( nPBEngine, ADround( n, 2 ) )
+     ADpb_push( nPBEngine, ADround( n, 2 ) )
+
+     if n == 1 .or. n == 2
+         ADnotyet( "Edit" )
+     elseif n == 3 .or. n == 4
+         ADnotyet( "Add" )
+     elseif n == 5 .or. n == 6
+         ADnotyet( "Delete" )
+     elseif n == 7 .or. n == 8
+         ADnotyet( "Recall" )
+     elseif n == 9 .or. n == 10
+         ADnotyet( "Pack" )
+     endif
+ endif
+ return NIL
+
+
+ static func xToggle( nPBEngine, n )
+ local lActive := ADpb_toggle( nPBEngine, n )
+
+ if lActive
+     ADpb_toggle( nPBEngine, n, .f. )
+     ADpb_chgcolor( nPBEngine, n, "N+/W", "N+/W" )
+ else
+     ADpb_toggle( nPBEngine, n, .t. )
+     ADpb_restcolor( nPBEngine, n )
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_select()         Selects an item in ADpb_activate().
+'------------------------------------------------------------------------------
+ ADpb_select( <nItem> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Selects an item in ADpb_activate().
+
+ Example
+ -------
+ #include "inkey.ch"
+ func main()
+ local nScr := setcursor(0)
+ local aScn := ADbox( 10,30,14,64, "GR+/B" )
+ local bConfig := {||ADpb_keys( { K_F10 }, {||ADpb_select(3)} )}
+ local e := ADpb_create( bConfig )
+
+ ADpb_add( e,12,34, "The",,     "B+/W" )      // button #1
+ ADpb_add( e,12,39, "Quick",,   "B+/W" )      // button #2
+ ADpb_add( e,12,46, "Brown",,   "B+/W" )      // button #3
+ ADpb_add( e,12,53, "Clipper",, "B+/W" )      // button #4
+
+ ADpb_show( e, "B" )
+ ? ADpb_activate( e )
+ ADpb_kill( e )
+ ADrestscn( aScn )
+ setcursor( nScr )
+ return NIL
+!seealso: "ADpb_abort()" "ADpb_activate()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_show()           Displays the buttons in the engine.
+'------------------------------------------------------------------------------
+ ADpb_show( <nEngine>, [cBackColor] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays the buttons in the engine.
+
+ <nEngine> is the numeric engine identifier.
+
+ [cBackColor] is an optional background color specifier.  If it is passed,
+ a shadow will be drawn around the button.  The shadow's foreground color
+ is black while its background color is [cBackColor].  When a button is
+ shadowed as such, it will "move" when "pushed."
+
+ Example
+ -------
+ See ADpb_create()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpb_altkeys()        Returns the alt equivalents of the trigger keys
+'------------------------------------------------------------------------------
+ ADpb_altkeys( <nEngine> ) --> <aKeys>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array of the alt equivalents of the trigger keys
+
+ <nEngine> is the numeric engine identifier.
+
+ <aKeys> is the return value.
+
+ Example
+ -------
+ func main()
+ local e := ADpb_create()
+
+ ADpb_add( e,2,2, "The" )          // button #1
+ ADpb_add( e,4,2, "Quick" )        // button #2
+ ADpb_add( e,6,2, "Brown" )        // button #3
+ cls
+ ADpb_show( e )
+ setpos( 10, 0 )
+ aeval( ADpb_altkeys( e ), {|x| qout( x )} )   // 276  -> K_ALT_T
+                                               // 272  -> K_ALT_Q
+                                               // 304  -> K_ALT_B
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_triggers()       Returns an array of trigger keys.
+'------------------------------------------------------------------------------
+ ADpb_triggers( <nEngine> ) --> <aKeys>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array of trigger keys.
+
+ <nEngine> is the numeric engine identifier.
+
+ <aKeys> is the return value.  Each button in the engine is mapped to two
+ trigger keys in <aKeys>, an upper case, and a lower case.  Thus the number
+ of elements in <aKeys> is twice as many buttons there are in the engine.
+
+ Example
+ -------
+ func main()
+ local e := ADpb_create()
+
+ ADpb_add( e,2,2, "The" )          // button #1
+ ADpb_add( e,4,2, "Quick" )        // button #2
+ ADpb_add( e,6,2, "Brown" )        // button #3
+ cls
+ ADpb_show( e )
+ setpos( 10, 0 )
+ aeval( ADpb_triggers( e ), {|x| qout( x )} )   // 84  -> "t"
+                                                // 116 -> "T"
+                                                // 81  -> "q"
+                                                // 113 -> "Q"
+                                                // 66  -> "b"
+                                                // 98  -> "B"
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_spots()          Returns the corresponding hot spots of the buttons
+'------------------------------------------------------------------------------
+ ADpb_spots( <nEngine> ) --> <aSpots>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns an array of the corresponding hot spots of the buttons.
+
+ <nEngine> is the numeric engine identifier.
+
+ <aSpots> is the return value.
+
+ Example
+ -------
+ func main()
+ local e := ADpb_create()
+
+ ADpb_add( e,2,2, "The" )          // button #1
+ ADpb_add( e,4,2, "Quick" )        // button #2
+ ADpb_add( e,6,2, "Brown" )        // button #3
+ ADpb_add( e,8,2, "Fox" )          // button #4
+ cls
+ ADpb_show( e )
+ setpos( 10, 0 )
+ aeval( ADpb_spots( e ),;
+        {|x| aeval( x, {|y| qqout( y, " " )} ), qout("");
+        };
+      )         // 2 2 2 4
+                // 4 2 4 6
+                // 6 2 6 6
+                // 8 2 8 4
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_version()        Returns the version number of the PB Collection
+'------------------------------------------------------------------------------
+ ADpb_version() --> <cVersionNumber>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the version number of the PB Collection as a string.
+
+ Example
+ -------
+ ? ADpb_version()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Push Buttons ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADpb_horizontal()     Creates a horizontal push button engine
+'------------------------------------------------------------------------------
+ ADpb_horizontal( <nRow>, <nCol>, <aLabels>, [aTrigger], [nSpace], [bConfig],;
+     [cHelpID], [cHelpHeader] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a horizontal push button engine.
+
+ <nRow>, <nCol> is the starting location of the buttons in the engine
+
+ <aLabels> is an array of button labels.  It is possible to stuff color info
+ into the array by making an element a 2-element subarray instead of a simple
+ character string.  The 2 elements would then be:
+
+   1 - the label itself
+   2 - the color specifier of the button.
+
+ [aTrigger] is an array of the index positions of the trigger keys.  Defaults
+ to an array of all 1s.
+
+ [nSpace] is the number of spaces to place between buttons.  Defaults to 3.
+
+ [bConfig] is an optional Configuration Specifier.  See also ADpb_create().
+
+ [cHelpID] is an optional Help ID string.
+
+ [cHelpHeader] is an optional Help Header string.
+
+ <nEngine> is the numeric identifier of the created engine.
+
+ Example
+ -------
+ func main()
+ local e
+
+ cls
+ e := ADpb_horizontal( 10, 10, { "The", "Quick", "Brown" } )
+ ADpb_show( e )
+ ? ADpb_activate( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpb_vertical()       Creates a vertical push button engine
+'------------------------------------------------------------------------------
+ ADpb_vertical( <nRow>, <nCol>, <aLabels>, [aTrigger], [nSpace], [bConfig],;
+     [cHelpID], [cHelpHeader] ) --> <nEngine>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Creates a vertical push button engine.
+
+ <nRow>, <nCol> is the starting location of the buttons in the engine
+
+ <aLabels> is an array of button labels.  It is possible to stuff color info
+ into the array by making an element a 2-element subarray instead of a simple
+ character string.  The 2 elements would then be:
+
+   1 - the label itself
+   2 - the color specifier of the button.
+
+ [aTrigger] is an array of the index positions of the trigger keys.  Defaults
+ to an array of all 1s.
+
+ [nSpace] is the number of lines to place between buttons.  Defaults to 1.
+
+ [bConfig] is an optional Configuration Specifier.  See also ADpb_create().
+
+ [cHelpID] is an optional Help ID string.
+
+ [cHelpHeader] is an optional Help Header string.
+
+ <nEngine> is the numeric identifier of the created engine.
+
+ Example
+ -------
+ func main()
+ local e
+
+ cls
+ e := ADpb_vertical( 10, 10, { "The", "Quick", "Brown" } )
+ ADpb_show( e )
+ ? ADpb_activate( e )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADpushmenu()          Displays a push button dialog box
+'------------------------------------------------------------------------------
+ ADpushmenu( <aPrompt>, <aButtons>, [aTrigger], [cColor], [nTop], [nLeft] )
+    --> <nSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a push button dialog box that looks like this:
+
+        ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+        ³    Drive A: Not Ready     ³
+        ³  ÚÄÄÄÄÄÄÄ¿    ÚÄÄÄÄÄÄÄ¿   ³
+        ³  ³ Retry ³İ   ³ Abort ³İ  ³
+        ³  ÀÜÜÜÜÜÜÜÙİ   ÀÜÜÜÜÜÜÜÙİ  ³
+        ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+
+ <aPrompt> is the prompt string array.  ( {"Drive A: Not Ready"} ) A prompt
+ of two or more lines is possible by passing an array of strings.
+
+ <aButtons> is an array of option buttons.  ({ "Retry", "Abort" })
+
+ [aTrigger] is an optional array of the index positions of the trigger
+ characters.  Defaults to an array of ONEs.
+
+ [cColor] is a color string for the box color, defaults to "GR+/RB"
+
+ [nTop] and [nLeft] are the top/left coordinates of the box.  If they are not
+ passed, the box is centered on the screen.
+
+ <nSelection> is the numeric return value.  It is the index position of the
+ selected option.  It is zero if the menu was aborted.
+
+
+ Example 1:
+ ----------
+
+ ? ADPushmenu( {"Which color?"}, { "White", "Blue", "Red" } )
+
+
+ Example 2:
+ ---------
+
+ // change the default colors
+
+ ? ADPushmenu( {"Which color?"},;
+              { "White", "Blue", "Red" },;
+              "W+/B";
+            )
+
+ Full source code is provided in UDEM01.PRG for the ADPushmenu() function.
+ Contributed by David L. Smith (CIS: 72351,225).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

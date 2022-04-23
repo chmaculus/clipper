@@ -1,0 +1,74 @@
+'------------------------------------------------------------------------------
+ ^bClipper Debugger -- CLD.EXE^b
+ Debug Clipper-compiled executable (.EXE) programs
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bSyntax^b
+
+     ^bCLD [[/43 | /50 | /S] [@<scriptFile>]<R>
+        ^b<exeFile> [<argument list>]]
+
+ ^bCommand-line Arguments^b
+
+     This is the command-line syntax for invoking the Debugger.  Note that
+     with the exception of argument list, all other CLD arguments must come
+     before the executable filename on the command-line.  If no command-line
+     arguments are specified, CLD displays a brief help screen.
+
+     ^b/43 | /50 | /S^b specifies the screen mode used by the Debugger.
+     These three options are mutually exclusive and, if more than one is
+     specified, CLD.EXE uses the last one that occurs on the command-line.
+     The default screen mode is 25 lines, with the Debugger using the entire
+     screen.
+
+     ^b/43^b specifies 43 line mode (available on EGA monitors only).
+
+     ^b/50^b specifies 50 line mode (available on EGA and VGA monitors
+     only).
+
+     ^b/S^b (available on EGA and VGA monitors only) splits the screen
+     between your application and the Debugger, allowing you to view the
+     application and the Debugger simultaneously.  On a VGA monitor /S uses
+     50 line mode, and on an EGA monitor it uses 43 line mode.  In split
+     screen mode, the top 25 lines of the screen are used by your
+     application, and the remaining lines are used for the Debugger
+     display.  In this mode, you cannot move or size windows in the
+     Debugger.
+
+     ^b<scriptFile>^b is the name of a script file with a default extension
+     of (.cld).  CLD searches for the specified <scriptFile> in the current
+     directory and then searches the DOS PATH.
+
+     A script file is simply an ASCII text file containing one or more
+     Debugger commands, with each command appearing on a separate line.
+     When the Debugger is invoked with a script file, each command in the
+     file is executed automatically after the <exeFile> file is loaded.
+
+     In addition to any script file called for on the CLD command-line, the
+     Debugger automatically searches for a script file with the name
+     ^bInit.cld^b.  If a file by this name is located in the current
+     directory or anywhere in the DOS PATH, the Debugger executes it as a
+     script file.  If both ^bInit.cld^b and a command-line script file are
+     present, ^bInit.cld^b is executed first, followed by the command-line
+     script file.
+
+     ^b<exeFile>^b is the name of the executable (.EXE) file you want to
+     debug.  CLD searches for the <exeFile> in the current directory
+     only--the DOS PATH is not searched.  If this file has not been compiled
+     using the /B compiler option to embed debugging information, debugging
+     is not possible.
+
+     ^b<argument list>^b is the argument list for <exeFile>.
+
+ ^bDescription^b
+
+     The Clipper debugger (CLD.EXE) allows you to view your source code
+     while your program is running.  Features of the debugger include
+     watching the values of variables and expressions as your program
+     executes, examining database (.dbf) files and executing your program
+     slowly, a line at a time.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

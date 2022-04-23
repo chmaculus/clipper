@@ -1,0 +1,21 @@
+'------------------------------------------------------------------------------
+^BSETPRC()^B
+
+    SETPRC() sets the internal PROW() and PCOL() values to the specified
+    values.
+
+^USyntax^U
+
+    SETPRC(<expN1>,<expN2>)
+
+^UUsage^U
+
+    <exp N1> is stored in PROW(), and <exp N2> is stored in PCOL().  This
+    can be useful for sending a set-up string to the printer without
+    changing where the program thinks the print head is positioned.  In
+    addition, this function can be used to suppress page ejects.
+!seealso: clip_125.ngo:"PROW" clip_121.ngo:"PCOL" 
+'------------------------------------------------------------------------------
+
+
+

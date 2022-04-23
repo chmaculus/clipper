@@ -1,0 +1,24 @@
+COPIAR  A ==> C
+  xcopy a: c:
+COPIAR  A ==> D
+  xcopy a: d:
+COPIAR  B ==> C
+  xcopy b: c:
+COPIAR  B ==> D
+  xcopy b: d:
+COPIAR  C ==> A
+  xcopy c: a:
+COPIAR  C ==> B
+  xcopy c: b:
+COPIAR  D ==> A
+  xcopy d: a:
+COPIAR  D ==> B
+  xcopy d: b:
+SHEZ
+  shez *.*
+COMPRIMIR
+  zip FICHERO
+VER ZIP
+  pkunzip -v !.!
+VERIFICAR HARD
+  chkdsk c: /f

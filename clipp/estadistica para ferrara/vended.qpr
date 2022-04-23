@@ -1,0 +1,5 @@
+SELECT Detven.codven, Detven.fecha, Detven.codart, Detven.totite,;
+  Vended.nombre;
+ FROM  detven INNER JOIN vended ;
+   ON  Detven.codven = Vended.codigo;
+ ORDER BY Detven.fecha

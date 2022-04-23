@@ -1,0 +1,1445 @@
+!short: Introduction Print Job Definitions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     With the Novell utility PRINTCON.EXE, print job definitions that contain
+     the settings for a capture process can be created.  The functions in
+     this chapter allow you to control the print job definitions of the
+     current users and all other users on a file server.  You can create new
+     job definitions and query or modify settings in existing definitions.
+     It is possible to read the settings of a job definition and to directly
+     start a capture process (NNETPJCAPF()).  This function call is
+     equivalent to a call of the CAPTURE utility with the parameter /J=.
+
+     ^bImportant!^b  Within the Netware documentation the term "job" is used
+     to describe a print job within a queue and also a set of capture
+     parameters (print job definition).  Within this chapter the term "job"
+     or "job definition" only describes the definition of capture parameters.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: NNETPJADD()  Adds a new print job definition
+'------------------------------------------------------------------------------
+ ^bNNETPJADD()^b
+ Adds a new print job definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJADD(<cJob>,[<cUser>],[<cServer>|<nConId>])
+     ^b   --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the print job definition that is added.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJADD() returns .T. if the print job definition has been added
+     successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB ADD
+     NNETPJADD() allows you to add a new print job definition (<cJob>) for
+     <cUser>.  The new job definition is created with default values that can
+     be modified by calling other NNETPJXXX() functions.  To achieve results
+     with NNETPJADD(), a print job file for <cUser> must exist
+     (PRINTCON.DAT).  <cJob> must be unique, and the job file must have less
+     than 37 entries.  If <cUser> is not the current user, access rights for
+     the mail directory of the user are required.
+
+ ^bExample^b
+
+     Add a new print job definition for the current user under the name
+     MYJOB:
+
+     IF NNETPJADD('MYJOB')
+     ? 'Job definition has been added successfully'
+     ELSE
+     ? 'Error'
+     ENDIF
+!seealso: "NNETPJCRT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJBAN()  Sets or queries the print of a banner page
+'------------------------------------------------------------------------------
+ ^bNNETPJBAN()^b
+ Sets or queries the print of a banner page
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJBAN([<cJob>],[<lNewTitle>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> lBanner
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<lNewTitle>^b  Designates whether a banner page for <nJob> is printed
+     (.T.) or not (.F.).
+
+     ^b<cServer>^b  Designates the name of the file server on which the queue
+     <Queue> is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJBAN() returns .T. if the job definition includes printing a banner
+     page.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB BANNER
+     A banner page can be printed under Netware before each print job to show
+     the user name.  NNETPJBAN() allows you to determine if a banner page is
+     printed.  The printing of a banner page can be suppressed by passing the
+     parameter <lNewTitle> with .F..  If <cUser> is not the current user,
+     access rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine if the job definition MYJOB includes printing a
+        banner page:
+
+        ? NNETPJBAN('MYJOB')
+
+     ^b^CFE^b  Suppress the printing of a banner page for the job MYJOB:
+
+        ? NNETPJBAN('MYJOB', .F.)
+!seealso: tool_009.ngo:"NNETJBAN()" "NNETPJBNAM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJBNAM() Sets or queries the banner name of a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJBNAM()^b
+ Sets or queries the banner name of a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJBNAM([<cJob>],[<cNewName>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates a default job.
+
+     ^b<cNewName>^b  Designates a new banner name that is set for <cJob>.
+     The banner name can be up to 12 characters long.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJBNAM() returns the user name that is printed on the banner page of
+     <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB BANNER NAME
+     The banner page of a job contains the user name of the job owner and the
+     name of the printed file.  NNETPJBNAM() allows you to set or determine
+     the name of the printed file.  If <cUser> is not the current user,
+     access rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the file name for the banner page in the job
+        definition MYJOB:
+
+        ? NNETPJBNAM('MYJOB')
+
+     ^b^CFE^b  Set the file name for the banner page in the job definition
+        MYJOB to LST:
+
+        ? NNETPJBAN('MYJOB', 'LST')
+!seealso: tool_009.ngo:"NNETJBNAME()" "NNETPJBAN()" "NNETPJUSR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJCAP()  Sets or queries the capture mode for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJCAP()^b
+ Sets or queries the capture mode for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJCAP([<cJob>],[<lNewCap>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> lCaptureMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<lNewCap>^b  Designates an optional parameter that allows you to set a
+     new capture mode for <cJob>.  When this parameter is .T., the function
+     activates the auto end capture mode.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJCAP() returns .T. if the auto end capture mode has been activated.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB CAPTURE MODE
+     Under Netware, two capture modes are possible.  If the auto end capture
+     mode is activated, open print jobs are closed automatically when the
+     application has been terminated or the printer device has been closed.
+     If the auto end capture mode is not activated, open jobs are closed when
+     the timeout value is exceeded, or the ENDCAP utility or the CA-Clipper
+     Tools NNETCAPEND() function are called.  NNETPJCAP() allows you to query
+     or set the capture mode in a print job definition.  If <cUser> is not
+     the current user, access rights for the mail system of the user are
+     required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the capture mode in the job definition MYJOB:
+
+        IF NNETPJCAP('MYJOB')
+        ? 'Auto end capture activated'
+        ELSE
+        ? 'Auto end capture mode not active'
+        ENDIF
+
+     ^b^CFE^b  Activate the auto end capture mode in the job definition
+        MYJOB:
+
+        ? NNETPJCAP('MYJOB', .T.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJCAPF() Starts the capture mode with print job settings
+'------------------------------------------------------------------------------
+ ^bNNETPJCAPF()^b
+ Starts the capture mode with print job settings
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJCAPF([<cJob>],[<cUser>],[<cServer>|<nConId>])
+     ^b   --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJCAPF() returns .T. if the capture mode has been started
+     successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB CAPTURE FLAGS
+     NNETPJCAPF() allows you to start a capture process with the settings of
+     a print job definition (<cJob>).  A call of NNETPJCAPF() corresponds to
+     a call of the Novell utility CAPTURE, with or without the /j=<cJob>
+     option.  If <cUser> is not the current user, access rights for the mail
+     system of the user are required.
+
+ ^bNote^b
+
+     ^b^CFE^b  NNETPJCAPF() starts a capture process.  A following call of
+        NNETCAPBEG() is not necessary.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Start a capture process with the settings of the default job
+        definition:
+
+        IF NNETPJCAPF()
+        ? 'Capture has been started successfully'
+        ELSE
+        ? 'Error'
+        ENDIF
+
+     ^b^CFE^b  Start a capture process with the settings of the job
+        definition MYJOB:
+
+        IF NNETPJCAPF('MYJOB')
+        ? 'Capture has been started successfully'
+        ELSE
+        ? 'Error'
+        ENDIF
+!seealso: tool_005.ngo:"NNETCAPBEG()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJCNT()  Determines the number of jobs in a job file
+'------------------------------------------------------------------------------
+ ^bNNETPJCNT()^b
+ Determines the number of jobs in a job file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJCNT([<cUser>],[<cServer>|<nConId>]) --> nNumber
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJCNT() returns the number of print job definitions in the job
+     definition file (PRINTCON.DAT) of <cUser>.  If an error occurs, the
+     function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB COUNT
+     A job definition file (PRINTCON.DAT) can contain up to 37 entries.
+     NNETPJCNT() allows you to determine the current number of job
+     definitions.  If <cUser> is not the current user, access rights for the
+     mail system of the user are required.
+
+ ^bExample^b
+
+     Determine the number of print job definitions for the current user:
+
+     ? NNETPJCNT()
+!seealso: "NNETPJADD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJCOPY() Sets or queries the number of copies for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJCOPY()^b
+ Sets or queries the number of copies for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJCOPY([<cJob>],[<nNewCopies>],[<cUser>],
+     ^b   [<cServer>|<nConId>]) --> nCopies
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewCopies>^b  Designates the new number of copies for <cJob>.  The
+     maximum number of copies is 255.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJCOPY() returns the number of copies of <cJob> that are printed.
+     If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NNETPJCOPY() allows you to set or query the number of copies within a
+     print job definition.  To query the number of copies, do not pass a
+     value for <nNewCopies>.  If <cUser> is not the current user, access
+     rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of copies in print job definition MYJOB:
+
+        ? NNETPJCOPY('MYJOB')
+
+     ^b^CFE^b  Set the number of copies in print job definition MYJOB to 3:
+
+        ? NNETPJCOPY('MYJOB', 3)
+!seealso: tool_009.ngo:"NNETJCOPY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJCRT()  Creates an empty print job file
+'------------------------------------------------------------------------------
+ ^bNNETPJCRT()^b
+ Creates an empty print job file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJCRT([<cUser>],[<cServer>|<nConId>]) --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJCRT() returns .T. if the print job file has been created
+     successfully.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB (DEFINITION FILE) CREATE
+     NNETPJCRT() allows you to create an empty job definition file
+     (PRINTCON.DAT) for the current user or any other user.  Job definitions
+     can be added to this file by calling NNETPJADD().  If <cUser> is not the
+     current user, access rights for the mail system of the user are
+     required.
+
+ ^bNote^b
+
+     ^bImportant!^b  If a print job file for <cUser> already exists, all job
+     entries are lost when you call NNETPJCRT().
+
+ ^bExample^b
+
+     Create a new job definition file for the current user:
+
+     cDef = 'SYS:MAIL/+REMLEFT(NNETUSERID(), '0')+'PRINTCON.DAT'
+     IF !FILE(cDef)
+     NNETPJCRT()
+     ENDIF
+!seealso: "NNETPJADD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJDEF()  Sets or queries the default print job for a user
+'------------------------------------------------------------------------------
+ ^bNNETPJDEF()^b
+ Sets or queries the default print job for a user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJDEF([<cNewDefault>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> cDefault
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<nNewDefault>^b  Designates an optional parameter that sets a new
+     print job definition.  The definition must already exist.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJDEF() returns the name of the default job definition for <cUser>.
+
+ ^bDescription^b
+
+     In general, all NNETPJXXX() functions that refer to a print job
+     definition access the default job definition.  NNETPJDEF() allows you to
+     set or query the name of the default job definition.  If <cUser> is not
+     the current user, access rights for the mail system of the user are
+     required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the name of the default job definition for the
+        current user:
+
+        ? NNETPJDEF()
+
+     ^b^CFE^b  Set MYJOB as the default job definition for the current user:
+
+        ? NNETPJDEF('MYJOB')
+!seealso: "NNETPJADD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJDEL()  Deletes a print job definition
+'------------------------------------------------------------------------------
+ ^bNNETPJDEL()^b
+ Deletes a print job definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJDEL(<cJob>,[<cUser>],[<cServer>|<nConId>])
+     ^b   --> lSuccess
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the name of the print job definition.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     file (PRINTCON.DAT) is accessed.  The default value accesses the current
+     user.
+
+     ^b<cServer>^b  Designates the name of the file server used.  Your
+     workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJDEL() returns .T. if the print job definition <cJob> has been
+     deleted successfully.  If an error occurs, the function returns .F..
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB DELETE
+     NNETPJDEL() allows you to delete the print job definition (<cJob>) of
+     the current user or any other user (if the print job definition file can
+     be accessed for that user).  The default job cannot be deleted.
+
+ ^bExample^b
+
+     Delete the print job HPLJ of the current user:
+
+     IF NNETPJDEL('HPLJ')
+        ? 'Job definition deleted successfully!'
+     ELSE
+        ? 'Error'
+     ENDIF
+!seealso: "NNETPJADD()" "NNETPJCRT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJDEV()  Sets or queries the print job device
+'------------------------------------------------------------------------------
+ ^bNNETPJDEV()^b
+ Sets or queries the print job device
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJDEV([<cJob>],[<cNewDevice>],[<cUser>],
+     ^b   [<cServer>|<nConId>]) --> cDevice
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewDevice>^b  Designates a new device name for <cJob>.  The device
+     name must have an entry in the printer definition file (NET$PRN.DAT) on
+     <cServer>.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJDEV() returns the device name in the job definition <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB DEVICE
+     A print job definition can contain the name of a device.  This name can
+     be set or queried by calling NNETPJDEV().  Do not pass a value for
+     <cNewDevice> to query the device name.  A device name can be set by
+     specifying <cNewDevice>.  To reset a device name (set to none), the
+     parameter <cNewDevice> must contain an empty string ("").  If <cUser> is
+     not the current user, access rights for the mail system of the user are
+     required.
+
+ ^bNote^b
+
+     ^b^CFE^b  Setting a new device name resets the current device mode.  The
+        mode can then be set by calling NNETPJMODE().
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the device name in the job definition MYJOB:
+
+        ? NNETPJDEV('MYJOB')
+
+     ^b^CFE^b  Set the device name in the job definition MYJOB to HPLJ:
+
+        ? NNETPJDEV('MYJOB', 'HPLJ')
+
+     ^b^CFE^b  Reset the device name in the job definition MYJOB to NONE:
+
+        ? NNETPJDEV('MYJOB', '')
+!seealso: "NNETPJFORM()" "NNETPJMODE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJFORM() Sets or queries the print job form
+'------------------------------------------------------------------------------
+ ^bNNETPJFORM()^b
+ Sets or queries the print job form
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJFORM([<cJob>],[<cNewForm>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> cForm
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewForm>^b  Designates a new form name for <cJob>.  The form name
+     must have an entry in the printer definition file (NET$PRN.DAT) on
+     <cServer>.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJFORM() returns the form name in the job definition <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB FORM
+     A print job definition can contain the name of a form.  This name can be
+     set or queried by calling NNETPJFORM().  Do not pass a value for
+     <cNewForm> to query the form name.  A form name can be set by specifying
+     <cNewForm>.  If <cUser> is not the current user, access rights for the
+     mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the form name in the job definition MYJOB:
+
+        ? NNETPJFORM('MYJOB')
+
+     ^b^CFE^b  Set the form name in the job definition MYJOB to INVOICE:
+
+        ? NNETPJFORM('MYJOB', 'INVOICE')
+!seealso: "NNETPJDEV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJFSRV() Sets or queries the file server for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJFSRV()^b
+ Sets or queries the file server for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJFSRV([<cJob>],[<cNewServer>],[<cUser>],
+     ^b   [<cServer>|<nConId>]) --> cFileServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewServer>^b  Designates a new file server name for <cJob>.  The
+     file server must be available in the internal network.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJFSRV() returns the name of the file server in the job definition
+     <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB FILE SERVER
+     A print job definition must contain the name of a file server to find
+     the print queue when the job is activated.  The file server name can be
+     set or queried by calling NNETPJFSRV().  Do not pass a value for
+     <cNewServer> to query the server name.  A server name can be set by
+     specifying <cNewServer>.  If <cUser> is not the current user, access
+     rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the file server name in the job definition MYJOB:
+
+        ? NNETPJFSRV('MYJOB')
+
+     ^b^CFE^b  Set the server name in the job definition MYJOB to SERVER1:
+
+        ? NNETPJFSRV('MYJOB', 'SERVER1')
+!seealso: "NNETPJQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJLIST() Determines the print job list for a user
+'------------------------------------------------------------------------------
+ ^bNNETPJLIST()^b
+ Determines the print job list for a user
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJLIST([<cUser>],[<cServer>|<nConId>]) --> aJobs
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJLIST() returns a one-dimensional array that contains the names of
+     the print job definitions for <cUser>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB LIST
+     NNETPJLIST() returns a list of all existing job definitions for <cUser>.
+     If <cUser> is not the current user, access rights for the mail system of
+     the user are required.
+
+ ^bExample^b
+
+     Determine and display the job definitions for the current user:
+
+     aJobs = NNETPJLIST()
+     FOR i = 1 TO LEN(aJobs)
+     ? aJobs[i]
+     NEXT i
+!seealso: "NNETPJDEF()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJLPT()  Sets the LPT device for a print job definition
+'------------------------------------------------------------------------------
+ ^bNNETPJLPT()^b
+ Sets the LPT device for a print job definition
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJLPT([<cJob>],[<nNewLPT>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> nLPT
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewLPT>^b  Designates a new LPT device for <cJob>.  Values from 1 to
+     3 (LPT1 to LPT3) are valid.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJLPT() returns the LPT device.  A return value of -1 indicates an
+     error.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB LPT
+     A local parallel interface, referred to the definition, must be
+     specified for each print job definition.  The LPT device of a print job
+     definition can be set or queried by calling NNETPJLPT().  Do not pass a
+     value for <cNewLPT> to query the LPT device.  A new LPT device can be
+     set by designating a value for <cNewLPT> between 1 and 3 for LPT1 to
+     LPT3.  If <cUser> is not the current user, access rights for the mail
+     system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the LPT device in the job definition MYJOB:
+
+        ? NNETPJLPT('MYJOB')
+
+     ^b^CFE^b  Set the LPT device in the job definition MYJOB to 2:
+
+        ? NNETPJLPT('MYJOB', 2)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJMODE() Sets or queries the device mode for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJMODE()^b
+ Sets or queries the device mode for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJMODE([<cJob>],[<cNewMode>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> cMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewMode>^b  Designates a new device mode for <cJob>.  The device
+     mode must have an entry in the printer definition file (NET$PRN.DAT) on
+     <cServer>.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJMODE() returns the device mode in the job definition <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB MODE
+     A print job definition can contain the name of a device and a
+     corresponding device mode.  The device mode can be set or queried by
+     calling NNETPJMODE().  Do not pass a value for <cNewMode>.  A device
+     mode can be set to query the device mode by specifying <cNewMode>.  To
+     reset a device mode (set to none), the parameter <cNewMode> must contain
+     an empty string ("").  If <cUser> is not the current user, access rights
+     for the mail system of the user are required.
+
+ ^bNote^b
+
+     ^b^CFE^b  The device mode is validated only when it is set.  If the
+        device has been modified with NNETPJDEV(), the returned device mode
+        can be invalid.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the device mode in the job definition MYJOB:
+
+        ? NNETPJMODE('MYJOB')
+
+     ^b^CFE^b  Set the device mode in the job definition MYJOB to PLAIN:
+
+        ? NNETPJMODE('MYJOB', 'PLAIN')
+
+     ^b^CFE^b  Reset the device name and the device mode in the job
+        definition MYJOB to NONE:
+
+        ? NNETPJDEV('MYJOB', '')
+        ? NNETPJMODE('MYJOB', '')
+!seealso: "NNETPJDEV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJNOTY() Sets or queries the notify mode for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJNOTY()^b
+ Sets or queries the notify mode for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJNOTY([<cJob>],[<lNewMessage>],[<cUser>],
+     ^b   [<cServer>|<nConId>]) --> lMessage
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewMessage>^b  Designates a new notify mode that is set for <cJob>.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJNOTY() returns the notify mode in the job definition <cJob>.  A
+     return of .T. indicates that the user is notified after a job has been
+     printed.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB NOTIFY
+     Netware allows a user to receive a broadcast message after a job has
+     been printed.  This option can be specified within a job definition.
+     NNETPJNOTY() allows you to set or query the option.  Do not pass a value
+     for <cNewMessage> to query the notify option.  When <cNewMessage> is set
+     to .T., the user is notified after a job has been printed.    If <cUser>
+     is not the current user, access rights for the mail system of the user
+     are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the notify mode for the default job:
+
+        IF NNETPJNOTY()
+        ? 'Notify mode activated'
+        ELSE
+        ? 'Notify mode not active'
+        ENDIF
+
+     ^b^CFE^b  Activate the notify mode for default job:
+
+        ? NNETPJNOTY(, .T.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJPSRV() Sets or queries the target print server for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJPSRV()^b
+ Sets or queries the target print server for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJPSRV([<cJob>],[<cNewServer>],[<cUser>],
+     ^b   [<cServer>|<nConId>]) --> cPrintServer
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewServer>^b  Designates a new print server name for <cJob>.  The
+     print server must be in the print server list of the currently defined
+     queue.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJPSRV() returns the name of the print server in the job definition
+     <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB PRINT SERVER
+     A print job definition can contain the name of a print server.  This
+     setting is not supported by the Novell capture services.  However, you
+     can use the information in conjunction with the CA-Clipper Tools
+     functions for job manipulation to set a specified print server as the
+     target for a print job  (NNETJSRV()).
+
+     The print server name can be set or queried by calling NNETPJPSRV().  Do
+     not pass a value for <cNewServer> to query the server name.  A server
+     name can be set by specifying <cNewServer>.  If <cUser> is not the
+     current user, access rights for the mail system of the user are
+     required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the print server name in the job definition MYJOB:
+
+        ? NNETPJPSRV('MYJOB')
+
+     ^b^CFE^b  Set the print server name in the job definition MYJOB to
+        PSERVER:
+
+        ? NNETPJPSRV('MYJOB', 'PSERVER')
+
+     ^b^CFE^b  Create the print job, and set the print server of the job
+        definition MYJOB as the target server:
+
+        NNETPJCAPF('MYJOB')
+        SET PRINTER ON
+        ? 'Hello'           // A new job is created
+        NNETJSRV('LINEPRINTER', NNETCAPJOB(1), NNETPJPSRV('MYJOB'))
+        ? NNETCAPFLU(1)
+!seealso: tool_009.ngo:"NNETCAPJOB()" tool_009.ngo:"NNETJSRV()" "NNETPJFSRV()" "NNETPJQ()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJQ()    Sets or queries the print queue for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJQ()^b
+ Sets or queries the print queue for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJQ([<cJob>],[<cNewQueue>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> cQueue
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewQueue>^b  Designates a new queue that is set for <cJob>.  The
+     queue must exist on the file server currently defined in <cJob>.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJQ() returns the name of the print queue in the job definition
+     <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB QUEUE
+     A print job definition must contain the name of the print queue that is
+     set as the target queue when the definition is activated.  The queue
+     name can be set or queried by calling NNETPJQ().  Do not pass a value
+     for <cNewQueue> to query the queue name.  A new queue can be set by
+     specifying <cNewQueue>.  If <cUser> is not the current user, access
+     rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the queue in the job definition MYJOB:
+
+        ? NNETPJPQ('MYJOB')
+
+     ^b^CFE^b  Set the queue in the job definition MYJOB to LINEPRINTER:
+
+        ? NNETPJQ('MYJOB', 'LINEPRINTER')
+!seealso: "NNETPJFSRV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJSUPF() Sets or queries the form feed mode after a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJSUPF()^b
+ Sets or queries the form feed mode after a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJSUPF([<cJob>],[<lNewPage>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> lPageMode
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<lNewPage>^b  Designates a new form feed mode for <cJob>.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJSUPF() returns the form feed mode for <cJob>.  A return of .F.
+     indicates that a form feed is performed after a job has been printed.
+
+ ^bDescription^b
+
+     NOVELL NET SUPPRESS FORM FEED
+     Netware automatically creates a form feed at the end of each print job.
+     NNETPJSUPF() allows you to set a form feed or determine if a form feed
+     is defined in the job definition.  A form feed can be suppressed by
+     designating <lNewPage> with .T..  Do not pass a value for <lNewPage> to
+     query the current setting.  If <cUser> is not the current user, access
+     rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the form feed mode for the default job:
+
+        IF NNETPJSUPF()
+        ? 'Form feed suppressed'
+        ELSE
+        ? 'Form feed activated'
+        ENDIF
+
+     ^b^CFE^b  Deactivate the form feed for the default job:
+
+        ? NNETPJSUPF(, .T.)
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJTABS() Sets or queries the tab widths for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJTABS()^b
+ Sets or queries the tab widths for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJTABS([<cJob>],[<nNewTab>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> nTab
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewTabs>^b  Designates an optional parameter that contains the
+     number of spaces to which the tabs are expanded.  The value 0 designates
+     that the tabs are not expanded.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJTABS() returns the number of spaces to which the tabs (CHR(9)) are
+     expanded.  The value 0 indicates that the tabs have not been expanded.
+     If an error occurs, the function returns -1.
+
+     The return value has a meaning only if the text mode is set in <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB TABS
+     In text jobs, the print server is able to replace tabs (CHR(9)) with
+     spaces.  The number of spaces per tab can be queried or set with
+     NNETPJTABS().  Do not pass a value for <nNewTabs> to query the number of
+     spaces.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the number of spaces that are set as a tab
+        replacement in the default job:
+
+        NNETPJTABS()
+
+     ^b^CFE^b  Set the number of spaces per tab to 4 in the default job:
+
+        ? NNETPJTABS(, 4)
+!seealso: "NNETPJTXT()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJTXT()  Sets or queries the text or binary mode for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJTXT()^b
+ Sets or queries the text or binary mode for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJTXT([<cJob>],[<lNewText>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> lText
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<lNewMode>^b  Designates an optional parameter that indicates whether
+     text (.T.) or binary (.F.) jobs are created after the definition <cJob>
+     has been activated.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     The return value of NNETPJTXT() specifies the data type in the job
+     definition <cJob>.  A return value of .F. indicates binary data, and a
+     return value of .T. indicates text data.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB TEXT
+     The Queue Management System (QMS) differentiates between text and binary
+     jobs.  NNETJTXT() allows you to query or set the mode for a job
+     definition <cJob>.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the mode for the default job:
+
+        IF NNETPJTXT()
+        ? 'Text mode'
+        ELSE
+        ? 'Binary mode'
+        ENDIF
+
+     ^b^CFE^b  Set the text mode for the default job:
+
+        ? NNETPJTXT(, .T.)
+!seealso: "NNETPJTABS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJUSR()  Sets or determines the user name of a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJUSR()^b
+ Sets or determines the user name of a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJUSR([<cJob>],[<cNewName>],[<cUser>],[<cServer>|
+     ^b   <nConId>]) --> cName
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<cNewName>^b  Designates an optional parameter that allows you to set
+     a new user name for <cJob>.  The name can be up to 12 characters long.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NOVELL NET PRINT JOB USER
+     NNETPJUSR() returns the user name for the banner page in the job
+     definition file <cJob>.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB USER (NAME)
+     The banner page of a job contains the user name of the job owner and the
+     name of the printed file.  NNETPJUSR() allows you to set or determine
+     the user.  If <cUser> is not the current user, access rights for the
+     mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the user name for the banner page in the job
+        definition MYJOB:
+
+        ? NNETPJUSR('MYJOB')
+
+     ^b^CFE^b  Set the user name for the banner page in the job definition
+        MYJOB to MICK:
+
+        ? NNETPJBAN('MYJOB', 'MICK')
+!seealso: tool_009.ngo:"NNETJBNAME()" "NNETPJBAN()" "NNETPJBNAM()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NNETPJWAIT() Sets or queries the timeout for a print job
+'------------------------------------------------------------------------------
+ ^bNNETPJWAIT()^b
+ Sets or queries the timeout for a print job
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bNNETPJWAIT([<cJob>],[<nNewTimeout>],[<cUser>],
+     ^b   [<cServer>|<nConId>]) --> nTimeout
+
+     ^bNetware: 2.2 and 3.11
+
+ ^bArguments^b
+
+     ^b<cJob>^b  Designates the selected print job definition.  The default
+     value designates the default job.
+
+     ^b<nNewTimeout>^b  Designates an optional parameter that allows you to
+     set a timeout in seconds for <cJob>.  A value of 0 indicates a timeout
+     that does not end.
+
+     ^b<cUser>^b  Designates the name of the user whose print job definition
+     is processed.  The default value designates the current user.
+
+     ^b<cServer>^b  Designates the name of the file server on which the
+     operation is processed.  Your workstation must be attached to <cServer>.
+
+     ^b<nConId>^b  Designates the connection ID of your workstation on
+     <cServer>.
+
+ ^bReturns^b
+
+     NNETPJWAIT() returns the timeout in seconds.  The value 0 indicates a
+     timeout that does not end.  If an error occurs, the function returns -1.
+
+ ^bDescription^b
+
+     NOVELL NET PRINT JOB WAIT
+     The timeout in a job definition specifies after how many seconds without
+     data output a job is automatically closed.  NNETPJWAIT() allows you to
+     set or query the timeout.  Do not pass a value for <nNewTimeout> to
+     query the number of seconds.  If <cUser> is not the current user, access
+     rights for the mail system of the user are required.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Determine the timeout in the job definition MYJOB:
+
+        ? NNETPJWAIT('MYJOB')
+
+     ^b^CFE^b  Set the timeout in the job definition MYJOB to 20 seconds:
+
+        ? NNETPJWAIT('MYJOB', 20)
+!seealso: "NNETPJCAP()" 
+'------------------------------------------------------------------------------
+
+
+

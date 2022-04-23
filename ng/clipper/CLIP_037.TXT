@@ -1,0 +1,34 @@
+'------------------------------------------------------------------------------
+^BRETURN^B
+
+    RETURN is used to restore control to either the calling procedure or
+    the operating system.
+
+^USyntax^U
+
+    RETURN [<exp>]
+
+^UArgument^U
+
+    <exp> evaluates to the return value if the current program structure is
+    a user-defined function.
+
+^UUsage^U
+
+    When RETURN is used in the highest level program, control passes to the
+    operating system.  In a procedure, Clipper returns to the calling
+    procedure and releases all PRIVATE memory variables.
+
+    There can be more than one RETURN in a procedure or user-defined
+    function.  A procedure or user-defined function need not, however, end
+    with a RETURN.  Since user-defined functions must return values, each
+    must contain at least one RETURN with an argument.
+
+    Note that Clipper does not support RETURN TO MASTER or any other form
+    of RETURN specifying the level of the call to return to, although
+    RETURN TO MASTER can be simulating via BEGIN SEQUENCE...BREAK.
+!seealso: ???.ngo:"BEGIN SEQUENCE..END" ???.ngo:"CANCEL" clip_024.ngo:"PRIVATE" clip_026.ngo:"PUBLIC" 
+'------------------------------------------------------------------------------
+
+
+

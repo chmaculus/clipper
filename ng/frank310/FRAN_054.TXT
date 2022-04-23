@@ -1,0 +1,377 @@
+!short:  1. Implementing a basic mouseable Get/Read
+'------------------------------------------------------------------------------
+^b Implementing a basic mouseable Get/Read
+
+ Implementing a basic mouseable Get/Read is easy.  We simply replace
+ "GET" with "ADGET", and "READ" with "ADread( getlist )" in our classical
+ Clipper code.
+
+ Consider this code:
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+
+  cls
+  @10,10 say "First line " get aa
+  @11,10 say "Second line" get bb
+  @12,10 say "Second line" get cc
+  read
+  return NIL
+
+ We can _mousify_ the above by simply replacing "get" with "adget", "read"
+ with "ADread( getlist )" and by #including "frankie.ch", like this:
+
+^b  #include "frankie.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+
+  cls
+  @10,10 say "First line " ^badget^b aa
+  @11,10 say "Second line" ^badget^b bb
+  @12,10 say "Second line" ^badget^b cc
+^b  ADread( getlist )
+  return NIL
+
+ Now, we can jump from Get to any Get by clicking the desired Get with the
+ mouse.  We can quickly move the cursor to any location within the focused
+ Get by clicking on that particular location.
+!seealso: fran_011.ngo:"ADread()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  2. Specifying the initially focused Get
+'------------------------------------------------------------------------------
+^b Specifying the initially focused Get
+
+ This is done by passing the numeric position of the desired Get as the
+ third parameter in ADread().  The example below will initially set the
+ focus to Get #3.
+
+  #include "frankie.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+
+  cls
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist^b,, 3^b )
+  return NIL
+!seealso: fran_011.ngo:"ADread()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  3. Adding a timeout feature
+'------------------------------------------------------------------------------
+^b Adding a timeout feature
+
+ ADread()'s second parameter [bConfig] is its Configuration Parameter, aka
+ 'config block'.  This is our gateway to reconfiguring ADread().  And this
+ what we need to use in order to add a timeout feature.  Note how this is
+ done in the code below:
+
+  #include "frankie.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+^b  local bConfig := {||ADr_timeout( 3, {||ADblankscn()} )}
+
+  cls
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist^b, bConfig^b )
+  return NIL
+
+ The ADread() above will timeout after 3 seconds of idling by blanking
+ the screen.  The 2nd parameter of ADr_timeout() is a codeblock that
+ gets EVALed when ADread() times out.  When the codeblock exits, control
+ is returned to ADread().  If we so desire we can write a codeblock that
+ will dial the modem and send a report to the Boss if ADread() idles for
+ more than one second.
+!seealso: fran_011.ngo:"ADread()" fran_011.ngo:"ADr_timeout()" fran_028.ngo:"ADblankscn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  4. Can we validate the whole Read as opposed to a single Get?
+'------------------------------------------------------------------------------
+^b Can we validate the whole Read as opposed to a single Get?
+
+ Yes.  We can use one of the APIs of the Get/Read collection, ADr_exit().
+ This API specifies a codeblock that ADread() EVALs when an attempt is made
+ to save the Read.  If it returns a TRUE, the Read is allowed to save/exit.
+ If it returns a FALSE the Read is not allowed to exit.
+
+ In the example below, ADread() checks the values of 'First line' and
+ 'Third line' then determines if it will exit.
+
+  #include "frankie.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+^b  local bConfig := {||ADr_exit( {||xValidateRead()} )}
+
+  cls
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist, bConfig )
+  return NIL
+
+^b  func xValidateRead()
+^b  local lValid
+^b
+^b  if ADr_varget(1) == "Frankie" .and. "_mousing_" $ ADr_varget(3)
+^b    lValid := .t.
+^b  else
+^b    lValid := .f.
+^b    tone(100,1)
+^b    ADmessage( { "'First line' must be 'Frankie' and",;
+^b                 "'_mousing_' must be part of 'Second Line'";
+^b               },;
+^b               14;
+^b             )
+^b  endif
+^b  return lValid
+
+  Note how ADr_varget() is used to fetch the current Get values.
+
+  ADr_exit() is a handy API to use when there is a need to validate the
+  a set of Gets as a whole.  Classically, one would place the Read inside
+  a loop, save the Read, check the values of the Gets, then loop back if
+  at least one of the Gets is not valid.  During the loop back, the program
+  typically redisplays the Gets and initializes the focus on the first Get.
+
+  Those of us who have been validating our Reads like this will recognize
+  the need to find a better way.
+!seealso: fran_011.ngo:"ADread()" fran_011.ngo:"ADr_exit()" fran_011.ngo:"ADr_varget()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  5. How about validating every keystroke?
+'------------------------------------------------------------------------------
+^b  How about validating every keystroke?
+
+ Yes, we can validate every key as it is entered.  We will need the
+ ADr_keyvalid() API to do this.  ADr_keyvalid() specifies a codeblock that
+ is EVALed after every regular key (that has not been defined as a hot key)
+ stroke.  If this codeblock returns TRUE, the key is accepted.  When EVALed
+ it is automatically passed the chr() of the key, the relative position of
+ the cursor, the index position of the Get and the value of the Get buffer
+ before the key was entered.
+
+ In the following example, the keys in 'First line' are validated, and only
+ those that correspond to 'Frankie' are accepted.
+
+  #include "frankie.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "       "
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+^b  local bConfig := {||ADr_keyvalid( {|c,p,n,b|xValidateKey(c,p,n,b)} )}
+
+  cls
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist, bConfig )
+  return NIL
+
+^b func xValidateKey( cKey, nPos, nGet, cBuffer )
+^b local lValid := .t.
+^b
+^b if nGet == 1
+^b    if cKey != substr( "Frankie", nPos, 1    )
+^b        tone(100,1)
+^b        ADmessage( { "Only '" +;
+^b                    substr( "Frankie", nPos, 1 ) +;
+^b                    "' is valid in position " +;
+^b                    ADn2s( nPos );
+^b                }, 14;
+^b                )
+^b        lValid := .f.
+^b    endif
+^b endif
+^b return lValid
+!seealso: fran_011.ngo:"ADread()" fran_011.ngo:"ADr_keyvalid()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  6. How do we define hot keys?
+'------------------------------------------------------------------------------
+^b How do we define hot keys?
+
+ Naturally with ADr_keys().  The example below defines K_F8, K_9 and K_F10
+ as hot keys.
+
+  #include "frankie.ch"
+  #include "inkey.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+^b  local bConfig := {||ADr_keys( { K_F8, K_F9, K_F10 },;
+^b                                {|n,k|xHandler(k)};
+^b                              );
+^b                   }
+
+  cls
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist, bConfig )
+  return NIL
+
+^b  func xHandler( nKey )
+^b  if nKey == K_F8
+^b    ADmessage( { "Pressed F8" } )
+^b  elseif nKey == K_F9
+^b    ADmessage( { "Pressed F9" } )
+^b  elseif nKey == K_F10
+^b    ADmessage( { "Pressed F10" } )
+^b  endif
+^b  return NIL
+
+ Note that the codeblock {|n,k|xHandler(k)} is passed two parameters.  But
+ it only passes one to the function xHandler(k).  The parameters are
+ intended to help the handler determine which hot key was pressed.  Either
+ n or k may be used to do that.  For example, the following would have
+ also worked
+
+  #include "frankie.ch"
+  #include "inkey.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+  local bConfig := {||ADr_keys( { K_F8, K_F9, K_F10 },;
+                                {|n,k|xHandler(^bn^b)};
+                              );
+                   }
+
+  cls
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist, bConfig )
+  return NIL
+
+  func xHandler( ^bnIndex^b )
+  if ^bnIndex == 1^b
+    ADmessage( { "Pressed F8" } )
+  elseif ^bnIndex == 2^b
+    ADmessage( { "Pressed F9" } )
+  elseif ^bnIndex == 3^b
+    ADmessage( { "Pressed F10" } )
+  endif
+  return NIL
+!seealso: fran_011.ngo:"ADread()" fran_011.ngo:"ADr_keys()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  7. How do we define hot spots?
+'------------------------------------------------------------------------------
+^b How do we define hot spots?
+
+ By using ADr_lbuttons().  Study this example:
+
+  #include "frankie.ch"
+
+  func main()
+  local getlist[0]
+  local aa := "Frankie"
+  local bb := "by The Programmer's Desk"
+  local cc := "the logical! alternative to _mousing_ Clipper"
+^b  local bConfig := {||ADr_lbuttons( { { 9,10,9,15 } }, {|n,r,c|xHandler(c)} )}
+  local aScn
+
+  cls
+  aScn := ADbox( 9,8,13,68 )
+^b  ADsay( 9, 10, "[-][?]" )
+  @10,10 say "First line " adget aa
+  @11,10 say "Second line" adget bb
+  @12,10 say "Second line" adget cc
+  ADread( getlist, bConfig )
+  ADrestscn( aScn )
+  return NIL
+
+
+^b  func xHandler( nCol )
+^b  ADm_rwait()   // wait for mouse button to be released
+^b
+^b  if nCol <= 12
+^b    ADmessage( { "Clicked [-]" } )
+^b  else
+^b    ADmessage( { "Clicked [?]" } )
+^b  endif
+^b  return NIL
+!seealso: fran_011.ngo:"ADread()" fran_011.ngo:"ADr_lbuttons()" fran_028.ngo:"ADmessage()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:  8. How does ADread() handle long character strings and memo fields?
+'------------------------------------------------------------------------------
+^b How does ADread() handle long character strings and memo fields?
+
+ ADread() handles memo fields as character strings in the same way.  However,
+ if the strings are long (memo fields are usually, but not always), the use
+ of a "@S" picture clause changes ADread()'s behavior.  Not only does it
+ allow horizontal scrolling, as in Clipper's READ, but it also now provides
+ the expansion of the Get into a memoedit() when the Tab key is pressed.
+
+ Note, however, that memoedit() allows the string to increase in length.
+ This is ok for memos but may not be the desired behavior for character
+ Gets.  ADread()'s default behavior is to truncate the Get if it is allowed
+ to exceed its original length.  To preclude this from happening with a memo,
+ use the MEMO clause.
+
+ For a long string you can do this:
+
+^b @10,10 say "Long Character String" adget aa picture "@S40"
+
+ And for a memo:
+
+^b @10,10 say "Memo Field" adget aa picture "@S40" MEMO
+
+ A memoedit() behavior that can cause havoc on an expanded character Get
+ is its insertion of carriage returns to the string.  ADread() removes them
+ before saving the Get, but retains them if the ADGET is claused with MEMO.
+ You can force a MEMO'ed Get to be stripped off carriage returns by adding
+ the REMOVECR clause, like this
+
+  @10,10 say "Memo Field" adget aa picture "@S40" MEMO ^bREMOVECR
+!seealso: fran_011.ngo:"ADread()" fran_011.ngo:"MEMO" fran_011.ngo:"REMOVECR" 
+'------------------------------------------------------------------------------
+
+
+

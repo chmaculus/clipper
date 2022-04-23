@@ -1,0 +1,23 @@
+'------------------------------------------------------------------------------
+^BPACK^B
+
+    PACK physically removes records that are marked for deletion from the
+    active database file.
+
+^USyntax^U
+
+    PACK
+
+^UUsage^U
+
+    All open index files are automatically REINDEXed.
+
+    After you execute a PACK command, the disk space used by the deleted
+    records is reclaimed when the file is closed.  Note that PACK does not
+    create a backup file or use any temporary files.  All file operations
+    are internal to the current database file.
+!seealso: ???.ngo:"DELETE" clip_029.ngo:"RECALL" clip_030.ngo:"REINDEX" clip_053.ngo:"SET DELETED" clip_090.ngo:"ZAP" 
+'------------------------------------------------------------------------------
+
+
+

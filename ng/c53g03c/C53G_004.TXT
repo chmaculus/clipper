@@ -1,0 +1,2444 @@
+!short: _evalLaunch()      Call CA-Clipper code blocks from C
+'------------------------------------------------------------------------------
+ ^b_evalLaunch()^b
+ Call CA-Clipper code blocks from C
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _evalLaunch(
+     ^b                  EVALINFOP evalInfoP
+     ^b                )
+
+ ^bArguments^b
+
+     ^bevalInfoP^b is a properly set EVALINFO structure (as set by _evalNew()
+     and _evalPutParam()).
+
+ ^bReturns^b
+
+     The item that is the result of the evaluation.
+
+ ^bDescription^b
+
+     The _evalLaunch() function allows you to call any code that can be
+     defined in a code block from C.  Note also that you may call a
+     particular symbol by name if you pass a character string item to
+     _evalNew() when creating the EVALINFO structure.
+
+     _evalLaunch() requires a EVALINFO structure properly initialized via
+     _evalNew() with parameters placed in the structure via _evalPutParam().
+     Failure to follow this protocol exactly will result in catastrophe.
+
+     During the process of launching an evaluation, the Item API creates new
+     item references for each item placed in the parameter list.  After an
+     _evalLaunch() call is made, you must call _evalRelease() to individually
+     release all of the references, or the items used as parameters will
+     never be released from object memory for the garbage collector.
+
+ ^bExamples^b
+
+     /*
+     * USERDO()
+     * --------
+     */
+
+     CLIPPER userDO( void )
+     {
+        EVALINFO info;
+        USHORT   uiParam;
+        ITEM     retP;
+
+        /* Get evaluation expression */
+
+        if ( PCOUNT < 1 )
+        {
+           _ret();
+           return;
+        }
+        else
+        {
+           _evalNew( &info, _itemParam( 1 ) );
+        }
+
+        /* Get parameters */
+
+        for ( uiParam=2; uiParam <= PCOUNT; uiParam++ )
+        {
+           _evalPutParam( &info, _itemParam(uiParam) );
+        }
+
+        /* Launch evaluation information */
+
+        retP = _evalLaunch( &info );
+
+        /* Release ITEMs associated w/eval info */
+
+        _evalRelease( &info );
+
+        _itemReturn ( retP );
+        _itemRelease( retP );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_evalNew()" "_evalPutParam()" "_evalRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _evalNew()         Initialize an EVALINFO structure for use
+'------------------------------------------------------------------------------
+ ^b_evalNew()^b
+ Initialize an EVALINFO structure for use
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBOOL _evalNew(
+     ^b               EVALINFOP evalInfoP,
+     ^b               ITEM itmEval
+     ^b             )
+
+ ^bArguments^b
+
+     ^bevalInfoP^b is the structure to initialize.
+
+     ^bitmEval^b is a character or block item that is to be evaluated.
+
+ ^bReturns^b
+
+     TRUE if the operation was successful.
+
+ ^bDescription^b
+
+     The _evalNew() function resets an EVALINFO structure for evaluation of a
+     code block or routine name.  If itmEval is a character item, it is
+     assumed to be the symbol name of a routine to execute.  Otherwise,
+     itmEval is assumed to be a valid code block.
+
+ ^bExamples^b
+
+     /*
+     * USERDO()
+     * --------
+     */
+
+     CLIPPER userDO( void )
+     {
+        EVALINFO info;
+        USHORT   uiParam;
+        ITEM     retP;
+
+        /* Get evaluation expression */
+
+        if ( PCOUNT < 1 )
+        {
+           _ret();
+           return;
+        }
+        else
+        {
+           _evalNew( &info, _itemParam( 1 ) );
+        }
+
+        /* Get parameters */
+
+        for ( uiParam=2; uiParam <= PCOUNT; uiParam++ )
+        {
+           _evalPutParam( &info, _itemParam(uiParam) );
+        }
+
+        /* Launch evaluation information */
+
+        retP = _evalLaunch( &info );
+
+        /* Release ITEMs associated w/eval info */
+
+        _evalRelease( &info );
+
+        _itemReturn ( retP );
+        _itemRelease( retP );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_evalLaunch()" "_evalPutParam()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _evalPutParam()    Place a parameter in an EVALINFO structure
+'------------------------------------------------------------------------------
+ ^b_evalPutParam()^b
+ Place a parameter in an EVALINFO structure
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBOOL _evalPutParam(
+     ^b                    EVALINFOP evalInfoP,
+     ^b                    ITEM itmParam
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bevalInfoP^b is the structure in which to add the parameter.
+
+     ^bitmParam^b is the parameter to add to the structure.
+
+ ^bReturns^b
+
+     TRUE if the operation was successful.
+
+ ^bDescription^b
+
+     The _evalPutParam() function allows you to place parameters in an
+     EVALINFO structure one at a time.  Parameters are placed in the order
+     that they are passed (i.e., the first call to _evalPutParam() places the
+     first parameter, the second call places the second parameter, and so
+     on).
+
+     ^bNote: ^b If a particular evaluation does not require parameters, there
+     is no need to call this function at all, simply call _evalNew() and then
+     _evalLaunch().
+
+     ^bWarning! ^b Parameters in an EVALINFO structure should not be released
+     (via _itemRelease() or _evalRelease()) until the evaluation is performed
+     or the EVALINFO structure is no longer needed.
+
+ ^bExamples^b
+
+     /*
+     * USERDO()
+     * --------
+     */
+
+     CLIPPER userDO( void )
+     {
+        EVALINFO info;
+        USHORT   uiParam;
+        ITEM     retP;
+
+        /* Get evaluation expression */
+
+        if ( PCOUNT < 1 )
+        {
+           _ret();
+        return;
+        }
+        else
+        {
+           _evalNew( &info, _itemParam( 1 ) );
+        }
+
+        /* Get parameters */
+
+        for ( uiParam=2; uiParam <= PCOUNT; uiParam++ )
+        {
+           _evalPutParam( &info, _itemParam(uiParam) );
+        }
+
+        /* Launch evaluation information */
+
+        retP = _evalLaunch( &info );
+
+        /* Release ITEMs associated w/eval info */
+
+        _evalRelease( &info );
+
+        _itemReturn ( retP );
+        _itemRelease( retP );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_evalLaunch()" "_evalNew()" "_evalRelease()" "_itemRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _evalRelease()     Release all parameter references in an EVALINFO structure
+'------------------------------------------------------------------------------
+ ^b_evalRelease()^b
+ Release all parameter references in an EVALINFO structure
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBOOL _evalRelease(
+     ^b                   EVALINFOP evalInfoP
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bevalInfoP^b is the structure already used to launch an evaluation.
+
+ ^bReturns^b
+
+     TRUE if the operation was successful.
+
+ ^bDescription^b
+
+     During the process of launching an evaluation, the Item API creates new
+     item references for each item placed in the parameter list.  After an
+     _evalLaunch() call is made, you must call _evalRelease() to individually
+     release all of the references.
+
+     ^bWarning! ^b It is vitally important that items be released once you no
+     longer have need for them.  For ^beach launch^b of a particular EVALINFO
+     structure, you ^bmust^b call _evalRelease().  Failure to do so may cause
+     a CA-Clipper stack fault or memory errors.
+
+     ^bWarning! ^b Do ^bNOT^b pass this function an EVALINFO structure that
+     has ^bNOT^b been subject to an _evalLaunch().
+
+ ^bExamples^b
+
+     /*
+     * USERDO()
+     * --------
+     */
+
+     CLIPPER userDO( void )
+     {
+        EVALINFO info;
+        USHORT   uiParam;
+        ITEM     retP;
+
+        /* Get evaluation expression */
+
+        if ( PCOUNT < 1 )
+        {
+           _ret();
+           return;
+        }
+        else
+        {
+           _evalNew( &info, _itemParam( 1 ) );
+        }
+
+        /* Get parameters */
+
+        for ( uiParam=2; uiParam <= PCOUNT; uiParam++ )
+        {
+           _evalPutParam( &info, _itemParam(uiParam) );
+        }
+
+        /* Launch evaluation information */
+
+        retP = _evalLaunch( &info );
+
+        /* Release ITEMs associated w/eval info */
+
+        _evalRelease( &info );
+
+        _itemReturn ( retP );
+        _itemRelease( retP );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_evalLaunch()" "_evalPutParam()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemArrayGet()    Retrieve an element of an item of type array
+'------------------------------------------------------------------------------
+ ^b_itemArrayGet()^b
+ Retrieve an element of an item of type array
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemArrayGet(
+     ^b                    ITEM itmArr,
+     ^b                    USHORT uiElem
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bitmArr^b is the item of type array from which to retrieve an element.
+
+     ^buiElem^b is the element number to retrieve.
+
+ ^bReturns^b
+
+     A new item containing a reference to the element number requested from
+     the array.
+
+ ^bDescription^b
+
+     You can use _itemArrayGet() to retrieve a particular element of an
+     array.  The element retrieved may be any type supported by the Item API,
+     and may even be another array.
+
+     Since _itemArrayGet() creates a new item reference, do not forget to
+     release the new reference with _itemRelease() after use.  Failure to do
+     so could result in a CA-Clipper stack fault.
+
+     ^bNote: ^b Since CA-Clipper arrays are one-based, not zero-based, the
+     uiElem parameter must not be zero.
+
+ ^bExamples^b
+
+     /*
+     * MYACLONE()
+     * ----------
+     * myAClone( <aArray1> ) --> aNewArray
+     */
+
+     HIDE ITEM near _xAClone( ITEM aSrc );
+
+     CLIPPER ARRAYCLONE( void )
+
+     {
+        ITEM aSource;            // Source array
+        ITEM aCloned;            // New array
+
+        /* Do parameters check */
+
+        if ( PCOUNT != 1 )
+        {
+           return;
+        }
+
+        /* Get source array as ITEM */
+
+        aSource = _itemParam( 1 );
+
+        /* Clone source array  */
+
+        aCloned = _xAClone( aSource );
+
+        /* Return clone, release clone and source */
+
+        _itemReturn ( aCloned );
+
+        _itemRelease( aSource );
+        _itemRelease( aCloned );
+
+        return;
+     }
+
+     HIDE ITEM near _xAClone( ITEM aSrc )
+     {
+        ITEM   temp;
+        ITEM   aTemp;
+        ITEM   aNew;
+
+        USHORT i;
+        USHORT nLen;
+
+        // If item not an array, return NIL
+        if ( !( _itemType( aSrc ) == ARRAY ) )
+           return ( _itemNew( NULL ) );
+
+        // Get number of elements, create new array
+        nLen = _itemSize( aSrc );
+        aNew = _itemArrayNew( nLen );
+
+        // For each element... get source & copy
+        for ( i = 1; i <= nLen; i++ )
+        {
+           temp = _itemArrayGet( aSrc, i );
+
+           // If it's an array, copy via recursion
+           if ( _itemType( temp ) == ARRAY )
+           {
+              aTemp = _xAClone( temp );
+              _itemArrayPut( aNew, i, aTemp );
+              _itemRelease( aTemp );
+           }
+           else
+           {
+              _itemArrayPut( aNew, i, temp );
+           }
+
+           _itemRelease( temp );
+
+        }
+
+        return ( aNew );
+
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemArrayNew()" "_itemArrayPut()" "_itemRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemArrayNew()    Create a new item as an array
+'------------------------------------------------------------------------------
+ ^b_itemArrayNew()^b
+ Create a new item as an array
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemArrayNew(
+     ^b                    USHORT uiSize
+     ^b                  )
+
+ ^bArguments^b
+
+     ^buiSize^b is the number of elements with which to initialize the array.
+     _itemArrayNew() will accept a zero-element array.  This means that
+     arrays created will have no elements ({}).
+
+ ^bReturns^b
+
+     A new item of type array with a _itemSize() of uiSize.
+
+ ^bDescription^b
+
+     You can use the _itemArrayNew() function to create a new CA-Clipper-
+     level array.  usSize will accept zero and will create a zero-length
+     array.
+
+     ^bNote: ^b When creating a new item reference, remember to release the
+     item reference with _itemRelease() after returning it to CA-Clipper or
+     when it is no longer needed.
+
+ ^bExamples^b
+
+     /*
+     * MYACLONE()
+     * ----------
+     * myAClone( <aArray1> ) --> aNewArray
+     */
+
+     HIDE ITEM near _xAClone( ITEM aSrc );
+
+     CLIPPER ARRAYCLONE( void )
+
+     {
+        ITEM aSource;            // Source array
+        ITEM aCloned;            // New array
+
+        /* Do parameters check */
+
+        if ( PCOUNT != 1 )
+        {
+           return;
+        }
+
+        /* Get source array as ITEM */
+
+        aSource = _itemParam( 1 );
+
+        /* Clone source array  */
+
+        aCloned = _xAClone( aSource );
+
+        /* Return clone, release clone and source */
+
+        _itemReturn ( aCloned );
+
+        _itemRelease( aSource );
+        _itemRelease( aCloned );
+
+        return;
+     }
+
+     HIDE ITEM near _xAClone( ITEM aSrc )
+     {
+        ITEM   temp;
+        ITEM   aTemp;
+        ITEM   aNew;
+
+        USHORT i;
+        USHORT nLen;
+
+        // If item not an array, return NIL
+        if ( !( _itemType( aSrc ) == ARRAY ) )
+           return ( _itemNew( NULL ) );
+
+        // Get number of elements, create new array
+        nLen = _itemSize( aSrc );
+        aNew = _itemArrayNew( nLen );
+
+        // For each element... get source & copy
+        for ( i = 1; i <= nLen; i++ )
+        {
+           temp = _itemArrayGet( aSrc, i );
+
+           // If it's an array, copy via recursion
+           if ( _itemType( temp ) == ARRAY )
+           {
+              aTemp = _xAClone( temp );
+              _itemArrayPut( aNew, i, aTemp );
+              _itemRelease( aTemp );
+           }
+           else
+           {
+              _itemArrayPut( aNew, i, temp );
+           }
+
+           _itemRelease( temp );
+
+        }
+
+        return ( aNew );
+
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemArrayGet()" "_itemArrayPut()" "_itemRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemArrayPut()    Place an item into a CA-Clipper-level array element
+'------------------------------------------------------------------------------
+ ^b_itemArrayPut()^b
+ Place an item into a CA-Clipper-level array element
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemArrayPut(
+     ^b                    ITEM itmArr,
+     ^b                    USHORT uiElem,
+     ^b                    ITEM itmAdd
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bitmArr^b is the array into which you want to place a new item.
+
+     ^buiElem^b is the element number of the array itmArr for the new item.
+     Remember that CA-Clipper arrays element numbers begin at one, not
+     zero; like C arrays.  A zero value in this parameter will not be accepted.
+
+     ^bitmAdd^b is the new item to place into itmArr at element uiElem.
+
+ ^bReturns^b
+
+     _itemArrayPut() always returns itmArr.
+
+ ^bDescription^b
+
+     The function _itemArrayPut() allows you to place values (as items) into
+     CA-Clipper-level arrays.  Note that if the root array was passed to your
+     Extend routine as a parameter, changes made through _itemArrayPut() will
+     be reflected at the CA-Clipper level.  This is because all arrays in
+     CA-Clipper are passed by reference rather than by value.
+
+ ^bExamples^b
+
+     /*
+     * MYACLONE()
+     * ----------
+     * myAClone( <aArray1> ) --> aNewArray
+     */
+
+     HIDE ITEM near _xAClone( ITEM aSrc );
+
+     CLIPPER ARRAYCLONE( void )
+
+     {
+        ITEM aSource;            // Source array
+        ITEM aCloned;            // New array
+
+        /* Do parameters check */
+
+        if ( PCOUNT != 1 )
+        {
+           return;
+        }
+
+        /* Get source array as ITEM */
+
+        aSource = _itemParam( 1 );
+
+        /* Clone source array  */
+
+        aCloned = _xAClone( aSource );
+
+        /* Return clone, release clone and source */
+
+        _itemReturn ( aCloned );
+
+        _itemRelease( aSource );
+        _itemRelease( aCloned );
+
+        return;
+     }
+
+     HIDE ITEM near _xAClone( ITEM aSrc )
+     {
+        ITEM   temp;
+        ITEM   aTemp;
+        ITEM   aNew;
+
+        USHORT i;
+        USHORT nLen;
+
+        // If item not an array, return NIL
+        if ( !( _itemType( aSrc ) == ARRAY ) )
+           return ( _itemNew( NULL ) );
+
+        // Get number of elements, create new array
+        nLen = _itemSize( aSrc );
+        aNew = _itemArrayNew( nLen );
+
+        // For each element... get source & copy
+        for ( i = 1; i <= nLen; i++ )
+        {
+           temp = _itemArrayGet( aSrc, i );
+
+           // If it's an array, copy via recursion
+           if ( _itemType( temp ) == ARRAY )
+           {
+              aTemp = _xAClone( temp );
+              _itemArrayPut( aNew, i, aTemp );
+              _itemRelease( aTemp );
+           }
+           else
+           {
+              _itemArrayPut( aNew, i, temp );
+           }
+
+           _itemRelease( temp );
+
+        }
+
+        return ( aNew );
+
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemArrayGet()" "_itemArrayNew()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemCopyC()       Copy a character item's value into a C buffer
+'------------------------------------------------------------------------------
+ ^b_itemCopyC()^b
+ Copy a character item's value into a C buffer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bUSHORT _itemCopyC(
+     ^b                   ITEM itmChar,
+     ^b                   BYTEP fpBuffer,
+     ^b                   USHORT uiSize
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bitmChar^b is the item from which to get a character value.
+
+     ^bfpBuffer^b is the preallocated buffer to copy the item's value into.
+
+     ^buiSize^b is fpBuffer's size (one-based).  If this parameter is zero,
+     _itemCopyC() will assume that the buffer is of adequate size to hold the
+     string.
+
+ ^bReturns^b
+
+     The number of characters copied into the character buffer.
+
+ ^bDescription^b
+
+     The _itemCopyC() function copies an item's character value into a buffer
+     of uiSize length.  This is useful when you need to be in control of
+     allocation and deallocation of the buffer used for the item's value.
+
+     ^bWarning! ^b You are responsible for allocating and freeing a buffer of
+     adequate size for the item.  There is ^bno need^b to call _itemFreeC()
+     when using _itemCopyC() as with _itemGetC().
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+     * Count occurrences of a single character
+     * in a CA-Clipper string.  Version 1.00
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemFreeC()       Frees a character string allocated by the Item API
+'------------------------------------------------------------------------------
+ ^b_itemFreeC()^b
+ Frees a character string allocated by the Item API
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBOOL _itemFreeC(
+     ^b                 BYTEP fpItemVal
+     ^b               )
+
+ ^bArguments^b
+
+     ^bfpItemVal^b is a pointer returned by the Item API in response to an
+     _itemGetC() call.
+
+ ^bReturns^b
+
+     True if the requested pointer was released.
+
+ ^bDescription^b
+
+     When _itemGetC() is asked to provide a character string from a character
+     item, it allocates memory for the string from one of several places.
+     You need to call the _itemFreeC() function to release the memory once
+     the string is no longer necessary.
+
+     ^bWarning! ^b Do ^bnot^b call _itemFreeC() unless the character string
+     was retrieved through _itemGetC().  Calling _itemFreeC() with a NULL
+     pointer, a pointer already freed, or a string not retrieved by
+     _itemGetC() will result in a VM integrity fault or other internal error.
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+     * Count occurrences of a single character
+     * in a CA-Clipper string.  Version 1.00
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemGetC()        Retrieve a character value from an item
+'------------------------------------------------------------------------------
+ ^b_itemGetC()^b
+ Retrieve a character value from an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBYTEP _itemGetC(
+     ^b                 ITEM itmChar
+     ^b               )
+
+ ^bArguments^b
+
+     ^bitmChar^b is the item from which to retrieve a character value.
+
+ ^bReturns^b
+
+     A pointer to a copy of the string contained within itmChar.
+
+ ^bDescription^b
+
+     _itemGetC() returns a pointer to a copy of the character string or memo
+     contained within itmChar.  If itmChar is not a character value (type
+     MEMO or CHARACTER), the results will be unpredictable.
+
+     ^bWarning! ^b The pointer returned must be freed through an _itemFreeC()
+     call.
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+     * Count occurrences of a single character
+     * in a CA-Clipper string.
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemFreeC()" "_itemPutC()" "_itemPutCL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemGetDS()       Retrieve a date as a character string
+'------------------------------------------------------------------------------
+ ^b_itemGetDS()^b
+ Retrieve a date as a character string
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBYTEP _itemGetDS(
+     ^b                  ITEM itmDate,
+     ^b                  BYTEP fpBuffer
+     ^b                )
+
+ ^bArguments^b
+
+     ^bitmDate^b is the item from which to retrieve a date string.
+
+     ^bfpBuffer^b is the 8 character buffer to place the date string within.
+
+ ^bReturns^b
+
+     A zero-terminated string of the format yyyymmdd representing the date
+     value contained within the item passed.
+
+ ^bDescription^b
+
+     _itemGetDS() allows you to retrieve the value of a CA-Clipper-level date
+     as a character string.  The returned string is a copy of the date, so
+     any changes to the string cannot be reflected to the CA-Clipper level if
+     the item is a parameter.
+
+     ^bNote: ^b The date string returned is zero-terminated.
+
+     ^bWarning! ^b You are responsible for allocating and freeing the buffer
+     where the date string is placed.  Note that the recommended destination
+     memory address is the stack, since values returned from _itemGetDS()
+     will always be 8 characters long.
+
+ ^bExamples^b
+
+     /*
+     *
+     * Quarter( dDate ) -> nQuarter
+     *
+     *
+     * Given a date, determines what quarter it lies in
+     *
+     */
+
+     CLIPPER Quarter( void )
+     {
+        ITEM itmDate, itmQuarter;
+        BYTE sDate[8];               // Date buffer: YYYYMMDD\0
+
+        if ( PCOUNT == 0 )
+        {
+           _ret();                  // Withhold service!
+           return;
+        }
+
+        itmQuarter = _itemPutNL( NULL, 0 );
+        itmDate = _itemParam( 1 );
+
+        if ( _itemType( itmDate ) == DATE )
+        {
+           _itemGetDS( itmDate, sDate );
+
+           sDate[6] = NULL;
+
+           if (sDate[4] == '1')
+           {
+              itmQuarter = _itemPutNL( itmQuarter, 4 );
+           }
+           else
+           {
+              switch ( sDate[5] )
+              {
+                 case '1':
+                 case '2':
+                 case '3':
+                    itmQuarter = _itemPutNL( itmQuarter, 1 );
+                    break;
+
+                 case '4':
+                 case '5':
+                 case '6':
+                    itmQuarter = _itemPutNL( itmQuarter, 2 );
+                    break;
+
+                 default:
+                    itmQuarter = _itemPutNL( itmQuarter, 3 );
+
+              }
+           }
+        }
+
+        _itemReturn( itmQuarter );
+        _itemRelease( itmDate );
+        _itemRelease( itmQuarter );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemPutDS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemGetL()        Retrieve a logical value from an item
+'------------------------------------------------------------------------------
+ ^b_itemGetL()^b
+ Retrieve a logical value from an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBOOL _itemGetL(
+     ^b                ITEM itmLogic
+     ^b              )
+
+ ^bArguments^b
+
+     ^bitmLogic^b is the item from which to retrieve a logical value.
+
+ ^bReturns^b
+
+     The boolean value TRUE or FALSE.
+
+ ^bDescription^b
+
+     The _itemGetL() function is used to retrieve a logical value from the
+     item passed, and return it as a boolean value.  If itmLogic is not a
+     CA-Clipper-level logical type (LOGICAL), the results will be
+     unpredictable.
+
+ ^bExamples^b
+
+     /*
+     *  YesNo( lExpr ) -> cValue
+     *
+     *  Given a logical expression, returns the
+     *  string "Yes" if true, and "No " if false.
+     *
+     */
+
+     CLIPPER YesNo( void )
+     {
+        ITEM itmParam, itmCRet;
+
+        // Warning: DGROUP!
+
+        itmCRet = _itemPutC( NULL, "No " );
+
+        if (PCOUNT > 0)
+        {
+           itmParam = _itemParam( 1 );
+           if (_itemGetL( itmParam ))
+              itmCRet = _itemPutC( itmCRet, "Yes");
+
+           _itemRelease( itmParam );
+        }
+
+        _itemRelease( _itemReturn( itmCRet ) );
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemPutL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemGetND()       Retrieve numeric value as double-precision type
+'------------------------------------------------------------------------------
+ ^b_itemGetND()^b
+ Retrieve a numeric value as a double-precision type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bXDOUBLE _itemGetND(
+     ^b                    ITEM itmNumber
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bitmNumber^b is the item from which to retrieve a double.
+
+ ^bReturns^b
+
+     The numeric value in itmNumber as double-precision type.
+
+ ^bDescription^b
+
+     The _itemGetND() function returns the CA-Clipper-level numeric stored in
+     itmNumber as a floating point C double-precision value.  Note that the
+     use of XDOUBLE ensures floating point routines will not be linked in
+     unless they become necessary.
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetNL()" "_itemPutND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemGetNL()       Retrieve a numeric long value from an item
+'------------------------------------------------------------------------------
+ ^b_itemGetNL()^b
+ Retrieve a numeric long value from an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^blong _itemGetNL(
+     ^b                 ITEM itmNumber
+     ^b               )
+
+ ^bArguments^b
+
+     ^bitmNumber^b is the item from which to retrieve a long value.
+
+ ^bReturns^b
+
+     The numeric contained within the item passed as a C-style long.
+
+ ^bDescription^b
+
+     The _itemGetNL() function is used to retrieve a numeric long from an
+     item.  If the value contained within itmNumber is not a numeric, or is
+     a numeric with the DOUBLE flag set (see _itemType()), then the results
+     of calling this function will be unpredictable.
+
+ ^bExamples^b
+
+   #include "clipdefs.h"
+   #include "extend.api"
+   #include "item.api"
+   #include "fm.api"
+
+   HIDE ITEM near _xMakeSub( USHORTP apSize, USHORT dims );
+
+   /*
+   *
+   * MYARRAY()
+   *
+   * Just like ARRAY()!
+   */
+   CLIPPER MYARRAY(void)
+
+   {
+     ITEM      arrayP, elementsP;
+     SHORT     i;
+     BOOL      check;
+     USHORT    pcount = PCOUNT;
+     USHORTP    apSize;
+     /* Check parameters - must be at least one and all */
+     /* NUMERIC */
+     if ( pcount )
+     {
+   /* CAUTION: _xgrab() will cause VM IE if there isn't */
+   /* enough  memory */
+       apSize = (USHORTP)_xgrab( pcount * sizeof( USHORT ) );
+       /* store the parameters into apSize[] in */
+       /* reverse order. */
+
+       for (i = 0; i < pcount; i++)
+       {
+         elementsP = _itemParam( pcount-i );
+         check = _itemType( elementsP ) == NUMERIC &&
+             ( apSize[i] =
+             (USHORT)_itemGetNL( elementsP ) ) <= 4096;
+         _itemRelease( elementsP );
+         if (!check)
+           break;
+       }
+       /* If all of the parameters check out ...*/
+
+       if( check )
+       {
+         arrayP = _xMakeSub( apSize, pcount );
+         _itemReturn ( arrayP );
+         _itemRelease( arrayP );
+       }
+       else
+       {
+     _itemRelease( _itemReturn( _itemNew( NULL ) ) ); }
+       _xfree( apSize );
+     }
+
+             }
+
+             HIDE ITEM near _xMakeSub( USHORTP apSize, USHORT dims )
+             {
+               ITEM   arrayP;
+               ITEM   tempP;
+               USHORT i;
+               arrayP = _itemArrayNew( apSize[ --dims ] );
+               if ( dims )
+               {
+                 for (i = 1; i <= apSize[ dims ]; i++)
+                 {
+                   tempP = _xMakeSub( apSize, dims );
+                   _itemArrayPut( arrayP, i, tempP );
+                   _itemRelease( tempP );
+                 }
+               }
+               return (arrayP);
+             }
+
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetND()" "_itemPutNL()" "_itemType()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemNew()         Creates a NIL or empty item
+'------------------------------------------------------------------------------
+ ^b_itemNew()^b
+ Creates a NIL or empty item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemNew(
+     ^b               ITEM itmNull
+     ^b             )
+
+ ^bArguments^b
+
+     ^bitmNull^b is an item that should always be NULL.
+
+ ^bReturns^b
+
+     A new item of undefined (NIL) type.
+
+ ^bDescription^b
+
+     The _itemNew() function allows you to create a NIL item to use as a
+     return value.
+
+     ^bNote: ^b When creating a new item reference, remember to release the
+     item reference with _itemRelease() after returning it to CA-Clipper or
+     when it is no longer needed.
+
+ ^bExamples^b
+
+   #include "clipdefs.h"
+   #include "extend.api"
+   #include "item.api"
+   #include "fm.api"
+
+   HIDE ITEM near _xMakeSub( USHORTP apSize, USHORT dims );
+
+   /*
+   *
+   * MYARRAY()
+   *
+   * Just like ARRAY()!
+   */
+   CLIPPER MYARRAY(void)
+
+   {
+     ITEM      arrayP, elementsP;
+     SHORT     i;
+     BOOL      check;
+     USHORT    pcount = PCOUNT;
+     USHORTP    apSize;
+     /* Check parameters - must be at least one and all */
+     /* NUMERIC */
+     if ( pcount )
+     {
+   /* CAUTION: _xgrab() will cause VM IE if there isn't */
+   /* enough  memory */
+       apSize = (USHORTP)_xgrab( pcount * sizeof( USHORT ) );
+       /* store the parameters into apSize[] in */
+       /* reverse order. */
+
+       for (i = 0; i < pcount; i++)
+       {
+         elementsP = _itemParam( pcount-i );
+         check = _itemType( elementsP ) == NUMERIC &&
+             ( apSize[i] =
+             (USHORT)_itemGetNL( elementsP ) ) <= 4096;
+         _itemRelease( elementsP );
+         if (!check)
+           break;
+       }
+       /* If all of the parameters check out ...*/
+
+       if( check )
+       {
+         arrayP = _xMakeSub( apSize, pcount );
+         _itemReturn ( arrayP );
+         _itemRelease( arrayP );
+       }
+       else
+       {
+     _itemRelease( _itemReturn( _itemNew( NULL ) ) ); }
+       _xfree( apSize );
+     }
+
+             }
+
+             HIDE ITEM near _xMakeSub( USHORTP apSize, USHORT dims )
+             {
+               ITEM   arrayP;
+               ITEM   tempP;
+               USHORT i;
+               arrayP = _itemArrayNew( apSize[ --dims ] );
+               if ( dims )
+               {
+                 for (i = 1; i <= apSize[ dims ]; i++)
+                 {
+                   tempP = _xMakeSub( apSize, dims );
+                   _itemArrayPut( arrayP, i, tempP );
+                   _itemRelease( tempP );
+                 }
+               }
+               return (arrayP);
+             }
+
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemArrayNew()" "_itemRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemParam()       Get parameter passed to an Extend routine from CA-Clipper
+'------------------------------------------------------------------------------
+ ^b_itemParam()^b
+ Retrieve a parameter passed to an Extend routine from CA-Clipper
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemParam(
+     ^b                 USHORT uiParamNo
+     ^b               )
+
+ ^bArguments^b
+
+     ^buiParamNo^b is the parameter number to retrieve.
+
+ ^bReturns^b
+
+     The requested parameter number or an empty (NIL) item if the parameter
+     number does not exist.
+
+ ^bDescription^b
+
+     The _itemParam() function is used to retrieve parameters passed from
+     CA-Clipper to your Extend routine.  _itemParam() creates a new item and
+     returns that item with the parameter number requested.
+
+     ^bNote: ^b CA-Clipper parameter numbers begin at one, not zero.
+
+     ^bNote: ^b _itemParam() creates a new item reference.  Remember to
+     release the item reference with _itemRelease() after returning it to
+     CA-Clipper or when it is no longer needed.
+
+ ^bExamples^b
+
+   #include "clipdefs.h"
+   #include "extend.api"
+   #include "item.api"
+   #include "fm.api"
+
+   HIDE ITEM near _xMakeSub( USHORTP apSize, USHORT dims );
+
+   /*
+   *
+   * MYARRAY()
+   *
+   * Just like ARRAY()!
+   */
+   CLIPPER MYARRAY(void)
+
+   {
+     ITEM      arrayP, elementsP;
+     SHORT     i;
+     BOOL      check;
+     USHORT    pcount = PCOUNT;
+     USHORTP    apSize;
+     /* Check parameters - must be at least one and all */
+     /* NUMERIC */
+     if ( pcount )
+     {
+   /* CAUTION: _xgrab() will cause VM IE if there isn't */
+   /* enough  memory */
+       apSize = (USHORTP)_xgrab( pcount * sizeof( USHORT ) );
+       /* store the parameters into apSize[] in */
+       /* reverse order. */
+
+       for (i = 0; i < pcount; i++)
+       {
+         elementsP = _itemParam( pcount-i );
+         check = _itemType( elementsP ) == NUMERIC &&
+             ( apSize[i] =
+             (USHORT)_itemGetNL( elementsP ) ) <= 4096;
+         _itemRelease( elementsP );
+         if (!check)
+           break;
+       }
+       /* If all of the parameters check out ...*/
+
+       if( check )
+       {
+         arrayP = _xMakeSub( apSize, pcount );
+         _itemReturn ( arrayP );
+         _itemRelease( arrayP );
+       }
+       else
+       {
+     _itemRelease( _itemReturn( _itemNew( NULL ) ) ); }
+       _xfree( apSize );
+     }
+
+             }
+
+             HIDE ITEM near _xMakeSub( USHORTP apSize, USHORT dims )
+             {
+               ITEM   arrayP;
+               ITEM   tempP;
+               USHORT i;
+               arrayP = _itemArrayNew( apSize[ --dims ] );
+               if ( dims )
+               {
+                 for (i = 1; i <= apSize[ dims ]; i++)
+                 {
+                   tempP = _xMakeSub( apSize, dims );
+                   _itemArrayPut( arrayP, i, tempP );
+                   _itemRelease( tempP );
+                 }
+               }
+               return (arrayP);
+             }
+
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemRelease()" "_itemReturn()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemPutC()        Place a zero-terminated character value into an item
+'------------------------------------------------------------------------------
+ ^b_itemPutC()^b
+ Place a zero-terminated character value into an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemPutC(
+     ^b                ITEM itmChar,
+     ^b                BYTEP fpChars
+     ^b              )
+
+ ^bArguments^b
+
+     ^bitmChar^b is the item into which you want to place the string.  If
+     itmChar is NULL, _itemPutC() will create a new item.
+
+     ^bfpChars^b is the zero-terminated string to place into the item.
+
+ ^bReturns^b
+
+     A new item reference containing the zero-terminated string passed.
+
+ ^bDescription^b
+
+     The _itemPutC() function is used to associate a zero-terminated string
+     with an item.  Any previous value in itmChar will be destroyed.
+
+     The data located at fpChars is copied into a new space associated with
+     the item that is returned.  It is the programmer's responsibility to
+     free the allocation of fpChars in whatever manner it was allocated.
+
+     ^bNote: ^b _itemPutC() must copy the intended string from your buffer at
+     fpChars.  If fpChars is unusually large, _itemPutC() may cause a VM
+     failure due to insufficient real memory to accomplish a large copy.
+     Typically, this error would manifest itself as an internal error 5302.
+
+     ^bCaution! ^b Do not assume that the address in itmChar will be the
+     same address returned by _itemPutC().
+
+ ^bExamples^b
+
+     /*
+     *  YesNo( lExpr ) -> cValue
+     *
+     *  Given a logical expression, returns the
+     *  string "Yes" if true, and "No " if false.
+     *
+     */
+
+     CLIPPER YesNo( void )
+     {
+        ITEM itmParam, itmCRet;
+
+        // Warning: DGROUP!
+
+        itmCRet = _itemPutC( NULL, "No " );
+
+        if (PCOUNT > 0)
+        {
+           itmParam = _itemParam( 1 );
+           if (_itemGetL( itmParam ))
+              itmCRet = _itemPutC( itmCRet, "Yes");
+
+           _itemRelease( itmParam );
+        }
+
+        _itemRelease( _itemReturn( itmCRet ) );
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetC()" "_itemPutCL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemPutCL()       Put character value into item, ignoring null terminators
+'------------------------------------------------------------------------------
+ ^b_itemPutCL()^b
+ Place a character value into an item, ignoring null terminators
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemPutCL(
+     ^b                 ITEM itmChar,
+     ^b                 BYTEP fpChars,
+     ^b                 USHORT uiLen
+     ^b               )
+
+ ^bArguments^b
+
+     ^bitmChar^b is the item into which you want to place the string.  If
+     itmChar is NULL, _itemPutCL() will create a new item.
+
+     ^bfpChars^b is the zero-terminated string to place into the item.
+
+     ^buiLen^b is the number of bytes to place into the item.
+
+ ^bReturns^b
+
+     A new item reference containing the string passed.
+
+ ^bDescription^b
+
+     The _itemPutCL() function is used to associate any string with an item,
+     ignoring embedded nulls.  Any previous value in itmChar will be
+     destroyed.
+
+     The data located at fpChars is copied into a new space associated with
+     the item that is returned.  It is the programmer's responsibility to
+     free the allocation of fpChars in whatever manner it was allocated.
+
+     ^bNote: ^b _itemPutCL() must copy the intended string from your buffer
+     at fpChars.  If fpChars is unusually large, _itemPutCL() may cause a VM
+     failure due to insufficient real memory to accomplish a large copy.
+     Typically, this error would manifest itself as an internal error 5302.
+
+     ^bCaution! ^b Do not assume that the address in itmChar will be the
+     same address returned by _itemPutCL().
+
+ ^bExamples^b
+
+     /*
+     *
+     * BootSector( [nDrive] ) -> cBootSecBuff
+     *
+     * Read the boot sector from drive nDrive,
+     * if there is no drive specified, BootSector()
+     * reads drive A.
+     *
+     * (0=A, 1=B, 2=C, etc...)
+     *
+     * Warning: Does not check for errors.
+     *          Needs dos.h & LLIBCA
+     */
+
+     CLIPPER BootSector( void )
+     {
+        ITEM   itmDriveN, itmBuff;
+        BYTEP  bufferP;
+        HANDLE vmBuffer;
+        USHORT uiDriveN = 0;            // Default: A
+        USHORT uiLen = 1024;
+
+        union  REGS  preCallRx, postCallRx;
+        struct SREGS theSegs;
+
+        if ( PCOUNT > 0 )
+        {
+           itmDriveN = _itemParam( 1 );
+
+           if ( _itemType( itmDriveN ) | NUMERIC )
+              uiDriveN = (USHORT) _itemGetNL( itmDriveN );
+
+           _itemRelease( itmDriveN );
+        }
+
+        vmBuffer = _xvalloc( uiLen );
+        bufferP  = _xvlock( vmBuffer );
+
+        segread( &theSegs );
+
+        theSegs.es     = FP_SEG( bufferP );
+        preCallRx.x.bx = FP_OFF( bufferP );
+        preCallRx.x.ax = 0x0201;            // BIOS 02 / 1 sector
+        preCallRx.x.cx = 1;                 // Track 0, Sector 1
+        preCallRx.x.dx = uiDriveN;          // Side 0, Drive uiDriveN
+
+        int86x( 0x13, &preCallRx, &postCallRx, &theSegs );
+
+        if ( postCallRx.x.cflag )
+           ERRMSG( "\r\nERROR on read!" );
+
+        itmBuff = _itemPutCL( NULL, bufferP, uiLen );
+
+        _xvunlock( vmBuffer );
+        _xvfree( vmBuffer );
+
+        _itemRelease( _itemReturn( itmBuff ) );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetC()" "_itemPutC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemPutDS()       Place a date string into an item
+'------------------------------------------------------------------------------
+ ^b_itemPutDS()^b
+ Place a date string into an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemPutDS(
+     ^b                 ITEM itmDate,
+     ^b                 BYTEP fpDate
+     ^b               )
+
+ ^bArguments^b
+
+     ^bitmDate^b is the item into which you want to place the date string.
+     If this item is NULL, a new item will be created.
+
+     ^bfpDate^b is a zero-terminated string representing the date to assign
+     to the new item.  The format of fpDate must be yyyymmdd.
+
+ ^bReturns^b
+
+     A new date item reference containing the date passed.
+
+ ^bDescription^b
+
+     The _itemPutDS() function is used to place a zero-terminated string date
+     into an item.  If the date string is malformed, the new date item will
+     be set to a NULL date.
+
+     ^bCaution! ^b Do not assume that the address in itmDate will be the
+     same address returned by _itemPutDS().
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetDS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemPutL()        Place a logical value into an item
+'------------------------------------------------------------------------------
+ ^b_itemPutL()^b
+ Place a logical value into an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemPutL(
+     ^b                ITEM itmLogic,
+     ^b                BOOL bValue
+     ^b              )
+
+ ^bArguments^b
+
+     ^bitmLogic^b is the item in which you want to place the logical value.
+     If itmLogic is NULL, _itemPutL() will create a new item.
+
+     ^bbValue^b is the logical (boolean) value to place into the item.  As
+     with C, zero represents FALSE, and nonzeros represent TRUE.
+
+ ^bReturns^b
+
+     A new item reference containing the logical value passed.
+
+ ^bDescription^b
+
+     The _itemPutL() function allows you to place a logical value into an
+     item.  Note that if the first parameter passed to _itemPutL() is NULL,
+     _itemPutL() will create a new item and place the logical value lValue in
+     that item.  The data contained in itmLogic is released to SVOS for
+     garbage collection.
+
+     ^bCaution! ^b Do not assume that the address in itmLogic will be the
+     same address returned by _itemPutL().
+
+ ^bExamples^b
+
+     /*
+     *
+     * IsDouble( nNumber ) -> lIsIt
+     *
+     *
+     * Returns true if the number passed is
+     * internally represented as a double.
+     */
+
+     CLIPPER IsDouble( void )
+     {
+        ITEM itmRet, itmNum;
+
+        itmRet = _itemPutL( NULL, FALSE );
+
+        if (PCOUNT > 0)
+        {
+           itmNum = _itemParam( 1 );
+
+           if (_itemType( itmNum ) & DOUBLE)
+              itmRet = _itemPutL( itmRet, TRUE );
+
+           _itemRelease( itmNum );
+        }
+
+        _itemRelease( _itemReturn( itmRet ) );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemPutND()       Places a double-precision number into an item
+'------------------------------------------------------------------------------
+ ^b_itemPutND()^b
+ Places a double-precision number into an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemPutND(
+     ^b                 ITEM itmNumber,
+     ^b                 XDOUBLE dNum
+     ^b               )
+
+ ^bArguments^b
+
+     ^bitmNumber^b is the item into which you want to place the number.  If
+     this item is NULL, _itemPutND() will create a new item.
+
+     ^bdNum^b is the double-precision value to assign to the item.
+
+ ^bReturns^b
+
+     A new double-precision value item reference containing the
+     double-precision value passed.
+
+ ^bDescription^b
+
+     The _itemPutND() function is used to place a numeric double-precision
+     value into an item.  You should use a double-precision value to represent
+     a number when you know that the number falls within the range of
+     1.7E+308 to 1.7E-308.
+
+     ^bCaution! ^b Do not assume that the address in itmNumber will be the
+     same address returned by _itemPutND().
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetND()" "_itemPutNL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemPutNL()       Place a long integer into an item
+'------------------------------------------------------------------------------
+ ^b_itemPutNL()^b
+ Place a long integer into an item
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemPutNL(
+     ^b                 ITEM itmNumber,
+     ^b                 long lNum
+     ^b               )
+
+ ^bArguments^b
+
+     ^bitmNumber^b is the item into which you want to place the number.  If
+     this item is NULL, _itemPutNL() will create a new item.
+
+     ^blNum^b is the signed long integer number to assign to the item.
+
+ ^bReturns^b
+
+     A new signed long integer item reference containing the numeric passed.
+
+ ^bDescription^b
+
+     The _itemPutNL() function is used to place a numeric long integer into an
+     item.  You should use a long integer value to represent a number when you
+     know that the number will fall within the range of -2,147,483,648 to
+     2,147,483,647.
+
+     ^bCaution! ^b Do not assume that the address in itmNumber will be the
+     same address returned by _itemPutNL().
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+     * Count occurrences of a single character
+     * in a CA-Clipper string.
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemGetNL()" "_itemPutND()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemRelease()     Make an item available for garbage collection
+'------------------------------------------------------------------------------
+ ^b_itemRelease()^b
+ Make an item available for garbage collection
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bBOOL _itemRelease(
+     ^b                   ITEM itmRef
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bitmRef^b is the item to release.
+
+ ^bReturns^b
+
+     TRUE if the item passed was successfully released.
+
+ ^bDescription^b
+
+     The _itemRelease() function drops your Extend routine's reference to a
+     CA-Clipper-level item.  If your Extend routine was the only reference to
+     that item, then the item becomes garbage and a candidate for collection.
+     However, if the item is referred to elsewhere, then it will not be
+     collected until its last reference is released.
+
+     ^bWarning! ^b It is vitally important that items be released once you no
+     longer have need for them.  Failure to do so may cause a CA-Clipper
+     stack fault or memory errors.
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+
+
+     * Count occurrences of a single character
+     * in a CA-Clipper string.  Version 1.00
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_evalPutParam()" "_itemArrayGet()" "_itemArrayNew()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemReturn()      Return an item to CA-Clipper
+'------------------------------------------------------------------------------
+ ^b_itemReturn()^b
+ Return an item to CA-Clipper
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bITEM _itemReturn(
+     ^b                  ITEM itmRet
+     ^b                )
+
+ ^bArguments^b
+
+     ^bitmRet^b is the item you wish to return to CA-Clipper.
+
+ ^bReturns^b
+
+     The same ITEM that was posted as the return value.
+
+ ^bDescription^b
+
+     The _itemReturn() function is used to send an item back to CA-Clipper in
+     the form of a return value.
+
+     ^bNote: ^b Once an item is returned to CA-Clipper via _itemReturn(), it
+     is considered as "referenced" by the CA-Clipper runtime system, and
+     therefore, is not a candidate for garbage collection.  However, your C
+     function must still call _itemRelease() after posting an item for return
+     so that once the CA-Clipper variable which received the return value goes
+     out of scope, it ^bdoes^b get properly collected.
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+     * Count occurrences of a single character
+     * in a CA-Clipper string.
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemParam()" "_itemRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemSize()        Determine an item's size
+'------------------------------------------------------------------------------
+ ^b_itemSize()^b
+ Determine an item's size
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bUSHORT _itemSize(
+     ^b                  ITEM itmRef
+     ^b                )
+
+ ^bArguments^b
+
+     ^bitmRef^b is the item whose size you want to determine.
+
+ ^bReturns^b
+
+     _itemSize() returns an unsigned short integer value indicating the size
+     of the item referenced by itmRef.
+
+ ^bDescription^b
+
+     The _itemSize() function returns the storage size required for a
+     particular item.  For each CA-Clipper data type, length is determined
+     according to the table below:
+
+     ^bReturn Size for Each Item Type^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bItem Type                  Size Returned^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ARRAY                      Number of elements in array.
+     CHARACTER or MEMO          Storage length of the string.
+     UNDEF                      Always returns zero.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bNote: ^b Size is determined from a one base, not zero, as are most
+     programming structures in C.  Thus, an array that has an _itemSize() of
+     42 actually contains 42 elements, and not 43 as one might expect.  An
+     array of length zero, however, may exist.
+
+ ^bExamples^b
+
+     /*
+     *
+     * CharCount( cString, cChar )
+     *
+     * Count occurrences of a single character
+     * in a CA-Clipper string.
+     *
+     */
+
+     CLIPPER CharCount( void )
+     {
+        USHORT uiChars = 0;
+        USHORT uiLen;
+        USHORT i;
+        HANDLE vmhString;
+
+        BYTEP  cStringP;
+        BYTE   cFindMe;
+
+        ITEM   itmString, itmFindMe, itmRet;
+
+        if (PCOUNT != 2)
+        {
+           _ret();               // NOTE: Withhold service
+           return;               // Early return!
+        }
+
+        itmRet    = _itemPutNL( NULL, 0 );
+        itmString = _itemParam( 1 );
+        itmFindMe = _itemParam( 2 );
+
+        if ( (_itemType( itmString ) == CHARACTER) &&
+              (_itemType( itmFindMe ) == CHARACTER) )
+        {
+           _itemCopyC( itmFindMe, &cFindMe, 1 );
+
+           vmhString = _xvalloc( _itemSize( itmString ), NULL );
+           cStringP = _xvlock( vmhString );
+
+           uiLen = _itemCopyC( itmString, cStringP, NULL );
+
+           for( i = 0; i < uiLen; i++ )
+           {
+              if ( cStringP[i] == cFindMe )
+                 uiChars++;
+           }
+
+           _xvunlock( vmhString );
+           _xvfree( vmhString );
+
+           itmRet = _itemPutNL( itmRet, (long)uiChars );
+
+        }
+
+        _itemReturn( itmRet );
+
+        _itemRelease( itmRet );
+        _itemRelease( itmString );
+        _itemRelease( itmFindMe );
+
+        return;
+     }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemType()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _itemType()        Determine an item's type
+'------------------------------------------------------------------------------
+ ^b_itemType()^b
+ Determine an item's type
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "item.api"
+     ^bUSHORT _itemType(
+     ^b                  ITEM itmRef
+     ^b                )
+
+ ^bArguments^b
+
+     ^bitmRef^b is the item whose type you want to determine.
+
+ ^bReturns^b
+
+     One of a number of manifest constants that indicate the item's
+     CA-Clipper type, as shown in the following section.
+
+ ^bDescription^b
+
+     The _itemType() function is used to determine an item's CA-Clipper type.
+     The returned type corresponds to the table below:
+
+     ^bItem Type Manifest Constants from Extend.api^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bManifest Constant       CA-Clipper Type^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     UNDEF                   NIL or simply undefined
+     CHARACTER               Character string
+     NUMERIC                 Numeric (long or double)
+     LOGICAL                 Boolean value
+     DATE                    Date value
+     MPTR                    Item is passed by reference
+     MEMO                    Memo field
+     ARRAY                   CA-Clipper-level array
+     BLOCK                   Code block
+     DOUBLE                  Double numeric
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     These constants do not distinctly represent CA-Clipper types.  Numeric
+     values are divided into word and double, and system-defined objects as
+     well as object type (classname) are not determinable.  CA-Clipper-level
+     objects are identified as arrays by the Item API.
+
+     ^bNote: ^b Computer Associates does not recommend use of the Item API to
+     modify object values, as such modifications would violate an object's
+     interface and encapsulation.
+
+     An item's _itemType() may be a combination of manifest constants from
+     the list above.  For example, an item may be a character string passed
+     by reference.  In this case, the flags CHARACTER and MPTR would be set.
+     A call to _itemType() for a numeric such as 42.102 would set both
+     NUMERIC and DOUBLE flags.  To test for multiple flags, simply OR them
+     together (e.g., CHARACTER | MPTR).
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Item.api.
+
+!seealso: "_itemSize()" 
+'------------------------------------------------------------------------------
+
+
+

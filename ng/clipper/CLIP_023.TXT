@@ -1,0 +1,66 @@
+'------------------------------------------------------------------------------
+^BPARAMETERS^B
+
+    PARAMETERS identifies memory variables that receive passed values or
+    references.
+
+^USyntax^U
+
+    PARAMETERS <parameter list>
+
+^UArgument^U
+
+    <memvar list> is one or more receiving memory variables separated by
+    commas.  The number of receiving variables does not have to match the
+    number of parameters passed.
+
+^UUsage^U
+
+    Parameters are defined as either format or actual.  Formal parameters
+    are the receiving memory variables specified as arguments of the
+    PARAMETERS statement.  Actual parameters are the arguments of the
+    calling DO...WITH or user-defined function.
+
+    There are two methods of passing parameters, by value or by reference.
+    By value means that the actual parameter is evaluated and the result is
+    placed in a memory location.  When the subsequent PARAMETERS executes,
+    the value is transferred to the receiving variable.  Passing by
+    reference, by contrast, means that a pointer to the location of the
+    actual parameter is passed instead of the value.  Subsequent changes to
+    the formal parameter are actually changes to the actual parameter,
+    hence the term passing by reference.
+
+    Note that in Clipper there is no argument checking and therefore no
+    requirement that the number of actual parameters match the number of
+    formal parameters.  To determine the number of actual parameters passed
+    use PCOUNT().
+
+    ^BPassing parameters to procedures and user-defined functions^B: The
+    following rules apply when you pass memory variables and arrays to
+    procedures and user-defined functions:
+
+    1.  Memory variables and array identifiers are passed by reference to
+        procedures.  Array elements, expressions, variables within
+        parentheses, and fields are passed by value (fields must be bounded
+        by parentheses).
+
+    2.  Parameters are passed by value to functions by default; however,
+        they can be passed by reference if the variable is preceded by the
+        "at" sign (@).  Arrays are always passed by reference; array
+        elements can only be passed by value.
+
+    ^BPassing parameters from the DOS command line^B: You can pass multiple
+    character strings to your program from the DOS command line.  The
+    character strings must be separated by spaces.  A parameter bounded by
+    quotes is passed as one string.  For example:
+
+    ^RC>PROG "CLIPPER COMPILER" 5
+
+    The routine that receives parameters from the DOS command should test
+    the number of passed parameters with PCOUNT() to assure that critical
+    parameters are defined.
+!seealso: ???.ngo:"DO" clip_024.ngo:"PRIVATE" clip_025.ngo:"PROCEDURE" clip_026.ngo:"PUBLIC" clip_072.ngo:"SET PROCEDURE" clip_122.ngo:"PCOUNT()" 
+'------------------------------------------------------------------------------
+
+
+

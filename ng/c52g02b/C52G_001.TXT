@@ -1,0 +1,2110 @@
+!short: ^bOverview -- Compiler Error Messages
+'------------------------------------------------------------------------------
+     This section is a summary of error messages possible when compiling a
+     program file (.prg) with CLIPPER.EXE.  The messages are divided into
+     categories according to severity and the point where the error occurs in
+     the compilation process.  Each category is described below, followed by
+     a listing of all messages organized by category.
+
+     The listed compiler error and warning messages are a subset of all the
+     possible messages the compiler can display, and represent the most
+     likely problems that will be encountered during compilation.
+
+ ^bCompiler Warning Messages^b
+
+     Compiler warning messages indicate potential program errors that are not
+     fatal to the compilation process.  After a warning, compilation
+     continues with no effect on the generation of the output object (.OBJ)
+     file.  The DOS return code is not set when a compiler warning is
+     generated.
+
+     The general format of a compiler warning message is as follows:
+
+     ^b<filename>(<line>):  Error C1xxx <message text>[: <symbol>]
+
+ ^bCompiler Error Messages^b
+
+     Compiler error messages identify program errors that may be fatal to the
+     compilation process.  After a compilation error, the compiler attempts
+     to recover and continue.  In most cases, however, recovery will not be
+     possible and compilation terminates with no object file generated.  The
+     DOS return code is set to 1 when a compiler error is generated.
+
+     The general format of a compiler error message is as follows:
+
+     ^b<filename>(<line>):  Error C2xxx <message text>[: <symbol>]
+
+ ^bCompiler Fatal Error Messages^b
+
+     Compiler fatal error messages indicate a very serious problem has
+     occurred during the compilation of a program file (.prg). Because of the
+     severity, compilation terminates immediately and no object file is
+     generated.  The DOS return code is set to 1 when a fatal compiler error
+     is generated.
+
+     The general format of a fatal error message is as follows:
+
+     ^b<filename>(<line>):  Error C3xxx <message text>[: <symbol>]
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bCompiler Warning Messages
+!short:
+!short: C1001        Return statement with no value in function
+'------------------------------------------------------------------------------
+ ^bC1001   Return statement with no value in function^b
+
+     ^bExplanation:^b  You specified a RETURN statement with no return value
+     within a function definition.  In CA-Clipper, all function definitions
+     should return a value even though the return value may not be used in
+     the calling routine.  If you specify a RETURN statement without a return
+     value, the compiler generates NIL as the default.
+
+     ^bAction:^b  Change the declaration from FUNCTION to PROCEDURE or add
+     the missing return value to the erroneous RETURN statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C1002        Procedure returns value
+'------------------------------------------------------------------------------
+ ^bC1002   Procedure returns value^b
+
+     ^bExplanation:^b  You specified a RETURN statement with a return value
+     within a procedure definition.  In CA-Clipper, function definitions may
+     return values but procedure definitions may not. If you specify a return
+     value within a procedure definition, the compiler generates this warning
+     and the runtime system returns the specified value in the same way as
+     for a function definition.
+
+     ^bAction:^b  Change the declaration from PROCEDURE to FUNCTION or remove
+     the return value from the erroneous RETURN statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C1003        Ambiguous variable reference
+'------------------------------------------------------------------------------
+ ^bC1003   Ambiguous variable reference^b
+
+     ^bExplanation:^b  You referred to an undeclared or unaliased variable
+     when compiling with the /W option.  This includes variables you specify
+     within PRIVATE, PUBLIC, or PARAMETERS statements and not declared MEMVAR
+     or referred with the MEMVAR -> alias.  Declaration statements include
+     FIELD, LOCAL, MEMVAR, or STATIC.
+
+     There are several special cases where this warning can occur:
+
+     1. When compiling program files (.prg) containing @...GET, CLEAR, CLEAR
+        ALL, READ, or READ SAVE commands, a warning will be generated for the
+        system variable GetList.
+
+     2. When compiling program files (.prg) containing database commands such
+        as AVERAGE or SUM, a warning will be generated for undeclared result
+        variables.
+
+     ^bNote: ^b This warning is often followed by the "C1004 Ambiguous
+     reference, assuming memvar" warning message.
+
+     ^bAction:^b  In general, declare all variables used in a procedure or
+     function.  If the variable is a database field, specify the variable
+     prefaced by the work area or FIELD -> alias, declare it within a FIELD
+     statement.
+
+     If the warning refers to the system variable GetList, declare it within
+     a MEMVAR statement either at the top of the current procedure or
+     function, or at the top of the current program file (.prg) if you are
+     compiling with the /N option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C1004        Ambiguous variable reference, assuming memvar
+'------------------------------------------------------------------------------
+ ^bC1004   Ambiguous variable reference, assuming memvar^b
+
+     ^bExplanation:^b  You made a reference to an undeclared or unaliased
+     variable when compiling with the /W option, but the context of the
+     program indicated that a MEMVAR declaration could be assumed.  This
+     warning usually follows a "C1003 Ambiguous variable reference" warning
+     message.
+
+     ^bAction:^b  In general, declare all variables used in a procedure or
+     function.  If the variable is a database field, specify the variable
+     prefaced by the work area or FIELD -> alias, or declare it within a
+     FIELD statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C1005        Redefinition or duplicate definition of #define
+'------------------------------------------------------------------------------
+ ^bC1005   Redefinition or duplicate definition of #define^b
+
+     ^bExplanation:^b  You have attempted to #define an identifier that is
+     already defined.  This happens when you redefine an identifier without
+     first undefining it with #undef.  This problem can occur because you
+     simply omitted the #undef directive, an unintended side effect of
+     including a header file that defined the same identifier, or
+     architectural problems in the use of #define directives in the current
+     program file (.prg).
+
+     ^bAction:^b  Check first to see if you intended to redefine the
+     specified identifier.  If you did, add a #undef directive above the
+     #define directive.  If this is not the source of the problem, check to
+     see if the identifier was first defined or redefined in any header file
+     used by the current program file (.prg).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C1007        Function does not end with RETURN
+'------------------------------------------------------------------------------
+ ^bC1007   Function does not end with RETURN^b
+
+     ^bExplanation:^b  You have defined a function that ends with a statement
+     other than RETURN.  This warning can occur if you have specified a
+     statement earlier in the function definition or there is no RETURN
+     statement in the function definition.  In the case where you haven't
+     specified a RETURN statement, the compiler generates NIL as the default
+     return value.
+
+     ^bAction:^b  Check first to see if there is a RETURN statement anywhere
+     in the function definition and add one if there isn't.  If you have
+     specified one or more RETURN statements within the function, add a
+     RETURN NIL to the end of the function definition.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bCompiler Error Messages
+!short:
+!short: C2001        Syntax error
+'------------------------------------------------------------------------------
+ ^bC2001   Syntax error^b
+
+     ^bExplanation:^b  A syntax error has occurred somewhere in the current
+     statement.
+
+     ^bAction:^b  The correct syntax for all commands, functions, and
+     statements can be found in the Language Reference chapter of the
+     Reference guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2002        Statement unterminated at end of line
+'------------------------------------------------------------------------------
+ ^bC2002   Statement unterminated at end of line^b
+
+     ^bExplanation:^b  A syntax error has occurred at the end of the current
+     statement.  This usually occurs when there is an unterminated expression
+     or unbalanced parentheses at the end of the statement.
+
+     ^bAction:^b  Check the statement carefully, correct, and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2003        Syntax error in statement
+'------------------------------------------------------------------------------
+ ^bC2003   Syntax error in statement^b
+
+     ^bExplanation:^b  A syntax error has been encountered somewhere in the
+     current statement.
+
+     ^bAction:^b  The correct syntax for all commands, functions, and
+     statements can be found in the Language Reference chapter of the
+     Reference guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2004        Illegal character
+'------------------------------------------------------------------------------
+ ^bC2004   Illegal character^b
+
+     ^bExplanation:^b  You specified an illegal character within a program
+     statement and not within a literal string.  Legal characters for
+     identifiers and keywords include (_, a-z, A-Z, ^C84, ^C8E, ^C94, ^C99,
+     ^C81, ^C9A, ^CE1) for the first character followed by (_, a-z, A-Z, 0-9,
+     ^C84, ^C8E, ^C94, ^C99, ^C81, ^C9A, ^CE1).
+
+     ^bAction:^b  Remove the offending character from the program statement
+     and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2005        Statement not recognized
+'------------------------------------------------------------------------------
+ ^bC2005   Statement not recognized^b
+
+     ^bExplanation:^b  The current statement cannot be not recognized by the
+     compiler.  This happens when a command is not recognized by the
+     preprocessor and is passed to the compiler without translation.
+
+     This error commonly happens when you fail to specify a required comma
+     separator for certain statement options such as items in a list.  Some
+     examples are the REPLACE command which requires multiple WITH clauses
+     separated by commas and the COPY TO command which requires fields
+     specified as a comma-separated list.
+
+     ^bAction:^b  Correct the statement containing the erroneous command and
+     recompile.  If you are defining your own command, check the command
+     definition to determine why the specified command is not translated.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2006        Statement not allowed outside procedure or function
+'------------------------------------------------------------------------------
+ ^bC2006   Statement not allowed outside procedure or function^b
+
+     ^bExplanation:^b  You specified a statement other than a FIELD, MEMVAR,
+     or STATIC before the first PROCEDURE or FUNCTION statement and the
+     current program file (.prg) was compiled with the /N option.
+
+     ^bAction:^b  Remove the erroneous statement or move it inside the
+     appropriate procedure or function definition.  Alternatively, compile
+     without the /N option to force the compiler to automatically generate a
+     procedure definition with the same name as the program file (.prg).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2007        Unterminated string
+'------------------------------------------------------------------------------
+ ^bC2007   Unterminated string^b
+
+     ^bExplanation:^b  You specified a literal character string without a
+     terminating quotation mark.  This error may be caused by the inadvertent
+     use of an apostrophe instead of a single quote mark, or it may be a
+     simple omission.
+
+     ^bAction:^b  Add the terminating quotation mark.  Valid character string
+     delimiters include single quotes ('), double quotes (""), and square
+     brackets ([]).
+
+     ^bNote:^b  Use of square brackets is strongly discouraged.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2009        Invalid use of @ (pass-by-reference) operator
+'------------------------------------------------------------------------------
+ ^bC2009   Invalid use of @ (pass-by-reference) operator^b
+
+     ^bExplanation:^b  You applied the pass-by-reference operator (@) to an
+     array element or a variable explicitly declared with the FIELD
+     statement.  The CA-Clipper runtime system passes both array elements and
+     field variables by value in all cases.
+
+     ^bAction:^b  If you applied the @ operator to a field variable, pass the
+     field by value.  Fields have global scope, so there may no reason to
+     pass the field at all.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2010        Incorrect number of arguments
+'------------------------------------------------------------------------------
+ ^bC2010   Incorrect number of arguments^b
+
+     ^bExplanation:^b  You called a built-in CA-Clipper function with the
+     wrong number of arguments.  Unlike calls to user-defined functions or
+     non-built-in functions, the CA-Clipper compiler performs argument
+     checking on built-in functions.  Refer to the Reserved Word appendix in
+     the Error Messages and Appendices guide for complete list of predefined
+     functions.
+
+     ^bAction:^b  Correct the call to the built-in function with the correct
+     number of arguments and recompile.  The correct syntax for all functions
+     can be found in the Language Reference chapter of the Reference guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2011        EXIT statement with no loop in sight
+'------------------------------------------------------------------------------
+ ^bC2011   EXIT statement with no loop in sight^b
+
+     ^bExplanation:^b  You specified an EXIT statement outside of a DO WHILE
+     or FOR loop.  EXIT statements are valid only between a DO WHILE and an
+     ENDDO statement or between a FOR and a NEXT statement.  This type of
+     error usually occurs because of a nesting error when specifying control
+     structures.
+
+     ^bAction:^b  Check the flow of control in your program's logic for a
+     missing DO WHILE or FOR statement above the erroneous EXIT statement or
+     remove the erroneous statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2012        LOOP statement with no loop in sight
+'------------------------------------------------------------------------------
+ ^bC2012   LOOP statement with no loop in sight^b
+
+     ^bExplanation:^b  You specified a LOOP statement outside of a DO WHILE
+     or FOR loop.  LOOP statements are valid only between a DO WHILE and an
+     ENDDO statement or between a FOR and a NEXT statement.  This type of
+     error usually occurs because of a nesting error when specifying control
+     structures.
+
+     ^bAction:^b  Check the flow of control in your program's logic for a
+     missing DO WHILE or FOR statement above the erroneous LOOP statement or
+     remove the erroneous statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2013        EXIT statement violates enclosing SEQUENCE
+'------------------------------------------------------------------------------
+ ^bC2013   EXIT statement violates enclosing SEQUENCE^b
+
+     ^bExplanation:^b  You specified an EXIT statement between BEGIN SEQUENCE
+     and RECOVER statements without an enclosing  DO WHILE or FOR loop.  This
+     could happen for several reasons:
+
+     1. You specified an EXIT statement with no enclosing DO WHILE or FOR
+        control structure within a SEQUENCE.
+
+     2. You are attempting to EXIT from a DO WHILE or FOR control structure
+        enclosing the current SEQUENCE from within the SEQUENCE.
+
+     ^bAction:^b
+
+     1. Check to determine if you omitted the DO WHILE or FOR control
+        structure statements.  If so, add the control structure statements.
+
+     2. Check to determine if you intended to EXIT from a control structure
+        enclosing the current SEQUENCE.  If so, you must BREAK to the RECOVER
+        or the END statements and then EXIT.
+
+     3. Remove the offending EXIT statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2014        LOOP statement violates enclosing SEQUENCE
+'------------------------------------------------------------------------------
+ ^bC2014   LOOP statement violates enclosing SEQUENCE^b
+
+     ^bExplanation:^b  You specified a LOOP statement within BEGIN SEQUENCE
+     and RECOVER statements without an enclosing DO WHILE or FOR loop.  This
+     could happen for several reasons:
+
+     1. You specified a LOOP statement with no enclosing DO WHILE or FOR
+        control structure within a SEQUENCE.
+
+     2. You are attempting to LOOP to a DO WHILE or FOR statement outside the
+        current SEQUENCE from within the SEQUENCE.
+
+     ^bAction:^b
+
+     1. Check to determine if you omitted the DO WHILE or FOR control
+        structure statements.  If so, add the control structure statements.
+
+     2. Check to determine if you intended to LOOP to a control structure
+        enclosing the current SEQUENCE.  If so, you must BREAK to the RECOVER
+        or the END statements and then LOOP.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2015        Illegal initializer
+'------------------------------------------------------------------------------
+ ^bC2015   Illegal initializer^b
+
+     ^bExplanation:^b  You declared a STATIC variable with an initializer
+     that is not a literal value.  Because a static initializer is computed
+     at compile-time and assigned before the beginning of execution, it must
+     consist entirely of constants and simple operators (no variables or
+     function calls).  Initializers for variables of other storage classes
+     (e.g., LOCAL, PRIVATE, and PUBLIC) can be any valid CA-Clipper
+     expression.
+
+     ^bAction:^b
+
+     1. Change the static initializer to a constant or literal value and
+        recompile.
+
+     2. If you want to initialize a static variable with an expression, you
+        must do it within the body of a function or procedure.  The following
+        method shows how it can be done:
+
+        STATIC cVar
+        .
+        .
+        .
+        IF cVar == NIL
+           cVar := <xExp>
+        ENDIF
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2016        Name conflicts with previous declaration
+'------------------------------------------------------------------------------
+ ^bC2016   Name conflicts with previous declaration^b
+
+     ^bExplanation:^b  You specified a PRIVATE, PUBLIC, or PARAMETER
+     statement containing a variable with the same name as a declared LOCAL
+     STATIC, FIELD or MEMVAR currently within scope.  If you use the /N (no
+     automatic procedure) option, this includes any filewide declarations
+     that occur before the first PROCEDURE or FUNCTION declaration.
+
+     ^bAction:^b  Change the erroneous variable name to another name.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2017        Duplicate variable declaration
+'------------------------------------------------------------------------------
+ ^bC2017   Duplicate variable declaration^b
+
+     ^bExplanation:^b  You declared a variable with the same name as a
+     previous variable of the same scope.  For example, STATIC x, followed by
+     LOCAL x.
+
+     ^bAction:^b  This usually occurs when declaring many variables in
+     several declaration statements and a variable is specified twice.
+     Remove one of the duplicate declarations.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2018        Outer block variable out of reach
+'------------------------------------------------------------------------------
+ ^bC2018   Outer block variable out of reach^b
+
+     ^bExplanation:^b  Within a nested code block, an inner block contains a
+     reference to a variable declared as a parameter within the outer block.
+
+     ^bAction:^b  Put the parameter declaration in the same block that
+     references the variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2019        CALL of CA-Clipper procedure or function
+'------------------------------------------------------------------------------
+ ^bC2019   CALL of CA-Clipper procedure or function^b
+
+     ^bExplanation:^b  You invoked a previously declared procedure or
+     function with the CALL command.  CALL is designed to invoke separately
+     compiled or assembled routines and not CA-Clipper-compiled procedures
+     and functions.
+
+     ^bAction:^b
+
+     1. Rename either the external routine name or the conflicting procedure
+        or function name.
+
+     2. If you are compiling multiple program files (.prg) into a single
+        object file (.OBJ), check to see if the conflicting procedure or
+        function is in another program file (.prg).  If it is and not called
+        by procedures and functions outside of the program file (.prg),
+        consider declaring it a STATIC FUNCTION or PROCEDURE.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2020        Mistreatment of CALLed symbol
+'------------------------------------------------------------------------------
+ ^bC2020   Mistreatment of CALLed symbol^b
+
+     ^bExplanation:^b  A previously CALLed procedure has been invoked with
+     either a DO statement or a function call.
+
+     ^bAction:^b  Make sure that routines you intend to CALL do not have the
+     same names as CA-Clipper routines defined in your program.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2021        Redefinition of CA-Clipper procedure or function
+'------------------------------------------------------------------------------
+ ^bC2021   Redefinition of CA-Clipper procedure or function^b
+
+     ^bExplanation:^b  You specified a PROCEDURE or FUNCTION declaration for
+     a procedure or function name already declared within the same scope.
+     Procedures and functions in CA-Clipper are either public (visible to all
+     other routines in a program) or static (visible only to routines
+     declared within the same program file).
+
+     ^bAction:^b  This error usually is generated because of a name conflict
+     between two public functions.  If both functions are indeed public
+     functions, rename one of them.  If either or both could be STATIC,
+     declare them accordingly.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2022        Redefinition of predefined function
+'------------------------------------------------------------------------------
+ ^bC2022   Redefinition of predefined function^b
+
+     ^bExplanation:^b  You declared a function with the same name as a
+     predefined CA-Clipper function.  Unlike ordinary CA-Clipper functions,
+     predefined function names are reserved and cannot be redefined.  Refer
+     to the Reserved Word appendix in the Error Messages and Appendices guide
+     for complete list of predefined functions.
+
+     ^bAction:^b  Rename your function or procedure to resolve the conflict
+     and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2023        CA-Clipper definition of CALLed symbol
+'------------------------------------------------------------------------------
+ ^bC2023   CA-Clipper definition of CALLed symbol^b
+
+     ^bExplanation:^b  A previously CALLed procedure name has been declared
+     in a PROCEDURE or FUNCTION statement.
+
+     ^bAction:^b  This conflict can only be resolved by renaming either the
+     CALLed procedure name or the declared procedure or function name.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2024        Unclosed control structures
+'------------------------------------------------------------------------------
+ ^bC2024   Unclosed control structures^b
+
+     ^bExplanation:^b  You specified a control structure without specifying
+     the terminating END statement.
+
+     ^bAction:^b  Check all BEGIN SEQUENCE, DO CASE, DO WHILE, FOR, and IF
+     statements for corresponding END statements and make sure that all
+     structures are properly nested.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2025        ELSE does not match IF
+'------------------------------------------------------------------------------
+ ^bC2025   ELSE does not match IF^b
+
+     ^bExplanation:^b  You specified an ELSE statement outside an IF...ENDIF
+     control structure.  ELSE is part of the IF control structure syntax and,
+     therefore, cannot occur outside of the structure.
+
+     ^bAction:^b  Remove the offending ELSE statement, or fix the nesting
+     error and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2026        ELSEIF does not match IF
+'------------------------------------------------------------------------------
+ ^bC2026   ELSEIF does not match IF^b
+
+     ^bExplanation:^b  You specified an ELSEIF statement outside an
+     IF...ENDIF control structure.  ELSEIF is part of the IF control
+     structure syntax and, therefore, cannot occur outside of the structure.
+
+     ^bAction:^b  Remove the offending ELSEIF statement, or fix the nesting
+     error and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2027        ENDIF does not match IF
+'------------------------------------------------------------------------------
+ ^bC2027   ENDIF does not match IF^b
+
+     ^bExplanation:^b  You specified an ENDIF statement without a
+     corresponding IF statement.  ENDIF is part of the IF control structure
+     syntax and, therefore, cannot occur outside of the structure.  This
+     error may be due to improperly nested IF structures.
+
+     ^bAction:^b  Remove the offending ENDIF statement, or fix the nesting
+     error and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2028        ENDDO does not match WHILE
+'------------------------------------------------------------------------------
+ ^bC2028   ENDDO does not match WHILE^b
+
+     ^bExplanation:^b  You specified an ENDDO statement without a
+     corresponding DO WHILE statement.  ENDDO is part of the DO WHILE control
+     structure syntax and, therefore, cannot occur outside of the structure.
+     This error may be due to improperly nested DO WHILE structures.
+
+     ^bAction:^b  Remove the offending ENDDO statement, or fix the nesting
+     error and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2029        NEXT does not match FOR
+'------------------------------------------------------------------------------
+ ^bC2029   NEXT does not match FOR^b
+
+     ^bExplanation:^b  You specified a NEXT statement without a corresponding
+     FOR statement.  NEXT is part of the FOR control structure syntax and,
+     therefore, cannot occur outside of the structure.  This error may be due
+     to improperly nested FOR...NEXT structures.
+
+     ^bAction:^b  Remove the offending NEXT statement, or fix the nesting
+     error and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2030        ENDCASE does not match DO CASE
+'------------------------------------------------------------------------------
+ ^bC2030   ENDCASE does not match DO CASE ^b
+
+     ^bExplanation:^b  You specified an ENDCASE statement without a
+     corresponding DO CASE statement.  ENDCASE is part of the DO CASE control
+     structure syntax and, therefore, cannot occur outside of the structure.
+     This error may be due to improperly nested DO CASE structures.
+
+     ^bAction:^b  Remove the offending ENDCASE statement, or fix the nesting
+     error and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2031        CASE or OTHERWISE is not immediately within DO CASE
+'------------------------------------------------------------------------------
+ ^bC2031   CASE or OTHERWISE is not immediately within DO CASE^b
+
+     ^bExplanation:^b  You specified a  CASE or OTHERWISE statement that does
+     not fall within a DO CASE...ENDCASE control structure.  CASE and
+     OTHERWISE are part of the DO CASE control structure syntax and, as such,
+     cannot occur outside of the structure.
+
+     ^bAction:^b  Check to see if the CASE structure begins with a DO CASE
+     statement adding one if it is missing.  Remove the offending CASE or
+     OTHERWISE statements and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2032        TEXT statement error
+'------------------------------------------------------------------------------
+ ^bC2032   TEXT statement error^b
+
+     ^bExplanation:^b  A problematic TEXT statement has been encountered.
+
+     ^bAction:^b  This error might occur if you attempt to redefine the TEXT
+     command with a translation directive and have some error in the
+     underlying output routine.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2033        Missing ENDTEXT
+'------------------------------------------------------------------------------
+ ^bC2033   Missing ENDTEXT^b
+
+     ^bExplanation:^b  You specified a TEXT statement without a corresponding
+     ENDTEXT statement.  TEXT is similar to a control structure; it must be
+     terminated with an ENDTEXT statement.
+
+     ^bAction:^b  Add an ENDTEXT statement to the end of the TEXT block.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2034        Formal parameters already declared
+'------------------------------------------------------------------------------
+ ^bC2034   Formal parameters already declared^b
+
+     ^bExplanation:^b  You declared a function or procedure with both
+     declared parameters (e.g., FUNCTION (a, b, c)) followed by a PARAMETERS
+     statement.  Specifying only one of the two parameter definitions is
+     legal.
+
+     ^bAction:^b  Move all of the parameters listed in the PARAMETERS
+     statement to the procedure or function declaration statement and then
+     remove the PARAMETERS statement.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2035        Invalid declaration
+'------------------------------------------------------------------------------
+ ^bC2035   Invalid declaration^b
+
+     ^bExplanation:^b  An error was detected in a variable declaration
+     statement (e.g., LOCAL, MEMVAR).
+
+     ^bAction:^b  Check the indicated declaration statement for proper
+     syntax.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2036        Mayhem in CASE handler
+'------------------------------------------------------------------------------
+ ^bC2036   Mayhem in CASE handler^b
+
+     ^bExplanation:^b  You specified statements between a DO CASE statement
+     and the first CASE or OTHERWISE statement.  No statements are allowed
+     between these statements.
+
+     ^bAction:^b  Either remove the statements or move them to the proper
+     case handling block.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2037        Invalid procedure name in DO statement
+'------------------------------------------------------------------------------
+ ^bC2037   Invalid procedure name in DO statement^b
+
+     ^bExplanation:^b  You specified a DO statement with an <idProcedure>
+     argument that is not a valid identifier.  Identifiers in CA-Clipper must
+     begin with a letter or an underscore which may be followed by any
+     combination of letters, numbers, or underscores.
+
+     ^bAction:^b  Correct the procedure name and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2038        Invalid target name in CALL statement
+'------------------------------------------------------------------------------
+ ^bC2038   Invalid target name in CALL statement^b
+
+     ^bExplanation:^b  You specified a CALL statement with an <idProcedure>
+     argument that is not a valid identifier.  Identifiers in CA-Clipper must
+     begin with a letter or an underscore which may be followed by any
+     combination of letters, numbers, or underscores.
+
+     ^bAction:^b  Correct the procedure name and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2039        Invalid selector in send
+'------------------------------------------------------------------------------
+ ^bC2039   Invalid selector in send^b
+
+     ^bExplanation:^b  An unknown message has been sent (with the : operator)
+     to an object class.  The general reason for this error is a misspelled
+     method name or the message was sent to an object of the wrong class.
+
+     ^bAction:^b  The Language Reference chapter of the Reference guide has a
+     complete list of methods for each class of objects.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2040        Invalid unary inline operator
+'------------------------------------------------------------------------------
+ ^bC2040   Invalid unary inline operator^b
+
+     ^bExplanation:^b  The expression in question is not specified correctly.
+
+     ^bAction:^b  Examine the expression carefully and correct any obvious
+     mistakes.  Also, use parentheses to clarify the expression.  This
+     increases readability and makes problems more evident.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2041        Invalid binary operator
+'------------------------------------------------------------------------------
+ ^bC2041   Invalid binary operator^b
+
+     ^bExplanation:^b  The expression in question is not specified correctly.
+
+     ^bAction:^b  Examine the expression carefully and correct any obvious
+     problems.  Also try using parentheses to clarify the expression and make
+     it more readable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2042        Invalid lvalue
+'------------------------------------------------------------------------------
+ ^bC2042   Invalid lvalue^b
+
+     ^bExplanation:^b  You specified a value on the left side of an
+     assignment operator that is not a valid identifier.  Only identifiers
+     can be assigned values or references.
+
+     The error could happen if you attempted to use the inline assignment
+     operator (:=) when you intended to use the compare operator (==), or it
+     may be a more obvious error (e.g., 5 := y + 10).
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2043        Invalid alias expression
+'------------------------------------------------------------------------------
+ ^bC2043   Invalid alias expression^b
+
+     ^bExplanation:^b  You specified an identifier on the left side of the
+     alias operator (->) that is not a valid alias name.  The left side of
+     the alias operator can only be an identifier or a macro expression.
+
+     ^bAction:^b  Check to see that you haven't specified an expression as
+     the alias name.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2044        Invalid function name
+'------------------------------------------------------------------------------
+ ^bC2044   Invalid function name^b
+
+     ^bExplanation:^b  You called a function with a name that is not a valid
+     identifier.  Identifiers in CA-Clipper must begin with a letter or an
+     underscore which may be followed by any combination of letters, numbers,
+     or underscores.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2045        Target name was used previously in non-CALL context
+'------------------------------------------------------------------------------
+ ^bC2045   Target name was used previously in non-CALL context^b
+
+     ^bExplanation:^b  You specified a CALL to a procedure or function that
+     you previously invoked with a DO statement or a function call.
+
+     ^bAction:^b  Make sure that routines you CALL do not have the same names
+     as CA-Clipper routines defined in your program.  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2046        SEQUENCE nesting error
+'------------------------------------------------------------------------------
+ ^bC2046   SEQUENCE nesting error^b
+
+     ^bExplanation:^b  You specified a BEGIN SEQUENCE...END control structure
+     with a nesting error.  Control structures must be nested properly.
+     Furthermore, RECOVER and BREAK cannot be used outside of a BEGIN
+     SEQUENCE...END structure.
+
+     ^bAction:^b  Check to make sure that each BEGIN has a matching END and
+     that any other control structure used within the SEQUENCE are also
+     closed with a matching END.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2047        GET contains complex macro
+'------------------------------------------------------------------------------
+ ^bC2047   GET contains complex macro^b
+
+     ^bExplanation:^b  You attempted to GET a macro expression (e.g.,
+     &(<expression>)).  Legally, you may GET a memory, field, or macro
+     variable.
+
+     ^bAction:^b
+
+     1. Assign the macro expression to a variable and GET the variable.
+
+     2. Check to see if you meant to GET a macro variable and change the
+        macro expression to a macro variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2048        GET contains both macro and declared symbol references
+'------------------------------------------------------------------------------
+ ^bC2048   GET contains both macro and declared symbol references^b
+
+     ^bExplanation:^b  An attempt to specify the GET variable using a
+     declared variable in combination with a macro operator (&) has been
+     encountered.
+
+     ^bAction:^b  Assign the expression to a variable and then GET the
+     variable.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2049        Code block contains complex macro
+'------------------------------------------------------------------------------
+ ^bC2049   Code block contains complex macro^b
+
+     ^bExplanation:^b  An attempt to use a macro expression (e.g.,
+     &(<expression>)) within a code block has been encountered.
+
+     ^bAction:^b  Assign the macro expression to a variable and use the
+     variable in the code block.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2050        Code block contains both macro and declared symbol references
+'------------------------------------------------------------------------------
+ ^bC2050   Code block contains both macro and declared symbol references^b
+
+     ^bExplanation:^b  A code block has been encountered containing a
+     declared variable used in combination with the macro operator (&).
+
+     ^bAction:^b  Assign the expression to a variable and use the variable in
+     the code block.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2051        LOCAL declaration follows executable statement
+'------------------------------------------------------------------------------
+ ^bC2051   LOCAL declaration follows executable statement^b
+
+     ^bExplanation:^b  You specified a LOCAL statement following an
+     executable statement.  All variable declaration statements (FIELD,
+     LOCAL, MEMVAR, STATIC) must precede any executable statements in a
+     procedure or function definition.
+
+     ^bAction:^b  Move the LOCAL statement before any executable statements
+     within the procedure or function definition and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2052        MEMVAR declaration follows executable statement
+'------------------------------------------------------------------------------
+ ^bC2052   MEMVAR declaration follows executable statement ^b
+
+     ^bExplanation:^b  You specified a MEMVAR statement following an
+     executable statement.  All variable declaration statements must precede
+     any executable statements in a procedure or function definition.
+
+     ^bAction:^b  Move the MEMVAR statement before any executable statements
+     within the procedure or function definition and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2053        FIELD declaration follows executable statement
+'------------------------------------------------------------------------------
+ ^bC2053   FIELD declaration follows executable statement^b
+
+     ^bExplanation:^b  You specified a FIELD statement following an
+     executable statement.  All variable declaration statements (FIELD,
+     LOCAL, MEMVAR, and STATIC) must precede any executable statements in a
+     procedure or function definition.
+
+     ^bAction:^b  Move the FIELD statement before any executable statements
+     in the procedure or function definition and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2054        STATIC declaration follows executable statement
+'------------------------------------------------------------------------------
+ ^bC2054   STATIC declaration follows executable statement^b
+
+     ^bExplanation:^b  You specified a STATIC statement following an
+     executable statement.  All variable declaration statements must precede
+     all executable statements in a procedure or function definition.
+
+     ^bAction:^b  Move the STATIC statement before any executable statements
+     within the procedure or function definition and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2055        Syntax error in #define
+'------------------------------------------------------------------------------
+ ^bC2055   Syntax error in #define^b
+
+     ^bExplanation:^b  You specified a #define directive containing a syntax
+     error.  The syntax for this and all other preprocessor directives can be
+     found in the Language Reference chapter of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2056        Unexpected end of file in #define
+'------------------------------------------------------------------------------
+ ^bC2056   Unexpected end of file in #define^b
+
+     ^bExplanation:^b  You specified a #define directive containing an
+     end-of-file CHR(26) mark.  The syntax for this and all other
+     preprocessor directives can be found in the Language Reference chapter
+     of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2057        Label missing in #define
+'------------------------------------------------------------------------------
+ ^bC2057   Label missing in #define^b
+
+     ^bExplanation:^b  A #define directive has been encountered with no
+     identifier.
+
+     ^bAction:^b  The syntax for this and all other preprocessor directives
+     can be found in the Language Reference chapter of the Reference guide.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2058        Comma or right parenthesis missing in #define
+'------------------------------------------------------------------------------
+ ^bC2058   Comma or right parenthesis missing in #define^b
+
+     ^bExplanation:^b  You specified a pseudofunction definition with a
+     missing comma or right parenthesis.  When you define a pseudofunction,
+     you must specify matching left and right parentheses as well as separate
+     all function arguments with commas.
+
+     ^bAction:^b  Check the definition closely, supply the missing character,
+     and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2059        Missing => in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2059   Missing => in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive without the => separator.  Each
+     #translate/#command directive requires the => symbol even if the
+     definition has no result pattern.  The syntax for this and all other
+     preprocessor directives can be found in the Language Reference chapter
+     of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2060        Unknown result marker in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2060   Unknown result marker in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing a reference to a result-marker
+     name in the result pattern which was not defined in the match pattern.
+
+     ^bAction:^b  Check the spelling of the result marker to make sure that
+     it has a corresponding match-marker name on the left side of the
+     translation directive.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2061        Label error in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2061   Label error in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing a reference to an erroneous
+     match marker.  The syntax for this and all other preprocessor directives
+     can be found in the Language Reference chapter of the Reference guide.
+
+     ^bAction:^b  Correct or remove the offending match marker and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2062        Bad match marker in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2062   Bad match marker in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing a reference to an illegal match
+     marker.  The syntax for this and all other preprocessor directives can
+     be found in the Language Reference chapter of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2063        Bad result marker #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2063   Bad result marker #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing a reference to an illegal result
+     marker.  The syntax for this and all other preprocessor directives can
+     be found in the Language Reference chapter of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2064        Bad restricted match marker in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2064   Bad restricted match marker in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing a reference to an illegal
+     restricted match marker.  The syntax for this and all other preprocessor
+     directives can be found in the Language Reference chapter of the
+     Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2065        Empty optional clause in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2065   Empty optional clause in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing an empty optional clause.
+     Optional clauses are defined in the #command and #translation directives
+     using square brackets.  This error indicates consecutive opening and
+     closing square brackets with nothing in between.
+
+     ^bAction:^b  Add the missing optional clause or delete the extraneous
+     square brackets.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2066        Unclosed optional clause in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2066   Unclosed optional clause in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing an optional clause with a
+     missing right square bracket.  All optional clauses must be enclosed in
+     square brackets.
+
+     ^bAction:^b  Add the missing square bracket and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2067        Too many nested #ifdefs
+'------------------------------------------------------------------------------
+ ^bC2067   Too many nested #ifdefs^b
+
+     ^bExplanation:^b  The maximum number of 16 levels of nested #ifdef
+     directives has been exceeded.
+
+     ^bAction:^b  Reduce the number of nested definitions.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2068        Error in #ifdef
+'------------------------------------------------------------------------------
+ ^bC2068   Error in #ifdef^b
+
+     ^bExplanation:^b  You specified an #ifdef directive containing an error.
+     The syntax for this and all other preprocessor directives can be found
+     in the Language Reference chapter of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2069        #endif does not match #ifdef
+'------------------------------------------------------------------------------
+ ^bC2069   #endif does not match #ifdef^b
+
+     ^bExplanation:^b  You specified an #endif directive without a
+     corresponding #ifdef or #ifndef.
+
+     ^bAction:^b  Check to see that each #endif has a corresponding #ifdef or
+     #ifndef directive, correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2070        #else does not match #ifdef
+'------------------------------------------------------------------------------
+ ^bC2070   #else does not match #ifdef^b
+
+     ^bExplanation:^b  You specified an #else directive that does not fall
+     within a #ifdef or #ifndef control structure.
+
+     ^bAction:^b  Check to see that each #else directive you specified is
+     nested between an #ifdef or #ifndef and an #endif directive, correct and
+     recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2071        Error in #undef
+'------------------------------------------------------------------------------
+ ^bC2071   Error in #undef^b
+
+     ^bExplanation:^b  You specified an #undef directive that contains an
+     error.  The syntax for this and all other preprocessor directives can be
+     found in the Language Reference chapter of the Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2072        Ambiguous match pattern in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2072   Ambiguous match pattern in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing two consecutive optional
+     match-marker clauses with no intervening keyword.
+
+     ^bAction:^b  This is not allowed since the preprocessor has no way of
+     knowing which match marker to use for matching input text.  Refer to the
+     Language Reference chapter of the Reference guide for more information
+     and examples using the translation directives.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2073        Result pattern contains nested clauses in #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2073   Result pattern contains nested clauses in #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive containing a nested repeating result clause
+     (i.e., nested square brackets).  Nested clauses are not allowed in
+     result patterns.  Attempting this usually means that you need two rules
+     instead of one.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2074        #error: <msg>                                                  ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bC2074   #error: <msg>^b
+
+     ^bExplanation:^b  A #error preprocessor directive has been encountered
+     during program compilation.
+
+     ^bAction:^b  Check source code for intentional inclusion of #error
+     directives.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2075        Too many locals
+'------------------------------------------------------------------------------
+ ^bC2075   Too many locals^b
+
+     ^bExplanation:^b  You have exceeded the maximum of 255 local variables
+     per function definition.  Use of this many local variables is probably
+     an indication of a function that is too complex.
+
+     ^bAction:^b  Divide the routine into two or more subroutines.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2076        Too many parameters
+'------------------------------------------------------------------------------
+ ^bC2076   Too many parameters^b
+
+     ^bExplanation:^b  You specified a function or procedure definition with
+     more than the maximum of 255 declared parameters.  Use of this many
+     parameters indicates a routine that is too complex.
+
+     ^bAction:^b
+
+     1. Divide the routine into two or more subroutines.
+
+     2. Use an array instead of variables to pass a large number of values
+        between routines.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2077        Too many parameters
+'------------------------------------------------------------------------------
+ ^bC2077   Too many parameters^b
+
+     ^bExplanation:^b  You specified a function or procedure definition with
+     more than the maximum of 255 in a PARAMETERS statement.  Use of this
+     many parameters indicates an overly complex routine.
+
+     ^bAction:^b
+
+     1. Divide the routine into two or more subroutines.
+
+     2. Use an array instead of variables to pass a large number of values
+        between routines.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2078        Circular #define
+'------------------------------------------------------------------------------
+ ^bC2078   Circular #define^b
+
+     ^bExplanation:^b  You specified a #define directive in terms of itself
+     (e.g., #define x y followed by #define y x).  A circular #define cannot
+     be resolved by the preprocessor and is, therefore, not allowed.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2079        Circular #translate/#command
+'------------------------------------------------------------------------------
+ ^bC2079   Circular #translate/#command^b
+
+     ^bExplanation:^b  You specified a #translate/#xtranslate or
+     #command/#xcommand directive in terms of itself.  A circular #translate
+     or #command cannot be resolved by the preprocessor and is, therefore,
+     not allowed.
+
+     When using #command and #translate, keep in mind that both directives
+     match four-character abbreviations for keywords.  This may cause an
+     unexpected match which could lead to this error.
+
+     ^bAction:^b
+
+     1. Check to see if the problem is related to the four-letter rule using
+        either #translate or #command.  If it is, change the directive to
+        either #xtranslate or #xcommand which both require an exact match.
+
+     2. Remove the circular definition and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C2086        RETURN violates enclosing SEQUENCE
+'------------------------------------------------------------------------------
+ ^bC2086   RETURN violates enclosing SEQUENCE^b
+
+     ^bExplanation:^b  You specified a RETURN statement between a BEGIN
+     SEQUENCE statement and the corresponding RECOVER statement (or END
+     statement, if no RECOVER statement is used).
+
+     The only valid ways to exit from a SEQUENCE are to BREAK or to execute
+     across the end of the code in the SEQUENCE.
+
+     ^bNote:^b  This error is a deviation from previous releases of
+     CA-Clipper in which it was allowed.
+
+     ^bAction:^b  Reorganize your code so that the RETURN occurs in the
+     RECOVER code or outside the SEQUENCE and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ^bCompiler Fatal Error Messages
+!short:
+!short: C3001        Out of memory
+'------------------------------------------------------------------------------
+ ^bC3001   Out of memory^b
+
+     ^bExplanation:^b  The compiler has run out of memory.
+
+     ^bAction:^b  The easiest solution is to make the program smaller by
+     reducing the number of procedures or functions defined in the program
+     file (.prg) or reducing the number of program files in the compiler
+     script file.  Reducing the number of preprocessor directives used in the
+     application may also help. If possible, you could make more memory
+     available to the compiler by temporarily unloading any memory-resident
+     programs currently in memory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3002        Input buffer overflow
+'------------------------------------------------------------------------------
+ ^bC3002   Input buffer overflow^b
+
+     ^bExplanation:^b  You specified a program statement that is too long for
+     the preprocessor.
+
+     ^bAction:^b  Divide the statement into several smaller statements and
+     recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3003        Can't open intermediate file
+'------------------------------------------------------------------------------
+ ^bC3003   Can't open intermediate file^b
+
+     ^bExplanation:^b  The compiler created a temporary file to contain
+     intermediate results and could not open the file at a later time.
+
+     ^bAction:^b  This error is extremely unlikely to occur.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3004        Bad command line option
+'------------------------------------------------------------------------------
+ ^bC3004   Bad command line option^b
+
+     ^bExplanation:^b  You specified an illegal or unknown compiler
+     command-line option.  For a complete list of the valid command-line
+     options, execute CLIPPER.EXE with no arguments.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3005        Bad command line parameter
+'------------------------------------------------------------------------------
+ ^bC3005   Bad command line parameter^b
+
+     ^bExplanation:^b  You specified a compiler command-line option with an
+     unknown or unrecognizable argument.  For the correct syntax of the
+     compiler command line, execute CLIPPER.EXE with no arguments.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3006        Can't create preprocessed output file
+'------------------------------------------------------------------------------
+ ^bC3006   Can't create preprocessed output file ^b
+
+     ^bExplanation:^b  The compiler cannot create the preprocessed output
+     file when the /P command-line option is specified.  This can happen for
+     several reasons:
+
+     1. You have run out of file handles.
+
+     2. You have run out of disk space.
+
+     3. You do not have create rights on a network.
+
+     ^bAction:^b
+
+     1. Increase the number of file handles by changing the FILES statement
+        in your CONFIG.SYS file.  Reboot and recompile.
+
+     2. Delete unwanted files from disk and recompile.
+
+     3. Ask your network administrator for create rights in the directory you
+        are compiling.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3007        Can't open #include file
+'------------------------------------------------------------------------------
+ ^bC3007   Can't open #include file^b
+
+     ^bExplanation:^b  The preprocessor cannot open the file specified in a
+     #include directive.  The file is either misspelled or not located in any
+     of the directories specified by the INCLUDE environment variable.
+
+     ^bAction:^b  Correct the problem by changing the filename, including its
+     directory in your DOS INCLUDE environment variable, or using the /I
+     option to temporarily add one or more directories to the front of the
+     INCLUDE directory list.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3008        Bad filename in #include
+'------------------------------------------------------------------------------
+ ^bC3008   Bad filename in #include^b
+
+     ^bExplanation:^b  You specified a #include directive with a file
+     specification that is not a literal string enclosed in quotation marks
+     (e.g., "Initial.ch").  In CA-Clipper, brackets (<>) are not supported.
+
+     ^bAction:^b  Enclose the literal filename in quotation marks and
+     recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3009        Too many nested #includes
+'------------------------------------------------------------------------------
+ ^bC3009   Too many nested #includes^b
+
+     ^bExplanation:^b  The maximum number of nested #includes has been
+     exceeded.  CA-Clipper allows a maximum of 16 nested #includes.
+
+     ^bAction:^b  Change your header file architecture to a flatter
+     structure.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3010        Invalid name follows #
+'------------------------------------------------------------------------------
+ ^bC3010   Invalid name follows #^b
+
+     ^bExplanation:^b  An unknown or invalid directive was encountered by the
+     preprocessor.  You have either misspelled the directive or used one that
+     the preprocessor does not support.  A complete list of preprocessor
+     directives can be found in the Language Reference chapter of the
+     Reference guide.
+
+     ^bAction:^b  Correct and recompile.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3011        Can't open standard rule file
+'------------------------------------------------------------------------------
+ ^bC3011   Can't open standard rule file^b
+
+     ^bExplanation:^b  The compiler cannot open the standard header file
+     (i.e., either STD.CH or the file specified with the /U compiler option).
+
+     ^bAction:^b  The compiler searches for the standard header file as it
+     does for any other header file, looking in the current directory and
+     then in the INCLUDE path.  Update the INCLUDE environment variable with
+     the proper location or add a new location to the front of the current
+     include list with the /I option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3012        Too many standard rules
+'------------------------------------------------------------------------------
+ ^bC3012   Too many standard rules^b
+
+     ^bExplanation:^b  There are too many rules in the standard header file
+     (i.e., either STD.CH or the file specified with the /U compiler option).
+
+     ^bAction:^b  Take some of the standard rules and put them in another
+     header file.  Then, #include this header file at the beginning of each
+     program file in your application.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3013        Expression stack overflow
+'------------------------------------------------------------------------------
+ ^bC3013   Expression stack overflow^b
+
+     ^bExplanation:^b  You have specified an extremely large procedure or
+     function, or an extremely complicated expression.
+
+     ^bAction:^b  If possible, break up the procedure, function, or
+     expression.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3014        Expression stack underflow
+'------------------------------------------------------------------------------
+ ^bC3014   Expression stack underflow^b
+
+     ^bExplanation:^b  You have specified an extremely large procedure or
+     function, or an extremely complicated expression.
+
+     ^bAction:^b  If possible, break up the procedure, function, or
+     expression.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3015        Control stack overflow
+'------------------------------------------------------------------------------
+ ^bC3015   Control stack overflow^b
+
+     ^bExplanation:^b  This error can be caused by too many nested control
+     structures.
+
+     ^bAction:^b  Examine your program and simplify it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3016        Control stack underflow
+'------------------------------------------------------------------------------
+ ^bC3016   Control stack underflow^b
+
+     ^bExplanation:^b  This error can be caused by too many nested control
+     structures.
+
+     ^bAction:^b  Examine your program and simplify it.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3017        Error reading or opening script file
+'------------------------------------------------------------------------------
+ ^bC3017   Error reading or opening script file^b
+
+     ^bExplanation:^b  The compiler cannot find or open the specified script
+     file (.clp).  Compiler script (.clp) must be located in the current
+     directory unless you explicitly specify the path.  You must explicitly
+     specify the script file extension if the file has an extension other
+     than (.clp).
+
+     ^bAction:^b
+
+     1. Make sure the file is located in the current directory or specify the
+        path as a part of the script file specification.
+
+     2. If the extension is not (.clp), specify the extension as a part of
+        the file specification.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3018        Too many symbols
+'------------------------------------------------------------------------------
+ ^bC3018   Too many symbols^b
+
+     ^bExplanation:^b  The program file(s) compiled into the current object
+     file use too many symbols.
+
+     ^bAction:^b  Simplify the program so that you use fewer symbols (e.g.,
+     reuse variable names when possible instead of defining new ones).
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3019        Too many publics
+'------------------------------------------------------------------------------
+ ^bC3019   Too many publics^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3020        Too many segments
+'------------------------------------------------------------------------------
+ ^bC3020   Too many segments^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3021        Too many fixups
+'------------------------------------------------------------------------------
+ ^bC3021   Too many fixups^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3022        Too many external references
+'------------------------------------------------------------------------------
+ ^bC3022   Too many external references^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3023        Too many labels
+'------------------------------------------------------------------------------
+ ^bC3023   Too many labels^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3024        Too many procs
+'------------------------------------------------------------------------------
+ ^bC3024   Too many procs^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3025        Too many proc requests
+'------------------------------------------------------------------------------
+ ^bC3025   Too many proc requests^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3026        Segment too big
+'------------------------------------------------------------------------------
+ ^bC3026   Segment too big^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3027        Proc too big
+'------------------------------------------------------------------------------
+ ^bC3027   Proc too big^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3028        Symbol table too big
+'------------------------------------------------------------------------------
+ ^bC3028   Symbol table too big^b
+
+     ^bExplanation:^b  This error can occur if you are using automatic
+     compilation to compile too many program files (.prg) into a single
+     object file (.OBJ) at one time.
+
+     ^bAction:^b
+
+     1. Try breaking the compile up into two or more smaller groups of files.
+
+     2. Change your overall program building strategy to use single-file
+        compilation where a single program file (.prg) is compiled into a
+        single object file (.OBJ).  To compile using single-file compilation
+        mode, use the /M option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3029        Write error to intermediate file
+'------------------------------------------------------------------------------
+ ^bC3029   Write error to intermediate file^b
+
+     ^bExplanation:^b  The compiler created a temporary file to hold
+     intermediate results and cannot write to the file.  This error can occur
+     if you run out of disk space during the compile.
+
+     ^bAction:^b
+
+     1. Free some disk space and recompile.
+
+     2. Direct the compiler to write its temporary files to another drive
+        where there is enough disk space using the /T option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3030        Write error to OBJ
+'------------------------------------------------------------------------------
+ ^bC3030   Write error to OBJ^b
+
+     ^bExplanation:^b  The compiler created an object file but cannot write
+     to the file.  This error can occur if you run out of disk space during
+     the compile.
+
+     ^bAction:^b
+
+     1. Free some disk space and recompile.
+
+     2. Direct the compiler to write the object file (.OBJ) to another drive
+        using the /O option.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3031        Can't create OBJ
+'------------------------------------------------------------------------------
+ ^bC3031   Can't create OBJ^b
+
+     ^bExplanation:^b  For some reason, the compiler cannot create an object
+     file.  This error can occur if you run out of directory entries or you
+     do not have create rights on a network drive.
+
+     ^bAction:^b
+
+     1. Check with your network administrator to see if you have create
+        rights in the directory where you are compiling.
+
+     2. Compile using the /O option to write object files to another drive or
+        directory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3032        Can't create intermediate file
+'------------------------------------------------------------------------------
+ ^bC3032   Can't create intermediate file^b
+
+     ^bExplanation:^b  The compiler is attempting to create a temporary file
+     to hold intermediate results and for some reason it cannot create the
+     file.  This error can occur if you run out of directory entries or you
+     do not have create rights on a network drive.
+
+     ^bAction:^b
+
+     1. Check with your network administrator to see if you have create
+        rights in the directory where you are compiling.
+
+     2. Compile using the /T option to write temporary files to another drive
+        or directory.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3039        Phase error                                                    ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bC3039   Phase error^b
+
+     ^bExplanation:^b  An unknown symbol has been encountered in the
+     compiler's second pass.
+
+     ^bAction:^b  Usually occurs when .PRGs are too big or when the .PRG
+     contains complicated and long control structures such as nested CASE
+     statements.  Try simplifying the program.
+
+     Can also occur if the program contains two OTHERWISE statements in a DO
+     CASE construct.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: C3040        Unexpected end of intermediate file                            ^r^CEA^r
+'------------------------------------------------------------------------------
+ ^bC3040   Unexpected end of intermediate file^b
+
+     ^bExplanation:^b  An unexpected EOF was encountered while reading from
+     the intermediate (temporary) file.
+
+     ^bAction:^b  This error occurs because the file was not fully written to
+     disk due to one the following:
+
+     1.  Insufficient diskspace.
+
+     2.  Insufficient write privileges on a network.
+
+     3.  Not enough file handles.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,62 @@
+'------------------------------------------------------------------------------
+^BSORT^B
+
+    SORT copies records from the current work area to another database file
+    in sorted order.
+
+^USyntax^U
+
+    SORT [<scope>] ON <field1> [/A][/C][/D] [,<field2> [/A][/C][/D]]...
+    TO <file>/(<expC>) [FOR <condition>] [WHILE <condition>]
+
+^UArguments^U
+
+    <field1..fieldN> are the fields to use as sort keys.  Note that SORT
+    does not work with substrings and expressions as keys.
+
+    <file> is the name of the target file for the sorted records.  Unless
+    otherwise specified, the new file is assigned the (.dbf) extension.
+
+^UOptions^U
+
+    ^BOrder^B SOFT supports three sorting options:
+
+    o  /A sorts in ascending order.
+    o  /D sorts in descending order.
+    o  /C sorts ignoring the case of the specified character field.
+
+    Unless otherwise specified, the default SORT is ascending order.
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    SORT.  The default is ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to SORT within the given scope.  The WHILE clause specifies the set of
+    records meeting the condition from the current record until the
+    condition fails.
+
+^UUsage^U
+
+    Clipper SORTs character fields in accordance with ASCII value of each
+    character within the string.  Numeric fields are SORTed in numeric
+    order, and date fields are SORTed chronologically.  Logical and memo
+    fields cannot be SORTed.
+
+    SORT performs as much of its operation as possible in memory and then
+    it spools to a temporary disk file (Clipsort.tmp).  This temporary file
+    can be as large as the size of the source database file.  Note also
+    that a SORT uses up to three file handles: the source database file,
+    the target database file, and the temporary file.
+
+    ^BDeleted source records^B: SORT copies deleted records to the target
+    database file and the deleted records retain their deleted status.
+
+^UNetwork^U
+
+    In a network environment, the database file to be SORTed should be
+    locked with FLOCK() or USEd EXCLUSIVEly.
+!seealso: clip_013.ngo:"INDEX" 
+'------------------------------------------------------------------------------
+
+
+

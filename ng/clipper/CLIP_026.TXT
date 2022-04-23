@@ -1,0 +1,65 @@
+'------------------------------------------------------------------------------
+^BPUBLIC^B
+
+    PUBLIC makes memory variables and/or arrays global by enabling them to
+    be used by all procedures within a program.
+
+^USyntax^U
+
+    PUBLIC <memvar list>
+
+^UArguments^U
+
+    <memvar list> is the list of memory variables and/or arrays to declare
+    PUBLIC.  If an array is specified, it is created according to the
+    dimension specified.
+
+^UOption^U
+
+    ^BClipper^B: To include Clipper extensions in a program and still allow
+    the program to run under dBASE III PLUS the special memory variable
+    "clipper" is initialized to true (.T.) when declared PUBLIC.  Using
+    "clipper" as the argument of an IF..ENDIF construct blocks Clipper-
+    specific code so these lines of code are not executed when run under
+    dBASE III PLUS.
+
+    ^BNote^B: Compilation errors occur when the syntax of the dBASE III
+    PLUS commands is not supported.  In this instance, comment out
+    statements that you do not want compiled.
+
+ ^UUsage^U
+
+    Declaring a memory variable PUBLIC when the variable does not exist
+    creates a new logical memory variable that is false (.F.).  Once
+    assigned a value, its scope is global and the variable becomes
+    available to all procedures within the program.  Note that you cannot
+    declare an existing private variable PUBLIC.  If you do this, Clipper
+    simply ignores the declaration and the memory variable retains its
+    private status and scope.  Public variables, however, can be
+    temporarily hidden from other procedures by declaring them PRIVATE.
+
+    ^BArrays^B: In addition to declaring PUBLIC memory variables, you can
+    declare PUBLIC arrays.  Declaring an array PUBLIC creates an array with
+    the specified number of elements whose scope is all procedures in the
+    current program.  Note, however, that PUBLIC array elements are
+    undefined until assigned a value.
+
+^UExample^U
+
+    The following is an example of code using the PUBLIC memory variable
+    "clipper" to allow Clipper enhancements in a program that runs under
+    interpretive dBASE:
+
+                    ^R PUBLIC Clipper            ^R
+                    ^R IF clipper                ^R
+                    ^R    @ 1,0,3,10 BOX "*"     ^R
+                    ^R ELSE                      ^R
+                    ^R    @ 1,0 say "**********" ^R
+                    ^R    @ 2,0 say "*        *" ^R
+                    ^R    @ 3,0 say "**********" ^R
+                    ^R ENDIF                     ^R
+!seealso: ???.ngo:"DECLARE" clip_023.ngo:"PARAMETERS" clip_024.ngo:"PRIVATE" 
+'------------------------------------------------------------------------------
+
+
+

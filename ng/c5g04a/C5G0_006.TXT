@@ -1,0 +1,40 @@
+'------------------------------------------------------------------------------
+ ^bClipper Program Editor -- PE.EXE^b
+ Create and edit simple program files
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bSyntax^b
+
+     ^bPE [<filename>]^b
+
+ ^bCommand-line Arguments^b
+
+     ^B<filename>^B is the name of the text file to edit or create.  The
+     default extension is (.prg).  If a filename is not specified, PE
+     prompts you for one.
+
+ ^bSystem Architecture^b
+
+     Like the DBU and RL utilities, PE is written in Clipper and provided in
+     source code form.  If you installed Clipper 5.0 using the default
+     configuration, a single source file named Pe.prg is located in the
+     \CLIPPER5\SOURCE\PE directory.  PE.EXE is installed in \CLIPPER5\BIN
+     and this directory is included in the PATH statement in your
+     AUTOEXEC.BAT.  You should, therefore, be able to access PE from any
+     drive and/or directory.
+
+     To facilitate maintenance of the PE program file, the make file,
+     PE.RMK, is also installed in the PE source directory.  Provided you do
+     not add new source files or make changes in the existing file
+     dependencies, issuing the following command at the DOS prompt:
+
+     C>RMAKE PE
+
+     will compile and link the PE source files to create a new PE.EXE
+     executable file.  See the Program Maintenance--RMAKE.EXE chapter in
+     Programming and Utilties book for more information about make files.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

@@ -1,0 +1,965 @@
+!short: Introduction Mathematical Functions
+'------------------------------------------------------------------------------
+ ^bIntroduction^b
+
+     This chapter offers an array of interesting mathematical functions to
+     implement in CA-Clipper.  It includes trigonometric functions, finance-
+     oriented math computations, and functions to determine the factorial,
+     sign, or the next-largest integer of a value.
+
+     SETPREC() is important for trigonometric functions.  With this function
+     you can specify the precision as a number of places to the right of the
+     decimal.  However, if it is less accurate, the speed is greater.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+!short: ACOS()       Computes the cosine arc
+'------------------------------------------------------------------------------
+ ^bACOS()^b
+ Computes the cosine arc
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bACOS(<nCosine>) --> nCosArc
+
+ ^bArgument^b
+
+     ^b<nCosine>^b  Designates the cosine value for an angle where the
+     response is determined in radians.  The value is in the range of -1 to
+     +1 (inclusive).
+
+ ^bReturns^b
+
+     ACOS() returns the cosine arc for <nCosine>.
+
+ ^bDescription^b
+
+     ACOS() determines an angle size in radians for a cosine value.  The
+     returned value is in the range of 0 to pi.
+
+ ^bNote^b
+
+     ^b^CFE^b  The precision of the result can be influenced by the SETPREC()
+        function.
+
+ ^bExample^b
+
+     Compute the cosine arc:
+
+     ? STR(ACOS(0.7), 18, 15)      // 0.795398830184144
+
+!seealso: "ASIN()" "ATAN()" "ATN2()" "DTOR()" "RTOD()" "SETPREC()" "SIN()" "TAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASIN()       Computes the sine arc
+'------------------------------------------------------------------------------
+ ^bASIN()^b
+ Computes the sine arc
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bASIN(<nSine>) --> nSineArc
+
+ ^bArgument^b
+
+     ^b<nSine>^b  Designates the angle sine value for which you want the
+     response determined in radians.  The value can be in the range of -1 to
+     +1 (inclusive).
+
+ ^bReturns^b
+
+     ASIN() returns the arc sine for <nSine>.
+
+ ^bDescription^b
+
+     ASIN() determines an angle size in radians for a sine value.  The return
+     value is in the range of -pi/2 to +pi/2.
+
+ ^bNote^b
+
+     ^b^CFE^b  The SETPREC() function can influence the result.
+
+ ^bExample^b
+
+     Compute the sine arc:
+
+     ? STR(ASIN(0.5), 18, 15)      // 0.523598775598299
+
+!seealso: "ACOS()" "ATAN()" "ATN2()" "DTOR()" "RTOD()" "SETPREC()" "SIN()" "TAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ATAN()       Computes the tangent arc
+'------------------------------------------------------------------------------
+ ^bATAN()^b
+ Computes the tangent arc
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bATAN(<nTangent>) --> nArcTan
+
+ ^bArgument^b
+
+     ^b<nTangent>^b  Designates the angle tangent value for which you want
+     the response determined in radians.
+
+ ^bReturns^b
+
+     ATAN() returns the tangent arc for <nTangent>.
+
+ ^bDescription^b
+
+     ATAN() determines an angle size in radians for a tangent value.
+
+ ^bNote^b
+
+     ^b^CFE^b  The SETPREC() function can influence the precision of the
+        result.
+
+ ^bExample^b
+
+     Compute the arc of the tangent :
+
+     ? STR(ATAN(PI()/4), 18, 15)      // 0.665773750028354
+
+!seealso: "ASIN()" "ACOS()" "ATN2()" "DTOR()" "RTOD()" "SETPREC()" "SIN()" "TAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ATN2()       Computes the angle size from the sine and cosine
+'------------------------------------------------------------------------------
+ ^bATN2()^b
+ Computes the angle size from the sine and cosine
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bATN2(<nSine>,<nCosine>) --> nArc
+
+ ^bArguments^b
+
+     ^b<nSine>^b  Designates the sine value for an angle.
+
+     ^b<nCosine>^b  Designates the cosine value for an angle.
+
+ ^bReturns^b
+
+     ATN2() returns the angle sine in radians.
+
+ ^bDescription^b
+
+     ATN2() returns the angle sine in radians, where the sine and the cosine
+     of a given point have been specified.  The function returns results for
+     all four quadrants and corresponds to a call of ATAN(x/y).  One
+     advantage of the ATN2() function is that no "divide by zero" error can
+     occur.  The returned value is in the range of -pi to +pi.
+
+ ^bNote^b
+
+     ^b^CFE^b  The SETPREC() function can influence the precision of the
+        result.
+
+ ^bExamples^b
+
+     ^b^CFE^b  Compute the sine and cosine of 30 degrees.  DTOR() is then
+        used to convert these into the radian value:
+
+        SET DECIMALS TO 4
+        X  :=  SIN(DTOR(30))
+        Y  :=  COS(DTOR(30))
+
+     ^b^CFE^b  Use RTOD() to compute the result in degrees:
+
+        ? RTOD(ATN2(x, y))         // 30.0000
+
+!seealso: "ASIN()" "ACOS()" "ATAN()" "DTOR()" "RTOD()" "SETPREC()" "SIN()" "TAN()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CEILING()    Rounds up to the next integer
+'------------------------------------------------------------------------------
+ ^bCEILING()^b
+ Rounds up to the next integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCEILING(<nValue>) --> nLargerInteger
+
+ ^bArgument^b
+
+     ^b<nValue> ^b Designates the number for which the next-largest integer
+     is determined.
+
+ ^bReturns^b
+
+     CEILING() returns the next-largest integer to the one that is passed as
+     a parameter.
+
+ ^bDescription^b
+
+     CEILING() returns the next-largest integer to the one passed as a
+     parameter.  This applies to positive and negative numbers.
+
+ ^bExample^b
+
+     Show the next-largest integer (including positive and negative numbers):
+
+     ? CEILING(1.9)            // Result:   2
+     ? CEILING(1.1)            // Result:   2
+     ? CEILING(0.9)            // Result:   1
+     ? CEILING(-0.1)           // Result:   0
+     ? CEILING(-0.9)           // Result:   0
+     ? CEILING(-1.1)           // Result:-1
+
+!seealso: "FLOOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COS()        Computes the cosine
+'------------------------------------------------------------------------------
+ ^bCOS()^b
+ Computes the cosine
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOS(<nArc>) --> nCosine
+
+ ^bArgument^b
+
+     ^b<nArc>^b  Designates a radian value for which the cosine is
+     determined.
+
+ ^bReturns^b
+
+     COS() returns the cosine value specified in <nArc>.
+
+ ^bDescription^b
+
+     COS() computes the angle cosine measured in radians.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you want the values specified in degrees, you can convert
+        them with the DTOR() function.
+
+ ^bExample^b
+
+     Compute the cosine:
+
+     ? STR(COS(0), 18, 15)               // 1.000000000000000
+     ? STR(COS(PI() /4), 18, 15)         // 0.707106781186548
+     ? STR(COS(PI() /2), 18, 15)         // 0.000000000000000
+     ? STR(COS(PI() *99.5), 18, 15)      // 0.000000000000000
+     ? STR(COS(PI() /9), 18, 15)         // 0.939692620785908
+
+!seealso: "SIN()" "TAN()" "COT()" "DTOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COT()        Computes the cotangent
+'------------------------------------------------------------------------------
+ ^bCOT()^b
+ Computes the cotangent
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bCOT(<nArc>) --> nCoTangent
+
+ ^bArgument^b
+
+     ^b<nArc>^b  Designates a radian value for which the cotangent is
+     determined.
+
+ ^bReturns^b
+
+     COT() returns the cotangent of the value specified in <nArc>.
+
+ ^bDescription^b
+
+     COT() computes the cotangent of an angle measured in radians.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the values are specified in degrees, use the DTOR()
+        function to convert them.
+
+ ^bExample^b
+
+     Computes the cotangent:
+
+     ? STR(COT(PI() /4), 18, 15)      // 1.000000000000000
+     ? STR(COT(PI() /2), 18, 15)      // 0.000000000000000
+     ? STR(COT(PI() /9), 18, 15)      // 2.747477419454622
+
+!seealso: "SIN()" "COS()" "TAN()" "DTOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DTOR()       Converts from a degree to radian measure
+'------------------------------------------------------------------------------
+ ^bDTOR()^b
+ Converts from a degree to radian measure
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bDTOR(<nAngle>) --> nArc
+
+ ^bArgument^b
+
+     ^b<Angle>^b  Designates a valid angle measurement in degrees.
+
+ ^bReturns^b
+
+     DTOR() returns the radian of the specified value.
+
+ ^bDescription^b
+
+     In addition to expressing angle measurements in degrees, you may also
+     need to express an angle in radians.  With DTOR(), you can convert
+     degree measurements into radians.
+
+ ^bExample^b
+
+     Show some calculations accurate to 15th place:
+
+     ? STR(DTOR(360), 18, 15)     // Result: 6.283185307179588
+     ? STR(DTOR(180), 18, 15)     // Result: 3.141592653589794
+     ? STR(DTOR(180.5), 18, 15)   // Result: 3.150319299849766
+     ? STR(DTOR(720), 18, 15)     // Result: 12.566370614359180
+     ? STR(DTOR(-180), 18, 15)    // Result:-3.141592653589794
+
+!seealso: "RTOD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FACT()       Computes the factorial
+'------------------------------------------------------------------------------
+ ^bFACT()^b
+ Computes the factorial
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFACT(<nValue>) --> nFactorial
+
+ ^bArgument^b
+
+     ^b<nValue>^b  Designates a value between 0 and 21.
+
+ ^bReturns^b
+
+     FACT() returns the factorial of the specified value.
+
+ ^bDescription^b
+
+     FACT() computes the factorial of a value in the range of 0 to 21.  Since
+     results for factorials over 21 are too large, the function returns -1 to
+     indicate an error.
+
+ ^bExamples^b
+
+     Show some factorials:
+
+     ? FACT(1)         // Result: 1
+     ? FACT(5)         // Result: 120
+     ? FACT(21)        // Result: 51090942171709440000
+     ? FACT(25)        // Result: -1 (Value too large !)
+     ? FACT(0)         // Function returns 1
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: FLOOR()      Rounds down to the next integer
+'------------------------------------------------------------------------------
+ ^bFLOOR()^b
+ Rounds down to the next integer
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFLOOR(<nValue>) --> nSmallerInteger
+
+ ^bArgument^b
+
+     ^b<nValue>^b  Designates the number for which the next-smaller integer
+     is determined.
+
+ ^bReturns^b
+
+     FLOOR() returns the next-smaller integer of the one passed as a
+     parameter.
+
+ ^bDescription^b
+
+     FLOOR() always returns the next-smaller integer of the one passed as a
+     parameter.  This applies to positive and negative numbers.
+
+ ^bExample^b
+
+     Show the next-smaller integer for positive and negative numbers:
+
+     ? FLOOR(1.9)       // Result:  1
+     ? FLOOR(1.1)       // Result:  1
+     ? FLOOR(0.9)       // Result:  0
+     ? FLOOR(-0.1)      // Result: -1
+     ? FLOOR(-0.9)      // Result: -1
+     ? FLOOR(-1.1)      // Result: -2
+
+!seealso: "CEILING()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: FV()         Computes future value of capital
+'------------------------------------------------------------------------------
+ ^bFV()^b
+ Computes future value of capital
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bFV(<nInstall>,<nInterestRate>,<nNumberofPayments>)
+     ^b    --> nCapital
+
+ ^bArguments^b
+
+     ^b<nInstall>^b  Designates the installment amount to pay for the period.
+
+     ^b<nInterestRate>^b  Designates the interest rate calculated for the
+     payment period.  1 corresponds to 100%.
+
+     ^b<nNumberofPayments>^b  Designates the number of payments.
+
+ ^bReturns^b
+
+     FV() returns the future capital value of the total deposits, plus the
+     interest generated.
+
+ ^bDescription^b
+
+     FUTURE VALUE
+     FV() returns the capital available after the <nNumberofPayments> total
+     installments at <nInstall> payment, at an <nInterestRate> interest
+     charge for the period.
+
+ ^bExample^b
+
+     What amount would you save, if you pay $150.00 per month for 3 years
+     into a fund that pays an annual interest rate of 6%?
+
+     nRate  :  0.06/12         // Monthly interest rate
+     ? FV(150, nRate, 36)      // Result: 5900.42
+
+!seealso: "PAYMENT()" "PV()" "RATE()" "PERIODS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: GETPREC()    Determines the level of precision that is set
+'------------------------------------------------------------------------------
+ ^bGETPREC()^b
+ Determines the level of precision that is set
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bReturns^b
+
+     GETPREC() returns the level of precision currently installed for
+     CA-Clipper Tools trigonometric functions.  The value corresponds to the
+     number of digits to the right of the decimal in the range of 1 to 16.
+
+ ^bDescription^b
+
+     GET PRECISION
+     GETPREC() queries the currently installed precision level for CA-Clipper
+     Tools trigonometric functions.  The returned value corresponds to the
+     number of digits to the right of the decimal, that are being worked
+     with.  Although the default is 16, you can change this value with
+     SETPREC().
+
+ ^bExample^b
+
+     What precision has been set?
+
+     ? GETPREC()      //  e.g. 10
+
+!seealso: "SETPREC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: LOG10()      Computes the common logarithm
+'------------------------------------------------------------------------------
+ ^bLOG10()^b
+ Computes the common logarithm
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bLOG10(<nValue>) --> nLog10
+
+ ^bArgument^b
+
+     ^b<nValue>^b  Designates a number for which the base 10 logarithm is
+     determined.
+
+ ^bReturns^b
+
+     LOG10() returns the base 10 logarithm for the <nValue> number.
+
+ ^bDescription^b
+
+     LOG10() determines the common logarithm for a number.
+
+ ^bNote^b
+
+     ^b^CFE^b  For non-mathematicians, look at it this way:  to what power
+        must 10 be raised (10n) so that <nValue> results?
+
+ ^bExample^b
+
+     Display common logarithm values:
+
+     ? LOG10(0.01)            // -2.00
+     ? LOG10(2)               //  0.30
+     ? LOG10(100)             //  2.00
+     ? LOG10(INFINITY())      //  308.25
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: PAYMENT()    Computes the periodic payment amount
+'------------------------------------------------------------------------------
+ ^bPAYMENT()^b
+ Computes the periodic payment amount
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPAYMENT(<nCapital>,<nInterestRate>,<nNumberpayments>,)
+     ^b    --> nPayment
+
+ ^bArguments^b
+
+     ^b<nCapital>^b  Designates the loan amount.
+
+     ^b<nInterestRate>^b  Designates the periodic interest rate.  1
+     corresponds to 100%.
+
+     ^b<nNumberPayments>^b  Designates the number of payments on the loan
+     within the payment period.
+
+ ^bReturns^b
+
+     PAYMENT() returns the payment to make for each payment period.
+
+ ^bDescription^b
+
+     PAYMENT() computes the payment for each period where loan interest
+     applies.  The determined amount relates to a loan amount <nCapital> that
+     is repaid over <nNumberPayments>, at an interest rate of
+     <nInterestRate>.
+
+ ^bExample^b
+
+     How high does the monthly annuity amount have to be, if you want to
+     repay a $2,000.00 loan within 24 months at an annual interest rate of
+     10%:
+
+     nRate  :=  0.1/12              // The monthly rate
+     ? PAYMENT(2000, Rate, 24)      // 92.29 per month
+
+!seealso: "PV()" "FV()" "RATE()" "PERIODS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PERIODS()    Computes number of payment periods necessary to repay a loan
+'------------------------------------------------------------------------------
+ ^bPERIODS()^b
+ Computes the number of payment periods necessary to repay a loan
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPERIODS(<nCapital>,<nPayment>,<nInterestRate>)
+     ^b   --> nNumberPayments
+
+ ^bArguments^b
+
+     ^b<nCapital> ^b Designates the loan amount.
+
+     ^b<nPayment> ^b Designates the amount of the scheduled periodic payment.
+
+     ^b<nInterestRate>^b  Designates the periodic interest rate.  1
+     corresponds to 100%.
+
+ ^bReturns^b
+
+     PERIODS() returns the number of payments required to repay the
+     <nCapital> amount.
+
+ ^bDescription^b
+
+     PERIODS() computes how often you must make a payment <nPayment> to reach
+     the <nCapital> amount at the <nInterestRate> interest rate.
+
+ ^bNote^b
+
+     ^b^CFE^b  If the installment payment is smaller than the interest
+        amount, repayment lasts forever.  In this case, the function returns
+        a value
+        of -1.
+
+ ^bExample^b
+
+     How many months do you need to pay back a $4000 loan at an annual
+     interest rate of 9.5%, if you want the $200 monthly payments?
+
+     nRate  :=  0.095/12             // Monthly rate
+     ? PERIODS(4000, 200, Rate)      // Number of periods
+
+!seealso: "PAYMENT()" "PV()" "FV()" "RATE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: PI()         Returns pi with the highest degree of accuracy
+'------------------------------------------------------------------------------
+ ^bPI()^b
+ Returns pi with the highest degree of accuracy
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPI() --> nPI
+
+ ^bReturns^b
+
+     PI() returns the pi value with the highest degree of accuracy.
+
+ ^bDescription^b
+
+     This function simplifies calculations when the most accurate pi value is
+     required.
+
+ ^bExample^b
+
+     Show the accurate display for the pi value:
+
+     ? STR(PI(), 18, 15)      // Result:  3.141592653589793
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: PV()         Computes the cash present value after interest charges
+'------------------------------------------------------------------------------
+ ^bPV()^b
+ Computes the cash present value after interest charges
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bPV(<nPayments>,<nInterestRate>,<nNumberPayments>)
+     ^b   --> nCapital
+
+ ^bArguments^b
+
+     ^b<nPayment>^b  Designates the amount of the scheduled periodic payment.
+
+     ^b<nInterestRate>^b  Designates the periodic interest rate.  1
+     corresponds to 100%.
+
+     ^b<nNumberPayments>^b  Designates the number of anticipated payment
+     periods.
+
+ ^bReturns^b
+
+     PV() returns the cash value of an interest yield.
+
+ ^bDescription^b
+
+     PRESENT VALUE
+     The function computes the cash value of regular equal payments
+     <nNumberPayments> at an <nInterestRate> interest rate over
+     <nNumberPayments> payment periods.
+
+ ^bExamples^b
+
+     ^b^CFE^b  How high can a loan be if you pay $175 for 24 months, at an
+        annual fixed interest rate of 9.5%?  Since payments are monthly, the
+        annual percentage rate is divided by 12:
+
+        nRate  :=  0.095/12
+        ? PV(175, nRate, 24)     // $3811.43
+
+     ^b^CFE^b  Annual payments over 2 years at 9.5% per annum:
+
+        ? PV(175, 0.095, 2)      // $305.77
+
+!seealso: "PAYMENT()" "RATE()" "PERIODS()" "FV()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RATE()       Computes the interest rate for a loan
+'------------------------------------------------------------------------------
+ ^bRATE()^b
+ Computes the interest rate for a loan
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRATE(<nCapital>,<nPayment>,<nNumberPayments>)
+     ^b   --> nInterestRate
+
+ ^bArguments^b
+
+     ^b<nCapital>^b  Designates the amount of the loan.
+
+     ^b<nPayment> ^b Designates the payment per installment.
+
+     ^b<NumberPayments> ^b Designates the number of the planned payment
+     periods.
+
+ ^bReturns^b
+
+     RATE() returns the loan interest rate.
+
+ ^bDescription^b
+
+     RATE() determines the annual interest rate for a loan <nCapital> in the
+     <nNumberPayments> period at the specified <nPayment> installment.  The
+     calculated interest rate is based on a Newtonian iterative solution
+     procedure:
+
+         lk+1=ik - f(ik)/f(ik)
+
+     where:
+
+         f(i)=(1-(l + i)^^-n)/i - PV/PMT
+
+     The initial value for i is selected as follows:
+
+         -io = PMT/PV - PV/n^^2PMT
+
+ ^bNote^b
+
+     ^b^CFE^b  This function allows a maximum value for the payment period of
+        1020.
+
+ ^bExample^b
+
+     For a $2500 loan, you pay $86.67 per month for 3 years.  What is the
+     effective annual interest rate?
+
+     nLoan     :=  2500
+     nPayment  :=  86.67
+     nPeriod   :=  36
+
+     ? RATE(nLoan, nPayment, nPeriod) * 12      // 0.1501 (15.01%)
+
+!seealso: "PAYMENT()" "PV()" "FV()" "PERIODS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: RTOD()       Converts from a radian to degree measure
+'------------------------------------------------------------------------------
+ ^bRTOD()^b
+ Converts from a radian to degree measure
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bRTOD(<nArc>) --> nAngle
+
+ ^bArgument^b
+
+     ^b<nArc>^b  Designates a valid angle measurement in radians.
+
+ ^bReturns^b
+
+     RTOD() returns the value of the designated parameter in degrees.
+
+ ^bDescription^b
+
+     In addition to expressing an angle measurement in degrees, it is often
+     useful to express an angle in radians.  RTOD() converts a radian
+     measurement into degrees.
+
+ ^bExample^b
+
+     Show some conversions:
+
+     ? RTOD( PI() )        // Result:  180
+     ? RTOD(2 * PI())      // Result:  360
+     ? RTOD(4 * PI())      // Result:  720
+     ? RTOD( -PI() )       // Result: -180
+
+!seealso: "DTOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SETPREC()    Sets the precision level for trigonometric functions
+'------------------------------------------------------------------------------
+ ^bSETPREC()^b
+ Sets the precision level for trigonometric functions
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSETPREC(<nPrecision>) --> cNull
+
+ ^bArgument^b
+
+     ^b<nPrecision>^b  Designates the number of places for computational
+     precision in the range of 1 to 16.  The default value is 16.
+
+ ^bReturns^b
+
+     SETPREC() always returns a null string.
+
+ ^bDescription^b
+
+     SET PRECISION
+     CA-Clipper Tools works with the default precision set at 16 places to
+     the right of the decimal for trigonometric functions.  If you do not
+     want this precision level, or you want a faster execution speed, reduce
+     the number of places accordingly.  The following functions are affected:
+
+     SIN()  COS()  TAN()  COT()  ASIN()  ACOS()  ATAN()  ATN2()
+
+ ^bExample^b
+
+     Set a precision level of 10 places:
+
+     SETPREC(10)         // Always returns a null string
+
+!seealso: "GETPREC()" "SIN()" "COS()" "TAN()" "COT()" "ASIN()" "ACOS()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SIGN()       Determines the mathematical sign of a number
+'------------------------------------------------------------------------------
+ ^bSIGN()^b
+ Determines the mathematical sign of a number
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSIGN(<nValue>) --> nSign
+
+ ^bArgument^b
+
+     ^b<nValue> ^b Designates the number to determine as a mathematical sign.
+
+ ^bReturns^b
+
+     SIGN() returns 1, 0, or -1, based on whether the number passed as a
+     parameter is positive, null, or negative.
+
+ ^bDescription^b
+
+     This function simplifies mathematical expressions.  If constructions or
+     functions become unnecessary.  SIGN() returns three different values, in
+     accordance with the specified parameter:
+
+        1        positive numbers
+        0        the number 0
+       -1        negative numbers
+
+ ^bExamples^b
+
+     ^b^CFE^b  Show a positive number:
+
+        ? SIGN(48335)      // Result: 1
+
+     ^b^CFE^b  Show a negative number:
+
+        ? SIGN(-258)       // Result: -1
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: SIN()        Computes the sine of a radian value
+'------------------------------------------------------------------------------
+ ^bSIN()^b
+ Computes the sine of a radian value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bSIN(<nArc>) --> nSine
+
+ ^bArgument^b
+
+     ^b<nArc> ^b Designates the radian value to determine as a sine.
+
+ ^bReturns^b
+
+     SIN() returns the sine for the <nArc> specified value.
+
+ ^bDescription^b
+
+     SIN() determines the sine of a a specified radian value.
+
+ ^bExample^b
+
+     Show some sine calculations:
+
+     ? STR(SIN(PI() /4), 18, 15)         // 0.707106781186548
+     ? STR(SIN(PI() /2), 18, 15)         // 1.000000000000000
+     ? STR(SIN(PI() *99.5), 18, 15)      //-1.000000000000000
+     ? STR(SIN(PI() /9), 18, 15)         // 0.342020143325669
+
+!seealso: "COS()" "TAN()" "COT()" "DTOR()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: TAN()        Computes the tangent of a radian value
+'------------------------------------------------------------------------------
+ ^bTAN()^b
+ Computes the tangent of a radian value
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bSyntax^b
+
+     ^bTAN(<nArc>) --> nTangent
+
+ ^bArgument^b
+
+     ^b<nArc> ^b Designates the radian value to determine as a tangent.
+
+ ^bReturns^b
+
+     TAN() returns the tangent for the <nArc> specified value.
+
+ ^bDescription^b
+
+     TAN() determines the tangent of a value specified in radians.
+
+ ^bNote^b
+
+     ^b^CFE^b  If you want to represent the value in degrees, convert it with
+        the DTOR() function.
+
+ ^bExample^b
+
+     Some tangent calculations:
+
+     ? STR(TAN(0), 18, 15)            //  1.000000000000000
+     ? STR(TAN(PI() /4), 18, 15)      //  1.000000000000000
+     ? STR(TAN(PI() /9), 18, 15)      //  0.363970234266202
+
+!seealso: "SIN()" "COS()" "COT()" "DTOR()" 
+'------------------------------------------------------------------------------
+
+
+

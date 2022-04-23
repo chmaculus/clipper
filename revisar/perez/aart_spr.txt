@@ -1,0 +1,360 @@
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º 24/10/2000           AARTICUL.SPR              12:52:19 º
+*       º                                                         º
+*       ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+*       º                                                         º
+*       º Christian A. Máculus                                    º
+*       º                                                         º
+*       º Copyright (c) 2000 Nombre de la empresa                 º
+*       º Chapeaurouge 576                                        º
+*       º Gral. Alvear, Mendo  5620                                  º
+*       º Argentina                                         º
+*       º                                                         º
+*       º Description:                                            º
+*       º Este programa lo ha generado automáticamente GENSCRN.    º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+
+#REGION 0
+REGIONAL m.currarea, m.talkstat, m.compstat
+
+IF SET("TALK") = "ON"
+	SET TALK OFF
+	m.talkstat = "ON"
+ELSE
+	m.talkstat = "OFF"
+ENDIF
+m.compstat = SET("COMPATIBLE")
+SET COMPATIBLE FOXPLUS
+
+m.rborder = SET("READBORDER")
+SET READBORDER ON
+
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º             Windows Definiciones de ventana             º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+*
+
+IF NOT WEXIST("_08a0rl86q")
+	DEFINE WINDOW _08a0rl86q ;
+		AT  0.000, 0.000  ;
+		SIZE 19.615,74.000 ;
+		TITLE "ACTUALIZACION DE ARTICULOS" ;
+		FONT "MS Sans Serif", 8 ;
+		STYLE "B" ;
+		FLOAT ;
+		NOCLOSE ;
+		MINIMIZE ;
+		SYSTEM ;
+		COLOR RGB(,,,192,192,192)
+	MOVE WINDOW _08a0rl86q CENTER
+ENDIF
+
+
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º  AARTICUL/Windows Código de configuración - SECCION 2   º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+*
+
+#REGION 1
+restore from articulo.mem additive
+tnumero=narticulo
+tdescripcion=''
+tstockactual=6
+tcosto=0.0
+tcodigo=''
+suspendido=0
+tpreciopub=0
+tpreciodis=0
+modi=.f.
+
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º        AARTICUL/Windows Distribución de pantalla        º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+*
+
+#REGION 1
+IF WVISIBLE("_08a0rl86q")
+	ACTIVATE WINDOW _08a0rl86q SAME
+ELSE
+	ACTIVATE WINDOW _08a0rl86q NOSHOW
+ENDIF
+@ 1.000,1.667 SAY "Número:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 2.462,2.000 SAY "Descripcion:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 7.385,2.000 SAY "Stock actual:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 2.308,1.333 TO 13.000,73.500 ;
+	PEN 1, 8
+@ 8.923,2.000 SAY "Porcentaje publico:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 10.538,2.000 SAY "Porcentaje distribuidor:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 0.923,10.500 GET tnumero ;
+	SIZE 1.000,4.667 ;
+	DEFAULT " " ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "B" ;
+	PICTURE "@K 9999" ;
+	VALID verarticulos() ;
+	COLOR ,RGB(0,0,255,255,255,255)
+@ 0.923,10.500 GET tcodigo ;
+	SIZE 1.000,4.667 ;
+	DEFAULT " " ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "B" ;
+	PICTURE "@K 9999" ;
+	VALID verarticulos() ;
+	COLOR ,RGB(0,0,255,255,255,255)
+@ 2.385,14.333 GET tdescripcion ;
+	SIZE 2.000,43.333 ;
+	DEFAULT " " ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "B" ;
+	PICTURE "@K!" ;
+	VALID _08a0rl87u() ;
+	DISABLE ;
+	COLOR ,RGB(0,0,255,255,255,255)
+@ 8.846,25.000 GET tpreciopub ;
+	SIZE 1.000,4.500 ;
+	DEFAULT " " ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "B" ;
+	PICTURE "@K 9999.99" ;
+	DISABLE ;
+	COLOR ,RGB(0,0,255,255,255,255)
+@ 10.462,25.167 GET tpreciodis ;
+	SIZE 1.000,4.500 ;
+	DEFAULT " " ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "B" ;
+	PICTURE "@K" ;
+	DISABLE ;
+	COLOR ,RGB(0,0,255,255,255,255)
+@ 16.615,22.000 GET sino ;
+	PICTURE "@*HT Aceptar;Cancelar" ;
+	SIZE 2.000,12.167,5.000 ;
+	DEFAULT 1 ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "B" ;
+	VALID _08a0rl885()
+@ 0.923,20.000 SAY "Código:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 5.615,2.000 SAY "Precio de costo:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+@ 10.538,34.333 SAY "Suspendido:" ;
+	FONT "MS Sans Serif", 8 ;
+	STYLE "BT"
+
+IF NOT WVISIBLE("_08a0rl86q")
+	ACTIVATE WINDOW _08a0rl86q
+ENDIF
+
+READ CYCLE
+
+RELEASE WINDOW _08a0rl86q
+
+#REGION 0
+
+SET READBORDER &rborder
+
+IF m.talkstat = "ON"
+	SET TALK ON
+ENDIF
+IF m.compstat = "ON"
+	SET COMPATIBLE ON
+ENDIF
+
+
+
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º AARTICUL/Windows Procedimientos y funciones de soporte  º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+*
+
+#REGION 1
+procedure listaarticulos
+if tnumero=0
+	use articulos order descripcio
+	seek tdescripcion
+	if found()
+		tnumero=numero
+		tdescripcion=descripcion
+		tstockactual=stockact
+		tcosto=preciocost
+		tcodigo=codigo
+		tpreciodis=porcendis
+		tpreciopub=porcenpub
+		suspendido=tsuspendido
+		
+		modi=.t.
+	else
+		DEFINE WINDOW REPARA FROM 2,5 TO 28,80 TITLE "LISTADO DE ARTICULOS"
+		ON KEY LABEL ENTER DO ENTRADA
+		BROWSE WINDOW REPARA;
+			NOAPPEND;
+			NODELETE;
+			NOEDIT;
+			NOMENU;
+*                       (codigo_c6, descripcio_c35, stockact_n6, precicost_n7,2, porcendis_n3, porcenpub_n3, suspendido_n1, numero_n6)
+			FIELDS codigo :H="Codigo",descripcion:h="Descripcion",preciop :h='Precio publico',preciom :h='Precio mayorista'
+		ON KEY LABEL ENTER
+		tcodigo=codigo
+		tdescripcion=descripcion
+		tstockmaximo=stockma
+		tstockminimo=stockmi
+		tpreciop=preciop
+		tpreciom=preciom
+		modi=.t.
+		show gets enable
+	endif
+endif
+
+function verarticulos
+if tcodigo=0
+	show get tdescripcion enable
+else
+	use articulos order codigo
+	seek tcodigo
+	if found()
+		tnumero=numero
+		tdescripcion=descripcion
+		tstockactual=stockact
+		tcosto=preciocost
+		tcodigo=codigo
+		tpreciodis=porcendis
+		tpreciopub=porcenpub
+		suspendido=tsuspendido
+		modi=.t.
+	else
+		**** codigo nuevos ****
+		tnumero=numero
+		tdescripcion=descripcion
+		tstockactual=stockact
+		tcosto=preciocost
+		tcodigo=codigo
+		tpreciodis=porcendis
+		tpreciopub=porcenpub
+		suspendido=tsuspendido
+		modi=.f.
+	endif
+	show gets enable
+
+endif
+close databases
+show gets
+
+function verstock
+if varread()='TSTOCKMAXI'
+	if tstockmaximo=0
+		wait windows 'El stock maximo debe ser mayor que cero'
+		return .f.
+	endif
+endif
+if varread()='TSTOCKMINI'
+	if tstockminimo=0
+		wait windows 'El stock minimo debe ser mayor que cero'
+		return .f.
+	endif
+	if tstockmaximo<tstockminimo
+		wait windows 'El stock maximo debe ser mayor que el stock minimo'
+		return .f.
+	endif
+endif
+
+
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º _08A0RL87U           tdescripcion VALID                 º
+*       º                                                         º
+*       º Function Origin:                                        º
+*       º                                                         º
+*       º From Platform:       Windows                            º
+*       º From Screen:         AARTICUL,     Record Number:    9  º
+*       º Variable:            tdescripcion                       º
+*       º Called By:           VALID Clause                       º
+*       º Object Type:         Field                              º
+*       º Snippet Number:      1                                  º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+*
+FUNCTION _08a0rl87u     &&  tdescripcion VALID
+#REGION 1
+do listaarticulos
+
+
+*       ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+*       º                                                         º
+*       º _08A0RL885           sino VALID                         º
+*       º                                                         º
+*       º Function Origin:                                        º
+*       º                                                         º
+*       º From Platform:       Windows                            º
+*       º From Screen:         AARTICUL,     Record Number:   13  º
+*       º Variable:            sino                               º
+*       º Called By:           VALID Clause                       º
+*       º Object Type:         Push Button                        º
+*       º Snippet Number:      2                                  º
+*       º                                                         º
+*       ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+*
+FUNCTION _08a0rl885     &&  sino VALID
+#REGION 1
+if sino=1
+	if modi=.t.
+		use articulos order codigo
+		seek tcodigo
+		if found()
+
+		tnumero=numero
+		tstockactual=stockact
+		tcosto=preciocost
+		tpreciodis=porcendis
+		suspendido=tsuspendido
+
+
+			replace suspendido with tsuspendido
+			replace preciodis with porcendis
+			replace preciocost with tcosto
+			replace numero with tnumero
+			replace codigo with tcodigo
+			replace descripcion with tdescripcion
+			replace preciopub with porcenpub
+			replace preciodis with porcendis
+		else
+			? 'ERROR CODIGO 2'
+			CANCEL
+		endif		
+	else
+		use articulos
+		append blank
+			replace suspendido with tsuspendido
+			replace preciodis with porcendis
+			replace preciocost with tcosto
+			replace numero with tnumero
+			replace codigo with tcodigo
+			replace descripcion with tdescripcion
+			replace preciopub with porcenpub
+			replace preciodis with porcendis
+		narticulo=narticulo+1
+		save to articulo.mem all like narticu*
+	endif
+endif

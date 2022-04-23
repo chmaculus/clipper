@@ -1,0 +1,36 @@
+'------------------------------------------------------------------------------
+^BPCOUNT()^B
+
+    PCOUNT() returns the number of actual parameters that have been passed
+    to a procedure or user-defined function.
+
+^USyntax^U
+
+    PCOUNT()
+
+^UReturns^U
+
+    An integer numeric value.
+
+    PCOUNT() returns the number of parameters passed.  If no parameters are
+    passed, PCOUNT() returns zero.  Note that PCOUNT() retains its value
+    until you attempt to pass parameters to either a procedure or a user-
+    defined function.
+
+^UUsage^U
+
+    PCOUNT() can prove useful when polling the DOS command line for
+    parameters at the top of your program.
+
+^UExample^U
+
+    ^RPARAMETERS file                  ^R
+    ^RIF PCOUNT() = 0                  ^R
+    ^R   ACCEPT "File to use: " TO file^R
+    ^RENDIF                            ^R
+    ^RUSE &file                        ^R
+!seealso: clip_023.ngo:"PARAMETERS" 
+'------------------------------------------------------------------------------
+
+
+

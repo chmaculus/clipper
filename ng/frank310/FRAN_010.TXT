@@ -1,0 +1,963 @@
+!short:^b ÍÍ The Engine Function ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADboxmenu()         ^rm^r The engine function
+'------------------------------------------------------------------------------
+ADboxmenu( <xPrompt>, <aMenu>, [aTrigger], [bBlock], [nTop], [nLeft],;
+   [bConfig], [xHelpID], [xHelpHeader] ) --> <nSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a dialog box that looks like this:
+
+        ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+        ³    Drive A: Not Ready     ³
+        ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+        ³    Retry    ³    Abort    ³
+        ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+
+ <xPrompt> is the prompt string. ( "Drive A: Not Ready" ) A prompt of two or
+ more lines is possible by passing an array of strings.
+
+ <aMenu> is an array of string options.  ({ "Retry", "Abort" })
+
+ [aTrigger] is an optional array of the index positions of the trigger
+ characters.  Defaults to an array of ONEs.  NOTE: If an '&' is embedded in
+ a menu option, its relative position supercedes whatever is specified in
+ [aTrigger].  ANOTHER NOTE: If an '&' is embedded in a menu option, all the
+ other options _must_ also be &-embedded, i.e. you cannot mix the use of
+ [aTrigger] with the use of &-embedding. This marker may be changed with
+ ADg_trigmarker().
+
+ [bBlock] is an optional codeblock that gets EVALuated when a selection is
+ made.  The engine identifier is automatically passed to it.  Note that if
+ [bBlock] is passed, ADboxmenu() does not exit when a selection is made.  To
+ exit, you must specifically send an exit message via the API, ADbm_exit().
+
+ [nTop] and [nLeft] are the top/left coordinates of the box.  If they are not
+ passed, the box is centered on the screen.
+
+ [bConfig] is the Configuration Specifier.  It is typically a codeblock that
+ calls one or a series of APIs that send messages to the engine to
+ reconfigure itself.  It is automatically passed the engine identifier.  See
+ the examples below.
+
+ [xHelpID] an optional Help Identifier string or array of identifiers.  If
+ only one string is passed, it will be treated as the ID for all options.  If
+ an array is passed, each option will have its own ID.
+
+ [xHelpHeader] - Window title for the Help screen.  If this is not passed,
+ the Help screen will be displayed with the default "HELP" title.  If it is
+ passed as a string, it will be used as title for the Help screens of all the
+ menu options.  If passed as an array, each element in the array must
+ correspond to each menu option.
+
+ <nSelection> is the numeric return value.  It is the index position of the
+ selected option.  It is zero if the menu was aborted.  Note that if [bBlock]
+ is passed, the return value may not be relevant.
+
+ v3.00 -> v3.10
+ --------------
+ 1. The mouse cursor is automatically moved to the initially highlighted
+    option when the dialog box is displayed, if the AutoMoveMouse flag is
+    set to TRUE by ADg_autommove().
+
+ v2.30 -> v3.00
+ --------------
+ 1. Added the 9th parameter, [xHelpHeader].
+
+ 2.  Allows embedding of '&' in menu options to identify trigger keys.
+
+ v2.1 -> v2.2
+ ------------
+ Added support for global hot keys that are defined with ADg_keys().
+
+
+ Example 1:
+ ----------
+
+ ? ADboxmenu( "Which color?", { "White", "Blue", "Red" } )
+
+
+ Example 2:
+ ---------
+
+ // change the default colors
+
+ ? ADboxmenu( "Which color?",;
+              { "White", "Blue", "Red" },;
+              NIL,;
+              NIL,;
+              NIL,;
+              NIL,;
+              {|| ADbm_colors( { "N/BG", "R+/B", "W+" } )};
+            )
+
+ NOTE: See BM_TOUR.PRG and the various BM_DEMO?.PRGs for more examples.
+!seealso: fran_031.ngo:"ADg_trigmarker()" fran_031.ngo:"ADg_autommove()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Config APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADbm_boxattr()        Reconfigures the box attributes
+'------------------------------------------------------------------------------
+ ADbm_boxattr( <aAttributes> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the attributes of the box.
+
+ [aAttributes] is an array of 5 values.  If it is passed, the corresponding
+ box attributes are set to its values.  the elements are:
+
+   1 - the box frame.  Defaults to "ÕÍ¸³¾ÍÔ³ "
+   2 - the box divider.  Defaults to "ÃÄ´Â³Ï"
+   3 - a shadow definition.  Defaults to "N+/N".  This element has the same
+       meaning as the [xShadow] parameter of ADbox().
+   4 - a logical value, whether to explode or not.  Defaults to .T.
+   5 - a numeric value defining the number of spaces to pad each option with.
+       Defaults to 4.
+
+ Example:
+ -------
+ bConfig := {|| ADbm_boxattr(;
+                              {;
+                                "ÚÄ¿³ÙÄÀ³ ",;  // box frame
+                                "ÃÄ´Â³Á",;     // divider
+                                .f.,;          // no shadow
+                                .f.,;          // do not explode
+                                10;            // pad with 10 spaces
+                              };
+                            );
+            }
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: "ADbmg_boxattr()" fran_028.ngo:"ADbox()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_color()          Reconfigures the colors
+'------------------------------------------------------------------------------
+ ADbm_color( <aColor> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Reconfigures the colors.
+
+ <aColor> is an array of 3 color specifiers.  If it is passed, the menu
+ colors are set to its values.  Its elements are:
+
+   1 - the standard color.  Defaults to "B/W" or "W/N"
+   2 - the enhanced color. Defaults to "GR+/BG" or "N/W"
+   3 - the foreground part of the trigger color.  The background part is
+       always set to the background part of the standard/enhanced color.
+       Defaults to "R"
+
+ Example:
+ -------
+ bConfig := {|| ADbm_colors( { "N+/W*", "GR+/R", "B+" } )}
+ setblink( .f. )
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+ setblink( .t. )
+!seealso: "ADbmg_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_initsel()        Specifies the initially highlighted option.
+'------------------------------------------------------------------------------
+ ADbm_initsel( <nOption> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies which option is to be initially highlighted.
+
+ <nOption> is the index position of the option to be initially highlighted.
+
+ Example:
+ --------
+ ADboxmenu( "What Is Your Answer?",;
+            { "Yes", "No", "Maybe" },;
+            NIL, NIL, NIL, NIL,;
+            {|| ADbm_initsel( 3 )}; // initial hilite on "Maybe"
+          )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_invkey()         Defines an invalid key handler.
+'------------------------------------------------------------------------------
+ ADbm_invkey( <bInvKey> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines a codeblock to EVALuate when an invalid key is pressed.  An
+ invalid key is one that is not one of: Enter, trigger keys, left/right
+ arrow keys, Esc (if active) and the hot keys.
+
+ <bInvKey> is the codeblock to EVAL.  It is automatically passed the inkey
+ code of the pressed key and the engine id.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_isescape()       Toggles the Esc key behavior
+'------------------------------------------------------------------------------
+ ADbm_isescape( <lActive> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Toggles the active state of the Esc key.  When it is active, ADboxmenu()
+ aborts when it is pressed, or when the right mouse button is clicked.  By
+ default, the Esc key is not active.
+
+ Example
+ -------
+ bConfig := {|| ADbm_isescape( .t. )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: "ADbm_abort()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_justify()        Specifies justification of the prompts
+'------------------------------------------------------------------------------
+ ADbm_justify( <nJustify> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Specifies justification of the prompts.
+
+ <nJustify> is numeric mode whose valid values are defined in Frankie.ch
+ as:
+
+   0 - center (default)
+   1 - left justify
+   2 - right justify
+
+ Example
+ -------
+ #include "frankie.ch"
+ ADboxmenu( "Continue?",;
+            { "No", "Yes" },;
+            ,,,,;
+            {||ADbm_justify( BM_JUSTIFY_LEFT )};
+          )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_keys()           Defines hot keys
+'------------------------------------------------------------------------------
+ ADbm_keys( <aKeys>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot keys local to the dialog box.
+
+ <aKeys> is an array of the inkey codes of the keys to be defined as hot
+ keys.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot keys
+ is pressed.  It is automatically passed two parameters:
+
+   1 - the index position of the pressed key
+   2 - the inkey code of the pressed key
+
+ Example:
+ -------
+ func main()
+ local bConfig := {|| ADbm_keys( { K_F9, K_F10 },;
+                                 {|n,k| Xhandler(n,k)};
+                               );
+                  }
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nKeyCode )
+ if nIndexPos == 1       // same functionality as:
+                         // if nKeyCode == K_F9
+    ADmessage( { "F9" } )
+ elseif nIndexPos == 2   // same functionality as:
+                         // elseif nKeyCode == K_F10
+    ADmessage( { "F10" } )
+ endif
+ return nil
+!seealso: "ADbm_lbuttons()" "ADbm_rbuttons()" fran_027.ngo:"ADg_keys()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_lbuttons()       Defines left button hot spots
+'------------------------------------------------------------------------------
+ ADbm_lbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse left button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+   1 - the index position of the clicked spot
+   2 - the mouse cursor row position when the hot spot was clicked
+   3 - the corresponding mouse column position
+
+ Example:
+ -------
+ func main()
+ local aSpots := {;
+                   { 0,0,0,0 },;
+                   { maxrow(), maxcol(), maxrow(), maxcol() };
+                 }
+ local bConfig := {|| ADbm_lbuttons( aSpots,;
+                                     {|n,r,c| Xhandler(n,r,c)};
+                                   );
+                  }
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+ return nil
+
+ func Xhandler( nIndexPos, nRow, nCol )
+ if nIndexPos == 1
+    ADmessage( { "Top/Left Corner" } )
+ elseif nIndexPos == 2
+    ADmessage( { "Bottom/Right Corner" } )
+ endif
+ return nil
+!seealso: "ADbm_keys()" "ADbm_rbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_poll()           Defines an additional event poller
+'------------------------------------------------------------------------------
+ ADbm_poll( <bEvent>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Polls for another event (in addition to regular keyboard and mouse events
+ normally polled by ADboxmenu()).
+
+ <bEvent> is the polling codeblock.  It must return a numeric.  A return
+ value of 0 means that no event occurred.  A non-zero value means that
+ an event occurred.
+
+ <bHandler> is a codeblock that processes the returned value of <bEvent>.
+ Note that it is EVALed only if <bEvent> returns a non-zero value.  It is
+ passed two parameters:
+
+     1 - the returned value of <bEvent>
+     2 - the numeric engine id
+
+ Example
+ -------
+ #include "inkey.ch"
+ #include "frankie.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown" }
+ local bConfig := {||ADbm_poll( {||Xpoller()},;
+                                {|x,e|Xhandler(x,e)};
+                              );
+                  }
+ ADboxmenu( "Select", aMenu,,,,, bConfig )
+ return NIL
+
+ func Xpoller()
+ return ascan( { K_RT_SHIFT, K_LF_SHIFT, K_CTRL, K_ALT }, {|x|ADkbflag(x)} )
+
+
+ func Xhandler( nEvent, nEngine )
+ local cKey
+
+ if nEvent == 1
+     cKey := "Right Shift"
+ elseif nEvent == 2
+     cKey := "Left Shift"
+ elseif nEvent == 3
+     cKey := "Ctrl"
+ elseif nEvent == 4
+     cKey := "Alt"
+ endif
+
+ ADmessage( { cKey + " key is pressed " } )
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_rbuttons()       Defines right mouse button hot spots
+'------------------------------------------------------------------------------
+ ADbm_rbuttons( <aSpots>, <bHandler> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Defines hot spots for the mouse right button.
+
+ [aSpots] is an array of the screen sections that are to be defined as hot
+ spots.  Each hot spot is an array of  {top,left,bottom,right} coordinates.
+
+ [bHandler] is a codeblock that is EVALuated when one of the defined hot
+ spots is clicked.  It is automatically passed three parameters:
+
+ 1 - the index position of the clicked spot
+ 2 - the mouse cursor row position when the hot spot was clicked
+ 3 - the corresponding mouse column position
+
+ Example
+ -------
+ // deactivate the right button
+ func main()
+ local aMenu, bConfig, aSpots
+
+ aMenu := { "The", "Quick", "Brown", "Fox" }
+ aSpots := { { 0,0,maxrow(),maxcol() } }
+ bConfig := {|| ADbm_rbuttons( aSpots,;
+                               {|n,r,c| NIL};
+                             ),;
+                ADbm_isescape( .t. );
+            }
+ ADboxmenu( "Prompt", aMenu,,,,, bConfig )
+ return nil
+!seealso: "ADbm_keys()" "ADbm_lbuttons()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_sleep()          Defines an alternate event handler()
+'------------------------------------------------------------------------------
+ ADbm_sleep( <lSleep>, [bSleep] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Tells ADboxmenu's event handler to go to sleep, that is, not poll for
+ events.  Optionally, events may be diverted to another handler.
+
+ <lSleep> - a logical value that tells ADboxmenu() whether to sleep or
+ not.  Defaults to TRUE.
+
+ [bSleep] is an optional codeblock that acts as the event handler for
+ ADboxmenu() if <lSleep> is TRUE.  This codeblock is passed two
+ parameters:
+
+     1 - the menu engine id
+     2 - events in the form of an array similar to the return value of
+         ADwait().
+
+ Note that if <lSleep> is TRUE and [bSleep] is NIL, the engine will
+ go on an indefinite sleep, making it appear that the system hung.
+
+ Example:
+ --------
+ #include "inkey.ch"
+
+ func main()
+ local aMenu := { "The", "Quick", "Brown" }
+ local bConfig := {||ADbm_sleep( .t., {|e,a|Xhandler(e,a)} )}
+
+ ADboxmenu( "Select", aMenu,,,,, bConfig )
+ return NIL
+
+
+ func Xhandler( e, aEvents )
+ if aEvents[1] != 0
+     if aEvents[1] == K_ALT_Q
+         ADbm_abort()
+     else
+         ADmessage( { "Key (" + ADn2s( aEvents[1] ) + ") was pressed" } )
+     endif
+ elseif aEvents[2] == 1
+     ADmessage( { "Mouse Left Button was clicked at " +;
+                  ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] );
+                } )
+ elseif aEvents[2] == 2
+     ADmessage( { "Mouse Right Button was clicked at " +;
+                  ADn2s( aEvents[3] ) + "," + ADn2s( aEvents[4] );
+                } )
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_timeout()        Specifies a timeout behavior.
+'------------------------------------------------------------------------------
+ ADbm_timeout( <nTimeout>, <bTimeout> ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Designates a time-out routine.
+
+ <nTimeOut> is the number of idle seconds to pass before the timeout routine
+ is invoked.
+
+ <bTimeOut> is a codeblock that ADboxmenu() EVALuates after <nTimeOut>
+ seconds of inactivity.
+
+ Example
+ -------
+ bConfig := {|| ADbm_timeout( 3 , {||ADblankscn()} )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Action APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADbm_abort()          Aborts the dialog box
+'------------------------------------------------------------------------------
+ ADbm_abort( [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Aborts the dialog box, and optionally sets the exit code to [nExitCode].  If
+ [nExitCode] is not specified, it defaults to BMX_ABORT which is #defined
+ in Frankie.ch.
+
+ NOTE:  This function used to be ADbm_exit() prior to Frankie v2.
+
+ Example:
+ -------
+ /*
+ Assigns F10 as an exit key.
+ */
+
+ bConfig := {|| ADbm_keys( { K_F10 }, {|| ADbm_abort()} )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: "ADbm_select()" "ADbm_isescape()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_display()        Redisplays a menu preiously removed from the screen.
+'------------------------------------------------------------------------------
+ ADbm_display() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Displays a menu previously removed from the screen with ADbm_undisplay().
+
+ Example:
+ --------
+ func main()
+ local cPrompt := "Guess What?"
+ local aMenu := { "The", "Quick", "Brown", "Clipper", "Abort" }
+ local bProcess := {|n|Xprocess(n)}
+
+ ADboxmenu( cPrompt, aMenu,, bProcess )
+ return NIL
+
+
+ static func Xprocess( nIndex )
+
+ if nIndex == 5
+     ADbm_abort()
+ else
+     // Remove the menu from the screen
+     ADbm_undisplay()
+
+     // Do what you have to do
+     ADmessage( { str( nIndex ) } )
+
+     // Re-display the menu
+     ADbm_display()
+ endif
+ return NIL
+!seealso: "ADbm_undisplay()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_select()         Selects currently highlighted option.
+'------------------------------------------------------------------------------
+ ADbm_select( [nExitCode] ) --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Selects the currently highlighted option, and optionally sets the exit code
+ to [nExitCode].  If [nExitCode] is not specified, it defaults to BMX_SELECT
+ which is #defined in Frankie.ch.
+
+ -------
+ /*
+ Assigns F10 to select currently highlighted option
+ */
+
+ bConfig := {|| ADbm_keys( { K_F10 }, {|| ADbm_select()} )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: "ADbm_abort()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_undisplay()      Removes the menu from the screen.
+'------------------------------------------------------------------------------
+ ADbm_undisplay() --> NIL
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Undisplays the current menu.  This does not kill the engine.
+
+ Example:
+ --------
+ func main()
+ local cPrompt := "Guess What?"
+ local aMenu := { "The", "Quick", "Brown", "Clipper", "Abort" }
+ local bProcess := {|n|Xprocess(n)}
+
+ ADboxmenu( cPrompt, aMenu,, bProcess )
+ return NIL
+
+
+ static func Xprocess( nIndex )
+
+ if nIndex == 5
+     ADbm_abort()
+ else
+     // Remove the menu from the screen
+     ADbm_undisplay()
+
+     // Do what you have to do
+     ADmessage( { str( nIndex ) } )
+
+     // Re-display the menu
+     ADbm_display()
+ endif
+ return NIL
+!seealso: "ADbm_display()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ The Info APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADbm_col()            Returns the column position of the highlighted option
+'------------------------------------------------------------------------------
+ ADbm_col() --> <nColumn>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the starting column position of the currently highlighted option.
+
+ Example
+ -------
+ bConfig := {|| ADbm_keys( {-9}, {||ADmessage( { ADn2s( ADbm_col() ) } )} )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: "ADbm_row()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_current()        Returns the currently highlighted option
+'------------------------------------------------------------------------------
+ ADbm_current() --> <nCurrentSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the index position of the currently highlighted option.
+
+ Example
+ -------
+ bConfig := {|| ADbm_keys( {-9}, {||ADmessage( { ADn2s( ADbm_current() ) } )} )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_exitcode()       Returns the last exitcode
+'------------------------------------------------------------------------------
+ ADbm_exitcode() --> <nExitCode>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the exit code of the last exited ADboxmenu().  If the menu was
+ exited by means of a keypress, the exit code is simply the inkey code
+ of the key.  Otherwise, it is one of the following values #defined in
+ Frankie.ch.
+
+ //ADboxmenu() special exit codes
+ #define BMX_ABORT   -102  // if the menu is exited with the mouse right
+                           // button, or programatically with an
+                           // ADbm_abort() call.
+ #define BMX_SELECT  -103  // if an option was selected with the mouse left
+                           // button, or programatically with an
+                           // ADbm_select() call.
+
+ Example
+ -------
+ ADboxmenu( "Exit?", { "Yes", "No" } )
+ ?ADbm_exitcode()
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_row()            Returns the row position of the menu
+'------------------------------------------------------------------------------
+ ADbm_row() --> <nRow>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the row position of the menu options.
+
+ Example
+ -------
+ bConfig := {|| ADbm_keys( {-9}, {||ADmessage( { ADn2s( ADbm_row() ) } )} )}
+ ADboxmenu( "Exit?", { "Yes", "No" },,,,, bConfig )
+!seealso: "ADbm_col()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_version()        Returns the ADboxmenu() version number as a string.
+'------------------------------------------------------------------------------
+ ADbm_version() --> <nVersion>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Returns the version number of ADboxmenu() as a string.
+
+ Example
+ -------
+ ? ADbm_version().
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Global APIs ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADbmg_boxattr()       Globally sets the menu box attributes
+'------------------------------------------------------------------------------
+ ADbmg_boxattr( [aAttr] ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the current ADboxmenu() box attributes, <aOld>, and optionally
+ globally sets them to the new values in [aAttr]. Both [aAttr] and <aOld>
+ contain 5 elements:
+
+        1 - the box frame
+        2 - the box divider
+        3 - to drop a shadow or not
+        4 - to explode or not
+        5 - number of space padding around options
+
+ NOTE:  ADbmg_boxattr(), and all Global APIs, must be called OUTSIDE bConfig.
+
+ Example:
+ --------
+ ADbmg_boxattr( { "ÚÄ¿³ÙÄÀ³ ", "ÃÄ´Â³Á", .f., .f., 2 } )
+!seealso: "ADbm_boxattr()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbmg_color()         Globally sets the menu colors
+'------------------------------------------------------------------------------
+ ADbmg_color( [aColors] ) --> <aOld>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Returns the current ADboxmenu() color setting, <aOld>, and optionally
+ globally sets them to new values in [aColors].  Both [aColors] and <aOld>
+ contain 3 elements:
+
+        1 - standard color
+        2 - enhanced color
+        3 - the foreground of the trigger color
+
+ NOTE:  ADbmg_color(), and all Global APIs, must be called OUTSIDE bConfig.
+
+ Example:
+ --------
+ ADbmg_color( { "R/W", "B/W", "W+" } )
+!seealso: "ADbm_color()" 
+'------------------------------------------------------------------------------
+
+
+
+!short:
+!short:^b ÍÍ Specialized Functions ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+!short: ADbm_drives()         "Which Drive?" dialog box
+'------------------------------------------------------------------------------
+ ADbm_drives( [bConfig], [xHelpID], [xHelpHeader] ) --> <cDrive>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Implements a dialog box of all available drives.  Returns the letter
+ identifying the selected drive ( "A", "B", etc. ) or a null string if the
+ menu was aborted.
+
+ NOTE: The parameters [bConfig], [xHelpID], [xHelpHeader] are optional and
+       have the same meaning as the corresponding parameters in ADboxmenu().
+
+ Example
+ -------
+ func main()
+ local cDrive := ADbm_drives()
+
+ if cDrive $ "AB"
+    ADmessage( {"Insert disk in Drive " + cDrive } )
+ endif
+ return NIL
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_floppy()         "Which Floppy?" dialog box
+'------------------------------------------------------------------------------
+ ADbm_floppy( [cPrompt], [bProcess], [bConfig], [xHelpID], [xHelpHeader] )
+    --> <nSelection>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ A specialized "Which Floppy?" dialog box.  Automatically determines what
+ floppy drives are available.  Optionally adds a "Cancel" option.
+
+ [cPrompt] is an optional prompt string.  It defaults to "Which Floppy?"
+
+ [bProcess] is an optional codeblock that is EVALuated when a selection is
+ made.  It is passed the letter and numeric identifiers of the selected
+ drive.  Before it is EVALuated, ADbm_floppy() first checks to see if the
+ selected drive is ready.  If [bProcess] is passed, 'Cancel' is added as a
+ menu option.
+
+ NOTE: The parameters [bConfig], [xHelpID], [xHelpHeader] are optional and
+       have the same meaning as the corresponding parameters in ADboxmenu().
+
+ <nSelection> is the numeric return value.  It is always 0 if [bProcess] is
+ passed.  Otherwise, it is the index position of the selection.
+
+ Example:
+ --------
+ func main()
+ one()
+ two()
+ three()
+ return NIL
+
+ /*--------------------------------------------------------------------
+    Simplest implementation
+
+    ADbm_floppy() with no [bProcess].  Returns the _numeric_ ID
+    of the slected floppy (0 - none was selected, 1 = A: was selected,
+    2 = B: was selected).  The dialog box exits after the selection.
+ --------------------------------------------------------------------*/
+ func one()
+ local nFloppy := ADbm_floppy()
+ local cFloppy
+
+ if nFloppy != 0
+   // convert the selection (numeric) to a floppy identifier
+   cFloppy := chr( nFloppy + 64 ) + ":"
+
+   if ADbm_isfloppy( cFloppy )
+     // files picklist
+     ADpl_files( ,, cFloppy, "*.*" )
+   endif
+ else
+   ADmessage( { "Aborted" } )
+ endif
+ return NIL
+
+ /*--------------------------------------------------------------------
+    A [bProcess] is passed.  Note the following:
+
+    1. A 'Cancel' option is added to the dialog box.
+    2. The  dialog box does not exit after EVALuating the [bProcess].
+       The only way to exit is by selecting Cancel.
+ --------------------------------------------------------------------*/
+ func two()
+ ADbm_floppy( , {|c,n|ADpl_files( ,, c + ":" )} )
+ return NIL
+
+ /*--------------------------------------------------------------------
+    An ADbm_abort() is added inside [bProcess] to force an exit
+    of the dialog box after its EVALuation.
+ --------------------------------------------------------------------*/
+ func three()
+ ADbm_floppy( , {|c,n|ADpl_files( ,, c + ":" ), ADbm_abort()} )
+ return NIL
+
+
+ v2.1 -> v2.2
+ ------------
+ In prior versions, the 'Cancel' option is always added.  Now, it is added
+ only if [bProcess] is passed.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_isfloppy()       "Drive Not Ready" dialog box
+'------------------------------------------------------------------------------
+ ADbm_isfloppy( [cDrive], [bConfig], [xHelpID], [xHelpHeader] ) -> <lReady>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Checks to see if floppy drive [cDrive] is ready; implements a "Drive Not
+ Ready" dialog box if it is not; subsequently returns whether it is ready or
+ not. [cDrive] defaults to the A:  drive.  Note that [cDrive] always refers
+ to a floppy, even if "C" or "D" is specified.
+
+ NOTE: The parameters [bConfig], [xHelpID], [xHelpHeader] are optional and
+       have the same meaning as the corresponding parameters in ADboxmenu().
+
+ Example
+ -------
+ if ADbm_isfloppy( "B" )
+    copy file Q.PRG to B:Q.PRG
+ endif
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_isprinter()      "Printer Not Ready" dialog box
+'------------------------------------------------------------------------------
+ ADbm_isprinter( [nLPTPort], [bConfig], [xHelpID], [xHelpHeader] )
+    --> <lReady>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Checks to see if LPT1 is ready. Implements a "Printer Not Ready" dialog box
+ if it is not. Subsequently returns whether it is ready or not.
+
+ NOTE: The parameters [bConfig], [xHelpID] and [xHelpHeader] are optional
+       and have the same meaning as the corresponding parameters in
+       ADboxmenu().
+
+ [nLPTPort] is the LPT port to check (1=LPT1 (default), 2=LPT2, 3=LPT3).
+
+ Example
+ -------
+ if ADbm_isprinter()
+    copy file Q.PRG to LPT1
+ endif
+
+ v2.1 -> v2.2
+ ------------
+ 1. In prior versions, the printer is checked only once, and based on the
+ result of that one check, a 'not ready' message is displayed.  In v2.2
+ this check is done several times.
+
+ 2. Support for LPT ports other than the default LPT1 was added in v2.2.
+ The syntax changed from:
+
+    ADbm_isprinter( [bConfig], [cHelpID] )
+
+ to:
+
+    ADbm_isprinter( [nPrinter], [bConfig], [cHelpID] )
+
+ where [nPrinter] is 1 for LPT1, 2 for LPT2 and 3 for LPT3, but defaults
+ to 1.
+
+ You may have to modify your existing source code as follows:
+
+    1.  Old: ADbm_isprinter()
+        New: Same or ADbm_isprinter(1)
+
+    2.  Old: ADbm_isprinter( bConfig )
+        New: ADbm_isprinter( , bConfig ) or ADbm_isprinter( 1, bConfig )
+
+    3.  Old: ADbm_isprinter( , cHelpID )
+        New: ADbm_isprinter( ,, cHelpID ) or ADbm_isprinter( 1,, cHelpID )
+
+    4.  Old: ADbm_isprinter( bConfig, cHelpID )
+        New: ADbm_isprinter( , bConfig, cHelpID )
+          or ADbm_isprinter( 1, bConfig, cHelpID )
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: ADbm_switch()         Toggles a switch
+'------------------------------------------------------------------------------
+ ADbm_switch( <vSwitch>, <cPrompt>,  [bConfig], [xHelpID], [xHelpHeader] )
+    --> <lOldSetting>
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ Toggles a switch.
+
+ <vSwitch> is the name of the variable that refers to a logical switch.
+ Always pass it by reference.
+
+ <cPrompt> is the prompt displayed by ADboxmenu().  The current setting of
+ <vSwitch> is appended to it.
+
+ NOTE: The parameters [bConfig], [xHelpID] and [xHelpHeader] are optional and
+       have the same meaning as the corresponding parameters in ADboxmenu().
+
+ <lOldSetting> is the setting of <vSwitch> before the call.
+
+ Example:
+ -------
+ func main()
+ local lSetting := .t.
+ ADbm_switch( @lSetting, "The Switch is Currently " )
+ ADbm_switch( @lSetting, "The Switch is Currently " )
+ ADbm_switch( @lSetting, "The Switch is Currently " )
+ return nil
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

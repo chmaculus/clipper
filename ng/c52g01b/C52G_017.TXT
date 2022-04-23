@@ -1,0 +1,4382 @@
+!short: Abbreviation
+'------------------------------------------------------------------------------
+ ^bAbbreviation^b
+
+     (preprocessor) A source token whose leftmost characters exactly match
+     the leftmost characters of a keyword in a translation directive.
+     Abbreviations must be at least four characters in length.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Activation
+'------------------------------------------------------------------------------
+ ^bActivation^b
+
+     (procedure and function) The commencement of execution of a procedure.
+     Each call to a procedure is referred to as an activation of that
+     procedure.  If the procedure in turn calls another procedure (or calls
+     itself recursively), a new activation is said to have occurred.  The
+     earlier activation is then referred to as a pending activation.
+
+     Pending activations are often referred to as higher-level activations or
+     higher-level procedures.  When one procedure calls another (i.e.,
+     creates a new activation), the latter is often referred to as a lower-
+     level activation or a lower-level procedure.
+
+!seealso: "Activation Record" "Activation Stack" "Function" "Procedure" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Activation Record
+'------------------------------------------------------------------------------
+ ^bActivation Record^b
+
+     (procedure and function) An internal data structure that contains
+     information pertaining to an activation.
+
+!seealso: "Activation" "Activation Stack" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Activation Stack
+'------------------------------------------------------------------------------
+ ^bActivation Stack^b
+
+     (procedure and function) An internal data structure that contains an
+     activation record for the current activation and all pending
+     activations.
+
+!seealso: "Activation" "Activation Record" "Stack" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Active Window
+'------------------------------------------------------------------------------
+ ^bActive Window^b
+
+     (debugger) The window to which all keystrokes (except those valid in the
+     Command Window) apply.  An active window is indicated by a highlighted
+     border.  The Tab and Shift-Tab keys are used to select the next and
+     previous window, respectively.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Algorithm
+'------------------------------------------------------------------------------
+ ^bAlgorithm^b
+
+     (algorithm) A set of rules and/or a finite series of steps that will
+     accomplish a particular task.
+
+!seealso: "Iteration" "Selection" "Sequence" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Alias
+'------------------------------------------------------------------------------
+ ^bAlias^b
+
+     (database) The name of a work area; an alternate name given to a
+     database file.  Aliases are often used to give database files
+     descriptive names and are assigned when the database file is opened.  If
+     no alias is specified when the database file is USEd, the name of the
+     database file becomes the alias.
+
+     An alias can be used to reference both fields and expressions (including
+     user-defined functions).  In order to alias an expression, the
+     expression must be enclosed in parentheses.
+
+!seealso: "Work Area" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Animate Mode
+'------------------------------------------------------------------------------
+ ^bAnimate Mode^b
+
+     (debugger) The mode of execution in which an application runs one line
+     at a time until a Breakpoint or Tracepoint is reached, with the
+     Execution Bar moving to each line as it is executed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Application
+'------------------------------------------------------------------------------
+ ^bApplication^b
+
+     (configuration) A program designed to execute a set of interrelated
+     tasks.  Typically referring to a system designed to address a particular
+     business purpose (e.g., Order Entry/Inventory/Invoicing, a document
+     tracking database, or an insurance claims calculator).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Argument
+'------------------------------------------------------------------------------
+ ^bArgument^b
+
+     (variable) Generally, a value or variable supplied in a function or
+     procedure call, or an operand supplied to an operator.  In function and
+     procedure calls, arguments are often referred to as actual parameters.
+
+!seealso: "Parameter" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Array
+'------------------------------------------------------------------------------
+ ^bArray^b
+
+     (array) A data structure that contains an ordered series of values
+     called elements.  The elements of an array are referred to by ordinal
+     number; the first element is number 1, the second is number 2, etc.  A
+     numeric expression used to specify an element of an array is referred to
+     as a subscript or index.  In CA-Clipper, the elements of an array may be
+     values of any type, including references to other arrays.
+
+!seealso: "Array Reference" "Nested Array" "Subarray" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Array Functions
+'------------------------------------------------------------------------------
+ ^bArray Functions^b
+
+     (array) Those functions that specifically perform their tasks on arrays.
+
+!seealso: "Array" "Element" "Function" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Array Iterator
+'------------------------------------------------------------------------------
+ ^bArray Iterator^b
+
+     (array) A function that traverses an array, performing an operation on
+     each element.
+
+!seealso: "Array" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Array Reference
+'------------------------------------------------------------------------------
+ ^bArray Reference^b
+
+     (array) A special data value that allows access to an array.  In
+     CA-Clipper, program variables and array elements cannot directly contain
+     arrays; they may, however, contain array references.  A variable that
+     contains a reference to a particular array is said to refer to that
+     array, and the array's elements may be accessed by applying a subscript
+     to the variable.  If the value of a variable containing an array
+     reference is assigned to a second variable, the second variable will
+     contain a copy of the array reference; both variables then refer to the
+     same array, and the array's elements may be accessed by applying a
+     subscript to either variable.
+
+!seealso: "Array" "Nested Array" "Subarray" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ASCII
+'------------------------------------------------------------------------------
+ ^bASCII^b
+
+     (general) An acronym for the American Standard Code for Information
+     Interchange, the agreed upon standard for representing characters
+     (alphabetic, symbolic, etc.) in the memory of the computer.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Assignment
+'------------------------------------------------------------------------------
+ ^bAssignment^b
+
+     (expression) The act of copying a new value into a variable.  In
+     CA-Clipper this is done with the simple assignment operators (=) and
+     (:=), or the compound operators (+=, -=, *=, **=).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Attribute
+'------------------------------------------------------------------------------
+ ^bAttribute^b
+
+     (database) As a formal DBMS term, refers to a column or field in a table
+     or database file.
+
+!seealso: "Column" "Field" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Background Color
+'------------------------------------------------------------------------------
+ ^bBackground Color^b
+
+     (user interface) The color that appears behind displayed text of another
+     color (the foreground color).
+
+!seealso: "Foreground Color" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Beginning of File
+'------------------------------------------------------------------------------
+ ^bBeginning of File^b
+
+     (database) The top of the database file.  In CA-Clipper there is no
+     beginning of file area or record.  Instead, it is indicated by BOF()
+     returning true (.T.) if an attempt is made to move the record pointer
+     above the first record in the database file or the database file is
+     empty.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Binary
+'------------------------------------------------------------------------------
+ ^bBinary^b
+
+     (general) The numerical base upon which computer programs are modeled.
+     Also referred to as base 2, it is a mathematical way of representing the
+     electrical circuitry upon which computers operate.  A 0 represents an
+     off state, and a 1 indicates an on state.  A combination of eight ons
+     and offs are used to express bytes of program or data in memory.
+
+!seealso: "Byte" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Binary File
+'------------------------------------------------------------------------------
+ ^bBinary File^b
+
+     (file) A file that contains an unformatted sequence of bytes.  Carriage
+     return, linefeed, or end of file characters have no special meaning in a
+     binary file.  Binary files include executable files, graphics files, or
+     data files.
+
+!seealso: "Text File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Binary Operator
+'------------------------------------------------------------------------------
+ ^bBinary Operator^b
+
+     (expression) An operator that operates on two operands.  For example,
+     the addition operator.
+
+!seealso: "Operator" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Blockify
+'------------------------------------------------------------------------------
+ ^bBlockify^b
+
+     (preprocessor) To change an expression in the source text into a code
+     block definition.  Blockifying is accomplished by surrounding the source
+     text with braces and placing an empty block parameter list (a pair of
+     vertical bars) just inside the braces.  When the resulting code block is
+     evaluated at runtime, the original expression will be evaluated.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Blockify Result Marker
+'------------------------------------------------------------------------------
+ ^bBlockify Result Marker^b
+
+     (preprocessor) A result marker of the form <{id}>.  id must correspond
+     to the name of a match marker.  A blockify result marker specifies that
+     the corresponding source text is to be blockified.  If the matched
+     source text is a list of expressions, each expression in the list is
+     individually blockified.  If no source text matched the corresponding
+     match marker, an empty result is produced.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Branching
+'------------------------------------------------------------------------------
+ ^bBranching^b
+
+     (language) Changing the sequence of execution in a program.  Execution
+     normally proceeds in sequence from the top of a function or procedure to
+     the bottom.  When control is transferred to a statement that is not in
+     sequence, execution is said to have branched.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Breakpoint
+'------------------------------------------------------------------------------
+ ^bBreakpoint^b
+
+     (debugger) A point at which an application pauses execution and returns
+     control to the debugger.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Buffer
+'------------------------------------------------------------------------------
+ ^bBuffer^b
+
+     (general) A temporary data storage location in memory.  As an example, a
+     disk input-output buffer is an area of memory that stores data read from
+     the disk to temporary locations while processing it.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Byte
+'------------------------------------------------------------------------------
+ ^bByte^b
+
+     (general) Eight bits of data, the smallest unit of information stored in
+     the computer's memory.  As an example, one byte is required to represent
+     one ASCII character.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Calling Program
+'------------------------------------------------------------------------------
+ ^bCalling Program^b
+
+     (procedure and function) The procedure, or user-defined function that
+     transferred control to the currently executing procedure or function.
+     When the current procedure or user-defined function terminates with a
+     RETURN statement, this is where control will return.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Callstack
+'------------------------------------------------------------------------------
+ ^bCallstack^b
+
+     (debugger) A list containing the names of all pending activations at the
+     current point in an application.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Callstack Window
+'------------------------------------------------------------------------------
+ ^bCallstack Window^b
+
+     (debugger) The window in which the Callstack is displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Cell
+'------------------------------------------------------------------------------
+ ^bCell^b
+
+     (database)  In a table, a cell is the intersection of a Row and a
+     Column.
+
+!seealso: "Column" "Row" "Table" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Character
+'------------------------------------------------------------------------------
+ ^bCharacter^b
+
+     (general) A letter, digit, punctuation mark, or special symbol stored
+     and processed by the computer.
+
+     (data type) A special data type consisting of one or more values in the
+     IBM extended character set.  Characters can be grouped together to form
+     strings.  The maximum size of a character string in CA-Clipper is 65,534
+     bytes.
+
+!seealso: "ASCII" "String" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Character Functions
+'------------------------------------------------------------------------------
+ ^bCharacter Functions^b
+
+     (expression) Those functions that act upon individual characters or
+     strings of ASCII characters in the performance of their tasks.
+
+!seealso: "ASCII" "Function" "String" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Classes
+'------------------------------------------------------------------------------
+ ^bClasses^b
+
+     (object-oriented) A class defines the variables contained in an object,
+     and the operations applied when the object receives a message.  Every
+     object is an instance of a class and responds to messages of that class.
+     Each object, however, has its own copy of the variables specified in the
+     class definition.  New objects are created in CA-Clipper by a calling a
+     special function that begins with the class name followed by the New
+     suffix.
+
+!seealso: "Instance Variables" "Messages" "Methods" "Objects" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Clause
+'------------------------------------------------------------------------------
+ ^bClause^b
+
+     (command) An optional or required section of a CA-Clipper command
+     beginning with a keyword that modifies or enhances the command.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Code Block
+'------------------------------------------------------------------------------
+ ^bCode Block^b
+
+     (data type) A special data type that refers to a piece of compiled
+     program code.  In a program, the source code that specifies the creation
+     of a code block.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Code Window
+'------------------------------------------------------------------------------
+ ^bCode Window^b
+
+     (debugger) The window in which source code is displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Collision
+'------------------------------------------------------------------------------
+ ^bCollision^b
+
+     (network) An attempt by more than one user (typically on a networked,
+     multiuser system) to update a database simultaneously, usually resulting
+     in data corruption.  Generally due to poor implementation of the code to
+     support multiuser operations.
+
+!seealso: "Deadly Embrace" "LAN" "Local Area Network" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Column
+'------------------------------------------------------------------------------
+ ^bColumn^b
+
+     (database) A database term used to describe a field in a table or
+     database file.
+
+     (user interface) A numeric value that represents a position on the
+     display screen or on the printed page.
+
+!seealso: "Field" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Command
+'------------------------------------------------------------------------------
+ ^bCommand^b
+
+     (command) A statement to be translated by the CA-Clipper preprocessor
+     into source code that will perform a particular operation.  All
+     CA-Clipper commands are defined in the standard header file, STD.CH,
+     located in \CLIPPER5\INCLUDE.  Also, the preprocessor directives that
+     define a command.
+
+!seealso: "Header File" "Statement" "STD.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Command Window
+'------------------------------------------------------------------------------
+ ^bCommand Window^b
+
+     (debugger) The window in which commands are displayed and entered.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Comment
+'------------------------------------------------------------------------------
+ ^bComment^b
+
+     (language) Text in a source program that is ignored by the compiler.
+     Usually used to make descriptive comments about the surrounding source
+     code.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Compiler
+'------------------------------------------------------------------------------
+ ^bCompiler^b
+
+     (program) A program that translates source code output from the
+     preprocessor into object code.  The resulting object file can then be
+     linked to produce an executable program using the linker.
+
+!seealso: "Linker" "Object File" "Program File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Concatenate
+'------------------------------------------------------------------------------
+ ^bConcatenate^b
+
+     (expression) To combine two groups of character data together by placing
+     them in a sequence to form a new string of characters.
+
+!seealso: "Data Type" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Concurrency
+'------------------------------------------------------------------------------
+ ^bConcurrency^b
+
+     (database) The degree to which data can be accessed by more than one
+     user at the same time.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Condition
+'------------------------------------------------------------------------------
+ ^bCondition^b
+
+     (command, database, expression) A logical expression that determines
+     whether an operation will take place.  With database commands, a logical
+     expression that determines what records are included in an operation.
+     Conditions are specified as arguments of the FOR or WHILE clause.
+
+!seealso: "Scope" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Conditional Compilation
+'------------------------------------------------------------------------------
+ ^bConditional Compilation^b
+
+     (preprocessor) Selective exclusion by the preprocessor of certain source
+     code.  The affected source code is bracketed by the #ifdef and #endif
+     directives.  It is excluded if the argument in the #ifdef directive is
+     not a #defined identifier.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Console Input/Output
+'------------------------------------------------------------------------------
+ ^bConsole Input/Output^b
+
+     (user interface) A style of operation of the keyboard and display that
+     emulates a simple typewriter-like interface.  Console input echoes each
+     key typed and provides processing for the backspace and return keys.
+     Console output wraps to the next line when the output reaches the right
+     edge of the visible display, and scrolls the display when the output
+     reaches the bottom of the visible display.
+
+!seealso: "Full-screen Input/Output" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Constant
+'------------------------------------------------------------------------------
+ ^bConstant^b
+
+     (variable) The representation of an actual value.  For example, .T. is a
+     logical constant, string is a character constant, 21 is a numeric
+     constant.  There are no date and memo constants.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Constant Array
+'------------------------------------------------------------------------------
+ ^bConstant Array^b
+
+     (array)
+
+!seealso: "Literal Array" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Control Structure
+'------------------------------------------------------------------------------
+ ^bControl Structure^b
+
+     (language) Any program structure that alters the flow of program
+     control.  In CA-Clipper, these include:
+
+     ^b^CFE^b  BEGIN SEQUENCE...END
+
+     ^b^CFE^b  DO WHILE...ENDDO
+
+     ^b^CFE^b  DO CASE...ENDCASE
+
+     ^b^CFE^b  FOR...NEXT
+
+     ^b^CFE^b  IF...ENDIF
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Controlling/Master Index
+'------------------------------------------------------------------------------
+ ^bControlling/Master Index^b
+
+     (database) The index currently being used to refer to records by key
+     value or sequential record movement commands.
+
+!seealso: "Index" "Natural Order" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Conversion Functions
+'------------------------------------------------------------------------------
+ ^bConversion Functions^b
+
+     (expression) Generally referring to a category of functions whose
+     purpose is to change one data type to another (e.g., to change a number
+     or a date to a character string).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Cursor
+'------------------------------------------------------------------------------
+ ^bCursor^b
+
+     (user interface) An onscreen indicator used to show the current keyboard
+     input focus and is displayed as a block or underline character.  The
+     cursor moves in response to characters or control keys typed by the
+     user.
+
+     (debugger) The cursor indicates the current line and/or column position
+     in the active window or dialog box.  Note that some windows, such as the
+     Monitor Window, do not utilize the cursor.  When a window that does not
+     utilize the cursor is active, the cursor appears in the Code Window.
+
+!seealso: "Highlight" "Input Focus" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Data Independence
+'------------------------------------------------------------------------------
+ ^bData Independence^b
+
+     (modular programming) The technique of writing a program, function, or
+     procedure in such a way that it will be able to perform its operation on
+     data supplied to it without a built-in description of the data format.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Data Type
+'------------------------------------------------------------------------------
+ ^bData Type^b
+
+     (data type) The category of a data value.  A data type is distinguished
+     by the set of allowable values for that type, the set of operators that
+     can be applied, and the storage format used to represent these values.
+     In CA-Clipper, the following data types are defined: character, numeric,
+     date, logical, array, object, code block, and NIL.  Program variables
+     may contain values of any type.  Database field variables are limited to
+     character, numeric, date, logical, and a special type called memo which
+     is treated the same as character.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Database
+'------------------------------------------------------------------------------
+ ^bDatabase^b
+
+     (database) An aggregation of related operational data used by an
+     application system.  A database can contain one or more data files or
+     tables.
+
+!seealso: "Field" "Record" "Tuple" "View" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Date Functions
+'------------------------------------------------------------------------------
+ ^bDate Functions^b
+
+     (expression) Functions that operate on date values (as opposed to
+     character, numeric or other values).
+
+!seealso: "Function" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Date Type
+'------------------------------------------------------------------------------
+ ^bDate Type^b
+
+     (data type) A special data type consisting of digits to store year,
+     month, and day values.  Operations on date values are based on
+     chronological values.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DBMS
+'------------------------------------------------------------------------------
+ ^bDBMS^b
+
+     (database) An acronym for the term database management system.  A DBMS
+     is a software system that mediates access to a database through a data
+     manipulation language.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Deadly Embrace
+'------------------------------------------------------------------------------
+ ^bDeadly Embrace^b
+
+     (network) In a multiuser database management system, the result of an
+     unforeseen flaw that has allowed a situation wherein two or more
+     simultaneous operations cannot be completed because each has instigated
+     locks on files or records that the other needs to complete its task.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Debugger
+'------------------------------------------------------------------------------
+ ^bDebugger^b
+
+     (debugger) A tool used to track down errors in a program.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Debugging
+'------------------------------------------------------------------------------
+ ^bDebugging^b
+
+     (error handling) A phase of software development where errors are
+     identified and fixed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Declaration
+'------------------------------------------------------------------------------
+ ^bDeclaration^b
+
+     (variable) A statement used by the compiler to define a variable,
+     procedure, or function identifier.  The scope of the declaration is
+     determined by the position of the declaration statement in the source
+     file.
+
+!seealso: "Identifier" "Scope" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Decrement
+'------------------------------------------------------------------------------
+ ^bDecrement^b
+
+     (expression) To decrease a value by a fixed amount, usually one.  In
+     CA-Clipper, the decrement operator (--) can be used to decrement a
+     numeric value in a variable.
+
+!seealso: "Assignment" "Increment" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Define
+'------------------------------------------------------------------------------
+ ^bDefine^b
+
+     (preprocessor) To #define an identifier to the preprocessor and
+     optionally specify text to be substituted for occurrences of the
+     identifier.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Delimited File
+'------------------------------------------------------------------------------
+ ^bDelimited File^b
+
+     (file, database) A text file that contains variable-length database
+     records with each record separated by a carriage return/linefeed pair
+     (CHR(13) + CHR(10)) and terminated with an end of file mark (CHR(26)).
+     Each field within a delimited file is variable length, not padded with
+     either leading or trailing spaces, and separated by a comma.  Character
+     strings are optionally delimited to allow for embedded commas.
+
+!seealso: "Database" "SDF File" "Text File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Delimiter
+'------------------------------------------------------------------------------
+ ^bDelimiter^b
+
+     (general) A character or other symbol that marks a boundary.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Destination
+'------------------------------------------------------------------------------
+ ^bDestination^b
+
+     (expression) The variable or array element to receive data in an
+     assignment.
+
+     (general) The work area, file, or device to which data is sent.
+
+!seealso: "Assignment" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Device
+'------------------------------------------------------------------------------
+ ^bDevice^b
+
+     (general) Either an actual physical component of the computer system
+     such as printer or a DOS handle that refers to it (e.g., PRN:), or a
+     logical device that behaves and is addressed the same way as a physical
+     device (e.g., a print spooler).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dialog Box
+'------------------------------------------------------------------------------
+ ^bDialog Box^b
+
+     (debugger) A box displayed from within the debugger whenever further
+     input is required.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dimension
+'------------------------------------------------------------------------------
+ ^bDimension^b
+
+     (array) The maximum number of subscripts required to specify an array
+     element.  For example, a two-dimensional array must have two subscripts,
+     a three-dimensional array must have three subscripts and so on.
+
+!seealso: "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Directive
+'------------------------------------------------------------------------------
+ ^bDirective^b
+
+     (preprocessor) An instruction to the preprocessor.  Preprocessor
+     directives must appear on a separate line, and must begin with a hash
+     mark (#).  Their scope or effect extends from the point where they are
+     encountered to the end of the source file in which they appear.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Directory
+'------------------------------------------------------------------------------
+ ^bDirectory^b
+
+     (file) The major operating system facility for cataloging files.  A
+     directory contains a list of files and references to child directories
+     (subdirectories), and is identified by name.  Directories can be nested
+     forming a hierarchical tree structure.  The operating system provides a
+     number of facilities that allow users to create and delete directories.
+
+!seealso: "Disk" "File" "Path" "Volume" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Disk
+'------------------------------------------------------------------------------
+ ^bDisk^b
+
+     A magnetic storage medium designed for long-term storage.  Disks come in
+     two varieties: hard disks (fast but fixed) or floppy disks (slow but
+     removable).  A disk can be partitioned into multiple volumes, each
+     containing a tree-structured directory system that holds files
+     accessible by programs.
+
+!seealso: "Directory" "File" "Volume" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Drive
+'------------------------------------------------------------------------------
+ ^bDrive^b
+
+     (file) A disk drive or a letter (normally followed by a colon) that
+     designates a disk drive.  On most computers, the letters A and B refer
+     to floppy disk drives; other letters refer to fixed disk drives or
+     logical drives (e.g., fixed disk partitions or network drives).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dumb Stringify Result Marker
+'------------------------------------------------------------------------------
+ ^bDumb Stringify Result Marker^b
+
+     (preprocessor) A result marker of the form #<{id}>.  id must correspond
+     to the name of a match marker.  A dumb stringify result marker specifies
+     that the corresponding source text is to be enclosed in quotes.  If the
+     matched source text constitutes a list of expressions, each expression
+     in the list is individually stringified.  If no source text was matched,
+     an empty pair of quotes is produced.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dynamic
+'------------------------------------------------------------------------------
+ ^bDynamic^b
+
+     (general) Used generically to refer to data or algorithms that change
+     with time.  Often used specifically to describe algorithms that
+     automatically adjust to prevailing conditions.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dynamic Overlay
+'------------------------------------------------------------------------------
+ ^bDynamic Overlay^b
+
+     (linker) Allows a module's code to be divided into pages to be brought
+     into and out of memory on a least recently used basis.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Dynamic Scoping
+'------------------------------------------------------------------------------
+ ^bDynamic Scoping^b
+
+     (variable) A method of determining an item's existence or visibility
+     based on the state of a program during execution.  Example: A CA-Clipper
+     public variable may or may not be visible within a particular function,
+     depending on whether the variable has been created and whether a
+     previously called function has obscured it by creating a private
+     variable with the same name.
+
+!seealso: "Lexical Scoping" "Scope" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Element
+'------------------------------------------------------------------------------
+ ^bElement^b
+
+     (array) A component unit of an array, usually referred to by a numeric
+     subscript or index.
+
+!seealso: "Array" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Empty Result
+'------------------------------------------------------------------------------
+ ^bEmpty Result^b
+
+     (preprocessor) An absence of result text; the effect of certain result
+     markers when the corresponding match marker did not match any source
+     text (but when the translation directive as a whole was matched).  An
+     empty result simply implies that no result text is written to output.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Encapsulation
+'------------------------------------------------------------------------------
+ ^bEncapsulation^b
+
+     (modular programming) Generically, the design of a function or program
+     that obeys the principle of information hiding.  A function or program
+     is said to be encapsulated if other programs or functions have no
+     knowledge of its inner workings.  A data structure is said to be
+     encapsulated if knowledge of its internal organization is limited to a
+     single function or module.
+
+!seealso: "Information Hiding" "Lexical Scoping" "Modularity" "Side Effect" 
+'------------------------------------------------------------------------------
+
+
+
+!short: End of File
+'------------------------------------------------------------------------------
+ ^bEnd of File^b
+
+     (database) The bottom of a database file.  In CA-Clipper, this is
+     LASTREC() + 1 and is indicated by EOF() returning true (.T.).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Enhanced Color
+'------------------------------------------------------------------------------
+ ^bEnhanced Color^b
+
+     (user interface) The color used to display GETs or PROMPTs (if INTENSITY
+     is ON).
+
+!seealso: "Standard Color" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Environment Variables
+'------------------------------------------------------------------------------
+ ^bEnvironment Variables^b
+
+     (configuration) Operating system variables that can be used to
+     communicate configuration information to executable programs.
+     Environment variables are manipulated using the DOS SET command.  The
+     CA-Clipper compiler and linker respond to certain environment variables.
+     CA-Clipper programs can inspect the settings of environment variables
+     using the GETENV() function.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Error
+'------------------------------------------------------------------------------
+ ^bError^b
+
+     (error handling) The presence of some element of an operation that does
+     not satisfy the requirements of the operation.  An error when
+     encountered causes failure, which in turn raises an exception.
+
+!seealso: "Exception" "Failure" "Runtime Error" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Error Handling
+'------------------------------------------------------------------------------
+ ^bError Handling^b
+
+     (error handling) The concept of including code in a program so that
+     exceptions to normal operational states that occur during the program
+     execution can be anticipated and dispatched with the least possible
+     detrimental consequences to the use of the program and the data being
+     worked on.
+
+!seealso: "Exception" "Runtime Error" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Evaluate
+'------------------------------------------------------------------------------
+ ^bEvaluate^b
+
+     (expression) To execute part of a program in order to produce a value.
+     For an expression, to execute the program code associated with the
+     expression and return the resulting value.  For the macro operator, to
+     compile the macro string, execute the resulting program code, and return
+     the resulting value.
+
+!seealso: "Expression" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Exception
+'------------------------------------------------------------------------------
+ ^bException^b
+
+     (error handling) An occurrence of an abnormal condition during the
+     execution of an operation.  An exception is said to be raised when an
+     operation fails.
+
+!seealso: "Error" "Failure" "Runtime Error" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Exclusive
+'------------------------------------------------------------------------------
+ ^bExclusive^b
+
+     (network) In a network, to assure that no other user will write data to
+     a file, it may be opened in an Exclusive mode.  Only the user opening
+     the file exclusively may then access it until exclusive use of the file
+     (by closing it, or opening it SHARED) is relinquished.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Executable File
+'------------------------------------------------------------------------------
+ ^bExecutable File^b
+
+     (configuration) A file output from the linker directly executable from
+     the operating system command line.  Executable files have an .EXE
+     extension.
+
+!seealso: "Linker" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Execution Bar
+'------------------------------------------------------------------------------
+ ^bExecution Bar^b
+
+     (debugger) The highlight bar which is positioned on the line of code to
+     be executed next.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Exported Instance Variables
+'------------------------------------------------------------------------------
+ ^bExported Instance Variables^b
+
+     (object-oriented)
+
+!seealso: "Instance Variables" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Expression
+'------------------------------------------------------------------------------
+ ^bExpression^b
+
+     (expression) A combination of constants, identifiers, operators, and
+     functions that yield a single value when evaluated.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Extension
+'------------------------------------------------------------------------------
+ ^bExtension^b
+
+     (file) A filename extension normally used for identifying the type or
+     originating program of a file.
+
+!seealso: "Drive" "Filename" "Path" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Failure
+'------------------------------------------------------------------------------
+ ^bFailure^b
+
+     (error handling) The inability of an operation to satisfy its purpose.
+     When a failure occurs an exception is raised.  Failures are due in large
+     part to errors.
+
+!seealso: "Error" "Exception" "Retry" "Runtime Error" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Field
+'------------------------------------------------------------------------------
+ ^bField^b
+
+     (database) The basic column unit of a database file.  A field has four
+     attributes: name, type, length, and decimals if the type is numeric.
+
+!seealso: "Database" "Record" "Tuple" "Vector" "View" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Field Variable
+'------------------------------------------------------------------------------
+ ^bField Variable^b
+
+     (variable, database) A variable that refers to data in a database field,
+     as opposed to data in memory.
+
+!seealso: "Local Variable" "Memory Variable" "Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: File
+'------------------------------------------------------------------------------
+ ^bFile^b
+
+     (file) A file is an organized collection of bytes stored on disk,
+     maintained by the operating system, and referenced by name.  Its
+     internal structure is solely determined by its creator.
+
+!seealso: "Binary File" "Database" "Text File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: File Handle
+'------------------------------------------------------------------------------
+ ^bFile Handle^b
+
+     (file) An integer numeric value returned from FOPEN() or FCREATE() when
+     a file is opened or created.  This value is used to identify the file
+     for other operations until it is closed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: File Locking
+'------------------------------------------------------------------------------
+ ^bFile Locking^b
+
+     (network) The process by which a user is guaranteed exclusive access to
+     a database file.  The file is only available to the user that applied
+     the lock.
+
+!seealso: "Record Locking" 
+'------------------------------------------------------------------------------
+
+
+
+!short: File Server
+'------------------------------------------------------------------------------
+ ^bFile Server^b
+
+     (network) A computer on a network dedicated to providing data storage to
+     other computers (i.e., workstations) for the purpose of sharing
+     information among multiple users.  File servers tend to provide other
+     services such as E-Mail service and shared printer support as well.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Filewide Declaration
+'------------------------------------------------------------------------------
+ ^bFilewide Declaration^b
+
+     (variable) A variable declaration statement that has the scope of the
+     entire source file.  Filewide declarations are specified before the
+     first procedure or function declaration in a program file and the
+     program file must be compiled with the /N option.
+
+!seealso: "Scope" "Storage Class" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Filename
+'------------------------------------------------------------------------------
+ ^bFilename^b
+
+     (file) The name of a disk file that may optionally include a drive
+     designator, path, and extension.
+
+!seealso: "Drive" "Extension" "Path" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Foreground Color
+'------------------------------------------------------------------------------
+ ^bForeground Color^b
+
+     (user interface) The color of text appearing on the screen, usually on a
+     different colored background.
+
+!seealso: "Background Color" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Formfeed
+'------------------------------------------------------------------------------
+ ^bFormfeed^b
+
+     (general) A special character (CHR(12)) that by convention causes most
+     printers to move the printhead to the top of the next page.
+
+!seealso: "Hard Carriage Return" "Linefeed" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Freeformat
+'------------------------------------------------------------------------------
+ ^bFreeformat^b
+
+     (linker) The suggested command interface for .RTLink, allowing you to
+     specify linker commands in any order on the command line.  It is easier
+     to create, examine and change FREEFORMAT command lines.  It is
+     compatible with the Plink86-Plus syntax.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Full-screen Input/Output
+'------------------------------------------------------------------------------
+ ^bFull-screen Input/Output^b
+
+     (user interface) A style of operation of the keyboard and display used
+     for complex data entry and display tasks.  Full-screen input and output
+     are generally performed using the @..SAY, @..GET and READ commands.
+     Full-screen output is distinguished from console-style output by the
+     fact that control characters (e.g., backspace, carriage return) are not
+     processed, and wrapping and scrolling do not occur at the boundaries of
+     the visible display area.
+
+!seealso: "Console Input/Output" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Function
+'------------------------------------------------------------------------------
+ ^bFunction^b
+
+     (procedure and function) An executable block of code with an assigned
+     name.  Alternately, the collection of source code statements that define
+     a function.  Certain functions are supplied as part of CA-Clipper;
+     others are defined by the programmer using the FUNCTION or PROCEDURE
+     declaration statements.  The latter are referred to as user-defined
+     functions.
+
+     The terms procedure and function are generally interchangeable.  By
+     convention, a function returns a value, while a procedure does not.
+
+!seealso: "Activation" "Parameter" "Procedure" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Group
+'------------------------------------------------------------------------------
+ ^bGroup^b
+
+     (linker) An Intel 8086 addressing classification defining a collection
+     of segments to be addressed using the same segment register.  Note that
+     a group is not a section but rather a logical concept used only for
+     addressing.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Hard Carriage Return
+'------------------------------------------------------------------------------
+ ^bHard Carriage Return^b
+
+     (general) An explicit carriage return character at the end of a line in
+     a text file, as opposed to a soft carriage return that might be inserted
+     into text by a program designed to handle word wrapping.  A hard
+     carriage return character is generated by the expression (CHR(13)) where
+     a soft carriage return character is generated with the expression
+     (CHR(141)).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Header File
+'------------------------------------------------------------------------------
+ ^bHeader File^b
+
+     (configuration, preprocessor) A source file containing manifest constant
+     definitions; command or pseudofunctions; and/or program statements
+     merged into another source file using the #include preprocessor
+     directive.
+
+!seealso: "Program File" "Source Code" "STD.CH" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Help Window
+'------------------------------------------------------------------------------
+ ^bHelp Window^b
+
+     (debugger) The window in which online help is displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Hexadecimal
+'------------------------------------------------------------------------------
+ ^bHexadecimal^b
+
+     (general) A representation of a value in base 16 rather than decimal
+     which is base 10.  Hexadecimal values are easily converted to and from
+     binary (base 2) which is the form of data the computer actually uses.
+     Hexadecimal values are represented by digits zero through nine and A
+     through F for values between 10 and 15.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Hidden
+'------------------------------------------------------------------------------
+ ^bHidden^b
+
+     (modular programming) The resulting state of a module of a program
+     written to conform to the principals of information hiding.
+
+!seealso: "Information Hiding" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Highlight
+'------------------------------------------------------------------------------
+ ^bHighlight^b
+
+     (user interface) Indicates input focus for menus, browsers, or GETs.
+     With menus and browsers, the currently selected item or cell has input
+     focus and is displayed in the current enhanced color or inverse video.
+     With GETs, the current GET is highlighted in the current enhanced color
+     or inverse video while the other GETs are displayed in the current
+     standard color if an unselected color setting is active.
+
+!seealso: "Cell" "Enhanced Color" "Input Focus" "Standard Color" 
+'------------------------------------------------------------------------------
+
+
+
+!short: IBM Extended Character Set
+'------------------------------------------------------------------------------
+ ^bIBM Extended Character Set^b
+
+     (general) The character set built into the ROM of the IBM PC.  This
+     character set is a superset of ASCII, containing additional special
+     characters (such as a line drawing character set) that may be used to
+     enhance your program screens.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Identifier
+'------------------------------------------------------------------------------
+ ^bIdentifier^b
+
+     (preprocessor, procedure and function, variable) A name that identifies
+     a function, procedure, variable, constant or other named entity in a
+     source program.  In CA-Clipper, identifiers must begin with an
+     alphabetic character and may contain alphabetic characters, numeric
+     characters, and the underscore character.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Include File
+'------------------------------------------------------------------------------
+ ^bInclude File^b
+
+     (preprocessor)
+
+!seealso: "Header File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Increment
+'------------------------------------------------------------------------------
+ ^bIncrement^b
+
+     (expression) To increase a value by a fixed amount, usually one.  In
+     CA-Clipper the increment operator (++) can be used to increment a
+     numeric value in a variable.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Incremental Linking
+'------------------------------------------------------------------------------
+ ^bIncremental Linking^b
+
+     (linker) The ability to link only the modules of an application that
+     have been changed, greatly increasing the speed in which the link
+     occurs.
+
+!seealso: "Linking" "Module" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Index
+'------------------------------------------------------------------------------
+ ^bIndex^b
+
+     (database) An ordered set of key values that provides a logical ordering
+     of the records in an associated database file.  Each key in an index is
+     associated with a particular record in the database file.  The records
+     can be processed sequentially in key order, and any record can be
+     located by performing a SEEK operation with the associated key value.
+
+!seealso: "Controlling/Master Index" "Key Value" "Natural Order" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Information Hiding
+'------------------------------------------------------------------------------
+ ^bInformation Hiding^b
+
+     (procedure and function) A fundamental programming principle that states
+     that functions and programs should conceal their inner workings from
+     other functions and programs.  Stated simply:  a function should possess
+     only the knowledge necessary for it to accomplish its task.  When one
+     function calls another, the calling function should possess only the
+     knowledge explicitly required to call the other function.
+
+!seealso: "Encapsulation" "Lexical Scoping" "Modularity" "Side Effect" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Initialize
+'------------------------------------------------------------------------------
+ ^bInitialize^b
+
+     (variable) To assign a starting value to a variable.  If initialization
+     is specified as part of a declaration or variable creation statement,
+     the value to be assigned is called an initializer.
+
+!seealso: "Assignment" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Input Focus
+'------------------------------------------------------------------------------
+ ^bInput Focus^b
+
+     (user interface) The GET, browse cell, or menu item where user
+     interaction can take place is said to have input focus.  The item with
+     input focus usually is displayed in enhanced color or inverse video.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Insert Mode
+'------------------------------------------------------------------------------
+ ^bInsert Mode^b
+
+     (user interface) A data entry mode entered when the user presses the
+     insert key.  When this mode is active, characters are inserted at the
+     cursor position.  Text to the right of the cursor is shifted right.
+
+!seealso: "Overstrike Mode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Inspecting
+'------------------------------------------------------------------------------
+ ^bInspecting^b
+
+     (debugger) The process of examining work areas, variables, expressions
+     and activations inside the debugger.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Instance Variables
+'------------------------------------------------------------------------------
+ ^bInstance Variables^b
+
+     (object-oriented) Instance variables are the attributes or the data
+     portion of an object as defined by the object's class.  Each object,
+     when created, is given its own unique set of instance variables
+     initialized to their default values.  Instance variables that are
+     accessible are called exported instance variables.  Exported instance
+     variables can be inspected and--in some cases--assigned using the send
+     operator.  The instance variables of an object persist as long as the
+     object it belongs to.
+
+!seealso: "Classes" "Objects" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Integer
+'------------------------------------------------------------------------------
+ ^bInteger^b
+
+     (data type) A number with no decimal digits.  Note that CA-Clipper does
+     not provide a separate data type for integer values.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Iteration
+'------------------------------------------------------------------------------
+ ^bIteration^b
+
+     (algorithm) One of the three basic building blocks of algorithm
+     development (the others are sequence and selection).  Iteration refers
+     to operations that are performed repeatedly, usually until some
+     condition is satisfied.
+
+!seealso: "Selection" "Sequence" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Join
+'------------------------------------------------------------------------------
+ ^bJoin^b
+
+     (database) An operation that takes two tables as operands and produces
+     one table as a result.  It is, in fact, a combination of other
+     operations including selection and projection.
+
+!seealso: "Projection" "Selection" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Key Expression
+'------------------------------------------------------------------------------
+ ^bKey Expression^b
+
+     (database) An expression, typically based on one or more database
+     fields, that when evaluated, yields a key value for a database record.
+     Key expressions are most often used to create indexes or for
+     summarization operations.
+
+!seealso: "Index" "Key Value" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Key Value
+'------------------------------------------------------------------------------
+ ^bKey Value^b
+
+     (database) The value produced by evaluating a key expression.  When
+     placed in an index, a key value identifies the logical position of the
+     associated record in its database file.
+
+!seealso: "Index" "Key Expression" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Keyboard Buffer
+'------------------------------------------------------------------------------
+ ^bKeyboard Buffer^b
+
+     (user interface) An area of memory dedicated to storing input from the
+     keyboard while a program is unable to process the input.  When the
+     program is able to accept the input, the keyboard buffer is emptied.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Keyword
+'------------------------------------------------------------------------------
+ ^bKeyword^b
+
+     (command, language) A word that has a special meaning to a compiler or
+     other utility program.  Commands, directives, or options are often
+     recognized by examining supplied text to see if it contains keywords.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: LAN
+'------------------------------------------------------------------------------
+ ^bLAN^b
+
+     (network) An acronym for Local Area Network.  Generally used to describe
+     a system by which microcomputers are connected together to perform such
+     functions as file and peripheral sharing, electronic mail, and
+     centralized backup of data.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Lexical Scoping
+'------------------------------------------------------------------------------
+ ^bLexical Scoping^b
+
+     (variable) A method of determining an item's existence, visibility, or
+     applicability (i.e., the item's scope) by it's position within the text
+     of a program.
+
+!seealso: "Local Variable" "Scope" "Static Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Lexically Scoped Variable
+'------------------------------------------------------------------------------
+ ^bLexically Scoped Variable^b
+
+     (variable) A variable that is only accessible in a particular section of
+     a program, where that section is defined using simple textual rules.
+     For example, a local variable is only accessible within the procedure
+     that declares it.
+
+!seealso: "Dynamic Scoping" "Local Variable" "Static Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Library
+'------------------------------------------------------------------------------
+ ^bLibrary^b
+
+     (linker) A file containing one or more object modules.  Modules are
+     extracted by linker and combined with object files to form an executable
+     (.EXE) file or a prelink library (.PLL) file.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Library File
+'------------------------------------------------------------------------------
+ ^bLibrary File^b
+
+     (configuration) A file containing one or more object modules.  The
+     linker searches specified libraries to resolve references to functions
+     or procedures that were not defined in the object files being linked.
+
+!seealso: "Linker" "Module" "Object File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Lifetime of a Variable
+'------------------------------------------------------------------------------
+ ^bLifetime of a Variable^b
+
+     (variable) The period of time during which a variable retains its
+     assigned value.  The lifetime of a variable depends on its storage
+     class.
+
+!seealso: "Scope" "Visibility" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Linefeed
+'------------------------------------------------------------------------------
+ ^bLinefeed^b
+
+     (general) A special character (CHR(10)) that by convention causes the
+     cursor or printhead to move to the next line or to terminate a line in a
+     text file.  It is usually used in combination with a hard carriage
+     return.
+
+!seealso: "Formfeed" "Hard Carriage Return" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Linker
+'------------------------------------------------------------------------------
+ ^bLinker^b
+
+     (program) A program that combines object files created by a compiler to
+     produce an executable program.  The linker examines the supplied object
+     files to resolve symbol references between modules.  If a module refers
+     to a symbol that is not defined by any of the modules, the linker
+     searches one or more libraries to resolve the reference.
+
+!seealso: "Library File" "Object File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Linking
+'------------------------------------------------------------------------------
+ ^bLinking^b
+
+     (linker) The process in which object files and libraries are combined
+     and references are resolved to produce a relocatable memory image
+     (generally, an executable).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: List
+'------------------------------------------------------------------------------
+ ^bList^b
+
+     (expression, command) A list of expressions, field names, or filenames,
+     separated by commas specified generally as command, procedure, or
+     function arguments.  Code blocks can also execute a list of expressions.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: List Match Marker
+'------------------------------------------------------------------------------
+ ^bList Match Marker^b
+
+     (preprocessor) A match marker indicating a position that will
+     successfully match a list of one or more arbitrarily complex
+     expressions.  A list match marker marks a part of a command that is
+     expected to consist of a list of programmer-supplied expressions.  A
+     list match marker has the form <id,...>.  id associates a name with the
+     match marker.  The name can be used in a result marker to specify how
+     the matching source text is to be handled.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Literal
+'------------------------------------------------------------------------------
+ ^bLiteral^b
+
+     (data type) A source code element interpreted literally (as
+     encountered), and assumed to have no abstract meaning.  Generally a
+     constant.
+
+!seealso: "Constant" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Literal Array
+'------------------------------------------------------------------------------
+ ^bLiteral Array^b
+
+     (array) In CA-Clipper, an array specified by enclosing a series of
+     expressions in curly ({}) braces.  A literal array is an expression that
+     evaluates to an array reference.
+
+!seealso: "Array" "Array Reference" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Local Area Network
+'------------------------------------------------------------------------------
+ ^bLocal Area Network^b
+
+     (network) A system by which microcomputers are connected (via coaxial
+     cable, optical fiber, twisted pair phone wire, or other media), relying
+     on sophisticated operating software to perform such functions as file
+     and peripheral sharing, electronic mail, and centralized backup of data.
+
+!seealso: "LAN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Local Variable
+'------------------------------------------------------------------------------
+ ^bLocal Variable^b
+
+     (variable) A variable that exists and retains its value only as long as
+     the procedure in which it is declared is active (i.e., until the
+     procedure returns control to a higher-level procedure).  Local variables
+     are lexically scoped; they are accessible by name only within the
+     procedure where they are declared.
+
+!seealso: "Dynamic Scoping" "Lexical Scoping" "Static Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Logical Type
+'------------------------------------------------------------------------------
+ ^bLogical Type^b
+
+     (data type) A special data type consisting of true (.T.) or false (.F.)
+     values.
+
+!seealso: "Condition" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Logify
+'------------------------------------------------------------------------------
+ ^bLogify^b
+
+     (preprocessor) To change an expression in the source text into a logical
+     value.  Logifying is accomplished by surrounding the expression with
+     periods.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Logify Result Marker
+'------------------------------------------------------------------------------
+ ^bLogify Result Marker^b
+
+     (preprocessor) A result marker of the form #<.id.>.  id must correspond
+     to the name of a match marker.  This result marker writes true (.T.) to
+     the result text if any input text is matched; otherwise, it writes false
+     (.F.) to the result text.  The input text itself is not written to the
+     result text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Macro
+'------------------------------------------------------------------------------
+ ^bMacro^b
+
+     (expression) In CA-Clipper, an operation that allows source code to be
+     compiled and executed at runtime.  In CA-Clipper, the macro symbol (&)
+     does not perform text substitution unless embedded within a character
+     string.  Instead, it is generally treated as a unary operator that
+     operates on a character string.  The text in the character string is
+     compiled on the fly using a special runtime compiler.  The resulting
+     code is then executed, and the value obtained is returned as the result
+     of the macro operation.
+
+!seealso: "Code Block" "Unary Operator" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Make
+'------------------------------------------------------------------------------
+ ^bMake^b
+
+     (program) A program used to maintain multifile program systems.  A make
+     program takes as its input a file (make file) specifying the
+     relationships between files.  When executed the make program compares
+     the date and time stamps of specified target files to the specified
+     dependent files.  If any of the dependent files have a more recent date
+     and time stamp than the associated target files, a series of actions are
+     performed.
+
+!seealso: "Make File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Make File
+'------------------------------------------------------------------------------
+ ^bMake File^b
+
+     (configuration) A text file used as input to a make utility containing
+     the specifications and actions required to build a program or a system
+     of programs.  This file is often referred to as a description file.
+
+!seealso: "Make" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Manifest Constant
+'------------------------------------------------------------------------------
+ ^bManifest Constant^b
+
+     (preprocessor) An identifier specified in a #define directive.  The
+     preprocessor substitutes the specified result text whenever it
+     encounters the identifier in the source text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Map File (.MAP)
+'------------------------------------------------------------------------------
+ ^bMap File (.MAP)^b
+
+     (linker) The map file (.MAP) contains information about symbol and
+     segment addresses within the memory image created by .RTLink.  It is
+     generated when requested through the use of the appropriate command line
+     switch.  A map file generated during a link will have much more
+     information than one produced during the creation of a prelinked
+     library.  During the .PLL creation, only symbols, names, and some
+     relative addresses are known.  During a link, the final memory layout is
+     known, and a more detailed map can be created.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Master Index
+'------------------------------------------------------------------------------
+ ^bMaster Index^b
+
+     (database)
+
+!seealso: "Controlling/Master Index" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Match
+'------------------------------------------------------------------------------
+ ^bMatch^b
+
+     (preprocessor) A successful comparison of source text with a match
+     pattern (or part of a match pattern).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Match Marker
+'------------------------------------------------------------------------------
+ ^bMatch Marker^b
+
+     (preprocessor) A construct used in a match pattern to indicate a
+     position that will successfully match a particular type of source text.
+     There are several types of match markers, each of which will
+     successfully match a particular type of source text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Match Pattern
+'------------------------------------------------------------------------------
+ ^bMatch Pattern^b
+
+     (preprocessor) The part of a translation directive that specifies the
+     format of source text to be affected by the directive.  A match pattern
+     generally consists of words and match markers.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Memo Type
+'------------------------------------------------------------------------------
+ ^bMemo Type^b
+
+     (data type, database) A special database field type consisting of one or
+     more characters in the IBM extended character set.  The maximum size of
+     a memo field in CA-Clipper is 65,534 bytes.  A memo field differs only
+     from a character string by the fact it is stored in a separate memo
+     (.DBT file) and the field length is variable-length
+
+!seealso: "Character" "String" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Memory Variable
+'------------------------------------------------------------------------------
+ ^bMemory Variable^b
+
+     (variable) In general, a variable that resides in memory, as opposed to
+     a database field variable.  Sometimes used specifically to refer to
+     variables of the MEMVAR storage class (private and public variables), as
+     opposed to static or local variables.
+
+!seealso: "Field Variable" "Private Variable" "Public Variable" "Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Menu
+'------------------------------------------------------------------------------
+ ^bMenu^b
+
+     (user interface) An onscreen list of choices from which the user
+     selects.  Menus range from simple to elaborate forms.  Two examples are
+     menus that pull down from the top of the screen (an elaborate type
+     requiring more programming), or a simple list of numbered items from
+     which the user selects by entering the appropriate number.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Menu Bar
+'------------------------------------------------------------------------------
+ ^bMenu Bar^b
+
+     (debugger) The bar at the top of the debugger screen, on which the
+     available menu choices are displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Messages
+'------------------------------------------------------------------------------
+ ^bMessages^b
+
+     (object-oriented) A message is the way an object is requested to perform
+     some action.  Messages are sent to an object and composed of the object
+     name, the send operator, and the selector name followed by arguments
+     enclosed in parentheses.  The selector has the same name as the method
+     it is calling.  Sending a message produces a return value, much like a
+     function call with the return value varying depending on the operation
+     performed.
+
+!seealso: "Instance Variables" "Methods" "Objects" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Metasymbol
+'------------------------------------------------------------------------------
+ ^bMetasymbol^b
+
+     (language) Descriptive symbols used in syntax to represent information
+     that must be supplied as part of a source code statement.  A metasymbol
+     is constructed using two information components: a data type prefix and
+     a logical descriptor.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Methods
+'------------------------------------------------------------------------------
+ ^bMethods^b
+
+     (object-oriented) A method is the operation performed in response to a
+     message sent to an object.
+
+!seealso: "Classes" "Messages" "Objects" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Modularity
+'------------------------------------------------------------------------------
+ ^bModularity^b
+
+     (modular programming) Roughly, a measure of a system's adherence to the
+     principles of modular programming.  The principles of modular
+     programming are not precisely defined, but may be said to comprise these
+     basic ideas:  programs should be organized as well-defined modules;
+     modules should correspond with syntactic units of the programming
+     language (such as functions or source files); a module should accomplish
+     a well-defined task;  a module should interact with as few other modules
+     as possible;  interactions between modules should be explicitly
+     specified in the source code for the modules;  modules should obey the
+     principle of information hiding.
+
+!seealso: "Encapsulation" "Information Hiding" "Lexical Scoping" "Side Effect" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Module
+'------------------------------------------------------------------------------
+ ^bModule^b
+
+     (modular programming) Generically, a procedure or function (or a set of
+     related procedures and functions) that can be treated as a unit.
+     Sometimes used to refer specifically to the code in a single object
+     file, normally the result of compiling a single source file.
+
+     (linker) A portion of the object code that is a discrete unit.  If any
+     part of a module is linked, the entire module must be linked.
+
+!seealso: "Object File" "Program File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Monitor Window
+'------------------------------------------------------------------------------
+ ^bMonitor Window^b
+
+     (debugger) The window in which monitored variables are displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Monitored Variable
+'------------------------------------------------------------------------------
+ ^bMonitored Variable^b
+
+     (debugger) A variable which is selected by the options on the Monitor
+     Menu and displayed in the Monitor Window.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Multidimensional Array
+'------------------------------------------------------------------------------
+ ^bMultidimensional Array^b
+
+     (array) In CA-Clipper, an array whose elements consist entirely of
+     references to other arrays (called subarrays).  The elements of the
+     subarrays may, in turn, contain references to other arrays.  Arrays
+     organized in this fashion are said to be nested.  Each level of nesting
+     may be viewed as a dimension of the main array, and the elements of the
+     subarrays may be accessed by applying multiple subscripts to the main
+     array.
+
+!seealso: "Array" "Array Reference" "Nested Array" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Natural Order
+'------------------------------------------------------------------------------
+ ^bNatural Order^b
+
+     (database) For a database file, the order determined by the sequence in
+     which records were originally entered into the file.  Also called
+     unindexed order.
+
+!seealso: "Index" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Nested Array
+'------------------------------------------------------------------------------
+ ^bNested Array^b
+
+     (array) In CA-Clipper, two arrays are said to be nested if one of them
+     contains a reference to the other.  When an array contains a reference
+     to a second array, the second array is sometimes called a subarray of
+     the first array.
+
+!seealso: "Array" "Array Reference" "Multidimensional Array" 
+'------------------------------------------------------------------------------
+
+
+
+!short: NIL
+'------------------------------------------------------------------------------
+ ^bNIL^b
+
+     (data type) A special data type that has only one allowable value.  The
+     special value (NIL) is automatically assigned to all uninitialized
+     variables except publics, and is also passed as a substitute when
+     arguments are omitted in a procedure or function call.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Normal Stringify Result Marker
+'------------------------------------------------------------------------------
+ ^bNormal Stringify Result Marker^b
+
+     (preprocessor) A result marker of the form <"id">.  id must correspond
+     to the name of a match marker.  A normal stringify result marker
+     specifies that the corresponding source text is to be enclosed in
+     quotes.  If the matched source text is a list, each element of the list
+     is individually stringified.  If no source text was matched, an empty
+     result is produced.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Normalization
+'------------------------------------------------------------------------------
+ ^bNormalization^b
+
+     (database) The process of elimination and consolidation of redundant
+     data elements in a database system.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Numeric Type
+'------------------------------------------------------------------------------
+ ^bNumeric Type^b
+
+     (data type) A special data type consisting of values that indicate
+     magnitude.  Numeric values consist of digits between zero and nine, a
+     sign, and a decimal point.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Object File
+'------------------------------------------------------------------------------
+ ^bObject File^b
+
+     (configuration) A file that contains the output of a compiler or other
+     language translator, generally the result of compiling a single source
+     file.  Object files are linked to create an executable program.
+
+!seealso: "Linking" "Program File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Objects
+'------------------------------------------------------------------------------
+ ^bObjects^b
+
+     (object-oriented, data type) An object is an instance of a class.  Each
+     object has one or more attributes (called instance variables) and a
+     series of operations (methods) that execute when a message is sent to
+     the object.  The object's instance variables can only be accessed or
+     assigned by sending messages to the object.  Objects are created by
+     calling a special function associated with a class.
+
+!seealso: "Classes" "Instance Variables" "Messages" "Methods" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Operand
+'------------------------------------------------------------------------------
+ ^bOperand^b
+
+     (expression) A value that is operated on by an operator, or the term in
+     an expression that specifies such a value.  For example, in the
+     expression x + 5, x and 5 are operands.
+
+!seealso: "Operator" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Operating System
+'------------------------------------------------------------------------------
+ ^bOperating System^b
+
+     The basic software program that organizes and services the computer and
+     its peripheral devices.  The operating system supported by CA-Clipper,
+     MS/PC-DOS is organized into several layers as follows:
+
+     ^b^CFE^b  Loader is the layer which brings the operating system software
+        into memory.
+
+     ^b^CFE^b  BIOS is the basic hardware interface layer that provides
+        services to the kernel and consists of initialization code and device
+        drivers.
+
+     ^b^CFE^b  Kernel is the application interface layer and provides
+        services for process control, memory management, peripheral support,
+        and a file system.
+
+     ^b^CFE^b  User interface shell (COMMAND.COM) provides basic services to
+        the user including an interactive mode, directory management, and a
+        service for loading and executing application programs.
+
+     ^b^CFE^b  Support programs provide extended operating services not
+        resident in the user interface shell.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Operator
+'------------------------------------------------------------------------------
+ ^bOperator^b
+
+     (expression) A symbol that identifies a basic operation.  For example,
+     the multiplication operator (*) denotes that two values are to be
+     multiplied.  Operators are categorized as either unary or binary,
+     depending on whether they require one or two operands, respectively.
+
+!seealso: "Binary Operator" "Operand" "Unary Operator" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Optional Clause
+'------------------------------------------------------------------------------
+ ^bOptional Clause^b
+
+     (command, preprocessor) A portion of a match pattern that is enclosed in
+     square ([ ]) brackets.  An optional clause specifies part of a match
+     pattern that need not be present for source text to match the pattern.
+     An optional clause may contain any of the components legal within a
+     match pattern, including other optional clauses.  When a match pattern
+     contains a series of optional clauses that are immediately adjacent to
+     each other, the matching portions of the source text are not required to
+     appear in the same order as the clauses in the match pattern.  If an
+     optional clause is matched by more than one part of the source text, the
+     multiple matches may be handled using a repeating clause in the result
+     pattern.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Overlay
+'------------------------------------------------------------------------------
+ ^bOverlay^b
+
+     (linker) A section of an executable program that shares memory with
+     other sections of the same program.  An overlay is read into memory when
+     the code residing in it is requested by the root (nonoverlayed) section
+     or another overlay.
+
+!seealso: "Dynamic Overlay" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Overstrike Mode
+'------------------------------------------------------------------------------
+ ^bOverstrike Mode^b
+
+     (user interface) A data entry mode entered when the user presses the
+     insert key.  When this mode is active, characters are entered at the
+     cursor position and text to the right of the cursor remains stationary.
+
+!seealso: "Insert Mode" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Parameter
+'------------------------------------------------------------------------------
+ ^bParameter^b
+
+     (variable) A identifier that receives a value or reference passed to a
+     procedure or user-defined function.  A parameter is sometimes referred
+     to as a formal parameter.
+
+!seealso: "Activation" "Argument" "Function" "Procedure" "Reference" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Path
+'------------------------------------------------------------------------------
+ ^bPath^b
+
+     (file) A literal string that specifies the location of a disk directory
+     in the tree structured directory system.  A path specification consists
+     of the following elements:  an optional disk drive letter followed by a
+     colon, an optional backslash indicating that the path starts at the root
+     directory of the specified drive, the names of all the directories from
+     the root directory to the target directory, separated by backslash (\)
+     characters.  Example:  C:\CLIPPER5\INCLUDE.  A path list is a series of
+     path specifications separated by semicolons.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Picture
+'------------------------------------------------------------------------------
+ ^bPicture^b
+
+     (user interface) A string that defines the format for data entry or
+     display in a GET, SAY, or the return value of TRANSFORM().  Picture
+     strings are comprised of functions which affect the formatting as a
+     whole and a series of template characters that affect formatting on a
+     character by character basis.
+
+!seealso: "Template" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Port
+'------------------------------------------------------------------------------
+ ^bPort^b
+
+     (general) A designation for the hardware that allows the processor to
+     communicate with peripheral devices.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Positional
+'------------------------------------------------------------------------------
+ ^bPositional^b
+
+     (linker) The POSITIONAL command interface requires that certain items
+     appear on the input line in a specific order.  This syntax is similar to
+     Microsoft LINK interface.  Because this syntax limits the use of .RTLink
+     overlays to one overlay area, it is recommended that the FREEFORMAT
+     syntax be used.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prelinked Library
+'------------------------------------------------------------------------------
+ ^bPrelinked Library^b
+
+     (linker) Part of the executable program that is stored external to the
+     .EXE file.  Prelinked libraries are created before producing an
+     executable in a multistep link.  This allows you to create a runtime
+     library with code that you access from different programs, considerably
+     speeding up the linking process.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Preprocessor
+'------------------------------------------------------------------------------
+ ^bPreprocessor^b
+
+     (program, preprocessor) A translation program that prepares source code
+     for compilation by applying selective text replacements.  The
+     replacements to be made are specified by directives in the source file.
+     In CA-Clipper, the preprocessor operates transparently as a part of the
+     compiler program (CLIPPER.EXE).
+
+!seealso: "Compiler" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Precedence
+'------------------------------------------------------------------------------
+ ^bPrecedence^b
+
+     (expression) The stature of an operator in the hierarchy that determines
+     the order in which expressions are evaluated.  For example, the
+     expression 5 + 2 * 3 is interpreted as 5 + (2 * 3) because the multiply
+     operator (*) has a higher precedence than the addition operator (+).
+
+!seealso: "Expression" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Primitive
+'------------------------------------------------------------------------------
+ ^bPrimitive^b
+
+     (procedure and function) A simple, low-level function used by other
+     high-level functions or programs to perform a more complex task.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Print Spooler
+'------------------------------------------------------------------------------
+ ^bPrint Spooler^b
+
+     A program running either on a local workstation or on the file server
+     that captures print jobs to a file and then queues them for printing
+     later.  Print spoolers generally operate as background tasks in order to
+     facilitate printing while other tasks are operating in the foreground.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Private Variable
+'------------------------------------------------------------------------------
+ ^bPrivate Variable^b
+
+     (variable) A variable of the MEMVAR storage class.  Private variables
+     are created dynamically at runtime using the PRIVATE statement, and
+     accessible within the creating procedure and any lower-level procedures
+     unless obscured by another private variable with the same name.
+
+!seealso: "Activation" "Dynamic Scoping" "Function" "Public Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Procedure
+'------------------------------------------------------------------------------
+ ^bProcedure^b
+
+     (procedure and function) An executable block of code with an assigned
+     name.  Alternately, the collection of source code statements that define
+     a procedure.  In CA-Clipper, this can be a source file (.prg), a format
+     file (.fmt), an explicitly declared procedure (PROCEDURE), or an
+     explicitly declared function (FUNCTION).
+
+     The terms procedure and function are generally interchangeable.  By
+     convention, a function returns a value, while a procedure does not.
+
+!seealso: "Activation" "Function" "Parameter" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Procedure File
+'------------------------------------------------------------------------------
+ ^bProcedure File^b
+
+     (configuration) An ASCII text file containing CA-Clipper procedure and
+     function definitions usually ending with a (.prg) extension; a program
+     file.
+
+!seealso: "Program File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Program Editor
+'------------------------------------------------------------------------------
+ ^bProgram Editor^b
+
+     (program) A program that creates and edits text files or programs.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Program File
+'------------------------------------------------------------------------------
+ ^bProgram File^b
+
+     (configuration) An ASCII text file containing CA-Clipper source code.
+     Program files usually end with a (.prg) extension.  The compiler reads
+     the program file, translates the source code, and produces an object
+     file, that is then linked to produce an executable program.
+
+!seealso: "Linking" "Object File" "Source Code" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Projection
+'------------------------------------------------------------------------------
+ ^bProjection^b
+
+     (database) A DBMS term specifying a subset of fields.  In CA-Clipper,
+     the analogy is the FIELDS clause.
+
+!seealso: "Join" "Selection" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Prompt
+'------------------------------------------------------------------------------
+ ^bPrompt^b
+
+     (user interface) A series of characters displayed on the screen
+     indicating that input from the keyboard is expected.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Pseudofunction
+'------------------------------------------------------------------------------
+ ^bPseudofunction^b
+
+     (preprocessor) A function-like construct that is replaced with another
+     expression via the #define directive, rather than compiled into a
+     conventional function call.  Pseudofunctions may contain parenthesized
+     arguments that may be included in the substituted text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Public Variable
+'------------------------------------------------------------------------------
+ ^bPublic Variable^b
+
+     (variable) A variable of the MEMVAR storage class.  Public variables are
+     created dynamically at runtime using the PUBLIC statement, and are
+     accessible from any procedure at any level unless obscured by a private
+     variable with the same name.
+
+!seealso: "Activation" "Dynamic Scoping" "Function" "Private Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Query
+'------------------------------------------------------------------------------
+ ^bQuery^b
+
+     (database) A request for information to be retrieved from a database.
+     Alternately, a data structure in which such a request is encoded.
+
+     (general) A query is also a general term used when you want to
+     interrogate a setting or an exported instance variable for its current
+     value.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Queue
+'------------------------------------------------------------------------------
+ ^bQueue^b
+
+     (general) A data structure of variable length where elements are added
+     to one end and retrieved from the other.  A queue is often described as
+     first in, first out.
+
+!seealso: "Print Spooler" "Stack" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Record
+'------------------------------------------------------------------------------
+ ^bRecord^b
+
+     (database) The basic row unit of a database file consisting of one or
+     more field elements.
+
+!seealso: "Database" "Field" "Table" "Tuple" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Record Locking
+'------------------------------------------------------------------------------
+ ^bRecord Locking^b
+
+     (network) The process by which one user obtains exclusive access to a
+     record in a database to prevent another user from attempting to write
+     data to it concurrently.  A record lock must be applied prior to writing
+     to a database in use by more than one user.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Recovery
+'------------------------------------------------------------------------------
+ ^bRecovery^b
+
+     (error handling) The process of attempting to handle an exception or
+     runtime error.  Generally, recovery consists of three possible actions:
+     terminate processing, retry the failed operation, or resume processing
+     with the next operation.  In all cases, the environment of the program
+     must be restored to a stable state.
+
+!seealso: "Error" "Exception" "Failure" "Retry" "Runtime Error" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Recursion
+'------------------------------------------------------------------------------
+ ^bRecursion^b
+
+     (expression) The calling of a procedure by a statement in that same
+     procedure.  When a procedure calls itself it is said to recurse.  A
+     recursive call causes a new activation of the procedure.  If the source
+     code for the procedure includes a declaration of local variables, a new
+     set of local variables is created for each activation.  A private
+     variable created by the procedure is associated with the activation in
+     which it is created, and is visible in that activation and any lower-
+     level activations, unless obscured by a private variable created in a
+     lower-level activation.
+
+!seealso: "Activation" "Function" "Private Variable" "Procedure" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Reference
+'------------------------------------------------------------------------------
+ ^bReference^b
+
+     (array, variable) A special value that refers indirectly to a variable
+     or array.  If one variable contains a reference to a second variable
+     (achieved by passing the second variable by reference in a function or
+     procedure call), operations on the first variable (including assignment)
+     are passed through to the second variable.  If a variable contains a
+     reference to an array, the elements of the array can be accessed by
+     applying a subscript to the variable.
+
+!seealso: "Array Reference" "Parameter" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Regular Match Marker
+'------------------------------------------------------------------------------
+ ^bRegular Match Marker^b
+
+     (preprocessor) A match marker indicating a position that will
+     successfully match an arbitrarily complex expression in the source text.
+     A regular match marker generally marks a part of a command that is
+     expected to consist of arbitrary programmer-supplied text, as opposed to
+     a keyword or other restrictive component.  In order for the source text
+     to match, it must constitute a properly formed expression.  A regular
+     match marker has the form <id>.  id associates a name with the match
+     marker.  The name can be used in a result marker to specify how the
+     matching source text is to be handled.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Regular Result Marker
+'------------------------------------------------------------------------------
+ ^bRegular Result Marker^b
+
+     (preprocessor) A result marker of the form <id>.  id must correspond to
+     the name of a match marker.  This result marker writes the matched input
+     text to the result text, or nothing if no input text is matched.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Relation
+'------------------------------------------------------------------------------
+ ^bRelation^b
+
+     (database) A link between database files that allows the record pointer
+     to move in more than one database file based on the value of a common
+     field or expression.  This allows information to be accessed from more
+     than one database file at a time.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Relational Database System
+'------------------------------------------------------------------------------
+ ^bRelational Database System^b
+
+     (database) A system that stores data in rows and columns, without system
+     dependencies within the data.  In other words, relationships between
+     different databases are not stored in the actual database itself, as is
+     the case in a system that uses record pointers.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Relative Addressing
+'------------------------------------------------------------------------------
+ ^bRelative Addressing^b
+
+     (user interface) To refer to a memory address, array element, screen
+     location, or printer location with respect to another value, rather than
+     referring to a specific address or element.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Repeating Clause
+'------------------------------------------------------------------------------
+ ^bRepeating Clause^b
+
+     (preprocessor) A portion of a result pattern surrounded by square ([ ])
+     brackets.  The text specified by the repeating clause is written to
+     output once for each successfully matched match marker in the
+     corresponding match pattern.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Restricted Match Marker
+'------------------------------------------------------------------------------
+ ^bRestricted Match Marker^b
+
+     (preprocessor) A match marker indicating a position that will
+     successfully match one or more specified keywords.  A restricted match
+     marker marks a part of a command that is expected to be a keyword.  A
+     restricted match marker has the form <id: wordList> where wordList is a
+     list of one or more keywords.  Source text is successfully matched only
+     if it matches one of the keywords (or is an acceptable abbreviation).
+     id associates a name with the match marker.  The name can be used in a
+     result marker to specify how the matching source text is to be handled.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Result Text
+'------------------------------------------------------------------------------
+ ^bResult Text^b
+
+     (preprocessor) The text that results from formatting matched source text
+     using a result pattern.  If the result text matches a match pattern in
+     another preprocessor directive, then it becomes the source text for that
+     directive.  Otherwise, the result text is passed as input to the
+     compiler.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Result Pattern
+'------------------------------------------------------------------------------
+ ^bResult Pattern^b
+
+     (preprocessor) The part of a translation directive that specifies the
+     text to be substituted for source text that matches the match pattern.
+     A result pattern generally consists of operators and result markers.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Retry
+'------------------------------------------------------------------------------
+ ^bRetry^b
+
+     (network) Upon failing to lock a record in a database that is opened in
+     shared mode, retry refers to attempting the write again based upon
+     certain programmatic parameters.
+
+     (error handling) After an exception has been raised and the conditions
+     of a failure corrected, an attempt is made to reexecute the failed
+     operation.
+
+!seealso: "Error" "Exception" "Exclusive" "Failure" "Runtime Error" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Return Value
+'------------------------------------------------------------------------------
+ ^bReturn Value^b
+
+     (procedure and function) The value or reference returned by a function
+     or method from a function call or message send.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Root
+'------------------------------------------------------------------------------
+ ^bRoot^b
+
+     (linker) A  special section of the program that has the lowest address
+     of all sections.  This is the first section of the program loaded into
+     memory by DOS or the RTLINKST.COM startup code.  Other sections are
+     loaded by the overlay manager.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Row
+'------------------------------------------------------------------------------
+ ^bRow^b
+
+     (database) A group of related column or field values that are treated as
+     a single entity.  It is the same as a CA-Clipper record.
+
+     (user interface) A numeric expression that evaluates to an integer
+     identifying a screen or printer row position.
+
+!seealso: "Column" "Field" "Record" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Run Mode
+'------------------------------------------------------------------------------
+ ^bRun Mode^b
+
+     (debugger) The mode of execution in which an application executes
+     without pausing, until a Breakpoint or Tracepoint is reached.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Runtime Error
+'------------------------------------------------------------------------------
+ ^bRuntime Error^b
+
+     (error handling) An error that halts a program while it is executing.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scope
+'------------------------------------------------------------------------------
+ ^bScope^b
+
+     (command, database) In a database command, a clause that specifies a
+     range of database records to be addressed by the command.  The scope
+     clause uses the qualifiers ALL, NEXT, RECORD, and REST to define the
+     record scope.
+
+!seealso: "Condition" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scoreboard
+'------------------------------------------------------------------------------
+ ^bScoreboard^b
+
+     (user interface) An area of the display on line 0 beginning at column 60
+     that displays status information during certain data entry operations.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Script File
+'------------------------------------------------------------------------------
+ ^bScript File^b
+
+     (configuration) A text file that contains command input to a compiler,
+     linker, or other utility program.  A script file is often used in lieu
+     of equivalent keyboard input.  For the CA-Clipper compiler, script files
+     contain a list of source files to be compiled into a single object file.
+
+     (debugger) A file in which frequently used debugger commands are stored
+     and from which those commands can be executed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Scrolling
+'------------------------------------------------------------------------------
+ ^bScrolling^b
+
+     (user interface) The action that takes place when the user attempts to
+     move the cursor or highlight beyond the window boundary to access
+     information not currently displayed.
+
+!seealso: "Window" 
+'------------------------------------------------------------------------------
+
+
+
+!short: SDF File
+'------------------------------------------------------------------------------
+ ^bSDF File^b
+
+     (file, database) A text file that contains fixed-length database records
+     with each record separated by a carriage return/linefeed pair (CHR(13) +
+     CHR(10)) and terminated with an end of file mark (CHR(26)).  Each field
+     within an SDF file is fixed-length with character strings padded with
+     trailing spaces and numeric values padded with leading spaces.  There
+     are no field separators.
+
+!seealso: "Database" "Delimited File" "Text File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Search Condition
+'------------------------------------------------------------------------------
+ ^bSearch Condition^b
+
+     (database)
+
+!seealso: "Condition" "Scope" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Section
+'------------------------------------------------------------------------------
+ ^bSection^b
+
+     (linker) Load module portion of an .EXE or .OVL file loaded into memory
+     as a single unit.  In a program with overlays, the root section
+     containing the main program module loads when the program is executed.
+     Other sections are loaded as overlays when modules within them are
+     invoked.
+
+!seealso: "Dynamic Overlay" "Linking" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Segment
+'------------------------------------------------------------------------------
+ ^bSegment^b
+
+     (linker) Code or data handled by the linker as a indivisible unit.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Selection
+'------------------------------------------------------------------------------
+ ^bSelection^b
+
+     (algorithm) One of the three basic building blocks of algorithm
+     development (the others are sequence and iteration).  Selection allows
+     control to flow along a number of possible paths, depending on the
+     circumstance encountered.
+
+     (database) A DBMS term that specifies a subset of records meeting a
+     condition.  The selection itself is obtained with a selection operator.
+     In CA-Clipper, the analogy is the FOR clause.
+
+!seealso: "Iteration" "Join" "Projection" "Sequence" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Self
+'------------------------------------------------------------------------------
+ ^bSelf^b
+
+     (object-oriented) An object-oriented term describing a reference to the
+     object that received the current message.  In CA-Clipper, this reference
+     is often the return value of a message send.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Send Operator
+'------------------------------------------------------------------------------
+ ^bSend Operator^b
+
+     (object-oriented) A new operator (:) in CA-Clipper used to send messages
+     to user interface objects.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Separator
+'------------------------------------------------------------------------------
+ ^bSeparator^b
+
+     (file, database) The character or set of characters that differentiate
+     fields or records from one another.  In CA-Clipper, the DELIMITED and
+     SDF file types have separators.  The DELIMITED file uses a comma as the
+     field separator and a carriage return/linefeed pair as the record
+     separator.  The SDF file type has no field separator, but also uses a
+     carriage return/linefeed pair as the record separator.
+
+!seealso: "Delimiter" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Sequence
+'------------------------------------------------------------------------------
+ ^bSequence^b
+
+     (algorithm) One of the three basic building blocks of algorithm
+     development (the others are selection and iteration).  A sequence is a
+     series of discrete steps that must be performed in a particular order.
+
+     (language) In CA-Clipper, a series of statements enclosed in a BEGIN
+     SEQUENCE control structure.
+
+!seealso: "Algorithm" "Iteration" "Selection" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Set Colors Window
+'------------------------------------------------------------------------------
+ ^bSet Colors Window^b
+
+     (debugger) The window in which the Debugger color settings can be
+     inspected.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Shared
+'------------------------------------------------------------------------------
+ ^bShared^b
+
+     (network) A mode in which a file is opened that allows it to be accessed
+     by more than one user at the same time.  The inverse of Exclusive.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Shortcutting
+'------------------------------------------------------------------------------
+ ^bShortcutting^b
+
+     (expression) A compiler optimization that causes expressions to be
+     evaluated only to the extent required to determine their outcome.  For
+     example, in the expression f() .OR. g() function g need not be executed
+     if function f returns true (.T.).  CA-Clipper performs shortcutting on
+     all logical operators (.OR. .AND. .NOT.).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Side Effect
+'------------------------------------------------------------------------------
+ ^bSide Effect^b
+
+     (modular programming) An unexpected effect of executing a function or
+     program.  When a function changes the state of a system in a way that is
+     not explicitly specified by the function's name or calling protocol, the
+     change is called a side effect.  Reliance on side effects is contrary to
+     the principles of modular programming.
+
+!seealso: "Encapsulation" "Information Hiding" "Lexical Scoping" "Modularity" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Single Step Mode
+'------------------------------------------------------------------------------
+ ^bSingle Step Mode^b
+
+     (debugger) The mode of execution in which only the line of code
+     highlighted by the Execution Bar is executed, and its output displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Single-dimensional Array
+'------------------------------------------------------------------------------
+ ^bSingle-dimensional Array^b
+
+     (array) In CA-Clipper, an array whose elements do not contain references
+     to other arrays.
+
+!seealso: "Array" "Multidimensional Array" "Nested Array" "Subarray" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Skeleton
+'------------------------------------------------------------------------------
+ ^bSkeleton^b
+
+     (command) A wildcard mask used to specify a group of filenames or memory
+     variables.  The * is used to specify one or more characters and the ? to
+     specify a single character.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Smart Stringify Result Marker
+'------------------------------------------------------------------------------
+ ^bSmart Stringify Result Marker^b
+
+     (preprocessor) A result marker of the form <(id)>.  id must correspond
+     to the name of a match marker.  A smart stringify result marker
+     specifies that the corresponding source text is to be enclosed in quotes
+     unless the source text was enclosed in parentheses.  If the matched
+     source text is a list, each element of the list is individually
+     processed.  If no source text was matched, an empty result is produced.
+     The smart stringify result marker is used to implement commands that
+     allow extended expressions (a part of a command that may be either an
+     unquoted literal or a character expression).
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Soft Carriage Return
+'------------------------------------------------------------------------------
+ ^bSoft Carriage Return^b
+
+     (general) A carriage return that is introduced into text usually in
+     order to implement some sort of wrap operation, as opposed to a Hard
+     Carriage Return that was specifically entered into the text when it was
+     created.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Sort Order
+'------------------------------------------------------------------------------
+ ^bSort Order^b
+
+     (array, database) Describes the various ways database files and arrays
+     are ordered.
+
+     ^b^CFE^b  Ascending
+
+        Causes the order of data in a sort to be from lowest value to highest
+        value.
+
+     ^b^CFE^b  Descending
+
+        Causes the order of data in a sort to be from highest value to lowest
+        value.
+
+     ^b^CFE^b  Chronological
+
+        Causes data in a sort to be ordered based on a date value, from
+        earliest to most recent.
+
+     ^b^CFE^b  ASCII
+
+        Causes data in a sort to be ordered according to the ASCII Code
+        values of the data to be sorted.
+
+     ^b^CFE^b  Dictionary
+
+        The data in a sort is ordered in the way it would appear if the items
+        sorted were entries in a dictionary of the English language.
+
+     ^b^CFE^b  Collating Sequence
+
+        Data in a sort will be placed in sequence following the order of
+        characters in the IBM Extended Character Set.
+
+     ^b^CFE^b  Natural
+
+        The order in which data was entered into the database.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Source Code
+'------------------------------------------------------------------------------
+ ^bSource Code^b
+
+     (procedure and function) The textual representation of a program or
+     procedure.
+
+!seealso: "Object File" "Program File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Source File
+'------------------------------------------------------------------------------
+ ^bSource File^b
+
+     (configuration)
+
+!seealso: "Header File" "Program File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Source Text
+'------------------------------------------------------------------------------
+ ^bSource Text^b
+
+     (preprocessor) Text from a source file, processed by the preprocessor.
+     Source text is examined to see if it matches a previously specified
+     match pattern.  If so, the corresponding result pattern is substituted
+     for the matching source text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Spooler
+'------------------------------------------------------------------------------
+ ^bSpooler^b
+
+     (network)
+
+!seealso: "Print Spooler" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Stack
+'------------------------------------------------------------------------------
+ ^bStack^b
+
+     (general) A data structure of variable length whose elements are added
+     and retrieved from the same end.  A stack is often described as first
+     in, last out.
+
+!seealso: "Queue" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Standard Color
+'------------------------------------------------------------------------------
+ ^bStandard Color^b
+
+     (user interface) The color pair definition that is used by all output
+     options (such as SAY and ?), with the exception of GETs and PROMPTs,
+     that use the enhanced color pair.
+
+!seealso: "Enhanced Color" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Statement
+'------------------------------------------------------------------------------
+ ^bStatement^b
+
+     (language) In CA-Clipper, the basic unit of source code.  A statement is
+     normally a single line of text.  Multiple statements can be placed on
+     the same line by separating them with semicolons.  A statement may be
+     continued to another line by placing a semicolon at the end of the line
+     to be continued.  If the text of a statement matches a command
+     definition (defined with a preprocessor directive), it is translated
+     into the form specified by the command definition.
+
+!seealso: "Command" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Static Overlay
+'------------------------------------------------------------------------------
+ ^bStatic Overlay^b
+
+     (linker) A section of the program that is not always resident in RAM,
+     and shares memory with other sections.  The section that is currently in
+     use is loaded into memory, allowing a larger program to execute in less
+     available RAM.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Static Variable
+'------------------------------------------------------------------------------
+ ^bStatic Variable^b
+
+     (variable) A variable that exists and retains its value for the duration
+     of execution.  Static variables are lexically scoped; they are only
+     accessible within the procedure that declares them, unless they are
+     declared as filewide, in which case they are accessible to any procedure
+     in the source file that contains the declaration.
+
+!seealso: "Dynamic Scoping" "Lexical Scoping" "Local Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: STD.CH
+'------------------------------------------------------------------------------
+ ^bSTD.CH^b
+
+     (preprocessor) The standard header file containing definitions for all
+     CA-Clipper commands.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Storage Class
+'------------------------------------------------------------------------------
+ ^bStorage Class^b
+
+     (variable) Defines the two characteristics of variables: lifetime and
+     visibility.
+
+!seealso: "Lifetime" "Scope" "Visibility" 
+'------------------------------------------------------------------------------
+
+
+
+!short: String
+'------------------------------------------------------------------------------
+ ^bString^b
+
+     (data type) Generically, a value of type character.  In source code, a
+     series of characters enclosed in single or double quotes.
+
+!seealso: "Character" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Stringify
+'------------------------------------------------------------------------------
+ ^bStringify^b
+
+     (preprocessor) To change source text into a literal character string by
+     surrounding the text with quotes.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Stub
+'------------------------------------------------------------------------------
+ ^bStub^b
+
+     (error handling) A procedure used for debugging purposes that only
+     simulates the intended actions of the real procedure.  It may display an
+     indicating message, return a constant value, or do nothing.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Subarray
+'------------------------------------------------------------------------------
+ ^bSubarray^b
+
+     (array) In CA-Clipper, an array that is referred to by an element of
+     another array.
+
+!seealso: "Array" "Multidimensional Array" "Nested Array" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Subdirectory
+'------------------------------------------------------------------------------
+ ^bSubdirectory^b
+
+     (file)
+
+!seealso: "Directory" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Subscript
+'------------------------------------------------------------------------------
+ ^bSubscript^b
+
+     (array) A numeric value used to designate a particular element of an
+     array.  Applying a subscript to an array is called subscripting the
+     array.  In CA-Clipper programs, subscripting is specified by enclosing a
+     numeric expression in square ([ ]) brackets after the name of a program
+     variable.  The variable is then said to be subscripted.
+
+!seealso: "Array" "Array Reference" "Nested Array" "Subarray" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Substring
+'------------------------------------------------------------------------------
+ ^bSubstring^b
+
+     (data type) A string within a string, usually to be specified as an
+     argument of a function or command.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Swapfile
+'------------------------------------------------------------------------------
+ ^bSwapfile^b
+
+     (linker) Also known as the workfile, used by .RTLink to swap data and
+     code in and out of memory during the linking process.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Symbol
+'------------------------------------------------------------------------------
+ ^bSymbol^b
+
+     (linker) An assigned name for a value representing a constant or the
+     address of code or data.  There are four types of symbols used by the
+     linker defined as follows:
+
+     ^b^CFE^b  Absolute symbol: a constant
+
+     ^b^CFE^b  Relative symbol: address of code or data
+
+     ^b^CFE^b  Public symbol: accessed by modules other than the module in
+        which they are defined.  Public symbols are used to share procedures
+        and variables between modules.  As such, the relative address of a
+        public symbol is assigned by the compiler during compilation.
+
+     ^b^CFE^b  External symbol: a public symbol not defined in the current
+        module.  Generally, these are references into CLIPPER.LIB or
+        EXTEND.LIB, but the compiler generates them whenever there is a
+        procedure or user-defined function referenced but not compiled into
+        the current module.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Syntax
+'------------------------------------------------------------------------------
+ ^bSyntax^b
+
+     (language) The rules that dictate the form of statements or commands as
+     defined by the implementors of the language.  Also, a complete
+     description of the forms that a statement or command can take.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Table
+'------------------------------------------------------------------------------
+ ^bTable^b
+
+     (database) A DBMS term defining a collection of column definitions and
+     row values.  In CA-Clipper, it is represented and referred to as a
+     database file.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Template
+'------------------------------------------------------------------------------
+ ^bTemplate^b
+
+     (user interface) A mask that specifies the format in which data should
+     be displayed.  For example, you might want to store phone numbers as
+     "9999999999" to save space, but use a template to display the number to
+     the user as "(999) 999-9999."
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Text File
+'------------------------------------------------------------------------------
+ ^bText File^b
+
+     (file) A file consisting entirely of ASCII characters.  Each line is
+     separated by a carriage return/linefeed pair (CHR(13) + CHR(10)) and the
+     file is terminated with a end of file mark (CHR(26)).
+
+!seealso: "Delimited File" "Program File" "SDF File" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Text Replacement
+'------------------------------------------------------------------------------
+ ^bText Replacement^b
+
+     (preprocessor) The process of removing portions of input text and
+     substituting different text in its place.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Toggle
+'------------------------------------------------------------------------------
+ ^bToggle^b
+
+     (command) As a verb, to choose between an on or off state.  As a noun, a
+     value or setting that can be either on or off.  A toggle is often
+     represented using a logical value, with true (.T.) representing on, and
+     false (.F.) representing off.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Token
+'------------------------------------------------------------------------------
+ ^bToken^b
+
+     (preprocessor) An elemental sequence of characters having a collective
+     meaning.  The preprocessor groups characters into tokens as it reads the
+     input text stream.  Tokens include identifiers, keywords, constants, and
+     operators.  White space, and certain special characters, serve to mark
+     the end of a token to the preprocessor.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Trace Mode
+'------------------------------------------------------------------------------
+ ^bTrace Mode^b
+
+     (debugger) A mode of execution similar to Single Step Mode, the
+     difference being that Trace Mode traces over function and procedure
+     calls.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Tracepoint
+'------------------------------------------------------------------------------
+ ^bTracepoint^b
+
+     (debugger) A variable or expression whose value is displayed in the
+     Watch Window, and which causes an application to pause whenever that
+     value changes.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Translation Directive
+'------------------------------------------------------------------------------
+ ^bTranslation Directive^b
+
+     (preprocessor) A preprocessor instruction containing a translation rule.
+     The two translation directives are #command and #translate.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Translation Rule
+'------------------------------------------------------------------------------
+ ^bTranslation Rule^b
+
+     (preprocessor) The portion of a translation directive containing a match
+     pattern followed by the special symbol (=>) followed by a result
+     pattern.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Truncate
+'------------------------------------------------------------------------------
+ ^bTruncate^b
+
+     (expression) To remove insignificant information from the end of an item
+     of data.  With numerics, to ignore any part of the number that falls
+     outside of the specified precision.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Tuple
+'------------------------------------------------------------------------------
+ ^bTuple^b
+
+     (database) A formal DBMS term that refers to a row in a table or a
+     record in a database file.  In DIF files, tuple also refers to the
+     equivalent of a CA-Clipper record.
+
+!seealso: "Database" "Field" "Record" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Two-dimensional Array
+'------------------------------------------------------------------------------
+ ^bTwo-dimensional Array^b
+
+     (array) An array that has two dimensions.  In CA-Clipper, an array whose
+     elements contain references to other arrays, all of which have the same
+     length and do not refer to other arrays.
+
+!seealso: "Array" "Array Reference" "Nested Array" "Subscript" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Typeahead Buffer
+'------------------------------------------------------------------------------
+ ^bTypeahead Buffer^b
+
+     (user interface)
+
+!seealso: "Keyboard Buffer" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Unary Operator
+'------------------------------------------------------------------------------
+ ^bUnary Operator^b
+
+     (expression) An operator that operates on a single operand.  For
+     example, the .NOT. operator.
+
+!seealso: "Binary Operator" "Operator" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Undefine
+'------------------------------------------------------------------------------
+ ^bUndefine^b
+
+     (preprocessor) To remove an identifier from the preprocessor's list of
+     defined identifiers via the #undefine directive.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Undefined Symbol
+'------------------------------------------------------------------------------
+ ^bUndefined Symbol^b
+
+     (linker) An unresolved symbol) that was never declared public by a
+     module, but which is referenced by another module.  After the public
+     symbol definition is encountered, the symbol becomes defined (resolved).
+     When a symbol is referenced, but not defined, it is said to be
+     undefined.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Unselected Color
+'------------------------------------------------------------------------------
+ ^bUnselected Color^b
+
+     (user interface) The color pair definition used to display all but the
+     current GET or the GET that has input focus.  If this color setting is
+     specified, the current GET is displayed using the current enhanced
+     color.
+
+!seealso: "Enhanced Color" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Update
+'------------------------------------------------------------------------------
+ ^bUpdate^b
+
+     (database) The process of changing the value of fields in one or more
+     records.  Database fields are updated by various commands and the
+     assignment operator.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: User Function
+'------------------------------------------------------------------------------
+ ^bUser Function^b
+
+     (user interface) A user-defined function called by ACHOICE(), DBEDIT(),
+     or MEMOEDIT() to handle key exceptions.  A user function is supplied to
+     one of these functions by passing a parameter consisting of a string
+     containing the function's name.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: User Interface
+'------------------------------------------------------------------------------
+ ^bUser Interface^b
+
+     (user interface) The way a program interacts with its user (i.e., menu
+     operation and selection, data input methods, etc.)
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: User-defined Function
+'------------------------------------------------------------------------------
+ ^bUser-defined Function^b
+
+     (procedure and function)
+
+!seealso: "Function" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Variable
+'------------------------------------------------------------------------------
+ ^bVariable^b
+
+     (variable) An area of memory that contains a stored value.  Also, the
+     source code identifier that names a variable.
+
+!seealso: "Local Variable" "Private Variable" "Static Variable" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Vector
+'------------------------------------------------------------------------------
+ ^bVector^b
+
+     (database) In a DIF file, vector refers to the equivalent of a
+     CA-Clipper field.
+
+!seealso: "Database" "Field" "Record" "Tuple" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Verb
+'------------------------------------------------------------------------------
+ ^bVerb^b
+
+     (command) The first word of a command that describes the action to
+     perform.
+
+!seealso: "Command" 
+'------------------------------------------------------------------------------
+
+
+
+!short: View
+'------------------------------------------------------------------------------
+ ^bView^b
+
+     (database) A DBMS term that defines a virtual table.  A virtual table
+     does not actually exist but is derived from existing tables and
+     maintained as a definition.  The definition in turn is maintained in a
+     separate file or as an entry in a system dictionary file.  In
+     CA-Clipper, views are supported only by DBU.EXE and are maintained in
+     (.vew) files.
+
+!seealso: "Database" "Field" "Record" 
+'------------------------------------------------------------------------------
+
+
+
+!short: View Sets Window
+'------------------------------------------------------------------------------
+ ^bView Sets Window^b
+
+     (debugger) The window in which CA-Clipper status settings can be
+     inspected.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: View Workareas Window
+'------------------------------------------------------------------------------
+ ^bView Workareas Window^b
+
+     (debugger) The window in which work area information is displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Visibility
+'------------------------------------------------------------------------------
+ ^bVisibility^b
+
+     (variable) The set of conditions under which a variable is accessible by
+     name.  A variable's visibility depends on its storage class.
+
+!seealso: "Dynamic Scoping" "Lexical Scoping" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Volume
+'------------------------------------------------------------------------------
+ ^bVolume^b
+
+     (file) A unit of disk storage uniquely identified by a label and of
+     fixed size.  A hard disk can be partitioned into one or more volumes by
+     an operation system utility.  Volumes are subdivided into one or more
+     directories organized in tree structure.
+
+!seealso: "Directory" "Disk" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Wait State
+'------------------------------------------------------------------------------
+ ^bWait State^b
+
+     (user interface) A wait state is any mode that extracts keys from the
+     keyboard except for INKEY().  These modes include ACHOICE(), DBEDIT(),
+     MEMOEDIT(), ACCEPT, INPUT, READ and WAIT.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Watch Window
+'------------------------------------------------------------------------------
+ ^bWatch Window^b
+
+     (debugger) The window in which Watchpoints and Tracepoints are
+     displayed.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Watchpoint
+'------------------------------------------------------------------------------
+ ^bWatchpoint^b
+
+     (debugger) A variable or expression whose value is displayed in the
+     Watch Window and updated as an application executes.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Wild Match Marker
+'------------------------------------------------------------------------------
+ ^bWild Match Marker^b
+
+     (preprocessor) A match marker indicating a position that will
+     successfully match any source text.  A wild match marker matches all
+     source text from the current position to the end of the source line.  A
+     wild match marker has the form <*id*>.  id associates a name with the
+     match marker.  The name can be used in a result marker to specify how
+     the matching source text is to be handled.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Window
+'------------------------------------------------------------------------------
+ ^bWindow^b
+
+     (user interface) A rectangular screen region used for display.  A window
+     may be the same size or smaller than the physical screen.  Attempting to
+     display information that extends beyond the specified boundaries of the
+     window clips the output at the window edge.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Word
+'------------------------------------------------------------------------------
+ ^bWord^b
+
+     (preprocessor) A series of characters in a match pattern or result
+     pattern.  Source text matches a word in a match pattern if the text is
+     identical to the word or is an acceptable abbreviation of it.  A word
+     that appears in a result pattern is copied unmodified into the result
+     text.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Word Wrapping
+'------------------------------------------------------------------------------
+ ^bWord Wrapping^b
+
+     (user interface) The process of continuing the current text on the next
+     line of a display when a boundary is reached and breaking the text on a
+     word boundary.
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: Work Area
+'------------------------------------------------------------------------------
+ ^bWork Area^b
+
+     (database) The basic containment area of a database file and its
+     associated indexes.  Work areas can be referred to by alias name,
+     number, or a letter designator.
+
+!seealso: "Alias" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Workfile
+'------------------------------------------------------------------------------
+ ^bWorkfile^b
+
+     (linker)
+
+!seealso: "Swapfile" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Workstation
+'------------------------------------------------------------------------------
+ ^bWorkstation^b
+
+     (network) A personal computer connected to a network used to run
+     applications and front end processes.
+
+!seealso: "File Server" 
+'------------------------------------------------------------------------------
+
+
+

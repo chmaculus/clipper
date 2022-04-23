@@ -1,0 +1,67 @@
+'------------------------------------------------------------------------------
+^BMENU^B
+
+    To execute a light-bar menu for the currently defined set of PROMPTs.
+
+^USyntax^U
+
+    MENU TO <memvar>
+
+^UArgument^U
+
+    <memvar> is where MENU TO places the result of the selection process.
+    If the memory variable does not exist, MENU TO creates it as numeric
+    type.  If it does exist, MENU TO uses it to determine the currently
+    highlighted choice in the list of pending PROMPTs.
+
+^UUsage^U
+
+    MENU TO is the selection mechanism for the Clipper light-bar menu
+    system.  Before executing it, paint the display of menu pads and define
+    the associated MESSAGEs with a series of @...PROMPT statements.  Then
+    invoke it with MENU TO <memvar>.  If the <memvar> does not exist, MENU
+    TO creates it and places the highlight on the first PROMPT.  If it does
+    exist, its value determines the first PROMPT highlighted.
+
+    ^BNavigation and Selection^B: Pressing the arrow keys moves the
+    highlight to the next or previous PROMPTs.  As each PROMPT is
+    highlighted the associated MESSAGE displays on the row specified with
+    SET MESSAGE.  If WRAP is ON, an Uparrow from the first PROMPT moves the
+    highlight to the last PROMPT.  Likewise a Dnarrow from the last PROMPT
+    moves the highlight to the first prompt.  To make a selection, press
+    Return or the first character of a PROMPT.  MENU TO then returns the
+    position of the selected PROMPT as a numeric value into the specified
+    memory variable.  Pressing Esc terminates the menu without making a
+    choice and returns zero.  The following table summarizes the active
+    keys within MENU TO:
+
+    ^UKey^U            ^UAction^U
+
+    Uparrow        Previous Prompt
+    Dnarrow        Next Prompt
+    Home           First Prompt
+    End            Last Prompt
+    Leftarrow      Previous Prompt
+    Rightarrow     Next Prompt
+    PgUp           Select PROMPT, returning position
+    PgDn           Select PROMPT, returning position
+    Return         Select PROMPT, returning position
+    Esc            Abort selection, returning zero
+    First letter   Select first PROMPT with same first letter
+
+    ^BSET KEY procedures^B: MENU TOs can be nested within SET KEY
+    procedures without clearing the pending PROMPTs (unlike GET/READ).
+    However, if the same memory variable is used for nested menus, it
+    retains the previous value unless it is declared PRIVATE in the SET KEY
+    procedure.  Therefore it is recommended that a different <memvar> be
+    used for each menu.  When you are in a SET KEY procedure, you can
+    access the name of the return memory variable using READVAR().  This is
+    useful as status information or to stuff a new PROMPT position into the
+    calling menu.
+
+    A maximum of 32 PROMPTS per menu are allowed.
+!seealso: ???.ngo:"@...PROMPT" clip_067.ngo:"SET MESSAGE" clip_078.ngo:"SET WRAP" clip_091.ngo:"ACHOICE()" 
+'------------------------------------------------------------------------------
+
+
+

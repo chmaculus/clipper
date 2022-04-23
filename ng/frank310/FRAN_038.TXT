@@ -1,0 +1,130 @@
+'------------------------------------------------------------------------------
+ What's New in the Get/Read Collection?
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ ^rVersion 3.10
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û PASSWORD Clause - new.  A special clause for GETting passwords.
+
+ û ADr_password() - new.  Gets a password.
+
+ û ADrpu_selection() - new.  Returns the last value selected from the
+   last ADr_popup().
+
+ û ADr_nthget() - modified.  Added a new parameter so the position of a
+   Get within GetList may be retrieved by passing its varname.
+
+ û ADr_expattr() - modified.  Added a new parameter [bAbort].
+
+ û ADrg_expattr() - new.  API for setting global attributes of the expanded
+   Get.
+
+ ^rVersion 3.00
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADread() - modified.  Added a 6th optional parameter for defining
+   Help headings.
+
+ û ADr_rbuttons() - new.  API to reconfigure right mouse button behavior.
+
+ ^rVersion 2.3
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADr_ngets() - does not cause an array error anymore.
+
+ ^rVersion 2.2
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û ADread() - added support for global keys.
+
+ û ADr_expattr() - modified.  Added a 5th and 6th parameters for defining the
+   expand key (default is K_TAB) and the action to take when the length
+   of the entry is almost or over the length of the Get (default is beep
+   the speaker).
+
+ û JUMPKEY - modified.  The change is for situations when a jump key is used
+   more than once.  In v2.1, every time the jump key is pressed, the focus
+   goes to the first Get that owns the jump key.  In v2.2, the focus rotates
+   among the Gets that own the same jump key.
+
+ û ADr_sleep() - new.  Instructs the Read to sleep, that is, not to process
+   events.  Optionally activates an alternate event handler while it is
+   asleep.
+
+ û ADg_one() and ADg_oneb() - modified.  Can now use the "CALC" or "MEMO"
+   clause.
+
+ û ADr_filled() - modified.
+
+ û ADr_ngets() - new.  Returns the number of Gets.
+
+ û REMOVECR clause - new.  Instructs ADread() to remove carriage returns
+   from an expanded memo.
+
+ û ADr_initget() - new.  An alternate way of specifying the Get to be
+   initially focus.
+
+
+ ^rVersion 2.1
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û (modified) ADr_tbpopup() - In v2.0, only the top/left corner of the
+   browse could be specified.  Now, even the right/bottom can be specified.
+
+ ^rVersion 2.0
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ û (modified) ADread() - an array of Help Identifiers may now be passed,
+   one for each Get.
+
+   ADMEMO is no longer supported!  A new clause, MEMO, takes its place.
+
+ û (new) CALC - a command clause that specifies a calculator-style Get
+   reader.
+
+ û (new) JUMPKEY - a command clause that assigns a "jump key" to a Get.
+   When a jump key is pressed, focus is immediately moved to the Get to
+   which the key is attached.
+
+ û (new) MEMO - a command clause to tell ADget that the Get variable is
+   a memo field.
+
+ û (new) ADr_getobj() - Info API that returns the currently active object.
+
+ û (new) ADr_issaved() - Info API that returns a TRUE if the last exited
+   READ was not aborted, and FALSE if otherwise
+
+ û (modified) ADr_jump() - no longer needs the second parameter.  In Frankie
+   1, there was a possibility of a "Processor stack fault" runtime error
+   when ADr_jump() was called from within a VALID clause, unless a FALSE was
+   passed as a 2nd parameter.
+
+ û (new) ADr_nextget() - Info API that returns the index position of the Get
+   intended to be focused next.
+
+ û (modified) ADr_popup() - may now be configured similar to ADvermenu()
+
+ û (new) ADr_prevget() - Info API that returns the index position of the
+   previously focused Get.
+
+ û (new) ADr_setscan() - defines how ADread() locates the next Get to set
+   focus to.
+
+ û (new) ADr_tbpopup() - Valid API that pops up valid values with a database
+   tbrowse.
+
+ û (new) ADr_valjumps() - Config API that configures ADread() to forego
+   EVALuating the postblock when jumping from one Get to another.  Jumping
+   normally occurs when an unfocused Get is clicked, or when ADr_jump() is
+   invoked.
+
+ û (new) ADr_varname() - Info API that returns the Get varname.
+
+ û (new) ADg_many() - a generic boxed ADread() engine for an array.  Like
+   any other Frankie engine, it is configurable.
+
+ û (modified) ADg_one() - It is now configurable.
+
+ û (modified) ADg_oneg() - It is now configurable.
+
+ û (new) ADrg_insert() - Global API that configures the Insert/Overwrite
+   toggle setting as well as the associated cursor sizes.
+!seealso: fran_011.ngo:"PASSWORD" fran_011.ngo:"ADr_password()" fran_011.ngo:"ADrpu_selection()" fran_011.ngo:"ADr_nthget()" fran_011.ngo:"ADr_expattr()" fran_011.ngo:"ADrg_expattr()" 
+'------------------------------------------------------------------------------
+
+
+

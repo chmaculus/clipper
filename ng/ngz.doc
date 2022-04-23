@@ -1,0 +1,122 @@
+
+
+
+                    NGZ 1.0 - Norton Guide Disassembler
+                    -----------------------------------
+
+                    Contents:   Purpose         p. 1
+                                Format
+                                Description
+                                Using NGZ
+                                Files           p. 2
+                                Credits
+                                Copyright
+                                Eof             p. 2
+
+
+Purpose             To disassemble or report on NG v1.0 database files.
+
+
+Format              NGZ ngfile.ng [/?][/R | /Poffset[/Q]]
+                    /?  Brief help text
+                    /R  Report only (.RPT)
+                    /Poffset  Partial disassembly at _hex_ file offset.
+                        E.g. /P1A44B
+                        Run a report first to get the offset.
+                        Don't use this on menu or short-to-short strucs.
+                    /Q  Suppress screen output (Note: disables Ctrl-C)
+
+
+Description         NGZ does what other NG disassemblers do, but it uses
+                    a different, and somewhat faster, algorithm.
+                    It can resolve all !Seealso references to other files
+                    without aborting with an 'out of memory' error, and
+                    resolve all !File references. Not by recursively read-
+                    ing (and decrypting) the .NG byte by byte, but by in-
+                    dexing and processing the file sequentially.
+
+                    The NGZ source includes a near-complete description of
+                    the NG file format. More details on the format and on
+                    the disassembly algorithm in a note in NGZ.GLO.
+
+
+Using NGZ           Type NGZ filename.NG for a complete disassembly, i.e.
+                    a number of FILEnnn.ASC, a FILE.LCF, a FILE.MAK, and
+                    a FILE.RPT, = source, an NGML link control file, a
+                    MAKE script file, and a report file with brief statis-
+                    tics, a file index, and entries on any unresolved see-
+                    alsos (these were ignored at compilation time and can-
+                    not be resolved; they'll appear in the .ASC as a ref-
+                    erence to FILE999.NGO).
+
+                         +----------------------------------------+
+                           NOTE: Existing .ASC .LCF .MAK and .RPT
+                                   files will be overwritten
+                         +----------------------------------------+
+
+                    During disassembly, NGZ outputs a simple odometer:
+                    file number, 's' for a short struc, 'l' for a long,
+                    and 'f' for a !File entry.
+
+                    You should note that the /R, /P, and /Q switches are
+                    last minute additions. Despite what the brief help text
+                    says, you _can_ use the /P switch on a short-to-short
+                    structure, but it will result in some garbage at the
+                    !File entries (in fact, it can be run on any offset
+                    since it bypasses all indexing, but aborts if offset
+                    doesn't point to a short or long structure).
+
+                    If you want to dig deeper into the structure headers,
+                    e.g. if attempting to restore a currupt file, NGZ.INC
+                    has some procedures that may be useful. However, these
+                    are not implemented in NGZ.EXE.
+
+
+Files               NGZ.PAS  Pascal source.
+                    NGZ.GLO  Global definitions.
+                    NGZ.INC  Support routines.
+                    NGZ.DOC  This file.
+                    NGZ.EXE  The executable.
+
+                    TP6 was used for compilation but TP4+ should work
+                    as well.
+
+
+Credits             NGZ is my own work but I doubt it would have reached
+                    the .exe state without a glance or two in the follow-
+                    ing 2 programs (though my knowledge of C is limited
+                    to a very few WORDs):
+
+                    DIS_NG.C - Norton Guide Disassembler
+                    Written by Donald C. Mullen, August 28, 1988
+                    UUCP: ...!ecsvax!dukeac!don
+                    Corrections and additions June 1990 by Henrik Sloth
+                    (based on NG_SPLIT.C v1.1 by John C. Gordan)
+
+                    NGDUMP.PAS v1.0 - Norton Guide Decompiler
+                    Copyright 1989 J.P.Pedersen, 1990 E.v.Asperen
+                    Eelco van Asperen
+                    evas@cs.eur.nl (asperen@hroeur5.bitnet)
+                    Erasmus University Rotterdam, The Netherlands
+                    (based on NGCLONE.PAS - an NG.EXE clone by J.P.
+                    Pedersen a.o.)
+
+
+Copyright           NGZ is in the public domain. You're free to use, copy,
+                    and distribute the five NGZ files on condition that the
+                    files are not separated or modified and that no fee
+                    exceeding distribution costs is charged.
+
+                    To my knowledge, the NG file format was never placed in
+                    the public domain; an American company is currently mar-
+                    keting an NG update.
+
+                    And you should, of course, take into consideration any
+                    applicable copyright laws before using NGZ.
+
+
+May 1993,
+Morten Elling
+DK-8000 Aarhus C.
+
+

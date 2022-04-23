@@ -1,0 +1,27 @@
+'------------------------------------------------------------------------------
+^BSET CENTURY^B
+
+    SET CENTURY toggles the year's century digits for the input and display
+    of date fields and memory variables.
+
+^USyntax^U
+
+    SET CENTURY on/OFF/(<expL>)
+
+^UUsage^U
+
+    When CENTURY is OFF, the century digits of dates are not displayed and
+    cannot be input.  if a calculation is performed on a date resulting in
+    a non-twentieth century value, the date contains the correct century
+    although it does not display.  Dates entered without century digits
+    default to the twentieth century.
+
+    When CENTURY is ON, a date field displays with a four-digit year and
+    non-twentieth century dates can both be displayed and input.
+
+    Clipper supports all dates in the range 01/01/0100 to 12/31/2999.
+!seealso: clip_050.ngo:"SET DATE" clip_152.ngo:"YEAR" 
+'------------------------------------------------------------------------------
+
+
+

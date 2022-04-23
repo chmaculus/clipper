@@ -1,0 +1,60 @@
+'------------------------------------------------------------------------------
+^BSKIP^B
+
+    SKIP moves the record pointer forward or backward in the active
+    database file.
+
+^USyntax^U
+
+    SKIP <exp N1> [ALIAS <work area>/<alias>/(<expN2>)]
+
+^UArgument^U
+
+    <expN1> specifies the number of records to move the record pointer from
+    the current position.  A positive value moves the record pointer
+    forward and a negative value moves the record pointer backwards.  A
+    zero argument flushes the current work area buffer to DOS buffers.
+
+^UOption^U
+
+    ^BAlias^B: The ALIAS clause moves the record pointer in the designated
+    work area instead of the current work area.
+
+^UUsage^U
+
+    SKIP without a numeric argument moves the current record position to
+    the next record.  SKIPping backward beyond the beginning-of-file moves
+    the pointer to the first record and BOF() returns true (.T.).  SKIPping
+    forward beyond the end-of-file positions the record pointer at
+    LASTREC() + 1 and EOF() returns true (.T.).
+
+    If an index file is in use, SKIP moves the specified number of
+    positions as defined by the index.
+
+    ^BFlushing Clipper buffers^B: Any command that causes a record to be
+    read into Clipper's internal buffers flushes the current database file
+    buffer to a DOS buffer if a change has been made to that buffer;s
+    contents since it was read from disk.  SKIP 0 can be used to force a
+    flush of the current database file buffer without causing record
+    movement.  Note that the specific time information is written to disk
+    depends on DOS unless you execute a COMMIT to force an actual disk-
+    write.  SKIP 0 itself does not necessarily cause a disk write.  Note
+    also that the command does not flush INDEX buffers.
+
+^UExample^U
+
+    The following demonstrates movement of the record pointer in a remote
+    work area:
+
+    ^RSKIP ALIAS 4^R
+
+    This is the same as:
+
+    ^RSELECT 4^R
+    ^RSKIP    ^R
+    ^RSELECT 1^R
+!seealso: ???.ngo:"COMMIT" clip_128.ngo:"RECNO()" ???.ngo:"CONTINUE" clip_011.ngo:"GOTO" clip_008.ngo:"FIND" clip_019.ngo:"LOCATE" clip_041.ngo:"SEEK" 
+'------------------------------------------------------------------------------
+
+
+

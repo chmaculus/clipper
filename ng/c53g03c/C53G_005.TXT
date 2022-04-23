@@ -1,0 +1,1467 @@
+!short: _errGetDescrip()   Get the value of description
+'------------------------------------------------------------------------------
+ ^b_errGetDescription()^b
+ Get the value of description
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bBYTEP _errGetDescription(
+     ^b                          ERRORP pError
+     ^b                        )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetDescription() returns a pointer to the string containing the
+     error description.
+
+ ^bDescription^b
+
+     _errGetDescription() retrieves a pointer to the description string of an
+     error.  The description is a short error message that is displayed by
+     the default CA-Clipper error handler routine to give the user an
+     indication of the problem.
+
+     ^bNote: ^b This string may be empty if the genCode is defined in
+     Error.ch (such as EG_OPEN).  In this case, the proper description will
+     automatically be supplied when the error is launched.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves a pointer to the error
+        description:
+
+        #include "error.api"
+           .
+           .
+           .
+           BYTEP fpDescription;
+           fpDescription = _errGetDescription( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutDescrip()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetFileName()  Get the filename
+'------------------------------------------------------------------------------
+ ^b_errGetFileName()^b
+ Get the filename
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bBYTEP _errGetFileName(
+     ^b                       ERRORP pError
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetFileName() returns a pointer to the string containing the
+     filename.
+
+ ^bDescription^b
+
+     _errGetFileName() retrieves a pointer to a string containing the name of
+     the file being operated on, if any, when the error occurred.  This value
+     should be empty for operations that do not involve files.
+
+     ^bNote: ^b The _fsExtOpen() function automatically sets filename to the
+     correct value, if an error occurs.  See the "File System API Reference"
+     chapter in this guide and the Usage Example at the end of this chapter
+     for more information.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves a pointer to the string filename:
+
+        #include "error.api"
+           .
+           .
+           .
+           BYTEP fpFileName;
+           fpFileName = _errGetFileName( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutFileName()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetFlags()     Get the values of the error type flags
+'------------------------------------------------------------------------------
+ ^b_errGetFlags()^b
+ Get the values of the error type flags
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bUSHORT _errGetFlags(
+     ^b                     ERRORP pError
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetFlags() returns the value of the error type flags.
+
+ ^bDescription^b
+
+     _errGetFlags() retrieves the current value of flags, which determines the
+     actions that are allowed for this error.  The value and meaning of the
+     error type flags defined in Error.api are as follows:
+
+     ^bError flags Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant     Value  Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     EF_CANRETRY    1    Advises the CA-Clipper error handler routine that
+                         the failed operation can be retried.
+     EF_CANDEFAULT  4    Advises the CA-Clipper error handler routine that
+                         the failed operation can be safely ignored.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves the contents of flags:
+
+        #include "error.api"
+           .
+           .
+           .
+           USHORT uiFlags;
+           uiFlags = _errGetFlags( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutFlags()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetGenCode()   Get the value of genCode
+'------------------------------------------------------------------------------
+ ^b_errGetGenCode()^b
+ Get the value of genCode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bUSHORT _errGetGenCode(
+     ^b                       ERRORP pError
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetGenCode() returns a value indicating the general type of the
+     operation taking place when the error occurred.
+
+ ^bDescription^b
+
+     _errGetGenCode() retrieves the value of genCode which represents the
+     general category of operation taking place when the error occurred.  The
+     header file Error.ch contains many predefined genCode values that you
+     may use to test for specific errors.  See _errPutGenCode() for
+     additional details about genCode.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves the contents of genCode:
+
+        #include "error.api"
+           .
+           .
+           .
+           USHORT uiGenCode;
+           uiGenCode = _errGetGenCode( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutGenCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetOperation() Get the value of operation
+'------------------------------------------------------------------------------
+ ^b_errGetOperation()^b
+ Get the value of operation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bBYTEP _errGetOperation(
+     ^b                        ERRORP pError
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetOperation() returns a pointer to the string containing the
+     operation.
+
+ ^bDescription^b
+
+     _errGetOperation() retrieves a pointer to the string indicating the
+     operation at the time the error occurred.  This is used to identify the
+     CA-Clipper-level operation that failed, which might be an operator symbol
+     (like "+" or "&") or a function name (like "STR()" or "TYPE()").
+
+     ^bNote: ^b The operation value that you, as a subsystem developer, use
+     will normally be the name of your CA-Clipper-callable function.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves a pointer to the string
+        operation:
+
+        #include "error.api"
+           .
+           .
+           .
+           BYTEP fpOperation;
+           fpOperation = _errGetOperation( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutOperation()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetOsCode()    Get the value of osCode
+'------------------------------------------------------------------------------
+ ^b_errGetOsCode()^b
+ Get the value of osCode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bUSHORT _errGetOsCode(
+     ^b                      ERRORP pError
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetOsCode() returns the current value of osCode.
+
+ ^bDescription^b
+
+     _errGetOsCode() retrieves the value representing an operating
+     system-specific error code.  This code currently corresponds to the DOS
+     error Number since CA-Clipper presently will run only under the DOS
+     operating system, a DOS window in Windows or OS/2, or a DOS emulator in
+     other operating systems.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves the contents of osCode:
+
+        #include "error.api"
+           .
+           .
+           .
+           USHORT uiOsCode;
+           uiOsCode = _errGetOsCode( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutOsCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetSeverity()  Get the value of severity
+'------------------------------------------------------------------------------
+ ^b_errGetSeverity()^b
+ Get the value of severity
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bUSHORT _errGetSeverity(
+     ^b                        ERRORP pError
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetSeverity() returns a flag indicating the severity of the error.
+
+ ^bDescription^b
+
+     _errGetSeverity() gets the value of severity in the Error object.  You
+     may use the severity level to generate warnings as well as errors.
+
+     ^bNote: ^b Manifest constants that you may use to set the severity are
+     available in the Error.ch file and are shown in the _errPutSeverity()
+     function reference.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves the contents of severity:
+
+        #include "error.api"
+           .
+           .
+           .
+           USHORT uiSeverity;
+           uiSeverity = _errGetSeverity( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutSeverity()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetSubCode()   Get the value of subCode
+'------------------------------------------------------------------------------
+ ^b_errGetSubCode()^b
+ Get the value of subCode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bUSHORT _errGetSubCode(
+     ^b                       ERRORP pError
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetSubCode() returns the value of subCode.
+
+ ^bDescription^b
+
+     _errGetSubCode() retrieves a value that indicates the specific error
+     number within the subsystem referenced by subSystem.  The combination of
+     the subSystem name and the subCode uniquely identifies a specific error.
+     See _errPutSubCode() for additional details about subCode.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows how to retrieve the contents of
+        subCode:
+
+        #include "error.api"
+           .
+           .
+           .
+           USHORT uiSubCode;
+           uiSubCode = _errGetSubCode( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetSubSystem()" "_errPutSubCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetSubSystem() Get the value of subSystem
+'------------------------------------------------------------------------------
+ ^b_errGetSubSystem()^b
+ Get the value of subSystem
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bBYTEP _errGetSubSystem(
+     ^b                        ERRORP pError
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetSubSystem() returns a pointer to the string containing the
+     subSystem name.
+
+ ^bDescription^b
+
+     _errGetSubSystem() retrieves a pointer to name of the subSystem in which
+     the error occurred.  The combination of the subSystem name and the
+     subCode uniquely identifies a specific error.  See _errPutSubSystem()
+     for additional details about subSystem.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment retrieves a pointer to the string
+        subSystem:
+
+        #include "error.api"
+           .
+           .
+           .
+           BYTEP fpSubSystem;
+           fpSubSystem = _errGetSubSystem( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetSubCode()" "_errPutSubSystem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errGetTries()     Get the value of the retry counter tries
+'------------------------------------------------------------------------------
+ ^b_errGetTries()^b
+ Get the value of the retry counter tries
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bUSHORT _errGetTries(
+     ^b                     ERRORP pError
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object from which the value is to
+     be retrieved.
+
+ ^bReturns^b
+
+     _errGetTries() returns the value of tries.
+
+ ^bDescription^b
+
+     _errGetTries() retrieves the value of the tries counter, indicating how
+     many times the operation has been tried.  If the error can be rectified,
+     tries is incremented each time the operation is retried.  See
+     _errPutTries() for additional details about the tries counter.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment increments the retry counter tries:
+
+        #include "error.api"
+           .
+           .
+           .
+           _errPutTries( pError, _errGetTries( pError )++ );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errPutTries()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errLaunch()       Launch the CA-Clipper error handler system
+'------------------------------------------------------------------------------
+ ^b_errLaunch()^b
+ Launch the CA-Clipper error handler system
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRCODE _errLaunch(
+     ^b                    ERRORP pError
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to a properly created and generated Error
+     object.
+
+ ^bReturns^b
+
+     _errLaunch() returns an error code indicating the action to take, or
+     zero if no error occurred.
+
+ ^bDescription^b
+
+     _errLaunch() invokes the CA-Clipper error handler, using pError as an
+     argument.  This function handles errors that can default or retry (see
+     _errPutFlags()).
+
+     The following table shows several manifest constants defined in
+     Error.api that you may use to test the return value of this function.
+     The error code returned indicates the value returned by the error
+     handler.  You should return an error code from each function in the
+     subsystem so that you may test for an error after the function returns.
+
+     ^b_errLaunch() Return Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant       Value     Meaning/Action^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     E_BREAK        FFFFh    Error Handler issued a BREAK command or BREAK()
+                             function. Clean up and exit immediately.
+     E_RETRY        1        Retry operation (occurs only if you specify
+                             EF_CANRETRY flag).   Retry the failed operation
+                             and increment the value of tries.
+     E_DEFAULT      0        Ignore failure (occurs only if you specify
+                             EF_CANDEFAULT  flag).  Ignore the failure,
+                             taking whatever default action is required
+                             for the subsystem to continue.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     Notice that E_DEFAULT is the same as the value for success (zero).
+     E_DEFAULT literally means to pretend nothing happened and, therefore,
+     the calling routine has no need to distinguish between E_DEFAULT and
+     success.  The most common use you will find for E_DEFAULT is to handle
+     warnings.  Never use E_DEFAULT if the error will affect the operation of
+     any other part of the subsystem.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment demonstrates launching an error and
+        returning the error code to the calling function:
+
+        #include "error.api"
+
+           .
+           .   <an error occurs>
+           .
+           ERRORP pError;
+           ERRCODE uiErrCode;
+
+           pError = _errNew();
+           .
+           .   <put values in error>
+           .
+           uiErrCode = _errLaunch( pError );
+           _errRelease( pError );
+
+           return ( uiErrCode );
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errNew()" "_errPutFlags()" "_errPutTries()" "_errRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errNew()          Create a new Error object
+'------------------------------------------------------------------------------
+ ^b_errNew()^b
+ Create a new Error object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errNew(void)
+
+ ^bReturns^b
+
+     _errNew() returns a pointer to a new Error object.
+
+ ^bDescription^b
+
+     _errNew() creates an empty Error object and returns a pointer to it.
+     You may modify the variables within the object using the "_errPut"
+     functions and inspect them using the "_errGet" functions.  You may,
+     then, send the object to the CA-Clipper error handler.
+
+     The values of the variables in the Error object created by _errNew() are
+     compatible with the instance variables in CA-Clipper Error objects.
+     This allows the use of the constants in the Error.ch include file.
+
+     Proper error handling is the responsibility of the subsystem programmer.
+     The CA-Clipper API systems provide low-level services and normally
+     provide only simple return values indicating success or failure.  The
+     exception is the _fsExtOpen() function from the File System API
+     (demonstrated in the Usage Example at the end of this chapter), which can
+     assign values to an Error object.
+
+     ^bNote: ^b When it is no longer required, release all memory allocated
+     by the Error object using _errRelease().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment demonstrates how to create an Error object:
+
+        #include "error.api"
+           .
+           .
+           .
+           ERRORP pError;
+
+           pError = _errNew();
+           .
+           .
+           .
+
+           _errRelease( pError );
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errLaunch()" "_errRelease()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutDescrip()   Set the value of description
+'------------------------------------------------------------------------------
+ ^b_errPutDescription()^b
+ Set the value of description
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutDescription(
+     ^b                           ERRORP pError,
+     ^b                           BYTEP  fpDescription
+     ^b                         )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^bfpDescription^b is a pointer to a null-terminated string containing a
+     short description of the specific error.
+
+ ^bReturns^b
+
+     _errPutDescription() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutDescription() defines a short error description that is displayed
+     by the default CA-Clipper error handler routine to give the user an
+     indication of the problem.  The message should correspond to the general
+     problem (genCode), not the specific failure (subCode).  "Open error" or
+     "Argument Error" are typical description messages.
+
+     ^bNote: ^b If you use one of the genCodes defined in Error.ch (such as
+     EG_OPEN), you do not have to supply a description.  The proper
+     description will be used automatically when the error is launched.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of description (you
+        should try to be more descriptive than the example):
+
+        #include "error.api"
+           .
+           .
+           .
+           _errPutDescription( pError, "Something happened" );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetDescrip()" "_errPutGenCode()" "_errPutSubCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutFileName()  Set the filename
+'------------------------------------------------------------------------------
+ ^b_errPutFileName()^b
+ Set the filename
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutFileName(
+     ^b                        ERRORP pError,
+     ^b                        BYTEP  fpFileName
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^bfpFileName^b is a pointer to a null-terminated string containing the
+     name of the file being accessed.
+
+ ^bReturns^b
+
+     _errPutFileName() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutFileName() assigns a string to the error containing the name of
+     the file being operated on, if any.  This value has no meaning on
+     operations that do not involve files.
+
+     ^bNote: ^b The _fsExtOpen() function automatically sets filename to the
+     correct value if an error occurs.  See the "File System API Reference"
+     chapter in this guide and the Usage Example at the end of this chapter
+     for more information.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of filename:
+
+        #include "error.api"
+           .
+           .
+           .
+           _errPutFileName( pError, "Foo.txt" );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetFileName()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutFlags()     Set the value of the error type flags
+'------------------------------------------------------------------------------
+ ^b_errPutFlags()^b
+ Set the value of the error type flags
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutFlags(
+     ^b                     ERRORP pError,
+     ^b                     USHORT uiFlags
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^buiFlags^b contains a value indicating the allowable actions for this
+     error.
+
+ ^bReturns^b
+
+     _errPutFlags() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutFlags() assigns a value to flags to specify the actions that are
+     allowed for this error. You, as the subsystem designer, are responsible
+     for determining what actions are permissible, and the following general
+     guidelines should help:
+
+      ^b^CFE^b If an error can be rectified by the user, you should allow a
+        retry.  For example, if a file open error occurs because the device is
+        not be ready (such as an open floppy drive door), the user can correct
+        the problem and retry the operation.
+
+     ^b^CFE^b  If the error is caused by something that cannot be remedied by
+        the user, you will gain nothing by allowing a retry.
+
+     ^b^CFE^b  If the error will not cause a failure in other parts of the
+        system, such as the failure to set a screen color, you may safely
+        ignore the error (the default behavior).
+
+     ^b^CFE^b  You may also ignore the error if there is a valid alternative
+        to the routine that failed.  For example, if a routine results in an
+        error because of failure to retrieve an environment variable that
+        holds the user's name, you can execute a function to retrieve the name
+        from the user before returning to the calling routine (which would
+        have no idea that an error even occurred).
+
+     The value and meaning of the error type flags defined in Error.api are
+     as follows:
+
+     ^bError flags Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant     Value     Meaning^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     EF_CANRETRY    1       Advises the CA-Clipper Error Handler routine that
+                            the failed operation can be retried.
+     EF_CANDEFAULT  4       Advises the CA-Clipper Error Handler routine that
+                            the failed operation can be safely ignored.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+     ^bWarning! ^b The most common use you will find for EF_CANDEFAULT is to
+     handle warnings.  Never use EF_CANDEFAULT if the error will affect the
+     operation of any other part of the subsystem.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of flags:
+
+        #include "error.api"
+           .
+           .
+           .
+           _errPutFlags( pError, EF_CANRETRY );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetFlags()" "_errLaunch()" "_errPutGenCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutGenCode()   Set the value of genCode
+'------------------------------------------------------------------------------
+ ^b_errPutGenCode()^b
+ Set the value of genCode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutGenCode(
+     ^b                       ERRORP pError,
+     ^b                       USHORT uiGenCode
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^buiGenCode^b is a code specifying the general type of operation taking
+     place when the error occurred.
+
+ ^bReturns^b
+
+     _errPutGenCode() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutGenCode() assigns a value to genCode, indicating the general
+     category of operation being performed when the error occurred.  It is
+     the subSystem and subCode combination that will identify your particular
+     error among all the possible errors sharing a genCode.
+
+     The header file Error.ch contains many predefined genCodes.  You should
+     use these codes whenever possible to be consistent with other
+     subsystems.
+
+     If you use a one of the predefined genCodes from Error.ch and do not
+     supply a description, a predefined description will automatically be
+     generated by the error handling system.  Using the system supplied
+     description has two advantages:  the description will be consistent
+     with other subsystems, and the supplied description in international
+     versions will be translated into the target language.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of genCode:
+
+        #include "error.api"
+        #include "error.ch"
+
+           .
+           .
+           .
+           _errPutGenCode( pError, EG_OPEN );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetGenCode()" "_errPutDescrip()" "_errPutSubCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutOperation() Set the value of operation
+'------------------------------------------------------------------------------
+ ^b_errPutOperation()^b
+ Set the value of operation
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutOperation(
+     ^b                         ERRORP pError,
+     ^b                         BYTEP fpOperation
+     ^b                       )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^bfpOperation^b is a pointer to a null-terminated string containing the
+     operation in progress when the error occurred.
+
+ ^bReturns^b
+
+     _errPutOperation() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutOperation() assigns a string to the error, indicating the current
+     operation.  This is used to identify the CA-Clipper-level operation that
+     failed which might be an operator symbol (like "+" or "&") or a function
+     name (like "STR()" or "TYPE()").
+
+     ^bNote: ^b The operation value that you, as a subsystem developer, use
+     will normally be the name of your CA-Clipper-callable function.  All
+     standard operators are handled automatically by CA-Clipper.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of operation and assumes
+        that the CA-Clipper-callable function name is OClone():
+
+        #include "error.api"
+
+           .
+           .  <error occurs cloning the object>
+           .
+           _errPutOperation( pError, "OCLONE()" );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetOperation()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutOsCode()    Set the value of osCode
+'------------------------------------------------------------------------------
+ ^b_errPutOsCode()^b
+ Set the value of osCode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutOsCode(
+     ^b                      ERRORP pError,
+     ^b                      USHORT uiOsCode
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^buiOsCode^b is the operating system error code.
+
+ ^bReturns^b
+
+     _errPutOsCode() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutOsCode() sets the value of the operating system-specific error
+     code.  This code corresponds to the DOS error number since current
+     CA-Clipper versions run only under the DOS operating system, a DOS
+     window in Windows or OS/2, or a DOS emulator in other operating systems.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of osCode:
+
+        #include "error.api"
+        #include "filesys.api"
+           .
+           .  <a file related error>
+           .
+           _errPutOsCode( pError, _fsError() );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetOsCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutSeverity()  Set the value of severity
+'------------------------------------------------------------------------------
+ ^b_errPutSeverity()^b
+ Set the value of severity
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutSeverity(
+     ^b                        ERRORP pError,
+     ^b                        USHORT uiSeverity
+     ^b                      )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^buiSeverity^b is a flag indicating the severity of the error.
+
+ ^bReturns^b
+
+     _errPutSeverity() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutSeverity() sets the value of severity in the Error object.  You
+     may use the severity level to generate warnings as well as errors.
+
+     Manifest constants that you may use to set the severity are available in
+     the Error.ch file and are shown below:
+
+     ^bError severity Values^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ^bConstant      Value  Meaning/Usage^b
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+     ES_WHOCARES     0    Undefined.  An undefined value that can be used to
+                          send an informative message.
+     ES_WARNING      1    Warning.  A noncritical anomaly that should allow
+                          DEFAULT, as well as RETRY, if appropriate.
+     ES_ERROR        2    Error.  Should only allow DEFAULT if the
+                          consequences of ignoring the error are well known.
+                          Should allow RETRY, if appropriate.
+     ES_CATASTROPHIC 3    Severe Error.  Catastrophic error value; should not
+                          allow any action other than application  shutdown.
+     컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of severity:
+
+        #include "error.api"
+        #include "error.ch"
+
+           .
+           .
+           .
+           _errPutSeverity( pError, ES_ERROR );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetSeverity()" "_errLaunch()" "_errPutFlags()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutSubCode()   Set the value of subCode
+'------------------------------------------------------------------------------
+ ^b_errPutSubCode()^b
+ Set the value of subCode
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutSubCode(
+     ^b                       ERRORP pError,
+     ^b                       USHORT uiSubCode
+     ^b                     )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^buiSubCode^b is a value indicating the specific error number within the
+     subsystem referenced by subSystem.
+
+ ^bReturns^b
+
+     _errPutSubCode() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutSubCode() allows the assignment of a subCode to an error.  It is
+     the combination of the subSystem name and the subCode that uniquely
+     identifies a specific error.
+
+     You should make subCodes consistent between subsystems that are
+     identical in functionality.  For example, the CA-Clipper DBFNTX and
+     DBFNDX drivers share the same subCodes wherever possible.  Designers
+     of RDD subsystems should attempt to use the same subCodes as the
+     CA-Clipper RDDs in order to provide consistency to the end user.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of subCode:
+
+        #include "error.api"
+
+           .
+           .
+           .
+           _errPutSubCode( pError, 1210 );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetSubCode()" "_errPutSubSystem()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutSubSystem() Set the value of subSystem
+'------------------------------------------------------------------------------
+ ^b_errPutSubSystem()^b
+ Set the value of subSystem
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutSubSystem(
+     ^b                         ERRORP pError,
+     ^b                         BYTEP fpSubSystem
+     ^b                       )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^bfpSubSystem^b is a pointer to a null-terminated string indicating the
+     subsystem in which the error occurred.
+
+ ^bReturns^b
+
+     _errPutSubSystem() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutSubSystem() allows the assignment of the subSystem name to an
+     error.  It is the combination of subSystem name and the subCode that
+     uniquely identifies a specific error.
+
+     You should make subCodes consistent between subsystems that are
+     identical in functionality.  For example, the CA-Clipper DBFNTX and
+     DBFNDX share the same subCodes wherever possible.  Designers of RDD
+     subsystems should attempt to use the same subCodes as the CA-Clipper
+     RDDs in order to provide consistency to the end user.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the setting of subSystem:
+
+        #include "error.api"
+
+           .
+           .
+           .
+           _errPutSubSystem( pError, "MYDRIVER" );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetSubSystem()" "_errPutSubCode()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errPutTries()     Set the value of the counter tries
+'------------------------------------------------------------------------------
+ ^b_errPutTries()^b
+ Set the value of the counter tries
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bERRORP _errPutTries(
+     ^b                     ERRORP pError,
+     ^b                     USHORT uiTries
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object that is to be set.
+
+     ^buiTries^b is a counter that indicates how many times an operation has
+     been tried.
+
+ ^bReturns^b
+
+     _errPutTries() returns a pointer to the Error object (self).
+
+ ^bDescription^b
+
+     _errPutTries() sets the value of the counter tries, indicating how many
+     times the operation has been tried.  If you designate an operation as
+     retriable, you should increment tries each time the error occurs before
+     calling _errLaunch().  This allows the error handler to determine how
+     many times to allow a retry of an operation before finally giving up.
+
+     ^bNote: ^b The _fsExtOpen() function automatically updates the tries
+     counter each time it is executed.  See the "File System API Reference"
+     chapter in this guide for more information.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment increments the tries counter:
+
+        #include "error.api"
+
+           .
+           .
+           .
+           _errPutTries( pError, _errGetTries( pError )++ );
+           uiErrCode = _errLaunch( pError );
+           .
+           .
+           .
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errGetTries()" "_errLaunch()" "_errPutFlags()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _errRelease()      Destroy an Error object
+'------------------------------------------------------------------------------
+ ^b_errRelease()^b
+ Destroy an Error object
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "error.api"
+     ^bvoid _errRelease(
+     ^b                  ERRORP pError
+     ^b                )
+
+ ^bArguments^b
+
+     ^bpError^b is a pointer to the Error object to be destroyed.
+
+ ^bReturns^b
+
+     _errRelease() has no return value.
+
+ ^bDescription^b
+
+     _errRelease() destroys the Error object pError and releases the memory
+     used by it.
+
+     ^bWarning! ^b _errRelease() does not release memory referenced by the
+     pointers it contains.  You as the subsystem programmer must free this
+     memory as necessary.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This code fragment shows the destruction of an Error object:
+
+        #include "error.api"
+           ERRORP pError;
+           pError = _errNew();
+           .
+           .
+           .
+           _errRelease( pError );
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Error.api.
+
+!seealso: "_errLaunch()" "_errNew()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: Error API          Usage Example
+'------------------------------------------------------------------------------
+ ^bError API^b
+ Usage Example
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bUsage Example^b
+
+     ^b^CFE^b  This example demonstrates how to handle a retriable error by
+        producing, launching, and destroying an Error object.
+
+        The first function is a CA-Clipper-callable interface function which
+        calls a second C routine to actually open the file.
+
+        The isolated C function opens the file, retrying the operation as many
+        times as the CA-Clipper error handler indicates.  The example uses
+        the function _fsExtOpen() to perform the low-level file I/O (See the
+        "File System API Reference" chapter in this guide for more
+        information).
+
+        /***
+        *   FILEOPEN()
+        *
+        *   CA-Clipper-callable function that attempts to open a file
+        *   for reading and writing using FileOpener() and returns the
+        *   file handle.  The first parameter is the name of the file to
+        *   open and the second is a logical value indicating if the
+        *   file should be opened shared (default is false).  If the
+        *   filename is passed by reference it will be changed to the
+        *   fully qualified name of the file if the open is successful,
+        *   or the name that was attempted if unsuccessful.
+        *
+        *   Note: the subsystem code is set in this function since the
+        *   lower-level function FileOpener() is designed to be called
+        *   from many different routines.
+        */
+
+        #include "extend.api"
+
+        CLIPPER FILEOPEN()
+        {
+
+           BYTEP fpFileName;
+           FHANDLE hFile = FS_ERROR;
+           USHORT uiFlags = FO_READWRITE
+           ERRORP pError;
+
+
+           if ( ISCHAR( 1 ) )
+           {
+              fpFileName = _parc( 1 );
+              uiFlags |= ( ISLOG( 2 ) && _parl( 2 ) )
+                ? FO_SHARED : FO_EXCLUSIVE;
+
+              pError = _errNew()
+
+              _errPutSubCode( pError, 1111 ); // subCode determined by
+                                              // caller
+
+              hFile = FileOpener( fpFileName, uiFlags, pError );
+
+              if ( ISBYREF( 1 ) )
+                 _storc( fpFileName, 1 );
+
+           {
+
+
+           _retni( hFile );
+        }
+
+
+        /***
+        *   FileOpener()
+        *
+        *   Attempts to open a file whose name is passed as an argument
+        *   along with the open mode flags and a pointer to an allocated
+        *   Error object.  A default extension of ".TXT" will be assumed
+        *   if the filename does not include an extension.
+        *
+        *   The function will generate an error if the open fails and
+        *   will continue to retry for as long as the Error Handler
+        *   returns E_RETRY.
+        *
+        *   The return value will be a valid file handle if successful,
+        *   otherwise FS_ERROR is returned.
+        */
+
+        #include "error.api"
+        #include "error.ch"
+        #include "filesys.api"
+
+        FHANDLE FileOpener( BYTEP fpFileName, USHORT uiFlags,
+                            ERRORP pError )
+        {
+
+           FHANDLE hHandle;
+           BOOL    retry;
+
+           _errPutSeverity( pError, ES_ERROR );   // we determine the
+                                                  // severity
+
+           _errPutFlags( pError, EF_CANRETRY );   // and the allowable
+                                                  // action
+           _errPutGenCode( pError, EG_OPEN );     // open error
+
+           // will be modified by _fsExtOpen() to the opened filename
+           _errPutFileName( pError, fpFileName )
+
+
+           do
+           {
+              hHandle = _fsExtOpen( fpFileName, ".TXT", uiFlags,
+                 NULL, pError );
+
+              retry = FALSE;
+
+              if (hHandle == FS_ERROR)
+              {
+                 retry = ( _errLaunch( pError) == E_RETRY );
+              }
+
+           } while (retry);
+
+
+           fpFileName = _errGetFileName( pError );
+
+           return (handle);
+        }
+
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+

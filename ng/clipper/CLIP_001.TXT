@@ -1,0 +1,1780 @@
+!short: ?/??           Displays an expression list on the next line of CRT.
+'------------------------------------------------------------------------------
+^B?/??^B
+
+    To display the results of one or more expressions separated by a space.
+
+^USyntax^U
+
+    ?/?? <exp list>
+
+^UArgument^U
+
+    <exp list> is the list of values of any data type to display.  The list
+    can consist of any combination of data types including memo type.
+
+^UUsage^U
+
+    The single question mark issues a carriage return and line feed before
+    the expression list is displayed.  The double question mark does not.
+    When used in a program, ?? displays the expression list beginning with
+    the current cursor or printer position.
+!seealso: "@...SAY...GET" clip_083.ngo:"TEXT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: @...BOX        Permits box drawing.
+'------------------------------------------------------------------------------
+^B@...BOX^B
+
+    @...BOX is used to draw boxes on the screen.  You may specify the size
+    and relative position of the box on the screen, and up to 9 different
+    characters can be used in drawing the box.
+
+^USyntax^U
+
+    @ <exp N1>, <exp N2>, <exp N3>, <exp N4> BOX <exp C>
+
+^UArguments^U
+
+    <exp N1> is the top row.  Values may be in the range of zero to 24.
+
+    <exp N2> is the left most column.  Values may be in the range of zero
+    to 79.
+
+    <exp N3> is the bottom row.  Values may be in the range of zero to 24.
+
+    <exp N4> is the right most column.  Values may be in the range of zero
+    to 79.
+
+    <exp C> is a string of eight border characters and one fill character.
+    @...BOX draws the box using this string starting from the upper left
+    hand corner and then proceeds clockwise.
+
+^UUsage^U
+
+    For the string, you may specify up to 8 different ASCII characters for
+    each of the four corners and sides.  If you choose to specify a 9th
+    character in the string, that character will be used to fill the box.
+    The characters that are specified in the string will be displayed
+    starting from the upper left hand corner and then drawn clockwise.  A
+    typical use of this command would involve specifying the appropriate
+    single- or double-line box drawing characters in the string.
+!seealso: "@...CLEAR" "@...TO" 
+'------------------------------------------------------------------------------
+
+
+
+!short: @...CLEAR      Clears a rectangular section of the screen.
+'------------------------------------------------------------------------------
+^B@..CLEAR^B
+
+    To clear a rectangular region of the screen.
+
+^USyntax^U
+
+    @ <exp N1>,<exp N2> CLEAR [TO <exp N3>, <exp N4>]
+
+^UUsage^U
+
+    <expN1..expN2> define the coordinates of the upper right corner.  The
+    first expression is the row and the second is the column coordinate.
+
+^UOptions^U
+
+    ^BTo:^B The TO clause defines the lower right corner coordinates (<exp
+    N3> and <exp N4>) of the region to CLEAR.  If this clause is not
+    specified, the corner coordinates default to row 24, column 79.
+!seealso: "@...BOX" "CLEAR" clip_133.ngo:"SCROLL" 
+'------------------------------------------------------------------------------
+
+
+
+!short: @...PROMPT     Used to place menu selections on the screen.
+'------------------------------------------------------------------------------
+^B@...PROMPT^B
+
+    @...PROMPT is used to place menu selections on the screen.  The menu
+    selection will be placed at the location specified by the row and
+    column.
+
+^USyntax^U
+
+    @ <exp N1>, <exp N2> PROMPT <exp C> [MESSAGE <exp C>]
+
+^UArguments^U
+
+    <exp N1> is the row where the prompt displays.
+
+    <exp N2> is the column where the prompt displays.
+
+    <exp C> is the prompt string.
+
+^UOptions^U
+
+    ^BMessage:^B The MESSAGE clause defines the message to display each
+    time the current PROMPT is highlighted.  The message displays on the
+    row specified by SET MESSAGE.
+
+^UUsage^U
+
+    @...PROMPT is the display portion of the Clipper light-bar menu system.
+    Each @...PROMPT statement paints a menu prompt and defines an
+    associated MESSAGE to be displayed on the line specified by SET MESSAGE
+    TO.  The light-bar menu is then invoked with MENU TO.  Prompts can be
+    painted in any order and configuration of row and column position.
+    MENU TO navigates them in the order they are defined.
+
+    There can be up to 32 PROMPTS per menu.
+
+    ^RColor:^R PROMPTS are painted in the current standard color.  The
+    highlight appears in the current enhanced color.
+!seealso: clip_020.ngo:"MENU" clip_046.ngo:"SET COLOR" clip_067.ngo:"SET MESSAGE" clip_078.ngo:"SET WRAP" clip_091.ngo:"ACHOICE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: @...SAY...GET    Displays user-formatted data on screen/printer.
+'------------------------------------------------------------------------------
+^B@...SAY...GET^B
+
+    To display and input data at specified row and column positions.
+
+^USyntax^U
+
+    @ <exp N1>, <exp N2> [SAY <exp> [PICTURE <clause>]] [GET <variable>
+    [PICTURE <exp C>] [RANGE <exp N1>,<exp N2>] [VALID <expL>]
+
+^UArguments^U
+
+    <exp N1> is the row coordinate.
+
+    <exp N2> is the column coordinate.
+
+^UOptions^U
+
+    ^BSay:^B The SAY clause displays the result of an <exp> of any type
+    (including a memo field) at the specified coordinates on the current
+    DEVICE.  Clipper supports two devices: PRINT and SCREEN.  If DEVICE is
+    SET TO PRINT. output is directed to the printer.  Otherwise it is
+    directed to the SCREEN.  To direct @...SAYS to a file, SET DEVICE TO
+    PRINT and then SET PRINTER TO <output filename>.  Output destined for
+    the printer is then redirected to the specified text file.
+
+    @...SAYs to the printer behave a little differently than to the screen.
+    If you address a printer row and column position less than the last
+    position printed since an EJECT or SETPRC(), Clipper performs an EJECT
+    and resets the internal PROW() and PCOL() values.  Your printing logic
+    must, therefore, proceed sequentially from left to right down the page.
+
+    SAYs display in standard color (see SET COLOR).
+
+    ^BGet:^B The GET clause displays a <variable> (a field or memory
+    variable) at a specified screen coordinate and adds it to the list of
+    pending GETs.  A subsequent READ invokes a full-screen edit mode
+    allowing you to edit the contents of the pending GETs with a full
+    complement of editing and navigation keys.  For a complete list of
+    keys, see READ.
+
+    Clipper supports GETting fields from other work areas if fields are
+    referenced using the alias.
+
+    GETs display in enhanced color unless there is an unselected COLOR
+    SETting.  if this is the case, the current GET displays in the enhanced
+    color and all other active GETs display in the unselected color.
+
+    Note that GETs are not directed to the printer or a file with SET
+    DEVICE TO PRINT.
+
+    ^BPicture:^B The PICTURE clause defines the mask for entry into a GET
+    and formats the output of a SAY.  Clipper provides two mechanisms to
+    control formatting: ^Bfunction^B and/or a ^Btemplate^B.  Functions
+    apply to the entire SAY or GET while templates mask characters position
+    by position.
+
+    ^BFunctions:^B A PICTURE function is a symbol preceded by an "@."  If a
+    template symbol follows the function, it must be preceded with a space.
+    Note that more than one function can be applied within the same
+    PICTURE.  The following table summarizes the available functions:
+
+^BPICTURE FUNCTIONS^B
+
+    ^UFunc^U  ^UType^U   ^UDescription^U
+
+     A     C     Allows only alphabetic characters into a GET
+     B     N     Displays numbers left-justified
+     C     N     Displays CR (credit) after positive numbers
+     D     D,N   Displays dates in SET DATE format
+     E     D,N   Displays dates in British format, numerics in European
+                 format (command and period reversed)
+     K     ALL   Clears GET if first key is not a cursor key
+     R     C     Non-template characters are inserted
+    S<n>   C     Allows horizontal scrolling within a GET
+     X     N     Displays DB (debit) after negative numbers
+     Z     N     Displays zeros as blanks
+     (     N     Encloses negative numbers in parentheses w/ leading spaces
+     )     N     Encloses negative numbers in parentheses w/o leading spaces
+     !     C     Converts alphabetic characters to upper case
+
+    ^BTemplates^B: Template symbols follow functions in the PICTURE string
+    if they are specified.  Each position in the output or input stream is
+    mapped to the symbol in the same position in the template.  Clipper
+    provides a number of template symbols as follows:
+
+    Template    Description
+
+       A        Displays only alphabetic characters
+       N        Displays only alphabetic and numeric characters
+       X        Displays any character
+       9        Displays digits for any data type with sign for numerics
+       #        Displays digits, signs, and spaces for any data type
+       L        Displays logicals as "T" or "F"
+       Y        Allows only "Y" or "N"
+       !        Converts an alphabetic character to upper case
+       $        Displays a dollar sign in place of a leading space in a
+                numeric
+       *        Displays an asterisk in place of a leading space in a
+                numeric
+       .        Specifies a decimal point position.
+       ,        Specifies a comma position.
+
+    Other characters specified in the template overwrite the character at
+    the same position in the source stream and output.  If, however, you
+    use the "R" function, non-template symbols specified are inserted into
+    the display but not output if the PICTURE applies to a GET.
+
+    ^BRange:^B The RANGE clause limits entry into date and numeric type
+    variables by specifying the lower and upper bounds of acceptable input
+    (the lower must precede the upper).  If the value is not within the
+    RANGE, an indicating message displays in the SCOREBOARD area and
+    control returns to the GET.  Note that the RANGE check is performed
+    unless you press Esc to terminate the GET.  In this case, there is no
+    RANGE check and the <variable> is restored to its original value.
+
+    ^BValue:^B The VALID clause allows you the validate an entry into a GET
+    with a logical expression.  Like RANGE, the VALID expression evaluates
+    whenever you attempt to terminate the associated GET unless you press
+    Esc and ESCAPE is ON.  If the expression returns false (.F.) control
+    returns to the GET and you cannot leave the GET until the expression
+    returns true (.T.) or you press Esc.
+
+    Note that the expression may contain or be a user-defined function.
+    This is useful for lookups and other types of post-processing
+    functions.  One of the unique capabilities of Clipper is that within a
+    user-defined function called by VALID, you can change the contents of
+    the current GET.  You do this simply by STOREing or REPLACEing a new
+    value into the current GET variable.  When control returns to the GET,
+    Clipper updates it with the new value of the variable.
+
+^UUsage^U
+
+    ^BHelp:^B You can create a help system that operates within a screen
+    consisting of @...SAY...GETs by first SETting KEY TO a specific help
+    procedure.  Then within the procedure, use READVAR() to determine the
+    current GET and display the appropriate help screen.  Note that within
+    a SET KEY procedure, you can change the contents of the current GET in
+    the same way you would from within a VALID.
+!seealso: "?/??" "@...TO" "@...CLEAR" clip_121.ngo:"PCOL()" clip_125.ngo:"PROW()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: @...TO         To draw single or double line boxes on the screen.
+'------------------------------------------------------------------------------
+^B@...TO^B
+
+    To draw single or double line boxes on the screen.
+
+^USyntax^U
+
+    @ <exp N1>, <exp N2> TO <exp N3>, <exp N4> [DOUBLE]
+
+^UArguments^U
+
+    <exp N1..exp N4> define the coordinates of the box.  ExpN1 and expN2
+    define the upper left corner and expN3 and expN4 define the lower right
+    corner.  If the two row coordinates (<expN1> and <expN3> are the same,
+    Clipper draws a horizontal line.  If the two column coordinates
+    (<expN2> and <expN4> are the same, Clipper draws a vertical line.
+
+^UOptions^U
+
+    ^BDouble:^B The DOUBLE clause paints the box with a double line.  if
+    this clause is not specified, the box is painted with a single line.
+
+^UUsage^U
+
+    @...TO is very similar to @...BOX with two exceptions.  First, @...BOX
+    allows you to define the characters of the box and second, it supports
+    a fill character.  @...TO, however, is easier to use since you do not
+    have to remember the box characters.
+!seealso: "@...BOX" "@...CLEAR" clip_091.ngo:"ACHOICE" clip_092.ngo:"DBEDIT()" clip_133.ngo:"SCROLL()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ACCEPT         Allows input of character data into memory variable.
+'------------------------------------------------------------------------------
+^BACCEPT^B
+
+    To enter a string from the keyboard into a specified memory variable.
+
+^USyntax^U
+
+    ACCEPT [<prompt>] TO <memvar>
+
+^UArgument^U
+
+    <memvar> is the name of the memory variable where the keyboard entry is
+    placed.
+
+^UOption^U
+
+    ^BPrompt:^B The <prompt> is a character string displayed before the
+    input area.
+
+^UUsage^U
+
+    ACCEPT takes entry from the keyboard and places it into a newly created
+    character memory variable.  Return confirms entry and is the only key
+    that terminates ACCEPT.  If ^C1B^CD9 is entered in response to the
+    ACCEPT command, the content of the memory variable is null (without any
+    contents, or ASCII 0).
+!seealso: "@...SAY...GET" clip_014.ngo:"INPUT" clip_089.ngo:"WAIT" clip_098.ngo:"INKEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: APPEND BLANK   Adds a new record at the end of the current database.
+'------------------------------------------------------------------------------
+^BAPPEND BLANK^B
+
+    To add a new record to the end of the currently selected database file.
+
+^USyntax^U
+
+    APPEND BLANK
+
+^UUsage^U
+
+    APPEND BLANK option adds a blank record and makes it the current
+    record.
+
+^UNetwork^U
+
+    When operating under a network and the current database file is shared,
+    APPEND BLANK attempts to add and then lock a new record.  If another
+    user has locked the database file or attempted to APPEND BLANK at the
+    same time, NETERR() returns true (.T.).  Note that a newly APPENDed
+    record remains locked until you lock another record or perform an
+    UNLOCK.  Note also that APPENDing BLANK does not release an FLOCK() by
+    the current user.
+!seealso: "APPEND FROM" clip_047.ngo:"SET CONFIRM" clip_061.ngo:"SET FORMAT" 
+'------------------------------------------------------------------------------
+
+
+
+!short: APPEND FROM    Adds records from other files to selected dBASE file.
+'------------------------------------------------------------------------------
+^BAPPEND FROM^B
+
+    APPEND FROM copies records from an existing file to the end of the
+    active database file.  The FROM file does not have to be a database
+    file.
+
+^USyntax^U
+
+    APPEND [<scope>] [FIELDS <field list>] FROM <file>/(<expC>)
+    [FOR <condition>] [WHILE <condition>] [SDF]/[DELIMITED
+    [WITH BLANK/<delimiter>/(<expC>)]]
+
+^UArgument^U
+
+    <file> is the name of the source file.  If no file type is specified, a
+    ^R.dbf^R extension is assumed.  If there is a type option specified,
+    the file extension is assumed to be ^R.txt^R unless specified.
+
+^UOptions^U
+
+    ^BFields:^B If the FIELDS clause is specified, data is APPENDed only
+    into the fields specified.
+
+    ^BScope:^B The <scope> is the portion of the source database file to
+    APPEND FROM.  In Clipper, NEXT<n> APPENDS the first <n> records and
+    supersedes any FOR or WHILE condition.  RECORD <n> APPENDs only source
+    database file record number <n> to the target database file.  The
+    default scope is ALL records.
+
+    ^BCondition:^B The FOR clause specifies the conditional set of records
+    to APPEND FROM within the given scope.  The WHILE clause specifies the
+    set of records meeting the condition from the first record in the
+    source file until the condition fails.
+
+    ^BType:^B There are three types of files Clipper can import: SDF,
+    DELIMITED, and (.dbf) files.
+
+    SDF identifies a System Data Format ASCII file.  Each record is the
+    same length and ends with a carriage return and line feed.
+
+    DELIMITED identifies an ASCII text file, where fields are separated by
+    commas and character fields are bounded by double quotation marks (the
+    default delimiter).  Note that the delimiters are not required and
+    Clipper correctly APPENDs character fields not bounded by them.  Fields
+    and records are variable length and end with a carriage return and line
+    feed.  The end-of-file mark is Ctrl-Z (1A hex).
+
+    DELIMITED WITH BLANK identifies an ASCII text file, where fields are
+    separated by one space and character fields are not bounded by
+    delimiters.
+
+    DELIMITED WITH <delimiter> identifies a delimited ASCII text file,
+    where character fields are delimited with the specified delimiter.
+
+^UUsage^U
+
+    ^BDeleted Records^B in the source database file are APPENDed but not
+    marked as deleted in the target database file.  If DELETED is ON,
+    however, none of the deleted source records are APPENDed.
+
+    ^BFields with the same name and types^B are APPENDed.  Unlike dBASE
+    III, however, the source and target fields must be the same data type.
+    If they are not you will get the error message "Type conflict in
+    REPLACE" when you APPEND FROM.
+
+    ^BMatching widths^B: If a target field is larger, Clipper pads the
+    source data to fill it.  If the target field is smaller, Clipper
+    truncates the source data.
+
+^UNetwork^U
+
+    Note that APPEND FROM does not require the target file locked with
+    FLOCK() or USEd EXCLUSIVEly in order to function properly.  Clipper
+    automatically arbitrates contention for the target database file during
+    APPENDs.
+!seealso: "COPY" 
+'------------------------------------------------------------------------------
+
+
+
+!short: AVERAGE        Computes and displays mean of one or more fields.
+'------------------------------------------------------------------------------
+^BAVERAGE^B
+
+    To average a series of numeric expressions to memory variables for a
+    range of records in the current database file.
+
+^USyntax^U
+
+    AVERAGE [<scope>] <expression list> TO <memvar list> [FOR <condition>]
+    [WHILE <condition>]
+
+^UArguments^U
+
+    <exp list> is a list of the numeric values to AVERAGE for each record
+    processed.
+
+    <memvar list> identifies the receiving memory variables for the
+    averages and is created when the command executes.  Existing memory
+    variables with the same names are overwritten.  This list must contain
+    the same number of elements as the list of expressions to AVERAGE.
+
+^UOptions^U
+
+    ^BScope:^B The <scope> is the portion of the current database file to
+    AVERAGE.  The default scope is ALL.
+
+    ^BCondition:^B The FOR clause specifies the conditional set of records
+    to AVERAGE within the given scope.  The WHILE clause specifies the set
+    of records meeting the condition from the current record until the
+    condition fails.
+!seealso: clip_082.ngo:"SUM" clip_084.ngo:"TOTAL" 
+'------------------------------------------------------------------------------
+
+
+
+!short: BEGIN SEQUENCE..END   To define a control structure for error scoping.
+'------------------------------------------------------------------------------
+^BBEGIN SEQUENCE...END^B
+
+    BEGIN SEQUENCE...END defines a control structure for user-defined error
+    scoping within the flow of a program.
+
+^USyntax^U
+
+    BEGIN SEQUENCE
+       <statements>...
+       [BREAK]
+       <statements>...
+    END
+
+^UOptions^U
+
+    ^BBreak:^B The BREAK statement branches execution to the statement
+    immediately following the matching END statement.
+
+^UUsage^U
+
+    BEGIN SEQUENCE...END is a control structure that allows relatively easy
+    definition of exception handling.  When an exception occurs, issue a
+    BREAK to branch control to the program statement immediately following
+    the END statement that terminates the current SEQUENCE program
+    structure.  BREAK can occur in a nested or the current procedure.
+    Nested procedures can be nested any number of levels below the BEGIN
+    SEQUENCE structure which may also include any of the runtime error
+    procedures.  The latter allows you to define local recovery operations
+    for runtime error conditions specific to the context in which they
+    occur.  It can also be used to simulate RETURN TO MASTER (see below for
+    example).
+
+^UExamples^U
+
+    The following code fragment demonstrates the SEQUENCE construct within
+    a nested or the current procedure:
+
+    ^RBEGIN SEQUENCE          ^R
+    ^R   <statements>...      ^R
+    ^R   IF break_cond        ^R
+    ^R      BREAK             ^R
+    ^R   ENDIF                ^R
+    ^R   <statements>...      ^R
+    ^REND                     ^R
+    ^R                        ^R
+    ^R<recovery statements>...^R
+
+    The following code fragment demonstrates simulation of RETURN TO
+    MASTER.
+
+    ^R*1st level menu                                         ^R
+    ^R*                                                       ^R
+    ^RDO WHILE .T.                                            ^R
+    ^R   BEGIN SEQUENCE                                       ^R
+    ^R   CLEAR                                                ^R
+    ^R   @ 01,01 say "Master Menu..."                         ^R
+    ^R   @ 05,05 PROMPT "Go one level down"                   ^R
+    ^R   @ 06,05 PROMPT "No operation     "                   ^R
+    ^R   @ 07,05 PROMPT "Quit             "                   ^R
+    ^R   MENU TO first                                        ^R
+    ^R   DO CASE                                              ^R
+    ^R      CASE first = 1                                    ^R
+    ^R         DO menu2                                       ^R
+    ^R      CASE first = 2                                    ^R
+    ^R         @23,01 say "No-op choice...press any key..."   ^R
+    ^R         inkey(0)                                       ^R
+    ^R      CASE first = 3                                    ^R
+    ^R         EXIT                                           ^R
+    ^R   ENDCASE                                              ^R
+    ^R   END SEQUENCE                                         ^R
+    ^RENDDO                                                   ^R
+    ^RRETURN                                                  ^R
+    ^R                                                        ^R
+    ^R*********                                               ^R
+    ^R* 2nd level menu                                        ^R
+    ^R*                                                       ^R
+    ^RPROCEDURE menu2                                         ^R
+    ^RDO WHILE .T.                                            ^R
+    ^R   CLEAR                                                ^R
+    ^R   @ 01,01 say "Menu 2 ..."                             ^R
+    ^R   @ 05,05 PROMPT "Go one level down"                   ^R
+    ^R   @ 06,05 PROMPT "No operation     "                   ^R
+    ^R   @ 07,05 PROMPT "Quit             "                   ^R
+    ^R   MENU TO second                                       ^R
+    ^R   DO CASE                                              ^R
+    ^R      CASE second = 1                                   ^R
+    ^R         DO menu3                                       ^R
+    ^R      CASE second = 2                                   ^R
+    ^R         @23,01 say "No-op choice...press any key..."   ^R
+    ^R         inkey(0)                                       ^R
+    ^R      CASE first = 3                                    ^R
+    ^R         EXIT                                           ^R
+    ^R   ENDCASE                                              ^R
+    ^R   @ 24,01 say "exiting"                                ^R
+    ^R   INKEY(0)                                             ^R
+    ^RENDDO                                                   ^R
+    ^RRETURN                                                  ^R
+    ^R                                                        ^R
+    ^R*********                                               ^R
+    ^R* 3rd level menu                                        ^R
+    ^R*                                                       ^R
+    ^RPROCEDURE menu3                                         ^R
+    ^RDO WHILE .T.                                            ^R
+    ^R   CLEAR                                                ^R
+    ^R   @ 01,01 say "Menu 3 ..."                             ^R
+    ^R   @ 05,05 PROMPT "Return to Master "                   ^R
+    ^R   @ 06,05 PROMPT "No operation     "                   ^R
+    ^R   @ 07,05 PROMPT "Quit             "                   ^R
+    ^R   MENU TO third                                        ^R
+    ^R   DO CASE                                              ^R
+    ^R      CASE third = 1                                    ^R
+    ^R         BREAK                                          ^R
+    ^R      CASE third = 2                                    ^R
+    ^R         @23,01 say "No-op choice...press any key..."   ^R
+    ^R         inkey(0)                                       ^R
+    ^R      CASE third = 3                                    ^R
+    ^R         EXIT                                           ^R
+    ^R   ENDCASE                                              ^R
+    ^R   @ 24,01 say "exiting"                                ^R
+    ^R   INKEY(0)                                             ^R
+    ^RENDDO                                                   ^R
+    ^RRETURN                                                  ^R
+!seealso: clip_037.ngo:"RETURN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CALL           To execute separately compiled or assembled programs.
+'------------------------------------------------------------------------------
+^BCALL^B
+
+    To execute separately compiled or assembled routines and programs.
+
+^USyntax^U
+
+    CALL <process> WITH <exp list>
+
+^UArguments^U
+
+    <exp list> is the list of expressions of any data type to pass to the
+    external process.
+
+^UUsage^U
+
+    CALLed programs must be defined as FAR processes ending with a FAR
+    return.  All data references consist of four-byte pointers in the form
+    SEGMENT:OFFSET, and are on top of the stack in the order passed (see
+    the example below).  All data types are passed by reference.  Your
+    program must preserve the BP, SS, SI, DI, ES, and DS registers.
+
+    ^BPassing Parameters:^B The CALL command parameter list may consist of
+    up to seven parameters.  The DX:BX and ES:BX registers point to the
+    first parameter, similar to dBASE III.  If you wish to convert a dBASE
+    III load module, add the following statements to your .ASM file:
+
+    PUBLIC <proc>
+
+    and
+
+    mov ds,dx
+
+    Character strings are passed by reference and are null terminated (a 0
+    byte at the end of the string).  The length of any data item must be
+    preserved, as the data area contains many data items consecutively in
+    memory.  If an item is lengthened, you will in all likelihood write
+    over other data.
+    The CALL command executes a binary program file that has been
+    loaded in memory with the LOAD command.  Each loaded file is treated as
+    a subroutine or module rather than as an external program (which could
+    be executed with the RUN command).  As a result, each time you want to
+    execute the program, it can simply run from memory without having to be
+    reloaded from a disk.  Up to 16 binary program files can be loaded in
+    memory at one time, and each can be up to 32,000 bytes in length.
+
+    When you CALL the binary program file, you specify the name of the file
+    without the .bin extension.  The program module name is the same as the
+    file loaded in memory.  When you call the file, you can pass either a
+    character expression or a memory variable of any data type to the
+    binary program file.  All character type memory variables and
+    expressions end with a null (ASCII value zero).
+
+    Numeric variables are passed as 8 byte floating point representation,
+    consisting of a 53 bit characteristic and an 11 bit exponent biased by
+    1023.  To pass numeric parameters as integers, use WORD() to convert
+    them from the Clipper internal format to integer.  If the numeric value
+    you are passing is greater than -+32,767, it cannot be passed as an
+    integer and therefore the use of WORD() is inappropriate.
+
+    Note also that if you use WORD() to pass a numeric value, it is passed
+    by value.
+
+    ^BCompiling and Linking:^B CALLed programs must conform to the
+    following rules:
+
+    - The program must be in the "INTEL 8086 relocatable object file
+      format", with the .OBJ file extension.
+
+    - Must follow C language calling and parameter passing conventions.
+
+    - Must be available to the Clipper Linker at link time.  You will need
+      runtime support for any language other than assembly language.  See
+      your compiler manual for details.
+
+^UExamples^U
+
+    The following example in C changes the variable "var" from "123" to
+    "ABC".
+
+    ^Rvar = "123"              ^R
+    ^RCALL Test WITH var, "ABC"^R
+    ^R? var                    ^R
+    ^RRETURN                   ^R
+
+    To CALL a C program, use the following simple program as a basis:
+
+    ^R/* Compile as large module*/^R
+    ^Rtest (p1, p2)               ^R
+    ^R                            ^R
+    ^Rchar *p1;                   ^R
+    ^Rchar *p2;                   ^R
+    ^R                            ^R
+    ^R{                           ^R
+    ^R    while (*p2)             ^R
+    ^R    *p1++ = *p2++;          ^R
+    ^R}                           ^R
+!seealso: "DO" clip_151.ngo:"WORD()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CANCEL/QUIT    To terminate program processing and close all open files.
+'------------------------------------------------------------------------------
+^BCANCEL^B
+
+    To terminate program processing, close all open files, and return
+    control to the operating system.
+
+^USyntax^U
+
+    CANCEL/QUIT
+
+^UUsage^U
+
+    CANCEL or QUIT can be used from anywhere in a program to terminate and
+    return to the operating system.  A RETURN executed at the highest level
+    procedure performs the same action.
+!seealso: clip_027.ngo:"QUIT" clip_037.ngo:"RETURN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEAR          Clears the screen, home the cursor and clear pending GETs.
+'------------------------------------------------------------------------------
+^BCLEAR^B
+
+    To clear the screen, home the cursor, and clear all pending GETs.
+
+^USyntax^U
+
+    CLEAR [SCREEN]
+
+^UOption^U
+
+    ^BScreen:^B The SCREEN clause suppresses the automatic clearing of GETs
+    when the screen is CLEARed.
+
+^UUsage^U
+
+    After CLEAR erases the screen the cursor is positioned at 0,0.
+
+    If you are editing GETs, do not execute a CLEAR within a procedure
+    invoked  either by SET KEY or the VALID clause since it will release
+    all pending GETs.  To clear the screen without CLEARing GETs, use CLEAR
+    SCREEN or @0,0 CLEAR.
+!seealso: "@...CLEAR" "CLEAR GETS" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEAR ALL      Closes open databases, releases all memory variables.
+'------------------------------------------------------------------------------
+^BCLEAR ALL^B
+
+    To close all open database (and related index, format, and memo) files,
+    release all memory variables, and SELECT work area 1.
+
+^USyntax^U
+
+    CLEAR ALL
+!seealso: "CLEAR MEMORY" "CLOSE" clip_031.ngo:"RELEASE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEAR GETS     Releases all @...GETs issued since the last CLEAR or READ.
+'------------------------------------------------------------------------------
+^BCLEAR GETS^B
+
+    CLEAR GETS releases all @...GETs issued since the last CLEAR ALL, CLEAR
+    GETS, or READ command.
+
+^USyntax^U
+
+    CLEAR GETS
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEAR MEMORY   Releases all memory variables.
+'------------------------------------------------------------------------------
+^BCLEAR MEMORY^B
+
+    CLEAR MEMORY releases all memory variables.
+
+^USyntax^U
+
+    CLEAR MEMORY
+
+^UUsage^U
+
+    CLEAR MEMORY releases all PUBLIC and PRIVATE memory variables, while
+    RELEASE ALL only releases PRIVATE memory variables declared in the
+    program currently being executed.
+!seealso: "CLEAR ALL" clip_031.ngo:"RELEASE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLEAR TYPEAHEAD   Empties the type-ahead buffer.
+'------------------------------------------------------------------------------
+^BCLEAR TYPEAHEAD^B
+
+    CLEAR TYPEAHEAD empties the type-ahead buffer.
+
+^USyntax^U
+
+    CLEAR TYPEAHEAD
+
+^UUsage^U
+
+    CLEAR TYPEAHEAD is useful in user-interface procedures to guarantee
+    that keys processed from the keyboard buffer are appropriate to the
+    current activity and not pending from a previous activity.  This is
+    particularly useful in the user functions of ACHOICE() and DBEDIT().
+!seealso: clip_016.ngo:"KEYBOARD" clip_076.ngo:"SET TYPEAHEAD" clip_091.ngo:"ACHOICE()" clip_092.ngo:"DBEDIT()" clip_102.ngo:"LASTKEY()" clip_120.ngo:"NEXTKEY()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CLOSE          Closes various types of files.
+'------------------------------------------------------------------------------
+^BCLOSE^B
+
+    CLOSE is used to close alternate files, database files, format files,
+    index files, and procedure files.
+
+^USyntax^U
+
+    CLOSE ALL/ALTERNATE/DATABASES/FORMAT/INDEX
+
+^UOptions^U
+
+    ^BAll^B: CLOSEs all alternate, database, and index files in all work
+    areas.  Additionally, it releases all active filters, relations and
+    formats.
+
+    ^BAlternate^B: CLOSEs the currently open alternate file.  It does not,
+    however, release the alternate file name pointed to by SET ALTERNATE TO
+    <filename>.  SET ALTERNATE TO with no argument also CLOSEs the
+    alternate file.
+
+    ^BDatabases^B: CLOSEs all open database and associated index files in
+    all work areas and releases all active filters.  It does not, however,
+    have any effect on the active format.
+
+    ^BFormat^B: Releases the current format performing the same action as
+    SET FORMAT TO with no argument.
+
+    ^BIndexes^B: CLOSEs all index files open in the current work area.
+
+^UUsage^U
+
+    In Clipper, a number of other commands also CLOSE files including:
+
+    ^CF9  QUIT
+    ^CF9  CANCEL
+    ^CF9  RETURN from the highest level procedure
+    ^CF9  CLEAR ALL
+    ^CF9  USE with no argument
+
+    Clipper also closes files from a runtime error message prompt.  When
+    you terminate program execution in response to a runtime error the
+    following options close files:
+
+    ^CF9  Quit option from (Q/A/I) prompt
+
+    ^CF9  Pressing "N" from the Continue option
+!seealso: "CANCEL/QUIT" "CLEAR ALL" "CLEAR MEMORY" clip_027.ngo:"QUIT" clip_037.ngo:"RETURN" clip_043.ngo:"SET ALTERNATE" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COMMIT         To perform a solid-disk write for all work areas.
+'------------------------------------------------------------------------------
+^BCOMMIT^B
+
+    COMMIT performs a solid-disk write for all work areas.
+
+^USyntax^U
+
+    COMMIT
+
+^UUsage^U
+
+    COMMIT flushes all Clipper buffers to DOS and then performs a solid-
+    disk write.
+
+    This requires DOS 3.3 or greater.
+!seealso: clip_079.ngo:"SKIP" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CONTINUE       Points to next record meeting LOCATE conditions.
+'------------------------------------------------------------------------------
+^BCONTINUE^B
+
+    CONTINUE searches for the next record in the active database file that
+    meets the condition specified by the most recent LOCATE command.
+
+^USyntax^U
+
+    CONTINUE
+
+^UUsage^U
+
+    CONTINUE searches from the current record position for the next record
+    meeting the most recent LOCATE condition executed in the current work
+    area.  It terminates when a match is found or the end of the LOCATE
+    scope is reached.
+
+    If the CONTINUE is successful, the matching record becomes the current
+    record and FOUND() returns true (.T.).  If it is unsuccessful, FOUND()
+    always returns false (.F.) and the positioning of the record pointer
+    depends on the controlling scope of the pending LOCATE.
+
+    Each work area may have an active LOCATE condition.  In Clipper, a
+    LOCATE condition remains pending until a new LOCATE condition is
+    specified.  No other commands release the condition.
+!seealso: clip_019.ngo:"LOCATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COPY           Copies database file in USE to a new file.
+'------------------------------------------------------------------------------
+^BCOPY^B
+
+    COPY duplicates all or part of an active database file to a new file.
+
+^USyntax^U
+
+    COPY TO <file>/(<expC1>) [<scope>] [FIELDS <fields list>]
+    [FOR <condition>] [WHILE <condition>] [SDF/DELIMITED/DELIMITED WITH
+    <delimiter>/(<expC2>)]
+
+^UArguments^U
+
+    <file> is the name of the new file.  If no type clause is specified,
+    (.dbf) is the default file type and no extension is necessary.  If
+    there is a type clause specified, the file extension is assumed to be
+    (.txt) unless specified.
+
+^UOptions^U
+
+    ^BFields^B: The FIELDS clause specifies the list of fields to copy to
+    the target database file.  The default is all fields.
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    COPY.  The default is ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to COPY within the given scope.  The WHILE clause specifies the set of
+    records meeting the condition from the current record until the
+    condition fails.
+
+    ^BSDF^B: The SDF clause specifies the output file type as a System Data
+    Format ASCII file.  Records are fixed length, each separated by a
+    carriage return/line feed pair.  Fields are fixed length and there is
+    no field separator.  Character fields are padded with trailing blanks,
+    numeric fields are padded with leading blanks, date fields are written
+    in the form "yyyymmdd," and logical fields are written in the form T/F.
+    The end-of-file mark is Ctrl-Z (1A hex).
+
+    ^BDelimited^B: The DELIMITED clause specifies the output file type as a
+    DELIMITED ASCII file.  Records are variable length, each separated by a
+    carriage return/line feed pair.  Fields are variable length and
+    separated by commas.  Character fields are bounded by delimiters (the
+    double quote mark is the default unless you specify a different
+    character using the WITH clause).  Leading and trailing spaces for
+    numeric and character fields are truncated, date fields are written in
+    the form "yyyymmdd," and logical fields are written in the form T/F.
+    Ctrl-Z (1A hex) is the end-of-file mark.
+
+    ^BNote^B: DELIMITED WITH BLANK, DIF, SYLK, and WKS file type options
+    are not supported in addition to the TYPE keyword.
+
+^UUsage^U
+
+    All records contained in the active database file are copies unless
+    limited by a scope or FOR/WHILE clause.  Records marked for deletion
+    will be copied unless DELETED is ON or a FILTER has been SET.
+
+^UNetwork^U
+
+     When you COPY in a network environment, Clipper opens the target
+     database file EXCLUSIVE.
+!seealso: "APPEND FROM" "COPY FILE" "COPY STRUCTURE" clip_053.ngo:"SET DELETED" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COPY FILE      Duplicates any closed file.
+'------------------------------------------------------------------------------
+^BCOPY FILE^B
+
+    COPY FILE creates a duplicate of any closed file.
+
+^USyntax^U
+
+    COPY FILE <file1>.<ext>/(<expC1>) TO <file2>.<ext>/(<expC2>)
+
+^UArguments^U
+
+    <file1> is the name of the source file to COPY including the extension.
+
+    <file2> is the name of the target file including the extension.
+
+^UUsage^U
+
+    COPY FILE copies files from the Clipper default drive and directory.
+!seealso: "CLOSE" "COPY" clip_052.ngo:"SET DEFAULT" clip_088.ngo:"USE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COPY STRUCTURE Creates empty database with fields from current database.
+'------------------------------------------------------------------------------
+^BCOPY STRUCTURE^B
+
+    To create an empty database file with field definitions from the
+    current database file.
+
+^USyntax^U
+
+    COPY STRUCTURE TO <file>/(<expC1>) [FIELDS <fields list>]
+
+^UArguments^U
+
+    <file> is the target database file.  The default extension is (.dbf)
+    unless another is specified.
+
+^UOptions^U
+
+    ^BFields^B: The <field list> is the set of fields to COPY to the new
+    database structure in the order specified.  The default is all fields.
+!seealso: "COPY STRUCTURE EXTENDED" "CREATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COPY STRUCTURE EXTENDED  Creates database filled with field definitions.
+'------------------------------------------------------------------------------
+^BCOPY STRUCTURE EXTENDED^B
+
+    To create a database file whose contents are the field definitions of
+    the current database file.
+
+^USyntax^U
+
+    COPY TO <file>/(<expC1>) STRUCTURE EXTENDED [FIELDS <fields list>]
+
+^UArguments^U
+
+    <file> is the name of the structure extended database file.
+
+^UOptions^U
+
+    ^BFields^B: The <field list> is one or more fields in the current
+    database file whose definitions will appear in the new database file as
+    records in the order specified.
+
+^UUsage^U
+
+    COPY STUCTURE EXTENDED creates a database file with four fields:
+    Field_name, Field_type, Field_len, and Field_dec.  The structure
+    extended file contains the structure of the current database file with
+    a record for the definition of each field.
+
+    Used in application programs this permits you to create or modify the
+    structure of a database file programmatically.  To create a new
+    database file from the structure extended file, use CREATE FROM.  If
+    you only need an empty structure extended file, use CREATE.
+!seealso: "CREATE" "CREATE FROM" clip_085.ngo:"TYPE()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: COUNT          Counts and displays # of records for specified criteria.
+'------------------------------------------------------------------------------
+^BCOUNT^B
+
+    COUNT tallies the number of records in the current work area to a
+    memory variables within the specified scope and specified conditions.
+
+^USyntax^U
+
+    COUNT [<scope>] [FOR <condition>] [WHILE <condition>] TO <memvar>
+
+^UArgument^U
+
+    <memvar> is a memory variable assigned the COUNT result.  If the
+    variable does not exist or is not numeric type, COUNT creates it as
+    numeric.
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    COUNT.  The default is ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to COUNT within the given scope.  The WHILE clause specifies the set of
+    records meeting the condition from the current record until the
+    condition fails.
+!seealso: "AVERAGE" clip_082.ngo:"SUM" clip_084.ngo:"TOTAL" clip_103.ngo:"LASTREC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CREATE         Creates an empty structure extended database file.
+'------------------------------------------------------------------------------
+^BCREATE^B
+
+    To create an empty structure extended database file.
+
+^USyntax^U
+
+    CREATE <file>/(<expC>)
+
+^UArgument^U
+
+    <file> is the name of the empty structure extended file.
+
+^UUsage^U
+
+    Like COPY STRUCTURE EXTENDED, CREATE produces a structure extended file
+    with four fields: Field_name, Field_type, Field_len, and Field_dec and
+    can be used in conjunction with CREATE FROM to form a new database
+    files.  Unlike COPY STRUCTURE EXTENDED, CREATE produces an empty
+    database file and does not require the presence of another database
+    file to create it.
+!seealso: "CREATE FROM" "COPY STRUCTURE EXTENDED" 
+'------------------------------------------------------------------------------
+
+
+
+!short: CREATE FROM    Creates new database file from a structure extended file.
+'------------------------------------------------------------------------------
+^BCREATE FROM^B
+
+    To create a new database file from an structure extended file.
+
+^USyntax^U
+
+    CREATE <file1>/(<expC1>) FROM <file2>/(<expC2>)
+
+^UArgument^U
+
+    <file1> is the name of the new database file to create from the
+    structure extended file (<file2>).  The field definitions in the new
+    database file are taken from the records of <file2>.
+
+    <file2> is the name of a structure extended file to use as the
+    structure definition for the new database file.
+
+^UUsage^U
+
+    CREATE FORM produces a new database file with the field definitions
+    taken from the contents of a structure extended file.  To qualify as a
+    structure extended file, a database file must contain the following
+    four fields:
+
+    Field     Name             Type          Length    Decimals
+      1       Field_name       Character       10
+      2       Field_type       Character        1
+      3       Field_len        Numeric          3         0
+      4       Field_dec        Numeric          3         0
+
+    ^BData dictionaries^B: For data dictionary applications, you can have
+    any number of other fields within the structure extended file to
+    describe the extended field attributes.  You may, for example, want to
+    have fields to describe such field attributes as a description, key
+    flag, label, color, picture, and a validation expression for the VALID
+    clause.  When you CREATE FROM, Clipper creates the new database file
+    from the required fields only.  All other fields in the extended
+    structure are ignored.  Moreover, Clipper is not sensitive to the order
+    of the required fields.
+
+    ^BField lengths greater than 999^B: It is possible to create a
+    character field greater than 999 characters by specifying the Field_dec
+    equal to the INT() of the desired length divided by 256 and the
+    Field_len equal to the remainder of the length divided by 256.
+!seealso: "COPY STRUCTURE EXTENDED" "CREATE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DECLARE        Creates an array.
+'------------------------------------------------------------------------------
+^BDECLARE^B
+
+^UPurpose^U
+
+    To create one or more memory variable arrays.
+
+^USyntax^U
+
+    DECLARE <array name> [<exp N>] [,<array list>]
+
+^UArguments^U
+
+    <array> is the name of an array to create.  Note that you can create
+    more than one array with a single DECLARE statement.
+
+    <expN> is the number of elements in the array up to a maximum of 4096.
+    An array DECLAREd with less than one element defaults to one; more than
+    4096 elements defaults to 4096.
+
+    ^BNote^B: The square brackets surrounding <expN> are a required part of
+    the command syntax and in this case do not signify an optional
+    argument.
+
+^UUsage^U
+
+    DECLARE creates single dimensional private arrays whose scope is the
+    current procedure.  At the same time, PUBLIC and private arrays created
+    in higher-level procedures with the same name are hidden.  An array
+    uses one memory variable slot of the allotted memory variables.
+
+    Unlike memory variables, arrays and array elements cannot be saved in
+    (.mem) files.
+
+    To assign a value to an array element, use the assignment operator (=)
+    or the STORE command.  To STORE a value to an entire array, use
+    AFILL().  To retrieve a value from an array, refer to the element using
+    a subscript indicating its position in the array.
+
+    To determine the number of elements in an array, use LEN() by
+    specifying only the array name as the function argument.
+
+    The LEN() function may be used to return the number of elements in an
+    array, if the array name is the only parameter specified in the
+    function.
+
+    ^BData types^B: Elements within the same array can be mixed type and
+    obey all the typing rules of ordinary memory variables.  The TYPE()
+    function returns an "A" for an array reference and the data type of an
+    element if the reference includes the subscript.
+
+    ^BUse within macro variables^B: References to arrays and array elements
+    can be made with macro variables with one exception: the brackets
+    cannot be in a macro variable when DECLAREing the array.  Note,
+    however, that you cannot use or expand an array element as a macro
+    variable.  If you wish to use an array element in a macro, assign the
+    contents of the array element to a memory variable and then use the
+    memory variable as the macro variable.  For example:
+
+    ^RDECLARE fields[FLDCOUNT()]^R
+    ^RAFIELDS(fields)           ^R
+    ^Rfld_name = fields[1]      ^R
+    ^R? &fld_name               ^R
+
+    ^BPassing parameters^B: Array and array elements can be passed as
+    parameters to Clipper procedures, user_defined functions, and external
+    procedures that use the Extend System.  Arrays are passed by reference
+    and array elements are passed by value.  You cannot, however, pass
+    entire arrays to external procedures using the CALL command.  In this
+    case, you can only pass array elements one at a time.
+
+    ^BPUBLIC arrays^B: To create PUBLIC arrays, use the PUBLIC statement.
+    Note that PUBLIC arrays follow all the same rules as private arrays
+    with the exception of the scope which is all procedures.  See PUBLIC
+    for more information.
+!seealso: clip_026.ngo:"PUBLIC" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DELETE         Marks records for deletion.
+'------------------------------------------------------------------------------
+^BDELETE^B
+
+    DELETE marks records in the active database file for deletion.
+
+^USyntax^U
+
+    DELETE [<scope>] [FOR <condition>] [WHILE <condition>]
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    DELETE.  If a scope is not specified, DELETE acts only on the current
+    record.  If a condition is specified the default scope becomes ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to DELETE within the given scope.  The WHILE clause specifies the set
+    of records meeting the condition from the current record until the
+    condition fails.
+
+^UUsage^U
+
+    DELETE tags records so they can be filtered with SET DELETED ON,
+    queried with DELETED(), and physically removed from the database file
+    with PACK.  In addition, display commands such as LIST and DISPLAY
+    identify deleted records with an asterisk (*).  Once records are
+    deleted, you can reinstate them by using RECALL.  If you need to remove
+    all records from a database file, use ZAP instead of DELETE ALL and
+    PACK.
+
+^UNetwork^U
+
+    In a network environment, DELETE requires the current record be locked
+    with RLOCK() if you are DELETEing a single record.  If you are
+    DELETEing several records the current database file must be locked with
+    FLOCK() or USEd EXCLUSIVEly.
+!seealso: clip_022.ngo:"PACK" clip_029.ngo:"RECALL" clip_053.ngo:"SET DELETED" clip_090.ngo:"ZAP" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DIR            To display a listing of files from the specified path.
+'------------------------------------------------------------------------------
+^BDIR^B
+
+    To display a listing of files from the specified path.
+
+^USyntax^U
+
+    DIR [<drive>] [<path>] [<skeleton>]
+
+^UOptions^U
+
+    ^BSkeleton^B: The <skeleton> is a standard wildcard (* and ?) notation
+    for files.  If specified, DIR displays all matching files.  If not
+    specified, DIR displays a list of database (.dbf) files.
+
+^UUsage^U
+
+    DIR displays two formats of listing depending on whether you specify a
+    <skeleton>.  Not specifying a skeleton displays a standard listing of
+    database files from the current directory and includes the database
+    filename, date of last update, and number of records.  Specifying a
+    skeleton displays a list of files including filename, extension, number
+    of bytes, and date of last update.
+
+    To create applications where you present directory information to the
+    user, use ADIR() instead of DIR.  ADIR() allows you to fill a number of
+    arrays with the attributes of files.  Then with these arrays you can
+    create any kind of file selection or display menu.
+!seealso: 
+'------------------------------------------------------------------------------
+
+
+
+!short: DISPLAY        Displays records and fields in table form.
+'------------------------------------------------------------------------------
+^BDISPLAY^B
+
+    To display the result of one or more expressions for each record
+    processed.
+
+^USyntax^U
+
+    DISPLAY [OFF] [<scope>] <exp list> [FOR <condition>]
+    [WHILE <condition>] [TO PRINT] [TO FILE <file>/(<expC>)]
+
+^UArgument^U
+
+    <exp list> is the list of values displayed for each record processed.
+
+^UOptions^U
+
+    ^BScope^B: The <scope> is the portion of the current database file to
+    DISPLAY.  The default is the current record.  If a condition is
+    specified the scope becomes ALL.
+
+    ^BCondition^B: The FOR clause specifies the conditional set of records
+    to DISPLAY within the given scope.  The WHILE clause specifies the set
+    of records meeting the condition from the current record until the
+    condition fails.
+
+    ^BOff^B: The OFF clause suppresses the display of the record number.
+
+    ^BPrint^B: The TO PRINT clause echoes output to the printer.
+
+    ^BFile^B: The TO FILE clause echoes output to the specified filename.
+    If an extension is not specified, (.txt) is added.
+
+^UUsage^U
+
+    DISPLAY sends the results of the <exp list> to the screen in a tabular
+    format, each column separated by a space.  Unlike other dialects,
+    however, it does not display column headers or pause every 15 records.
+    In fact, DISPLAY is identical to LIST with the exception that its
+    default scope is NEXT 1 rather than ALL.
+
+    To interrupt a DISPLAY, use INKEY() as a part of the condition such as:
+
+    ^RDISPLAY Branch, Salesman, Amount FOR INKEY() <> 27^R
+!seealso: clip_018.ngo:"LIST" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DO             Executes a procedure.
+'------------------------------------------------------------------------------
+^BDO^B
+
+    To execute a procedure.
+
+^USyntax^U
+
+    DO <procedure> [WITH <parameter list>]
+
+^UArguments^U
+
+    <procedure> is the name of the procedure to execute.  This can be a
+    procedure written in Clipper, C, or assembly language.
+
+^UOption^U
+
+    ^BWith^B: Specifies a <parameter list> of up to 128 items allowing you
+    to pass memory variables or the results of expressions as parameters.
+    Memory variables can either be passed by reference or value.
+
+^UUsage^U
+
+    ^BPassing parameters^B: Using the WITH clause passes parameters to the
+    specified procedure evaluating each expression before branching.  To
+    optionally capture the passed parameters in a Clipper procedure, there
+    must be a PARAMETERS statement followed by the list of variables to
+    receive the passed references or values.  If the passed parameter is an
+    expression, field, or memory variable bounded by parentheses, it is
+    evaluated and its value passed to the called procedure.  If the
+    parameter is a memory variable not bounded by parentheses, it is passed
+    by reference and any changes to the receiving variable are reflected in
+    the source variable when the calling procedure terminates.  Note that
+    fields can only be passed by value and not be reference.
+
+    See PARAMETERS for a more detailed discussion of passing parameters.
+
+    ^BCompiling^B: When Clipper encounters a DO statement and the specified
+    procedure is not already known, it searches the current directory for a
+    (.prg) file  with the same name and compiles it if it is found.
+    Otherwise the called procedure is assumed to be an external.  Note that
+    when you link, the linker will expect to resolve this external
+    reference.
+!seealso: clip_023.ngo:"PARAMETERS" clip_024.ngo:"PRIVATE" clip_025.ngo:"PROCEDURE" clip_026.ngo:"PUBLIC" clip_037.ngo:"RETURN" clip_072.ngo:"SET PROCEDURE" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DO CASE        Sets up structure for executing one of several blocks.
+'------------------------------------------------------------------------------
+^BDO CASE^B
+
+    DO CASE is a structured programming command that selects only one
+    course of action from a set of alternatives.
+
+^USyntax^U
+
+    DO CASE
+       CASE <condition>
+           <commands>
+       [CASE <condition>]
+           <commands>
+       [OTHERWISE]
+           <commands>
+    ENDCASE
+
+^UUsage^U
+
+    ENDCASE terminates the DO CASE structure.  Command pairs such as DO
+    CASE...ENDCASE, IF...ENDIF, and DO WHILE...ENDDO must be properly
+    nested within DO CASE.  Nested DO CASEs are permitted.  There are no
+    nesting limits within the DO CASE structure.
+
+    CASE <condition> sets up a conditional statement for evaluation.  It is
+    a logical expression such as A=B or numvar<11.  When <condition>
+    evaluates to logical True, all subsequent commands are carried out
+    until any one of the following commands is reached: another CASE,
+    OTHERWISE, or ENDCASE.
+
+    After one True CASE is found and its associated commands are processed,
+    no further CASE statements are evaluated.  Program control will skip
+    immediately to the first command after ENDCASE.  If no CASE statements
+    evaluate to True, and there is no OTHERWISE statement, the program
+    processes the first command following ENDCASE.  OTHERWISE causes the
+    program to take an alternative path of action when all CASE statements
+    evaluate to False.
+
+    Note that like all other control structures, only the first three
+    characters of the END statement are significant.
+
+^UTips^U
+
+    In instances where only one of many conditions will evaluate to True,
+    or where only the first True instance is to be processed, the DO CASE
+    command is preferable to the IF command.
+
+    The CASE construction is often used when there are a small number of
+    exceptions to a condition.  The CASE <condition> statements can
+    represent the exceptions, and the OTHERWISE statement the more common
+    situation.
+!seealso: "DO" "DO WHILE" clip_012.ngo:"IF" 
+'------------------------------------------------------------------------------
+
+
+
+!short: DO WHILE       Executes a structured loop in programs.
+'------------------------------------------------------------------------------
+^BDO WHILE^B
+
+    DO WHILE is a structured programming command that allows command
+    statements between it and its associated ENDDO to be repeated as long
+    as the specified condition is True.
+
+^USyntax^U
+
+    DO WHILE <condition>
+       <commands>
+       [EXIT]
+       <commands>
+       [LOOP]
+       <commands>
+    ENDDO
+
+^UOptions^U
+
+    ^BExit^B: The EXIT statement unconditionally branches control from
+    within a DO WHILE structure to the command immediately following the
+    ENDDO.  This option is used generally when you want to terminate a DO
+    WHILE structure based on an intermediate and not the DO WHILE
+    condition.
+
+    ^BLoop^B: The LOOP statement branches control to the last executed DO
+    WHILE command line.  Looping is generally used where you want to
+    prevent execution of statements within a DO WHILE based on an
+    intermediate condition and branch immediately back to the DO WHILE
+    command line.
+
+^UUsage^U
+
+    ENDDO must terminate a DO WHILE structure.
+
+    DO WHILE <condition> opens a structured procedure that processes
+    subsequent commands only while the condition evaluates to True.
+
+    If <condition> evaluates to a logical True, all subsequent commands are
+    carried out until an ENDDO, LOOP, or EXIT is encountered.  ENDDO and
+    LOOP return control to the DO WHILE command for another evaluation of
+    <condition>.  EXIT passes control to the statement following the ENDDO.
+
+    If the condition evaluates to a logical False, all commands between DO
+    WHILE and ENDDO will be skipped and program control will go to the
+    command following ENDDO.
+
+    ^BMacros^B: Macro variables can comprise all or part of the DO WHILE
+    condition without limitation.
+
+    Note that like all other control structures, only the first three
+    characters of the END statement are significant.
+!seealso: clip_009.ngo:"FOR..NEXT" clip_012.ngo:"IF" clip_018.ngo:"LIST" clip_037.ngo:"RETURN" 
+'------------------------------------------------------------------------------
+
+
+
+!short: EJECT          Causes printer to advance the paper to top of next page.
+'------------------------------------------------------------------------------
+^BEJECT^B
+
+    EJECT causes the printer to advance the paper to the top of the next
+    page.
+
+^USyntax^U
+
+    EJECT
+
+^UUsage^U
+
+    EJECT issues a form feed (ASCII character value of 12) to the printer.
+    For proper printer operation, the paper must initially be set to the
+    top-of-form.  Refer to your printer manual for instructions on how to
+    set top-of-form.
+
+    If  you need to reset the internal printer row and column values to
+    zero without sending a form-feed, use SETPRC().
+!seealso: clip_137.ngo:"SETPRC()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: ERASE          Deletes files from the directory.
+!file: clip_006.ngo
+!short: EXTERNAL       Declares a symbol for the CLIPPER linker.
+!file: clip_007.ngo
+!short: FIND           Points to next record matching specified string/value.
+!file: clip_008.ngo
+!short: FOR..NEXT      Permits conventional FOR..NEXT program loop.
+!file: clip_009.ngo
+!short: FUNCTION       Declares user-defined functions.
+!file: clip_010.ngo
+!short: GO/GOTO        Points to specific record regardless of current position.
+!file: clip_011.ngo
+!short: IF             Allows conditional execution of commands.
+!file: clip_012.ngo
+!short: INDEX          Creates an index file.
+!file: clip_013.ngo
+!short: INPUT          Allows input of an expression result to memory variable.
+!file: clip_014.ngo
+!short: JOIN           Creates a new database by merging records from two areas.
+!file: clip_015.ngo
+!short: KEYBOARD       Stuffs the keyboard input buffer with specified string.
+!file: clip_016.ngo
+!short: LABEL FORM     To display labels from a definition held in a .lbl file.
+!file: clip_017.ngo
+!short: LIST           Lists records and fields in table form.
+!file: clip_018.ngo
+!short: LOCATE         Points to next record matching a specified condition.
+!file: clip_019.ngo
+!short: MENU TO        Highlights @..PROMPT, places selection value in memvar.
+!file: clip_020.ngo
+!short: NOTE/*         Inserts non-executing comments within a program file.
+!file: clip_021.ngo
+!short: PACK           Removes records marked for deletion.
+!file: clip_022.ngo
+!short: PARAMETERS     Allows variables to be passed to other procedures.
+!file: clip_023.ngo
+!short: PRIVATE        Hides memory variables/arrays in a memory variable list.
+!file: clip_024.ngo
+!short: PROCEDURE      Defines beginning of a procedure in a procedure file.
+!file: clip_025.ngo
+!short: PUBLIC         Makes memory variables global.
+!file: clip_026.ngo
+!short: QUIT/CANCEL    End program processing, close files, and return to OS.
+!file: clip_027.ngo
+!short: READ           Permits entry to fields or variables with GET.
+!file: clip_028.ngo
+!short: RECALL         Unmarks records marked for deletion.
+!file: clip_029.ngo
+!short: REINDEX        Rebuilds existing index files.
+!file: clip_030.ngo
+!short: RELEASE        Deletes memory variables to free up memory space.
+!file: clip_031.ngo
+!short: RENAME         Renames a file.
+!file: clip_032.ngo
+!short: REPLACE        Replaces data fields with specified values.
+!file: clip_033.ngo
+!short: REPORT FORM    Displays data in report form.
+!file: clip_034.ngo
+!short: RESTORE        Retrieves and activates memory variables from memory file.
+!file: clip_035.ngo
+!short: RESTORE SCREEN Allows multiple screens to be restored (with SAVE SCREEN).
+!file: clip_036.ngo
+!short: RETURN         Returns control to calling program - executes next command.
+!file: clip_037.ngo
+!short: RUN/!          To execute a DOS command or program from within application.
+!file: clip_038.ngo
+!short: SAVE           Stores all or part of current memory variables to disk file.
+!file: clip_039.ngo
+!short: SAVE SCREEN    For writing multiple screens to a buffer (w/ RESTORE SCREEN).
+!file: clip_040.ngo
+!short: SEEK           Points to next record matching a specified expression.
+!file: clip_041.ngo
+!short: SELECT         Switches among up to 10 open database files/work areas.
+!file: clip_042.ngo
+!short: SET ALTERNATE  Creates a file for saving output.
+!file: clip_043.ngo
+!short: SET BELL ON    Toggles bell during data entry operations.
+!file: clip_044.ngo
+!short: SET CENTURY    Toggles four-digit/two-digit year display.
+!file: clip_045.ngo
+!short: SET COLOR TO   Sets screen display attributes.
+!file: clip_046.ngo
+!short: SET CONFIRM    Toggles return key-press to complete a GET.
+!file: clip_047.ngo
+!short: SET CONSOLE    Toggles output to the screen
+!file: clip_048.ngo
+!short: SET CURSOR     Toggle screen cursor on and off.
+!file: clip_049.ngo
+!short: SET DATE       Determines the format for date displays.
+!file: clip_050.ngo
+!short: SET DECIMALS   Sets the minimum number of decimals displayed.
+!file: clip_051.ngo
+!short: SET DEFAULT    Specifies the default drive for file operations.
+!file: clip_052.ngo
+!short: SET DELETED    Toggles hiding records marked for deletion.
+!file: clip_053.ngo
+!short: SET DELIMITERS Displays full-screen fields delimited or in reverse video.
+!file: clip_054.ngo
+!short: SET DEVICE     Directs output to screen or printer.
+!file: clip_055.ngo
+!short: SET ESCAPE     Allows user to escape from program during execution.
+!file: clip_056.ngo
+!short: SET EXACT      Sets requirement for exact matches in character comparisons.
+!file: clip_057.ngo
+!short: SET EXCLUSIVE  Determines how files will be opened (for network).
+!file: clip_058.ngo
+!short: SET FILTER     Isolates records in file meeting specified criteria.
+!file: clip_059.ngo
+!short: SET FIXED      Fixes the number of decimal places to be displayed.
+!file: clip_060.ngo
+!short: SET FORMAT     Opens a format file for data entry.
+!file: clip_061.ngo
+!short: SET FUNCTION   Assign a character string to a function key.
+!file: clip_062.ngo
+!short: SET INDEX      Opens the specified index file(s).
+!file: clip_063.ngo
+!short: SET INTENSITY  Sets on the reverse video in full-screen operations.
+!file: clip_064.ngo
+!short: SET KEY        Redefines keys to perform procedures from wait state.
+!file: clip_065.ngo
+!short: SET MARGIN     Sets the left margin of the printer.
+!file: clip_066.ngo
+!short: SET MESSAGE    Allows messages to be displayed with PROMPTs.
+!file: clip_067.ngo
+!short: SET ORDER      Identifies the specified index as the controlling index.
+!file: clip_068.ngo
+!short: SET PATH       Specifies a path for file search.
+!file: clip_069.ngo
+!short: SET PRINT      Sends output to the printer.
+!file: clip_070.ngo
+!short: SET PRINTER    Determines destination of the print output.
+!file: clip_071.ngo
+!short: SET PROCEDURE  Compiles procedures & functions into current object file.
+!file: clip_072.ngo
+!short: SET RELATION   Links two databases together according to key expression.
+!file: clip_073.ngo
+!short: SET SCOREBOARD Toggles display of messages within READ and MEMOEDIT().
+!file: clip_074.ngo
+!short: SET SOFTSEEK   Toggles for "relative" SEEKing.
+!file: clip_075.ngo
+!short: SET TYPEAHEAD  Specifies the size of the keyboard buffer.
+!file: clip_076.ngo
+!short: SET UNIQUE     Only first records with identical keys appear in index file.
+!file: clip_077.ngo
+!short: SET WRAP       Toggles wrapping in menus.
+!file: clip_078.ngo
+!short: SKIP           Moves pointer forward/backward relative to current position.
+!file: clip_079.ngo
+!short: SORT           Creates copy of database file sorted on one or more fields.
+!file: clip_080.ngo
+!short: STORE          Creates and initializes one or more memory variables.
+!file: clip_081.ngo
+!short: SUM            Computes & displays sum of selected arithmetic fields.
+!file: clip_082.ngo
+!short: TEXT           Displays a block of text data in a command file.
+!file: clip_083.ngo
+!short: TOTAL          Sums numeric fields of active database to second database.
+!file: clip_084.ngo
+!short: TYPE           Displays and/or prints contents of a text file.
+!file: clip_085.ngo
+!short: UNLOCK         Release a file or record lock set by current user.
+!file: clip_086.ngo
+!short: UPDATE         Allows batch updates of a database file.
+!file: clip_087.ngo
+!short: USE            Specifies database file to be used for all operations.
+!file: clip_088.ngo
+!short: WAIT           Suspends program processing until a key is entered.
+!file: clip_089.ngo
+!short: ZAP            Removes all records from active database file.
+!file: clip_090.ngo

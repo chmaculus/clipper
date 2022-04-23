@@ -1,0 +1,1523 @@
+!short: _xvalloc()         Allocate a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvalloc()^b
+ Allocate a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bHANDLE _xvalloc(
+     ^b                 USHORT uiSize,
+     ^b                 USHORT uiFlags
+     ^b               )
+
+ ^bArguments^b
+
+     ^buiSize^b is the size of the segment to allocate in bytes.
+
+     ^buiFlags^b is currently unused and must be set to zero.
+
+ ^bReturns^b
+
+     If successful, _xvalloc() returns a 16-bit segment handle; otherwise, it
+     returns zero.
+
+ ^bDescription^b
+
+     _xvalloc() allocates a VM segment, returning a handle that you can use
+     in all subsequent VM operations involving that segment.
+
+     ^bNote: ^b To use the memory contained in the segment, your function
+     must obtain a far pointer to physical memory by locking the segment with
+     _xvlock() or _xvwire().
+
+     ^bWarning! ^b You must eventually use _xvfree() to free VM segments
+     allocated by _xvalloc().
+
+ ^bNotes^b
+
+     ^b^CFE  Maximum size:^b  The maximum number of bytes that can be allocated
+        in a VM segment is 65,520, enough to hold the largest CA-Clipper
+        string and a null terminator.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example allocates a segment with _xvalloc() and locks it
+        with _xvlock().  After a string is copied into the locked segment,
+        the segment is unlocked and freed (with _xvunlock() and _xvfree()):
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMExample(char * spSrc);
+
+
+        Boolean VMExample(char * spSrc)
+
+        {
+           HANDLE hSegment;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvalloc(strlen(spSrc) + 1, 0))
+              {
+              spString = _xvlock(hSegment);
+              if (spString != NULL)
+                 {
+                 strcpy(spString, spSrc);
+
+                 .
+                 . <statements>
+                 .
+
+                 bResult = TRUE;
+
+                 _xvunlock(hSegment);
+                 }
+              _xvfree(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapnew()" "_xvfree()" "_xvlock()" "_xvrealloc()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvfree()          Free an allocated VM segment
+'------------------------------------------------------------------------------
+ ^b_xvfree()^b
+ Free an allocated VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bvoid _xvfree(
+     ^b              HANDLE hSegment
+     ^b            )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvfree() has no return value.
+
+ ^bDescription^b
+
+     _xvfree() releases a VM segment previously allocated by _xvalloc() and
+     invalidates the handle of that segment.
+
+     ^bWarning! ^b Do not use _xvfree() to free a locked segment.  Use
+     _xvlockcount() to determine the number of locks on a segment and
+     _xvunlock() to release the locks.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example allocates a segment with _xvalloc() and locks it
+        with _xvlock().  After a string is copied into the locked segment,
+        the segment is unlocked and freed (with _xvunlock() and _xvfree()):
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMExample(char * spSrc);
+
+
+        Boolean VMExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvalloc(strlen(spSrc) + 1, 0))
+              {
+              spString = _xvlock(hSegment);
+              if (spString != NULL)
+                 {
+                 strcpy(spString, spSrc);
+
+                 .
+                 . <statements>
+                 .
+
+                 bResult = TRUE;
+
+                 _xvunlock(hSegment);
+                 }
+              _xvfree(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvlockcount()" "_xvunlock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheapalloc()     Allocate a memory block from a segment heap
+'------------------------------------------------------------------------------
+ ^b_xvheapalloc()^b
+ Allocate a memory block from a segment heap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bUSHORT _xvheapalloc(
+     ^b                     HANDLE hSegment,
+     ^b                     USHORT uiSize
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvheapnew().
+
+     ^buiSize^b is the number of bytes to allocate from the segment heap.
+
+ ^bReturns^b
+
+     If successful, _xvheapalloc() returns the offset of the allocated memory
+     block; otherwise, it returns zero.
+
+ ^bDescription^b
+
+     _xvheapalloc() allocates a memory block from within a segment heap.  If
+     you request a size larger than the largest contiguous memory block
+     within the segment heap (or larger than the segment heap itself), the
+     function returns zero.
+
+     If the memory is successfully allocated, _xvheapalloc() returns an
+     offset into the segment heap.  You can use this offset, with the VM
+     segment handle returned by _xvheapnew(), in all subsequent operations
+     involving the allocated block.
+
+     ^bNote: ^b To use the allocated memory block, your function must obtain
+     a far pointer to physical memory by locking the allocated memory with
+     _xvheaplock().
+
+     ^bWarning! ^b You must eventually use _xvheapfree() to free memory
+     blocks allocated by _xvheapalloc().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a segment heap with _xvheapnew() and
+        allocates a memory block in the segment heap.  The block is then
+        locked and the string is copied into it.  Later, the memory block is
+        unlocked, the memory freed, and the heap destroyed:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMHeapExample(char * spSrc);
+
+        #define HEAP_SIZE   4096
+
+        Boolean VMHeapExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           unsigned uiStringOffset;
+           unsigned uiBufflen;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvheapnew(HEAP_SIZE))
+              {
+              uiBufflen = strlen(spSrc) + 1;
+              uiStringOffset = _xvheapalloc(hSegment, uiBufflen);
+              if (uiStringOffset)
+                 {
+                 spString = _xvheaplock(hSegment, uiStringOffset);
+                 if (spString != NULL)
+                    {
+                    strcpy(spString, spSrc);
+
+                    .
+                    . <statements>
+                    .
+
+                    bResult = TRUE;
+
+                    _xvheapunlock(hSegment, uiStringOffset);
+                    }
+                 _xvheapfree(hSegment, uiStringOffset);
+                 }
+              _xvheapdestroy(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapdestroy()" "_xvheapfree()" "_xvheaplock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheapdestroy()   Free the segment allocated for a segment heap
+'------------------------------------------------------------------------------
+ ^b_xvheapdestroy()^b
+ Free the segment allocated for a segment heap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bvoid _xvheapdestroy(
+     ^b                     HANDLE hSegment
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvheapnew().
+
+ ^bReturns^b
+
+     _xvheapdestroy() has no return value.
+
+ ^bDescription^b
+
+     _xvheapdestroy() frees a VM segment previously allocated as a segment
+     heap with _xvheapnew() and invalidates the handle of that segment.
+
+     ^bWarning! ^b _xvheapdestroy() frees the entire segment heap.  Before
+     using this function, you must use_xvheapfree() to free all memory blocks
+     allocated within the segment heap.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a segment heap with _xvheapnew() and
+        allocates a memory block in the segment heap.  The block is then
+        locked and the string is copied into it.  Later, the memory block is
+        unlocked, the memory freed, and the heap destroyed:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMHeapExample(char * spSrc);
+
+        #define HEAP_SIZE   4096
+
+        Boolean VMHeapExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           unsigned uiStringOffset;
+           unsigned uiBufflen;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvheapnew(HEAP_SIZE))
+              {
+              uiBufflen = strlen(spSrc) + 1;
+              uiStringOffset = _xvheapalloc(hSegment, uiBufflen);
+              if (uiStringOffset)
+                 {
+                 spString = _xvheaplock(hSegment, uiStringOffset);
+                 if (spString != NULL)
+
+                    {
+                    strcpy(spString, spSrc);
+
+                    .
+                    . <statements>
+                    .
+
+                    bResult = TRUE;
+
+                    _xvheapunlock(hSegment, uiStringOffset);
+                    }
+                 _xvheapfree(hSegment, uiStringOffset);
+                 }
+              _xvheapdestroy(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapfree()" "_xvheapnew()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheapfree()      Free an allocated block of segment heap memory
+'------------------------------------------------------------------------------
+ ^b_xvheapfree()^b
+ Free an allocated block of segment heap memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bvoid _xvheapfree(
+     ^b                  HANDLE hSegment,
+     ^b                  USHORT uiOffset
+     ^b                )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvheapnew().
+
+     ^buiOffset^b is the offset of the allocated memory block returned by
+     _xvheapalloc().
+
+ ^bReturns^b
+
+     _xvheapfree() has no return value.
+
+ ^bDescription^b
+
+     _xvheapfree() frees a memory block previously allocated in a segment
+     heap by _xvheapalloc() and then invalidates the offset for that memory
+     block.
+
+     ^bNote: ^b _xvheapfree() only frees blocks of memory allocated within
+     the segment heap.  After all allocated blocks of memory within the
+     segment heap have been freed, use _xvheapdestroy() to free the entire
+     segment heap.
+
+     ^bWarning! ^b Do not use _xvheapfree() to free a locked memory block.
+     Unlock the memory block first using _xvheapunlock().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a segment heap with _xvheapnew() and
+        allocates a memory block in the segment heap.  The block is then
+        locked and the string is copied into it.  Later, the memory block is
+        unlocked, the memory freed, and the heap destroyed:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMHeapExample(char * spSrc);
+
+        #define HEAP_SIZE   4096
+
+        Boolean VMHeapExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           unsigned uiStringOffset;
+           unsigned uiBufflen;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvheapnew(HEAP_SIZE))
+              {
+              uiBufflen = strlen(spSrc) + 1;
+              uiStringOffset = _xvheapalloc(hSegment, uiBufflen);
+              if (uiStringOffset)
+                 {
+                 spString = _xvheaplock(hSegment, uiStringOffset);
+                 if (spString != NULL)
+                    {
+                    strcpy(spString, spSrc);
+
+                    .
+                    . <statements>
+                    .
+
+                    bResult = TRUE;
+
+                    _xvheapunlock(hSegment, uiStringOffset);
+                    }
+                 _xvheapfree(hSegment, uiStringOffset);
+                 }
+              _xvheapdestroy(hSegment);
+
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapalloc()" "_xvheapdestroy()" "_xvheapnew()" "_xvheapunlock()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheaplock()      Lock an allocated block of segment heap memory
+'------------------------------------------------------------------------------
+ ^b_xvheaplock()^b
+ Lock an allocated block of segment heap memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bFARP _xvheaplock(
+     ^b                  HANDLE hSegment,
+     ^b                  USHORT uiOffset
+     ^b                )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvheapnew().
+
+     ^buiOffset^b is the offset of the allocated memory block returned by
+     _xvheapalloc().
+
+ ^bReturns^b
+
+     _xvheaplock() returns a far pointer to the allocated memory block, or a
+     NULL pointer, if either argument is invalid.
+
+ ^bDescription^b
+
+     _xvheaplock() locks the entire segment heap, guaranteeing that the
+     allocated memory block is located in conventional memory and will not be
+     moved or swapped out by the VMM system.  The pointer returned is valid
+     until all blocks of memory within the segment are unlocked using
+     _xvheapunlock().
+
+     ^bWarning! ^b Do not leave a memory block locked unnecessarily.  Because
+     all locked segments reside in conventional memory, the more of them you
+     lock, the greater the chance of exhausting conventional memory.
+     Therefore, always unlock a memory block with _xvheapunlock() when you
+     are not actively accessing it.  Typically, this will mean locking and
+     unlocking the same memory block several times within one function call.
+
+     You must eventually unlock memory blocks locked by _xvheaplock() using
+     _xvheapunlock().
+
+ ^bNotes^b
+
+     ^b^CFE  Error conditions:^b  If there is not enough VM swap space available
+        for the segment to be loaded into conventional memory, the system
+        raises an internal error and halts.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a segment heap with _xvheapnew() and
+        allocates a memory block in the segment heap.  The block is then
+        locked and the string is copied into it.  Later, the memory block is
+        unlocked, the memory freed, and the heap destroyed:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMHeapExample(char * spSrc);
+
+        #define HEAP_SIZE   4096
+
+        Boolean VMHeapExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           unsigned uiStringOffset;
+           unsigned uiBufflen;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvheapnew(HEAP_SIZE))
+              {
+              uiBufflen = strlen(spSrc) + 1;
+              uiStringOffset = _xvheapalloc(hSegment, uiBufflen);
+              if (uiStringOffset)
+                 {
+                 spString = _xvheaplock(hSegment, uiStringOffset);
+                 if (spString != NULL)
+                    {
+                    strcpy(spString, spSrc);
+
+                    .
+                    . <statements>
+                    .
+
+                    bResult = TRUE;
+
+                    _xvheapunlock(hSegment, uiStringOffset);
+                    }
+                 _xvheapfree(hSegment, uiStringOffset);
+                 }
+              _xvheapdestroy(hSegment);
+              }
+
+           return (bResult);
+
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapalloc()" "_xvheapnew()" "_xvheapunlock()" "_xvlockcount()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheapnew()       Allocate a VM segment for use as a segment heap
+'------------------------------------------------------------------------------
+ ^b_xvheapnew()^b
+ Allocate a VM segment for use as a segment heap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bHANDLE _xvheapnew(
+     ^b                   USHORT uiSize
+     ^b                 )
+
+ ^bArguments^b
+
+     ^buiSize^b is the size of the VM segment to allocate as a segment heap.
+
+ ^bReturns^b
+
+     If successful, _xvheapnew() returns a 16-bit segment handle; otherwise,
+     it returns zero.
+
+ ^bDescription^b
+
+     _xvheapnew() allocates a VM segment for use as a segment heap.
+
+     ^bWarning! ^b You must eventually free a segment allocated by
+     _xvheapnew() with _xvheapdestroy().
+
+ ^bNotes^b
+
+     ^b^CFE  Actual heap size:^b In CA-Clipper, there are two bytes of overhead
+        for every memory block allocated within the segment heap.  Therefore,
+        you cannot use a segment heap to hold a string that approaches the
+        CA-Clipper maximum string length (65,519 bytes).  In such cases,
+        you should dedicate an entire VM segment to the string.
+
+     ^b^CFE  Efficiency:^b The VMM system is most efficient when managing a small
+        number of relatively large segments.  The segment heap functions
+        allow a single segment to be treated as a C-style heap (using
+        _xvheapalloc() and _xvheapfree()), making it possible to store
+        multiple data items in one segment.  This can greatly increase the
+        overall efficiency of the VMM system.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a segment heap with _xvheapnew() and
+        allocates a memory block in the segment heap.  The block is then
+        locked and the string is copied into it.  Later, the memory block is
+        unlocked, the memory freed, and the heap destroyed:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMHeapExample(char * spSrc);
+
+        #define HEAP_SIZE   4096
+
+        Boolean VMHeapExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           unsigned uiStringOffset;
+           unsigned uiBufflen;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvheapnew(HEAP_SIZE))
+              {
+              uiBufflen = strlen(spSrc) + 1;
+              uiStringOffset = _xvheapalloc(hSegment, uiBufflen);
+              if (uiStringOffset)
+                 {
+                 spString = _xvheaplock(hSegment, uiStringOffset);
+                 if (spString != NULL)
+                    {
+                    strcpy(spString, spSrc);
+
+                    .
+                    . <statements>
+                    .
+
+                    bResult = TRUE;
+
+                    _xvheapunlock(hSegment, uiStringOffset);
+                    }
+                 _xvheapfree(hSegment, uiStringOffset);
+                 }
+              _xvheapdestroy(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapalloc()" "_xvheapdestroy()" "_xvheapfree()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheapresize()    Resize a segment heap
+'------------------------------------------------------------------------------
+ ^b_xvheapresize()^b
+ Resize a segment heap
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bHANDLE _xvheapresize(
+     ^b                      HANDLE hSegment,
+     ^b                      USHORT uiSize
+     ^b                    )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvheapnew().
+
+     ^buiSize^b is the new size in bytes.
+
+ ^bReturns^b
+
+     If successful, _xvheapresize() returns the original VM segment handle;
+     otherwise, it returns zero.
+
+ ^bDescription^b
+
+     _xvheapresize() resizes a previously allocated segment heap, shortening
+     or lengthening the segment heap to match the specified size.  If you
+     shorten the segment heap, bytes at the end of the segment are lost.
+
+     If the resizing is unsuccessful (indicated by a return value of zero),
+     the segment heap retains its original size.
+
+     ^bWarning! ^b Do not use _xvheapresize() to resize a segment heap that
+     has any allocated memory block locked.  Unlock the memory block first
+     using _xvheapunlock().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example resizes a segment heap:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Prototype
+        Boolean HeapResize(HANDLE hSegment, unsigned uiNewSize);
+
+
+        Boolean HeapResize(HANDLE hSegment, unsigned uiNewSize)
+        {
+           Boolean bResult = FALSE;
+
+           // Don't attempt to resize locked segment
+           //
+           if (_xvlockcount(hSegment) == 0)
+              {
+              if (_xvheapresize(hSegment, uiNewSize))
+                 bResult = TRUE;
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapnew()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvheapunlock()    Unlock an allocated block of segment heap memory
+'------------------------------------------------------------------------------
+ ^b_xvheapunlock()^b
+ Unlock an allocated block of segment heap memory
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bvoid _xvheapunlock(
+     ^b                    HANDLE hSegment,
+     ^b                    USHORT uiOffset
+     ^b                  )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvheapnew().
+
+     ^buiOffset^b is the offset of the allocated memory block returned by
+     _xvheapalloc().
+
+ ^bReturns^b
+
+     _xvheapunlock() has no return value.
+
+ ^bDescription^b
+
+     _xvheapunlock() unlocks a block of allocated memory previously locked by
+     _xvheaplock(), and invalidates any pointers to it.
+
+     ^bNote: ^b _xvheaplock() locks the entire segment heap so that it cannot
+     be moved or swapped out until all blocks of memory within it are
+     unlocked with _xvheapunlock().
+
+     ^bWarning! ^b After you unlock a memory block, you should not attempt to
+     access it with the far pointer returned by _xvheaplock() since there is
+     no guarantee that the memory block resides in the segment at that
+     physical memory address.  If you need further access to the memory
+     block, lock it again and use the new pointer returned by _xvheaplock().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example creates a segment heap with _xvheapnew() and
+        allocates a memory block in the segment heap.  The block is then
+        locked and the string is copied into it.  Later, the memory block is
+        unlocked, the memory freed, and the heap destroyed:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMHeapExample(char * spSrc);
+
+        #define HEAP_SIZE   4096
+
+        Boolean VMHeapExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           unsigned uiStringOffset;
+           unsigned uiBufflen;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvheapnew(HEAP_SIZE))
+              {
+              uiBufflen = strlen(spSrc) + 1;
+              uiStringOffset = _xvheapalloc(hSegment, uiBufflen);
+              if (uiStringOffset)
+                 {
+                 spString = _xvheaplock(hSegment, uiStringOffset);
+                 if (spString != NULL)
+                    {
+                    strcpy(spString, spSrc);
+
+                    .
+                    . <statements>
+                    .
+
+                    bResult = TRUE;
+
+                    _xvheapunlock(hSegment, uiStringOffset);
+                    }
+                 _xvheapfree(hSegment, uiStringOffset);
+                 }
+              _xvheapdestroy(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheapalloc()" "_xvheaplock()" "_xvheapnew()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvlock()          Lock a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvlock()^b
+ Lock a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bFARP _xvlock(
+     ^b              HANDLE hSegment
+     ^b            )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvlock() returns a far pointer to the base of the locked VM segment, or
+     a NULL pointer if the VM segment handle is not valid (i.e., does not
+     represent an allocated VM segment).
+
+ ^bDescription^b
+
+     _xvlock() guarantees that the VM segment is located in conventional
+     memory and cannot be moved or swapped.  The pointer returned is valid
+     until the segment is unlocked using _xvunlock().
+
+     ^bNote: ^b A VM segment may be locked more than once.  The VMM system
+     maintains, for each segment, a lock count (_xvlockcount()) which is
+     incremented each time you lock the segment and decremented each time you
+     unlock the segment.  A segment is not physically unlocked until its lock
+     count is zero.  You must eventually unlock all VM segments with
+     _xvunlock().
+
+     ^bWarning! ^b Do not leave a VM segment locked unnecessarily.  Because
+     all locked segments reside in conventional memory, the more of them you
+     lock, the greater the chance of exhausting conventional memory.
+     Therefore, always unlock a VM segment with _xvunlock() when you are not
+     actively accessing it.  Typically, this will mean locking and unlocking
+     the same VM segment several times within one function call.
+
+     If you have to lock a VM segment for an extended period of time, use
+     _xvwire().  This function places the VM segment in an area of the swap
+     space that least inhibits the VMM system.
+
+ ^bNotes^b
+
+     ^b^CFE  Error conditions:^b  If there is not enough VM swap space available
+        for the segment to be loaded into conventional memory, the system
+        raises an internal error and halts.
+
+     ^b^CFE  Garbage collection:^b  The VMM system may take up to several seconds
+        to lock a VM segment if locking it triggers garbage collection.  Use
+        _xvwire() for routines that require fast access to a buffer.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example allocates a segment with _xvalloc() and locks it
+        using _xvlock().  After a string is copied into the locked segment,
+        the segment is unlocked and freed (with _xvunlock() and _xvfree()):
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMExample(char * spSrc);
+
+
+        Boolean VMExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvalloc(strlen(spSrc) + 1, 0))
+              {
+              spString = _xvlock(hSegment);
+              if (spString != NULL)
+                 {
+                 strcpy(spString, spSrc);
+
+                 .
+                 . <statements>
+                 .
+
+                 bResult = TRUE;
+
+                 _xvunlock(hSegment);
+                 }
+              _xvfree(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvlockcount()" "_xvunlock()" "_xvwire()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvlockcount()     Determine the number of locks on a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvlockcount()^b
+ Determine the number of locks on a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bUSHORT _xvlockcount(
+     ^b                     HANDLE hSegment
+     ^b                   )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvlockcount() returns the number of locks on the VM segment.
+
+ ^bDescription^b
+
+     _xvlockcount() returns the number of locks active on the VM segment.  If
+     the lock count is zero, the segment is unlocked.
+
+     You can also use _xvlockcount() on segment heaps.  Every locked block of
+     allocated memory within the segment heap registers as one lock.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example resizes a segment heap if it is not currently
+        locked:
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Prototype
+        Boolean HeapResize(HANDLE hSegment, unsigned uiNewSize);
+
+
+        Boolean HeapResize(HANDLE hSegment, unsigned uiNewSize)
+        {
+           Boolean bResult = FALSE;
+
+           // Don't attempt to resize locked segment
+           //
+           if (_xvlockcount(hSegment) == 0)
+              {
+              if (_xvheapresize(hSegment, uiNewSize))
+                 bResult = TRUE;
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvheaplock()" "_xvlock()" "_xvunlock()" "_xvwire()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvrealloc()       Change the size of a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvrealloc()^b
+ Change the size of a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bHANDLE _xvrealloc(
+     ^b                   HANDLE hSegment,
+     ^b                   USHORT uiSize,
+     ^b                   USHORT uiFlags
+     ^b                 )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+     ^buiSize^b is the new VM segment size in bytes.
+
+     ^buiFlags^b is currently unused and must be set to zero.
+
+ ^bReturns^b
+
+     If successful, _xvrealloc() returns the original VM segment handle;
+     otherwise, it returns zero.
+
+ ^bDescription^b
+
+     _xvrealloc() resizes a previously allocated VM segment, shortening or
+     lengthening the VM segment to match the specified size.  If you shorten
+     the VM segment, bytes at the end of the segment are lost.
+
+     If the resizing is unsuccessful (indicated by a return value of zero),
+     the segment retains its original size.
+
+     ^bNote: ^b _xvrealloc() can resize locked segments, but the chance of
+     success is lower because the function will be constrained by other
+     locked segments that are currently in memory.
+
+     ^bWarning! ^b Use _xvheapresize(), not _xvrealloc(), to resize a segment
+     heap.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example resizes a previously allocated segment:
+
+        // CA-Clipper include files
+        #include "vm.api"
+
+        #define VR_SHRANK     1
+        #define VR_GREW       2
+        #define VR_NOCHANGE   3
+        #define VR_ERROR      0
+
+        // Prototype
+        int VMResizeExample(HANDLE hSegment, unsigned uiNewSize);
+
+
+        int VMResizeExample(HANDLE hSegment, unsigned uiNewSize)
+        {
+           int iResult = VR_ERROR;
+           unsigned int uiOldSize;
+           long lChange;
+
+           uiOldSize = _xvsize(hSegment);
+
+
+           // Attempt to resize and assign result
+           //
+           if (_xvrealloc(hSegment, uiNewSize, 0))
+              {
+              lChange = (_xvsize(hSegment) - uiOldSize);
+
+              if (lChange > 0)
+                 iResult = VR_GREW;
+
+              if (lChange == 0)
+                 iResult = VR_NOCHANGE;
+
+              if (lChange < 0)
+                 iResult = VR_SHRANK;
+              }
+
+           return (iResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvheapresize()" "_xvsize()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvsize()          Determine the size of a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvsize()^b
+ Determine the size of a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bUSHORT _xvsize(
+     ^b                HANDLE hSegment
+     ^b              )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvsize() returns the size of the VM segment, in bytes.  The actual
+     value returned is the original number of bytes specified in
+     in _xvalloc() that created the segment.
+
+ ^bDescription^b
+
+     _xvsize() returns the size of the VM segment.  You can resize the
+     segment if necessary using _xvrealloc().
+
+ ^bExamples^b
+
+     ^b^CFE^b  The following example resizes a previously allocated segment:
+
+        // CA-Clipper include files
+        #include "vm.api"
+
+        #define VR_SHRANK     1
+        #define VR_GREW       2
+        #define VR_NOCHANGE   3
+        #define VR_ERROR      0
+
+        // Prototype
+        int VMResizeExample(HANDLE hSegment, unsigned uiNewSize);
+
+
+        int VMResizeExample(HANDLE hSegment, unsigned uiNewSize)
+        {
+           int iResult = VR_ERROR;
+           unsigned int uiOldSize;
+           long lChange;
+
+           uiOldSize = _xvsize(hSegment);
+
+           // Attempt to resize and assign result
+           //
+           if (_xvrealloc(hSegment, uiNewSize, 0))
+              {
+              lChange = (_xvsize(hSegment) - uiOldSize);
+
+              if (lChange > 0)
+                 iResult = VR_GREW;
+
+              if (lChange == 0)
+                 iResult = VR_NOCHANGE;
+
+              if (lChange < 0)
+                 iResult = VR_SHRANK;
+              }
+
+           return (iResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvlockcount()" "_xvrealloc()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvunlock()        Unlock a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvunlock()^b
+ Unlock a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bvoid _xvunlock(
+     ^b                HANDLE hSegment
+     ^b              )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvunlock() has no return value.
+
+ ^bDescription^b
+
+     _xvunlock() unlocks a VM segment locked by _xvlock() and invalidates any
+     pointers to the segment.  Unlocking the segment allows the VMM system to
+     move or swap the segment if needed.
+
+     ^bNote: ^b If the segment's lock count (_xvlockcount()) is greater than
+     one, the lock count is decremented but the segment remains locked.  The
+     segment will not be unlocked until its lock count is decremented to
+     zero.
+
+     ^bWarning! ^b After you unlock a VM segment, you should not attempt to
+     access it with the far pointer returned by _xvlock() since there is no
+     guarantee that the segment at that physical memory address is the
+     segment you previously locked.  If you need further access to the
+     contents of the segment, lock it again and use the new pointer returned
+     by _xvlock().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example allocates a segment with _xvalloc() and locks it
+        with _xvlock().  After a string is copied into the locked segment,
+        the segment is unlocked and freed (with _xvunlock() and _xvfree()):
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototype
+        Boolean VMExample(char * spSrc);
+
+
+        Boolean VMExample(char * spSrc)
+        {
+           HANDLE hSegment;
+           char * spString;
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvalloc(strlen(spSrc) + 1, 0))
+              {
+              spString = _xvlock(hSegment);
+              if (spString != NULL)
+                 {
+                 strcpy(spString, spSrc);
+
+                 .
+                 . <statements>
+                 .
+
+                 bResult = TRUE;
+
+                 _xvunlock(hSegment);
+                 }
+              _xvfree(hSegment);
+              }
+
+           return (bResult);
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvfree()" "_xvlock()" "_xvlockcount()" "_xvunwire()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvunwire()        Unlock a wired VM segment
+'------------------------------------------------------------------------------
+ ^b_xvunwire()^b
+ Unlock a wired VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bvoid _xvunwire(
+     ^b                HANDLE hSegment
+     ^b              )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvunwire() has no return value.
+
+ ^bDescription^b
+
+     _xvunwire() unlocks a VM segment locked by _xvwire() and invalidates any
+     pointers to that segment.  Unwiring a segment allows the VMM system to
+     move and swap the segment as needed.
+
+     ^bNote: ^b If the segment's lock count (_xvlockcount()) is greater than
+     one, the lock count is decremented but the segment remains locked.  The
+     segment will not be unlocked until its lock count is decremented to
+     zero.
+
+     ^bWarning! ^b After you unlock a VM segment, you should not attempt to
+     access it with the far pointer returned by _xvwire() since there is no
+     guarantee that the segment at that physical memory address is the
+     segment you previously locked.  If you need further access to the
+     contents of the segment, lock it again and use the new pointer returned
+     by _xvwire().
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example allocates a segment with _xvalloc() and locks it
+        with _xvwire().  After a string is copied into the segment, it is
+        unlocked and freed.
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototypes
+        Boolean VMWireExSetup(char * spSrc);
+        void VMWireExExit(void);
+
+        static HANDLE hSegment;
+        static char * spString = NULL;
+
+
+        Boolean VMWireExSetup(char * spSrc)
+        {
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvalloc(strlen(spSrc) + 1, 0))
+              {
+              spString = _xvwire(hSegment);
+              if (spString != NULL)
+                 {
+                 strcpy(spString, spSrc);
+
+
+                 bResult = TRUE;
+
+                 }
+              else
+                 _xvfree(hSegment);
+              }
+
+           return (bResult);
+        }
+
+
+        void VMWireExExit(void)
+        {
+            // Clean up if anything was allocated
+           if (spString)
+              {
+              _xvunwire(hSegment);
+
+              spString = NULL;
+
+              _xvfree(hSegment);
+              }
+
+           return;
+
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvfree()" "_xvlockcount()" "_xvunlock()" "_xvwire()" 
+'------------------------------------------------------------------------------
+
+
+
+!short: _xvwire()          Obtain a long term lock on a VM segment
+'------------------------------------------------------------------------------
+ ^b_xvwire()^b
+ Obtain a long term lock on a VM segment
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+ ^bC Prototype^b
+
+     ^b#include "vm.api"
+     ^bFARP _xvwire(
+     ^b              HANDLE hSegment
+     ^b            )
+
+ ^bArguments^b
+
+     ^bhSegment^b is the VM segment handle returned by _xvalloc().
+
+ ^bReturns^b
+
+     _xvwire() returns a far pointer to the base of the locked VM segment, or
+     a NULL pointer, if the segment pointer is not valid (i.e., does not
+     represent an allocated segment).
+
+ ^bDescription^b
+
+     _xvwire() moves a segment to the low end of VM swap space and locks it,
+     preventing the segment from being moved or swapped.  Locking a VM
+     segment allows access to it through a standard far pointer.
+
+     VM segments locked by _xvwire() must be unlocked by _xvunwire().
+
+     ^bWarning! ^b Segments that you lock with _xvlock() may be placed in the
+     middle of the swap space.  Thus, if you hold the lock for a long period
+     of time, the swap space can become fragmented, reducing the size of the
+     largest contiguous memory block available.
+
+     _xvwire(), on the other hand, moves the locked segment to the lowest
+     possible position within the swap space.  Thus, if you use _xvwire() to
+     lock a segment for a long period of time, you avoid fragmentation.
+
+     ^bNote: ^b You may lock VM segment more than once.  For each segment,
+     the VMM system maintains a lock count (_xvlockcount()), which is
+     incremented each time you lock the segment and decremented each time you
+     unlock the segment.  A segment is not physically unlocked until its lock
+     count is zero.
+
+ ^bNotes^b
+
+     ^b^CFE  _xvwire() vs. _xvlock(): ^b The question of when to use _xvwire() and
+        when to use _xvlock() is one of efficiency.  _xvlock() is faster at
+        locking segments, but you must unlock the segments relatively quickly
+        or they will inhibit the VMM system.
+
+        _xvwire() is slower at locking segments, but you can maintain the
+        segment locks for a long period of time.  This gives functions access
+        to the wired segment without having to lock it.
+
+        A good example of the need for _xvwire() is a serial communications
+        buffer.  The initialization routine is not affected by the extra time
+        it takes to wire a segment, but the ISR for the communications port
+        needs instant access to memory and, thus, cannot afford to wait for a
+        segment to be locked.
+
+     ^b^CFE  Error conditions: ^b If the segment cannot be loaded into conventional
+        memory because of insufficient VM swap space, the system raises an
+        internal error and halts.
+
+ ^bExamples^b
+
+     ^b^CFE^b  This example allocates a segment with _xvalloc() and locks it
+        with _xvwire().  After a string is copied into the segment, it is
+        unlocked and freed.
+
+        // CA-Clipper include files
+        #include "extend.api"
+        #include "vm.api"
+
+        // Microsoft C include files
+        #include "string.h"
+
+        // Prototypes
+        Boolean VMWireExSetup(char * spSrc);
+        void VMWireExExit(void);
+
+        static HANDLE hSegment;
+        static char * spString = NULL;
+
+
+        Boolean VMWireExSetup(char * spSrc)
+        {
+           Boolean bResult = FALSE;
+
+           if (hSegment = _xvalloc(strlen(spSrc) + 1, 0))
+              {
+              spString = _xvwire(hSegment);
+              if (spString != NULL)
+                 {
+                 strcpy(spString, spSrc);
+
+
+                 bResult = TRUE;
+
+                 }
+              else
+                 _xvfree(hSegment);
+
+              }
+
+           return (bResult);
+        }
+
+
+        void VMWireExExit(void)
+        {
+            // Clean up if anything was allocated
+           if (spString)
+              {
+              _xvunwire(hSegment);
+
+              spString = NULL;
+
+              _xvfree(hSegment);
+              }
+
+           return;
+        }
+
+ ^bFiles^b  Library is CLIPPER.LIB, header file is Vm.api.
+
+!seealso: "_xvalloc()" "_xvfree()" "_xvlock()" "_xvlockcount()" "_xvunwire()" 
+'------------------------------------------------------------------------------
+
+
+
